@@ -1,0 +1,662 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>Phasing Camera Software</title>
+		</f:facet>
+
+
+<style type="text/css">
+@import "../js/jquery.svg.css";
+
+#svgbasics { width: 700px; height: 700px; border: 1px solid #484; }
+</style>
+
+<h:outputScript library="primefaces" name="jquery/jquery.js"/>
+<h:outputScript library="js" name="jquery-1.7.2.js" />
+<h:outputScript library="js" name="jquery.svg.js" />
+<h:outputScript library="js" name="jquery.svganim.js" />
+<h:outputScript library="js" name="jquery.mousewheel.js" />
+<h:outputScript library="js" name="jquery.mousewheel.min.js" />
+<h:outputScript library="js" name="jquery.event.drag.live-2.2.js" />
+<h:outputScript library="js" name="jquery.event.drag-2.2.js" />
+
+<script type="text/javascript">  
+//<![CDATA[
+$(function() {
+	$('#svgbasics').svg({onLoad: drawInitial});
+});
+
+function drawInitial(svg) {
+
+	var a = 41;
+	var b = a * Math.sqrt(3) / 2;
+
+    // var g0 = svg.group({id : 'groupPanel', transform: 'translate(0, 0)'});   
+	
+	var g0 = svg.group({transform: "translate(300,300)"});
+	
+	var g1 = svg.group(g0, {transform: "translate(" + 0 + "," + -2*b + ")"});
+	svg.polygon(g1, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g1, 35, 40, '1', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g2 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + -b + ")"});
+	svg.polygon(g2, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g2, 35, 40, '2', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g3 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + b + ")"});
+	svg.polygon(g3, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g3, 35, 40, '3', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g4 = svg.group(g0, {transform: "translate(" + 0 + "," + 2*b + ")"});
+	svg.polygon(g4, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g4, 35, 40, '4', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g5 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + b + ")"});
+	svg.polygon(g5, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g5, 35, 40, '5', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g6 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + -b + ")"});
+	svg.polygon(g6, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g6, 35, 40, '6', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g7 = svg.group(g0, {transform: "translate(" + 0 + "," + -4*b + ")"});
+	svg.polygon(g7, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g7, 35, 40, '7', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g8 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + -3*b + ")"});
+	svg.polygon(g8, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g8, 35, 40, '8', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g9 = svg.group(g0, {transform: "translate(" + -3*a + "," + -2*b + ")"});
+	svg.polygon(g9, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g9, 35, 40, '9', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g10 = svg.group(g0, {transform: "translate(" + -3*a + "," + 0 + ")"});
+	svg.polygon(g10, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g10, 30, 40, '10', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g11 = svg.group(g0, {transform: "translate(" + -3*a + "," + 2*b + ")"});
+	svg.polygon(g11, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g11, 30, 40, '11', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g12 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + 3*b + ")"});
+	svg.polygon(g12, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g12, 30, 40, '12', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g13 = svg.group(g0, {transform: "translate(" + 0 + "," + 4*b + ")"});
+	svg.polygon(g13, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g13, 30, 40, '13', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g14 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + 3*b + ")"});
+	svg.polygon(g14, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g14, 30, 40, '14', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g15 = svg.group(g0, {transform: "translate(" + 3*a + "," + 2*b + ")"});
+	svg.polygon(g15, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g15, 30, 40, '15', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g16 = svg.group(g0, {transform: "translate(" + 3*a + "," + 0 + ")"});
+	svg.polygon(g16, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g16, 30, 40, '16', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g17 = svg.group(g0, {transform: "translate(" + 3*a + "," + -2*b + ")"});
+	svg.polygon(g17, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g17, 30, 40, '17', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g18 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + -3*b + ")"});
+	svg.polygon(g18, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g18, 30, 40, '18', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+
+	var g19 = svg.group(g0, {transform: "translate(" + 0 + "," + -6*b + ")"});
+	svg.polygon(g19, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g19, 30, 40, '19', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g20 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + -5*b + ")"});
+	svg.polygon(g20, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g20, 30, 40, '20', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+	
+	var g21 = svg.group(g0, {transform: "translate(" + -3*a + "," + -4*b + ")"});
+	svg.polygon(g21, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g21, 30, 40, '21', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g22 = svg.group(g0, {transform: "translate(" + -9*a/2 + "," + -3*b + ")"});
+	svg.polygon(g22, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g22, 30, 40, '22', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g23 = svg.group(g0, {transform: "translate(" + -9*a/2 + "," + -b + ")"});
+	svg.polygon(g23, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g23, 30, 40, '23', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g24 = svg.group(g0, {transform: "translate(" + -9*a/2 + "," + b + ")"});
+	svg.polygon(g24, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g24, 30, 40, '24', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g25 = svg.group(g0, {transform: "translate(" + -9*a/2 + "," + 3*b + ")"});
+	svg.polygon(g25, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g25, 30, 40, '25', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g26 = svg.group(g0, {transform: "translate(" + -3*a + "," + 4*b + ")"});
+	svg.polygon(g26, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g26, 30, 40, '26', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g27 = svg.group(g0, {transform: "translate(" + -3*a/2 + "," + 5*b + ")"});
+	svg.polygon(g27, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g27, 30, 40, '27', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g28 = svg.group(g0, {transform: "translate(" + 0 + "," + 6*b + ")"});
+	svg.polygon(g28, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g28, 30, 40, '28', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g29 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + 5*b + ")"});
+	svg.polygon(g29, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g29, 30, 40, '29', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g30 = svg.group(g0, {transform: "translate(" + 3*a + "," + 4*b + ")"});
+	svg.polygon(g30, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g30, 30, 40, '30', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g31 = svg.group(g0, {transform: "translate(" + 9*a/2 + "," + 3*b + ")"});
+	svg.polygon(g31, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g31, 30, 40, '31', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g32 = svg.group(g0, {transform: "translate(" + 9*a/2 + "," + b + ")"});
+	svg.polygon(g32, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g32, 30, 40, '32', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g33 = svg.group(g0, {transform: "translate(" + 9*a/2 + "," + -b + ")"});
+	svg.polygon(g33, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g33, 30, 40, '33', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g34 = svg.group(g0, {transform: "translate(" + 9*a/2 + "," + -3*b + ")"});
+	svg.polygon(g34, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g34, 30, 40, '34', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g35 = svg.group(g0, {transform: "translate(" + 3*a + "," + -4*b + ")"});
+	svg.polygon(g35, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g35, 30, 40, '35', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+	var g36 = svg.group(g0, {transform: "translate(" + 3*a/2 + "," + -5*b + ")"});
+	svg.polygon(g36, [[0,b],[a/2,0],[3*a/2,0],[2*a,b],[3*a/2,2*b],[a/2,2*b]],  
+	             {fill: '#aaccff', stroke: 'black', strokeWidth: 1});
+	svg.text(g36, 30, 40, '36', {fontFamily: "Verdana", fontSize: "16", fill: "blue"}); 
+
+
+	//$(g0).animate({svgTransform: 'translate(50 50) rotate(60)'}); 
+	
+	// g0.setAttribute('transform','scale(' + 2 + ')');
+
+	var scale = 1;  
+	var transX = 300;
+	var transY = 300;
+	var dragStart = true;
+	
+	$('#svgbasics').bind('mousewheel', function(event, delta) { 
+
+		var translate = 'translate(' + transX + ', '+ transY + ')';  
+				 
+        if(delta > 0) {  
+            //zoom in  
+            scale *= 0.8;  
+            g0.setAttribute('transform',translate + 'scale(' + scale + ')');  
+        } else {  
+            //zoom out  
+            scale /= 0.8;  
+            if(scale <= 0.125) {  
+                scale = 0.125;  
+        	}  
+            g0.setAttribute('transform',translate + 'scale(' + scale + ')');  
+      	}  
+        $("html:not(:animated), body:not(:animated)").animate({scrollTop: 0}, 500);  
+        return true;  
+    });  
+	
+	$('#svgbasics').bind('drag', function(event, delta) {  
+
+		//alert(delta.originalX + ", " + delta.originalY);
+		transX = delta.startX + delta.offsetX - 50;
+		transY = delta.startY + delta.offsetY - 200;
+		
+        var translate = 'translate(' + transX + ', '+ transY + ')';  
+        g0.setAttribute('transform', translate + 'scale(' + scale + ')');  
+    });  
+	
+}
+//]]>  
+</script>  
+
+
+<style>
+
+
+.ui-datatable th,.ui-datatable tfoot,.ui-datatable td {
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.ui-datatable th {
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.ui-datatable .ui-datatable-data td,.ui-datatable .ui-datatable-data-empty td {
+	padding: 4px 4px;
+	margin: 0px;
+	border: 0px;
+}
+
+.ui-datatable .ui-column-filter {
+	font-size: 10px; !important
+	font-weight: normal; !important
+	font-family: verdana; !important
+	padding: 0px;
+}
+
+.ui-datatable-odd {
+    background: none repeat scroll 0 0 #F2F5F9;
+}
+
+.btmsForm .ui-datatable-odd {
+    background: inherit;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
+}
+
+.ui-widget {
+	font-size: 12px;
+}
+
+
+.logo-style {
+	position: absolute;
+	top: 9px;
+	right: 200px;
+	left: 10px;
+}
+
+
+.banner {
+	background: #A3B2CC;
+	background-image: url('../images/pcs.gif'); 
+	background-attachment: fixed;
+	background-position: top left;
+	background-repeat: repeat-y;
+	background-size: auto 68px;
+	height: 64px;
+	padding: 0; !important
+	margin: 0; !important
+	spacing: 0; !important
+	// border-bottom: solid 1px #00000; 
+}
+
+
+
+
+.ui-layout-pane-north .ui-widget-content, .ui-layout-pane-north .ui-layout-unit-content {
+
+background: #d4f8ff;
+
+	background-image: url('../../images/hexagon.jpg'); 
+	background-attachment: fixed;
+	background-position: 0px 0px;
+	background-repeat: repeat-x;
+	background-size: 1440px 225px;
+
+	spacing: 0; !important
+
+	height: 56px;  !important
+	padding: 0 0 0 0; !important
+	margin: 0 0 0 0; !important
+}
+
+#top.ui-layout-unit {
+	padding: 0 0 0 0; !important
+	border: 0 0 0 0; !important
+} 
+
+.ui-layout-unit {
+	border: 0px solid  #333333; !important
+}
+
+
+body {
+    background: #666666; !important 
+}
+
+.ui-accordion .ui-accordion-content {
+	padding: 1em; !important
+}
+
+.menubar {
+	background: #F2F7FF; !important
+}
+
+.menubar .ui-menu-list .ui-menuitem a {
+	color: #333333; !important;
+	text-decoration: none; !important
+	font-size: 10px; !important
+}
+
+label {
+	float:right;
+  	margin-right:0.2em;
+  	padding-top:0.0em;
+  	text-align:right;
+  	font-weight:normal;
+  	font-family:verdana;
+  	font-size: 12px;
+}
+
+
+.ui-inputfield {
+	font-family:verdana !important;
+	font-weight:normal !important;
+	padding:1px !important;
+	box-shadow:none !important;
+	font-size: 12px !important;
+}
+
+/* disable breadcrumb home icon and let text appear */
+
+div.btmsBreadcrumb ul li a.ui-icon {
+	background: none repeat 0 0;
+	text-indent: 0px;
+	height: auto;
+	width: auto;
+	margin-top: 3px;
+    overflow: auto;
+    padding: 0px;
+}
+
+#center {
+	padding: 0 3px 0 3px;
+}
+
+
+.ui-growl {
+	left: 300px;
+}
+
+
+.pcsExecutionPanel tbody tr td {
+	vertical-align: top;
+}
+
+.btmsForm tbody tr td, .pcsForm tbody tr td {
+	border: 0px;
+}
+.btmsForm tbody tr, .pcsForm tbody tr {
+	border: 0px;
+}
+.btmsForm tbody {
+	border: 0px;
+}
+
+.pcsForm {
+	border-collapse: separate;
+	border: 1px solid #888888;
+}
+
+.btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn {
+	padding: 4px 4px 4px 10px;
+}
+.btmsForm .btmsFormInputColumn, .pcsForm .btmsFormInputColumn {
+	padding: 4px 10px 4px 4px;
+}
+.btmsForm .ui-panelgrid-footer, .pcsForm .ui-panelgrid-footer {
+	text-align:right;
+}
+.btmsForm thead {
+	 display: none; 
+}
+.btmsForm .tableFormLabelColumn, .pcsForm .tableFormLabelColumn {
+	padding: 4px 4px 4px 10px;
+	width: 200px;
+}
+.btmsForm .tableFormInputColumn, .pcsForm .tableFormInputColumn {
+	padding: 4px 10px 4px 4px;
+	text-align: left;
+}
+
+.frameDisplay thead {
+	display: table-header-group !important;
+}
+.frameDisplay tbody tr td  {
+	padding: 4px 0px 4px 0px;
+}
+
+/* fix the combo boxes */
+.ui-selectonemenu-label {
+	font-size: 10px !important;
+}
+.ui-selectonemenu-trigger {
+	width: 14px !important;
+}
+
+.ui-wizard-step-title {
+    font-size: 14px;
+    margin: 0 3px 0 0;
+    padding: 0.2em;
+}
+
+.ui-progressbar .ui-widget-header {
+    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0 0 #85B2CB;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.ui-widget-header {
+    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0 0 #C4C4C4;
+    border: 1px solid #A8A8A8;
+    color: #333333;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.ui-progressbar {
+    border-radius: 10px 10px 10px 10px;
+}
+
+.helpAboutHeader td {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0px;
+}
+
+</style>
+
+	</h:head>
+
+
+	<h:body>
+		<!--  workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF -->
+		<f:event type="javax.faces.event.PreRenderViewEvent"
+			listener="#{applicationScopeBean.preRenderView}" />
+
+		<p:growl id="growl" />
+		
+		<p:layout fullPage="true">
+
+			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
+
+				<h:outputText value="Phasing Camera System" style="margin:40px;color:#d4f8ff;font-size:30pt;text-shadow: 1px 1px 1px #bbb;" />
+				<div style="float:right;margin-right:30px;margin-top:20px;">
+				<h:outputText value="" style="color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" />
+				</div>
+			</p:layoutUnit>
+
+
+			<p:layoutUnit id="center" position="center">
+
+			<h:form id="menuForm">
+			
+			    <p:growl id="messages"/>  
+
+				<p:menubar>
+					<p:submenu label="File" icon="ui-icon-document" >
+						<p:submenu label="New Procedure" icon="ui-icon-contact">
+							<p:menuitem value="Passive Tilt" action="#{passiveTiltController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Phasing" action="#{phasingController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Fine Screen" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="UFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="SUFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:separator />
+							<p:menuitem value="Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="First Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Pupil Registration" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						</p:submenu>
+						<p:submenu label="New CCD Map" icon="ui-icon-contact">
+							<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Dark Current Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Pixel Efficiency Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						</p:submenu>
+						<p:separator />
+						<p:menuitem value="Frame Viewer" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:separator />
+						<p:menuitem value="View Session Logs" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Current Session Log" url="#" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+
+					<p:submenu label="Global Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
+						<p:menuitem value="Setup" action="#{setupController.doViewSetup}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Missing Spots" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Incomplete Mirror" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:separator />
+						<p:menuitem value="System Administration" url="#" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+
+					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{sessionController.inPassiveTilt}" >
+						<p:menuitem value="Advanced Options" type="button" onclick="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+
+				 	<p:submenu label="Engineering Tools" icon="ui-icon-gear" disabled="true">
+						<p:menuitem value="Camera" action="#{cameraDiagnosticController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" />
+						<p:menuitem value="CCD" action="#{ccdDiagnosticController.doViewCcdDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="ACS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="DCS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+							
+					</p:submenu>
+
+				 	<p:submenu label="Help" icon="ui-icon-help">
+						<p:menuitem value="About..."  onclick="helpAboutDialog.show();" />
+					</p:submenu>
+
+				</p:menubar>
+			</h:form>
+
+				<h:form id="breadcrumbForm">
+					<p:breadCrumb model="#{breadcrumbMenuBean.model}"
+						styleClass="btmsBreadcrumb" />
+				</h:form>
+
+				<ui:insert name="content" />
+
+			</p:layoutUnit>
+
+		</p:layout>
+
+
+		<p:dialog id="basicDialog" header="Visualization Display" widgetVar="displayDialog" closable="false">  
+    		<div id="svgbasics"></div>  
+    		<h:form id="graphicDialogForm">
+    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
+					action="#{asyncPopupController.doCloseGraphicsDisplay}" oncomplete="displayDialog.hide();" />
+			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+					action="#{asyncPopupController.doCloseGraphicsDisplay}" oncomplete="displayDialog.hide();" />
+    		</h:form>
+		</p:dialog> 
+
+		<p:dialog id="helpAboutDlg" header="About PCS PEAS" widgetVar="helpAboutDialog">  
+    		<div>
+    		<p:panelGrid columns="2" style="width:100%" styleClass="helpAboutHeader">
+    		<p:graphicImage url="../images/peas.jpg" height="84px" width="126px" />
+    		<h:panelGroup>
+    		<p:spacer width="66px" height="10px"/>
+  			<h:outputText style="font-weight:bold; font-size:14px" value="PCS PEAS version 0.1"/>
+    		<p:spacer width="66px" height="10px"/>
+  			</h:panelGroup>
+    		</p:panelGrid>
+			<br/><br/>
+			Copyright 2013 by Scott Michaels, Mitch Troy, Gary Chanan<br/>and the Thirty Meter Telescope Corporation
+			<br/><br/>
+			<br/><br/>
+			Web Application Design by Scott Michaels			<br/><br/>
+			Algorithm Development by Gary Chanan and Mitch Troy  <br/><br/>
+			The authors would like to thank the Thirty Meter Telescope Corporation and<br/>the W. M. Keck Observatory for their support. 
+			<br/><br/>
+			</div>
+		</p:dialog> 
+
+		<p:dialog id="promptDialog" header="User Prompt" widgetVar="userPromptDialog" closable="false">  
+    		<div>
+    		<br/>
+    		The value for something has exceeded the threshold of some value:
+    		<br/>
+    		3452.0000 56.0 342
+    		<br/>
+    		<br/>
+    		Do you want to send commands?
+    		</div>  
+    		  
+    		<h:form id="promptDialogForm">
+    		<p:commandButton id="saveButton" value="Yes" style="float:right" update=":growl"
+					action="#{asyncPopupController.doCloseUserPrompt}" oncomplete="userPromptDialog.hide();" />
+			<p:commandButton id="closeButton" value="No" style="float:right" update=":growl"
+					action="#{asyncPopupController.doCloseUserPrompt}" oncomplete="userPromptDialog.hide();" />
+    		</h:form>
+		</p:dialog> 
+
+
+
+	</h:body>
+
+</f:view>
+</html>

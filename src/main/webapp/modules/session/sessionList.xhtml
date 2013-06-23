@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="sessionListForm" style="margin:30px">
+		
+			<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.sessionList}">				
+			    <f:facet name="header">
+					Session Summary
+				</f:facet>
+				
+				<p:column headerText="Number"
+					style="width:14em">
+					<h:outputText value="#{procedure.procedureNumber}" />
+				</p:column>
+				<p:column headerText="Type"
+					style="width:14em">
+					<h:outputText value="#{procedure.procedureType}" />
+				</p:column>
+				<p:column headerText="Time Run"
+					style="width:14em">
+					<h:outputText value="#{procedure.createDate}" />
+				</p:column>
+				 
+			</p:dataTable>
+
+			<br />
+			
+		</h:form>
+		
+	</ui:define>
+</ui:composition>
+</html>

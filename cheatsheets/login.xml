@@ -1,0 +1,526 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<cheatsheet title="CDI + JPA + EJB + JTA + JSF: Login quickstart">
+  <intro>
+   <description>
+    This quickstart shows you how to create and deploy an application which persists information to a database to JBoss AS.
+    Information is displayed using JSF views, business logic is encapsulated in CDI beans, information is persisted using JPA, and transactions can be controlled manually or using EJB.
+   </description>
+  </intro>
+  <item
+        skip="true"
+        title="The login example in depth">
+     <description>
+    	In the login example, all users are stored in an H2 database (an in-memory, embedded database provided out of the box in JBoss AS). 
+    	Each user is stored as an entity, and entities are mapped to the database using JPA. 
+    	By default, transactions are managed manually, using the JTA API. 
+    	Optionally, you can use EJB to manage transactions (we&apos;ll look at how to enable that later). 
+    	We need a transaction in progress in order to read and write any entities.
+		<br/><br/>
+		The login example is comprised of two JSF views, an entity, and a number of CDI beans. 
+		Additionally, there are the usual configuration files in <b>WEB-INF/</b> 
+		(which can be found in the <b>src/main/webapp</b> directory of the example). 
+		Here we find <b>beans.xml</b> and <b>face-config.xml</b> tell JBoss AS to enable CDI and JSF for the application. 
+		Notice that we don&apos;t need a web.xml. 
+		There are two new configuration files in <b>WEB-INF/classes/META-INF</b> 
+		(which can be found in the <b>src/main/resources</b> directory of the example) — <b>persistence.xml</b>, 
+		which sets up JPA, and <b>import.sql</b> which Hibernate, the JPA provider in JBoss AS, will use to load 
+		the initial users into the application when the application starts.
+     </description>
+ </item>
+ <item
+        skip="true"
+        title="persistence.xml">
+      <description>
+      persistence.xml is pretty straight forward, and links JPA to a datasource:
+      </description>
+      <subitem
+            label="The persistence unit is given a name, so that the application can use multiple if needed. If only one is defined, JPA will automatically use it. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/resources/META-INF/persistence.xml"	
+			param2="6" />
+	  </subitem>
+	  <subitem
+            label="The persistence unit references a data source. Here we are using the built in, sample, data source."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/resources/META-INF/persistence.xml"	
+			param2="8" />
+	  </subitem>
+	  <subitem
+            label="JPA allows us to configure the JPA provider specific properties. Here we tell Hibernate to automatically create any needed tables when the application starts (and drop them when the application is stopped). "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/resources/META-INF/persistence.xml"	
+			param2="10" />
+	  </subitem>
+      
+  </item>
+  
+  <item
+        skip="true"
+        title="JBoss AS datasource">
+     <description>
+    	 JBoss AS ships with a sample datasource java:jboss/datasources/ExampleDS. 
+    	 This data source is backed by H2, an in-memory database. Whilst this datasource is great for quickstarts, 
+    	 you will probably want to use a different datasource in your application. 
+    	 The <b>Getting Started Guide</b> tells you how to create a new datasource.
+    </description>
+    <command
+           required="false"
+           serialization="org.eclipse.ui.browser.openBrowser(url=https://docs.jboss.org/author/display/AS7/Getting+Started+Guide)"/>
+  </item>
+  
+  <item
+        skip="true"
+        title="home.xhtml">
+     <description>
+Let&apos;s take a look at the JSF views. First up is <b>src/main/webapp/home.xhtml</b>:
+    </description>
+    <subitem
+            label="As we have multiple views in this application, we've created a template that defines the common elements. We'll examine this next. Here we define the 'content' section of the page, which will be inserted into the template. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/home.xhtml"	
+			param2="7" />
+	</subitem>
+	<subitem
+            label="We output any messages for the user at the top of the form, such as the welcome message when you login. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/home.xhtml"	
+			param2="9" />
+	</subitem>
+	<subitem
+            label="The login form fields are only rendered if there is no logged in user. This allows us to prevent someone from logging in twice. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/home.xhtml"	
+			param2="11"
+			param3="16" />
+	</subitem>
+	<subitem
+            label="Depending on whether the user is logged in or not, we display a log out or log in button. We also display a link to the page which shows the available users. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/home.xhtml"	
+			param2="17"
+			param3="18" />
+	</subitem>
+	
+  </item>
+  
+  <item
+        skip="true"
+        title="template.xhtml">
+     <description>
+Now let&apos;s take a look at the template. 
+It defines common elements for the page, 
+and allows pages which use it to insert content in various places.
+    </description>
+    <subitem
+            label="The head, defined in case a page wants to add some content to the head of the page. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/template.xhtml"	
+			param2="9" />
+	</subitem>
+	
+    <subitem
+            label="The content, defined by a page using this template, will be inserted here  "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/template.xhtml"	
+			param2="23" />
+	</subitem>
+	
+  </item>
+  
+  <item
+        skip="true"
+        title="users.xhtml">
+     <description>
+Finally, let&apos;s take a look at the user management page. 
+It uses a table to display all existing users, and provides a form to add users
+    </description>
+    <subitem
+            label="The table which displays the current users in the database. The datatable references the users, and iterates over each one. Each user is assigned to the variable u, which we can use when laying out the table structure."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/users.xhtml"	
+			param2="11" />
+	</subitem>
+	
+    <subitem
+            label="Each column in the table is given a header, plus content."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/webapp/users.xhtml"	
+			param2="13"
+			param3="15" />
+	</subitem>
+	
+   </item>
+  <item
+        skip="true"
+        title="User.java">
+     <description>
+    	 Finally, we provide a simple form that allows you to add a new user.
+<br/><br/>
+The example has one entity, which is mapped via JPA to the relational database:
+    </description>
+    
+    <subitem
+            label="The @Entity annotation used on the class tells JPA that this class should be mapped as a table in the database. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/User.java"	
+			param2="6" />
+	</subitem>
+	<subitem
+            label="Every entity requires an id, the @Id annotation placed on a field (or a JavaBean mutator/accessor) tells JPA that this property is the id. You can use a synthetic id, or a natural id (as we do here)."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/User.java"	
+			param2="8"
+			param3="9" />
+	</subitem>
+	<subitem
+            label="The entity also stores the real name of the user, and their password. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/User.java"	
+			param2="10"
+			param3="11" />
+	</subitem>
+	<subitem
+            label="As this is Java, every property needs an accessor/mutator."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/User.java"	
+			param2="13"
+			param3="35" />
+	</subitem>
+  </item>
+  
+  <item
+        skip="true"
+        title="Credentials.java">
+     <description>
+    	 Next up, let's take a look at Credentials.java,
+    	  a data structure used to temporarily hold the credentials the user has entered whilst logging in.
+    </description>
+    <subitem
+            label="The bean is request scoped, as entered data is naturally scoped to a request."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Credentials.java"	
+			param2="6" />
+	</subitem>
+	<subitem
+            label="The bean is given a name, so we can access it from JSF. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Credentials.java"	
+			param2="7" />
+	</subitem>
+    <subitem
+            label="The bean needs to store the username and password entered, and also make them usable via accessors and mutators. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Credentials.java"	
+			param2="10"
+			param3="27" />
+	</subitem>
+  </item>
+  
+  <item
+        skip="true"
+        title="Login.java">
+     <description>
+    	 The logic allowing a user to log in, and storing who is currently logged in, is encoded in Login.java:
+    </description>
+    <subitem
+            label="The bean is session scoped, meaning that the currently logged user is kept until the session ends. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="12" />
+	</subitem>
+	<subitem
+            label="The bean is given a name, so we can access it from JSF. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="13" />
+	</subitem>
+    <subitem
+            label="We inject the credentials filled in on the web page so we can check them in the login() method."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="18"
+			param3="19" />
+	</subitem>
+	<subitem
+            label="We inject the user manager, which takes care of loading and adding users from the database. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="21"
+			param3="22" />
+	</subitem>
+	<subitem
+            label="The login method is triggered when the Login button is pressed. It asks the userManager to find a user with matching username and password, and if a user is found, sets the currentUser and displays a message to the user."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="26"
+			param3="32" />
+	</subitem>
+	<subitem
+            label="The logout method is triggered when the Logout button is pressed. It clearsthe currentUser and displays a message to the user."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="34"
+			param3="37" />
+	</subitem>
+	<subitem
+            label="The current user is exposed to the application using a producer method, which means that there is no coupling between a class wanting to know the current user, and the Login class. The LoggedIn qualifier is used to indicate that this User is special. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Login.java"	
+			param2="43"
+			param3="47" />
+	</subitem>
+  </item>
+  
+  <item
+        skip="true"
+        title="UserManager.java">
+     <description>
+    	 Now, let&apos;s look at the most interesting part of the application, how we interact with the database. 
+    	 As we mentioned earlier, by default the application uses the JTA API to manually control transactions. 
+    	 To implement both approaches, we&apos;ve defined a UserManager interface, with two implementations, 
+    	 one of which (the EJB variant) is as an alternative which can be enabled via a deployment descriptor. 
+    	 Let&apos;s first look at the interface, and the manual transaction control variant.
+    	 <br/>
+    	 The methods are fairly self explanatory, so let&apos;s move on quickly to the implementation, ManagedBeanUserManager.
+    </description>
+    <action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/UserManager.java" 
+			/>
+  </item>
+  
+  <item
+        skip="true"
+        title="ManagedBeanUserManager.java">
+     <description>
+        
+     </description>
+     
+     <subitem
+            label="The bean is given a name, so we can access it from JSF."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="13" />
+	 </subitem>
+	 
+	 <subitem
+            label="The bean is request scoped, meaning that the new user object being added is the same for every invocation of userManager during the request. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="14" />
+	 </subitem>
+	
+	 
+	 <subitem
+            label="We inject a JDK logger so that we can log when a user is added."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="17"
+			param3="18" />
+	</subitem>
+	<subitem
+            label="We inject the entity manager. This was set up in persistence.xml."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="20"
+			param3="21" />
+	</subitem>
+	<subitem
+            label="We create a named producer method that uses JPA to expose all the users currently in the database. This allows JSF to access this list. We also make this request scoped so that the database isn't hit every time we need to display the users list."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="29"
+			param3="45" />
+	</subitem>
+	<subitem
+            label="addUser takes the newUser and persists it to the database."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="46"
+			param3="60" />
+	</subitem>
+	<subitem
+            label="The findUser() method can check whether a user with a matching username and password exists, and return it if it does."
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/ManagedBeanUserManager.java"	
+			param2="62"
+			param3="84" />
+	</subitem>
+  </item>
+  
+  <item
+        skip="true"
+        title="Enable EJBUserManager.java">
+     <description>
+    	 You've probably noticed two things as you've read through this. 
+    	 Firstly, that manually managing transactions is a real pain. 
+    	 Secondly, you may be wondering how the entity manager and the logger are injected. 
+    	 First, let&apos;s tidy up the transaction manager, and use EJB to provide us with declarative transaction support.
+<br/><br/>
+	The class <b>EJBUserManager</b> provides this, and is defined as an alternative. 
+	Alternatives are disabled by default, and when enabled replace the original implementation. 
+	In order to enable this variant of UserManager, edit beans.xml and uncomment the alternative. 
+	Your beans.xml should now look like:
+	</description>
+    <action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/beans.xml" 
+			/>
+  </item>
+  <item
+        skip="true"
+        title="EJBUserManager.java">
+     <description>
+    	 Using declarative transaction management has allowed us to remove a third of the lines of code from the class,
+    	  but more importantly emphasizes the functionality of the class. Much better!
+    	  <br/><br/>
+    	  <b>Sharp eyed developers</b> who are used to Java EE will have noticed that we have added this <b>EJB to a war</b>. 
+    	  This is the key improvement offered in EJB 3.1 (which was first included in Java EE 6).
+	</description>
+    <action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/EJBUserManager.java" 
+			/>
+  </item>
+  
+  <item
+        skip="true"
+        title="Resources.java">
+     <description>
+    	 Finally, let&apos;s take a look at the Resources class, which provides resources such as the entity manager. 
+    	 CDI recommends using <b>resource producers</b>, as we do in this example, to alias resources to CDI beans, 
+    	 allowing for a consistent style throughout our application:
+    </description>
+	    <subitem
+            label="We use the 'resource producer' pattern, from CDI, to 'alias' the old fashioned @PersistenceContext injection of the entity manager to a CDI style injection. This allows us to use a consistent injection style (@Inject) throughout the application. "
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Resources.java"	
+			param2="13"
+			param3="16" />
+	</subitem>
+    <subitem
+            label="We expose a JDK logger for injection. In order to save a bit more boiler plate, we automatically set the logger category as the class name!"
+            skip="true">
+		<action
+			pluginId="org.jboss.tools.project.examples.cheatsheet"
+			class="org.jboss.tools.project.examples.cheatsheet.actions.OpenFileInEditor"
+			param1="/jboss-as-login/src/main/java/org/jboss/as/quickstarts/login/Resources.java"	
+			param2="18"
+			param3="22" />
+	</subitem>
+  </item>
+  
+  <item
+        skip="true"
+        title="Run and deploy the application">
+     <description>
+    	 Right-click the <b>jboss-as-login</b> project and select <b>Run As</b> &gt; <b>Run On Server</b> or click on the &quot;Click to Perform&quot; link below. 
+    </description>
+    <action
+		pluginId="org.jboss.tools.project.examples.cheatsheet"
+		class="org.jboss.tools.project.examples.cheatsheet.actions.RunOnServer"
+		param1="jboss-as-login"/> 
+  </item>
+</cheatsheet>

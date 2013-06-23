@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PROCESS model-entity="JSFProcess">
+ <PROCESS-ITEM NAME="rules:#newPartner.xhtml" PATH="/newPartner.xhtml" model-entity="JSFProcessGroup">
+  <PROCESS-ITEM ID="rules:#newPartner.xhtml:0" NAME="item"
+   PATH="/newPartner.xhtml" model-entity="JSFProcessItem">
+   <PROCESS-ITEM-OUTPUT
+    ID=":#{partnerController.doCreatePartner}:#listClassTypes.xhtml"
+    NAME="output" PATH="/listClassTypes.xhtml"
+    TARGET="rules:#listClassTypes.xhtml"
+    TITLE="#{partnerController.doCreatePartner}:[any]" model-entity="JSFProcessItemOutput"/>
+  </PROCESS-ITEM>
+ </PROCESS-ITEM>
+ <PROCESS-ITEM NAME="rules:#listClassTypes.xhtml"
+  PATH="/listClassTypes.xhtml" model-entity="JSFProcessGroup"/>
+</PROCESS>

@@ -1,0 +1,12 @@
+Add the following to the JBoss standalone.xml as a security domain:
+
+               <security-domain name="APSRealm" cache-type="default">
+                    <authentication>
+                        <login-module code="org.jboss.security.auth.spi.UsersRolesLoginModule" flag="required">
+                            <module-option name="usersProperties" value="users.properties"/>
+                            <module-option name="rolesProperties" value="roles.properties"/>
+                        </login-module>
+                    </authentication>
+                </security-domain>
+ 
+ 

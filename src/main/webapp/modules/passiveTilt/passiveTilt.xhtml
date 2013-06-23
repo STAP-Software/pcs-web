@@ -1,0 +1,238 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="procedureDetailForm">
+
+			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" update="@form :growl"
+				listener="#{asyncPopupController.asyncListener}" />
+
+			<p:growl id="growl" />
+
+			<p:spacer height="10px" />
+
+
+			<p:panelGrid columns="3" styleClass="pcsExecutionPanel">
+
+				<p:accordionPanel multiple="true" activeIndex="0,1">
+
+					<p:tab title="Procedure Configuration">
+
+						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="Filter" />
+							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+								<f:selectItem itemLabel="Select One" itemValue="" />
+								<f:selectItem itemLabel="611 nm" itemValue="611" />
+								<f:selectItem itemLabel="618 nm" itemValue="618" />
+								<f:selectItem itemLabel="651 nm" itemValue="651" />
+								<f:selectItem itemLabel="852 nm" itemValue="852" />
+								<f:selectItem itemLabel="870 nm" itemValue="870" />
+								<f:selectItem itemLabel="891 nm" itemValue="891" />
+							</p:selectOneMenu>
+
+							<h:outputLabel value="Integration Time" />
+							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
+								<f:selectItem itemLabel="Select One" itemValue="" />
+								<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
+								<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
+								<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
+								<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
+							</p:selectOneMenu>
+
+							<h:outputLabel value="Number of Trials" />
+							<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
+
+							<h:outputLabel value="Frame Source" />
+							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
+								<f:selectItem itemLabel="Select One" itemValue="" />
+								<f:selectItem itemLabel="CCD" itemValue="1" />
+								<f:selectItem itemLabel="Frame" itemValue="2" />
+							</p:selectOneMenu>
+
+
+						</p:panelGrid>
+					</p:tab>
+
+
+					<p:tab title="Status and Control">
+
+						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+							<h:outputLabel value="Procedure Type" />
+							<h:outputText value="Passive Tilt" />
+							<h:outputLabel value="Procedure #" />
+							<h:outputText value="12" />
+						</p:panelGrid>
+
+						<p:spacer height="10px" width="40px" />
+						<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{passiveTiltController.doExecuteProcedure}"
+							onclick="pbAjax.start();startButton2.disable();procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm" />
+						<p:spacer width="30px" />
+						<p:commandButton value="Pause" icon="ui-icon-pause" disabled="true" />
+						<p:spacer width="30px" />
+						<p:commandButton value="Abort" icon="ui-icon-close" actionListener="#{progressBean.cancel}"
+							oncomplete="pbAjax.cancel();startButton2.enable();" />
+						<br />
+						<br />
+						<p:progressBar widgetVar="pbAjax" ajax="true" value="#{progressBean.progress}" labelTemplate="{value}%" styleClass="animated">
+							<p:ajax event="complete" listener="#{progressBean.onComplete}" update=":procedureDetailForm:growl" oncomplete="startButton2.enable()" />
+						</p:progressBar>
+
+					</p:tab>
+					<p:tab title="Procedure Log">
+						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}"
+						  rendered="#{not empty statusLogController.procedureStatusLog}">
+
+							<p:column headerText="Time">
+								<h:outputText value="#{logEntry.createDate}" >
+									<f:convertDateTime pattern="hh:mm:ss" />
+								</h:outputText>
+							</p:column>
+							<p:column headerText="Status">
+								<h:outputText value="#{logEntry.status}" />
+							</p:column>
+							
+						</p:dataTable>
+					</p:tab>
+				</p:accordionPanel>
+				<p:panelGrid style="width:520px;height:520px" columns="1">
+					<p:carousel id="smallCarousel" value="#{passiveTiltController.frameList}" var="frame" rows="1" height="120"
+						style="width:550px !important" itemStyle="width:550px;height:550px">
+						<h:panelGrid columns="1" style="width:512px;height:512px" cellpadding="5">
+							<p:graphicImage value="../../images/frames/#{frame}.png" height="512px" width="512px" />
+
+						</h:panelGrid>
+					</p:carousel>
+				</p:panelGrid>
+				<p:accordionPanel multiple="true" activeIndex="0,1">
+					<p:tab title="Available Displays">
+						<p:panelGrid columns="1" styleClass="btmsForm">
+
+							<p:commandLink value="Centroids" onclick="displayDialog.show();" />
+							<p:commandLink value="Centroid Offsets" />
+							<p:commandLink value="Avg. Centroid Offsets" />
+							<p:commandLink value="Actuator Deltas" />
+							<p:commandLink value="Procedure Log" />
+
+						</p:panelGrid>
+					</p:tab>
+					<p:tab title="Phasing Camera State">
+					</p:tab>
+				</p:accordionPanel>
+
+			</p:panelGrid>
+
+		</h:form>
+
+		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog">
+
+			<h:form id="advancedForm">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Filter" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="611 nm" itemValue="611" />
+						<f:selectItem itemLabel="618 nm" itemValue="618" />
+						<f:selectItem itemLabel="651 nm" itemValue="651" />
+						<f:selectItem itemLabel="852 nm" itemValue="852" />
+						<f:selectItem itemLabel="870 nm" itemValue="870" />
+						<f:selectItem itemLabel="891 nm" itemValue="891" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Integration Time" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
+						<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
+						<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
+						<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Number of Trials" />
+					<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
+
+					<h:outputLabel value="Frame Source" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="CCD" itemValue="1" />
+						<f:selectItem itemLabel="Frame" itemValue="2" />
+					</p:selectOneMenu>
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+				</p:panelGrid>
+
+				<p:commandButton id="saveButton" value="Save" style="float:right" update=":growl"
+					action="#{passiveTiltController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
+				<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+					action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
+
+			</h:form>
+		</p:dialog>
+
+		<p:dialog id="executionPrefsDlg" header="Procedure Execution Preferences" widgetVar="executionPrefsDialog">
+
+			<h:form id="executionPrefsForm">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Filter" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="611 nm" itemValue="611" />
+						<f:selectItem itemLabel="618 nm" itemValue="618" />
+						<f:selectItem itemLabel="651 nm" itemValue="651" />
+						<f:selectItem itemLabel="852 nm" itemValue="852" />
+						<f:selectItem itemLabel="870 nm" itemValue="870" />
+						<f:selectItem itemLabel="891 nm" itemValue="891" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Integration Time" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
+						<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
+						<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
+						<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Number of Trials" />
+					<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
+
+					<h:outputLabel value="Frame Source" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
+						<f:selectItem itemLabel="Select One" itemValue="" />
+						<f:selectItem itemLabel="CCD" itemValue="1" />
+						<f:selectItem itemLabel="Frame" itemValue="2" />
+					</p:selectOneMenu>
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+				</p:panelGrid>
+
+				<p:commandButton id="saveButton" value="Save" style="float:right" update=":growl"
+					action="#{passiveTiltController.doSaveExecutionPreferences}" oncomplete="executionPrefsDialog.hide();" />
+				<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+					action="#{passiveTiltController.doCancelSaveExecutionPreferences}" oncomplete="executionPrefsDialog.hide();" />
+
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+</html>
