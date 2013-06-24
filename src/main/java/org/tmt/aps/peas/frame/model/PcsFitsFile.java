@@ -4,7 +4,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
 
-public class FitsFile {
+public class PcsFitsFile {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMMyy");
 
@@ -17,7 +17,7 @@ public class FitsFile {
 	int iteration;
 	int phasingStep;  // A-K = 1-11 for phasing
 
-	public FitsFile(String fitsFileName) {
+	public PcsFitsFile(String fitsFileName) {
 
 		try {
 

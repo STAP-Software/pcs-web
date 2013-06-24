@@ -1,6 +1,5 @@
 package org.tmt.aps.peas.frame.ui;
 
-import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -11,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -21,10 +21,9 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.frame.fits.FalseColorProcessor;
-import org.tmt.aps.peas.frame.fits.FitsFrame;
-import org.tmt.aps.peas.frame.fits.FitsReader;
-import org.tmt.aps.peas.frame.model.FitsFile;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.FitsFrame;
+import org.tmt.aps.peas.frame.model.PcsFitsFile;
 
 @Named
 @SessionScoped
@@ -32,6 +31,9 @@ public class FrameController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
+	
+	@EJB
+	FrameMgmt frameMgmt;
 
 	private TreeNode sessionRoot;
 	private TreeNode typeRoot;
@@ -62,18 +64,11 @@ public class FrameController implements Serializable {
 	public void onNodeSelect(NodeSelectEvent event) {
 
 		try {
-			
-			// TODO: frameFolder should be in peas.properties and read in by PeasProperties 
-			
-			String frameFolder = "C:\\Users\\Scott\\Desktop\\frames";
-			
+						
 			FrameTreeElement selectedElement = (FrameTreeElement)event.getTreeNode().getData();
-			
-			String path = frameFolder + File.separator + selectedElement.getFileName();
-			
-			FitsReader ft = new FitsReader();
 
-			FitsFrame fbs = ft.readFits(path);
+			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
+			
 			short frameArray[][] = fbs.getResult();
 
 			FalseColorProcessor falseColorer = new FalseColorProcessor();
@@ -96,29 +91,21 @@ public class FrameController implements Serializable {
 
 		// search folder for fits files
 		
-		// TODO: frameFolder should be in peas.properties and read in by PeasProperties 
 		
-		String frameFolder = "C:\\Users\\Scott\\Desktop\\frames";
+		Map<Integer, Map<Date, List<PcsFitsFile>>> telescope2Fits = new HashMap<Integer, Map<Date, List<PcsFitsFile>>>();
 		
-		// read in and parse each frame and build up 
-		File folder = new File(frameFolder);
+		List<PcsFitsFile> fitsFileList = frameMgmt.findAllFitsFiles();
 		
-		Map<Integer, Map<Date, List<FitsFile>>> telescope2Fits = new HashMap<Integer, Map<Date, List<FitsFile>>>();
-		
-	    for (File fileEntry : folder.listFiles()) {
+	    for (PcsFitsFile fitsFile : fitsFileList) {
 	    	
-	    	String filename = fileEntry.getName();
-	    	
-	    	FitsFile fitsFile = new FitsFile(filename);
-	    	
-	    	Map<Date, List<FitsFile>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
+	    	Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
 	    	if (telescopeFitsMap == null) {
-	    		telescopeFitsMap = new TreeMap<Date, List<FitsFile>>();
+	    		telescopeFitsMap = new TreeMap<Date, List<PcsFitsFile>>();
 	    		telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
 	    	}
-	    	List<FitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
+	    	List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
 	    	if (dateFitsList == null) {
-	    		dateFitsList = new ArrayList<FitsFile>();
+	    		dateFitsList = new ArrayList<PcsFitsFile>();
 	    		telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
 	    	}
 	    	dateFitsList.add(fitsFile);
@@ -126,17 +113,17 @@ public class FrameController implements Serializable {
 		
 	    for (Integer telescope : telescope2Fits.keySet()) {
 	    	
-	    	Map<Date, List<FitsFile>> telescopeFitsMap = telescope2Fits.get(telescope);
+	    	Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(telescope);
 	
 			TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
 
 	    	for (Date date : telescopeFitsMap.keySet()) {
-	    		List<FitsFile> dateFitsList = telescopeFitsMap.get(date);
+	    		List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(date);
 				TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
 	    		
 				// TODO: order dateFitsList by procedure number
 				Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
-				for (FitsFile fitsFile : dateFitsList) {
+				for (PcsFitsFile fitsFile : dateFitsList) {
 					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getProcedureNumber() + ": " + fitsFile.getProcedureName() + ": " + fitsFile.getFileName(), fitsFile.getFileName()), dateNode);					
 				}
 				

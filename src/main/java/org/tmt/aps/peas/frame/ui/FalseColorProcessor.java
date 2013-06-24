@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.frame.fits;
+package org.tmt.aps.peas.frame.ui;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;

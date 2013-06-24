@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.frame.fits;
+package org.tmt.aps.peas.frame.model;
 
 public class FitsFrame {
 	protected int noOfAxes; 
