@@ -26,7 +26,10 @@ public class PcsFitsFile {
 			String telescopeStr = st.nextToken();
 			telescope = new Integer(telescopeStr.substring(1));
 
-			date = sdf.parse(st.nextToken());
+			String dateString = st.nextToken();
+			date = sdf.parse(dateString);
+			
+			System.out.println("dateString = " + dateString + ", date = " + date);
 			
 			procedureTypeCd = st.nextToken();
 			

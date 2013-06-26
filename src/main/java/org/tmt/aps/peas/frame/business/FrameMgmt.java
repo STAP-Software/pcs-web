@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import nom.tam.fits.BasicHDU;
@@ -13,6 +14,7 @@ import nom.tam.fits.Header;
 import nom.tam.fits.PrimaryHDU;
 
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.FitsFrame;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.PcsFitsFile;
@@ -21,7 +23,9 @@ import org.tmt.aps.peas.frame.model.PcsFitsFile;
 public class FrameMgmt {
 
 	
-	String frameFolder = "C:\\Users\\Scott\\Desktop\\frames";
+	@EJB
+	PeasProperties peasProperties;
+	
 
 	
 	public ImageFrame getCorrectedFrame(int frameSource) {
@@ -38,10 +42,11 @@ public class FrameMgmt {
 		return null;
 	}
 	
-	public List<PcsFitsFile> findAllFitsFiles() {
+	public List<PcsFitsFile> findAllFitsFiles() throws Exception {
 		
-		// TODO: frameFolder should be in peas.properties and read in by PeasProperties 
+		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 		
+		System.out.println("frame folder = " + frameFolder);
 		
 		// read in and parse each frame and build up 
 		File folder = new File(frameFolder);
@@ -64,6 +69,8 @@ public class FrameMgmt {
 	
 	public FitsFrame loadFitsFrame(String fitsFilename) throws Exception {
 	
+		
+		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 		
 		String path = frameFolder + File.separator + fitsFilename;
 		

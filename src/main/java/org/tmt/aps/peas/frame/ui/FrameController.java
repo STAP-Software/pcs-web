@@ -94,21 +94,33 @@ public class FrameController implements Serializable {
 		
 		Map<Integer, Map<Date, List<PcsFitsFile>>> telescope2Fits = new HashMap<Integer, Map<Date, List<PcsFitsFile>>>();
 		
+		try {
+		
 		List<PcsFitsFile> fitsFileList = frameMgmt.findAllFitsFiles();
 		
 	    for (PcsFitsFile fitsFile : fitsFileList) {
 	    	
+	    	try {
 	    	Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
 	    	if (telescopeFitsMap == null) {
 	    		telescopeFitsMap = new TreeMap<Date, List<PcsFitsFile>>();
 	    		telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
 	    	}
+	    	
+			System.out.println("map get filename = " + fitsFile.getFileName());
+			System.out.println("map get dateString = " + fitsFile.getDate());
+
+	    	
 	    	List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
 	    	if (dateFitsList == null) {
 	    		dateFitsList = new ArrayList<PcsFitsFile>();
 	    		telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
 	    	}
 	    	dateFitsList.add(fitsFile);
+	    	
+	    	} catch (Exception e) {
+	    		e.printStackTrace();
+	    	}
 	    }
 		
 	    for (Integer telescope : telescope2Fits.keySet()) {
@@ -131,6 +143,10 @@ public class FrameController implements Serializable {
 	    	
 	    	
 	    }
+	    
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
 	    /*
 		TreeNode sessionNode0 = new DefaultTreeNode(new FrameTreeElement("11/26/2005", ""), telescopeNode1);
