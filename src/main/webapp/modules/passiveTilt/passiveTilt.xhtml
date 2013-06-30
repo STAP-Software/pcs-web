@@ -8,19 +8,24 @@
 
 	<ui:define name="content">
 
+		<h:form id="pollerForm">
+		<!-- keep the poller outside its update fixes it so that it stops correctly -->
+		<p:poll widgetVar="procedureExecutionPoller" autoStart="false" 
+			update=":procedureDetailForm :growl :menuForm @(.noupdate)"
+				listener="#{asyncController.asyncListener}" stop="#{!asyncController.executionStatus}" />
+		</h:form>
+		
 		<h:form id="procedureDetailForm">
 
-			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" update="@form :growl"
-				listener="#{asyncPopupController.asyncListener}" />
 
 			<p:growl id="growl" />
 
 			<p:spacer height="10px" />
 
 
-			<p:panelGrid columns="3" styleClass="pcsExecutionPanel">
+			<p:panelGrid id="procedureDetailPanel" columns="3" styleClass="pcsExecutionPanel">
 
-				<p:accordionPanel multiple="true" activeIndex="0,1">
+				<p:accordionPanel id="controlPanel" multiple="true" activeIndex="0,1,2">
 
 					<p:tab title="Procedure Configuration">
 
@@ -61,7 +66,7 @@
 					</p:tab>
 
 
-					<p:tab title="Status and Control">
+					<p:tab id="statusAndControlTab" title="Status and Control" styleClass="noupdate">
 
 						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 							<h:outputLabel value="Procedure Type" />
@@ -71,23 +76,21 @@
 						</p:panelGrid>
 
 						<p:spacer height="10px" width="40px" />
-						<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{passiveTiltController.doExecuteProcedure}"
-							onclick="pbAjax.start();startButton2.disable();procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm" />
+						<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{passiveTiltController.doExecuteProcedure}" styleClass="noupdate"
+							onclick="pbAjax.start();startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm" />
 						<p:spacer width="30px" />
-						<p:commandButton value="Pause" icon="ui-icon-pause" disabled="true" />
-						<p:spacer width="30px" />
-						<p:commandButton value="Abort" icon="ui-icon-close" actionListener="#{progressBean.cancel}"
+						<p:commandButton value="Abort" icon="ui-icon-close" actionListener="#{asyncController.doAbortProcedure}"
 							oncomplete="pbAjax.cancel();startButton2.enable();" />
 						<br />
 						<br />
-						<p:progressBar widgetVar="pbAjax" ajax="true" value="#{progressBean.progress}" labelTemplate="{value}%" styleClass="animated">
-							<p:ajax event="complete" listener="#{progressBean.onComplete}" update=":procedureDetailForm:growl" oncomplete="startButton2.enable()" />
+						<p:progressBar widgetVar="pbAjax" ajax="true" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated">
+							<p:ajax event="complete" listener="#{asyncController.onComplete}" update=":procedureDetailForm:growl" oncomplete="startButton2.enable()" />
 						</p:progressBar>
 
 					</p:tab>
 					<p:tab title="Procedure Log">
 						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}"
-						  rendered="#{not empty statusLogController.procedureStatusLog}">
+						  rendered="#{not empty statusLogController.procedureStatusLog}" >
 
 							<p:column headerText="Time">
 								<h:outputText value="#{logEntry.createDate}" >
@@ -165,7 +168,7 @@
 					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
 						<f:selectItem itemLabel="Select One" itemValue="" />
 						<f:selectItem itemLabel="CCD" itemValue="1" />
-						<f:selectItem itemLabel="Frame" itemValue="2" />
+						<f:selectItem itemLabel="File" itemValue="2" />
 					</p:selectOneMenu>
 
 					<p:spacer height="5px" />

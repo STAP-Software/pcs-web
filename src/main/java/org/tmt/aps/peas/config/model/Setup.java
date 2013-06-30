@@ -1,4 +1,4 @@
-package org.tmt.aps.peas;
+package org.tmt.aps.peas.config.model;
 
 public class Setup {
 

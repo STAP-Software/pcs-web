@@ -1,4 +1,4 @@
-package org.tmt.aps.peas;
+package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -12,6 +12,9 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.config.model.Setup;
 
 @Named
 @SessionScoped
@@ -51,13 +54,13 @@ public class SetupController implements Serializable {
 		
 		breadcrumbMenuBean.addFirstItem("Setup", "doViewSetup()");
 
-		return "/modules/setup.xhtml?faces-redirect=true";
+		return "/modules/config/setup.xhtml?faces-redirect=true";
 	}
 
 
 	public String doCancelSaveSetup() {
 
-		return "/modules/sessionList.xhtml?faces-redirect=true";
+		return "/modules/session/sessionList.xhtml?faces-redirect=true";
 	}
 
 }

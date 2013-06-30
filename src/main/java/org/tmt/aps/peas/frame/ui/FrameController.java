@@ -31,7 +31,7 @@ public class FrameController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
-	
+
 	@EJB
 	FrameMgmt frameMgmt;
 
@@ -40,7 +40,7 @@ public class FrameController implements Serializable {
 
 	private TreeNode selectedNode;
 	private StreamedContent graphicImage;
-	
+
 	public TreeNode getSessionRoot() {
 		return sessionRoot;
 	}
@@ -64,16 +64,16 @@ public class FrameController implements Serializable {
 	public void onNodeSelect(NodeSelectEvent event) {
 
 		try {
-						
-			FrameTreeElement selectedElement = (FrameTreeElement)event.getTreeNode().getData();
+
+			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
 
 			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
-			
+
 			short frameArray[][] = fbs.getResult();
 
 			FalseColorProcessor falseColorer = new FalseColorProcessor();
 			graphicImage = falseColorer.createImage(frameArray);
-			
+
 		} catch (Exception e) {
 
 		}
@@ -85,99 +85,96 @@ public class FrameController implements Serializable {
 	public String doSetupFrameViewer() {
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-		
+
 		// dummy for session root
 		sessionRoot = new DefaultTreeNode(new FrameTreeElement("Sessions", "-"), null);
+		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
 
 		// search folder for fits files
-		
-		
+
 		Map<Integer, Map<Date, List<PcsFitsFile>>> telescope2Fits = new HashMap<Integer, Map<Date, List<PcsFitsFile>>>();
 		
+		Map<String, List<PcsFitsFile>> type2Fits = new HashMap<String, List<PcsFitsFile>>();
+
 		try {
-		
-		List<PcsFitsFile> fitsFileList = frameMgmt.findAllFitsFiles();
-		
-	    for (PcsFitsFile fitsFile : fitsFileList) {
-	    	
-	    	try {
-	    	Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
-	    	if (telescopeFitsMap == null) {
-	    		telescopeFitsMap = new TreeMap<Date, List<PcsFitsFile>>();
-	    		telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
-	    	}
-	    	
-			System.out.println("map get filename = " + fitsFile.getFileName());
-			System.out.println("map get dateString = " + fitsFile.getDate());
 
-	    	
-	    	List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
-	    	if (dateFitsList == null) {
-	    		dateFitsList = new ArrayList<PcsFitsFile>();
-	    		telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
-	    	}
-	    	dateFitsList.add(fitsFile);
-	    	
-	    	} catch (Exception e) {
-	    		e.printStackTrace();
-	    	}
-	    }
-		
-	    for (Integer telescope : telescope2Fits.keySet()) {
-	    	
-	    	Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(telescope);
-	
-			TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
+			List<PcsFitsFile> fitsFileList = frameMgmt.findAllFitsFiles();
 
-	    	for (Date date : telescopeFitsMap.keySet()) {
-	    		List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(date);
-				TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
-	    		
-				// TODO: order dateFitsList by procedure number
-				Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
-				for (PcsFitsFile fitsFile : dateFitsList) {
-					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getProcedureNumber() + ": " + fitsFile.getProcedureName() + ": " + fitsFile.getFileName(), fitsFile.getFileName()), dateNode);					
+			for (PcsFitsFile fitsFile : fitsFileList) {
+
+				try {
+					Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
+					if (telescopeFitsMap == null) {
+						telescopeFitsMap = new TreeMap<Date, List<PcsFitsFile>>();
+						telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
+					}
+
+					System.out.println("map get filename = " + fitsFile.getFileName());
+					System.out.println("map get dateString = " + fitsFile.getDate());
+
+					List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
+					if (dateFitsList == null) {
+						dateFitsList = new ArrayList<PcsFitsFile>();
+						telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
+					}
+					dateFitsList.add(fitsFile);
+
+					
+					List<PcsFitsFile> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
+					if (typeFitsList == null) {
+						typeFitsList = new ArrayList<PcsFitsFile>();
+						type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
+					}
+					typeFitsList.add(fitsFile);
+					
+					
+					
+					
+				} catch (Exception e) {
+					e.printStackTrace();
 				}
-				
-	    	}
-	    	
-	    	
-	    }
-	    
+			}
+
+			for (Integer telescope : telescope2Fits.keySet()) {
+
+				Map<Date, List<PcsFitsFile>> telescopeFitsMap = telescope2Fits.get(telescope);
+
+				TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
+
+				for (Date date : telescopeFitsMap.keySet()) {
+					List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(date);
+					TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
+
+					// TODO: order dateFitsList by procedure number
+					Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
+					for (PcsFitsFile fitsFile : dateFitsList) {
+						TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getProcedureNumber() + ": "
+								+ fitsFile.getProcedureName() + ": " + fitsFile.getFileName(), fitsFile.getFileName()), dateNode);
+					}
+
+				}
+
+			}
+
+			for (String type : type2Fits.keySet()) {
+
+				List<PcsFitsFile> typeFitsList = type2Fits.get(type);
+
+				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
+
+				// TODO: order dateFitsList by procedure number
+				Collections.sort(typeFitsList, new BeanComparator("telescope"));
+				for (PcsFitsFile fitsFile : typeFitsList) {
+					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getFileName(), fitsFile.getFileName()), typeNode);
+				}
+
+
+			}
+
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-	    /*
-		TreeNode sessionNode0 = new DefaultTreeNode(new FrameTreeElement("11/26/2005", ""), telescopeNode1);
-		TreeNode sessionNode1 = new DefaultTreeNode(new FrameTreeElement("2/5/2008", ""), telescopeNode1);
-		TreeNode sessionNode2 = new DefaultTreeNode(new FrameTreeElement("6/4/2013", ""), telescopeNode2);
-
-		TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement("Passive Tilt 01", ""), sessionNode0);
-		TreeNode sessionNode01 = new DefaultTreeNode("picture", new FrameTreeElement("Phasing 01", ""), sessionNode0);
-		TreeNode sessionNode02 = new DefaultTreeNode("picture", new FrameTreeElement("Phasing 02", ""), sessionNode0);
-		TreeNode sessionNode03 = new DefaultTreeNode("picture", new FrameTreeElement("Phasing 03", ""), sessionNode0);
-
-		TreeNode sessionNode10 = new DefaultTreeNode("picture", new FrameTreeElement("UFS 01", ""), sessionNode1);
-		TreeNode sessionNode11 = new DefaultTreeNode("picture", new FrameTreeElement("UFS 02", ""), sessionNode1);
-
-		TreeNode sessionNode20 = new DefaultTreeNode("picture", new FrameTreeElement("SUFS 01", ""), sessionNode2);
-		TreeNode sessionNode21 = new DefaultTreeNode("picture", new FrameTreeElement("SUFS 02", ""), sessionNode2);
-		*/
-		// dummy for type root
-
-		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
-
-		TreeNode typeNode1 = new DefaultTreeNode(new FrameTreeElement("UFS", ""), typeRoot);
-		TreeNode typeNode2 = new DefaultTreeNode(new FrameTreeElement("SUFS", ""), typeRoot);
-
-		TreeNode typeNode10 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 11/26/2005 - Passive Tilt 01", ""), typeNode1);
-		TreeNode typeNode11 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 2/5/2008 - Passive Tilt 01", ""), typeNode1);
-		TreeNode typeNode12 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 6/4/2013 - Passive Tilt 01", ""), typeNode1);
-
-		TreeNode typeNode20 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 11/26/2005 - Passive Tilt 01", ""), typeNode2);
-		TreeNode typeNode21 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 2/5/2008 - Passive Tilt 01", ""), typeNode2);
-		TreeNode typeNode22 = new DefaultTreeNode("picture", new FrameTreeElement("K1 - 6/4/2013 - Passive Tilt 01", ""), typeNode2);
 
 		breadcrumbMenuBean.addItem("Frame Viewer ", "newProcedure.xhtml");
 

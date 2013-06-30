@@ -37,7 +37,8 @@
 						</p:scrollPanel>
 					</p:tab>
 					<p:tab title="Type">
-						<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" dynamic="true" cache="false" selectionMode="single"
+						<p:scrollPanel style="width:350px;height:512px" mode="native">  
+						<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
 							selection="#{frameController.selectedNode}" id="typeTree" animate="true">
 
 							<p:ajax event="select" update=":framePanel" listener="#{frameController.onNodeSelect}" />
@@ -51,6 +52,7 @@
 								<h:outputText value="#{frameTreeElement.displayName}" />
 							</p:treeNode>
 						</p:tree>
+						</p:scrollPanel>
 					</p:tab>
 				</p:tabView>
 

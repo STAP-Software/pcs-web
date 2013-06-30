@@ -1,4 +1,4 @@
-package org.tmt.aps.peas;
+package org.tmt.aps.peas.camera.ui;
 
 import java.io.Serializable;
 
@@ -9,6 +9,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.camera.model.Camera;
 import org.tmt.aps.peas.camera.model.KnifeEdge;
 import org.tmt.aps.peas.camera.model.PreflashLEDs;
@@ -16,7 +17,7 @@ import org.tmt.aps.peas.camera.model.Shutter;
 
 @Named
 @SessionScoped
-public class cameraDiagnosticController implements Serializable {
+public class CameraDiagnosticController implements Serializable {
 
 
 
@@ -75,7 +76,7 @@ public class cameraDiagnosticController implements Serializable {
 		
 		breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
 
-		return "/modules/cameraDiagnostic.xhtml?faces-redirect=true";
+		return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
 	}
 
 

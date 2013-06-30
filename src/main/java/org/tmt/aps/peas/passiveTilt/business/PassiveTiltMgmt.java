@@ -16,6 +16,7 @@ import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.passiveTilt.model.PassiveTiltDef;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
@@ -36,6 +37,8 @@ public class PassiveTiltMgmt {
 	@EJB
 	private StatusLogMgmt statusLogMgmt;
 	@EJB
+	private ProcedureExecutionMgmt procedureExecutionMgmt;
+	@EJB
 	private FortranProxy fortranProxy;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
@@ -54,6 +57,9 @@ public class PassiveTiltMgmt {
 	public void executeProcedure(PassiveTiltDef passiveTiltDef) {
 		try {
 
+			procedureExecutionMgmt.setExecutionStatus(true);
+			procedureExecutionMgmt.setPercentComplete(0);
+			
 			statusLogMgmt.initLog();
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
@@ -130,6 +136,9 @@ public class PassiveTiltMgmt {
 
 				graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
 
+				int trialPct = (int) ((((i+1)*100)/passiveTiltDef.getNumberOfTrials()) * 0.95);
+				
+				procedureExecutionMgmt.setPercentComplete(trialPct);
 			}
 
 			// FIXME: what is this really? we need to abstract this
@@ -140,6 +149,9 @@ public class PassiveTiltMgmt {
 			fortranProxy.actuatorLengths();
 			
 			userPromptMgmt.displayYesNoDialog("here is some text");
+			
+			procedureExecutionMgmt.setExecutionStatus(false);
+			procedureExecutionMgmt.setPercentComplete(100);
 
 		} catch (Exception e) {
 

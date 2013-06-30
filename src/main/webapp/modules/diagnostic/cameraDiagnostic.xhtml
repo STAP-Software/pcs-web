@@ -62,19 +62,21 @@
  				<h:outputLabel value="Knife Edge Position" />
           		<h:outputText value="#{cameraDiagnosticController.camera.knifeEdge.position}" />	
  				          		
-   				<h:outputLabel value="Fine Tilt" />
+   				<h:outputLabel value="Fine Tilt (x, y microns)" />
    				<h:panelGroup>
-          		<h:outputText value="x (microns) #{cameraDiagnosticController.camera.fineTilt.x}" />	
-         		<h:outputText value="y (microns) #{cameraDiagnosticController.camera.fineTilt.y}" />	
+          		<h:outputText value="#{cameraDiagnosticController.camera.fineTilt.x}" />
+          		<h:outputText value=", " />	
+         		<h:outputText value="#{cameraDiagnosticController.camera.fineTilt.y}" />	
 				</h:panelGroup>
  
  				<h:outputLabel value="Knife Edge Rate" />
           		<h:outputText value="#{cameraDiagnosticController.camera.knifeEdge.rate}" />	
 				
-   				<h:outputLabel value="Coarse Tilt" />
+   				<h:outputLabel value="Coarse Tilt (x, y microns)" />
    				<h:panelGroup>
-          		<h:outputText value="x (microns) #{cameraDiagnosticController.camera.coarseTilt.x}" />	
-         		<h:outputText value="y (microns) #{cameraDiagnosticController.camera.coarseTilt.y}" />	
+          		<h:outputText value="#{cameraDiagnosticController.camera.coarseTilt.x}" />	
+         		<h:outputText value=", " />	
+          		<h:outputText value="#{cameraDiagnosticController.camera.coarseTilt.y}" />	
 				</h:panelGroup>
 				
 				<h:outputLabel value="Video CCD Expose" />

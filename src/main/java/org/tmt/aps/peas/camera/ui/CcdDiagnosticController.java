@@ -1,4 +1,4 @@
-package org.tmt.aps.peas;
+package org.tmt.aps.peas.camera.ui;
 
 import java.io.Serializable;
 
@@ -8,6 +8,8 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+
+import org.tmt.aps.peas.BreadcrumbMenuBean;
 
 @Named
 @SessionScoped
@@ -49,7 +51,7 @@ public class CcdDiagnosticController implements Serializable {
 		
 		breadcrumbMenuBean.addFirstItem("CCD Diagnostic", "doViewCcdDiagnostic()");
 
-		return "/modules/ccdDiagnostic.xhtml?faces-redirect=true";
+		return "/modules/diagnostic/ccdDiagnostic.xhtml?faces-redirect=true";
 	}
 
 
