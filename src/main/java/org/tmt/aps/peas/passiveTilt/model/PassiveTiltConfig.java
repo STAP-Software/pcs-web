@@ -1,14 +1,14 @@
 package org.tmt.aps.peas.passiveTilt.model;
 
-public class PassiveTiltDef {
+public class PassiveTiltConfig {
 
 	private int filter;
 	private float integrationTime;
-	private int numberOfTrials;
+	private int numberOfTrials = 1;
 	private int frameSource;
 
-	private PassiveTiltAdvancedOptions advancedOptions;
-	private PassiveTiltExecutionPreferences executionPreferences;
+	private PassiveTiltAdvancedConfig advancedOptions;
+	private PassiveTiltWorkflowPreferences executionPreferences;
 
 	public int getFilter() {
 		return filter;
@@ -42,19 +42,19 @@ public class PassiveTiltDef {
 		this.frameSource = frameSource;
 	}
 
-	public PassiveTiltAdvancedOptions getAdvancedOptions() {
+	public PassiveTiltAdvancedConfig getAdvancedOptions() {
 		return advancedOptions;
 	}
 
-	public void setAdvancedOptions(PassiveTiltAdvancedOptions advancedOptions) {
+	public void setAdvancedOptions(PassiveTiltAdvancedConfig advancedOptions) {
 		this.advancedOptions = advancedOptions;
 	}
 
-	public PassiveTiltExecutionPreferences getExecutionPreferences() {
+	public PassiveTiltWorkflowPreferences getExecutionPreferences() {
 		return executionPreferences;
 	}
 
-	public void setExecutionPreferences(PassiveTiltExecutionPreferences executionPreferences) {
+	public void setExecutionPreferences(PassiveTiltWorkflowPreferences executionPreferences) {
 		this.executionPreferences = executionPreferences;
 	}
 

@@ -15,7 +15,7 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
-import org.tmt.aps.peas.passiveTilt.model.PassiveTiltDef;
+import org.tmt.aps.peas.passiveTilt.model.PassiveTiltConfig;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;

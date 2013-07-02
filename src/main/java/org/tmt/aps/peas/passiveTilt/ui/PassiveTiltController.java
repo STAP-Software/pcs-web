@@ -21,7 +21,7 @@ import org.tmt.aps.peas.Procedure;
 import org.tmt.aps.peas.ProcedureWizardBean;
 import org.tmt.aps.peas.SessionController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
-import org.tmt.aps.peas.passiveTilt.model.PassiveTiltDef;
+import org.tmt.aps.peas.passiveTilt.model.PassiveTiltConfig;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 
 @Named
@@ -38,10 +38,11 @@ public class PassiveTiltController implements Serializable {
 	@Inject
 	private SessionController sessionController;
 
-	PassiveTiltDef passiveTiltDef;
+	PassiveTiltConfig passiveTiltDef;
 
 	List<Procedure> sessionList;
 	List<String> frameList;
+	float integrationAddTime;
 
 	@PostConstruct
 	private void init() {
@@ -49,7 +50,7 @@ public class PassiveTiltController implements Serializable {
 		// test only, in the future, the DB will return a list of procedures,
 		// and the menus will be generated from those
 
-		passiveTiltDef = new PassiveTiltDef(); // for advanced options access from template
+		passiveTiltDef = new PassiveTiltConfig(); // for advanced options access from template
 
 		frameList = new ArrayList<String>();
 		frameList.add("1");
@@ -58,11 +59,11 @@ public class PassiveTiltController implements Serializable {
 
 	}
 
-	public PassiveTiltDef getPassiveTiltDef() {
+	public PassiveTiltConfig getPassiveTiltDef() {
 		return passiveTiltDef;
 	}
 
-	public void setPassiveTiltDef(PassiveTiltDef passiveTiltDef) {
+	public void setPassiveTiltDef(PassiveTiltConfig passiveTiltDef) {
 		this.passiveTiltDef = passiveTiltDef;
 	}
 
@@ -74,11 +75,20 @@ public class PassiveTiltController implements Serializable {
 		this.frameList = frameList;
 	}
 
+	public float getIntegrationAddTime() {
+		return integrationAddTime;
+	}
 
+	public void setIntegrationAddTime(float integrationAddTime) {
+		this.integrationAddTime = integrationAddTime;
+	}
+	
+	
+	
 
 	public String doNewPassiveTilt() {
 
-		passiveTiltDef = new PassiveTiltDef();
+		passiveTiltDef = new PassiveTiltConfig();
 		procedureWizardBean.reset();
 
 		sessionController.setInPassiveTilt(true);

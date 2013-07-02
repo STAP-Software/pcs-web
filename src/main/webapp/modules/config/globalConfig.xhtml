@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition>
+
+	<p:dialog id="globalConfigDialog" header="Global Configuration Options" widgetVar="globalConfigDlg">
+
+		<h:form id="setupForm">
+
+			<p:spacer height="10px" />
+
+			<p:fieldset legend="General" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<h:outputLabel value="Coarse Mirror Offset x(microns)" for="coarseMirrorX" />
+					<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfig.coarseMirrorX}" size="5" />
+
+					<h:outputLabel value="Coarse Mirror Offset y(microns)" for="coarseMirrorY" />
+					<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfig.coarseMirrorY}" size="5" />
+
+					<h:outputLabel value="Find and Identify Attempts" />
+					<p:inputText value="#{globalConfigController.globalConfig.fandIAttempts}" size="2" />
+
+					<h:outputLabel value="Rotate Camera (deg)" />
+					<p:inputText value="#{globalConfigController.globalConfig.cameraRot}" size="6" />
+
+				</p:panelGrid>
+
+			</p:fieldset>
+
+			<p:spacer height="10px" />
+
+			<p:fieldset legend="Advanced" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+
+					<h:outputLabel value="Remove Bad Pixels" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.removeBadPixels}" />
+
+					<h:outputLabel value="Subtract Dark Current" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.subtractDarkCurrent}" />
+
+					<h:outputLabel value="Flatten Field" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.flattenField}" />
+
+					<h:outputLabel value="UFS/SUFS Auto Point Telescope to Segment/Group" />
+					<p:selectOneMenu id="options" value="#{globalConfigController.globalConfig.autoPointTelescope}">
+						<f:selectItem itemLabel="Auto Point Telescope" itemValue="1" />
+						<f:selectItem itemLabel="Never Auto Point Telescope" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+
+
+					<h:outputLabel value="Comparison Phasing PLOG filename" for="compPhasingFile" />
+					<p:inputText id="compPhasingFile" value="#{globalConfigController.globalConfig.compPhasingPlogFilename}" size="40" />
+
+				</p:panelGrid>
+
+			</p:fieldset>
+		
+			<p:spacer height="10px" />
+
+			<p:fieldset legend="Procedure Display Preferences" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+					
+					<h:outputLabel value="Auto Display Centroids" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.displayPreferences.autoDisplayCentroids}" />
+					<h:outputLabel value="Auto Display Centroid Offsets" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.displayPreferences.autoDisplayCentroidOffsets}"  />
+					<h:outputLabel value="Auto Display Avg. Centroid Offsets" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.displayPreferences.autoDisplayAvgCentroidOffsets}"  />
+					<h:outputLabel value="Auto Display Actuator Deltas" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.displayPreferences.autoDisplayActuatorDeltas}"  />
+					<h:outputLabel value="Auto Display Procedure Data Log" />
+					<p:selectBooleanCheckbox value="#{globalConfigController.displayPreferences.autoDisplayProcedureDataLog}"  />
+
+
+				</p:panelGrid>
+
+			</p:fieldset>
+
+
+			<p:spacer height="10px" />
+			<br />
+			<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" oncomplete="globalConfigDlg.hide()"/>
+			<p:commandButton style="float:right" value="Cancel" icon="ui-icon-cancel" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" oncomplete="globalConfigDlg.hide()"/>
+			<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" />
+
+		</h:form>
+	</p:dialog>
+
+</ui:composition>
+</html>

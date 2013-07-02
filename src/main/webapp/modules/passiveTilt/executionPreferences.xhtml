@@ -1,0 +1,103 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:dialog id="executionPrefsDlg" header="Procedure Execution Preferences" widgetVar="executionPrefsDialog">
+
+		<h:form id="executionPrefsForm">
+
+
+			<p:spacer height="10px" />
+
+			<p:fieldset legend="Frame Preferences" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Frame Scale and Rotation Removal" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Always Remove" itemValue="1" />
+						<f:selectItem itemLabel="Never Remove" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Auto Save Frames" />
+					<p:selectBooleanCheckbox value="" />
+
+				</p:panelGrid>
+
+			</p:fieldset>
+			
+			<p:spacer height="10px" />
+			
+			<p:fieldset legend="Workflow Preferences" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Auto Center Telescope" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Auto Move Telescope" itemValue="1" />
+						<f:selectItem itemLabel="Never Move Telescope" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Auto Center Pupil" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Auto Command Tilt Plate" itemValue="1" />
+						<f:selectItem itemLabel="Never Command Tilt Plate" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Center Pupil Mechanism" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Coarse" itemValue="1" />
+						<f:selectItem itemLabel="Fine" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Auto Send Actuator Cmds" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Auto Command Primary" itemValue="1" />
+						<f:selectItem itemLabel="Never Command Primary" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+					<h:outputLabel value="Automatic Reference Beam Taking" />
+					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+						<f:selectItem itemLabel="Auto Take Ref Maps" itemValue="1" />
+						<f:selectItem itemLabel="Never Take Ref Maps" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+
+				</p:panelGrid>
+
+			</p:fieldset>
+
+			<p:spacer height="10px" />
+			<br/>
+
+			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl" action="#{passiveTiltController.doSaveAdvancedOptions}"
+				oncomplete="executionPrefsDialog.hide();" />
+			<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
+				action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="executionPrefsDialog.hide();" />
+
+		</h:form>
+	</p:dialog>
+
+</ui:composition>
+
+</html>
+
+
+
+
+
+
+

@@ -1,0 +1,258 @@
+
+.ui-datatable th,.ui-datatable tfoot,.ui-datatable td {
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.ui-datatable th {
+	font-family: Verdana;
+	font-size: 12px;
+}
+
+.ui-datatable .ui-datatable-data td,.ui-datatable .ui-datatable-data-empty td {
+	padding: 4px 4px;
+	margin: 0px;
+	border: 0px;
+}
+
+.ui-datatable .ui-column-filter {
+	font-size: 10px; !important
+	font-weight: normal; !important
+	font-family: verdana; !important
+	padding: 0px;
+}
+
+.ui-datatable-odd {
+    background: none repeat scroll 0 0 #F2F5F9;
+}
+
+.btmsForm .ui-datatable-odd {
+    background: inherit;
+}
+
+.ui-corner-all {
+	border-radius: 0px;
+}
+
+.ui-widget {
+	font-size: 12px;
+}
+
+
+.logo-style {
+	position: absolute;
+	top: 9px;
+	right: 200px;
+	left: 10px;
+}
+
+
+.banner {
+	background: #A3B2CC;
+	background-image: url('../images/pcs.gif'); 
+	background-attachment: fixed;
+	background-position: top left;
+	background-repeat: repeat-y;
+	background-size: auto 68px;
+	height: 64px;
+	padding: 0; !important
+	margin: 0; !important
+	spacing: 0; !important
+	// border-bottom: solid 1px #00000; 
+}
+
+
+
+
+.ui-layout-pane-north .ui-widget-content, .ui-layout-pane-north .ui-layout-unit-content {
+
+background: #d4f8ff;
+
+	background-image: url('../images/hexagon.jpg'); 
+	background-attachment: fixed;
+	background-position: 0px 0px;
+	background-repeat: repeat-x;
+	background-size: 1440px 225px;
+
+	spacing: 0; !important
+
+	height: 56px;  !important
+	padding: 0 0 0 0; !important
+	margin: 0 0 0 0; !important
+}
+
+#top.ui-layout-unit {
+	padding: 0 0 0 0; !important
+	border: 0 0 0 0; !important
+} 
+
+.ui-layout-unit {
+	border: 0px solid  #333333; !important
+}
+
+
+body {
+    background: #666666; !important 
+}
+
+.ui-accordion .ui-accordion-content {
+	padding: 1em; !important
+}
+
+.menubar {
+	background: #F2F7FF; !important
+}
+
+.menubar .ui-menu-list .ui-menuitem a {
+	color: #333333; !important;
+	text-decoration: none; !important
+	font-size: 10px; !important
+}
+
+
+.btmsFormLabelColumn label {
+	float: right;
+  	margin-right:0.5em;
+  	padding-top:0.2em;
+  	text-align:right;
+  	font-weight:normal;
+   	font-size: 1em;
+}
+.btmsFormLabelColumn a {
+	float: right;
+  	margin-right:0.5em;
+  	padding-top:0.2em;
+  	text-align:right;
+  	font-weight:normal;
+   	font-size: 1em;
+}
+
+.btmsFormInputColumn label {
+  	float: left;
+  	margin-right:0.5em;
+  	padding-top:0.2em;
+  	text-align:left;
+  	font-weight:normal;
+   	font-size: 1em;
+}
+
+
+.ui-inputfield {
+	font-weight:normal !important;
+	padding:1px !important;
+	box-shadow:none !important;
+	font-size: 12px !important;
+}
+
+/* disable breadcrumb home icon and let text appear */
+
+div.btmsBreadcrumb ul li a.ui-icon {
+	background: none repeat 0 0;
+	text-indent: 0px;
+	height: auto;
+	width: auto;
+	margin-top: 3px;
+    overflow: auto;
+    padding: 0px;
+}
+
+#center {
+	padding: 0 3px 0 3px;
+}
+
+
+.ui-growl {
+	left: 300px;
+}
+
+
+.pcsExecutionPanel tbody tr td {
+	vertical-align: top;
+}
+
+.btmsForm tbody tr td, .pcsForm tbody tr td {
+	border: 0px;
+}
+.btmsForm tbody tr, .pcsForm tbody tr {
+	border: 0px;
+}
+.btmsForm tbody {
+	border: 0px;
+}
+
+.pcsForm {
+	border-collapse: separate;
+	border: 1px solid #888888;
+}
+
+.btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn {
+	padding: 4px 4px 4px 10px;
+}
+.btmsForm .btmsFormInputColumn, .pcsForm .btmsFormInputColumn {
+	padding: 4px 10px 4px 4px;
+}
+.btmsForm .ui-panelgrid-footer, .pcsForm .ui-panelgrid-footer {
+	text-align:right;
+}
+.btmsForm thead {
+	 display: none; 
+}
+.btmsForm .tableFormLabelColumn, .pcsForm .tableFormLabelColumn {
+	padding: 4px 4px 4px 10px;
+	width: 200px;
+}
+.btmsForm .tableFormInputColumn, .pcsForm .tableFormInputColumn {
+	padding: 4px 10px 4px 4px;
+	text-align: left;
+}
+
+.frameDisplay thead {
+	display: table-header-group !important;
+}
+.frameDisplay tbody tr td  {
+	padding: 4px 0px 4px 0px;
+}
+
+/* fix the combo boxes 
+.ui-selectonemenu-label {
+	font-size: 10px !important;
+}
+*/
+.ui-selectonemenu-trigger {
+	width: 14px !important;
+}
+
+.ui-wizard-step-title {
+    font-size: 14px;
+    margin: 0 3px 0 0;
+    padding: 0.2em;
+}
+
+.ui-progressbar .ui-widget-header {
+    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0 0 #85B2CB;
+    border-radius: 10px 10px 10px 10px;
+}
+
+.ui-widget-header {
+    background: -moz-linear-gradient(center top , rgba(255, 255, 255, 0.8), rgba(255, 255, 255, 0)) repeat scroll 0 0 #C4C4C4;
+    border: 1px solid #A8A8A8;
+    color: #333333;
+    font-weight: bold;
+    text-shadow: 0 1px 0 rgba(255, 255, 255, 0.7);
+}
+
+.ui-progressbar {
+    border-radius: 10px 10px 10px 10px;
+}
+
+.helpAboutHeader td {
+    border-color: inherit;
+    border-style: solid;
+    border-width: 1px;
+    padding: 0px;
+}
+
+.noupdate {
+/* class that indicates to primefaces not to update */
+}
+

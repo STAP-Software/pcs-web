@@ -11,7 +11,7 @@
 		<h:form id="pollerForm">
 		<!-- keep the poller outside its update fixes it so that it stops correctly -->
 		<p:poll widgetVar="procedureExecutionPoller" autoStart="false" 
-			update=":procedureDetailForm :growl :menuForm @(.noupdate)"
+			update=":procedureDetailForm :growl :menuForm "
 				listener="#{asyncController.asyncListener}" stop="#{!asyncController.executionStatus}" />
 		</h:form>
 		
@@ -43,7 +43,8 @@
 							</p:selectOneMenu>
 
 							<h:outputLabel value="Integration Time" />
-							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
+							
+							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}" >
 								<f:selectItem itemLabel="Select One" itemValue="" />
 								<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
 								<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
@@ -52,13 +53,14 @@
 							</p:selectOneMenu>
 
 							<h:outputLabel value="Number of Trials" />
-							<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
+							<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" size="2"/>
+         
 
 							<h:outputLabel value="Frame Source" />
 							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
 								<f:selectItem itemLabel="Select One" itemValue="" />
 								<f:selectItem itemLabel="CCD" itemValue="1" />
-								<f:selectItem itemLabel="Frame" itemValue="2" />
+								<f:selectItem itemLabel="File" itemValue="2" />
 							</p:selectOneMenu>
 
 
@@ -66,7 +68,7 @@
 					</p:tab>
 
 
-					<p:tab id="statusAndControlTab" title="Status and Control" styleClass="noupdate">
+					<p:tab id="statusAndControlTab" title="Status and Control" >
 
 						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 							<h:outputLabel value="Procedure Type" />
@@ -77,7 +79,8 @@
 
 						<p:spacer height="10px" width="40px" />
 						<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{passiveTiltController.doExecuteProcedure}" styleClass="noupdate"
-							onclick="pbAjax.start();startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm" />
+							onclick="pbAjax.start();startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm" 
+							disabled="#{asyncController.executionStatus}"/>
 						<p:spacer width="30px" />
 						<p:commandButton value="Abort" icon="ui-icon-close" actionListener="#{asyncController.doAbortProcedure}"
 							oncomplete="pbAjax.cancel();startButton2.enable();" />
@@ -133,108 +136,8 @@
 
 		</h:form>
 
-		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog">
-
-			<h:form id="advancedForm">
-				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
-
-					<h:outputLabel value="Filter" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="611 nm" itemValue="611" />
-						<f:selectItem itemLabel="618 nm" itemValue="618" />
-						<f:selectItem itemLabel="651 nm" itemValue="651" />
-						<f:selectItem itemLabel="852 nm" itemValue="852" />
-						<f:selectItem itemLabel="870 nm" itemValue="870" />
-						<f:selectItem itemLabel="891 nm" itemValue="891" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Integration Time" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
-						<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
-						<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
-						<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Number of Trials" />
-					<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
-
-					<h:outputLabel value="Frame Source" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="CCD" itemValue="1" />
-						<f:selectItem itemLabel="File" itemValue="2" />
-					</p:selectOneMenu>
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
-
-				</p:panelGrid>
-
-				<p:commandButton id="saveButton" value="Save" style="float:right" update=":growl"
-					action="#{passiveTiltController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
-				<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
-					action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
-
-			</h:form>
-		</p:dialog>
-
-		<p:dialog id="executionPrefsDlg" header="Procedure Execution Preferences" widgetVar="executionPrefsDialog">
-
-			<h:form id="executionPrefsForm">
-				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
-
-					<h:outputLabel value="Filter" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="611 nm" itemValue="611" />
-						<f:selectItem itemLabel="618 nm" itemValue="618" />
-						<f:selectItem itemLabel="651 nm" itemValue="651" />
-						<f:selectItem itemLabel="852 nm" itemValue="852" />
-						<f:selectItem itemLabel="870 nm" itemValue="870" />
-						<f:selectItem itemLabel="891 nm" itemValue="891" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Integration Time" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
-						<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
-						<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
-						<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
-					</p:selectOneMenu>
-
-					<h:outputLabel value="Number of Trials" />
-					<p:inputText value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" />
-
-					<h:outputLabel value="Frame Source" />
-					<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="CCD" itemValue="1" />
-						<f:selectItem itemLabel="Frame" itemValue="2" />
-					</p:selectOneMenu>
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
-
-				</p:panelGrid>
-
-				<p:commandButton id="saveButton" value="Save" style="float:right" update=":growl"
-					action="#{passiveTiltController.doSaveExecutionPreferences}" oncomplete="executionPrefsDialog.hide();" />
-				<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
-					action="#{passiveTiltController.doCancelSaveExecutionPreferences}" oncomplete="executionPrefsDialog.hide();" />
-
-			</h:form>
-		</p:dialog>
-
+		<ui:include src="advancedOptions.xhtml"/>
+		<ui:include src="executionPreferences.xhtml"/>
 
 	</ui:define>
 </ui:composition>
