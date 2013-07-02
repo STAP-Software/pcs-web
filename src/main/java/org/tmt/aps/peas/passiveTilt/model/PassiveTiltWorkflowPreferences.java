@@ -2,59 +2,60 @@ package org.tmt.aps.peas.passiveTilt.model;
 
 public class PassiveTiltWorkflowPreferences {
 
-	private boolean frameScaleRotationRemoval;
-	private boolean autoCenterTelescope;
-	private boolean autoCenterPupil;
-	private boolean autoCenterPupilMechanism;
-	private boolean autoSendActuatorDeltas;
-	private boolean takeRefBeamAutomatically;
+	private int frameScaleRotationRemoval;
+	private int autoCenterTelescope;
+	private int autoCenterPupil;
+	private int autoCenterPupilMechanism;
+	private int autoSendActuatorCmds;
+	private int takeRefBeamAutomatically;
 	private boolean autoSaveFrames;
 
-	public boolean isFrameScaleRotationRemoval() {
+	public int getFrameScaleRotationRemoval() {
 		return frameScaleRotationRemoval;
 	}
 
-	public void setFrameScaleRotationRemoval(boolean frameScaleRotationRemoval) {
+	public void setFrameScaleRotationRemoval(int frameScaleRotationRemoval) {
 		this.frameScaleRotationRemoval = frameScaleRotationRemoval;
 	}
 
-	public boolean isAutoCenterTelescope() {
+	public int getAutoCenterTelescope() {
 		return autoCenterTelescope;
 	}
 
-	public void setAutoCenterTelescope(boolean autoCenterTelescope) {
+	public void setAutoCenterTelescope(int autoCenterTelescope) {
 		this.autoCenterTelescope = autoCenterTelescope;
 	}
 
-	public boolean isAutoCenterPupil() {
+	public int getAutoCenterPupil() {
 		return autoCenterPupil;
 	}
 
-	public void setAutoCenterPupil(boolean autoCenterPupil) {
+	public void setAutoCenterPupil(int autoCenterPupil) {
 		this.autoCenterPupil = autoCenterPupil;
 	}
 
-	public boolean isAutoCenterPupilMechanism() {
+	public int getAutoCenterPupilMechanism() {
 		return autoCenterPupilMechanism;
 	}
 
-	public void setAutoCenterPupilMechanism(boolean autoCenterPupilMechanism) {
+	public void setAutoCenterPupilMechanism(int autoCenterPupilMechanism) {
 		this.autoCenterPupilMechanism = autoCenterPupilMechanism;
 	}
 
-	public boolean isAutoSendActuatorDeltas() {
-		return autoSendActuatorDeltas;
+
+	public int getAutoSendActuatorCmds() {
+		return autoSendActuatorCmds;
 	}
 
-	public void setAutoSendActuatorDeltas(boolean autoSendActuatorDeltas) {
-		this.autoSendActuatorDeltas = autoSendActuatorDeltas;
+	public void setAutoSendActuatorCmds(int autoSendActuatorCmds) {
+		this.autoSendActuatorCmds = autoSendActuatorCmds;
 	}
 
-	public boolean isTakeRefBeamAutomatically() {
+	public int getTakeRefBeamAutomatically() {
 		return takeRefBeamAutomatically;
 	}
 
-	public void setTakeRefBeamAutomatically(boolean takeRefBeamAutomatically) {
+	public void setTakeRefBeamAutomatically(int takeRefBeamAutomatically) {
 		this.takeRefBeamAutomatically = takeRefBeamAutomatically;
 	}
 

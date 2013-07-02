@@ -60,7 +60,7 @@ public class GlobalConfigController implements Serializable {
 		
 		displayPreferences = new DisplayPreferences();
 		displayPreferences.setAutoDisplayActuatorDeltas(true);
-		displayPreferences.setAutoDisplayCentroidOffsets(true);
+		displayPreferences.setAutoDisplayAvgCentroidOffsets(true);
 		displayPreferences.setAutoDisplayProcedureDataLog(true);
 	}
 

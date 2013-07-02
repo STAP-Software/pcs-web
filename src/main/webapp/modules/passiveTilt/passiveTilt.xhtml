@@ -32,7 +32,7 @@
 						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Filter" />
-							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.filter}">
+							<p:selectOneMenu value="#{passiveTiltController.passiveTilt.passiveTiltConfig.filter}">
 								<f:selectItem itemLabel="Select One" itemValue="" />
 								<f:selectItem itemLabel="611 nm" itemValue="611" />
 								<f:selectItem itemLabel="618 nm" itemValue="618" />
@@ -44,7 +44,7 @@
 
 							<h:outputLabel value="Integration Time" />
 							
-							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.integrationTime}" >
+							<p:selectOneMenu value="#{passiveTiltController.passiveTilt.passiveTiltConfig.integrationTime}" >
 								<f:selectItem itemLabel="Select One" itemValue="" />
 								<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
 								<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
@@ -53,11 +53,11 @@
 							</p:selectOneMenu>
 
 							<h:outputLabel value="Number of Trials" />
-							<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{passiveTiltController.passiveTiltDef.numberOfTrials}" size="2"/>
+							<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{passiveTiltController.passiveTilt.passiveTiltConfig.numberOfTrials}" size="2"/>
          
 
 							<h:outputLabel value="Frame Source" />
-							<p:selectOneMenu value="#{passiveTiltController.passiveTiltDef.frameSource}">
+							<p:selectOneMenu value="#{passiveTiltController.passiveTilt.passiveTiltConfig.frameSource}">
 								<f:selectItem itemLabel="Select One" itemValue="" />
 								<f:selectItem itemLabel="CCD" itemValue="1" />
 								<f:selectItem itemLabel="File" itemValue="2" />

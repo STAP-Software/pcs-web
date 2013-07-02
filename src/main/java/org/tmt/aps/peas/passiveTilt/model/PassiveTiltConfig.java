@@ -10,6 +10,12 @@ public class PassiveTiltConfig {
 	private PassiveTiltAdvancedConfig advancedOptions;
 	private PassiveTiltWorkflowPreferences executionPreferences;
 
+	
+	public PassiveTiltConfig() {
+		this.advancedOptions = new PassiveTiltAdvancedConfig();
+		this.executionPreferences = new PassiveTiltWorkflowPreferences();
+	}
+	
 	public int getFilter() {
 		return filter;
 	}
