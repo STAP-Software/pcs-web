@@ -132,7 +132,7 @@ public class PassiveTiltController implements Serializable {
 		}
 
 		// kick off asynchronous procedure
-		passiveTiltMgmt.executeProcedure(procedure.getProcedureConfig());
+		passiveTiltMgmt.executeProcedure(procedure);
 
 	}
 

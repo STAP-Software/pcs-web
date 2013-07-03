@@ -136,6 +136,24 @@ body {
    	font-size: 1em;
 }
 
+.btmsFormOutputColumn td {
+  	float: left;
+  	margin-right:0.5em;
+  	padding-top:0.4em;
+  	text-align:left;
+  	font-weight:normal;
+   	font-size: 1em;
+   	vertical-align: bottom;
+}
+
+
+.peasFormLabelColumn {
+  	text-align:right;
+}
+.peasFormOutputColumn {
+  	text-align:left;
+  	font-weight:bold;
+}
 
 .ui-inputfield {
 	font-weight:normal !important;

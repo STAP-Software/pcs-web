@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.passiveTilt.business;
 
 import java.awt.Point;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Asynchronous;
@@ -16,6 +17,7 @@ import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
+import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -54,9 +56,14 @@ public class PassiveTiltMgmt {
 	}
 
 	@Asynchronous
-	public void executeProcedure(ProcedureConfig procedureConfig) {
+	public void executeProcedure(Procedure procedure) {
 		try {
 
+			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
+			
+			procedure.setExecutionStartTime(new Date());
+			procedure.setProcedureState(Procedure.PROCEDURE_STATE_EXECUTING);
+			
 			procedureExecutionMgmt.setExecutionStatus(true);
 			procedureExecutionMgmt.setPercentComplete(0);
 			
@@ -90,10 +97,15 @@ public class PassiveTiltMgmt {
 
 				statusLogMgmt.log("Current frame being used for test ");
 				ImageFrame frame = frameMgmt.getCorrectedFrame(procedureConfig.getFrameSource());
+				
+				// TODO: this is where we display the frame
+				
 				wait(3);
 
 				statusLogMgmt.log("Calling Find and Identify ");
 				List<Point> subimageList = imageProcessor.findAndIdentify(frame);
+				
+				// TODO: this is where we display the marked frame
 
 				wait(2);
 				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
@@ -154,11 +166,16 @@ public class PassiveTiltMgmt {
 			procedureExecutionMgmt.setPercentComplete(100);
 
 		} catch (Exception e) {
+			
+			procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 
 		}
 		/*
 		 * getProcStats();
 		 */
+		procedure.setExecutionEndTime(new Date());
+		procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
+
 	}
 
 	private void wait(int secs) {
