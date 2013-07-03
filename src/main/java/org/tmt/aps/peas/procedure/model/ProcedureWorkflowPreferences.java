@@ -1,6 +1,6 @@
-package org.tmt.aps.peas.passiveTilt.model;
+package org.tmt.aps.peas.procedure.model;
 
-public class PassiveTiltWorkflowPreferences {
+public class ProcedureWorkflowPreferences {
 
 	private int frameScaleRotationRemoval;
 	private int autoCenterTelescope;

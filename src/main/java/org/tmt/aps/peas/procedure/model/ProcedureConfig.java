@@ -1,19 +1,19 @@
-package org.tmt.aps.peas.passiveTilt.model;
+package org.tmt.aps.peas.procedure.model;
 
-public class PassiveTiltConfig {
+public class ProcedureConfig {
 
 	private int filter;
 	private float integrationTime;
 	private int numberOfTrials = 1;
 	private int frameSource;
 
-	private PassiveTiltAdvancedConfig advancedOptions;
-	private PassiveTiltWorkflowPreferences executionPreferences;
+	protected ProcedureAdvancedConfig advancedOptions;
+	protected ProcedureWorkflowPreferences executionPreferences;
 
 	
-	public PassiveTiltConfig() {
-		this.advancedOptions = new PassiveTiltAdvancedConfig();
-		this.executionPreferences = new PassiveTiltWorkflowPreferences();
+	public ProcedureConfig() {
+		this.advancedOptions = new ProcedureAdvancedConfig();
+		this.executionPreferences = new ProcedureWorkflowPreferences();
 	}
 	
 	public int getFilter() {
@@ -48,20 +48,21 @@ public class PassiveTiltConfig {
 		this.frameSource = frameSource;
 	}
 
-	public PassiveTiltAdvancedConfig getAdvancedOptions() {
+	public ProcedureAdvancedConfig getAdvancedOptions() {
 		return advancedOptions;
 	}
 
-	public void setAdvancedOptions(PassiveTiltAdvancedConfig advancedOptions) {
+	public void setAdvancedOptions(ProcedureAdvancedConfig advancedOptions) {
 		this.advancedOptions = advancedOptions;
 	}
 
-	public PassiveTiltWorkflowPreferences getExecutionPreferences() {
+	public ProcedureWorkflowPreferences getExecutionPreferences() {
 		return executionPreferences;
 	}
 
-	public void setExecutionPreferences(PassiveTiltWorkflowPreferences executionPreferences) {
+	public void setExecutionPreferences(ProcedureWorkflowPreferences executionPreferences) {
 		this.executionPreferences = executionPreferences;
 	}
+
 
 }

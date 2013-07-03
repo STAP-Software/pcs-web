@@ -15,8 +15,8 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
-import org.tmt.aps.peas.passiveTilt.model.PassiveTiltConfig;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
@@ -54,7 +54,7 @@ public class PassiveTiltMgmt {
 	}
 
 	@Asynchronous
-	public void executeProcedure(PassiveTiltConfig passiveTiltDef) {
+	public void executeProcedure(ProcedureConfig procedureConfig) {
 		try {
 
 			procedureExecutionMgmt.setExecutionStatus(true);
@@ -66,14 +66,14 @@ public class PassiveTiltMgmt {
 
 			wait(1);
 			
-			if (passiveTiltDef.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
 				// TODO: implement
 				// autoPointTelescope();
 
 				cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
 
-				cameraMgmt.commandFilter(passiveTiltDef.getFilter());
+				cameraMgmt.commandFilter(procedureConfig.getFilter());
 
 				// TODO: implement
 				// autoRefmapCheck();
@@ -86,10 +86,10 @@ public class PassiveTiltMgmt {
 				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
 			}
 
-			for (int i = 0; i < passiveTiltDef.getNumberOfTrials(); i++) {
+			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
 				statusLogMgmt.log("Current frame being used for test ");
-				ImageFrame frame = frameMgmt.getCorrectedFrame(passiveTiltDef.getFrameSource());
+				ImageFrame frame = frameMgmt.getCorrectedFrame(procedureConfig.getFrameSource());
 				wait(3);
 
 				statusLogMgmt.log("Calling Find and Identify ");
@@ -136,7 +136,7 @@ public class PassiveTiltMgmt {
 
 				graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
 
-				int trialPct = (int) ((((i+1)*100)/passiveTiltDef.getNumberOfTrials()) * 0.95);
+				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
 				procedureExecutionMgmt.setPercentComplete(trialPct);
 			}

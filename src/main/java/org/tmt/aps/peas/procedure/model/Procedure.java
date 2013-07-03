@@ -1,25 +1,15 @@
-package org.tmt.aps.peas;
+package org.tmt.aps.peas.procedure.model;
 
-import java.io.Serializable;
 import java.util.Date;
-import java.util.Set;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-@Entity
-@Table(name = "PfPartner")
-public class Procedure implements Serializable {
-	
+
+
+public class Procedure {
+
 	@Id
 	private Long procedureId;
 	
@@ -29,17 +19,22 @@ public class Procedure implements Serializable {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
-	
-	public Procedure() {
-		
-	}
-	
+	protected ProcedureConfig procedureConfig;
+
 	public Procedure(Long procedureId, String procedureType, int procedureNumber, Date createDate) {
 		this.procedureId = procedureId;
-		this.procedureType = procedureType;
 		this.procedureNumber = procedureNumber;
+		this.procedureType = procedureType;
 		this.createDate = createDate;
+		
+		procedureConfig = new ProcedureConfig();
 	}
+	
+	public Procedure() {
+		procedureConfig = new ProcedureConfig();
+	}
+
+
 	
 	public Long getProcedureId() {
 		return procedureId;
@@ -73,7 +68,14 @@ public class Procedure implements Serializable {
 		this.createDate = createDate;
 	}
 
+	public ProcedureConfig getProcedureConfig() {
+		return procedureConfig;
+	}
 
+
+	public void setProcedureConfig(ProcedureConfig procedureConfig) {
+		this.procedureConfig = procedureConfig;
+	}
 	
 
 }

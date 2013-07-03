@@ -1,7 +1,7 @@
-package org.tmt.aps.peas.passiveTilt.model;
+package org.tmt.aps.peas.procedure.model;
 
 
-public class PassiveTiltAdvancedConfig {
+public class ProcedureAdvancedConfig {
 		
 	private int calculationOptions;
 	
@@ -11,5 +11,5 @@ public class PassiveTiltAdvancedConfig {
 	public void setCalculationOptions(int calculationOptions) {
 		this.calculationOptions = calculationOptions;
 	}
-	
+
 }

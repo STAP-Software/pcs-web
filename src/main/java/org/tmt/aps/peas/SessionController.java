@@ -10,6 +10,8 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.tmt.aps.peas.procedure.model.Procedure;
+
 @Named
 @SessionScoped
 public class SessionController implements Serializable {
