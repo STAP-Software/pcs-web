@@ -6,7 +6,7 @@ import java.util.List;
 
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
-import javax.ejb.Singleton;
+import javax.ejb.Stateless;
 
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.camera.business.CameraMgmt;
@@ -16,14 +16,14 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
-import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
-@Singleton
+@Stateless
 public class PassiveTiltMgmt {
 
 	@EJB
@@ -39,7 +39,7 @@ public class PassiveTiltMgmt {
 	@EJB
 	private StatusLogMgmt statusLogMgmt;
 	@EJB
-	private ProcedureExecutionMgmt procedureExecutionMgmt;
+	private ProcedureExecutionState procedureExecutionMgmt;
 	@EJB
 	private FortranProxy fortranProxy;
 	@EJB

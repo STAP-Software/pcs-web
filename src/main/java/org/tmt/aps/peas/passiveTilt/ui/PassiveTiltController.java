@@ -16,10 +16,14 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.ProcedureWizardBean;
 import org.tmt.aps.peas.SessionController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Named
 @SessionScoped
@@ -27,6 +31,10 @@ public class PassiveTiltController implements Serializable {
 
 	@EJB
 	PassiveTiltMgmt passiveTiltMgmt;
+	@EJB
+	PeasProperties peasProperties;
+	@EJB
+	ProcedureMgmt procedureMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -49,22 +57,20 @@ public class PassiveTiltController implements Serializable {
 
 		procedure = new Procedure(); // for advanced options access from template
 
-		procedure.getProcedureConfig().getAdvancedOptions().setCalculationOptions(5);
-		procedure.getProcedureConfig().getExecutionPreferences().setAutoCenterPupil(1);
-		procedure.getProcedureConfig().getExecutionPreferences().setAutoCenterPupilMechanism(2);
-		procedure.getProcedureConfig().getExecutionPreferences().setAutoCenterTelescope(1);
-		procedure.getProcedureConfig().getExecutionPreferences().setAutoSaveFrames(true);
-		procedure.getProcedureConfig().getExecutionPreferences().setAutoSendActuatorCmds(3);
-		procedure.getProcedureConfig().getExecutionPreferences().setFrameScaleRotationRemoval(2);
-		procedure.getProcedureConfig().getExecutionPreferences().setTakeRefBeamAutomatically(1);
-		
+		procedure.getProcedureConfig().setCalculationOptions(5);
+		procedure.getProcedureConfig().setAutoCenterPupil(1);
+		procedure.getProcedureConfig().setAutoCenterPupilMechanism(2);
+		procedure.getProcedureConfig().setAutoCenterTelescope(1);
+		procedure.getProcedureConfig().setAutoSendActuatorCmds(3);
+		procedure.getProcedureConfig().setFrameScaleRotationRemoval(2);
+		procedure.getProcedureConfig().setAutoTakeRefBeam(1);
+
 		frameList = new ArrayList<String>();
 		frameList.add("1");
 		frameList.add("2");
 		frameList.add("3");
 
 	}
-
 
 	public Procedure getProcedure() {
 		return procedure;
@@ -89,23 +95,35 @@ public class PassiveTiltController implements Serializable {
 	public void setIntegrationAddTime(float integrationAddTime) {
 		this.integrationAddTime = integrationAddTime;
 	}
-	
-	
-	
 
 	public String doNewPassiveTilt() {
 
-		init();  // TODO: replace with passive tilt initialization from persistence
-		
-		
-		procedureWizardBean.reset();
+		try {
+			procedure = new Procedure();
 
-		sessionController.setInPassiveTilt(true);
+			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 
-		// perform setup for new...
-		Date date = new Date();
+			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(new Long(telescopeIdStr), new Long(instrumentIdStr),
+					ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
+
+			procedure.setProcedureConfig(procedureConfig);
+
+			procedureWizardBean.reset();
+
+			sessionController.setInPassiveTilt(true);
+
+			// perform setup for new...
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Error Initializing Procedure, check log files for details"));
+			return null;
+		}
+
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
-
+		Date date = new Date();
 		breadcrumbMenuBean.addItem("Passive Tilt - " + sdf.format(date), "newProcedure.xhtml");
 
 		return "/modules/passiveTilt/passiveTilt.xhtml?faces-redirect=true";
@@ -115,7 +133,6 @@ public class PassiveTiltController implements Serializable {
 
 		return "/modules/sessionList.xhtml?faces-redirect=true";
 	}
-
 
 	public void doExecuteProcedure(ActionEvent actionEvent) {
 

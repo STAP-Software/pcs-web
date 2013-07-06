@@ -3,7 +3,7 @@ package org.tmt.aps.peas.procedure.business;
 import javax.ejb.Singleton;
 
 @Singleton
-public class ProcedureExecutionMgmt {
+public class ProcedureExecutionState {
 
 	private boolean executionStatus;
 	private int percentComplete;

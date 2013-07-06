@@ -9,7 +9,7 @@ import javax.inject.Named;
 
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.SessionController;
-import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
@@ -22,7 +22,7 @@ public class AsyncController {
 	@EJB
 	UserPromptMgmt userPromptMgmt;
 	@EJB
-	ProcedureExecutionMgmt procedureExecutionMgmt;
+	ProcedureExecutionState procedureExecutionMgmt;
 	@Inject
 	SessionController sessionController;
 	

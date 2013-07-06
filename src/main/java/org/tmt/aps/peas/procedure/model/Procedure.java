@@ -2,10 +2,26 @@ package org.tmt.aps.peas.procedure.model;
 
 import java.util.Date;
 
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.tmt.aps.peas.camera.model.Instrument;
+import org.tmt.aps.peas.telescope.model.Telescope;
+
+@Entity
+@Table(name = "Procedure")
+@NamedQueries({
+	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN p.procedureConfig" )
+})
 public class Procedure {
 
 	public static final int PROCEDURE_STATE_NEW = 1;
@@ -15,9 +31,9 @@ public class Procedure {
 
 	@Id
 	private Long procedureId;
-
-	private String procedureType;
+	
 	private int procedureNumber;
+	private int procedureState;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date executionStartTime;
@@ -25,20 +41,22 @@ public class Procedure {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date executionEndTime;
 
-	protected ProcedureConfig procedureConfig;
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "telescopeId")
+	Telescope telescope;
+	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "instrumentId")
+	Instrument instrument;
+	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "procedureTypeId")
+	ProcedureType procedureType;
 
-	private int procedureState;
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "procedureConfigId")
+	ProcedureConfig procedureConfig;
 
-	public Procedure(Long procedureId, String procedureType, int procedureNumber, Date executionStartTime) {
-		this.procedureId = procedureId;
-		this.procedureNumber = procedureNumber;
-		this.procedureType = procedureType;
-		this.executionEndTime = executionStartTime;
-
-		procedureState = PROCEDURE_STATE_NEW;
-
-		procedureConfig = new ProcedureConfig();
-	}
 
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
@@ -50,14 +68,6 @@ public class Procedure {
 
 	public void setProcedureId(Long procedureId) {
 		this.procedureId = procedureId;
-	}
-
-	public String getProcedureType() {
-		return procedureType;
-	}
-
-	public void setProcedureType(String procedureType) {
-		this.procedureType = procedureType;
 	}
 
 	public int getProcedureNumber() {
@@ -99,6 +109,30 @@ public class Procedure {
 
 	public void setProcedureConfig(ProcedureConfig procedureConfig) {
 		this.procedureConfig = procedureConfig;
+	}
+
+	public Telescope getTelescope() {
+		return telescope;
+	}
+
+	public void setTelescope(Telescope telescope) {
+		this.telescope = telescope;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
+	}
+
+	public ProcedureType getProcedureType() {
+		return procedureType;
+	}
+
+	public void setProcedureType(ProcedureType procedureType) {
+		this.procedureType = procedureType;
 	}
 
 	public String getProcedureStateDisplayString() {

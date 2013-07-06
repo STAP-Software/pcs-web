@@ -29,9 +29,9 @@ public class SessionController implements Serializable {
 	private void init() {
 		
 		sessionList = new ArrayList<Procedure>();
-		sessionList.add(new Procedure(1l, "Reference Beam", 1, new Date()));
-		sessionList.add(new Procedure(1l, "Passive Tilt", 2, new Date()));
-		sessionList.add(new Procedure(1l, "Fine Screen", 3, new Date()));
+		
+		// TODO: get the session list in the correct way
+		
 		
 	}
 	
