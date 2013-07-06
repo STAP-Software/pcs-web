@@ -12,7 +12,7 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Calculation Options" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.calculationOptions}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.calculationOptions}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Select One" itemValue="" />
 						<f:selectItem itemLabel="Pure Tilts" itemValue="1" />
 						<f:selectItem itemLabel="Focus Mode Pistons" itemValue="2" />

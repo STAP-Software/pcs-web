@@ -14,6 +14,7 @@ public class ProcedureMgmt {
 	@PersistenceContext
 	private EntityManager em;
 	
+	
 	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {
 		TypedQuery<ProcedureConfig> query = em.createNamedQuery("findDefaultProcedureConfig", ProcedureConfig.class);
 		query.setParameter("telescopeId", telescopeId);
@@ -24,4 +25,5 @@ public class ProcedureMgmt {
 		
 		return query.getSingleResult();
 	}
+	
 }

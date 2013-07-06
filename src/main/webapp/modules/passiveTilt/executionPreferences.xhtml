@@ -17,7 +17,7 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Frame Scale and Rotation Removal" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.frameScaleRotationRemoval}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.frameScaleRotationRemoval}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Always Remove" itemValue="1" />
 						<f:selectItem itemLabel="Never Remove" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
@@ -37,35 +37,35 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Auto Center Telescope" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterTelescope}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterTelescope}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Move Telescope" itemValue="1" />
 						<f:selectItem itemLabel="Never Move Telescope" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Auto Center Pupil" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterPupil}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterPupil}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Command Tilt Plate" itemValue="1" />
 						<f:selectItem itemLabel="Never Command Tilt Plate" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Center Pupil Mechanism" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterPupilMechanism}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoCenterPupilMechanism}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Coarse" itemValue="1" />
 						<f:selectItem itemLabel="Fine" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Auto Send Actuator Cmds" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoSendActuatorCmds}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoSendActuatorCmds}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Command Primary" itemValue="1" />
 						<f:selectItem itemLabel="Never Command Primary" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Automatic Reference Beam Taking" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoTakeRefBeam}">
+					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.autoTakeRefBeam}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Take Ref Maps" itemValue="1" />
 						<f:selectItem itemLabel="Never Take Ref Maps" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />

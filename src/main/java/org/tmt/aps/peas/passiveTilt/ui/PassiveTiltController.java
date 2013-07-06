@@ -104,9 +104,11 @@ public class PassiveTiltController implements Serializable {
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 
+			//ProcedureConfig procedureConfig = new ProcedureConfig();
 			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(new Long(telescopeIdStr), new Long(instrumentIdStr),
 					ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
 
+			
 			procedure.setProcedureConfig(procedureConfig);
 
 			procedureWizardBean.reset();
@@ -139,6 +141,7 @@ public class PassiveTiltController implements Serializable {
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
 
+		System.out.println("doExecuteProcedure::");
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		if (procedure.getProcedureConfig().getFilter() != 611) {
@@ -149,8 +152,10 @@ public class PassiveTiltController implements Serializable {
 		}
 
 		// kick off asynchronous procedure
+		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
 		passiveTiltMgmt.executeProcedure(procedure);
-
+		System.out.println("doExecuteProcedure::after to call passiveTiltMgmt");
+		
 	}
 
 	public void doSaveAdvancedOptions() {
