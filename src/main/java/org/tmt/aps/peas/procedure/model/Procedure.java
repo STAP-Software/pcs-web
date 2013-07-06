@@ -14,13 +14,14 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.tmt.aps.peas.camera.model.Instrument;
+import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "Procedure")
 @NamedQueries({
 	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN p.procedureConfig" )
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig" )
 })
 public class Procedure {
 
@@ -56,6 +57,10 @@ public class Procedure {
 	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "procedureConfigId")
 	ProcedureConfig procedureConfig;
+
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "globalConfigId")
+	GlobalConfig globalConfig;
 
 
 	public Procedure() {
@@ -133,6 +138,14 @@ public class Procedure {
 
 	public void setProcedureType(ProcedureType procedureType) {
 		this.procedureType = procedureType;
+	}
+
+	public GlobalConfig getGlobalConfig() {
+		return globalConfig;
+	}
+
+	public void setGlobalConfig(GlobalConfig globalConfig) {
+		this.globalConfig = globalConfig;
 	}
 
 	public String getProcedureStateDisplayString() {

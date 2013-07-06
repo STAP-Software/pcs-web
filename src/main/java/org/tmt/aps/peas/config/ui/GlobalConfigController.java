@@ -3,25 +3,31 @@ package org.tmt.aps.peas.config.ui;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.config.model.DisplayPreferences;
+import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Named
 @SessionScoped
 public class GlobalConfigController implements Serializable {
 
-
+	@EJB
+	GlobalConfigMgmt globalConfigMgmt;
+	@EJB
+	PeasProperties peasProperties;
+	
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 
 	GlobalConfig globalConfig;
-	DisplayPreferences displayPreferences;
 
 	public GlobalConfig getGlobalConfig() {
 		return globalConfig;
@@ -33,35 +39,20 @@ public class GlobalConfigController implements Serializable {
 	}
 
 
-	public DisplayPreferences getDisplayPreferences() {
-		return displayPreferences;
-	}
-
-
-	public void setDisplayPreferences(DisplayPreferences displayPreferences) {
-		this.displayPreferences = displayPreferences;
-	}
-
 
 	@PostConstruct
 	public void init() {
 
-		globalConfig = new GlobalConfig();
-		
-		globalConfig.setAutoPointTelescope(2);
-		globalConfig.setCameraRot(0.004f);
-		globalConfig.setCoarseMirrorX(1.2345f);
-		globalConfig.setCoarseMirrorX(0.0043f);
-		globalConfig.setCompPhasingPlogFilename("A very long filename that we can save.xls");
-		globalConfig.setFandIAttempts(8);
-		globalConfig.setFlattenField(false);
-		globalConfig.setRemoveBadPixels(true);
-		globalConfig.setSubtractDarkCurrent(false);
-		
-		displayPreferences = new DisplayPreferences();
-		displayPreferences.setAutoDisplayActuatorDeltas(true);
-		displayPreferences.setAutoDisplayAvgCentroidOffsets(true);
-		displayPreferences.setAutoDisplayProcedureDataLog(true);
+		try {
+		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+
+		//ProcedureConfig procedureConfig = new ProcedureConfig();
+		globalConfig = globalConfigMgmt.findDefaultConfig(new Long(telescopeIdStr), new Long(instrumentIdStr));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 
 
