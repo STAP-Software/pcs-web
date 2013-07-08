@@ -18,12 +18,12 @@ import javax.inject.Named;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.ProcedureWizardBean;
-import org.tmt.aps.peas.SessionController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.session.ui.SessionController;
 
 @Named
 @SessionScoped
@@ -45,7 +45,7 @@ public class PassiveTiltController implements Serializable {
 
 	Procedure procedure;
 
-	List<Procedure> sessionList;
+	List<Procedure> procedureList;
 	List<String> frameList;
 	float integrationAddTime;
 
@@ -133,7 +133,7 @@ public class PassiveTiltController implements Serializable {
 
 	public String doCancelProcedure() {
 
-		return "/modules/sessionList.xhtml?faces-redirect=true";
+		return "/modules/procedureList.xhtml?faces-redirect=true";
 	}
 
 	public void doExecuteProcedure(ActionEvent actionEvent) {

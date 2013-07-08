@@ -82,7 +82,7 @@ public class CameraDiagnosticController implements Serializable {
 
 	public String doCancel() {
 
-		return "/modules/sessionList.xhtml?faces-redirect=true";
+		return "/modules/procedureList.xhtml?faces-redirect=true";
 	}
 	
 	public void doSendCommand() {

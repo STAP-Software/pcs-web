@@ -15,6 +15,7 @@ import javax.persistence.TemporalType;
 
 import org.tmt.aps.peas.camera.model.Instrument;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
@@ -61,6 +62,10 @@ public class Procedure {
 	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "globalConfigId")
 	GlobalConfig globalConfig;
+
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "sessionId")
+	Session session;
 
 
 	public Procedure() {
@@ -146,6 +151,14 @@ public class Procedure {
 
 	public void setGlobalConfig(GlobalConfig globalConfig) {
 		this.globalConfig = globalConfig;
+	}
+
+	public Session getSession() {
+		return session;
+	}
+
+	public void setSession(Session session) {
+		this.session = session;
 	}
 
 	public String getProcedureStateDisplayString() {

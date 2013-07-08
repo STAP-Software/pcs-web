@@ -301,28 +301,29 @@ function drawInitial(svg) {
 			    <p:growl id="messages"/>  
 
 				<p:menubar>
-					<p:submenu label="File" icon="ui-icon-document" >
-						<p:submenu label="New Procedure" icon="ui-icon-contact">
-							<p:menuitem value="Passive Tilt" action="#{passiveTiltController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Phasing" action="#{phasingController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Fine Screen" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="UFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="SUFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:separator />
-							<p:menuitem value="Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="First Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Pupil Registration" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						</p:submenu>
-						<p:submenu label="New CCD Map" icon="ui-icon-contact">
-							<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Dark Current Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Pixel Efficiency Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						</p:submenu>
+				
+					<p:submenu label="Session" icon="ui-icon-document">
+						<p:menuitem value="View Sessions" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Current Session" url="#" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+				
+					<p:submenu label="Run" icon="ui-icon-gear" >
+						<p:menuitem value="Passive Tilt" action="#{passiveTiltController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Phasing" action="#{phasingController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Fine Screen" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="UFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="SUFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
+						<p:menuitem value="Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="First Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Pupil Registration" url="#" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+					<p:submenu label="Frame" icon="ui-icon-contact">
 						<p:menuitem value="Frame Viewer" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
-						<p:menuitem value="View Session Logs" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="View Current Session Log" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Dark Current Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Pixel Efficiency Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
 					<p:submenu label="Global Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
@@ -341,7 +342,7 @@ function drawInitial(svg) {
 						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
-				 	<p:submenu label="Engineering Tools" icon="ui-icon-gear" disabled="true">
+				 	<p:submenu label="Interface" icon="ui-icon-wrench" disabled="true">
 						<p:menuitem value="Camera" action="#{cameraDiagnosticController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" />
 						<p:menuitem value="CCD" action="#{ccdDiagnosticController.doViewCcdDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="ACS" url="#" disabled="#{sessionController.procedureExecuting}"/>

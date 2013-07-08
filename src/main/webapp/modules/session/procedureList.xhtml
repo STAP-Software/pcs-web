@@ -11,20 +11,24 @@
 
 	<ui:define name="content">
 
-		<h:form id="sessionListForm" style="margin:30px">
+		<h:form id="procedureListForm" style="margin:30px">
 		
-			<p:dataTable id="sessionTable" var="session" value="#{sessionController.sessionList}">				
+			<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.procedureList}">				
 			    <f:facet name="header">
 					Session Summary
 				</f:facet>
 				
-				<p:column headerText="Date"
+				<p:column headerText="Number"
 					style="width:14em">
-					<h:outputText value="#{session.sessionDate}" />
+					<h:outputText value="#{procedure.procedureNumber}" />
 				</p:column>
-				<p:column headerText="Observers"
+				<p:column headerText="Type"
 					style="width:14em">
-					<h:outputText value="#{session.sessionId}" />
+					<h:outputText value="#{procedure.procedureType}" />
+				</p:column>
+				<p:column headerText="Time Run"
+					style="width:14em">
+					<h:outputText value="#{procedure.executionStartTime}" />
 				</p:column>
 				 
 			</p:dataTable>
