@@ -10,8 +10,6 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.ejb.TransactionAttribute;
-import javax.ejb.TransactionAttributeType;
 
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.camera.business.CameraMgmt;
@@ -24,6 +22,8 @@ import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.session.business.SessionMgmt;
+import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
@@ -32,6 +32,8 @@ import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 @Startup
 public class PassiveTiltExecutor {
 
+	@EJB
+	private SessionMgmt sessionMgmt;
 	@EJB
 	private CameraMgmt cameraMgmt;
 	@EJB
@@ -73,7 +75,7 @@ public class PassiveTiltExecutor {
 	}
 	
 	@Asynchronous
-	public void executeProcedure(Procedure procedure) {
+	public void executeProcedure(Procedure procedure, Session currentSession) {
 
 		System.out.println("PassiveTiltExecutor::executeProcedure::");
 
@@ -195,6 +197,8 @@ public class PassiveTiltExecutor {
 		 */
 		procedure.setExecutionEndTime(new Date());
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
+		
+		sessionMgmt.updateCurrentSession(currentSession);
 
 	}
 

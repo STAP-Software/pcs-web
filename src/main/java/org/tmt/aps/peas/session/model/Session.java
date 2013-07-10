@@ -3,8 +3,14 @@ package org.tmt.aps.peas.session.model;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
@@ -12,24 +18,42 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.tmt.aps.peas.camera.model.Instrument;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "Session")
 @NamedQueries({
 	@NamedQuery(name = "findAllSessions", query = "SELECT s from Session s" ),
-	@NamedQuery(name = "findSession", query = "SELECT DISTINCT s from Session s LEFT OUTER JOIN s.procedureList where s.sessionId = :sessionId" )
+	@NamedQuery(name = "findSession", query = "SELECT DISTINCT s from Session s "
+			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList where s.sessionId = :sessionId" ),
+	@NamedQuery(name = "findSessionByDate", query = "SELECT DISTINCT s from Session s "
+			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
+			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
+			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfig LEFT OUTER JOIN FETCH p.globalConfig LEFT OUTER JOIN FETCH p.session "
+			+ "where s.sessionDate = :sessionDate" )
 })
 public class Session {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long sessionId;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date sessionDate;
 
-	@OneToMany (mappedBy = "session")
+	@OneToMany (fetch = FetchType.LAZY, mappedBy = "session")
 	private List<Procedure> procedureList;
+	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "telescopeId")
+	Telescope telescope;
+	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "instrumentId")
+	Instrument instrument;
+
 	
 	public Long getSessionId() {
 		return sessionId;
@@ -55,7 +79,22 @@ public class Session {
 		this.procedureList = procedureList;
 	}
 
-	
+	public Telescope getTelescope() {
+		return telescope;
+	}
+
+	public void setTelescope(Telescope telescope) {
+		this.telescope = telescope;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
+	}
+
 	
 	
 	

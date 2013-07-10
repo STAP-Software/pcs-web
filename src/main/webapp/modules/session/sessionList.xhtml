@@ -13,18 +13,18 @@
 
 		<h:form id="sessionListForm" style="margin:30px">
 		
-			<p:dataTable id="sessionTable" var="session" value="#{sessionController.sessionList}">				
+			<p:dataTable id="sessionTable" var="currentSession" value="#{sessionController.sessionList}">				
 			    <f:facet name="header">
-					Session Summary
+					Session List for #{sessionController.telescope.telescopeName}
 				</f:facet>
 				
 				<p:column headerText="Date"
 					style="width:14em">
-					<h:outputText value="#{session.sessionDate}" />
+					<h:outputText value="#{currentSession.sessionDate}" />
 				</p:column>
 				<p:column headerText="Observers"
 					style="width:14em">
-					<h:outputText value="#{session.sessionId}" />
+					<h:outputText value="#{currentSession.sessionId}" />
 				</p:column>
 				 
 			</p:dataTable>

@@ -303,8 +303,8 @@ function drawInitial(svg) {
 				<p:menubar>
 				
 					<p:submenu label="Session" icon="ui-icon-document">
-						<p:menuitem value="View Sessions" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="View Current Session" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Current Session" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 				
 					<p:submenu label="Run" icon="ui-icon-gear" >

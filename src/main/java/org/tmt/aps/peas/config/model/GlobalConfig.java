@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -27,6 +29,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 public class GlobalConfig {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long globalConfigId;
 	
 	@Temporal(TemporalType.TIMESTAMP)

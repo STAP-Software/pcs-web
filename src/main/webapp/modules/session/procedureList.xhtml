@@ -13,9 +13,15 @@
 
 		<h:form id="procedureListForm" style="margin:30px">
 		
-			<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.procedureList}">				
+			<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.session.procedureList}">				
 			    <f:facet name="header">
-					Session Summary
+			 		<h:outputText value="Session Summary: "/>
+			 		<h:outputText value="&#160;&#160;&#160;&#160;"/>
+			 		<h:outputText value="#{sessionController.currentSession.telescope.telescopeName}"/>
+			 		<h:outputText value="&#160;&#160;&#160;&#160;"/>
+			 		<h:outputText value="#{sessionController.currentSession.sessionDate}">
+			 			<f:convertDateTime pattern="MM/dd/yyyy " />
+			 		</h:outputText>
 				</f:facet>
 				
 				<p:column headerText="Number"
@@ -24,7 +30,7 @@
 				</p:column>
 				<p:column headerText="Type"
 					style="width:14em">
-					<h:outputText value="#{procedure.procedureType}" />
+					<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
 				</p:column>
 				<p:column headerText="Time Run"
 					style="width:14em">

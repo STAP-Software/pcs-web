@@ -38,7 +38,7 @@ public class GlobalConfigController implements Serializable {
 		this.globalConfig = globalConfig;
 	}
 
-
+	
 
 	@PostConstruct
 	public void init() {

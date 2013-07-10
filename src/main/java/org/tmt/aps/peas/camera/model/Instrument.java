@@ -10,7 +10,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Instrument")
 @NamedQueries({
-	@NamedQuery(name = "findAllInstruments", query = "SELECT o from Instrument o" )
+	@NamedQuery(name = "findAllInstruments", query = "SELECT o from Instrument o" ),
+	@NamedQuery(name = "findInstrument", query = "SELECT o from Instrument o where instrumentId = :instrumentId" )
 })
 public class Instrument {
 

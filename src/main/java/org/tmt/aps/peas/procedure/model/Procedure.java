@@ -4,6 +4,8 @@ import java.util.Date;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -22,7 +24,12 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "Procedure")
 @NamedQueries({
 	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig" )
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig" ),
+	@NamedQuery(name = "findLatestSessionProcedure", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig INNER JOIN FETCH p.session "
+			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.procedureNumber desc" )
+	
+
 })
 public class Procedure {
 
@@ -32,6 +39,7 @@ public class Procedure {
 	public static final int PROCEDURE_STATE_ABORTED = 4;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long procedureId;
 	
 	private int procedureNumber;

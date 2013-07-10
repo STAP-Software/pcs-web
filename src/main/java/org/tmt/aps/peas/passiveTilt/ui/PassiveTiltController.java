@@ -17,7 +17,6 @@ import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.ProcedureWizardBean;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -39,8 +38,6 @@ public class PassiveTiltController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
-	private ProcedureWizardBean procedureWizardBean;
-	@Inject
 	private SessionController sessionController;
 
 	Procedure procedure;
@@ -54,16 +51,6 @@ public class PassiveTiltController implements Serializable {
 
 		// test only, in the future, the DB will return a list of procedures,
 		// and the menus will be generated from those
-
-		procedure = new Procedure(); // for advanced options access from template
-
-		procedure.getProcedureConfig().setCalculationOptions(5);
-		procedure.getProcedureConfig().setAutoCenterPupil(1);
-		procedure.getProcedureConfig().setAutoCenterPupilMechanism(2);
-		procedure.getProcedureConfig().setAutoCenterTelescope(1);
-		procedure.getProcedureConfig().setAutoSendActuatorCmds(3);
-		procedure.getProcedureConfig().setFrameScaleRotationRemoval(2);
-		procedure.getProcedureConfig().setAutoTakeRefBeam(1);
 
 		frameList = new ArrayList<String>();
 		frameList.add("1");
@@ -101,21 +88,23 @@ public class PassiveTiltController implements Serializable {
 		try {
 			procedure = new Procedure();
 
-			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-
 			//ProcedureConfig procedureConfig = new ProcedureConfig();
-			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(new Long(telescopeIdStr), new Long(instrumentIdStr),
+			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), sessionController.getInstrument().getInstrumentId(),
 					ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
 
-			
 			procedure.setProcedureConfig(procedureConfig);
 
-			procedureWizardBean.reset();
-
+			// add it to the session and give it a procedure number
+			sessionController.setupNewProcedure(procedure);
+			
+			// TODO: this should come from a MetaData component
+			ProcedureType procedureType = new ProcedureType();
+			procedureType.setProcedureTypeId(new Long(1));
+			procedureType.setProcedureTypeName("Passive Tilt");
+			
+			procedure.setProcedureType(procedureType);
 			sessionController.setInPassiveTilt(true);
 
-			// perform setup for new...
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -153,7 +142,7 @@ public class PassiveTiltController implements Serializable {
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
-		passiveTiltMgmt.executeProcedure(procedure);
+		passiveTiltMgmt.executeProcedure(procedure, sessionController.getCurrentSession());
 		System.out.println("doExecuteProcedure::after to call passiveTiltMgmt");
 		
 	}
