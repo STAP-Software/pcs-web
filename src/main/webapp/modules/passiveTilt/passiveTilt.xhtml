@@ -18,8 +18,6 @@
 		<h:form id="procedureDetailForm">
 
 
-			<p:growl id="growl" />
-
 			<p:spacer height="10px" />
 
 
@@ -103,8 +101,7 @@
 
 					</p:tab>
 					<p:tab title="Procedure Log">
-						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}"
-						  rendered="#{not empty statusLogController.procedureStatusLog}" >
+						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" >
 
 							<p:column headerText="Time">
 								<h:outputText value="#{logEntry.createDate}" >

@@ -17,6 +17,7 @@ import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -39,6 +40,8 @@ public class PassiveTiltController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
 	private SessionController sessionController;
+	@Inject
+	private GlobalConfigController globalConfigController;
 
 	Procedure procedure;
 
@@ -122,7 +125,7 @@ public class PassiveTiltController implements Serializable {
 
 	public String doCancelProcedure() {
 
-		return "/modules/procedureList.xhtml?faces-redirect=true";
+		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
 	public void doExecuteProcedure(ActionEvent actionEvent) {
@@ -130,6 +133,13 @@ public class PassiveTiltController implements Serializable {
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
 
+		// TODO: global config needs to be altered and saved if it has changed from nominal
+		procedure.setGlobalConfig(globalConfigController.getGlobalConfig());
+
+		procedure.setInstrument(sessionController.getInstrument());
+		procedure.setTelescope(sessionController.getTelescope());
+		
+		
 		System.out.println("doExecuteProcedure::");
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly

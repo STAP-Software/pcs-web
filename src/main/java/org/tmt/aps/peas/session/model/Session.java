@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.session.model;
 
+import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
 
@@ -26,13 +27,16 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "Session")
 @NamedQueries({
 	@NamedQuery(name = "findAllSessions", query = "SELECT s from Session s" ),
-	@NamedQuery(name = "findSession", query = "SELECT DISTINCT s from Session s "
-			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList where s.sessionId = :sessionId" ),
 	@NamedQuery(name = "findSessionByDate", query = "SELECT DISTINCT s from Session s "
 			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
 			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
 			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfig LEFT OUTER JOIN FETCH p.globalConfig LEFT OUTER JOIN FETCH p.session "
-			+ "where s.sessionDate = :sessionDate" )
+			+ "where s.sessionDate = :sessionDate" ),
+	@NamedQuery(name = "findSession", query = "SELECT DISTINCT s from Session s "
+			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
+			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
+			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfig LEFT OUTER JOIN FETCH p.globalConfig LEFT OUTER JOIN FETCH p.session "
+			+ "where s.sessionId = :sessionId" )
 })
 public class Session {
 
@@ -42,6 +46,10 @@ public class Session {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date sessionDate;
+	
+	private String description;
+	
+	private String observers;
 
 	@OneToMany (fetch = FetchType.LAZY, mappedBy = "session")
 	private List<Procedure> procedureList;
@@ -95,8 +103,30 @@ public class Session {
 		this.instrument = instrument;
 	}
 
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
+	public String getObservers() {
+		return observers;
+	}
+
+	public void setObservers(String observers) {
+		this.observers = observers;
+	}
+
+	public String getSessionDateFormatted() {
+		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		return sdf.format(sessionDate);
+	}
 	
-	
+	public String toString() {
+		return "Telescope: " + telescope.getTelescopeName() + ", Date: " + getSessionDateFormatted();
+	}
 	
 	
 }

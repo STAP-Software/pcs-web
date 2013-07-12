@@ -1,0 +1,81 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="procedureListForm" style="margin:30px">
+
+			<p:accordionPanel id="sessionPanel" multiple="true" activeIndex="0,1">
+
+				<p:tab title="Session Detail">
+
+					<p:panelGrid columns="2" styleClass="btmsForm">
+						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="Description" />
+							<p:inputTextarea value="#{sessionController.session.description}" rows="5" cols="100" />
+
+						</p:panelGrid>
+						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="Observers" />
+							<p:inputTextarea value="#{sessionController.session.observers}" rows="2" cols="70" />
+
+						</p:panelGrid>
+
+						<f:facet name="footer">
+							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+								action="#{sessionController.doSaveSession}" />
+							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+								action="#{sessionController.doCancelSaveSession}" />
+						</f:facet>
+					</p:panelGrid>
+				</p:tab>
+
+				<p:tab title="Procedures">
+
+					<h:commandLink>
+						<p:graphicImage value="../../images/excel.png" />
+						<p:dataExporter type="xls" target="sessionTable" fileName="mitch" />
+					</h:commandLink>
+					<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.session.procedureList}">
+						<f:facet name="header">
+							<h:outputText value="Session Summary: " />
+							<h:outputText value="&#160;&#160;&#160;&#160;" />
+							<h:outputText value="#{sessionController.currentSession.telescope.telescopeName}" />
+							<h:outputText value="&#160;&#160;&#160;&#160;" />
+							<h:outputText value="#{sessionController.currentSession.sessionDate}">
+								<f:convertDateTime pattern="MM/dd/yyyy " />
+							</h:outputText>
+						</f:facet>
+
+						<p:column>
+							<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{procedureController.doViewProcedure}">
+								<f:setPropertyActionListener target="#{procedureController.procedure}" value="#{procedure}" />
+							</p:commandLink>
+						</p:column>
+						<p:column headerText="Procedure Number">
+							<h:outputText value="#{procedure.procedureNumber}" />
+						</p:column>
+						<p:column headerText="Procedure Type">
+							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
+						</p:column>
+						<p:column headerText="Time Run">
+							<h:outputText value="#{procedure.executionStartTime}" />
+						</p:column>
+
+					</p:dataTable>
+				</p:tab>
+			</p:accordionPanel>
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

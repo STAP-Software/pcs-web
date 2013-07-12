@@ -86,6 +86,11 @@ public class SessionMgmt {
 		}
 
 	}
+	
+	public Session updateSession(Session session) {
+		em.merge(session);
+		return session;
+	}
 
 	public Telescope findTelescope(long telescopeId) {
 		TypedQuery<Telescope> query = em.createNamedQuery("findTelescope", Telescope.class);

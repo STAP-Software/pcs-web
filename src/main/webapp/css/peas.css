@@ -30,6 +30,9 @@
     background: inherit;
 }
 
+.ui-datatable tbody td,.ui-datatable thead th {
+    white-space: normal !important;
+}
 .ui-corner-all {
 	border-radius: 0px;
 }

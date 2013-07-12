@@ -3,6 +3,7 @@ package org.tmt.aps.peas.session.ui;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -10,9 +11,12 @@ import java.util.TimeZone;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.camera.model.Instrument;
@@ -58,6 +62,9 @@ public class SessionController implements Serializable {
 		
 		if (currentSession == null) {
 			currentSession = createNewSession();
+		} else {
+			// order procedures by procedure number
+			Collections.sort(currentSession.getProcedureList(), new BeanComparator("procedureNumber"));
 		}
 		
 		
@@ -151,9 +158,35 @@ public class SessionController implements Serializable {
 		
 		session = currentSession;
 		
-		breadcrumbMenuBean.addFirstItem("Current Session", "procedureList.xhtml");
-		return "/modules/session/procedureList.xhtml?faces-redirect=true";
+		breadcrumbMenuBean.addFirstItem("Current Session", "sessionDetail.xhtml");
+		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 
+	}
+	public String doViewSession() {
+		
+		session = sessionMgmt.findSession(session.getSessionId());
+		
+		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "sessionDetail.xhtml");
+		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
+
+	}
+	
+	public String doSaveSession() {
+		
+		sessionMgmt.updateSession(session);
+		
+        FacesContext context = FacesContext.getCurrentInstance();          
+        context.addMessage(null, new FacesMessage("Record Save Successful", "More text"));  
+	
+		breadcrumbMenuBean.addFirstItem("Session: " + session, "sessionDetail.xhtml");
+		return "/modules/session/sessionDetail.xhtml";
+		
+	}
+
+	public String doCancelSaveSession() {
+		
+		return doViewSessionList();
+		
 	}
 	
 	public String doViewSessionList() {

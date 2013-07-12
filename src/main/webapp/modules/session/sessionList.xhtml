@@ -11,26 +11,38 @@
 
 	<ui:define name="content">
 
-		<h:form id="sessionListForm" style="margin:30px">
+		<h:form id="sessionListForm" >
 		
-			<p:dataTable id="sessionTable" var="currentSession" value="#{sessionController.sessionList}">				
+			<div style="margin:30px;" >
+			<p:dataTable id="sessionTable" var="nightSession" value="#{sessionController.sessionList}">				
 			    <f:facet name="header">
 					Session List for #{sessionController.telescope.telescopeName}
 				</f:facet>
 				
-				<p:column headerText="Date"
-					style="width:14em">
-					<h:outputText value="#{currentSession.sessionDate}" />
+				<p:column>
+					<p:commandLink value="" styleClass="ui-icon ui-icon-search"
+						style="float:left"
+						action="#{sessionController.doViewSession}" >
+						<f:setPropertyActionListener target="#{sessionController.session}" value="#{nightSession}" />
+					
+					</p:commandLink>
 				</p:column>
-				<p:column headerText="Observers"
-					style="width:14em">
-					<h:outputText value="#{currentSession.sessionId}" />
+				<p:column headerText="Session Date">
+					<h:outputText value="#{nightSession.sessionDate}" >
+						<f:convertDateTime pattern="MM/dd/yyyy " />
+					</h:outputText>
+				</p:column>
+				<p:column headerText="Description">
+					<h:outputText value="#{nightSession.description}" />
+				</p:column>
+				<p:column headerText="Observers">
+					<h:outputText value="#{nightSession.observers}" />
 				</p:column>
 				 
 			</p:dataTable>
 
 			<br />
-			
+			</div>
 		</h:form>
 		
 	</ui:define>

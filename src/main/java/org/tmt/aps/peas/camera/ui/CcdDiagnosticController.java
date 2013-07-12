@@ -57,7 +57,7 @@ public class CcdDiagnosticController implements Serializable {
 
 	public String doCancel() {
 
-		return "/modules/procedureList.xhtml?faces-redirect=true";
+		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 	public void doSendCommand() {
 

@@ -20,8 +20,8 @@ public class BreadcrumbMenuBean implements Serializable {
 	public BreadcrumbMenuBean() {
 		model = new DefaultMenuModel();
 		MenuItem item = new MenuItem();
-		item.setValue("Current Session");
-		item.setUrl("procedureList.xhtml");
+		item.setValue("Session List");
+		item.setUrl("sessionList.xhtml");
 		item.setIcon(null);
 		item.setId("breadCrumbMenu_Item_0");  // need to set ids explicitly to avoid collisions in view
 		model.addMenuItem(item);

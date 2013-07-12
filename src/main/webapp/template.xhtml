@@ -13,7 +13,7 @@
 			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
 			<title>Phasing Camera Software</title>
 		</f:facet>
-
+  
 		<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/peas.css" />
 
 <style type="text/css">
@@ -281,7 +281,7 @@ function drawInitial(svg) {
 		<f:event type="javax.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
-		<p:growl id="growl" />
+		<p:growl id="growl" sticky="true" />
 		
 		<p:layout fullPage="true">
 
@@ -298,8 +298,6 @@ function drawInitial(svg) {
 
 			<h:form id="menuForm">
 			
-			    <p:growl id="messages"/>  
-
 				<p:menubar>
 				
 					<p:submenu label="Session" icon="ui-icon-document">

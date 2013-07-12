@@ -142,28 +142,35 @@
          <scope>provided</scope>
       </dependency>
 		
+<!-- 
       <dependency>
          <groupId>org.primefaces</groupId>
          <artifactId>primefaces</artifactId>
          <version>3.5</version>
       </dependency>
+ -->
+		<dependency>
+                <groupId>org.primefaces</groupId>
+                <artifactId>primefaces</artifactId>
+                <version>3.5</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.apache.poi</groupId>
+                        <artifactId>poi</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+
+            <dependency>
+                <groupId>org.apache.poi</groupId>
+                <artifactId>poi</artifactId>
+                <version>3.7</version>
+            </dependency>
 
       <dependency>
          <groupId>org.primefaces.themes</groupId>
-         <artifactId>cupertino</artifactId>
-         <version>1.0.2</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.primefaces.themes</groupId>
-         <artifactId>redmond</artifactId>
-         <version>1.0.2</version>
-      </dependency>
-
-      <dependency>
-         <groupId>org.primefaces.themes</groupId>
-         <artifactId>afterwork</artifactId>
-         <version>1.0.8</version>
+         <artifactId>all-themes</artifactId>
+         <version>1.0.9</version>
       </dependency>
 
 	  <dependency>
@@ -183,6 +190,9 @@
 	<artifactId>netcdf</artifactId>
 	<version>4.2</version>
 </dependency>
+
+
+
 
    </dependencies>
 
