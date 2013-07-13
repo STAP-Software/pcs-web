@@ -100,7 +100,7 @@
 						</h:panelGroup>
 
 					</p:tab>
-					<p:tab title="Procedure Log">
+					<p:tab title="Procedure Event Log">
 						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" >
 
 							<p:column headerText="Time">
@@ -115,28 +115,78 @@
 						</p:dataTable>
 					</p:tab>
 				</p:accordionPanel>
-				<p:panelGrid style="width:520px;height:520px" columns="1">
-					<p:carousel id="smallCarousel" value="#{passiveTiltController.frameList}" var="frame" rows="1" height="120"
-						style="width:550px !important" itemStyle="width:550px;height:550px">
-						<h:panelGrid columns="1" style="width:512px;height:512px" cellpadding="5">
-							<p:graphicImage value="../../images/frames/#{frame}.png" height="512px" width="512px" />
-
-						</h:panelGrid>
-					</p:carousel>
+				
+				<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm">
+				<p:carousel id="frameCarousel" value="#{passiveTiltController.frameList}" var="frame" rows="1" >
+					<p:graphicImage value="../../images/frames/#{frame}.png" height="512px" width="512px" />
+				</p:carousel>
+				<p:panelGrid  styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+				
+					<p:row>
+					<p:column styleClass="peasFormLabelColumn" style="width:35%">
+					<h:outputLabel value="Filename:" />
+					</p:column>
+					<p:column colspan="3" styleClass="peasFormOutputColumn" style="width:65%">
+					<h:outputText value="Some loaded filename"/>
+					</p:column>
+					</p:row>
+				
+					<p:row>
+					<p:column styleClass="peasFormLabelColumn" style="width:35%">
+					<h:outputLabel value="Search Radius (pixels):" />
+					</p:column>
+					<p:column styleClass="peasFormOutputColumn" style="width:15%">
+					<h:outputText value="8"/>
+					</p:column>
+					<p:column styleClass="peasFormLabelColumn" style="width:15%">
+					<h:outputLabel value="SNR:" />
+					</p:column>
+					<p:column styleClass="peasFormOutputColumn" style="width:35%">
+					<h:outputText value="10.8"/>
+					</p:column>
+					</p:row>>
 				</p:panelGrid>
+					<f:facet name="footer">
+						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" />
+						<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					</f:facet>
+				</p:panelGrid>
+				
 				<p:accordionPanel multiple="true" activeIndex="0,1">
-					<p:tab title="Available Displays">
+					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 
 							<p:commandLink value="Centroids" onclick="displayDialog.show();" />
 							<p:commandLink value="Centroid Offsets" />
 							<p:commandLink value="Avg. Centroid Offsets" />
 							<p:commandLink value="Actuator Deltas" />
-							<p:commandLink value="Procedure Log" />
+							<p:commandLink value="Procedure Report" />
 
 						</p:panelGrid>
 					</p:tab>
 					<p:tab title="Phasing Camera State">
+						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+			
+							<h:outputLabel value="Coarse Mirror Offset" />
+							<h:outputText value=""/>
+							<h:outputLabel value="x (&#181;m)" />
+							<h:outputText value="0.0"/>
+							<h:outputLabel value="y (&#181;m)" />
+							<h:outputText value="0.0"/>
+							<h:outputLabel value="Fine Mirror Offset" />
+							<h:outputText value=""/>
+							<h:outputLabel value="x (&#181;m)" />
+							<h:outputText value="0.0"/>
+							<h:outputLabel value="y (&#181;m)" />
+							<h:outputText value="0.0"/>
+							<h:outputLabel value="Filter Wheel Position" />
+							<h:outputText value="1"/>
+							<h:outputLabel value="Pupil Mask Wheel Position" />
+							<h:outputText value="1"/>
+							<h:outputLabel value="CCD Temperature" />
+							<h:outputText value="123.5"/>
+						</p:panelGrid>
 					</p:tab>
 				</p:accordionPanel>
 

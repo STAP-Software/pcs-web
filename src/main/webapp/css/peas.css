@@ -191,13 +191,13 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	vertical-align: top;
 }
 
-.btmsForm tbody tr td, .pcsForm tbody tr td {
+.btmsForm tbody tr td, .pcsForm tbody tr td, .pcsFormNoBorder tbody tr td {
 	border: 0px;
 }
-.btmsForm tbody tr, .pcsForm tbody tr {
+.btmsForm tbody tr, .pcsForm tbody tr, .pcsFormNoBorder tbody tr {
 	border: 0px;
 }
-.btmsForm tbody {
+.btmsForm tbody, .pcsFormNoBorder tbody {
 	border: 0px;
 }
 
@@ -206,23 +206,29 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	border: 1px solid #888888;
 }
 
-.btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn {
+.pcsFormNoBorder {
+	border-collapse: separate;
+	border: none;
+	width: 100%;
+}
+
+.btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn, .pcsFormNoBorder .btmsFormLabelColumn {
 	padding: 4px 4px 4px 10px;
 }
-.btmsForm .btmsFormInputColumn, .pcsForm .btmsFormInputColumn {
+.btmsForm .btmsFormInputColumn, .pcsForm .btmsFormInputColumn, .pcsFormNoBorder .InputColumn {
 	padding: 4px 10px 4px 4px;
 }
-.btmsForm .ui-panelgrid-footer, .pcsForm .ui-panelgrid-footer {
+.btmsForm .ui-panelgrid-footer, .pcsForm .ui-panelgrid-footer, .pcsFormNoBorder .ui-panelgrid-footer {
 	text-align:right;
 }
 .btmsForm thead {
 	 display: none; 
 }
-.btmsForm .tableFormLabelColumn, .pcsForm .tableFormLabelColumn {
+.btmsForm .tableFormLabelColumn, .pcsForm .tableFormLabelColumn, .pcsFormNoBorder .tableFormLabelColumn {
 	padding: 4px 4px 4px 10px;
 	width: 200px;
 }
-.btmsForm .tableFormInputColumn, .pcsForm .tableFormInputColumn {
+.btmsForm .tableFormInputColumn, .pcsForm .tableFormInputColumn, .pcsFormNoBorder .tableFormInputColumn {
 	padding: 4px 10px 4px 4px;
 	text-align: left;
 }

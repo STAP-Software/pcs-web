@@ -5,6 +5,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -117,8 +118,9 @@ public class PassiveTiltController implements Serializable {
 		}
 
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		Date date = new Date();
-		breadcrumbMenuBean.addItem("Passive Tilt - " + sdf.format(date), "newProcedure.xhtml");
+		breadcrumbMenuBean.addFirstItem("Passive Tilt - " + sdf.format(date), "newProcedure.xhtml");
 
 		return "/modules/passiveTilt/passiveTilt.xhtml?faces-redirect=true";
 	}
