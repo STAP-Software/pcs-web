@@ -1,0 +1,35 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+		<p:dialog id="fitsFileLoadDlg" header="FITS File Loader" widgetVar="fitsFileLoadDialog">
+
+			<h:form id="fitsFileLoadForm">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Select a File" />
+        			<p:selectOneListbox value="#{passiveTiltController.selectedFitsFile}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" >  
+            			<f:selectItems value="#{passiveTiltController.availableFitsFiles}" var="fitsFile" itemLabel="#{fitsFile.fileName}" itemValue="#{fitsFile}" />  
+            			<p:column>  
+                			#{f.fileName}  
+            			</p:column>  
+
+					</p:selectOneListbox>
+
+				</p:panelGrid>
+
+				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :procedureDetailForm:framePanel"
+					action="#{passiveTiltController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
+				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
+					action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />
+
+			</h:form>
+		</p:dialog>
+
+</ui:composition>
+
+</html>

@@ -51,7 +51,7 @@ public class FalseColorProcessor {
 		}
 	}
 	
-	public DefaultStreamedContent createImage(short[][] grayArray) {
+	public byte[] createImage(short[][] grayArray) {
 			
 		int width = grayArray.length; 
 		int height = grayArray[0].length; 
@@ -133,7 +133,8 @@ public class FalseColorProcessor {
 			
             ByteArrayOutputStream os = new ByteArrayOutputStream();  
             ImageIO.write(falseColor, "png", os);  
-            return new DefaultStreamedContent(new ByteArrayInputStream(os.toByteArray()), "image/png");   
+            byte[] content = os.toByteArray();
+            return content;
 
 			
 			

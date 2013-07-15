@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.frame.business;
 
 import java.io.File;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -66,6 +67,11 @@ public class FrameMgmt {
 	    return fitsFileList;
 	}
 
+	public FitsFrame loadFitsFrame(InputStream is) throws Exception {
+		Fits fitsFile = new Fits(is);
+		return loadFitsFrame(fitsFile);
+	}
+	
 	
 	public FitsFrame loadFitsFrame(String fitsFilename) throws Exception {
 	
@@ -73,8 +79,13 @@ public class FrameMgmt {
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 		
 		String path = frameFolder + File.separator + fitsFilename;
-		
 		Fits fitsFile = new Fits(path);
+		
+		return loadFitsFrame(fitsFile);
+	}
+	
+	public FitsFrame loadFitsFrame(Fits fitsFile) throws Exception {
+			
 		BasicHDU[] bhdus = fitsFile.read();
 		FitsFrame fb = new FitsFrame();
 

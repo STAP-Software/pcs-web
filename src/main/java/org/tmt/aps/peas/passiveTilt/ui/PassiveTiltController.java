@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.passiveTilt.ui;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -16,9 +17,18 @@ import javax.faces.event.ActionEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
+import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.FitsFrame;
+import org.tmt.aps.peas.frame.model.PcsFitsFile;
+import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
+import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -36,11 +46,15 @@ public class PassiveTiltController implements Serializable {
 	PeasProperties peasProperties;
 	@EJB
 	ProcedureMgmt procedureMgmt;
+	@EJB
+	FrameMgmt frameMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
 	private SessionController sessionController;
+	@Inject
+	private FrameController frameController;
 	@Inject
 	private GlobalConfigController globalConfigController;
 
@@ -49,6 +63,9 @@ public class PassiveTiltController implements Serializable {
 	List<Procedure> procedureList;
 	List<String> frameList;
 	float integrationAddTime;
+	UploadedFile uploadFitsFile;
+	PcsFitsFile selectedFitsFile;
+	byte[] falseColorPng;
 
 	@PostConstruct
 	private void init() {
@@ -87,28 +104,94 @@ public class PassiveTiltController implements Serializable {
 		this.integrationAddTime = integrationAddTime;
 	}
 
+	public PcsFitsFile getSelectedFitsFile() {
+		return selectedFitsFile;
+	}
+
+	public void setSelectedFitsFile(PcsFitsFile selectedFitsFile) {
+		this.selectedFitsFile = selectedFitsFile;
+	}
+
+	public UploadedFile getUploadFitsFile() {
+		return uploadFitsFile;
+	}
+
+	public StreamedContent getGraphicImage() {
+		if (falseColorPng == null) {
+			return null;
+		}
+        return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
+	}
+
+	public List<PcsFitsFile> getAvailableFitsFiles() {
+		List<PcsFitsFile> fitsFileList = frameController.getProcedureFitsFiles("PT");
+		System.out.println("FitsFileList size = " + fitsFileList.size());
+		return fitsFileList;
+	}
+
+	public void handleFileUpload(FileUploadEvent event) {
+
+		try {
+			uploadFitsFile = event.getFile();
+
+			FitsFrame fbs = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
+
+			short frameArray[][] = fbs.getResult();
+
+			FalseColorProcessor falseColorer = new FalseColorProcessor();
+			falseColorPng = falseColorer.createImage(frameArray);
+
+			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	public void doLoadFitsFile() {
+		try {
+			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
+
+			short frameArray[][] = fbs.getResult();
+
+			FalseColorProcessor falseColorer = new FalseColorProcessor();
+			falseColorPng = falseColorer.createImage(frameArray);
+
+ 			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void frameSourceListener() {
+		System.out.println("Frame Source Listener");
+	}
+
 	public String doNewPassiveTilt() {
 
 		try {
 			procedure = new Procedure();
 
-			//ProcedureConfig procedureConfig = new ProcedureConfig();
-			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), sessionController.getInstrument().getInstrumentId(),
-					ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
+			// ProcedureConfig procedureConfig = new ProcedureConfig();
+			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(),
+					sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
 
 			procedure.setProcedureConfig(procedureConfig);
 
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
-			
+
 			// TODO: this should come from a MetaData component
 			ProcedureType procedureType = new ProcedureType();
 			procedureType.setProcedureTypeId(new Long(1));
 			procedureType.setProcedureTypeName("Passive Tilt");
-			
+
 			procedure.setProcedureType(procedureType);
 			sessionController.setInPassiveTilt(true);
-
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -140,8 +223,7 @@ public class PassiveTiltController implements Serializable {
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
-		
-		
+
 		System.out.println("doExecuteProcedure::");
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
@@ -156,7 +238,7 @@ public class PassiveTiltController implements Serializable {
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
 		passiveTiltMgmt.executeProcedure(procedure, sessionController.getCurrentSession());
 		System.out.println("doExecuteProcedure::after to call passiveTiltMgmt");
-		
+
 	}
 
 	public void doSaveAdvancedOptions() {

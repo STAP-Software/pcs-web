@@ -9,61 +9,61 @@
 	<ui:define name="content">
 
 
-			<p:spacer height="10px" />
+		<p:spacer height="10px" />
 
 
-			<p:panelGrid columns="2">
+		<p:panelGrid columns="3">
 
 			<h:form id="frameViewerForm">
 				<p:tabView>
 					<p:tab title="Session">
-						<p:scrollPanel style="width:350px;height:512px" mode="native">  
-						<p:tree value="#{frameController.sessionRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
-							selection="#{frameController.selectedNode}" id="sessionTree" animate="true">
+						<p:scrollPanel style="width:350px;height:512px" mode="native">
+							<p:tree value="#{frameController.sessionRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
+								selection="#{frameController.selectedNode}" id="sessionTree" animate="true">
 
-							<p:ajax event="select" update=":framePanel" listener="#{frameController.onNodeSelect}" />
-
-
-							<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								<h:outputText value="#{frameTreeElement.displayName}" />
-							</p:treeNode>
+								<p:ajax event="select" update=":framePanel" listener="#{frameController.onNodeSelect}" />
 
 
-							<p:treeNode type="picture" icon="ui-icon-image">
-								<h:outputText value="#{frameTreeElement.displayName}" />
-							</p:treeNode>
+								<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+									<h:outputText value="#{frameTreeElement.displayName}" />
+								</p:treeNode>
 
-						</p:tree>
+
+								<p:treeNode type="picture" icon="ui-icon-image">
+									<h:outputText value="#{frameTreeElement.displayName}" />
+								</p:treeNode>
+
+							</p:tree>
 						</p:scrollPanel>
 					</p:tab>
 					<p:tab title="Type">
-						<p:scrollPanel style="width:350px;height:512px" mode="native">  
-						<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
-							selection="#{frameController.selectedNode}" id="typeTree" animate="true">
+						<p:scrollPanel style="width:350px;height:512px" mode="native">
+							<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
+								selection="#{frameController.selectedNode}" id="typeTree" animate="true">
 
-							<p:ajax event="select" update=":framePanel" listener="#{frameController.onNodeSelect}" />
+								<p:ajax event="select" update=":framePanel" listener="#{frameController.onNodeSelect}" />
 
-							<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
-								<h:outputText value="#{frameTreeElement.displayName}" />
-							</p:treeNode>
+								<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
+									<h:outputText value="#{frameTreeElement.displayName}" />
+								</p:treeNode>
 
 
-							<p:treeNode type="picture" icon="ui-icon-image">
-								<h:outputText value="#{frameTreeElement.displayName}" />
-							</p:treeNode>
-						</p:tree>
+								<p:treeNode type="picture" icon="ui-icon-image">
+									<h:outputText value="#{frameTreeElement.displayName}" />
+								</p:treeNode>
+							</p:tree>
 						</p:scrollPanel>
 					</p:tab>
 				</p:tabView>
 
-		</h:form>
+			</h:form>
 
-				<p:panelGrid style="width:520px;height:520px" columns="1" id="framePanel">
-					<h:panelGrid columns="1" style="width:512px;height:512px" cellpadding="5">
+			<p:panelGrid style="width:520px;height:520px" columns="1" id="framePanel">
+				<h:panelGrid columns="1" style="width:512px;height:512px" cellpadding="5">
 
-						<p:graphicImage value="#{frameController.graphicImage}" height="512px" width="512px" />							
-						  
-						<!--  
+					<p:graphicImage value="#{frameController.graphicImage}" height="512px" width="512px" />
+
+					<!--  
 						<p:lightBox>
 
 							<h:outputLink value="#">
@@ -78,15 +78,22 @@
 
 						</p:lightBox>
 						-->
-						
-						
-					</h:panelGrid>
-				</p:panelGrid>
 
+
+				</h:panelGrid>
 			</p:panelGrid>
 
+		</p:panelGrid>
 
+		<p:panelGrid>
+			<p:row>
+				<p:column colspan="2">
+					<p:fileUpload fileUploadListener="#{passiveTiltController.handleFileUpload}" mode="advanced"
+						update=":growl framePanel" sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
+				</p:column>
+			</p:row>
 
+		</p:panelGrid>
 	</ui:define>
 </ui:composition>
 </html>

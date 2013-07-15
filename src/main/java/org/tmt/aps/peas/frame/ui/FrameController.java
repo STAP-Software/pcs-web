@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.frame.ui;
 
+import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -10,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
@@ -17,6 +19,7 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.primefaces.event.NodeSelectEvent;
+import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
@@ -41,6 +44,8 @@ public class FrameController implements Serializable {
 	private TreeNode selectedNode;
 	private StreamedContent graphicImage;
 
+	Map<String, List<PcsFitsFile>> type2Fits;
+	
 	public TreeNode getSessionRoot() {
 		return sessionRoot;
 	}
@@ -60,30 +65,20 @@ public class FrameController implements Serializable {
 	public StreamedContent getGraphicImage() {
 		return graphicImage;
 	}
-
-	public void onNodeSelect(NodeSelectEvent event) {
-
-		try {
-
-			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
-
-			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
-
-			short frameArray[][] = fbs.getResult();
-
-			FalseColorProcessor falseColorer = new FalseColorProcessor();
-			graphicImage = falseColorer.createImage(frameArray);
-
-		} catch (Exception e) {
-
+	
+	public List<PcsFitsFile> getProcedureFitsFiles(String procedureTypeCd) {
+		return type2Fits.get(procedureTypeCd);
+	}
+	public List<PcsFitsFile> getAllFitsFiles() {
+		List<PcsFitsFile> allFitsFiles = new ArrayList<PcsFitsFile>();
+		for (String key : type2Fits.keySet()) {
+			allFitsFiles.addAll(type2Fits.get(key));
 		}
-		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
-
-		// FacesContext.getCurrentInstance().addMessage(null, message);
+		return allFitsFiles;
 	}
 
-	public String doSetupFrameViewer() {
-
+	@PostConstruct
+	public void init() {
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
 
 		// dummy for session root
@@ -94,7 +89,7 @@ public class FrameController implements Serializable {
 
 		Map<Integer, Map<Date, List<PcsFitsFile>>> telescope2Fits = new HashMap<Integer, Map<Date, List<PcsFitsFile>>>();
 		
-		Map<String, List<PcsFitsFile>> type2Fits = new HashMap<String, List<PcsFitsFile>>();
+		type2Fits = new HashMap<String, List<PcsFitsFile>>();
 
 		try {
 
@@ -109,8 +104,8 @@ public class FrameController implements Serializable {
 						telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
 					}
 
-					System.out.println("map get filename = " + fitsFile.getFileName());
-					System.out.println("map get dateString = " + fitsFile.getDate());
+					//System.out.println("map get filename = " + fitsFile.getFileName());
+					//System.out.println("map get dateString = " + fitsFile.getDate());
 
 					List<PcsFitsFile> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
 					if (dateFitsList == null) {
@@ -174,7 +169,36 @@ public class FrameController implements Serializable {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
+		}		
+	}
+	
+	public void onNodeSelect(NodeSelectEvent event) {
+
+		try {
+
+			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
+
+			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
+
+			short frameArray[][] = fbs.getResult();
+
+			FalseColorProcessor falseColorer = new FalseColorProcessor();
+			
+			byte[] falseColorPng = falseColorer.createImage(frameArray);
+			
+	        graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
+
+		} catch (Exception e) {
+
 		}
+		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
+
+		// FacesContext.getCurrentInstance().addMessage(null, message);
+	}
+
+	public String doSetupFrameViewer() {
+
+
 
 		breadcrumbMenuBean.addItem("Frame Viewer ", "newProcedure.xhtml");
 

@@ -16,11 +16,14 @@ public class PcsFitsFile {
 	int sufsGroup;
 	int iteration;
 	int phasingStep;  // A-K = 1-11 for phasing
+	String fileName;
 
 	public PcsFitsFile(String fitsFileName) {
 
 		try {
 
+			this.fileName = fitsFileName;
+			
 			StringTokenizer st = new StringTokenizer(fitsFileName, "_");
 
 			String telescopeStr = st.nextToken();
@@ -29,7 +32,7 @@ public class PcsFitsFile {
 			String dateString = st.nextToken();
 			date = sdf.parse(dateString);
 			
-			System.out.println("dateString = " + dateString + ", date = " + date);
+			//System.out.println("dateString = " + dateString + ", date = " + date);
 			
 			procedureTypeCd = st.nextToken();
 			
@@ -123,6 +126,14 @@ public class PcsFitsFile {
 	public void setPhasingStep(int phasingStep) {
 		this.phasingStep = phasingStep;
 	}
+	
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 
 	public String getProcedureName() {
 		if (procedureTypeCd == "PR") {
@@ -140,6 +151,7 @@ public class PcsFitsFile {
 		}
 	}
 	
+	/*
 	public String getFileName() {
 		
 		StringBuffer buf = new StringBuffer();
@@ -163,8 +175,20 @@ public class PcsFitsFile {
 		return buf.toString();
 		
 	}
+	*/
 	
 	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof PcsFitsFile) {
+			PcsFitsFile candidate = (PcsFitsFile)obj;
+			return candidate.getFileName().equals(this.getFileName());
+		} 
+		return false;
+	}
+
+
 	public String toString() {
 		return getFileName();
 	}
