@@ -210,6 +210,11 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	border: 1px solid #888888;
 }
 
+.pcsForm .accordionChild table {
+	width: 100% !important;
+	margin: 0px;
+}
+
 .pcsFormNoBorder {
 	border-collapse: separate;
 	border: none;

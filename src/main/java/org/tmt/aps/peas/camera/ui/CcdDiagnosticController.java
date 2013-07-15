@@ -22,6 +22,7 @@ public class CcdDiagnosticController implements Serializable {
 
 	int ccdCommand;
 	String utilityWord;
+	int integrationTime;
 	
 	
 	public int getCcdCommand() {
@@ -40,8 +41,20 @@ public class CcdDiagnosticController implements Serializable {
 		this.utilityWord = utilityWord;
 	}
 
+	public int getIntegrationTime() {
+		return integrationTime;
+	}
+
+	public void setIntegrationTime(int integrationTime) {
+		this.integrationTime = integrationTime;
+	}
+
 	public boolean getShowUtilityWord() {
 		return ccdCommand == 6;
+	}
+
+	public boolean getShowIntegrationTime() {
+		return ccdCommand == 12;
 	}
 
 	public String doViewCcdDiagnostic() {

@@ -43,6 +43,7 @@ public class FrameController implements Serializable {
 
 	private TreeNode selectedNode;
 	private StreamedContent graphicImage;
+	private int searchRadius;
 
 	Map<String, List<PcsFitsFile>> type2Fits;
 	
@@ -60,6 +61,22 @@ public class FrameController implements Serializable {
 
 	public void setSelectedNode(TreeNode selectedNode) {
 		this.selectedNode = selectedNode;
+	}
+	
+	public int getSearchRadius() {
+		return searchRadius;
+	}
+
+	public void setSearchRadius(int searchRadius) {
+		this.searchRadius = searchRadius;
+	}
+
+	public String getSelectedFitsFilename() {
+		if (selectedNode == null) {
+			return null;
+		}
+		FrameTreeElement fte = (FrameTreeElement)selectedNode.getData();
+		return fte.getFileName();
 	}
 
 	public StreamedContent getGraphicImage() {
