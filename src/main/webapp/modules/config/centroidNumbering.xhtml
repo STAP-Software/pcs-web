@@ -1,0 +1,47 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+$(function() {
+	$('#centroidDrawDiv').svg({onLoad: drawMissingSpots});
+});
+
+function drawMissingSpots(svg) {
+
+	var numbersField = document.getElementById('missingSpotsForm:centroidNbrs').value;
+ 	var numbersArray = numbersField.split(','); 
+    
+	var xField = document.getElementById('missingSpotsForm:centroidXs').value;
+ 	var xArray = xField.split(','); 
+    
+	var yField = document.getElementById('missingSpotsForm:centroidYs').value;
+ 	var yArray = yField.split(','); 
+	var msField = document.getElementById('missingSpotsForm:missingSpots').value;
+ 	var msArray = msField.split(','); 
+    
+ 	
+	var g0 = svg.group({transform: "translate(-25, -15) scale(0.61)"});
+		
+	for (var i = 0; i < numbersArray.length; i++) {
+		var missingSpot = false;
+		for (var j = 0; j < msArray.length; j++) {
+			if (numbersArray[i] == msArray[j]) {
+				missingSpot = true;
+			}
+		}
+		
+		if (missingSpot) {
+		    svg.text(g0, xArray[i], yArray[i], numbersArray[i], {fontFamily: "Verdana", fontSize: "16", fill: "red"});			
+		} else {
+		    svg.text(g0, xArray[i], yArray[i], numbersArray[i], {fontFamily: "Verdana", fontSize: "16", fill: "blue"});
+		}
+	}
+}
+//]]>  
+</script>  
+
+
+<div id="centroidDrawDiv" style="height:600px;width:600px;"></div>  
+
+</ui:composition>

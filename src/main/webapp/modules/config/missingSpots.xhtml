@@ -10,16 +10,14 @@
 
 		<h:form id="missingSpotsForm">
 
-			<p:panelGrid columns="2" styleClass="pcsExecution">
+			<h:inputHidden id="centroidNbrs" value="#{missingSpotsController.centroidNumbers}" />
+			<h:inputHidden id="centroidXs" value="#{missingSpotsController.centroidXs}" />
+			<h:inputHidden id="centroidYs" value="#{missingSpotsController.centroidYs}" />
+			<h:inputHidden id="missingSpots" value="#{missingSpotsController.missingSpots}" />
 
-				<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+			<p:panelGrid columns="1" style="margin:10px;padding:0px" styleClass="pcsForm">
 
-					<f:facet name="header">
-					Missing Spots
-				</f:facet>
-
-					<h:outputLabel style="height: 8px" />
-					<h:outputLabel />
+				<p:panelGrid columns="4" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
 
 					<h:outputLabel value="Mask Type" />
 					<h:panelGroup id="maskPanel">
@@ -42,15 +40,16 @@
 						<f:selectItems value="#{missingSpotsController.spots}" />
 					</p:selectCheckboxMenu>
 
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-
+				</p:panelGrid>
+				
+				<p:panelGrid columns="1" style="margin:0px;" styleClass="pcsForm">
+					<ui:include src="centroidNumbering.xhtml" />
 					<f:facet name="footer">
 						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl" />
-						<p:commandButton value="Reset" icon="ui-icon-reset" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
 					</f:facet>
-
 				</p:panelGrid>
+																
 			</p:panelGrid>
 		</h:form>
 
