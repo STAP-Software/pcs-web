@@ -315,19 +315,18 @@ function drawInitial(svg) {
 						<p:menuitem value="Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="First Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Pupil Registration" url="#" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
-					<p:submenu label="Frame" icon="ui-icon-contact">
-						<p:menuitem value="Frame Viewer" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
-						<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Dark Current Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Pixel Efficiency Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
+					<p:submenu label="Tools" icon="ui-icon-contact">
+						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
 
-					<p:submenu label="Global Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
+					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
 						<p:menuitem value="Global Config" type="button" onclick="globalConfigDlg.show();" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Missing Spots" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Incomplete Mirror" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
 						<p:menuitem value="System Administration" url="#" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
@@ -340,11 +339,9 @@ function drawInitial(svg) {
 						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
-				 	<p:submenu label="Interface" icon="ui-icon-wrench" disabled="true">
-						<p:menuitem value="Camera" action="#{cameraDiagnosticController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" />
-						<p:menuitem value="CCD" action="#{ccdDiagnosticController.doViewCcdDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="ACS" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="DCS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true">
+						<p:menuitem value="ACS Manual Control" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="DCS Manual Control" url="#" disabled="#{sessionController.procedureExecuting}"/>
 							
 					</p:submenu>
 

@@ -1,0 +1,59 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="missingSpotsForm">
+
+			<p:panelGrid columns="2" styleClass="pcsExecution">
+
+				<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<f:facet name="header">
+					Missing Spots
+				</f:facet>
+
+					<h:outputLabel style="height: 8px" />
+					<h:outputLabel />
+
+					<h:outputLabel value="Mask Type" />
+					<h:panelGroup id="maskPanel">
+						<p:selectOneMenu id="options" value="#{ccdDiagnosticController.ccdCommand}" style="top:2px">
+							<f:selectItem itemLabel="160" itemValue="1" />
+							<f:selectItem itemLabel="508" itemValue="2" />
+							<f:selectItem itemLabel="UFS" itemValue="3" />
+							<f:selectItem itemLabel="SUFS" itemValue="4" />
+							<p:ajax update="maskPanel" />
+						</p:selectOneMenu>
+						<h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;" />
+						<h:outputText value="Utility Word (Decimal) &#160;&#160;" rendered="#{ccdDiagnosticController.showUtilityWord}" />
+						<p:inputText id="utilityWord" value="#{ccdDiagnosticController.utilityWord}" size="5"
+							rendered="#{ccdDiagnosticController.showUtilityWord}" />
+					</h:panelGroup>
+
+					<h:outputLabel value="Spot Selection" />
+					<p:selectCheckboxMenu value="#{missingSpotsController.selectedSpots}" label="Spots" filter="true" filterText="Filter"
+						filterMatchMode="contains" panelStyle="width:190px">
+						<f:selectItems value="#{missingSpotsController.spots}" />
+					</p:selectCheckboxMenu>
+
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+
+					<f:facet name="footer">
+						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl" />
+						<p:commandButton value="Reset" icon="ui-icon-reset" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+					</f:facet>
+
+				</p:panelGrid>
+			</p:panelGrid>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

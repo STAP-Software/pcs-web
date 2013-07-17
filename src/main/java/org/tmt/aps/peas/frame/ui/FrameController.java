@@ -217,7 +217,7 @@ public class FrameController implements Serializable {
 
 
 
-		breadcrumbMenuBean.addItem("Frame Viewer ", "newProcedure.xhtml");
+		breadcrumbMenuBean.addItem("Frame/Instrument Tools ", "newProcedure.xhtml");
 
 		return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
 	}
