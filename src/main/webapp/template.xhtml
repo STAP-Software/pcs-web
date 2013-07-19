@@ -101,7 +101,7 @@
 
 				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true">
 						<p:menuitem value="ACS Manual Control" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="DCS Manual Control" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="DCS Manual Control" action="#{dcsController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 							
 					</p:submenu>
 

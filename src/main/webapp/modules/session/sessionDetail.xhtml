@@ -39,7 +39,7 @@
 
 				<p:tab title="Procedures">
 
-					<h:commandLink>
+ 					<h:commandLink>
 						<p:graphicImage value="../../images/excel.png" />
 						<p:dataExporter type="xls" target="sessionTable" fileName="mitch" />
 					</h:commandLink>
@@ -54,6 +54,9 @@
 							</h:outputText>
 						</f:facet>
 
+       					<p:column style="width:2%">  
+            				<p:rowToggler />  
+        				</p:column>  
 						<p:column>
 							<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{procedureController.doViewProcedure}">
 								<f:setPropertyActionListener target="#{procedureController.procedure}" value="#{procedure}" />
@@ -62,12 +65,83 @@
 						<p:column headerText="Procedure Number">
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
+						<p:column headerText="Test Number">
+							<h:outputText value="1" />
+						</p:column>
 						<p:column headerText="Procedure Type">
 							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>
-						<p:column headerText="Time Run">
+						<p:column headerText="Started">
 							<h:outputText value="#{procedure.executionStartTime}" />
 						</p:column>
+						<p:column headerText="Comments">
+							<h:outputText value="Procedure specific comments" />
+						</p:column>
+
+        <p:rowExpansion>  
+            <p:panelGrid columns="4" style="margin:20px; width:550px" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">  
+  
+  
+                <h:outputLabel value="Integration Time (sec)" />  
+                <h:outputText value="15.00" />  
+ 
+                <h:outputLabel value="Telescope Elevation (deg)" />  
+                <h:outputText value="66.25"/>  
+  
+                <h:outputLabel value="FWHM (pix)" />  
+                <h:outputText value="2.90"/>  
+                
+                <h:outputLabel value="ACS commands sent" />  
+                <h:outputText value="No"/>  
+   
+                <h:outputLabel value="Theta80 (pix)" />  
+                <h:outputText value="6.36"/>  
+                
+                <h:outputLabel value="Number of Frames" />  
+                <h:outputText value="1"/>  
+  
+                <h:outputLabel value="Centroid RMS (pix)" />  
+                <h:outputText value="1.74"/>  
+
+                <h:outputLabel value="ACS Snap # After" />  
+                <h:outputText value="0"/>  
+  
+                <h:outputLabel value="Act Cmd RMS (nm)" />  
+                <h:outputText value="nan"/>  
+ 
+                <h:outputLabel value="Star Name" />  
+                <h:outputText value=""/>  
+  
+                <h:outputLabel value="Equiv. Focus Mode (nm)" />  
+                <h:outputText value="0.0"/>  
+
+                <h:outputLabel value="Star Sp Type" />  
+                <h:outputText value=""/>  
+  
+                <h:outputLabel value="Coarse Mirror X (um)" />  
+                <h:outputText value="264"/>  
+ 
+                <h:outputLabel value="Star Vmag" />  
+                <h:outputText value="0.0"/>  
+  
+                <h:outputLabel value="Coarse Mirror Y (um)" />  
+                <h:outputText value="-1"/>  
+  
+  
+  
+  
+  
+  
+                 
+                 
+                 
+                 
+  
+                 
+            </p:panelGrid>  
+  
+        </p:rowExpansion>  
+
 
 					</p:dataTable>
 				</p:tab>

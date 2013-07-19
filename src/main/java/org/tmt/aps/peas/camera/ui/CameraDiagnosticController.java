@@ -53,7 +53,7 @@ public class CameraDiagnosticController implements Serializable {
 	public void refreshCamera() {
 		camera = new Camera(1, 1, 1, 1, 23.0f, 1, 0.0f, 
 				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
-				 1,  123.5f,  99.3f,  43.6f, 
+				 1,  -43.2f,  0.5f,  21.6f, 
 				 1, 0f, 1, 0f,
 				 2.3f,  1);
 		commandSelection = 1;

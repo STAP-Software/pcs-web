@@ -136,18 +136,20 @@
 
 					</p:tab>
 					<p:tab title="Procedure Event Log">
-						<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
+					<p:scrollPanel style="width:100%;height:206px" mode="native">
+						<p:dataTable id="sessionTable" var="logEntry"  value="#{statusLogController.procedureStatusLog.logEntryList}">
 
-							<p:column headerText="Time">
+							<p:column headerText="Time" >
 								<h:outputText value="#{logEntry.createDate}">
 									<f:convertDateTime pattern="hh:mm:ss" />
 								</h:outputText>
 							</p:column>
-							<p:column headerText="Status">
+							<p:column headerText="Status" >
 								<h:outputText value="#{logEntry.status}" />
 							</p:column>
 
 						</p:dataTable>
+						</p:scrollPanel>
 					</p:tab>
 				</p:accordionPanel>
 
@@ -179,7 +181,7 @@
 							<p:column styleClass="peasFormOutputColumn" style="width:35%">
 								<h:outputText value="10.8" />
 							</p:column>
-						</p:row>>
+						</p:row>
 				</p:panelGrid>
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
@@ -191,6 +193,40 @@
 				</p:panelGrid>
 
 				<p:accordionPanel multiple="true" activeIndex="0,1">
+				
+				
+					<p:tab title="Procedure Context">
+
+						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="Test #" />
+							<p:inputText size="4"/>
+							
+							<h:outputLabel value="ACS Snap # After" />
+							<p:inputText size="4"/>
+							
+							<h:outputLabel value="Star Name" />
+							<p:inputText size="20"/>
+							
+							<h:outputLabel value="Star Sp Type" />
+							<p:inputText size="4"/>
+
+							<h:outputLabel value="Star Vmag" />
+							<p:inputText size="4"/>
+
+							<h:outputLabel value="Comments" />
+							<p:inputTextarea value="" rows="1" cols="30" />
+
+					<f:facet name="footer">
+						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+							action="#{globalConfigController.doCancelSaveSetup}" />
+					</f:facet>
+						</p:panelGrid>
+					</p:tab>
+				
+				
+				
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 
@@ -208,21 +244,21 @@
 							<h:outputLabel value="Coarse Mirror Offset" />
 							<h:outputText value="" />
 							<h:outputLabel value="x (&#181;m)" />
-							<h:outputText value="0.0" />
+							<h:outputText value="5.0" />
 							<h:outputLabel value="y (&#181;m)" />
-							<h:outputText value="0.0" />
+							<h:outputText value="-12.3" />
 							<h:outputLabel value="Fine Mirror Offset" />
 							<h:outputText value="" />
 							<h:outputLabel value="x (&#181;m)" />
-							<h:outputText value="0.0" />
+							<h:outputText value="32.1" />
 							<h:outputLabel value="y (&#181;m)" />
-							<h:outputText value="0.0" />
+							<h:outputText value="-16.0" />
 							<h:outputLabel value="Filter Wheel Position" />
-							<h:outputText value="1" />
+							<h:outputText value="611 nm" />
 							<h:outputLabel value="Pupil Mask Wheel Position" />
-							<h:outputText value="1" />
+							<h:outputText value="036" />
 							<h:outputLabel value="CCD Temperature" />
-							<h:outputText value="123.5" />
+							<h:outputText value="-60.2 C" />
 						</p:panelGrid>
 					</p:tab>
 				</p:accordionPanel>

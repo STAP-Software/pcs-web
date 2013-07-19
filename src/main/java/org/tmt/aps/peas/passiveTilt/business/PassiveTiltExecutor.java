@@ -93,6 +93,12 @@ public class PassiveTiltExecutor {
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
+			
+			statusLogMgmt.log("Camera is not properly initialized.  Proceed with caution."); 
+			statusLogMgmt.log("Entering Passive Tilt Test");
+
+
+			
 			wait(1);
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
@@ -115,23 +121,36 @@ public class PassiveTiltExecutor {
 				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
 			}
 
+			statusLogMgmt.log("Current frame being used for test ");
+			statusLogMgmt.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
+		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
-				statusLogMgmt.log("Current frame being used for test ");
 				ImageFrame frame = frameMgmt.getCorrectedFrame(procedureConfig.getFrameSource());
 				
 				// TODO: this is where we display the frame
 				
-				wait(3);
+				wait(567);
 
 				statusLogMgmt.log("Calling Find and Identify ");
 				List<Point> subimageList = imageProcessor.findAndIdentify(frame);
 				
 				// TODO: this is where we display the marked frame
 
-				wait(2);
+				wait(689);
+				
+				statusLogMgmt.log(">>> Search count = 1");
+				statusLogMgmt.log(">>> Frame Scale: 0.9530617");
+				statusLogMgmt.log(">>> Rotation: 0.3370904  degrees");
+				statusLogMgmt.log(">>> Frame Scale: 0.9840439");
+				statusLogMgmt.log(">>> Calculating center of image");
+				statusLogMgmt.log("All centroids found and identified.");
+
 				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
 
+				wait(554);
+				statusLogMgmt.log("Calculating Centroid Residuals");
+			
 				// TODO: argument list is not complete
 				RegistrationDelta registrationDelta = imageProcessor.pupilRegistration36(subimageList);
 
@@ -170,6 +189,12 @@ public class PassiveTiltExecutor {
 
 				graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
 
+				wait(967);
+				
+				statusLogMgmt.log("Rigid body rotation is 0.284E-03 Rads");
+				statusLogMgmt.log("The telescope needs to be moved  0.04 arc sec. in AZ.  0.14 arc sec. in EL.");
+
+				
 				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
 				procedureExecutionMgmt.setPercentComplete(trialPct);
@@ -184,6 +209,10 @@ public class PassiveTiltExecutor {
 			
 			userPromptMgmt.displayYesNoDialog("here is some text");
 			
+			wait(134);
+			statusLogMgmt.log("Passive Tilt Test Completed");
+			statusLogMgmt.log("Exiting Passive Tilt Test");
+
 			procedureExecutionMgmt.setExecutionStatus(false);
 			procedureExecutionMgmt.setPercentComplete(100);
 
@@ -202,10 +231,10 @@ public class PassiveTiltExecutor {
 
 	}
 
-	private void wait(int secs) {
+	private void wait(int ms) {
 		// here we wait until the pending display is cleared
 		try {
-			Thread.sleep(secs * 1000);
+			Thread.sleep(ms);
 		} catch (InterruptedException e) {
 
 		}
