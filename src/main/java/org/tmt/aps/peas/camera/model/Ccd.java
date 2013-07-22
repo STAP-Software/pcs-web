@@ -1,16 +1,78 @@
 package org.tmt.aps.peas.camera.model;
 
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class Ccd {
 
 	public static final int POWER_STATE_ON = 1;
 	public static final int POWER_STATE_OFF = 2;
 
+	private Long ccdId;
+	private String ccdName;	
+	private String ccdDescription;	
+	private String hotPixelsEncoded;  // encoded as x1,y1,x2,y2, etc
+	
+	private Instrument instrument;
+	
 	private int state;
 	private float temperature;
 
+	
+	public Ccd(String ccdName, String ccdDescription, String hotPixelsEncoded, Instrument instrument) {
+		this.ccdName = ccdName;
+		this.ccdDescription = ccdDescription;
+		this.hotPixelsEncoded = hotPixelsEncoded;
+		this.instrument = instrument;
+	}
+	
+	
 	public Ccd(int state, float temperature) {
 		this.state = state;
 		this.temperature = temperature;
+	}
+
+	public Long getCcdId() {
+		return ccdId;
+	}
+
+	public void setCcdId(Long ccdId) {
+		this.ccdId = ccdId;
+	}
+	
+	public String getCcdName() {
+		return ccdName;
+	}
+
+	public void setCcdName(String ccdName) {
+		this.ccdName = ccdName;
+	}
+
+	public String getCcdDescription() {
+		return ccdDescription;
+	}
+	
+	public void setCcdDescription(String ccdDescription) {
+		this.ccdDescription = ccdDescription;
+	}
+
+	public String getHotPixelsEncoded() {
+		return hotPixelsEncoded;
+	}
+
+	public void setHotPixelsEncoded(String hotPixelsEncoded) {
+		this.hotPixelsEncoded = hotPixelsEncoded;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
 	}
 
 
@@ -40,4 +102,14 @@ public class Ccd {
 		return "";
 	}
 
+	public List<Point> getHotPixelList() {
+		// list is encoded as x1,y1,x2,y2, etc
+		List<String> items = Arrays.asList(hotPixelsEncoded.split("\\s*,\\s*"));
+		List<Point> hotPixelList = new ArrayList<Point>();
+		for (int i=0; i<items.size()/2; i++) {
+			Point point = new Point(new Integer(items.get(i*2)), new Integer(items.get((i*2)+1)));
+			hotPixelList.add(point);
+		}
+		return hotPixelList;
+	}
 }

@@ -14,7 +14,7 @@ public class Camera {
 	private CoarseTilt coarseTilt;
 	private FineTilt fineTilt;
 	private TwoPosMechanism twoPosMechanism;
-	private Ccd ccd;
+	//private Ccd ccd;
 	private float instrumentTemperature;
 	private float electronicsBoxTemperature;
 	private KnifeEdge knifeEdge;
@@ -39,7 +39,7 @@ public class Camera {
 		this.coarseTilt = new CoarseTilt(coarseTiltX, coarseTiltY);
 		this.fineTilt = new FineTilt(fineTiltX, fineTiltY);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
-		this.ccd = new Ccd(ccdPower, ccdTemperature);
+		//this.ccd = new Ccd(ccdPower, ccdTemperature);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
 		this.knifeEdge = new KnifeEdge(knifeEdgePositionCommand, knifeEdgePosition, knifeEdgeRateCommand, knifeEdgeRate);
@@ -111,6 +111,7 @@ public class Camera {
 		this.twoPosMechanism = twoPosMechanism;
 	}
 	
+	/*
 	public Ccd getCcd() {
 		return ccd;
 	}
@@ -118,7 +119,7 @@ public class Camera {
 	public void setCcd(Ccd ccd) {
 		this.ccd = ccd;
 	}
-
+	*/
 	public float getInstrumentTemperature() {
 		return instrumentTemperature;
 	}

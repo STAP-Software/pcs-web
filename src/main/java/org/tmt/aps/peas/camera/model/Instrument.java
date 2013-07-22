@@ -6,6 +6,7 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "Instrument")
@@ -21,6 +22,18 @@ public class Instrument {
 	@Column(nullable=false, length=100)
 	private String instrumentName;
 	
+	@Transient  // temporary
+	Camera camera;
+	@Transient // temporary
+	Ccd ccd;
+	
+	public Instrument() {
+		
+	}
+	
+	public Instrument (String instrumentName) {
+		this.instrumentName = instrumentName;
+	}
 	
 	public Long getInstrumentId() {
 		return instrumentId;
@@ -33,6 +46,18 @@ public class Instrument {
 	}
 	public void setInstrumentName(String instrumentName) {
 		this.instrumentName = instrumentName;
+	}
+	public Camera getCamera() {
+		return camera;
+	}
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+	}
+	public Ccd getCcd() {
+		return ccd;
+	}
+	public void setCcd(Ccd ccd) {
+		this.ccd = ccd;
 	}
 	
 	

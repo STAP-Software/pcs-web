@@ -86,9 +86,8 @@
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
 						<p:menuitem value="Global Config" type="button" onclick="globalConfigDlg.show();" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Hot Pixel Map" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
-						<p:menuitem value="System Administration" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="CCD Configuration" action="#{ccdDefController.doViewCcdList}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{sessionController.inPassiveTilt}" >
