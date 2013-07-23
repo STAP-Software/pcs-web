@@ -1,24 +1,60 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
+import java.util.List;
+
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "Camera")
+@NamedQueries({
+	@NamedQuery(name = "findCamera", query = "SELECT o from Camera o where cameraId = :cameraId" )
+})
 public class Camera {
 
 	
 	public static final int CCD_POWER_STATE_ON = 1;
 	public static final int CCD_POWER_STATE_OFF = 2;
 	
-	private int pupilMask;
-	private int filter;
-	private int refBeam;
+	@Id
+	private Long cameraId;
+	
+	@Transient
+	private int currentRefBeam;
+	@Transient
 	private Shutter shutter;
+	@Transient
 	private PreflashLEDs preflashLEDs;
+	@Transient
 	private CoarseTilt coarseTilt;
+	@Transient
 	private FineTilt fineTilt;
+	@Transient
 	private TwoPosMechanism twoPosMechanism;
-	//private Ccd ccd;
+	@Transient
 	private float instrumentTemperature;
+	@Transient
 	private float electronicsBoxTemperature;
-	private KnifeEdge knifeEdge;
-	private VideoCcd videoCcd;
+
+	@OneToOne
+	@JoinColumn(name="instrumentId")
+	private Instrument instrument;
+
+	@OneToOne (mappedBy="camera")
+	private PupilWheel pupilWheel;
+	
+	@OneToOne (mappedBy="camera")
+	private FilterWheel filterWheel;
+	
+	@OneToMany (mappedBy="camera")
+	List<ReferenceBeam> referenceBeamList;
 
 	public Camera() {
 		
@@ -27,48 +63,26 @@ public class Camera {
 	public Camera (int pupilMask, int filter, int refBeam, int shutterState, float shutterExposureTime, 
 			int preflashLEDState, float preflashLEDFlashDuration, 
 			float coarseTiltX, float coarseTiltY, float fineTiltX, float fineTiltY, int twoPosMechanismState, 
-			int ccdPower, float ccdTemperature, float instrumentTemperature, float electronicsBoxTemperature, 
-			int knifeEdgePositionCommand, float knifeEdgePosition, int knifeEdgeRateCommand, float knifeEdgeRate, 
-			float videoCcdExpose, int videoCcdPower) {
+			float instrumentTemperature, float electronicsBoxTemperature) {
 		
-		this.pupilMask = pupilMask;
-		this.filter = filter;
-		this.refBeam = refBeam;
+		//this.pupilMask = pupilMask;
+		//this.filter = filter;
+		this.currentRefBeam = currentRefBeam;
 		this.shutter = new Shutter(shutterState, shutterExposureTime);
 		this.preflashLEDs = new PreflashLEDs(preflashLEDState, preflashLEDFlashDuration);
 		this.coarseTilt = new CoarseTilt(coarseTiltX, coarseTiltY);
 		this.fineTilt = new FineTilt(fineTiltX, fineTiltY);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
-		//this.ccd = new Ccd(ccdPower, ccdTemperature);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
-		this.knifeEdge = new KnifeEdge(knifeEdgePositionCommand, knifeEdgePosition, knifeEdgeRateCommand, knifeEdgeRate);
-		this.videoCcd = new VideoCcd(videoCcdPower, videoCcdExpose);
 	}
 	
-
-	public int getPupilMask() {
-		return pupilMask;
+	public int getCurrentRefBeam() {
+		return currentRefBeam;
 	}
 
-	public void setPupilMask(int pupilMask) {
-		this.pupilMask = pupilMask;
-	}
-
-	public int getFilter() {
-		return filter;
-	}
-
-	public void setFilter(int filter) {
-		this.filter = filter;
-	}
-
-	public int getRefBeam() {
-		return refBeam;
-	}
-
-	public void setRefBeam(int refBeam) {
-		this.refBeam = refBeam;
+	public void setCurrentRefBeam(int currentRefBeam) {
+		this.currentRefBeam = currentRefBeam;
 	}
 
 	public Shutter getShutter() {
@@ -111,15 +125,6 @@ public class Camera {
 		this.twoPosMechanism = twoPosMechanism;
 	}
 	
-	/*
-	public Ccd getCcd() {
-		return ccd;
-	}
-
-	public void setCcd(Ccd ccd) {
-		this.ccd = ccd;
-	}
-	*/
 	public float getInstrumentTemperature() {
 		return instrumentTemperature;
 	}
@@ -136,20 +141,46 @@ public class Camera {
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
 	}
 
-	public KnifeEdge getKnifeEdge() {
-		return knifeEdge;
+	public Instrument getInstrument() {
+		return instrument;
 	}
 
-	public void setKnifeEdge(KnifeEdge knifeEdge) {
-		this.knifeEdge = knifeEdge;
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
 	}
 
-	public VideoCcd getVideoCcd() {
-		return videoCcd;
+	public PupilWheel getPupilWheel() {
+		return pupilWheel;
 	}
 
-	public void setVideoCcd(VideoCcd videoCcd) {
-		this.videoCcd = videoCcd;
+	public void setPupilWheel(PupilWheel pupilWheel) {
+		this.pupilWheel = pupilWheel;
 	}
+
+	public FilterWheel getFilterWheel() {
+		return filterWheel;
+	}
+
+	public void setFilterWheel(FilterWheel filterWheel) {
+		this.filterWheel = filterWheel;
+	}
+
+	public List<ReferenceBeam> getReferenceBeamList() {
+		return referenceBeamList;
+	}
+
+	public void setReferenceBeamList(List<ReferenceBeam> referenceBeamList) {
+		this.referenceBeamList = referenceBeamList;
+	}
+
+	public Long getCameraId() {
+		return cameraId;
+	}
+
+	public void setCameraId(Long cameraId) {
+		this.cameraId = cameraId;
+	}
+
+
 
 }

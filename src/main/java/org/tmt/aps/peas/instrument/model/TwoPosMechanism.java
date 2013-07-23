@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
 public class TwoPosMechanism {
 

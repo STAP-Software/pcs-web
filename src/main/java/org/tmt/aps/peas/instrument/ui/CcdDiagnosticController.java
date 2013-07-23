@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.camera.ui;
+package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
 

@@ -12,13 +12,13 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.camera.business.CameraMgmt;
 import org.tmt.aps.peas.common.fortran.FortranProxy;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
+import org.tmt.aps.peas.instrument.business.CameraMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;

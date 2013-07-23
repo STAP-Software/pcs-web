@@ -1,12 +1,12 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "Instrument")
@@ -22,10 +22,11 @@ public class Instrument {
 	@Column(nullable=false, length=100)
 	private String instrumentName;
 	
-	@Transient  // temporary
-	Camera camera;
-	@Transient // temporary
-	Ccd ccd;
+	@OneToOne (mappedBy="instrument")
+	private Camera camera;
+	
+	@OneToOne (mappedBy="instrument")
+	private Ccd ccd;
 	
 	public Instrument() {
 		

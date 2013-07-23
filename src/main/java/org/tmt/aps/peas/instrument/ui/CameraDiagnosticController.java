@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.camera.ui;
+package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
 
@@ -10,10 +10,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.camera.model.Camera;
-import org.tmt.aps.peas.camera.model.KnifeEdge;
-import org.tmt.aps.peas.camera.model.PreflashLEDs;
-import org.tmt.aps.peas.camera.model.Shutter;
+import org.tmt.aps.peas.instrument.model.Camera;
+import org.tmt.aps.peas.instrument.model.KnifeEdge;
+import org.tmt.aps.peas.instrument.model.PreflashLEDs;
+import org.tmt.aps.peas.instrument.model.Shutter;
 
 @Named
 @SessionScoped
@@ -53,9 +53,7 @@ public class CameraDiagnosticController implements Serializable {
 	public void refreshCamera() {
 		camera = new Camera(1, 1, 1, 1, 23.0f, 1, 0.0f, 
 				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
-				 1,  -43.2f,  0.5f,  21.6f, 
-				 1, 0f, 1, 0f,
-				 2.3f,  1);
+				 1,  -43.2f);
 		commandSelection = 1;
 	}
 	
@@ -67,13 +65,6 @@ public class CameraDiagnosticController implements Serializable {
 		return (commandSelection == 5) && (camera.getPreflashLEDs().getState() == PreflashLEDs.STATE_TIMED_FLASH);
 	}
 	
-	public boolean getRenderKnifeEdgePosition() {
-		return (commandSelection == 13) && (camera.getKnifeEdge().getPositionCommand() == KnifeEdge.POSITION_COMMAND_TYPE_POSITION);
-	}
-	
-	public boolean getRenderKnifeEdgeRate() {
-		return (commandSelection == 14) && (camera.getKnifeEdge().getRateCommand() == KnifeEdge.RATE_COMMAND_TYPE_RATE);
-	}
 	
 	public String doViewCameraDiagnostic() {
 

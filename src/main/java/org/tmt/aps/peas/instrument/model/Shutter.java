@@ -1,19 +1,18 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
-public class VideoCcd {
+public class Shutter {
 
-	public static final int POWER_STATE_ON = 1;
-	public static final int POWER_STATE_OFF = 2;
+	public static final int STATE_OPEN = 1;
+	public static final int STATE_CLOSE = 2;
+	public static final int STATE_TIMED_EXPOSURE = 3;
 
 	private int state;
 	private float exposureTime;
 
-	public VideoCcd(int state, float exposureTime) {
+	public Shutter(int state, float exposureTime) {
 		this.state = state;
 		this.exposureTime = exposureTime;
 	}
-
-
 
 	public int getState() {
 		return state;
@@ -31,14 +30,14 @@ public class VideoCcd {
 		this.exposureTime = exposureTime;
 	}
 
-
-
-	public String getDisplayString() {
+	public String getShutterDisplayString() {
 		switch (state) {
-		case POWER_STATE_ON:
-			return "On";
-		case POWER_STATE_OFF:
-			return "Off";
+		case STATE_OPEN:
+			return "Open";
+		case STATE_CLOSE:
+			return "Closed";
+		case STATE_TIMED_EXPOSURE:
+			return "Timed Exposure";
 		}
 		return "";
 	}

@@ -19,7 +19,7 @@ import javax.inject.Named;
 import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.camera.model.Instrument;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;

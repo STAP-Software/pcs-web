@@ -44,8 +44,19 @@ public class ProcedureController implements Serializable {
 	Procedure procedure;
 
 
+	public Procedure getProcedure() {
+		return procedure;
+	}
+
+
+	public void setProcedure(Procedure procedure) {
+		this.procedure = procedure;
+	}
+
+
 	public String doViewProcedure() {
 
+		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": " + procedure.getProcedureType().getProcedureTypeName(), "newProcedure.xhtml");
 
 		return "/modules/passiveTilt/passiveTilt.xhtml?faces-redirect=true";
 	}

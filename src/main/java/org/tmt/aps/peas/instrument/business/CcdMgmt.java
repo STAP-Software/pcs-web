@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.camera.business;
+package org.tmt.aps.peas.instrument.business;
 
 import java.io.Serializable;
 

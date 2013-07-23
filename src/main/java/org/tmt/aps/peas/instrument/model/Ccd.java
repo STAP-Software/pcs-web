@@ -1,20 +1,36 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "Ccd")
+@NamedQueries({
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where ccdId = :ccdId" )
+})
 public class Ccd {
 
 	public static final int POWER_STATE_ON = 1;
 	public static final int POWER_STATE_OFF = 2;
 
+	@Id
 	private Long ccdId;
 	private String ccdName;	
 	private String ccdDescription;	
 	private String hotPixelsEncoded;  // encoded as x1,y1,x2,y2, etc
 	
+	@ManyToOne
+	@JoinColumn (name="instrumentId")
 	private Instrument instrument;
 	
 	private int state;

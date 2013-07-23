@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.camera.ui;
+package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -10,8 +10,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.camera.model.Ccd;
-import org.tmt.aps.peas.camera.model.Instrument;
+import org.tmt.aps.peas.instrument.model.Ccd;
+import org.tmt.aps.peas.instrument.model.Instrument;
 
 @Named
 @SessionScoped

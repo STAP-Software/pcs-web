@@ -15,7 +15,7 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import org.tmt.aps.peas.camera.model.Instrument;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity

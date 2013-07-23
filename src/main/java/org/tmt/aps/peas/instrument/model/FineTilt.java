@@ -1,10 +1,10 @@
-package org.tmt.aps.peas.camera.model;
+package org.tmt.aps.peas.instrument.model;
 
-public class CoarseTilt {
+public class FineTilt {
 	private float x;
 	private float y;
 
-	CoarseTilt(float x, float y) {
+	FineTilt(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
