@@ -12,6 +12,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "Ccd")
@@ -27,20 +28,22 @@ public class Ccd {
 	private Long ccdId;
 	private String ccdName;	
 	private String ccdDescription;	
-	private String hotPixelsEncoded;  // encoded as x1,y1,x2,y2, etc
+	private String hotPixelListEncoded;  // encoded as x1,y1,x2,y2, etc
 	
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
 	private Instrument instrument;
 	
+	@Transient
 	private int state;
+	@Transient
 	private float temperature;
 
 	
-	public Ccd(String ccdName, String ccdDescription, String hotPixelsEncoded, Instrument instrument) {
+	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, Instrument instrument) {
 		this.ccdName = ccdName;
 		this.ccdDescription = ccdDescription;
-		this.hotPixelsEncoded = hotPixelsEncoded;
+		this.hotPixelListEncoded = hotPixelListEncoded;
 		this.instrument = instrument;
 	}
 	
@@ -74,13 +77,15 @@ public class Ccd {
 		this.ccdDescription = ccdDescription;
 	}
 
-	public String getHotPixelsEncoded() {
-		return hotPixelsEncoded;
+	public String getHotPixelListEncoded() {
+		return hotPixelListEncoded;
 	}
 
-	public void setHotPixelsEncoded(String hotPixelsEncoded) {
-		this.hotPixelsEncoded = hotPixelsEncoded;
+
+	public void setHotPixelListEncoded(String hotPixelListEncoded) {
+		this.hotPixelListEncoded = hotPixelListEncoded;
 	}
+
 
 	public Instrument getInstrument() {
 		return instrument;
@@ -120,7 +125,7 @@ public class Ccd {
 
 	public List<Point> getHotPixelList() {
 		// list is encoded as x1,y1,x2,y2, etc
-		List<String> items = Arrays.asList(hotPixelsEncoded.split("\\s*,\\s*"));
+		List<String> items = Arrays.asList(hotPixelListEncoded.split("\\s*,\\s*"));
 		List<Point> hotPixelList = new ArrayList<Point>();
 		for (int i=0; i<items.size()/2; i++) {
 			Point point = new Point(new Integer(items.get(i*2)), new Integer(items.get((i*2)+1)));

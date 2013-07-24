@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="filterWheelForm" style="margin:30px">
+
+			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Filter Wheel Configuration" />
+				</f:facet>
+
+				<h:outputLabel value="Filter #1" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter1}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Filter #2" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter2}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Filter #3" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter3}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Filter #4" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter4}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Filter #5" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter5}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Filter #6" />
+				<p:selectOneMenu value="#{filterController.filterWheel.filter6}" converter="#{filterConverter}">
+					<f:selectItems value="#{filterController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+				</p:selectOneMenu>
+
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+						action="#{filterController.doSaveFilterWheel}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+						action="#{filterController.doCancelSaveFilterWheel}" /> 
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

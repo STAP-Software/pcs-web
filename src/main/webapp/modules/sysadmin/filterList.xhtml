@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="filterListForm">
+
+			<p:spacer width="100" height="10" />
+			<div>
+				<p:commandLink value="" action="#{filterController.doNewFilter}" ajax="true" update="@form :growl" styleClass="ui-icon ui-icon-plus"
+					style="float: left" />
+				<p:commandLink value="Add a New Filter" action="#{filterController.doNewFilter}" ajax="true" update="@form :growl"
+					style="float: left" />
+			</div>
+			<br />
+
+			<div style="margin: 30px;">
+				<p:dataTable id="sessionTable" var="filter" value="#{filterController.filterList}">
+					<f:facet name="header">
+					PCS Filters 
+				</f:facet>
+
+					<p:column>
+						<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{filterController.doViewFilter}">
+							<f:setPropertyActionListener target="#{filterController.filter}" value="#{filter}" />
+
+						</p:commandLink>
+					</p:column>
+					<p:column headerText="Filter Name">
+						<h:outputText value="#{filter.filterName}" />
+					</p:column>
+					<p:column headerText="Current Wheel Position">
+						<h:outputText value="#{filter.wheelPosition}" />
+					</p:column>
+
+				</p:dataTable>
+
+				<br />
+			</div>
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

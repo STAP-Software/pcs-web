@@ -1,17 +1,25 @@
 package org.tmt.aps.peas.instrument.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 @Entity
 @Table(name = "PupilMask")
+@NamedQueries({
+	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o" )
+})
 public class PupilMask {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long pupilMaskId;
 
 	private String maskName;
@@ -103,5 +111,22 @@ public class PupilMask {
 	public void setPupilWheel(PupilWheel pupilWheel) {
 		this.pupilWheel = pupilWheel;
 	}
+	
+	public boolean isNewRecord() {
+		return pupilMaskId == null;
+	}
 
+
+	public boolean equals(Object obj) {
+		if (obj instanceof PupilMask) {
+			PupilMask candidate = (PupilMask)obj;
+			if (candidate.getPupilMaskId().longValue() == this.getPupilMaskId().longValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+	
+	
 }

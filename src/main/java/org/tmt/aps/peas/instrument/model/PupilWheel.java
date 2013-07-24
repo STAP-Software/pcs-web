@@ -29,6 +29,19 @@ public class PupilWheel {
 	@Transient
 	private PupilMask selectedPupilMask;
 
+	@Transient
+	private PupilMask pupilMask1;
+	@Transient
+	private PupilMask pupilMask2;
+	@Transient
+	private PupilMask pupilMask3;
+	@Transient
+	private PupilMask pupilMask4;
+	@Transient
+	private PupilMask pupilMask5;
+	@Transient
+	private PupilMask pupilMask6;
+	
 	public Long getPupilWheelId() {
 		return pupilWheelId;
 	}
@@ -51,6 +64,62 @@ public class PupilWheel {
 
 	public void setSelectedPupilMask(PupilMask selectedPupilMask) {
 		this.selectedPupilMask = selectedPupilMask;
+	}
+
+	public List<PupilMask> getPupilMaskList() {
+		return pupilMaskList;
+	}
+
+	public void setPupilMaskList(List<PupilMask> pupilMaskList) {
+		this.pupilMaskList = pupilMaskList;
+	}
+
+	public PupilMask getPupilMask1() {
+		return pupilMask1;
+	}
+
+	public void setPupilMask1(PupilMask pupilMask1) {
+		this.pupilMask1 = pupilMask1;
+	}
+
+	public PupilMask getPupilMask2() {
+		return pupilMask2;
+	}
+
+	public void setPupilMask2(PupilMask pupilMask2) {
+		this.pupilMask2 = pupilMask2;
+	}
+
+	public PupilMask getPupilMask3() {
+		return pupilMask3;
+	}
+
+	public void setPupilMask3(PupilMask pupilMask3) {
+		this.pupilMask3 = pupilMask3;
+	}
+
+	public PupilMask getPupilMask4() {
+		return pupilMask4;
+	}
+
+	public void setPupilMask4(PupilMask pupilMask4) {
+		this.pupilMask4 = pupilMask4;
+	}
+
+	public PupilMask getPupilMask5() {
+		return pupilMask5;
+	}
+
+	public void setPupilMask5(PupilMask pupilMask5) {
+		this.pupilMask5 = pupilMask5;
+	}
+
+	public PupilMask getPupilMask6() {
+		return pupilMask6;
+	}
+
+	public void setPupilMask6(PupilMask pupilMask6) {
+		this.pupilMask6 = pupilMask6;
 	}
 
 	

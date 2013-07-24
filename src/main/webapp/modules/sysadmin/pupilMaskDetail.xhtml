@@ -1,0 +1,49 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="pupilMaskForm" style="margin:30px">
+
+			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Pupil Mask Information" />
+				</f:facet>
+
+				<h:outputLabel value="Pupil Mask Name" />
+				<p:inputText value="#{pupilMaskController.pupilMask.maskName}" />
+
+				<h:outputLabel value="Number of Spots" />
+				<p:inputText value="#{pupilMaskController.pupilMask.numSpots}" />
+
+				<h:outputLabel value="Mask Rotation" />
+				<p:inputText value="#{pupilMaskController.pupilMask.maskRotation}" />
+
+				<h:outputLabel value="Rad. per Pixel" />
+				<p:inputText value="#{pupilMaskController.pupilMask.radPerPixel}" />
+
+				<h:outputLabel value="Sec. per Pixel" />
+				<p:inputText value="#{pupilMaskController.pupilMask.secPerPixel}" />
+
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+						action="#{pupilMaskController.doSavePupilMask}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+						action="#{pupilMaskController.doCancelSavePupilMask}" />
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

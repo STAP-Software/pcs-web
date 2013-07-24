@@ -1,0 +1,64 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="pupilMaskWheelForm" style="margin:30px">
+
+			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Pupil Wheel Configuration" />
+				</f:facet>
+
+				<h:outputLabel value="Pupil Mask #1" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask1}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Pupil Mask #2" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask2}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Pupil Mask #3" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask3}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Pupil Mask #4" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask4}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Pupil Mask #5" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask5}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+				<h:outputLabel value="Pupil Mask #6" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilWheel.pupilMask6}" converter="#{pupilMaskConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+				</p:selectOneMenu>
+
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+						action="#{pupilMaskController.doSavePupilWheel}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+						action="#{pupilMaskController.doCancelSavePupilWheel}" /> 
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

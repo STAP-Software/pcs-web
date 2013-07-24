@@ -1,16 +1,24 @@
 package org.tmt.aps.peas.instrument.model;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "Filter")
+@NamedQueries({
+	@NamedQuery(name = "findAllFilters", query = "SELECT o from Filter o" )
+})
 public class Filter {
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long filterId;
 
 	private String filterName;
@@ -95,4 +103,18 @@ public class Filter {
 		this.filterWheel = filterWheel;
 	}
 
+	
+	public boolean isNewRecord() {
+		return filterId == null;
+	}
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof Filter) {
+			Filter candidate = (Filter)obj;
+			if (candidate.getFilterId().longValue() == this.getFilterId().longValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 }

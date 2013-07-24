@@ -87,7 +87,14 @@
 						<p:menuitem value="Global Config" type="button" onclick="globalConfigDlg.show();" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
-						<p:menuitem value="CCD Configuration" action="#{ccdDefController.doViewCcdList}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:submenu label="Instrument Config"  disabled="#{sessionController.procedureExecuting}">
+							<p:menuitem value="Manage CCDs" action="#{ccdDefController.doViewCcdList}" />
+							<p:menuitem value="Manage Filters" action="#{filterController.doViewFilterList}" />
+							<p:menuitem value="Manage Filter Wheel" action="#{filterController.doViewFilterWheel}" />
+							<p:menuitem value="Manage Pupil Masks" action="#{pupilMaskController.doViewPupilMaskList}" />
+							<p:menuitem value="Manage Pupil Wheel" action="#{pupilMaskController.doViewPupilWheel}" />
+							<p:menuitem value="Manage Reference Beams" action="#{cameraDefController.doViewReferenceBeams}" />
+						</p:submenu>
 					</p:submenu>
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{sessionController.inPassiveTilt}" >
