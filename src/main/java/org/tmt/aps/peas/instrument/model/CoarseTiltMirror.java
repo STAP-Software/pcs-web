@@ -1,10 +1,10 @@
 package org.tmt.aps.peas.instrument.model;
 
-public class CoarseTilt {
+public class CoarseTiltMirror {
 	private float x;
 	private float y;
 
-	CoarseTilt(float x, float y) {
+	CoarseTiltMirror(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}

@@ -25,6 +25,8 @@ public class PupilMask {
 	private String maskName;
 
 	private int numSpots;
+	
+	private float spotDiameter;
 
 	private float maskRotation;
 
@@ -111,6 +113,16 @@ public class PupilMask {
 	public void setPupilWheel(PupilWheel pupilWheel) {
 		this.pupilWheel = pupilWheel;
 	}
+	
+	public float getSpotDiameter() {
+		return spotDiameter;
+	}
+
+	public void setSpotDiameter(float spotDiameter) {
+		this.spotDiameter = spotDiameter;
+	}
+
+	
 	
 	public boolean isNewRecord() {
 		return pupilMaskId == null;

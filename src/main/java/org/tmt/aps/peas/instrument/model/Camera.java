@@ -33,9 +33,9 @@ public class Camera {
 	@Transient
 	private PreflashLEDs preflashLEDs;
 	@Transient
-	private CoarseTilt coarseTilt;
+	private CoarseTiltMirror coarseTilt;
 	@Transient
-	private FineTilt fineTilt;
+	private FineTiltMirror fineTilt;
 	@Transient
 	private TwoPosMechanism twoPosMechanism;
 	@Transient
@@ -70,8 +70,8 @@ public class Camera {
 		this.currentRefBeam = currentRefBeam;
 		this.shutter = new Shutter(shutterState, shutterExposureTime);
 		this.preflashLEDs = new PreflashLEDs(preflashLEDState, preflashLEDFlashDuration);
-		this.coarseTilt = new CoarseTilt(coarseTiltX, coarseTiltY);
-		this.fineTilt = new FineTilt(fineTiltX, fineTiltY);
+		this.coarseTilt = new CoarseTiltMirror(coarseTiltX, coarseTiltY);
+		this.fineTilt = new FineTiltMirror(fineTiltX, fineTiltY);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
@@ -101,19 +101,19 @@ public class Camera {
 		this.preflashLEDs = preflashLEDs;
 	}
 
-	public CoarseTilt getCoarseTilt() {
+	public CoarseTiltMirror getCoarseTilt() {
 		return coarseTilt;
 	}
 
-	public void setCoarseTilt(CoarseTilt coarseTilt) {
+	public void setCoarseTilt(CoarseTiltMirror coarseTilt) {
 		this.coarseTilt = coarseTilt;
 	}
 
-	public FineTilt getFineTilt() {
+	public FineTiltMirror getFineTilt() {
 		return fineTilt;
 	}
 
-	public void setFineTilt(FineTilt fineTilt) {
+	public void setFineTilt(FineTiltMirror fineTilt) {
 		this.fineTilt = fineTilt;
 	}
 

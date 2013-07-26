@@ -16,6 +16,7 @@ public class ReferenceBeam {
 	private int refBeamNum;
 
 	private float wavelength;
+	private int segmentNumAlignment;  // segment number offset ref beams are aligned to 0 = no offset
 
 	@ManyToOne
 	@JoinColumn (name="cameraId")
@@ -54,5 +55,17 @@ public class ReferenceBeam {
 	public void setCamera(Camera camera) {
 		this.camera = camera;
 	}
+
+	public int getSegmentNumAlignment() {
+		return segmentNumAlignment;
+	}
+
+	public void setSegmentNumAlignment(int segmentNumAlignment) {
+		this.segmentNumAlignment = segmentNumAlignment;
+	}
+
+
+
+
 
 }
