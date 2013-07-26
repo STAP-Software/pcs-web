@@ -26,9 +26,9 @@
 
 						<f:facet name="footer">
 							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
-								action="#{ccdDefController.doSaveCcdDef}" />
+								action="#{ccdDefController.doSaveCcd}" />
 							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
-								action="#{ccdDefController.doCancelSaveCcdDef}" />
+								action="#{ccdDefController.doCancelSaveCcd}" />
 						</f:facet>
 					</p:panelGrid>
 
@@ -37,14 +37,6 @@
 				<p:tab title="Hot Pixels">
 
 					<p:spacer width="100" height="10" />
-					<div>
-						<p:commandLink value="" action="#{ccdDefController.doNewHotPixel}" ajax="true" update="@form :growl" styleClass="ui-icon ui-icon-plus"
-							style="float: left" />
-						<p:commandLink value="Add a New Hot Pixel" action="#{ccdDefController.doNewHotPixel}" ajax="true" update="@form :growl"
-							style="float: left" />
-					</div>
-					<br />
-					<br />
 
 					<p:dataTable id="ccdBadPixelTable" var="hotPixel" value="#{ccdDefController.ccd.hotPixelList}" style="width: 300px">
 
@@ -57,11 +49,21 @@
 						<p:column headerText="Delete">
 							<p:commandLink action="#{ccdDefController.doDeleteHotPixel}" title="delete" styleClass="ui-icon ui-icon-closethick"
 								update="@form :growl">
-								<f:setPropertyActionListener target="ccdDefController.hotPixel" value="hotPixel" />
+								<f:setPropertyActionListener target="#{ccdDefController.hotPixel}" value="#{hotPixel}" />
 							</p:commandLink>
 						</p:column>
 
 					</p:dataTable>
+					<br/>
+					<h:panelGroup>
+						<h:outputText value="x: &#160;"/>
+						<p:inputText id="xHot" value="#{ccdDefController.xHotPixel}" size="2"/>
+						<h:outputText value="&#160;&#160;y: &#160;"/>
+						<p:inputText id="yHot" value="#{ccdDefController.yHotPixel}" size="2"/>
+						<p:spacer width="10px"/>
+						<p:commandButton value="Add Hot Pixel" update="@form :growl"  
+             				ajax="true" action="#{ccdDefController.doAddHotPixel}" /> 
+					</h:panelGroup>
 				</p:tab>
 			</p:tabView>
 

@@ -3,9 +3,12 @@ package org.tmt.aps.peas.instrument.model;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -17,7 +20,8 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where ccdId = :ccdId" )
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where ccdId = :ccdId" ),
+	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o LEFT OUTER JOIN o.instrument" )
 })
 public class Ccd {
 
@@ -25,6 +29,7 @@ public class Ccd {
 	public static final int POWER_STATE_OFF = 2;
 
 	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long ccdId;
 	private String ccdName;	
 	private String ccdDescription;	
@@ -51,6 +56,10 @@ public class Ccd {
 	public Ccd(int state, float temperature) {
 		this.state = state;
 		this.temperature = temperature;
+	}
+	
+	public Ccd() {
+		
 	}
 
 	public Long getCcdId() {
@@ -124,6 +133,11 @@ public class Ccd {
 	}
 
 	public List<Point> getHotPixelList() {
+		
+		if (hotPixelListEncoded == null || hotPixelListEncoded.trim().length() == 0) {
+			return null;
+		}
+		
 		// list is encoded as x1,y1,x2,y2, etc
 		List<String> items = Arrays.asList(hotPixelListEncoded.split("\\s*,\\s*"));
 		List<Point> hotPixelList = new ArrayList<Point>();
@@ -132,5 +146,46 @@ public class Ccd {
 			hotPixelList.add(point);
 		}
 		return hotPixelList;
+	}
+	
+	public String encodeHotPixelList(List<Point> hotPixelList) {
+		
+		StringBuffer buf = new StringBuffer();
+		for (Point point : hotPixelList) {
+			buf.append(point.x + "," + point.y + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+	}
+	
+	public void removeHotPixel(Point hotPixel) {
+		List<Point> hotPixelList = getHotPixelList();
+		
+		for (Iterator<Point> it = hotPixelList.iterator(); it.hasNext(); ) {
+			Point candidate = it.next();
+			if (candidate.x == hotPixel.x && candidate.y == hotPixel.y) {
+				it.remove();
+				break;
+			}
+		}
+		hotPixelListEncoded = encodeHotPixelList(hotPixelList);
+	}
+	
+	
+	
+	public void addHotPixel(Point hotPixel) {
+		if (hotPixelListEncoded == null) {
+			hotPixelListEncoded = "";
+		}
+		StringBuffer buf = new StringBuffer(hotPixelListEncoded);
+		if (buf.length() > 0) {
+			buf.append(",");
+		}
+		buf.append(hotPixel.x + ",");
+		buf.append(hotPixel.y);
+		
+		hotPixelListEncoded = buf.toString();
 	}
 }
