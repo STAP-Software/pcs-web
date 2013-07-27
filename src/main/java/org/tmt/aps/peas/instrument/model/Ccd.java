@@ -1,9 +1,6 @@
 package org.tmt.aps.peas.instrument.model;
 
 import java.awt.Point;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -16,6 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.tmt.aps.peas.common.PointListEncoder;
 
 @Entity
 @Table(name = "Ccd")
@@ -134,58 +133,23 @@ public class Ccd {
 
 	public List<Point> getHotPixelList() {
 		
-		if (hotPixelListEncoded == null || hotPixelListEncoded.trim().length() == 0) {
-			return null;
-		}
-		
-		// list is encoded as x1,y1,x2,y2, etc
-		List<String> items = Arrays.asList(hotPixelListEncoded.split("\\s*,\\s*"));
-		List<Point> hotPixelList = new ArrayList<Point>();
-		for (int i=0; i<items.size()/2; i++) {
-			Point point = new Point(new Integer(items.get(i*2)), new Integer(items.get((i*2)+1)));
-			hotPixelList.add(point);
-		}
-		return hotPixelList;
+		return PointListEncoder.decodeList(hotPixelListEncoded);
 	}
 	
-	public String encodeHotPixelList(List<Point> hotPixelList) {
-		
-		StringBuffer buf = new StringBuffer();
-		for (Point point : hotPixelList) {
-			buf.append(point.x + "," + point.y + ",");
-		}
-		if (buf.length() > 0) {
-			buf.deleteCharAt(buf.length()-1);
-		}
-		return buf.toString();
-	}
 	
 	public void removeHotPixel(Point hotPixel) {
-		List<Point> hotPixelList = getHotPixelList();
 		
-		for (Iterator<Point> it = hotPixelList.iterator(); it.hasNext(); ) {
-			Point candidate = it.next();
-			if (candidate.x == hotPixel.x && candidate.y == hotPixel.y) {
-				it.remove();
-				break;
-			}
-		}
-		hotPixelListEncoded = encodeHotPixelList(hotPixelList);
+		List<Point> hotPixelList = PointListEncoder.removePoint(getHotPixelList(), hotPixel);		
+		hotPixelListEncoded = PointListEncoder.encodeList(hotPixelList);
 	}
 	
 	
 	
 	public void addHotPixel(Point hotPixel) {
-		if (hotPixelListEncoded == null) {
-			hotPixelListEncoded = "";
-		}
-		StringBuffer buf = new StringBuffer(hotPixelListEncoded);
-		if (buf.length() > 0) {
-			buf.append(",");
-		}
-		buf.append(hotPixel.x + ",");
-		buf.append(hotPixel.y);
 		
-		hotPixelListEncoded = buf.toString();
+		List<Point> hotPixelList = getHotPixelList();
+		hotPixelList.add(hotPixel);
+		
+		hotPixelListEncoded = PointListEncoder.encodeList(hotPixelList);
 	}
 }

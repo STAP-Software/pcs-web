@@ -19,8 +19,10 @@
 				<h:outputLabel value="Pupil Mask Name" />
 				<p:inputText value="#{pupilMaskController.pupilMask.maskName}" />
 
-				<h:outputLabel value="Number of Spots" />
-				<p:inputText value="#{pupilMaskController.pupilMask.numSpots}" />
+				<h:outputLabel value="Pupil Mask Type" />
+				<p:selectOneMenu value="#{pupilMaskController.pupilMask.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
+					<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
+				</p:selectOneMenu>
 
 				<h:outputLabel value="Mask Rotation" />
 				<p:inputText value="#{pupilMaskController.pupilMask.maskRotation}" />

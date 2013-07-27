@@ -9,12 +9,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 @Entity
 @Table(name = "PupilMask")
 @NamedQueries({
-	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o" )
+	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType" )
 })
 public class PupilMask {
 
@@ -24,13 +23,11 @@ public class PupilMask {
 
 	private String maskName;
 
-	private int numSpots;
-	
-	private float spotDiameter;
-
 	private float maskRotation;
 
 	private int wheelPosition;
+
+	private float spotDiameter;
 
 	private float radPerPixel;
 	private float secPerPixel;
@@ -39,6 +36,10 @@ public class PupilMask {
 	@ManyToOne
 	@JoinColumn (name="pupilWheelId")
 	private PupilWheel pupilWheel;
+	
+	@ManyToOne
+	@JoinColumn (name="pupilMaskTypeId")
+	private PupilMaskType pupilMaskType;
 	
 	
 
@@ -58,14 +59,6 @@ public class PupilMask {
 		this.maskName = maskName;
 	}
 
-	public int getNumSpots() {
-		return numSpots;
-	}
-
-	public void setNumSpots(int numSpots) {
-		this.numSpots = numSpots;
-	}
-
 	public float getMaskRotation() {
 		return maskRotation;
 	}
@@ -80,6 +73,30 @@ public class PupilMask {
 
 	public void setWheelPosition(int wheelPosition) {
 		this.wheelPosition = wheelPosition;
+	}
+
+	public PupilWheel getPupilWheel() {
+		return pupilWheel;
+	}
+
+	public void setPupilWheel(PupilWheel pupilWheel) {
+		this.pupilWheel = pupilWheel;
+	}
+
+	public PupilMaskType getPupilMaskType() {
+		return pupilMaskType;
+	}
+
+	public void setPupilMaskType(PupilMaskType pupilMaskType) {
+		this.pupilMaskType = pupilMaskType;
+	}
+
+	public float getSpotDiameter() {
+		return spotDiameter;
+	}
+
+	public void setSpotDiameter(float spotDiameter) {
+		this.spotDiameter = spotDiameter;
 	}
 
 	public float getRadPerPixel() {
@@ -104,22 +121,6 @@ public class PupilMask {
 
 	public void setPcsFocusToAcs(float pcsFocusToAcs) {
 		this.pcsFocusToAcs = pcsFocusToAcs;
-	}
-
-	public PupilWheel getPupilWheel() {
-		return pupilWheel;
-	}
-
-	public void setPupilWheel(PupilWheel pupilWheel) {
-		this.pupilWheel = pupilWheel;
-	}
-	
-	public float getSpotDiameter() {
-		return spotDiameter;
-	}
-
-	public void setSpotDiameter(float spotDiameter) {
-		this.spotDiameter = spotDiameter;
 	}
 
 	

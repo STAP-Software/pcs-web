@@ -10,8 +10,8 @@ import javax.persistence.TypedQuery;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
-import org.tmt.aps.peas.session.model.Session;
 
 @Stateless
 public class CameraDefMgmt {
@@ -66,6 +66,11 @@ public class CameraDefMgmt {
 		
 	}
 
+	public List<PupilMaskType> findAllPupilMaskTypes() {
+		TypedQuery<PupilMaskType> query = em.createNamedQuery("findAllPupilMaskTypes", PupilMaskType.class);
+
+		return query.getResultList();
+	}
 
 
 	

@@ -1,0 +1,63 @@
+package org.tmt.aps.peas.instrument.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "PupilMaskType")
+@NamedQueries({ @NamedQuery(name = "findAllPupilMaskTypes", query = "SELECT o from PupilMaskType o") })
+public class PupilMaskType {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long pupilMaskTypeId;
+
+	private int numSpots;
+	private String pupilMaskTypeName;
+
+	public Long getPupilMaskTypeId() {
+		return pupilMaskTypeId;
+	}
+
+	public void setPupilMaskTypeId(Long pupilMaskTypeId) {
+		this.pupilMaskTypeId = pupilMaskTypeId;
+	}
+
+	public int getNumSpots() {
+		return numSpots;
+	}
+
+	public void setNumSpots(int numSpots) {
+		this.numSpots = numSpots;
+	}
+
+	public String getPupilMaskTypeName() {
+		return pupilMaskTypeName;
+	}
+
+	public void setPupilMaskTypeName(String pupilMaskTypeName) {
+		this.pupilMaskTypeName = pupilMaskTypeName;
+	}
+
+	
+	
+	public boolean isNewRecord() {
+		return pupilMaskTypeId == null;
+	}
+
+	public boolean equals(Object obj) {
+		if (obj instanceof PupilMaskType) {
+			PupilMaskType candidate = (PupilMaskType) obj;
+			if (candidate.getPupilMaskTypeId().longValue() == this.getPupilMaskTypeId().longValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}

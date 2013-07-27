@@ -9,6 +9,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Named
@@ -20,6 +21,7 @@ public class CameraDefController implements Serializable {
 
 	private List<ReferenceBeam> attachedReferenceBeamList;
 	private List<ReferenceBeam> availableReferenceBeamList;
+	
 
 	@PostConstruct
 	private void init() {

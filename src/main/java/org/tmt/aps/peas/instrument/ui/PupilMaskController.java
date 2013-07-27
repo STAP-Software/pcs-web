@@ -12,6 +12,7 @@ import javax.inject.Named;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
 
 @Named
@@ -27,13 +28,14 @@ public class PupilMaskController implements Serializable {
 	private List<PupilMask> pupilMaskList;
 	private PupilMask pupilMask;
 	private PupilWheel pupilWheel;
+	private List<PupilMaskType> pupilMaskTypeList;
 
 	@PostConstruct
 	private void init() {
 		
 		refreshPupilMaskList();
 		refreshPupilWheel();
-
+		pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
 	}
 
 	public List<PupilMask> getPupilMaskList() {
@@ -58,6 +60,10 @@ public class PupilMaskController implements Serializable {
 
 	public void setPupilWheel(PupilWheel pupilWheel) {
 		this.pupilWheel = pupilWheel;
+	}
+
+	public List<PupilMaskType> getPupilMaskTypeList() {
+		return pupilMaskTypeList;
 	}
 
 	private void refreshPupilMaskList() {
