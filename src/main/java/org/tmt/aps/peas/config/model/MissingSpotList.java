@@ -13,31 +13,50 @@ import javax.persistence.Table;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
-@Table(name = "FandISpotList")
+@Table(name = "MissingSpotList")
 @NamedQueries({
-	@NamedQuery(name = "findAllFandISpotLists", query = "SELECT o from FandISpotList o" )
+	@NamedQuery(name = "findSpotListByTypeAndMask", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p "
+			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId" )
 })
-public class FandISpotList {
+public class MissingSpotList {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long spotListId;
+	private Long MissingSpotListId;
+	private int spotListType;
 	private Integer ufsSegment;	
 	private Integer sufsGroup;	
-	private String spotListEncoded;  
+	private String missingSpotListEncoded;  
 	
 	@ManyToOne
-	@JoinColumn (name="pupilMaskId")
+	@JoinColumn (name="pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
 
 	
 	
-	public Long getSpotListId() {
-		return spotListId;
+
+	public Long getMissingSpotListId() {
+		return MissingSpotListId;
 	}
 
-	public void setSpotListId(Long spotListId) {
-		this.spotListId = spotListId;
+	public void setMissingSpotListId(Long missingSpotListId) {
+		MissingSpotListId = missingSpotListId;
+	}
+
+	public String getMissingSpotListEncoded() {
+		return missingSpotListEncoded;
+	}
+
+	public void setMissingSpotListEncoded(String missingSpotListEncoded) {
+		this.missingSpotListEncoded = missingSpotListEncoded;
+	}
+
+	public int getSpotListType() {
+		return spotListType;
+	}
+
+	public void setSpotListType(int spotListType) {
+		this.spotListType = spotListType;
 	}
 
 	public Integer getUfsSegment() {
@@ -54,14 +73,6 @@ public class FandISpotList {
 
 	public void setSufsGroup(Integer sufsGroup) {
 		this.sufsGroup = sufsGroup;
-	}
-
-	public String getSpotListEncoded() {
-		return spotListEncoded;
-	}
-
-	public void setSpotListEncoded(String spotListEncoded) {
-		this.spotListEncoded = spotListEncoded;
 	}
 
 	public PupilMaskType getPupilMaskType() {

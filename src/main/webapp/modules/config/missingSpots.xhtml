@@ -17,16 +17,21 @@
 
 			<p:panelGrid columns="1" style="margin:10px;padding:0px" styleClass="pcsForm">
 
-				<p:panelGrid columns="4" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
+				<p:panelGrid columns="6" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
+
+					<h:outputLabel value="Spot List Type" />
+					<p:selectOneMenu id="options" value="#{missingSpotsController.spotListType}" style="top:2px">
+						<f:selectItem itemLabel="Find and Identify" itemValue="1" />
+						<f:selectItem itemLabel="Analysis" itemValue="2" />
+					    <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}"
+					    	oncomplete="runDrawMissingSpots();" />
+					</p:selectOneMenu>
 
 					<h:outputLabel value="Mask Type" />
 					<h:panelGroup id="maskPanel">
-						<p:selectOneMenu id="options" value="#{ccdDiagnosticController.ccdCommand}" style="top:2px">
-							<f:selectItem itemLabel="160" itemValue="1" />
-							<f:selectItem itemLabel="508" itemValue="2" />
-							<f:selectItem itemLabel="UFS" itemValue="3" />
-							<f:selectItem itemLabel="SUFS" itemValue="4" />
-							<p:ajax update="maskPanel" />
+					    <p:selectOneMenu value="#{missingSpotsController.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
+							<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
+							<p:ajax update="maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" />
 						</p:selectOneMenu>
 						<h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;" />
 						<h:outputText value="Utility Word (Decimal) &#160;&#160;" rendered="#{ccdDiagnosticController.showUtilityWord}" />
@@ -35,14 +40,15 @@
 					</h:panelGroup>
 
 					<h:outputLabel value="Spot Selection" />
-					<p:selectCheckboxMenu value="#{missingSpotsController.selectedSpots}" label="Spots" filter="true" filterText="Filter"
+					<p:selectCheckboxMenu id="spotSelector" value="#{missingSpotsController.selectedSpots}" label="Spots" filter="true" filterText="Filter"
 						filterMatchMode="contains" panelStyle="width:190px">
 						<f:selectItems value="#{missingSpotsController.spots}" />
+						<p:ajax update="centroidDisplay" />
 					</p:selectCheckboxMenu>
 
 				</p:panelGrid>
 				
-				<p:panelGrid columns="1" style="margin:0px;" styleClass="pcsForm">
+				<p:panelGrid id="centroidDisplay" columns="1" style="margin:0px;" styleClass="pcsForm">
 					<ui:include src="centroidNumbering.xhtml" />
 					<f:facet name="footer">
 						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl" />

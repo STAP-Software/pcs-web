@@ -13,6 +13,12 @@ import javax.persistence.Table;
 @NamedQueries({ @NamedQuery(name = "findAllPupilMaskTypes", query = "SELECT o from PupilMaskType o") })
 public class PupilMaskType {
 
+	public static final Long PUPIL_MASK_TYPE_ID_36 = new Long(1);
+	public static final Long PUPIL_MASK_TYPE_ID_160 = new Long(2);
+	public static final Long PUPIL_MASK_TYPE_ID_508 = new Long(3);
+	public static final Long PUPIL_MASK_TYPE_ID_UFS = new Long(4);
+	public static final Long PUPIL_MASK_TYPE_ID_SUFS = new Long(5);
+	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long pupilMaskTypeId;

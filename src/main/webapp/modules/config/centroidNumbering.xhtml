@@ -7,6 +7,12 @@ $(function() {
 	$('#centroidDrawDiv').svg({onLoad: drawMissingSpots});
 });
 
+function runDrawMissingSpots(){
+	$('#centroidDrawDiv').svg();
+	var svg = $('#centroidDrawDiv').svg('get');
+	drawMissingSpots(svg);
+}
+
 function drawMissingSpots(svg) {
 
 	var numbersField = document.getElementById('missingSpotsForm:centroidNbrs').value;
