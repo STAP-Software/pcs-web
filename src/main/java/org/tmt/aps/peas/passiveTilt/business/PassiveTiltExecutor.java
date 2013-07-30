@@ -1,6 +1,6 @@
 package org.tmt.aps.peas.passiveTilt.business;
 
-import java.awt.Point;
+
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -12,6 +12,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.fortran.FortranProxy;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;

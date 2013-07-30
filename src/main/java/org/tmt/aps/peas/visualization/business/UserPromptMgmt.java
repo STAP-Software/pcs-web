@@ -1,15 +1,12 @@
 package org.tmt.aps.peas.visualization.business;
 
-import java.awt.Point;
 import java.io.Serializable;
-import java.util.List;
 
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.tmt.aps.peas.visualization.model.UserPrompt;
-import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Singleton
 @Lock(LockType.READ)

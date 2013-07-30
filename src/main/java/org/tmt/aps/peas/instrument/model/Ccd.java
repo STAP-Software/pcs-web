@@ -1,6 +1,6 @@
 package org.tmt.aps.peas.instrument.model;
 
-import java.awt.Point;
+
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 
 @Entity

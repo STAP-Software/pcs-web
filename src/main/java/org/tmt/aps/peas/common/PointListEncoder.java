@@ -1,6 +1,6 @@
 package org.tmt.aps.peas.common;
 
-import java.awt.Point;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
@@ -13,7 +13,7 @@ public class PointListEncoder {
 	public static List<Point> decodeList(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
-			return null;
+			return new ArrayList<Point>();
 		}
 
 		// list is encoded as x1,y1,x2,y2, etc

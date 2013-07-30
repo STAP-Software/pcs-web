@@ -1,10 +1,11 @@
 package org.tmt.aps.peas.frame.business;
 
-import java.awt.Point;
+
 import java.util.List;
 
 import javax.ejb.Stateless;
 
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 

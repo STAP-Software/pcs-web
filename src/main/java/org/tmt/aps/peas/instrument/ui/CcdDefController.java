@@ -1,8 +1,7 @@
 package org.tmt.aps.peas.instrument.ui;
 
-import java.awt.Point;
+
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -12,9 +11,9 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.model.Ccd;
-import org.tmt.aps.peas.instrument.model.Instrument;
 
 @Named
 @SessionScoped
