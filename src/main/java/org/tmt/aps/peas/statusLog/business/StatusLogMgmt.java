@@ -1,29 +1,40 @@
 package org.tmt.aps.peas.statusLog.business;
 
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import java.util.List;
+
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
+import org.tmt.aps.peas.statusLog.model.StatusLogEntry;
 
 
-
-@Singleton
-@Lock(LockType.READ)
+@Stateless
 public class StatusLogMgmt {
 
-	ProcedureStatusLog procedureStatusLog;
+	@PersistenceContext
+	private EntityManager em;
 	
-	public ProcedureStatusLog getProcedureStatusLog() {
-		return procedureStatusLog;
+	public ProcedureStatusLog getProcedureStatusLog(Long procedureId) {
+		
+		TypedQuery<StatusLogEntry> query = em.createNamedQuery("findEntriesByProcedureId", StatusLogEntry.class);
+		query.setParameter("procedureId", procedureId);
+
+		List<StatusLogEntry> statusList = query.getResultList();
+		
+		ProcedureStatusLog statusLog = new ProcedureStatusLog();
+		statusLog.setLogEntryList(statusList);
+		return statusLog;
 	}
 	
-	public void initLog() {
-		procedureStatusLog = new ProcedureStatusLog();
-	}
-	
-	public void log(String entry) {
-		procedureStatusLog.addEntry(entry);
+	public void saveStatusLog(ProcedureStatusLog statusLog, Long procedureId) {
+		for (StatusLogEntry logEntry : statusLog.getLogEntryList()) {
+			logEntry.setProcedureId(procedureId);
+			em.persist(logEntry);
+		}
+		
 	}
 	
 }

@@ -215,6 +215,8 @@ public class PassiveTiltController implements Serializable {
 
 	public void doExecuteProcedure(ActionEvent actionEvent) {
 
+		System.out.println("doExecuteProcedure:: starting");
+		
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
 

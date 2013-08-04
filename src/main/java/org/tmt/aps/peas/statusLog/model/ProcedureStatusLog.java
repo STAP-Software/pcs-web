@@ -6,21 +6,21 @@ import java.util.List;
 
 public class ProcedureStatusLog {
 
-	List<StatusEntry> logEntryList;
+	List<StatusLogEntry> logEntryList;
 
-	public List<StatusEntry> getLogEntryList() {
+	public List<StatusLogEntry> getLogEntryList() {
 		return logEntryList;
 	}
 
-	public void setLogEntryList(List<StatusEntry> logEntryList) {
+	public void setLogEntryList(List<StatusLogEntry> logEntryList) {
 		this.logEntryList = logEntryList;
 	}
 	
 	public void addEntry(String entry) {
 		if (logEntryList == null) {
-			logEntryList = new ArrayList<StatusEntry>();
+			logEntryList = new ArrayList<StatusLogEntry>();
 		}
-		logEntryList.add(new StatusEntry(entry, new Date()));
+		logEntryList.add(new StatusLogEntry(entry, new Date()));
 	}
 	
 

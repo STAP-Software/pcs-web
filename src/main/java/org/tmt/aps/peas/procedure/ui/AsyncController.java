@@ -10,6 +10,7 @@ import javax.inject.Named;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.session.ui.SessionController;
+import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
@@ -25,6 +26,8 @@ public class AsyncController {
 	ProcedureExecutionState procedureExecutionMgmt;
 	@Inject
 	SessionController sessionController;
+	@Inject
+	StatusLogController statusLogController;
 	
 	public void asyncListener() {
 
@@ -49,6 +52,8 @@ public class AsyncController {
 		
 		sessionController.setProcedureExecuting(procedureExecutionMgmt.getExecutionStatus());
 
+		// refresh the controller from the logger to get it to the display
+		statusLogController.refreshCurrentProcedureStatusLog();
 	}
 
 	public void onComplete() {
