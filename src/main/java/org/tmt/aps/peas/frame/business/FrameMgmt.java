@@ -16,7 +16,7 @@ import nom.tam.fits.PrimaryHDU;
 
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.frame.model.FitsFrame;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.PcsFitsFile;
 
@@ -67,13 +67,13 @@ public class FrameMgmt {
 	    return fitsFileList;
 	}
 
-	public FitsFrame loadFitsFrame(InputStream is) throws Exception {
+	public CcdFrame loadFitsFrame(InputStream is) throws Exception {
 		Fits fitsFile = new Fits(is);
 		return loadFitsFrame(fitsFile);
 	}
 	
 	
-	public FitsFrame loadFitsFrame(String fitsFilename) throws Exception {
+	public CcdFrame loadFitsFrame(String fitsFilename) throws Exception {
 	
 		
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -84,10 +84,10 @@ public class FrameMgmt {
 		return loadFitsFrame(fitsFile);
 	}
 	
-	public FitsFrame loadFitsFrame(Fits fitsFile) throws Exception {
+	public CcdFrame loadFitsFrame(Fits fitsFile) throws Exception {
 			
 		BasicHDU[] bhdus = fitsFile.read();
-		FitsFrame fb = new FitsFrame();
+		CcdFrame fb = new CcdFrame();
 
 		System.out.println("bhdus = " + bhdus.length);
 

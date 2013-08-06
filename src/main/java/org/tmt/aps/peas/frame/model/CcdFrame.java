@@ -1,13 +1,43 @@
 package org.tmt.aps.peas.frame.model;
 
-public class FitsFrame {
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+
+@Entity
+@Table(name = "CcdFrame")
+@NamedQueries({
+
+})
+public class CcdFrame {
+	
+	@Id
+	@GeneratedValue(strategy=GenerationType.AUTO)
+	private Long ccdFrameId;
+
+	@Column(length=200)
+	private String pcsFitsFilename;
+	
+	@Transient
 	protected int noOfAxes; 
+	@Transient
 	protected int axes1; 
+	@Transient
 	protected int axes2;
+	@Transient
 	protected int bitPix; 
+	@Transient
 	protected String startTime; 
+	@Transient
 	protected String endTime; 
+	@Transient
 	protected String obsDate; 
+	@Transient
 	protected short result[][];
 	
 	
@@ -58,6 +88,18 @@ public class FitsFrame {
 	}
 	public void setResult(short[][] result) {
 		this.result = result;
+	}
+	public Long getCcdFrameId() {
+		return ccdFrameId;
+	}
+	public void setCcdFrameId(Long ccdFrameId) {
+		this.ccdFrameId = ccdFrameId;
+	}
+	public String getPcsFitsFilename() {
+		return pcsFitsFilename;
+	}
+	public void setPcsFitsFilename(String pcsFitsFilename) {
+		this.pcsFitsFilename = pcsFitsFilename;
 	} 
 
 

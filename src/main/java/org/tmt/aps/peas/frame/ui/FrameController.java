@@ -25,7 +25,7 @@ import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.model.FitsFrame;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.PcsFitsFile;
 
 @Named
@@ -195,7 +195,7 @@ public class FrameController implements Serializable {
 
 			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
 
-			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
+			CcdFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
 
 			short frameArray[][] = fbs.getResult();
 

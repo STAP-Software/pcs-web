@@ -25,7 +25,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.model.FitsFrame;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.PcsFitsFile;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.frame.ui.FrameController;
@@ -134,7 +134,7 @@ public class PassiveTiltController implements Serializable {
 		try {
 			uploadFitsFile = event.getFile();
 
-			FitsFrame fbs = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
+			CcdFrame fbs = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
 
 			short frameArray[][] = fbs.getResult();
 
@@ -151,7 +151,7 @@ public class PassiveTiltController implements Serializable {
 
 	public void doLoadFitsFile() {
 		try {
-			FitsFrame fbs = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
+			CcdFrame fbs = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
 
 			short frameArray[][] = fbs.getResult();
 

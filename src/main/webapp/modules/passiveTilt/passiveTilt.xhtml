@@ -195,28 +195,28 @@
 				<p:accordionPanel multiple="true" activeIndex="0,1">
 				
 				
-				<!-- 
+				 
 					<p:tab title="Procedure Context">
 
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Test #" />
-							<p:inputText size="4"/>
+							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.testNumber}" />
 							
-							<h:outputLabel value="ACS Snap # After" />
-							<p:inputText size="4"/>
+							<h:outputLabel value="ACS Snap # After"  />
+							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.acsSnapNumberAfter}"/>
 							
 							<h:outputLabel value="Star Name" />
-							<p:inputText size="20"/>
+							<p:inputText size="20" value="#{passiveTiltController.procedure.procedureContext.starName}"/>
 							
 							<h:outputLabel value="Star Sp Type" />
-							<p:inputText size="4"/>
+							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.starSpType}"/>
 
 							<h:outputLabel value="Star Vmag" />
-							<p:inputText size="4"/>
+							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.starVmag}"/>
 
 							<h:outputLabel value="Comments" />
-							<p:inputTextarea value="" rows="1" cols="30" />
+							<p:inputTextarea value="#{passiveTiltController.procedure.procedureContext.comments}" rows="1" cols="30" />
 
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
@@ -226,7 +226,7 @@
 						</p:panelGrid>
 					</p:tab>
 				
-				 -->
+				 
 				
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">

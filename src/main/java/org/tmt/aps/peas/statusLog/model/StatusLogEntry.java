@@ -36,6 +36,8 @@ public class StatusLogEntry {
 		this.createDate = createDate;
 	}
 	
+	public StatusLogEntry() {
+	}
 	
 	public String getStatus() {
 		return status;

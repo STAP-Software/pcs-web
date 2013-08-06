@@ -11,6 +11,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -75,9 +76,14 @@ public class Procedure {
 	@JoinColumn(name = "sessionId")
 	Session session;
 
+	@OneToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "procedureId")
+	ProcedureContext procedureContext;
+
 
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
+		procedureContext = new ProcedureContext();
 	}
 
 	public Long getProcedureId() {
@@ -169,6 +175,15 @@ public class Procedure {
 		this.session = session;
 	}
 
+	public ProcedureContext getProcedureContext() {
+		return procedureContext;
+	}
+
+	public void setProcedureContext(ProcedureContext procedureContext) {
+		this.procedureContext = procedureContext;
+	}
+
+	
 	public String getProcedureStateDisplayString() {
 
 		switch (procedureState) {
