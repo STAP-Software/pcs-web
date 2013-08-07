@@ -18,6 +18,21 @@ public class PcsFitsFile {
 	int phasingStep;  // A-K = 1-11 for phasing
 	String fileName;
 
+	public PcsFitsFile(Long telescopeId, Date date, String procedureTypeCd, int procedureNumber, int iteration,
+			int ufsSegment, int sufsGroup, int phasingStep) {
+		
+		this.telescope = (int)telescopeId.longValue();
+		this.date = date;
+		this.procedureTypeCd = procedureTypeCd;
+		this.procedureNumber = procedureNumber;
+		this.iteration = iteration;
+		this.ufsSegment = ufsSegment;
+		this.sufsGroup = sufsGroup;
+		this.phasingStep = phasingStep;
+		
+		this.fileName = generateFileName();
+	}
+	
 	public PcsFitsFile(String fitsFileName) {
 
 		try {
@@ -151,8 +166,8 @@ public class PcsFitsFile {
 		}
 	}
 	
-	/*
-	public String getFileName() {
+	
+	public String generateFileName() {
 		
 		StringBuffer buf = new StringBuffer();
 		buf.append("K" + telescope + "_");
@@ -175,7 +190,7 @@ public class PcsFitsFile {
 		return buf.toString();
 		
 	}
-	*/
+	
 	
 	
 

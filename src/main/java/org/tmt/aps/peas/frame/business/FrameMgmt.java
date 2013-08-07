@@ -7,6 +7,9 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.TypedQuery;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Data;
@@ -19,15 +22,59 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.PcsFitsFile;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 
 @Stateless
 public class FrameMgmt {
 
-	
+	@PersistenceContext
+	private EntityManager em;
+
+
 	@EJB
 	PeasProperties peasProperties;
 	
 
+	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
+		
+		CcdFrame ccdFrame = loadFitsFrame(fitsFilename);
+		return ccdFrame;
+	}
+	
+	public List<ProcedureCcdFrame> getFramesForProcedure(Long procedureId) {
+		
+		TypedQuery<ProcedureCcdFrame> query = em.createNamedQuery("findAllFramesForProcedure", ProcedureCcdFrame.class);
+		query.setParameter("procedureId", procedureId);
+
+		return query.getResultList();
+
+	}
+	
+	public void saveCcdFrame(CcdFrame ccdFrame, Long procedureId, int frameNumber) {
+		saveCcdFrame(ccdFrame);
+		associateCcdFrame(ccdFrame, procedureId, frameNumber, true);
+	}
+	
+	public void saveCcdFrame(CcdFrame ccdFrame) {
+		// 1. save the frame to a FITS file
+		
+		// 2. save the Ccd record with the fits file name		
+	}
+
+	public void associateCcdFrame(CcdFrame ccdFrame, Long procedureId, int frameNumber, boolean newFrameFlg) {
+		// create a ProcedureCcdRecord 
+		ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
+		procedureCcdFrame.setCcdFrame(ccdFrame);
+		procedureCcdFrame.setFrameNumber(frameNumber);
+		procedureCcdFrame.setNewFrameFlg(newFrameFlg);
+		procedureCcdFrame.setProcedureId(procedureId);
+		
+		em.persist(procedureCcdFrame);
+	}
+
+
+	
+	
 	
 	public ImageFrame getCorrectedFrame(int frameSource) {
 		

@@ -21,7 +21,7 @@ public class CcdFrame {
 	private Long ccdFrameId;
 
 	@Column(length=200)
-	private String pcsFitsFilename;
+	private String fitsFilename;
 	
 	@Transient
 	protected int noOfAxes; 
@@ -95,12 +95,12 @@ public class CcdFrame {
 	public void setCcdFrameId(Long ccdFrameId) {
 		this.ccdFrameId = ccdFrameId;
 	}
-	public String getPcsFitsFilename() {
-		return pcsFitsFilename;
+	public String getFitsFilename() {
+		return fitsFilename;
 	}
-	public void setPcsFitsFilename(String pcsFitsFilename) {
-		this.pcsFitsFilename = pcsFitsFilename;
-	} 
+	public void setFitsFilename(String fitsFilename) {
+		this.fitsFilename = fitsFilename;
+	}
 
 
 
