@@ -31,6 +31,8 @@ public class CcdFrame {
 	protected int axes2;
 	@Transient
 	protected int bitPix; 
+	
+	// are these next three required by FITS standard
 	@Transient
 	protected String startTime; 
 	@Transient

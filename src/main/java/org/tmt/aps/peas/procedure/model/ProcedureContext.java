@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class ProcedureContext {
 
 	@Id
-	private Long procedureConfigId;
+	private Long procedureId;
 
 	@Column(length=50)
 	String testNumber;
@@ -36,12 +36,14 @@ public class ProcedureContext {
 	String comments;
 
 	
-	public Long getProcedureConfigId() {
-		return procedureConfigId;
+
+
+	public Long getProcedureId() {
+		return procedureId;
 	}
 
-	public void setProcedureConfigId(Long procedureConfigId) {
-		this.procedureConfigId = procedureConfigId;
+	public void setProcedureId(Long procedureId) {
+		this.procedureId = procedureId;
 	}
 
 	public String getTestNumber() {
