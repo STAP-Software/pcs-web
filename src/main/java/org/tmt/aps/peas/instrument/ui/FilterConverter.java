@@ -17,7 +17,7 @@ import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.tmt.aps.peas.frame.model.PcsFitsFile;
+import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.model.Filter;
 
 @Named

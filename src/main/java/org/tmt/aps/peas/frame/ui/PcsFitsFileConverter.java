@@ -17,7 +17,7 @@ import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.tmt.aps.peas.frame.model.PcsFitsFile;
+import org.tmt.aps.peas.frame.model.FitsFilename;
 
 @Named
 @SessionScoped
@@ -35,9 +35,9 @@ public class PcsFitsFileConverter implements Converter, Serializable {
 			try {
 				String fitsFileName = submittedValue;
 
-				List<PcsFitsFile> fullList = frameController.getAllFitsFiles();
+				List<FitsFilename> fullList = frameController.getAllFitsFiles();
 
-				for (PcsFitsFile pcsFitsFile : fullList) {
+				for (FitsFilename pcsFitsFile : fullList) {
 					if (pcsFitsFile.getFileName().equals(fitsFileName)) {
 						System.out.println("getAsObject:: returining: " + fitsFileName);
 						return pcsFitsFile;
@@ -59,7 +59,7 @@ public class PcsFitsFileConverter implements Converter, Serializable {
 		if (value == null || value.equals("")) {
 			return "";
 		} else {
-			PcsFitsFile pcsFitsFile = (PcsFitsFile) value;
+			FitsFilename pcsFitsFile = (FitsFilename) value;
 			System.out.println("getAsString::" + pcsFitsFile.getFileName() );
 			return pcsFitsFile.getFileName();
 

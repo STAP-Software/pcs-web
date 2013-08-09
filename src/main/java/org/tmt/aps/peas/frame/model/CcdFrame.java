@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.frame.model;
 
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 @Entity
@@ -23,6 +27,9 @@ public class CcdFrame {
 	@Column(length=200)
 	private String fitsFilename;
 	
+	@Temporal(TemporalType.TIMESTAMP)
+	private Date createDate;
+
 	@Transient
 	protected int noOfAxes; 
 	@Transient
@@ -33,12 +40,6 @@ public class CcdFrame {
 	protected int bitPix; 
 	
 	// are these next three required by FITS standard
-	@Transient
-	protected String startTime; 
-	@Transient
-	protected String endTime; 
-	@Transient
-	protected String obsDate; 
 	@Transient
 	protected short result[][];
 	
@@ -67,24 +68,7 @@ public class CcdFrame {
 	public void setBitPix(int bitPix) {
 		this.bitPix = bitPix;
 	}
-	public String getStartTime() {
-		return startTime;
-	}
-	public void setStartTime(String startTime) {
-		this.startTime = startTime;
-	}
-	public String getEndTime() {
-		return endTime;
-	}
-	public void setEndTime(String endTime) {
-		this.endTime = endTime;
-	}
-	public String getObsDate() {
-		return obsDate;
-	}
-	public void setObsDate(String obsDate) {
-		this.obsDate = obsDate;
-	}
+
 	public short[][] getResult() {
 		return result;
 	}
@@ -102,6 +86,12 @@ public class CcdFrame {
 	}
 	public void setFitsFilename(String fitsFilename) {
 		this.fitsFilename = fitsFilename;
+	}
+	public Date getCreateDate() {
+		return createDate;
+	}
+	public void setCreateDate(Date createDate) {
+		this.createDate = createDate;
 	}
 
 

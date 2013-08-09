@@ -22,6 +22,9 @@ public class ProcedureType {
 	@Column(nullable=false, length=100)
 	private String procedureTypeName;
 	
+	@Column(nullable=false, length=10)
+	private String procedureTypeCd;
+	
 	
 	public Long getProcedureTypeId() {
 		return procedureTypeId;
@@ -34,6 +37,12 @@ public class ProcedureType {
 	}
 	public void setProcedureTypeName(String procedureTypeName) {
 		this.procedureTypeName = procedureTypeName;
+	}
+	public String getProcedureTypeCd() {
+		return procedureTypeCd;
+	}
+	public void setProcedureTypeCd(String procedureTypeCd) {
+		this.procedureTypeCd = procedureTypeCd;
 	}
 	
 	

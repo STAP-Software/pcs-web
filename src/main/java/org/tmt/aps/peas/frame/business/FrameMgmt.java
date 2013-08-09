@@ -14,14 +14,16 @@ import javax.persistence.TypedQuery;
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Data;
 import nom.tam.fits.Fits;
+import nom.tam.fits.HDU;
 import nom.tam.fits.Header;
 import nom.tam.fits.PrimaryHDU;
+import nom.tam.util.BufferedDataOutputStream;
 
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ImageFrame;
-import org.tmt.aps.peas.frame.model.PcsFitsFile;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 
 @Stateless
@@ -30,109 +32,107 @@ public class FrameMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
-
 	@EJB
 	PeasProperties peasProperties;
-	
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
-		
+
 		CcdFrame ccdFrame = loadFitsFrame(fitsFilename);
 		return ccdFrame;
 	}
-	
+
 	public List<ProcedureCcdFrame> getFramesForProcedure(Long procedureId) {
-		
+
 		TypedQuery<ProcedureCcdFrame> query = em.createNamedQuery("findAllFramesForProcedure", ProcedureCcdFrame.class);
 		query.setParameter("procedureId", procedureId);
 
 		return query.getResultList();
 
 	}
-	
-	public void saveCcdFrame(CcdFrame ccdFrame, Long procedureId, int frameNumber) {
-		saveCcdFrame(ccdFrame);
-		associateCcdFrame(ccdFrame, procedureId, frameNumber, true);
-	}
-	
-	public void saveCcdFrame(CcdFrame ccdFrame) {
-		// 1. save the frame to a FITS file
+
+	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
+		// determine FITS file name
+		FitsFilename fitsFilename = new FitsFilename(procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), procedureCcdFrame
+				.getProcedure().getProcedureType().getProcedureTypeCd(), procedureCcdFrame.getProcedure().getProcedureNumber(),
+				procedureCcdFrame.getProcedureIterationNumber(), procedureCcdFrame.getProcedure().getProcedureConfig().getUfsSegment(),
+				procedureCcdFrame.getProcedure().getProcedureConfig().getSufsGroup(), procedureCcdFrame.getPhasingStepNumber());
+
+		// save the frame to a FITS file
+		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
+		saveFitsFrame(ccdFrame);
 		
-		// 2. save the Ccd record with the fits file name		
+		// save the Ccd record with the fits file name
+		em.persist(ccdFrame);
+		
+		associateCcdFrame(procedureCcdFrame);
 	}
 
-	public void associateCcdFrame(CcdFrame ccdFrame, Long procedureId, int frameNumber, boolean newFrameFlg) {
-		// create a ProcedureCcdRecord 
-		ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
-		procedureCcdFrame.setCcdFrame(ccdFrame);
-		procedureCcdFrame.setFrameNumber(frameNumber);
-		procedureCcdFrame.setNewFrameFlg(newFrameFlg);
-		procedureCcdFrame.setProcedureId(procedureId);
-		
+	// manual Ccd frame save
+	// FITS file name TBD
+	public void saveCcdFrame(CcdFrame ccdFrame) {
+	}
+
+	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
+		// create a ProcedureCcdRecord
+
 		em.persist(procedureCcdFrame);
 	}
 
-
-	
-	
-	
 	public ImageFrame getCorrectedFrame(int frameSource) {
-		
+
 		if (frameSource == Constants.FRAME_SOURCE_CCD) {
 			// get the frame from CCD or from file, depending on the called type
-			
+
 			// if we get from CCD, store into a file
-			
+
 		}
-		
+
 		// get the frame from the file and return it
-		
+
 		return null;
 	}
-	
-	public List<PcsFitsFile> findAllFitsFiles() throws Exception {
-		
+
+	public List<FitsFilename> findAllFitsFiles() throws Exception {
+
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
-		
+
 		System.out.println("frame folder = " + frameFolder);
-		
-		// read in and parse each frame and build up 
+
+		// read in and parse each frame and build up
 		File folder = new File(frameFolder);
 
-		
-		List<PcsFitsFile> fitsFileList = new ArrayList<PcsFitsFile>();
-		
-	    for (File fileEntry : folder.listFiles()) {
-	    	
-	    	String filename = fileEntry.getName();
-	    	
-	    	PcsFitsFile fitsFile = new PcsFitsFile(filename);
+		List<FitsFilename> fitsFileList = new ArrayList<FitsFilename>();
 
-	    	fitsFileList.add(fitsFile);
-	    }
-	    
-	    return fitsFileList;
+		for (File fileEntry : folder.listFiles()) {
+
+			String filename = fileEntry.getName();
+
+			FitsFilename fitsFile = new FitsFilename(filename);
+
+			fitsFileList.add(fitsFile);
+		}
+
+		return fitsFileList;
 	}
 
 	public CcdFrame loadFitsFrame(InputStream is) throws Exception {
 		Fits fitsFile = new Fits(is);
 		return loadFitsFrame(fitsFile);
 	}
-	
-	
+
 	public CcdFrame loadFitsFrame(String fitsFilename) throws Exception {
-	
-		
+
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
-		
+
 		String path = frameFolder + File.separator + fitsFilename;
 		Fits fitsFile = new Fits(path);
-		
+
 		return loadFitsFrame(fitsFile);
 	}
-	
+
 	public CcdFrame loadFitsFrame(Fits fitsFile) throws Exception {
-			
+
 		BasicHDU[] bhdus = fitsFile.read();
 		CcdFrame fb = new CcdFrame();
 
@@ -154,10 +154,10 @@ public class FrameMgmt {
 				System.out.println("Length=" + leng);
 				System.out.println("Data=" + data);
 				int[] axes = imhdu.getAxes();
-				
+
 				System.out.println("data.getData: " + data.getData());
-				
-				short[][] shortArray = (short[][])data.getData();
+
+				short[][] shortArray = (short[][]) data.getData();
 
 				System.out.println(imhdu.getBitPix() + " bits per pixel");
 				System.out.println("Data = " + data.getData().getClass());
@@ -171,10 +171,10 @@ public class FrameMgmt {
 				fb.setAxes1(axes[1]);
 
 				fb.setAxes2(axes[0]);
-				
+
 				fb.setResult(shortArray);
 
-				fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
+				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
 				Header header = hdu.getHeader();
 
@@ -185,5 +185,20 @@ public class FrameMgmt {
 		}
 		return fb;
 	}
-	
+
+	// FIXME: built without an example.  This may not work
+	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {
+
+		Fits myFits;
+		// First create a null FITS object.
+		myFits = new Fits();
+
+		// Now create three extensions.
+		myFits.addHDU(HDU.create(ccdFrame.getResult()));
+
+		java.io.FileOutputStream fo = new java.io.FileOutputStream(ccdFrame.getFitsFilename());
+		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
+		myFits.write(o);
+
+	}
 }

@@ -47,6 +47,9 @@ public class ProcedureConfig {
 	private int numberOfTrials = 1;
 	private int frameSource;
 
+	private Integer ufsSegment;
+	private Integer sufsGroup;
+	
 	private Integer calculationOptions; // nullable
 
 	@Column(name="imageScaleRotationRemoval")
@@ -208,5 +211,23 @@ public class ProcedureConfig {
 	public void setProcedureType(ProcedureType procedureType) {
 		this.procedureType = procedureType;
 	}
+
+	public Integer getUfsSegment() {
+		return ufsSegment;
+	}
+
+	public void setUfsSegment(Integer ufsSegment) {
+		this.ufsSegment = ufsSegment;
+	}
+
+	public Integer getSufsGroup() {
+		return sufsGroup;
+	}
+
+	public void setSufsGroup(Integer sufsGroup) {
+		this.sufsGroup = sufsGroup;
+	}
+
+
 
 }

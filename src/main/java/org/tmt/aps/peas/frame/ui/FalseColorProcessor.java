@@ -2,54 +2,12 @@ package org.tmt.aps.peas.frame.ui;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
-
-import org.primefaces.model.DefaultStreamedContent;
  
 public class FalseColorProcessor { 
-	public static void main(String[] args) throws IOException { 
- 
-		BufferedReader reader; // This object is to read in grayscale data 
-		String line; 
-		String strings[]; 
-		int width; 
-		int height; 
- 
-		try { 
-			reader = new BufferedReader(new FileReader("data.txt")); 
-			line = reader.readLine(); // Read array size data 
-										// Parse the first line and output size 
-										// info to terminal ... 
-			strings = line.split(" "); 
-			height = Integer.parseInt(strings[0]); 
-			width = Integer.parseInt(strings[1]); 
-			System.out.println(" NR = " + height + ", NC = " + width); 
- 
-			// Read in grayscale information ... 
-			int grayArray[][] = new int[height][width]; // 2D array form 
-			int numPixels = width * height; 
-			int gray[] = new int[numPixels]; // 1D array form 
-			int entry = 0; 
-			for (int i = 0; i < height; i++) { 
-				line = reader.readLine(); 
-				strings = line.split(" "); 
-				for (int j = 0; j < width; j++) { 
-					grayArray[i][j] = Integer.parseInt(strings[j]); 
-					gray[entry++] = grayArray[i][j]; 
-				} 
-			} 
-			reader.close(); 
- 
-			
-		} catch (Exception e) {
-		}
-	}
 	
 	public byte[] createImage(short[][] grayArray) {
 			

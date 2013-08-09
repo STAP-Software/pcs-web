@@ -26,7 +26,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
-import org.tmt.aps.peas.frame.model.PcsFitsFile;
+import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
@@ -64,7 +64,7 @@ public class PassiveTiltController implements Serializable {
 	List<String> frameList;
 	float integrationAddTime;
 	UploadedFile uploadFitsFile;
-	PcsFitsFile selectedFitsFile;
+	FitsFilename selectedFitsFile;
 	byte[] falseColorPng;
 
 	@PostConstruct
@@ -104,11 +104,11 @@ public class PassiveTiltController implements Serializable {
 		this.integrationAddTime = integrationAddTime;
 	}
 
-	public PcsFitsFile getSelectedFitsFile() {
+	public FitsFilename getSelectedFitsFile() {
 		return selectedFitsFile;
 	}
 
-	public void setSelectedFitsFile(PcsFitsFile selectedFitsFile) {
+	public void setSelectedFitsFile(FitsFilename selectedFitsFile) {
 		this.selectedFitsFile = selectedFitsFile;
 	}
 
@@ -123,8 +123,8 @@ public class PassiveTiltController implements Serializable {
         return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
 	}
 
-	public List<PcsFitsFile> getAvailableFitsFiles() {
-		List<PcsFitsFile> fitsFileList = frameController.getProcedureFitsFiles("PT");
+	public List<FitsFilename> getAvailableFitsFiles() {
+		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles("PT");
 		System.out.println("FitsFileList size = " + fitsFileList.size());
 		return fitsFileList;
 	}

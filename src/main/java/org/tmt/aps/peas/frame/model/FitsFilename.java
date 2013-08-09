@@ -3,8 +3,9 @@ package org.tmt.aps.peas.frame.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.StringTokenizer;
+import java.util.TimeZone;
 
-public class PcsFitsFile {
+public class FitsFilename {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMMyy");
 
@@ -18,11 +19,11 @@ public class PcsFitsFile {
 	int phasingStep;  // A-K = 1-11 for phasing
 	String fileName;
 
-	public PcsFitsFile(Long telescopeId, Date date, String procedureTypeCd, int procedureNumber, int iteration,
+	public FitsFilename(Long telescopeId, String procedureTypeCd, int procedureNumber, int iteration,
 			int ufsSegment, int sufsGroup, int phasingStep) {
 		
 		this.telescope = (int)telescopeId.longValue();
-		this.date = date;
+		this.date = new Date();
 		this.procedureTypeCd = procedureTypeCd;
 		this.procedureNumber = procedureNumber;
 		this.iteration = iteration;
@@ -33,7 +34,7 @@ public class PcsFitsFile {
 		this.fileName = generateFileName();
 	}
 	
-	public PcsFitsFile(String fitsFileName) {
+	public FitsFilename(String fitsFileName) {
 
 		try {
 
@@ -169,6 +170,8 @@ public class PcsFitsFile {
 	
 	public String generateFileName() {
 		
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		
 		StringBuffer buf = new StringBuffer();
 		buf.append("K" + telescope + "_");
 		buf.append(sdf.format(date).toUpperCase() + "_");
@@ -196,8 +199,8 @@ public class PcsFitsFile {
 
 	@Override
 	public boolean equals(Object obj) {
-		if (obj instanceof PcsFitsFile) {
-			PcsFitsFile candidate = (PcsFitsFile)obj;
+		if (obj instanceof FitsFilename) {
+			FitsFilename candidate = (FitsFilename)obj;
 			return candidate.getFileName().equals(this.getFileName());
 		} 
 		return false;
