@@ -67,7 +67,7 @@
 						<p:panelGrid styleClass="pcsFormNoBorder">
 							<p:row>
 								<p:column colspan="2">
-									<p:fileUpload fileUploadListener="#{passiveTiltController.handleFileUpload}" mode="advanced"
+									<p:fileUpload fileUploadListener="#{procedureController.handleFileUpload}" mode="advanced"
 										update=":growl :frameViewerForm:framePanel" sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
 								</p:column>
 							</p:row>
@@ -148,8 +148,8 @@
 
 					<p:graphicImage value="#{frameController.graphicImage}" height="512px" width="512px" />
 					<!--  show this when procedure is done
-				<p:carousel id="frameCarousel" value="#{passiveTiltController.frameList}" var="frame" rows="1" >
-					<p:graphicImage value="#{passiveTiltController.graphicImage}" height="512px" width="512px" />	
+				<p:carousel id="frameCarousel" value="#{procedureController.frameList}" var="frame" rows="1" >
+					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />	
 				</p:carousel>
 				-->
 					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">

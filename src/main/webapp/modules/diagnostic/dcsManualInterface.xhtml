@@ -29,7 +29,7 @@
  				<h:panelGroup>
          		<p:selectBooleanCheckbox value="false" /> 
          		<p:spacer width="10px"/>
- 					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.calculationOptions}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
+ 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.calculationOptions}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Select One" itemValue="" />
 						<f:selectItem itemLabel="Left Bent 1" itemValue="1" />
 						<f:selectItem itemLabel="Left Bent 2" itemValue="3" />

@@ -34,8 +34,8 @@
 									<h:outputLabel value="Filter" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.filter}"
-										disabled="#{passiveTiltController.procedure.procedureState gt 1}">
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.filter}"
+										disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="611 nm" itemValue="611" />
 										<f:selectItem itemLabel="618 nm" itemValue="618" />
@@ -52,8 +52,8 @@
 									<h:outputLabel value="Integration Time" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.integrationTime}"
-										disabled="#{passiveTiltController.procedure.procedureState gt 1}">
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.integrationTime}"
+										disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
 										<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
@@ -68,8 +68,8 @@
 									<h:outputLabel value="Number of Trials" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{passiveTiltController.procedure.procedureConfig.numberOfTrials}"
-										size="2" disabled="#{passiveTiltController.procedure.procedureState gt 1}" />
+									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfig.numberOfTrials}"
+										size="2" disabled="#{procedureController.procedure.procedureState gt 1}" />
 								</p:column>
 							</p:row>
 
@@ -78,16 +78,16 @@
 									<h:outputLabel value="Frame Source" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.frameSource}"
-										disabled="#{passiveTiltController.procedure.procedureState gt 1}">
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.frameSource}"
+										disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="CCD" itemValue="1" />
 										<f:selectItem itemLabel="File" itemValue="2" />
-										<p:ajax update="configPanel" listener="#{passiveTiltController.frameSourceListener}"/>
+										<p:ajax update="configPanel" listener="#{procedureController.frameSourceListener}"/>
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
-										rendered="#{passiveTiltController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding" 
+										rendered="#{procedureController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding" 
 										onclick="fitsFileLoadDialog.show();"
 										style="top:-5px"/>
 								</p:column>
@@ -103,21 +103,21 @@
 							<h:outputLabel value="Procedure Type" />
 							<h:outputText value="Passive Tilt" />
 							<h:outputLabel value="Procedure #" />
-							<h:outputText value="#{passiveTiltController.procedure.procedureNumber}" />
-							<h:outputLabel value="Status" rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{passiveTiltController.procedure.procedureStateDisplayString}"
-								rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
-							<h:outputLabel value="Execution Start" rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{passiveTiltController.procedure.executionStartTime}"
-								rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
-							<h:outputLabel value="Execution End" rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{passiveTiltController.procedure.executionEndTime}"
-								rendered="#{passiveTiltController.procedure.procedureState ge 3}" />
+							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
+							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}"
+								rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputLabel value="Execution Start" rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputText value="#{procedureController.procedure.executionStartTime}"
+								rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputLabel value="Execution End" rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputText value="#{procedureController.procedure.executionEndTime}"
+								rendered="#{procedureController.procedure.procedureState ge 3}" />
 						</p:panelGrid>
 
 						<p:spacer height="10px" width="40px" />
-						<h:panelGroup rendered="#{passiveTiltController.procedure.procedureState lt 3}">
-							<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{passiveTiltController.doExecuteProcedure}" styleClass="noupdate"
+						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}">
+							<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
 								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm"
 								disabled="#{asyncController.executionStatus}" />
 							<p:spacer width="30px" />
@@ -155,15 +155,15 @@
 
 				<p:panelGrid id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
 					<f:facet name="header">
-						<h:outputText value="#{passiveTiltController.selectedFitsFile.fileName}" />
+						<h:outputText value="#{procedureController.selectedFitsFile.fileName}" />
 					</f:facet>
 
-					<p:spacer width="512" height="512" rendered="#{passiveTiltController.graphicImage == null}" />
+					<p:spacer width="512" height="512" rendered="#{procedureController.graphicImage == null}" />
 
-					<p:graphicImage value="#{passiveTiltController.graphicImage}" height="512px" width="512px" />
+					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
 					<!--  show this when procedure is done
-				<p:carousel id="frameCarousel" value="#{passiveTiltController.frameList}" var="frame" rows="1" >
-					<p:graphicImage value="#{passiveTiltController.graphicImage}" height="512px" width="512px" />	
+				<p:carousel id="frameCarousel" value="#{procedureController.frameList}" var="frame" rows="1" >
+					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />	
 				</p:carousel>
 				-->
 					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
@@ -201,22 +201,22 @@
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Test #" />
-							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.testNumber}" />
+							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.testNumber}" />
 							
 							<h:outputLabel value="ACS Snap # After"  />
-							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.acsSnapNumberAfter}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.acsSnapNumberAfter}"/>
 							
 							<h:outputLabel value="Star Name" />
-							<p:inputText size="20" value="#{passiveTiltController.procedure.procedureContext.starName}"/>
+							<p:inputText size="20" value="#{procedureController.procedure.procedureContext.starName}"/>
 							
 							<h:outputLabel value="Star Sp Type" />
-							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.starSpType}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.starSpType}"/>
 
 							<h:outputLabel value="Star Vmag" />
-							<p:inputText size="4" value="#{passiveTiltController.procedure.procedureContext.starVmag}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.starVmag}"/>
 
 							<h:outputLabel value="Comments" />
-							<p:inputTextarea value="#{passiveTiltController.procedure.procedureContext.comments}" rows="1" cols="30" />
+							<p:inputTextarea value="#{procedureController.procedure.procedureContext.comments}" rows="1" cols="30" />
 
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdDiagnosticController.doCancel}" />

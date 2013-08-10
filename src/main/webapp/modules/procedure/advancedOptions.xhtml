@@ -12,7 +12,7 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Calculation Options" />
-					<p:selectOneMenu value="#{passiveTiltController.procedure.procedureConfig.calculationOptions}" disabled="#{passiveTiltController.procedure.procedureState gt 1}">
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.calculationOptions}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Select One" itemValue="" />
 						<f:selectItem itemLabel="Pure Tilts" itemValue="1" />
 						<f:selectItem itemLabel="Focus Mode Pistons" itemValue="2" />
@@ -35,9 +35,9 @@
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl"
-					action="#{passiveTiltController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
+					action="#{procedureController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
 				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
-					action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
+					action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
 
 			</h:form>
 		</p:dialog>

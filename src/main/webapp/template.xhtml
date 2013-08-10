@@ -66,7 +66,7 @@
 					</p:submenu>
 				
 					<p:submenu label="Run" icon="ui-icon-gear" >
-						<p:menuitem value="Passive Tilt" action="#{passiveTiltController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Phasing" action="#{phasingController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Fine Screen" url="#" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="UFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
@@ -129,7 +129,7 @@
 
 		</p:layout>
 
-		<ui:include src="modules/passiveTilt/mirrorDialog.xhtml"/>
+		<ui:include src="modules/procedure/mirrorDialog.xhtml"/>
 
 		<p:dialog id="helpAboutDlg" header="About PCS PEAS" widgetVar="helpAboutDialog">  
     		<div>

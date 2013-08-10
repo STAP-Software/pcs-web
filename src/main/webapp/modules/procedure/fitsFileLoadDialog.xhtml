@@ -12,8 +12,8 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Select a File" />
-        			<p:selectOneListbox value="#{passiveTiltController.selectedFitsFile}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" >  
-            			<f:selectItems value="#{passiveTiltController.availableFitsFiles}" var="fitsFile" itemLabel="#{fitsFile.fileName}" itemValue="#{fitsFile}" />  
+        			<p:selectOneListbox value="#{procedureController.selectedFitsFile}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" >  
+            			<f:selectItems value="#{procedureController.availableFitsFiles}" var="fitsFile" itemLabel="#{fitsFile.fileName}" itemValue="#{fitsFile}" />  
             			<p:column>  
                 			#{f.fileName}  
             			</p:column>  
@@ -23,9 +23,9 @@
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :procedureDetailForm:framePanel"
-					action="#{passiveTiltController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
+					action="#{procedureController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
 				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
-					action="#{passiveTiltController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />
+					action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />
 
 			</h:form>
 		</p:dialog>

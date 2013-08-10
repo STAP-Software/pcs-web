@@ -12,6 +12,8 @@ public class PassiveTiltMgmt {
 	@EJB
 	private PassiveTiltExecutor passiveTiltExecutor;
 	
+	// not sure if this is even necessary
+	
 	public void executeProcedure(Procedure procedure, Session session) {
 		System.out.println("doExecuteProcedure::about to call passiveTiltMgmt");
 		passiveTiltExecutor.executeProcedure(procedure, session);

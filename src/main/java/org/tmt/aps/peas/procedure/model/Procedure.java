@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.procedure.model;
 
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -11,12 +12,14 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -28,7 +31,11 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig" ),
 	@NamedQuery(name = "findLatestSessionProcedure", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig INNER JOIN FETCH p.session "
-			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.procedureNumber desc" )
+			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.procedureNumber desc" ),
+	@NamedQuery(name = "findProcedure", query = "SELECT DISTINCT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig "
+			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame "
+			+ "WHERE p.procedureId = :procedureId" )
 	
 
 })
@@ -80,6 +87,8 @@ public class Procedure {
 	@JoinColumn(name = "procedureId")
 	ProcedureContext procedureContext;
 
+	@OneToMany (mappedBy="procedure")
+	List<ProcedureCcdFrame> procedureCcdFrameList;
 
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
@@ -183,6 +192,15 @@ public class Procedure {
 		this.procedureContext = procedureContext;
 	}
 
+	public List<ProcedureCcdFrame> getProcedureCcdFrameList() {
+		return procedureCcdFrameList;
+	}
+
+	public void setProcedureCcdFrameList(List<ProcedureCcdFrame> procedureCcdFrameList) {
+		this.procedureCcdFrameList = procedureCcdFrameList;
+	}
+
+	
 	
 	public String getProcedureStateDisplayString() {
 
