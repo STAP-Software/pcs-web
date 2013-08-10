@@ -27,6 +27,7 @@ import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
@@ -70,6 +71,10 @@ public class ProcedureController implements Serializable {
 	FitsFilename selectedFitsFile;
 	byte[] falseColorPng;
 
+	// TODO: generalize this to a set of files when necessary
+	CcdFrame loadedFitsFile;
+	
+	
 	@PostConstruct
 	private void init() {
 
@@ -137,9 +142,9 @@ public class ProcedureController implements Serializable {
 		try {
 			uploadFitsFile = event.getFile();
 
-			CcdFrame fbs = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
+			loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
 
-			short frameArray[][] = fbs.getResult();
+			short frameArray[][] = loadedFitsFile.getResult();
 
 			FalseColorProcessor falseColorer = new FalseColorProcessor();
 			falseColorPng = falseColorer.createImage(frameArray);
@@ -154,9 +159,9 @@ public class ProcedureController implements Serializable {
 
 	public void doLoadFitsFile() {
 		try {
-			CcdFrame fbs = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
+			loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
 
-			short frameArray[][] = fbs.getResult();
+			short frameArray[][] = loadedFitsFile.getResult();
 
 			FalseColorProcessor falseColorer = new FalseColorProcessor();
 			falseColorPng = falseColorer.createImage(frameArray);
@@ -229,6 +234,21 @@ public class ProcedureController implements Serializable {
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
+		
+		// if this is frame from file, associate the frame now
+		if (procedure.getProcedureConfig().isFrameFromFile()) {
+			// TODO: set up all frames.  For now, its just one frame
+			ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
+			procedureCcdFrame.setCcdFrame(loadedFitsFile);
+			procedureCcdFrame.setNewFrameFlg(false); // frame from file
+			procedureCcdFrame.setProcedure(procedure);
+			procedureCcdFrame.setProcedureFrameNumber(1);
+			procedureCcdFrame.setProcedureIterationNumber(1);
+			
+			procedure.addProcedureCcdFrame(procedureCcdFrame);
+		
+		}
+		
 
 		System.out.println("doExecuteProcedure::");
 		// validate inputs

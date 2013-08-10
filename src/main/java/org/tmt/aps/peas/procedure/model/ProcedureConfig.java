@@ -32,6 +32,10 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 })
 public class ProcedureConfig {
 
+	public static final int FRAME_SOURCE_CCD = 1;
+	public static final int FRAME_SOURCE_FILE = 2;
+	
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long procedureConfigId;
@@ -226,6 +230,10 @@ public class ProcedureConfig {
 
 	public void setSufsGroup(Integer sufsGroup) {
 		this.sufsGroup = sufsGroup;
+	}
+
+	public boolean isFrameFromFile() {
+		return frameSource == FRAME_SOURCE_FILE;
 	}
 
 

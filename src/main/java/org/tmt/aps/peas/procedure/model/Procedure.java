@@ -1,8 +1,11 @@
 package org.tmt.aps.peas.procedure.model;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +17,7 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -50,6 +54,24 @@ public class Procedure {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long procedureId;
 	
+	@Column(length=50)
+	String testNumber;
+	
+	@Column(length=50)
+	String acsSnapNumberAfter;
+	
+	@Column(length=50)
+	String starName;
+	
+	@Column(length=50)
+	String starSpType;
+	
+	@Column(length=50)
+	String starVmag;
+	
+	@Column(length=2048)
+	String comments;
+	
 	private int procedureNumber;
 	private int procedureState;
 
@@ -83,16 +105,12 @@ public class Procedure {
 	@JoinColumn(name = "sessionId")
 	Session session;
 
-	@OneToOne (fetch = FetchType.LAZY)
-	@JoinColumn(name = "procedureId")
-	ProcedureContext procedureContext;
 
 	@OneToMany (mappedBy="procedure")
 	List<ProcedureCcdFrame> procedureCcdFrameList;
 
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
-		procedureContext = new ProcedureContext();
 	}
 
 	public Long getProcedureId() {
@@ -101,6 +119,7 @@ public class Procedure {
 
 	public void setProcedureId(Long procedureId) {
 		this.procedureId = procedureId;
+		
 	}
 
 	public int getProcedureNumber() {
@@ -184,12 +203,52 @@ public class Procedure {
 		this.session = session;
 	}
 
-	public ProcedureContext getProcedureContext() {
-		return procedureContext;
+	public String getTestNumber() {
+		return testNumber;
 	}
 
-	public void setProcedureContext(ProcedureContext procedureContext) {
-		this.procedureContext = procedureContext;
+	public void setTestNumber(String testNumber) {
+		this.testNumber = testNumber;
+	}
+
+	public String getAcsSnapNumberAfter() {
+		return acsSnapNumberAfter;
+	}
+
+	public void setAcsSnapNumberAfter(String acsSnapNumberAfter) {
+		this.acsSnapNumberAfter = acsSnapNumberAfter;
+	}
+
+	public String getStarName() {
+		return starName;
+	}
+
+	public void setStarName(String starName) {
+		this.starName = starName;
+	}
+
+	public String getStarSpType() {
+		return starSpType;
+	}
+
+	public void setStarSpType(String starSpType) {
+		this.starSpType = starSpType;
+	}
+
+	public String getStarVmag() {
+		return starVmag;
+	}
+
+	public void setStarVmag(String starVmag) {
+		this.starVmag = starVmag;
+	}
+
+	public String getComments() {
+		return comments;
+	}
+
+	public void setComments(String comments) {
+		this.comments = comments;
 	}
 
 	public List<ProcedureCcdFrame> getProcedureCcdFrameList() {
@@ -216,5 +275,13 @@ public class Procedure {
 		default:
 			return "Unknown";
 		}
+	}
+
+	public void addProcedureCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
+		if (procedureCcdFrameList == null) {
+			procedureCcdFrameList = new ArrayList<ProcedureCcdFrame>();
+		}
+		procedureCcdFrameList.add(procedureCcdFrame);
+		
 	}
 }

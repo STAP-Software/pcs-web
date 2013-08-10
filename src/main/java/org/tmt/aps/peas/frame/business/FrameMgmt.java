@@ -3,6 +3,7 @@ package org.tmt.aps.peas.frame.business;
 import java.io.File;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -41,6 +42,19 @@ public class FrameMgmt {
 		return ccdFrame;
 	}
 
+	public CcdFrame findCcdFrame(String fitsFilename) {
+
+		try {
+		TypedQuery<CcdFrame> query = em.createNamedQuery("findCcdFrameByFilename", CcdFrame.class);
+		query.setParameter("fitsFilename", fitsFilename);
+
+		return query.getSingleResult();
+
+		} catch (Exception e) {
+			return null;
+		}
+	}
+
 	public List<ProcedureCcdFrame> getFramesForProcedure(Long procedureId) {
 
 		TypedQuery<ProcedureCcdFrame> query = em.createNamedQuery("findAllFramesForProcedure", ProcedureCcdFrame.class);
@@ -61,10 +75,10 @@ public class FrameMgmt {
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 		saveFitsFrame(ccdFrame);
-		
+
 		// save the Ccd record with the fits file name
 		em.persist(ccdFrame);
-		
+
 		associateCcdFrame(procedureCcdFrame);
 	}
 
@@ -76,6 +90,22 @@ public class FrameMgmt {
 	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
 		// create a ProcedureCcdRecord
 
+		// the passed CcdFrame will only have a filename
+		// we need to read from the DB to get the real record
+
+		CcdFrame ccdFrame = findCcdFrame(procedureCcdFrame.getCcdFrame().getFitsFilename());
+
+		if (ccdFrame == null) {
+			// we have to save it for the first time ourselves.  This is how we avoid having to 
+			// populate the database with legacy values using a script, just do it as needed.
+			ccdFrame = new CcdFrame();
+			ccdFrame.setCreateDate(new Date());
+			ccdFrame.setFitsFilename(procedureCcdFrame.getCcdFrame().getFitsFilename());
+			em.persist(ccdFrame);
+		}
+		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
+		
+		// perform the association
 		em.persist(procedureCcdFrame);
 	}
 
@@ -186,7 +216,7 @@ public class FrameMgmt {
 		return fb;
 	}
 
-	// FIXME: built without an example.  This may not work
+	// FIXME: built without an example. This may not work
 	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {
 
 		Fits myFits;

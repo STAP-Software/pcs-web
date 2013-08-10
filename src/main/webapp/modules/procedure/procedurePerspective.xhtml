@@ -201,22 +201,22 @@
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Test #" />
-							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.testNumber}" />
+							<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
 							
 							<h:outputLabel value="ACS Snap # After"  />
-							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.acsSnapNumberAfter}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.acsSnapNumberAfter}"/>
 							
 							<h:outputLabel value="Star Name" />
-							<p:inputText size="20" value="#{procedureController.procedure.procedureContext.starName}"/>
+							<p:inputText size="20" value="#{procedureController.procedure.starName}"/>
 							
 							<h:outputLabel value="Star Sp Type" />
-							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.starSpType}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.starSpType}"/>
 
 							<h:outputLabel value="Star Vmag" />
-							<p:inputText size="4" value="#{procedureController.procedure.procedureContext.starVmag}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.starVmag}"/>
 
 							<h:outputLabel value="Comments" />
-							<p:inputTextarea value="#{procedureController.procedure.procedureContext.comments}" rows="1" cols="30" />
+						    <p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
 
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdDiagnosticController.doCancel}" />

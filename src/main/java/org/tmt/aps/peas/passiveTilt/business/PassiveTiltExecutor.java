@@ -20,6 +20,7 @@ import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.instrument.business.CameraMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -48,7 +49,9 @@ public class PassiveTiltExecutor {
 	@EJB
 	private StatusLogger statusLogger;
 	@EJB
-	private ProcedureExecutionState procedureExecutionMgmt;
+	private ProcedureExecutionMgmt procedureExecutionMgmt;
+	@EJB
+	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private FortranProxy fortranProxy;
 	@EJB
@@ -84,13 +87,8 @@ public class PassiveTiltExecutor {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
 			
-			procedure.setExecutionStartTime(new Date());
-			procedure.setProcedureState(Procedure.PROCEDURE_STATE_EXECUTING);
+			procedureExecutionMgmt.performProcedureStartup(procedure);
 			
-			procedureExecutionMgmt.setExecutionStatus(true);
-			procedureExecutionMgmt.setPercentComplete(0);
-			
-			statusLogger.initLog();
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
@@ -198,7 +196,7 @@ public class PassiveTiltExecutor {
 				
 				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
-				procedureExecutionMgmt.setPercentComplete(trialPct);
+				procedureExecutionState.setPercentComplete(trialPct);
 			}
 
 			// FIXME: what is this really? we need to abstract this
@@ -214,25 +212,19 @@ public class PassiveTiltExecutor {
 			statusLogger.log("Passive Tilt Test Completed");
 			statusLogger.log("Exiting Passive Tilt Test");
 
-			procedureExecutionMgmt.setExecutionStatus(false);
-			procedureExecutionMgmt.setPercentComplete(100);
+			procedureExecutionState.setExecutionStatus(false);
+			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Exception e) {
 			
-			procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
+			procedureExecutionMgmt.handleProcedureException(procedure);
 
 		}
 		/*
 		 * getProcStats();
 		 */
-		procedure.setExecutionEndTime(new Date());
-		procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
 		
-		// this persists the procedure
-		sessionMgmt.updateCurrentSession(currentSession);
-
-		// TODO: see if the previous call set the procedure id
-		statusLogger.saveLog(procedure.getProcedureId());
+		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
 	private void wait(int ms) {
