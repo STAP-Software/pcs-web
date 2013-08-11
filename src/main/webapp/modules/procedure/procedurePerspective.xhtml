@@ -155,7 +155,7 @@
 
 				<p:panelGrid id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
 					<f:facet name="header">
-						<h:outputText value="#{procedureController.selectedFitsFile.fileName}" />
+					    <h:outputText value="#{procedureController.loadedFitsFile.fitsFilename}" />
 					</f:facet>
 
 					<p:spacer width="512" height="512" rendered="#{procedureController.graphicImage == null}" />

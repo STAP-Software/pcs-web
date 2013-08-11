@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.procedure.ui;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -120,6 +121,14 @@ public class ProcedureController implements Serializable {
 		this.selectedFitsFile = selectedFitsFile;
 	}
 
+	public CcdFrame getLoadedFitsFile() {
+		return loadedFitsFile;
+	}
+
+	public void setLoadedFitsFile(CcdFrame loadedFitsFile) {
+		this.loadedFitsFile = loadedFitsFile;
+	}
+
 	public UploadedFile getUploadFitsFile() {
 		return uploadFitsFile;
 	}
@@ -141,13 +150,10 @@ public class ProcedureController implements Serializable {
 
 		try {
 			uploadFitsFile = event.getFile();
+			
+			loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
 
-			loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream());
-
-			short frameArray[][] = loadedFitsFile.getResult();
-
-			FalseColorProcessor falseColorer = new FalseColorProcessor();
-			falseColorPng = falseColorer.createImage(frameArray);
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
 
 			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -161,11 +167,9 @@ public class ProcedureController implements Serializable {
 		try {
 			loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
 
-			short frameArray[][] = loadedFitsFile.getResult();
-
-			FalseColorProcessor falseColorer = new FalseColorProcessor();
-			falseColorPng = falseColorer.createImage(frameArray);
-
+			// if a png file for display exists, read it in.  Otherwise create it.
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+			
  			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
@@ -275,6 +279,27 @@ public class ProcedureController implements Serializable {
 		procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
 		
 		statusLogController.refreshProcedureStatusLog();
+		
+		// load up frames that were used
+		// TODO: this actually only works for one frame associated with procedure
+		// needs to be generalized to a group of frames
+		for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+			String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
+			
+			System.out.println("filename = " + filename);
+			try {
+				
+				loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
+			// if a png file for display exists, read it in.  Otherwise create it.
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+
+			
+		}
 		
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": " + procedure.getProcedureType().getProcedureTypeName(), "newProcedure.xhtml");
 

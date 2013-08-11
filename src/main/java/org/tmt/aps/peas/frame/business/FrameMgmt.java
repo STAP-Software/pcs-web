@@ -20,12 +20,14 @@ import nom.tam.fits.Header;
 import nom.tam.fits.PrimaryHDU;
 import nom.tam.util.BufferedDataOutputStream;
 
+import org.apache.commons.io.FileUtils;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 
 @Stateless
 public class FrameMgmt {
@@ -45,10 +47,10 @@ public class FrameMgmt {
 	public CcdFrame findCcdFrame(String fitsFilename) {
 
 		try {
-		TypedQuery<CcdFrame> query = em.createNamedQuery("findCcdFrameByFilename", CcdFrame.class);
-		query.setParameter("fitsFilename", fitsFilename);
+			TypedQuery<CcdFrame> query = em.createNamedQuery("findCcdFrameByFilename", CcdFrame.class);
+			query.setParameter("fitsFilename", fitsFilename);
 
-		return query.getSingleResult();
+			return query.getSingleResult();
 
 		} catch (Exception e) {
 			return null;
@@ -96,7 +98,7 @@ public class FrameMgmt {
 		CcdFrame ccdFrame = findCcdFrame(procedureCcdFrame.getCcdFrame().getFitsFilename());
 
 		if (ccdFrame == null) {
-			// we have to save it for the first time ourselves.  This is how we avoid having to 
+			// we have to save it for the first time ourselves. This is how we avoid having to
 			// populate the database with legacy values using a script, just do it as needed.
 			ccdFrame = new CcdFrame();
 			ccdFrame.setCreateDate(new Date());
@@ -104,7 +106,7 @@ public class FrameMgmt {
 			em.persist(ccdFrame);
 		}
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
-		
+
 		// perform the association
 		em.persist(procedureCcdFrame);
 	}
@@ -137,18 +139,26 @@ public class FrameMgmt {
 		for (File fileEntry : folder.listFiles()) {
 
 			String filename = fileEntry.getName();
+			
+			if (filename.toLowerCase().endsWith(".fts")) {
 
-			FitsFilename fitsFile = new FitsFilename(filename);
+				FitsFilename fitsFile = new FitsFilename(filename);
 
-			fitsFileList.add(fitsFile);
+				fitsFileList.add(fitsFile);
+				
+				// one time only conversion - UNCOMMENT TO GENERATE PNG FROM FITS FILES
+				System.out.println("file: " + filename);
+				CcdFrame ccdFrame = loadFitsFrame(filename);
+				loadPng(ccdFrame);
+			}
 		}
 
 		return fitsFileList;
 	}
 
-	public CcdFrame loadFitsFrame(InputStream is) throws Exception {
+	public CcdFrame loadFitsFrame(InputStream is, String filename) throws Exception {
 		Fits fitsFile = new Fits(is);
-		return loadFitsFrame(fitsFile);
+		return loadFitsFrame(fitsFile, filename);
 	}
 
 	public CcdFrame loadFitsFrame(String fitsFilename) throws Exception {
@@ -158,15 +168,15 @@ public class FrameMgmt {
 		String path = frameFolder + File.separator + fitsFilename;
 		Fits fitsFile = new Fits(path);
 
-		return loadFitsFrame(fitsFile);
+		return loadFitsFrame(fitsFile, fitsFilename);
 	}
 
-	public CcdFrame loadFitsFrame(Fits fitsFile) throws Exception {
+	public CcdFrame loadFitsFrame(Fits fitsFile, String fitsFilename) throws Exception {
 
 		BasicHDU[] bhdus = fitsFile.read();
 		CcdFrame fb = new CcdFrame();
+		fb.setFitsFilename(fitsFilename);
 
-		System.out.println("bhdus = " + bhdus.length);
 
 		if (bhdus != null) {
 
@@ -229,6 +239,34 @@ public class FrameMgmt {
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(ccdFrame.getFitsFilename());
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
 		myFits.write(o);
+
+	}
+
+	public byte[] loadPng(CcdFrame ccdFrame) {
+
+		try {
+			String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
+			String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
+
+			path = path.substring(0, path.length() - 3) + "png";
+
+			File pngFile = new File(path);
+
+			try {
+				byte[] falseColorPng = FileUtils.readFileToByteArray(pngFile);
+				return falseColorPng;
+			} catch (Exception e) {
+				FalseColorProcessor falseColorer = new FalseColorProcessor();
+				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getResult());
+
+				FileUtils.writeByteArrayToFile(pngFile, falseColorPng);
+				return falseColorPng;
+			}
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return null;
 
 	}
 }

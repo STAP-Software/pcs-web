@@ -195,14 +195,10 @@ public class FrameController implements Serializable {
 
 			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
 
-			CcdFrame fbs = frameMgmt.loadFitsFrame(selectedElement.getFileName());
+			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(selectedElement.getFileName());
 
-			short frameArray[][] = fbs.getResult();
-
-			FalseColorProcessor falseColorer = new FalseColorProcessor();
-			
-			byte[] falseColorPng = falseColorer.createImage(frameArray);
-			
+			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame);
+						
 	        graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
 
 		} catch (Exception e) {
