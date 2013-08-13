@@ -93,7 +93,7 @@
        			<h:outputLabel style="height: 10px" />
        			
        			<f:facet name="footer">
-					<p:commandButton value="Send Commands" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Send Commands" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
 
         	</p:panelGrid>
@@ -162,7 +162,7 @@
        			<h:outputLabel style="height: 10px" />
         			
        			<f:facet name="footer">
-					<p:commandButton value="Query All Status" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Query All Status" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
 
         	</p:panelGrid>
@@ -195,7 +195,7 @@
        			<h:outputLabel style="height: 132px" />
        			
        			<f:facet name="footer">
-					<p:commandButton value="Send Queries" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Send Queries" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
 
         	</p:panelGrid>

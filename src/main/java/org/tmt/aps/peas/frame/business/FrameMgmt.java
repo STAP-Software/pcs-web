@@ -146,10 +146,10 @@ public class FrameMgmt {
 
 				fitsFileList.add(fitsFile);
 				
-				// one time only conversion - UNCOMMENT TO GENERATE PNG FROM FITS FILES
-				System.out.println("file: " + filename);
-				CcdFrame ccdFrame = loadFitsFrame(filename);
-				loadPng(ccdFrame);
+				// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
+				//System.out.println("file: " + filename);
+				//CcdFrame ccdFrame = loadFitsFrame(filename);
+				//loadPng(ccdFrame);
 			}
 		}
 

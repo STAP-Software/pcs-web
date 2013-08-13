@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.instrument.ui;
+package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
 
@@ -17,7 +17,7 @@ import org.tmt.aps.peas.instrument.model.Shutter;
 
 @Named
 @SessionScoped
-public class CameraDiagnosticController implements Serializable {
+public class CameraManualController implements Serializable {
 
 
 

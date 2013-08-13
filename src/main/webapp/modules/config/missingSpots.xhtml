@@ -34,9 +34,9 @@
 							<p:ajax update="maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" />
 						</p:selectOneMenu>
 						<h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;" />
-						<h:outputText value="Utility Word (Decimal) &#160;&#160;" rendered="#{ccdDiagnosticController.showUtilityWord}" />
-						<p:inputText id="utilityWord" value="#{ccdDiagnosticController.utilityWord}" size="5"
-							rendered="#{ccdDiagnosticController.showUtilityWord}" />
+						<h:outputText value="Utility Word (Decimal) &#160;&#160;" rendered="#{ccdManualController.showUtilityWord}" />
+						<p:inputText id="utilityWord" value="#{ccdManualController.utilityWord}" size="5"
+							rendered="#{ccdManualController.showUtilityWord}" />
 					</h:panelGroup>
 
 					<h:outputLabel value="Spot Selection" />
@@ -51,8 +51,8 @@
 				<p:panelGrid id="centroidDisplay" columns="1" style="margin:0px;" styleClass="pcsForm">
 					<ui:include src="centroidNumbering.xhtml" />
 					<f:facet name="footer">
-						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl" />
-						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl" />
+						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{ccdManualController.doCancel}" />
 					</f:facet>
 				</p:panelGrid>
 																

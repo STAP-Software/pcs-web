@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.dcs.ui;
+package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
 
@@ -16,7 +16,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Named
 @SessionScoped
-public class DcsController implements Serializable {
+public class AcsManualController implements Serializable {
 
 	@EJB
 	PeasProperties peasProperties;

@@ -184,11 +184,11 @@
 						</p:row>
 				</p:panelGrid>
 					<f:facet name="footer">
-						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
 						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
 							action="#{globalConfigController.doCancelSaveSetup}" />
 						<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-							action="#{ccdDiagnosticController.doSendCommand}" update=":growl" />
+							action="#{ccdManualController.doSendCommand}" update=":growl" />
 					</f:facet>
 				</p:panelGrid>
 
@@ -219,7 +219,7 @@
 						    <p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
 
 					<f:facet name="footer">
-						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdDiagnosticController.doCancel}" />
+						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdManualController.doCancel}" />
 						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
 							action="#{globalConfigController.doCancelSaveSetup}" />
 					</f:facet>

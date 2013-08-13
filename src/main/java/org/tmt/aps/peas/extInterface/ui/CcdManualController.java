@@ -1,4 +1,4 @@
-package org.tmt.aps.peas.instrument.ui;
+package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
 
@@ -13,7 +13,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 
 @Named
 @SessionScoped
-public class CcdDiagnosticController implements Serializable {
+public class CcdManualController implements Serializable {
 
 
 	@Inject

@@ -31,60 +31,60 @@
        			<h:outputLabel />
       
    				<h:outputLabel value="Pupil Mask" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.pupilMask}" />	
+          		<h:outputText value="#{cameraManualController.camera.pupilMask}" />	
 
  				<h:outputLabel value="CCD Power" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.ccd.displayString}" />	
+          		<h:outputText value="#{cameraManualController.camera.ccd.displayString}" />	
  
    				<h:outputLabel value="Filter" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.filter}" />	
+          		<h:outputText value="#{cameraManualController.camera.filter}" />	
 
 				<h:outputLabel value="CCD Temperature" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.ccd.temperature}" />	
+          		<h:outputText value="#{cameraManualController.camera.ccd.temperature}" />	
  
    				<h:outputLabel value="Ref. Beam" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.refBeam}" />	
+          		<h:outputText value="#{cameraManualController.camera.refBeam}" />	
 
 				<h:outputLabel value="Instrument Temperature" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.instrumentTemperature}" />	
+          		<h:outputText value="#{cameraManualController.camera.instrumentTemperature}" />	
 
    				<h:outputLabel value="Shutter" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.shutter.shutterDisplayString}" />	
+          		<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" />	
 
  				<h:outputLabel value="Electronics Box Temperature" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.electronicsBoxTemperature}" />	
+          		<h:outputText value="#{cameraManualController.camera.electronicsBoxTemperature}" />	
  				
    				<h:outputLabel value="Preflash LEDs" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.preflashLEDs.displayString}" />	
+          		<h:outputText value="#{cameraManualController.camera.preflashLEDs.displayString}" />	
  				
  				<h:outputLabel value="Knife Edge Position" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.knifeEdge.position}" />	
+          		<h:outputText value="#{cameraManualController.camera.knifeEdge.position}" />	
  				          		
    				<h:outputLabel value="Fine Tilt (x, y microns)" />
    				<h:panelGroup>
-          		<h:outputText value="#{cameraDiagnosticController.camera.fineTilt.x}" />
+          		<h:outputText value="#{cameraManualController.camera.fineTilt.x}" />
           		<h:outputText value=", " />	
-         		<h:outputText value="#{cameraDiagnosticController.camera.fineTilt.y}" />	
+         		<h:outputText value="#{cameraManualController.camera.fineTilt.y}" />	
 				</h:panelGroup>
  
  				<h:outputLabel value="Knife Edge Rate" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.knifeEdge.rate}" />	
+          		<h:outputText value="#{cameraManualController.camera.knifeEdge.rate}" />	
 				
    				<h:outputLabel value="Coarse Tilt (x, y microns)" />
    				<h:panelGroup>
-          		<h:outputText value="#{cameraDiagnosticController.camera.coarseTilt.x}" />	
+          		<h:outputText value="#{cameraManualController.camera.coarseTilt.x}" />	
          		<h:outputText value=", " />	
-          		<h:outputText value="#{cameraDiagnosticController.camera.coarseTilt.y}" />	
+          		<h:outputText value="#{cameraManualController.camera.coarseTilt.y}" />	
 				</h:panelGroup>
 				
 				<h:outputLabel value="Video CCD Expose" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.videoCcd.exposureTime}" />	
+          		<h:outputText value="#{cameraManualController.camera.videoCcd.exposureTime}" />	
 				
   				<h:outputLabel value="Two Position Mechanism" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.twoPosMechanism.displayString}" />	
+          		<h:outputText value="#{cameraManualController.camera.twoPosMechanism.displayString}" />	
  				
 				<h:outputLabel value="Video CCD Power" />
-          		<h:outputText value="#{cameraDiagnosticController.camera.videoCcd.displayString}" />	
+          		<h:outputText value="#{cameraManualController.camera.videoCcd.displayString}" />	
  							
 				
        			<h:outputLabel style="height: 10px" />
@@ -93,7 +93,7 @@
        			<h:outputLabel style="height: 10px" />
        			
        			<f:facet name="footer">
-					<p:commandButton value="Refresh All Status" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Refresh All Status" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
 
         	</p:panelGrid>
@@ -105,7 +105,7 @@
 				</f:facet>
  				
  				<h:outputLabel value="Query" />
-    			<p:selectOneMenu id="options" value="#{ccdDiagnosticController.ccdCommand}" style="top:2px">  
+    			<p:selectOneMenu id="options" value="#{ccdManualController.ccdCommand}" style="top:2px">  
             		<f:selectItem itemLabel="Pupil Mask" itemValue="1" />  
             		<f:selectItem itemLabel="Filter" itemValue="2" />  
             		<f:selectItem itemLabel="Ref. Beam" itemValue="3" />  
@@ -125,7 +125,7 @@
          		</p:selectOneMenu>  				
  				
       			<f:facet name="footer">
-					<p:commandButton value="Query Camera" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Query Camera" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
  
  
@@ -139,7 +139,7 @@
  				
  				<h:outputLabel value="Command" />
  				<h:panelGroup id="commandPanel">
-    			<p:selectOneMenu value="#{cameraDiagnosticController.commandSelection}" style="top:2px">  
+    			<p:selectOneMenu value="#{cameraManualController.commandSelection}" style="top:2px">  
             		<f:selectItem itemLabel="Pupil Mask" itemValue="1" />  
             		<f:selectItem itemLabel="Filter" itemValue="2" />  
             		<f:selectItem itemLabel="Ref. Beam" itemValue="3" />  
@@ -156,7 +156,7 @@
              		<p:ajax update="commandPanel" />
          		</p:selectOneMenu>  				
  				<h:outputText value="&#160;&#160;&#160;&#160;" />
- 				<p:selectOneMenu value="#{cameraDiagnosticController.camera.pupilMask}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 1}">  
+ 				<p:selectOneMenu value="#{cameraManualController.camera.pupilMask}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 1}">  
             		<f:selectItem itemLabel="Position 1" itemValue="1" />  
             		<f:selectItem itemLabel="Position 2" itemValue="2" />  
             		<f:selectItem itemLabel="Position 3" itemValue="3" />  
@@ -165,7 +165,7 @@
             		<f:selectItem itemLabel="Position 6" itemValue="6" />  
 				</p:selectOneMenu>  
  				
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.filter}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 2}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.filter}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 2}">  
             		<f:selectItem itemLabel="Position 1" itemValue="1" />  
             		<f:selectItem itemLabel="Position 2" itemValue="2" />  
             		<f:selectItem itemLabel="Position 3" itemValue="3" />  
@@ -174,7 +174,7 @@
             		<f:selectItem itemLabel="Position 6" itemValue="6" />  
 				</p:selectOneMenu>  
  				
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.refBeam}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 3}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.refBeam}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 3}">  
             		<f:selectItem itemLabel="Ref. Beam 1" itemValue="1" />  
             		<f:selectItem itemLabel="Ref. Beam 2" itemValue="2" />  
             		<f:selectItem itemLabel="Ref. Beam 3" itemValue="3" />  
@@ -187,66 +187,66 @@
             		<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />  
 				</p:selectOneMenu>  
 
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.shutter.state}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 4}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.shutter.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 4}">  
             		<f:selectItem itemLabel="Open" itemValue="1" />  
             		<f:selectItem itemLabel="Close" itemValue="2" />  
             		<f:selectItem itemLabel="Timed Exposure" itemValue="3" />  
             		<p:ajax update="commandPanel" />
  				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" 	rendered="#{cameraDiagnosticController.renderExposureTime}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.shutter.exposureTime}"  size="5" rendered="#{cameraDiagnosticController.renderExposureTime}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" 	rendered="#{cameraManualController.renderExposureTime}"/>	
+        		<p:inputText value="#{cameraManualController.camera.shutter.exposureTime}"  size="5" rendered="#{cameraManualController.renderExposureTime}"/>
  				
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.preflashLEDs.state}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 5}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.preflashLEDs.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 5}">  
             		<f:selectItem itemLabel="On" itemValue="1" />  
             		<f:selectItem itemLabel="Off" itemValue="2" />  
             		<f:selectItem itemLabel="Timed Flash" itemValue="3" />  
             		<p:ajax update="commandPanel" />
  				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Flash Duration (sec) &#160;&#160;" rendered="#{cameraDiagnosticController.renderPreflashTime}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.preflashLEDs.flashDuration}"  size="5" rendered="#{cameraDiagnosticController.renderPreflashTime}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;Flash Duration (sec) &#160;&#160;" rendered="#{cameraManualController.renderPreflashTime}"/>	
+        		<p:inputText value="#{cameraManualController.camera.preflashLEDs.flashDuration}"  size="5" rendered="#{cameraManualController.renderPreflashTime}"/>
  				
-        		<h:outputText value="x (microns) &#160;&#160;" rendered="#{cameraDiagnosticController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.fineTilt.x}"  size="5" rendered="#{cameraDiagnosticController.commandSelection eq 6}"/>
-        		<h:outputText value="&#160;&#160;&#160;&#160;y (microns) &#160;&#160;" rendered="#{cameraDiagnosticController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.fineTilt.y}"  size="5" rendered="#{cameraDiagnosticController.commandSelection eq 6}"/>
+        		<h:outputText value="x (microns) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
+        		<p:inputText value="#{cameraManualController.camera.fineTilt.x}"  size="5" rendered="#{cameraManualController.commandSelection eq 6}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;y (microns) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
+        		<p:inputText value="#{cameraManualController.camera.fineTilt.y}"  size="5" rendered="#{cameraManualController.commandSelection eq 6}"/>
  				
-        		<h:outputText value="x (microns) &#160;&#160;" rendered="#{cameraDiagnosticController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.coarseTilt.x}"  size="5" rendered="#{cameraDiagnosticController.commandSelection eq 7}"/>
-        		<h:outputText value="&#160;&#160;&#160;&#160;y (microns) &#160;&#160;" rendered="#{cameraDiagnosticController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.coarseTilt.y}"  size="5" rendered="#{cameraDiagnosticController.commandSelection eq 7}"/>
+        		<h:outputText value="x (microns) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
+        		<p:inputText value="#{cameraManualController.camera.coarseTilt.x}"  size="5" rendered="#{cameraManualController.commandSelection eq 7}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;y (microns) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
+        		<p:inputText value="#{cameraManualController.camera.coarseTilt.y}"  size="5" rendered="#{cameraManualController.commandSelection eq 7}"/>
  				
- 				<p:selectOneMenu value="#{cameraDiagnosticController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 8}">  
+ 				<p:selectOneMenu value="#{cameraManualController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
             		<f:selectItem itemLabel="Extend" itemValue="1" />  
             		<f:selectItem itemLabel="Retract" itemValue="2" />  
   				</p:selectOneMenu>  
  				
- 				<p:selectOneMenu value="#{cameraDiagnosticController.camera.ccd.state}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 9}">  
+ 				<p:selectOneMenu value="#{cameraManualController.camera.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 9}">  
             		<f:selectItem itemLabel="On" itemValue="1" />  
             		<f:selectItem itemLabel="Off" itemValue="2" />  
   				</p:selectOneMenu>  
 
 
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.knifeEdge.positionCommand}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 13}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.knifeEdge.positionCommand}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 13}">  
             		<f:selectItem itemLabel="Home Knife" itemValue="1" />  
             		<f:selectItem itemLabel="Position Knife" itemValue="2" />  
              		<p:ajax update="commandPanel" />
  				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Knife Position (microns) &#160;&#160;" 	rendered="#{cameraDiagnosticController.renderKnifeEdgePosition}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.knifeEdge.position}"  size="5" rendered="#{cameraDiagnosticController.renderKnifeEdgePosition}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;Knife Position (microns) &#160;&#160;" 	rendered="#{cameraManualController.renderKnifeEdgePosition}"/>	
+        		<p:inputText value="#{cameraManualController.camera.knifeEdge.position}"  size="5" rendered="#{cameraManualController.renderKnifeEdgePosition}"/>
 
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.knifeEdge.rateCommand}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 14}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.knifeEdge.rateCommand}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 14}">  
             		<f:selectItem itemLabel="Stop Knife" itemValue="1" />  
             		<f:selectItem itemLabel="Set to Rate" itemValue="2" />  
              		<p:ajax update="commandPanel" />
  				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Knife Rate (microns) &#160;&#160;" 	rendered="#{cameraDiagnosticController.renderKnifeEdgeRate}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.knifeEdge.rate}"  size="5" rendered="#{cameraDiagnosticController.renderKnifeEdgeRate}"/>
+        		<h:outputText value="&#160;&#160;&#160;&#160;Knife Rate (microns) &#160;&#160;" 	rendered="#{cameraManualController.renderKnifeEdgeRate}"/>	
+        		<p:inputText value="#{cameraManualController.camera.knifeEdge.rate}"  size="5" rendered="#{cameraManualController.renderKnifeEdgeRate}"/>
 
 
-        		<h:outputText value="Exposure Time (sec) &#160;&#160;" rendered="#{cameraDiagnosticController.commandSelection eq 15}"/>	
-        		<p:inputText value="#{cameraDiagnosticController.camera.videoCcd.exposureTime}"  size="5" rendered="#{cameraDiagnosticController.commandSelection eq 15}"/>
+        		<h:outputText value="Exposure Time (sec) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 15}"/>	
+        		<p:inputText value="#{cameraManualController.camera.videoCcd.exposureTime}"  size="5" rendered="#{cameraManualController.commandSelection eq 15}"/>
 
-				<p:selectOneMenu value="#{cameraDiagnosticController.camera.videoCcd.state}" style="top:2px" rendered="#{cameraDiagnosticController.commandSelection eq 16}">  
+				<p:selectOneMenu value="#{cameraManualController.camera.videoCcd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 16}">  
             		<f:selectItem itemLabel="On" itemValue="1" />  
             		<f:selectItem itemLabel="Off" itemValue="2" />  
  				</p:selectOneMenu>  
@@ -255,7 +255,7 @@
  				</h:panelGroup>
  				
       			<f:facet name="footer">
-					<p:commandButton value="Send Commands" icon="ui-icon-check" ajax="true" action="#{ccdDiagnosticController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Send Commands" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
 				</f:facet>
  
  
@@ -264,7 +264,7 @@
          	
          	
       			<f:facet name="footer">
-					<p:commandButton value="Close" icon="ui-icon-close" ajax="true" action="#{cameraDiagnosticController.doCancel}" update=":growl"/>
+					<p:commandButton value="Close" icon="ui-icon-close" ajax="true" action="#{cameraManualController.doCancel}" update=":growl"/>
 				</f:facet>
         	</p:panelGrid>
     		
