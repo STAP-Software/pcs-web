@@ -12,13 +12,13 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Select a File" />
-        			<p:selectOneListbox value="#{procedureController.selectedFitsFile}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" >  
+        			<p:selectManyMenu value="#{procedureController.selectedFitsFiles}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" showCheckbox="true">  
             			<f:selectItems value="#{procedureController.availableFitsFiles}" var="fitsFile" itemLabel="#{fitsFile.fileName}" itemValue="#{fitsFile}" />  
             			<p:column>  
                 			#{f.fileName}  
             			</p:column>  
 
-					</p:selectOneListbox>
+					</p:selectManyMenu>
 
 				</p:panelGrid>
 

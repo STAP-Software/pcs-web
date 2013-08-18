@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.frame.model;
 
+import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -12,6 +13,9 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
+
+import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.StreamedContent;
 
 @Entity
 @Table(name = "CcdFrame")
@@ -94,6 +98,14 @@ public class CcdFrame {
 		this.createDate = createDate;
 	}
 
+	@Transient
+	byte[] falseColorPng;
+	public byte[] getFalseColorPng() {
+		return falseColorPng;
+	}
+	public void setFalseColorPng(byte[] falseColorPng) {
+		this.falseColorPng = falseColorPng;
+	}
 
 
 }

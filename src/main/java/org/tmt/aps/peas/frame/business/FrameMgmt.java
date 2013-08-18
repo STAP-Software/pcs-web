@@ -25,9 +25,10 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
-import org.tmt.aps.peas.frame.model.ImageFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.Procedure;
 
 @Stateless
 public class FrameMgmt {
@@ -37,6 +38,10 @@ public class FrameMgmt {
 
 	@EJB
 	PeasProperties peasProperties;
+	@EJB
+	FrameSimulator frameSimulator;
+	@EJB
+	ProcedureExecutionState procedureExecutionState;
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
 
@@ -111,7 +116,7 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	public ImageFrame getCorrectedFrame(int frameSource) {
+	public ProcedureCcdFrame getProcedureCcdFrame(int frameSource, int iteration, int frameNumber) {
 
 		if (frameSource == Constants.FRAME_SOURCE_CCD) {
 			// get the frame from CCD or from file, depending on the called type
@@ -120,9 +125,20 @@ public class FrameMgmt {
 
 		}
 
-		// get the frame from the file and return it
+		CcdFrame ccdFrame = frameSimulator.getFrame(frameNumber);
+		procedureExecutionState.setCurrentFrame(ccdFrame);
+		Procedure procedure = procedureExecutionState.getCurrentProcedure();
+		
+		ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
+		procedureCcdFrame.setCcdFrame(ccdFrame);
+		procedureCcdFrame.setNewFrameFlg(false); // frame from file
+		procedureCcdFrame.setProcedureFrameNumber(frameNumber);
+		procedureCcdFrame.setProcedureIterationNumber(iteration);
+		
+		// add it to the procedure 
+		procedure.addProcedureCcdFrame(procedureCcdFrame);
 
-		return null;
+		return procedureCcdFrame;
 	}
 
 	public List<FitsFilename> findAllFitsFiles() throws Exception {

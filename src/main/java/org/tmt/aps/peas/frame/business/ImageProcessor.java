@@ -6,13 +6,13 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.frame.model.ImageFrame;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 
 @Stateless
 public class ImageProcessor {
 
-	public List<Point> findAndIdentify(ImageFrame frame) {
+	public List<Point> findAndIdentify(CcdFrame frame) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -1,10 +1,9 @@
 package org.tmt.aps.peas.procedure.ui;
 
+import java.awt.Image;
 import java.io.ByteArrayInputStream;
-import java.io.File;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -15,6 +14,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ActionEvent;
+import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -26,12 +26,13 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.business.FrameSimulator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
-import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -51,6 +52,10 @@ public class ProcedureController implements Serializable {
 	PassiveTiltMgmt passiveTiltMgmt;
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	FrameSimulator frameSimulator;
+	@EJB
+	ProcedureExecutionState procedureExecutionState;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -66,26 +71,16 @@ public class ProcedureController implements Serializable {
 	Procedure procedure;
 
 	List<Procedure> procedureList;
-	List<String> frameList;
 	float integrationAddTime;
 	UploadedFile uploadFitsFile;
-	FitsFilename selectedFitsFile;
+	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 
 	// TODO: generalize this to a set of files when necessary
 	CcdFrame loadedFitsFile;
-	
-	
+
 	@PostConstruct
 	private void init() {
-
-		// test only, in the future, the DB will return a list of procedures,
-		// and the menus will be generated from those
-
-		frameList = new ArrayList<String>();
-		frameList.add("1");
-		frameList.add("2");
-		frameList.add("3");
 
 	}
 
@@ -97,14 +92,6 @@ public class ProcedureController implements Serializable {
 		this.procedure = procedure;
 	}
 
-	public List<String> getFrameList() {
-		return frameList;
-	}
-
-	public void setFrameList(List<String> frameList) {
-		this.frameList = frameList;
-	}
-
 	public float getIntegrationAddTime() {
 		return integrationAddTime;
 	}
@@ -113,12 +100,12 @@ public class ProcedureController implements Serializable {
 		this.integrationAddTime = integrationAddTime;
 	}
 
-	public FitsFilename getSelectedFitsFile() {
-		return selectedFitsFile;
+	public List<FitsFilename> getSelectedFitsFiles() {
+		return selectedFitsFiles;
 	}
 
-	public void setSelectedFitsFile(FitsFilename selectedFitsFile) {
-		this.selectedFitsFile = selectedFitsFile;
+	public void setSelectedFitsFiles(List<FitsFilename> selectedFitsFiles) {
+		this.selectedFitsFiles = selectedFitsFiles;
 	}
 
 	public CcdFrame getLoadedFitsFile() {
@@ -134,10 +121,25 @@ public class ProcedureController implements Serializable {
 	}
 
 	public StreamedContent getGraphicImage() {
-		if (falseColorPng == null) {
-			return null;
+
+		FacesContext context = FacesContext.getCurrentInstance();
+
+		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
+			// So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
+			return new DefaultStreamedContent();
+		} else {
+			// So, browser is requesting the image. Get ID value from actual request param.
+			String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
+
+			ProcedureCcdFrame pcf = procedure.getProcedureCcdFrameList().get(new Integer(indexStr));
+
+			byte[] falseColorPng = pcf.getCcdFrame().getFalseColorPng();
+
+			if (falseColorPng == null) {
+				return null;
+			}
+			return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 		}
-        return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
 	}
 
 	public List<FitsFilename> getAvailableFitsFiles() {
@@ -150,7 +152,7 @@ public class ProcedureController implements Serializable {
 
 		try {
 			uploadFitsFile = event.getFile();
-			
+
 			loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
 
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
@@ -165,12 +167,12 @@ public class ProcedureController implements Serializable {
 
 	public void doLoadFitsFile() {
 		try {
-			loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFile.getFileName());
+			loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
 
-			// if a png file for display exists, read it in.  Otherwise create it.
+			// if a png file for display exists, read it in. Otherwise create it.
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
-			
- 			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
+
+			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} catch (Exception e) {
@@ -183,7 +185,7 @@ public class ProcedureController implements Serializable {
 		System.out.println("Frame Source Listener");
 	}
 
-	// TODO: this should be split into a generic doNewProcedure 
+	// TODO: this should be split into a generic doNewProcedure
 	public String doNewPassiveTilt() {
 
 		try {
@@ -229,7 +231,7 @@ public class ProcedureController implements Serializable {
 	public void doExecuteProcedure(ActionEvent actionEvent) {
 
 		System.out.println("doExecuteProcedure:: starting");
-		
+
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
 
@@ -238,21 +240,19 @@ public class ProcedureController implements Serializable {
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
-		
+
+		procedureExecutionState.init(procedure);
+
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfig().isFrameFromFile()) {
-			// TODO: set up all frames.  For now, its just one frame
-			ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
-			procedureCcdFrame.setCcdFrame(loadedFitsFile);
-			procedureCcdFrame.setNewFrameFlg(false); // frame from file
-			procedureCcdFrame.setProcedure(procedure);
-			procedureCcdFrame.setProcedureFrameNumber(1);
-			procedureCcdFrame.setProcedureIterationNumber(1);
-			
-			procedure.addProcedureCcdFrame(procedureCcdFrame);
-		
+
+			try {
+				frameSimulator.init(selectedFitsFiles);
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+
 		}
-		
 
 		System.out.println("doExecuteProcedure::");
 		// validate inputs
@@ -272,44 +272,39 @@ public class ProcedureController implements Serializable {
 
 	}
 
-
-
 	public String doViewProcedure() {
 
 		procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
-		
+
 		statusLogController.refreshProcedureStatusLog();
-		
+
 		// load up frames that were used
-		// TODO: this actually only works for one frame associated with procedure
-		// needs to be generalized to a group of frames
 		for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 			String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
-			
+
 			System.out.println("filename = " + filename);
 			try {
-				
+
 				loadedFitsFile = frameMgmt.loadFitsFrame(filename);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
-			// if a png file for display exists, read it in.  Otherwise create it.
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
 
-			
+			// if a png file for display exists, read it in. Otherwise create it.
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+			procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
+
 		}
-		
-		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": " + procedure.getProcedureType().getProcedureTypeName(), "newProcedure.xhtml");
+
+		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
+				+ procedure.getProcedureType().getProcedureTypeName(), "newProcedure.xhtml");
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
-	
-	
 	// Maybe in another controller, not sure yet
-	
+
 	public void doSaveAdvancedOptions() {
 
 	}

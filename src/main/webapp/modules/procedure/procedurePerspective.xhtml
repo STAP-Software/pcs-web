@@ -83,13 +83,12 @@
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="CCD" itemValue="1" />
 										<f:selectItem itemLabel="File" itemValue="2" />
-										<p:ajax update="configPanel" listener="#{procedureController.frameSourceListener}"/>
+										<p:ajax update="configPanel" listener="#{procedureController.frameSourceListener}" />
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
-										rendered="#{procedureController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding" 
-										onclick="fitsFileLoadDialog.show();"
-										style="top:-5px"/>
+										rendered="#{procedureController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding"
+										onclick="fitsFileLoadDialog.show();" style="top:-5px" />
 								</p:column>
 							</p:row>
 
@@ -136,36 +135,49 @@
 
 					</p:tab>
 					<p:tab title="Procedure Event Log">
-					<p:scrollPanel style="width:100%;height:206px" mode="native">
-						<p:dataTable id="sessionTable" var="logEntry"  value="#{statusLogController.procedureStatusLog.logEntryList}">
+						<p:scrollPanel style="width:100%;height:206px" mode="native">
+							<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
 
-							<p:column headerText="Time" >
-								<h:outputText value="#{logEntry.createDate}">
-									<f:convertDateTime pattern="hh:mm:ss" />
-								</h:outputText>
-							</p:column>
-							<p:column headerText="Status" >
-								<h:outputText value="#{logEntry.status}" />
-							</p:column>
+								<p:column headerText="Time">
+									<h:outputText value="#{logEntry.createDate}">
+										<f:convertDateTime pattern="hh:mm:ss" />
+									</h:outputText>
+								</p:column>
+								<p:column headerText="Status">
+									<h:outputText value="#{logEntry.status}" />
+								</p:column>
 
-						</p:dataTable>
+							</p:dataTable>
 						</p:scrollPanel>
 					</p:tab>
 				</p:accordionPanel>
 
 				<p:panelGrid id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
-					<f:facet name="header">
-					    <h:outputText value="#{procedureController.loadedFitsFile.fitsFilename}" />
+					<ui:fragment rendered="#{procedureController.procedure.procedureState lt 3}" >
+					<f:facet name="header" >
+						<h:outputText id="fitsFilename" value="#{procedureController.loadedFitsFile.fitsFilename}" />
 					</f:facet>
-
+					</ui:fragment>
+					
 					<p:spacer width="512" height="512" rendered="#{procedureController.graphicImage == null}" />
 
-					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
-					<!--  show this when procedure is done
-				<p:carousel id="frameCarousel" value="#{procedureController.frameList}" var="frame" rows="1" >
-					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />	
-				</p:carousel>
-				-->
+					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px"
+						rendered="#{procedureController.procedure.procedureState lt 3}" />
+					<!--  show this when procedure is done -->
+					<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1"
+						rendered="#{procedureController.procedure.procedureState ge 3}">
+						
+					<p:panelGrid columns="1" style="padding:0;margin:0" >
+						<f:facet name="header" >
+							<h:outputText value="#{procedureCcdFrame.ccdFrame.fitsFilename}" />
+					    </f:facet>
+						
+						<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" >
+							<f:param name="frameIndex" value="#{procedureCcdFrame.procedureFrameNumber}" />
+						</p:graphicImage>
+					</p:panelGrid>
+					</p:carousel>
+
 					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 						<p:row>
@@ -182,7 +194,7 @@
 								<h:outputText value="10.8" />
 							</p:column>
 						</p:row>
-				</p:panelGrid>
+					</p:panelGrid>
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
 						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
@@ -193,41 +205,41 @@
 				</p:panelGrid>
 
 				<p:accordionPanel multiple="true" activeIndex="0,1">
-				
-				
-				 
+
+
+
 					<p:tab title="Procedure Context">
 
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Test #" />
 							<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
-							
-							<h:outputLabel value="ACS Snap # After"  />
-							<p:inputText size="4" value="#{procedureController.procedure.acsSnapNumberAfter}"/>
-							
+
+							<h:outputLabel value="ACS Snap # After" />
+							<p:inputText size="4" value="#{procedureController.procedure.acsSnapNumberAfter}" />
+
 							<h:outputLabel value="Star Name" />
-							<p:inputText size="20" value="#{procedureController.procedure.starName}"/>
-							
+							<p:inputText size="20" value="#{procedureController.procedure.starName}" />
+
 							<h:outputLabel value="Star Sp Type" />
-							<p:inputText size="4" value="#{procedureController.procedure.starSpType}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.starSpType}" />
 
 							<h:outputLabel value="Star Vmag" />
-							<p:inputText size="4" value="#{procedureController.procedure.starVmag}"/>
+							<p:inputText size="4" value="#{procedureController.procedure.starVmag}" />
 
 							<h:outputLabel value="Comments" />
-						    <p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
+							<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
 
-					<f:facet name="footer">
-						<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdManualController.doCancel}" />
-						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-							action="#{globalConfigController.doCancelSaveSetup}" />
-					</f:facet>
+							<f:facet name="footer">
+								<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdManualController.doCancel}" />
+								<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+									action="#{globalConfigController.doCancelSaveSetup}" />
+							</f:facet>
 						</p:panelGrid>
 					</p:tab>
-				
-				 
-				
+
+
+
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 

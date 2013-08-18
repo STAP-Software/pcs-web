@@ -1,7 +1,6 @@
 package org.tmt.aps.peas.passiveTilt.business;
 
 
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -17,7 +16,8 @@ import org.tmt.aps.peas.common.fortran.FortranProxy;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
-import org.tmt.aps.peas.frame.model.ImageFrame;
+import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.instrument.business.CameraMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -125,14 +125,16 @@ public class PassiveTiltExecutor {
 		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
-				ImageFrame frame = frameMgmt.getCorrectedFrame(procedureConfig.getFrameSource());
+				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), i, i);
+				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 				
 				// TODO: this is where we display the frame
+				
 				
 				wait(567);
 
 				statusLogger.log("Calling Find and Identify ");
-				List<Point> subimageList = imageProcessor.findAndIdentify(frame);
+				List<Point> subimageList = imageProcessor.findAndIdentify(ccdFrame);
 				
 				// TODO: this is where we display the marked frame
 
