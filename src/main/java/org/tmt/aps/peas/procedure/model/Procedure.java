@@ -284,4 +284,11 @@ public class Procedure {
 		procedureCcdFrameList.add(procedureCcdFrame);
 		
 	}
+	
+	public ProcedureCcdFrame getLatestProcedureCcdFrame() {
+		if (procedureCcdFrameList == null) {
+			return null;
+		}
+		return procedureCcdFrameList.get(procedureCcdFrameList.size()-1);
+	}
 }

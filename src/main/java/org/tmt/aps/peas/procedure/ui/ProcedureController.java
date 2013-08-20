@@ -76,8 +76,6 @@ public class ProcedureController implements Serializable {
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 
-	// TODO: generalize this to a set of files when necessary
-	CcdFrame loadedFitsFile;
 
 	@PostConstruct
 	private void init() {
@@ -108,14 +106,6 @@ public class ProcedureController implements Serializable {
 		this.selectedFitsFiles = selectedFitsFiles;
 	}
 
-	public CcdFrame getLoadedFitsFile() {
-		return loadedFitsFile;
-	}
-
-	public void setLoadedFitsFile(CcdFrame loadedFitsFile) {
-		this.loadedFitsFile = loadedFitsFile;
-	}
-
 	public UploadedFile getUploadFitsFile() {
 		return uploadFitsFile;
 	}
@@ -131,9 +121,22 @@ public class ProcedureController implements Serializable {
 			// So, browser is requesting the image. Get ID value from actual request param.
 			String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
 
-			ProcedureCcdFrame pcf = procedure.getProcedureCcdFrameList().get(new Integer(indexStr));
+			// index is passed when the procedure has completed execution and we need to know which one
+			// if index == null, then get the current procedure frame
+			
+			ProcedureCcdFrame pcf = null;
+			
+			System.out.println("indexStr = " + indexStr);
+			
+			if (indexStr == null) {
+				pcf = procedure.getLatestProcedureCcdFrame();
+			} else {
+				pcf = procedure.getProcedureCcdFrameList().get(new Integer(indexStr));
+			}
 
 			byte[] falseColorPng = pcf.getCcdFrame().getFalseColorPng();
+
+			System.out.println("falseColorPng = " + falseColorPng);
 
 			if (falseColorPng == null) {
 				return null;
@@ -153,7 +156,7 @@ public class ProcedureController implements Serializable {
 		try {
 			uploadFitsFile = event.getFile();
 
-			loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
+			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
 
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
 
@@ -167,7 +170,8 @@ public class ProcedureController implements Serializable {
 
 	public void doLoadFitsFile() {
 		try {
-			loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
+			
+			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
 
 			// if a png file for display exists, read it in. Otherwise create it.
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
@@ -197,6 +201,8 @@ public class ProcedureController implements Serializable {
 
 			procedure.setProcedureConfig(procedureConfig);
 
+			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
+			
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
@@ -282,6 +288,8 @@ public class ProcedureController implements Serializable {
 		for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 			String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
+			CcdFrame loadedFitsFile = null;
+			
 			System.out.println("filename = " + filename);
 			try {
 

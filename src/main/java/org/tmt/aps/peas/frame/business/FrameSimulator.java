@@ -22,6 +22,10 @@ public class FrameSimulator {
 		frameList = new ArrayList<CcdFrame>();
 		for (FitsFilename fitsFilename : fitsFilenameList) {
 			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
+			
+			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame);
+			ccdFrame.setFalseColorPng(falseColorPng);
+			
 			frameList.add(ccdFrame);
 		}
 	}

@@ -6,6 +6,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.business.SessionMgmt;
@@ -55,6 +56,27 @@ public class ProcedureExecutionMgmt {
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 				procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
 				frameMgmt.associateCcdFrame(procedureCcdFrame);
+
+				
+				// load up png file again because associateCcdFrame reloads ccd frame fresh
+				// FIXME: we should not have to do this.
+				String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
+
+				CcdFrame loadedFitsFile = null;
+
+				System.out.println("filename = " + filename);
+				try {
+
+					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// if a png file for display exists, read it in. Otherwise create it.
+				byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
+
 			}
 
 			statusLogger.saveLog(procedure.getProcedureId());
