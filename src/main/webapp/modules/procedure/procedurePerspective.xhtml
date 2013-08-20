@@ -88,7 +88,7 @@
 									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
 										rendered="#{procedureController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding"
-										onclick="fitsFileLoadDialog.show();" style="top:-5px" />
+										onclick="fitsFileLoadDialog.show();" style="top:-5px" disabled="#{procedureController.procedure.procedureState gt 1}" />
 								</p:column>
 							</p:row>
 
@@ -139,12 +139,12 @@
 							<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
 
 								<p:column headerText="Time">
-									<h:outputText value="#{logEntry.createDate}">
+									<h:outputText value="#{logEntry.createDate}" style="font-size: 10px">
 										<f:convertDateTime pattern="hh:mm:ss" />
 									</h:outputText>
 								</p:column>
 								<p:column headerText="Status">
-									<h:outputText value="#{logEntry.status}" />
+									<h:outputText value="#{logEntry.status}" style="font-size: 10px" />
 								</p:column>
 
 							</p:dataTable>
@@ -153,97 +153,100 @@
 				</p:accordionPanel>
 
 				<h:panelGroup id="framePanel">
-				<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate" rendered="#{procedureController.procedure.procedureState eq 1}">
+					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
+						rendered="#{procedureController.procedure.procedureState eq 1}">
 
-
-					<p:panelGrid columns="1" style="padding:0;margin:0" >
-
-						<p:spacer width="512" height="212" />
-						<br/>
-						
-						<p:panelGrid columns="1" style="padding:0; margin:auto; width: 200px; text-align:center">
-						<h:outputText value="Loaded Frames from File:" rendered="#{not empty procedureController.selectedFitsFiles}"/>
-						<h:outputText style="text-align:center" value="No CCD Images" rendered="#{empty procedureController.selectedFitsFiles}"/>
-						<ul>
-							<ui:repeat value="#{procedureController.selectedFitsFiles}" var="fitsFile">
-								<li><h:outputText value="#{fitsFile.fileName}" /></li>
-							</ui:repeat>
-						</ul>
-						</p:panelGrid>
-					</p:panelGrid>
-
-				</p:panelGrid>
-
-				<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate" rendered="#{procedureController.procedure.procedureState eq 2}">
-					<f:facet name="header">
-						<h:outputText id="fitsFilename" value="#{procedureController.procedure.latestProcedureCcdFrame.ccdFrame.fitsFilename}" />
-					</f:facet>
-
-
-					<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
-
-					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
-
-						<p:row>
-							<p:column styleClass="peasFormLabelColumn" style="width:35%">
-								<h:outputLabel value="Search Radius (pixels):" />
-							</p:column>
-							<p:column styleClass="peasFormOutputColumn" style="width:15%">
-								<h:outputText value="8" />
-							</p:column>
-							<p:column styleClass="peasFormLabelColumn" style="width:15%">
-								<h:outputLabel value="SNR:" />
-							</p:column>
-							<p:column styleClass="peasFormOutputColumn" style="width:35%">
-								<h:outputText value="10.8" />
-							</p:column>
-						</p:row>
-					</p:panelGrid>
-					
-					<f:facet name="footer">
-						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
-						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-							action="#{globalConfigController.doCancelSaveSetup}" />
-						<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-							action="#{ccdManualController.doSendCommand}" update=":growl" />
-					</f:facet>
-				</p:panelGrid>				
-				
-				<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate" rendered="#{procedureController.procedure.procedureState ge 3}">
-
-					<!--  show this when procedure is done -->
-					<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1">
 
 						<p:panelGrid columns="1" style="padding:0;margin:0">
-							<f:facet name="header">
-								<h:outputText value="#{procedureCcdFrame.ccdFrame.fitsFilename}" />
-							</f:facet>
 
-							<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px">
-								<f:param name="frameIndex" value="#{procedureCcdFrame.procedureFrameNumber}" />
-							</p:graphicImage>
+							<p:spacer width="512" height="212" />
+							<br />
+
+							<p:panelGrid columns="1" style="padding:0; margin:auto; width: 200px; text-align:center">
+								<h:outputText value="Loaded Frames from File:" rendered="#{not empty procedureController.selectedFitsFiles}" />
+								<h:outputText style="text-align:center" value="No CCD Images" rendered="#{empty procedureController.selectedFitsFiles}" />
+								<ul>
+									<ui:repeat value="#{procedureController.selectedFitsFiles}" var="fitsFile">
+										<li><h:outputText value="#{fitsFile.fileName}" /></li>
+									</ui:repeat>
+								</ul>
+							</p:panelGrid>
 						</p:panelGrid>
-					</p:carousel>
 
-					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
-
-						<p:row>
-							<p:column styleClass="peasFormLabelColumn" style="width:35%">
-								<h:outputLabel value="Search Radius (pixels):" />
-							</p:column>
-							<p:column styleClass="peasFormOutputColumn" style="width:15%">
-								<h:outputText value="8" />
-							</p:column>
-							<p:column styleClass="peasFormLabelColumn" style="width:15%">
-								<h:outputLabel value="SNR:" />
-							</p:column>
-							<p:column styleClass="peasFormOutputColumn" style="width:35%">
-								<h:outputText value="10.8" />
-							</p:column>
-						</p:row>
 					</p:panelGrid>
-					
-				</p:panelGrid>				
+
+					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
+						rendered="#{procedureController.procedure.procedureState eq 2}">
+						<f:facet name="header">
+							<h:outputText id="fitsFilename" value="#{procedureController.procedure.latestProcedureCcdFrame.ccdFrame.fitsFilename}" />
+						</f:facet>
+
+
+						<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
+
+						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+
+							<p:row>
+								<p:column styleClass="peasFormLabelColumn" style="width:35%">
+									<h:outputLabel value="Search Radius (pixels):" />
+								</p:column>
+								<p:column styleClass="peasFormOutputColumn" style="width:15%">
+									<h:outputText value="8" />
+								</p:column>
+								<p:column styleClass="peasFormLabelColumn" style="width:15%">
+									<h:outputLabel value="SNR:" />
+								</p:column>
+								<p:column styleClass="peasFormOutputColumn" style="width:35%">
+									<h:outputText value="10.8" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+
+						<f:facet name="footer">
+							<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
+							<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+								action="#{globalConfigController.doCancelSaveSetup}" />
+							<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
+								action="#{ccdManualController.doSendCommand}" update=":growl" />
+						</f:facet>
+					</p:panelGrid>
+
+					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
+						rendered="#{procedureController.procedure.procedureState ge 3}">
+
+						<!--  show this when procedure is done -->
+						<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1">
+
+							<p:panelGrid columns="1" style="padding:0;margin:0">
+								<f:facet name="header">
+									<h:outputText value="#{procedureCcdFrame.ccdFrame.fitsFilename}" />
+								</f:facet>
+
+								<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px">
+									<f:param name="frameIndex" value="#{procedureCcdFrame.procedureFrameNumber}" />
+								</p:graphicImage>
+							</p:panelGrid>
+						</p:carousel>
+
+						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+
+							<p:row>
+								<p:column styleClass="peasFormLabelColumn" style="width:35%">
+									<h:outputLabel value="Search Radius (pixels):" />
+								</p:column>
+								<p:column styleClass="peasFormOutputColumn" style="width:15%">
+									<h:outputText value="8" />
+								</p:column>
+								<p:column styleClass="peasFormLabelColumn" style="width:15%">
+									<h:outputLabel value="SNR:" />
+								</p:column>
+								<p:column styleClass="peasFormOutputColumn" style="width:35%">
+									<h:outputText value="10.8" />
+								</p:column>
+							</p:row>
+						</p:panelGrid>
+
+					</p:panelGrid>
 				</h:panelGroup>
 
 				<p:accordionPanel multiple="true" activeIndex="0,1">
@@ -283,11 +286,20 @@
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 
-							<p:commandLink value="Centroids" onclick="displayDialog.show();" />
-							<p:commandLink value="Centroid Offsets" />
-							<p:commandLink value="Avg. Centroid Offsets" />
-							<p:commandLink value="Actuator Deltas" />
-							<p:commandLink value="Procedure Report" />
+
+						  	<p:tree value="#{procedureController.visualizationDisplayRoot}" var="node" dynamic="true" cache="false" selectionMode="single" selection="#{treeBean.selectedNode}"
+								id="tree" expanded="true">
+
+								<p:treeNode type="folder">
+									<h:outputText value="#{node}"  />
+								</p:treeNode>
+								<p:treeNode type="link">
+									<p:commandLink value="#{node}" onclick="displayDialog.show();" />
+								</p:treeNode>
+							</p:tree>
+
+
+							<p:commandLink value="Download Procedure Report" />
 
 						</p:panelGrid>
 					</p:tab>

@@ -1,6 +1,5 @@
 package org.tmt.aps.peas.procedure.ui;
 
-import java.awt.Image;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
@@ -20,7 +19,9 @@ import javax.inject.Named;
 
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
+import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
+import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
@@ -75,11 +76,29 @@ public class ProcedureController implements Serializable {
 	UploadedFile uploadFitsFile;
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
-
+	private TreeNode visualizationDisplayRoot;
 
 	@PostConstruct
 	private void init() {
 
+		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
+		
+		TreeNode node0 = new DefaultTreeNode("folder", "Iteration 1", visualizationDisplayRoot);
+		TreeNode node1 = new DefaultTreeNode("folder", "Iteration 2", visualizationDisplayRoot);
+		
+		TreeNode node00 = new DefaultTreeNode("link", "Centroids", node0);
+		TreeNode node01 = new DefaultTreeNode("link", "Centroid Offsets", node0);
+		TreeNode node02 = new DefaultTreeNode("link", "Avg. Centroid Offsets", node0);
+		TreeNode node03 = new DefaultTreeNode("link", "Actuator Deltas", node0);
+
+		TreeNode node10 = new DefaultTreeNode("link", "Centroids", node1);
+		TreeNode node11 = new DefaultTreeNode("link", "Centroid Offsets", node1);
+		TreeNode node12 = new DefaultTreeNode("link", "Avg. Centroid Offsets", node1);
+		TreeNode node13 = new DefaultTreeNode("link", "Actuator Deltas", node1);
+
+		node0.setExpanded(true);
+		node1.setExpanded(true);
+		
 	}
 
 	public Procedure getProcedure() {
@@ -123,11 +142,11 @@ public class ProcedureController implements Serializable {
 
 			// index is passed when the procedure has completed execution and we need to know which one
 			// if index == null, then get the current procedure frame
-			
+
 			ProcedureCcdFrame pcf = null;
-			
+
 			System.out.println("indexStr = " + indexStr);
-			
+
 			if (indexStr == null) {
 				pcf = procedure.getLatestProcedureCcdFrame();
 			} else {
@@ -143,6 +162,10 @@ public class ProcedureController implements Serializable {
 			}
 			return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 		}
+	}
+
+	public TreeNode getVisualizationDisplayRoot() {
+		return visualizationDisplayRoot;
 	}
 
 	public List<FitsFilename> getAvailableFitsFiles() {
@@ -170,7 +193,7 @@ public class ProcedureController implements Serializable {
 
 	public void doLoadFitsFile() {
 		try {
-			
+
 			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
 
 			// if a png file for display exists, read it in. Otherwise create it.
@@ -202,7 +225,7 @@ public class ProcedureController implements Serializable {
 			procedure.setProcedureConfig(procedureConfig);
 
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
-			
+
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
@@ -289,7 +312,7 @@ public class ProcedureController implements Serializable {
 			String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
 			CcdFrame loadedFitsFile = null;
-			
+
 			System.out.println("filename = " + filename);
 			try {
 
