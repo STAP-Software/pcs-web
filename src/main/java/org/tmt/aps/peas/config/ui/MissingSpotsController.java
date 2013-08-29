@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
@@ -12,6 +17,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
@@ -23,6 +29,8 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Named
 @SessionScoped
 public class MissingSpotsController implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	MissingSpotsMgmt missingSpotsMgmt;
@@ -67,7 +75,7 @@ public class MissingSpotsController implements Serializable {
 
 	private void updateCentroidDisplay() {
 
-		System.out.println("Number of Spots = " + pupilMaskType.getNumSpots());
+		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
 
 		spots = new LinkedHashMap<String, Integer>();
 		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
@@ -107,7 +115,7 @@ public class MissingSpotsController implements Serializable {
 		centroidNumbers = numBuf.toString();
 		centroidXs = xBuf.toString();
 		centroidYs = yBuf.toString();
-		System.out.println("centroidNumbers = " + centroidNumbers);
+		logger.debug("centroidNumbers = " + centroidNumbers);
 
 	}
 

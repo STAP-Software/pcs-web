@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.visualization.business;
 
 import java.io.Serializable;
@@ -6,11 +11,14 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Lock(LockType.READ)
 public class UserPromptMgmt implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private UserPrompt pendingPrompt;
 	private Integer returnState;

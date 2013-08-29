@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.procedure.business;
 
 import java.util.Date;
@@ -5,6 +10,7 @@ import java.util.Date;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -15,6 +21,8 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
 @Stateless
 public class ProcedureExecutionMgmt {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	private SessionMgmt sessionMgmt;
@@ -64,7 +72,7 @@ public class ProcedureExecutionMgmt {
 
 				CcdFrame loadedFitsFile = null;
 
-				System.out.println("filename = " + filename);
+				logger.debug("filename = " + filename);
 				try {
 
 					loadedFitsFile = frameMgmt.loadFitsFrame(filename);

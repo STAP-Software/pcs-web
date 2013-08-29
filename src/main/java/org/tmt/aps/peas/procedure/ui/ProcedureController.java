@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.procedure.ui;
 
 import java.io.ByteArrayInputStream;
@@ -17,6 +22,7 @@ import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -44,6 +50,8 @@ import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 @Named
 @SessionScoped
 public class ProcedureController implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	PeasProperties peasProperties;
@@ -145,7 +153,7 @@ public class ProcedureController implements Serializable {
 
 			ProcedureCcdFrame pcf = null;
 
-			System.out.println("indexStr = " + indexStr);
+			logger.debug("indexStr = " + indexStr);
 
 			if (indexStr == null) {
 				pcf = procedure.getLatestProcedureCcdFrame();
@@ -155,7 +163,7 @@ public class ProcedureController implements Serializable {
 
 			byte[] falseColorPng = pcf.getCcdFrame().getFalseColorPng();
 
-			System.out.println("falseColorPng = " + falseColorPng);
+			logger.debug("falseColorPng = " + falseColorPng);
 
 			if (falseColorPng == null) {
 				return null;
@@ -170,7 +178,7 @@ public class ProcedureController implements Serializable {
 
 	public List<FitsFilename> getAvailableFitsFiles() {
 		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles("PT");
-		System.out.println("FitsFileList size = " + fitsFileList.size());
+		logger.debug("FitsFileList size = " + fitsFileList.size());
 		return fitsFileList;
 	}
 
@@ -209,7 +217,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public void frameSourceListener() {
-		System.out.println("Frame Source Listener");
+		logger.debug("Frame Source Listener");
 	}
 
 	// TODO: this should be split into a generic doNewProcedure
@@ -257,9 +265,10 @@ public class ProcedureController implements Serializable {
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
-	public void doExecuteProcedure(ActionEvent actionEvent) {
+	//public void doExecuteProcedure(ActionEvent actionEvent) {
+	public void doExecuteProcedure() {
 
-		System.out.println("doExecuteProcedure:: starting");
+		logger.debug(" ###############################  doExecuteProcedure:: starting");
 
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
@@ -283,7 +292,7 @@ public class ProcedureController implements Serializable {
 
 		}
 
-		System.out.println("doExecuteProcedure::");
+		logger.debug("doExecuteProcedure::");
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
@@ -297,7 +306,7 @@ public class ProcedureController implements Serializable {
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
 		passiveTiltMgmt.executeProcedure(procedure, sessionController.getCurrentSession());
-		System.out.println("doExecuteProcedure::after to call passiveTiltMgmt");
+		logger.debug("doExecuteProcedure::after to call passiveTiltMgmt");
 
 	}
 
@@ -313,7 +322,7 @@ public class ProcedureController implements Serializable {
 
 			CcdFrame loadedFitsFile = null;
 
-			System.out.println("filename = " + filename);
+			logger.debug("filename = " + filename);
 			try {
 
 				loadedFitsFile = frameMgmt.loadFitsFrame(filename);

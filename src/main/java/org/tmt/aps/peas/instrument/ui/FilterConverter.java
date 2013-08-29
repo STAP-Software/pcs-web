@@ -17,12 +17,15 @@ import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.model.Filter;
 
 @Named
 @SessionScoped
 public class FilterConverter implements Converter, Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Inject
 	private FilterController filterController;
@@ -54,7 +57,7 @@ public class FilterConverter implements Converter, Serializable {
 
 	public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
 		
-		System.out.println("getAsString::enter");
+		logger.debug("getAsString::enter");
 		if (value == null || value.equals("")) {
 			return "";
 		} else {

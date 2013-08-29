@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
@@ -8,6 +13,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -15,6 +21,8 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 @Named
 @SessionScoped
 public class CameraDefController implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;

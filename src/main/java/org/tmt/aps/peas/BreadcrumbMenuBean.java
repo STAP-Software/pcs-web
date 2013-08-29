@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas;
 
 import java.io.Serializable;
@@ -7,6 +12,7 @@ import javax.enterprise.context.SessionScoped;
 import javax.faces.component.UIComponent;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.primefaces.component.menuitem.MenuItem;
 import org.primefaces.model.DefaultMenuModel;
 import org.primefaces.model.MenuModel;
@@ -14,6 +20,8 @@ import org.primefaces.model.MenuModel;
 @Named
 @SessionScoped
 public class BreadcrumbMenuBean implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private MenuModel model;
 

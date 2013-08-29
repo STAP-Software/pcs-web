@@ -1,7 +1,7 @@
-/** 
- * @author Scott Michaels 
- * @version 1.0 
- * Copyright TMT Observatory Corporation 2013 - All Rights Reserved. 
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
  */
 package org.tmt.aps.peas.frame.ui;
 
@@ -17,18 +17,21 @@ import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 
 @Named
 @SessionScoped
 public class PcsFitsFileConverter implements Converter, Serializable {
 
+	Logger logger = Logger.getLogger(this.getClass());
+
 	@Inject
 	private FrameController frameController;
 
 	public Object getAsObject(FacesContext facesContext, UIComponent component, String submittedValue) {
-		System.out.println("getAsObject::enter");
-		System.out.println("getAsObject::submittedValue = " + submittedValue);
+		logger.debug("getAsObject::enter");
+		logger.debug("getAsObject::submittedValue = " + submittedValue);
 		if (submittedValue.trim().equals("")) {
 			return null;
 		} else {
@@ -39,7 +42,7 @@ public class PcsFitsFileConverter implements Converter, Serializable {
 
 				for (FitsFilename pcsFitsFile : fullList) {
 					if (pcsFitsFile.getFileName().equals(fitsFileName)) {
-						System.out.println("getAsObject:: returining: " + fitsFileName);
+						logger.debug("getAsObject:: returining: " + fitsFileName);
 						return pcsFitsFile;
 					}
 				}
@@ -55,12 +58,12 @@ public class PcsFitsFileConverter implements Converter, Serializable {
 
 	public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
 		
-		System.out.println("getAsString::enter");
+		logger.debug("getAsString::enter");
 		if (value == null || value.equals("")) {
 			return "";
 		} else {
 			FitsFilename pcsFitsFile = (FitsFilename) value;
-			System.out.println("getAsString::" + pcsFitsFile.getFileName() );
+			logger.debug("getAsString::" + pcsFitsFile.getFileName() );
 			return pcsFitsFile.getFileName();
 
 		}

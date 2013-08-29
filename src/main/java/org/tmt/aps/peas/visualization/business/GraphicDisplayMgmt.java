@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.visualization.business;
 
 
@@ -8,12 +13,15 @@ import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Singleton
 @Lock(LockType.READ)
 public class GraphicDisplayMgmt implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private VisualizationDisplay pendingDisplay;
 	private Integer returnState;

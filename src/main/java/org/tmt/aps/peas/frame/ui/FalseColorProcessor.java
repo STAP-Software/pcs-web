@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.frame.ui;
 
 import java.awt.image.BufferedImage;
@@ -6,9 +11,13 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+
+import org.apache.log4j.Logger;
  
 public class FalseColorProcessor { 
 	
+	Logger logger = Logger.getLogger(this.getClass());
+
 	public byte[] createImage(short[][] grayArray) {
 			
 		int width = grayArray.length; 
@@ -31,7 +40,7 @@ public class FalseColorProcessor {
 		} 
 
 		int imageRange = imageMax - imageMin;
-		System.out.println("max = " + imageMax + ", min = " + imageMin + ", range = " + imageRange);
+		logger.info("max = " + imageMax + ", min = " + imageMin + ", range = " + imageRange);
 		
 		try { 
 			// Create the R,G,B arrays for the false color image ... 
@@ -115,7 +124,7 @@ public class FalseColorProcessor {
  			*/
  
 		} catch (IOException ioe) { 
-			System.out.println("Error: IO Exception."); 
+			logger.error("Error: IO Exception."); 
 			return null;
 		} 
  

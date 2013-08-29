@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.passiveTilt.business;
 
 
@@ -10,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.fortran.FortranProxy;
@@ -33,6 +39,8 @@ import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 @Singleton
 @Startup
 public class PassiveTiltExecutor {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	private SessionMgmt sessionMgmt;
@@ -69,19 +77,19 @@ public class PassiveTiltExecutor {
 
 	@PostConstruct
 	void init() {
-		System.out.println("PassiveTiltMgmt::PostConstruct::");
+		logger.debug("PassiveTiltMgmt::PostConstruct::");
 	}
 	
 	@Asynchronous
 	public Future<?> testMethod() {
-		System.out.println("PassiveTiltMgmt::testMethod::");
+		logger.debug("PassiveTiltMgmt::testMethod::");
 		return null;
 	}
 	
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 
-		System.out.println("PassiveTiltExecutor::executeProcedure::");
+		logger.info("PassiveTiltExecutor::executeProcedure::");
 
 		try {
 

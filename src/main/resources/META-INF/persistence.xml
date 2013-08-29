@@ -10,7 +10,9 @@
       <jta-data-source>java:/PEASDS</jta-data-source>
 
 	<properties>
+		<!--  
 		<property name="hibernate.show_sql" value="true" />
+		-->
 	</properties>
 
    </persistence-unit>

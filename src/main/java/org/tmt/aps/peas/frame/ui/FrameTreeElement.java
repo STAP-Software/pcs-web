@@ -1,7 +1,15 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.frame.ui;
+
+import org.apache.log4j.Logger;
 
 public class FrameTreeElement {
 
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private String displayName;
 	

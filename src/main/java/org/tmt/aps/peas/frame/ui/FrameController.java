@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.frame.ui;
 
 import java.io.ByteArrayInputStream;
@@ -18,6 +23,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.log4j.Logger;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -31,6 +37,8 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 @Named
 @SessionScoped
 public class FrameController implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -121,8 +129,8 @@ public class FrameController implements Serializable {
 						telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
 					}
 
-					//System.out.println("map get filename = " + fitsFile.getFileName());
-					//System.out.println("map get dateString = " + fitsFile.getDate());
+					//logger.debug("map get filename = " + fitsFile.getFileName());
+					//logger.debug("map get dateString = " + fitsFile.getDate());
 
 					List<FitsFilename> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
 					if (dateFitsList == null) {

@@ -1,12 +1,20 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.procedure.business;
 
 import javax.ejb.Singleton;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 
 @Singleton
 public class ProcedureExecutionState {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private boolean executionStatus;
 	private int percentComplete;

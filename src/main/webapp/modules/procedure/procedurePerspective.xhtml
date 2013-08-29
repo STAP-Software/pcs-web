@@ -120,8 +120,7 @@
 								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm"
 								disabled="#{asyncController.executionStatus}" />
 							<p:spacer width="30px" />
-							<p:commandButton value="Abort" icon="ui-icon-close" actionListener="#{asyncController.doAbortProcedure}"
-								oncomplete="pbAjax.cancel();startButton2.enable();" />
+							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doExecuteProcedure}" />
 							<br />
 							<br />
 							<p:progressBar widgetVar="pbAjax" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated"

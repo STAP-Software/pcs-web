@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.frame.model;
 
 import java.text.SimpleDateFormat;
@@ -48,7 +53,7 @@ public class FitsFilename {
 			String dateString = st.nextToken();
 			date = sdf.parse(dateString);
 			
-			//System.out.println("dateString = " + dateString + ", date = " + date);
+			//logger.debug("dateString = " + dateString + ", date = " + date);
 			
 			procedureTypeCd = st.nextToken();
 			

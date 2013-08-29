@@ -1,6 +1,13 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas;
 
 import java.util.List;
+
+import org.apache.log4j.Logger;
 
 public class ConfigurationElement {
 

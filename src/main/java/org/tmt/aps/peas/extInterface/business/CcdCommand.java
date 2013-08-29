@@ -1,10 +1,19 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.extInterface.business;
 
 
 import javax.ejb.Stateless;
 
+import org.apache.log4j.Logger;
+
 @Stateless
 public class CcdCommand {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	// All CCD Commands should be defined here
 	

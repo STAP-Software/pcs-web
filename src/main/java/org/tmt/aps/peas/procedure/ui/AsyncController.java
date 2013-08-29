@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.procedure.ui;
 
 import javax.ejb.EJB;
@@ -7,6 +12,7 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.session.ui.SessionController;
@@ -17,6 +23,8 @@ import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 @Named
 @SessionScoped
 public class AsyncController {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	GraphicDisplayMgmt graphicDisplayMgmt;
@@ -31,12 +39,12 @@ public class AsyncController {
 	
 	public void asyncListener() {
 
-		System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
 		
 		// ask user prompt display manager for any pending user prompts
 		// ask graphic display manager for any pending displays
 		if (userPromptMgmt.getPendingPrompt() != null) {
-			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.execute("userPromptDialog.show()");
 			userPromptMgmt.setPendingPrompt(null);
@@ -44,7 +52,7 @@ public class AsyncController {
 
 		// ask graphic display manager for any pending displays
 		if (graphicDisplayMgmt.getPendingDisplay() != null) {
-			System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.execute("displayDialog.show()");
 			graphicDisplayMgmt.setPendingDisplay(null);
@@ -79,7 +87,7 @@ public class AsyncController {
 
 
 	public int getPercentComplete() {
-		System.out.println("getPercentComplete::" + procedureExecutionMgmt.getPercentComplete());
+		logger.debug("getPercentComplete::" + procedureExecutionMgmt.getPercentComplete());
 		return procedureExecutionMgmt.getPercentComplete();
 	}
 

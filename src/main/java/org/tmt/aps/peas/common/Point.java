@@ -1,6 +1,14 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.common;
 
+
 public class Point {
+	
+	
     /**
      * The X coordinate of this <code>Point</code>.
      * If no X coordinate is set it will default to 0.

@@ -1,11 +1,19 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.common;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 public class NumberListEncoder {
 
+	Logger logger = Logger.getLogger(this.getClass());
 	
 	
 	public static List<Integer> decodeList(String encodedList) {

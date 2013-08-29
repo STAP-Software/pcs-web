@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas.frame.business;
 
 import java.io.File;
@@ -21,6 +26,7 @@ import nom.tam.fits.PrimaryHDU;
 import nom.tam.util.BufferedDataOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -32,6 +38,8 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 
 @Stateless
 public class FrameMgmt {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@PersistenceContext
 	private EntityManager em;
@@ -145,7 +153,7 @@ public class FrameMgmt {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 
-		System.out.println("frame folder = " + frameFolder);
+		logger.debug("frame folder = " + frameFolder);
 
 		// read in and parse each frame and build up
 		File folder = new File(frameFolder);
@@ -163,7 +171,7 @@ public class FrameMgmt {
 				fitsFileList.add(fitsFile);
 				
 				// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
-				//System.out.println("file: " + filename);
+				//logger.info("file: " + filename);
 				//CcdFrame ccdFrame = loadFitsFrame(filename);
 				//loadPng(ccdFrame);
 			}
@@ -199,7 +207,7 @@ public class FrameMgmt {
 			for (int index = 0; index < bhdus.length; index++) {
 				BasicHDU hdu = bhdus[index];
 
-				System.out.println("hdu.class = " + hdu.getClass());
+				logger.debug("hdu.class = " + hdu.getClass());
 
 				PrimaryHDU imhdu = (PrimaryHDU) hdu;
 				// imhdu.info();
@@ -207,16 +215,16 @@ public class FrameMgmt {
 				Data data = imhdu.getData();
 
 				int leng = (int) data.getTrueSize(); // VS PADDED
-				System.out.println("Length=" + leng);
-				System.out.println("Data=" + data);
+				logger.debug("Length=" + leng);
+				logger.debug("Data=" + data);
 				int[] axes = imhdu.getAxes();
 
-				System.out.println("data.getData: " + data.getData());
+				logger.debug("data.getData: " + data.getData());
 
 				short[][] shortArray = (short[][]) data.getData();
 
-				System.out.println(imhdu.getBitPix() + " bits per pixel");
-				System.out.println("Data = " + data.getData().getClass());
+				logger.debug(imhdu.getBitPix() + " bits per pixel");
+				logger.debug("Data = " + data.getData().getClass());
 
 				int bpix = (int) imhdu.getBitPix();
 
@@ -234,7 +242,7 @@ public class FrameMgmt {
 
 				Header header = hdu.getHeader();
 
-				System.out.println("header = " + header);
+				logger.debug("header = " + header);
 
 			}
 

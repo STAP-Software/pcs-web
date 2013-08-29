@@ -17,12 +17,15 @@ import javax.faces.convert.ConverterException;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 
 @Named
 @SessionScoped
 public class PupilMaskConverter implements Converter, Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Inject
 	private PupilMaskController pupilMaskController;

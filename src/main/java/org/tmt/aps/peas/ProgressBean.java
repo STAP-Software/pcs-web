@@ -1,3 +1,8 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
 package org.tmt.aps.peas;
 
 import java.io.Serializable;
@@ -9,9 +14,13 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.log4j.Logger;
+
 @Named
 @SessionScoped
 public class ProgressBean implements Serializable {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	private Integer progress;
 
