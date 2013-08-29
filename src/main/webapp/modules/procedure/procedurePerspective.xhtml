@@ -285,9 +285,9 @@
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 
-
-						  	<p:tree value="#{procedureController.visualizationDisplayRoot}" var="node" dynamic="true" cache="false" selectionMode="single" selection="#{treeBean.selectedNode}"
-								id="tree" expanded="true">
+							  
+						  	<p:tree value="#{procedureController.visualizationDisplayRoot}" var="node" 
+								id="visualizationDisplayTree" expanded="true">
 
 								<p:treeNode type="folder">
 									<h:outputText value="#{node}"  />
@@ -297,8 +297,11 @@
 								</p:treeNode>
 							</p:tree>
 
-
+							
+							
 							<p:commandLink value="Download Procedure Report" />
+
+							
 
 						</p:panelGrid>
 					</p:tab>
