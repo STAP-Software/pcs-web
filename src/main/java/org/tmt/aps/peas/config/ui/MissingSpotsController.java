@@ -197,6 +197,8 @@ public class MissingSpotsController implements Serializable {
 
 	public void listViewChangeListener() {
 		// values have changed, refresh display values
+		logger.debug("missingSpotsMgmt = " + missingSpotsMgmt);
+		logger.debug("pupilMaskTypeId = " + pupilMaskType.getPupilMaskTypeId());
 		missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
 
 		updateCentroidDisplay();

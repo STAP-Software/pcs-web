@@ -54,7 +54,7 @@ public class AsyncController {
 		if (graphicDisplayMgmt.getPendingDisplay() != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
 			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.execute("displayDialog.show()");
+			requestContext.execute("centroidOffsetDisplayDialog.show()");
 			graphicDisplayMgmt.setPendingDisplay(null);
 		}
 		

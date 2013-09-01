@@ -80,6 +80,11 @@ public class CameraDefMgmt {
 		return query.getResultList();
 	}
 
+	public PupilMaskType findPupilMaskType(Long pupilMaskTypeId) {
+		
+		return em.find(PupilMaskType.class, pupilMaskTypeId);
+	}
+
 
 	
 	

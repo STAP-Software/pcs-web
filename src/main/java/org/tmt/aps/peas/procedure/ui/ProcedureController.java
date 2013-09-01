@@ -8,8 +8,11 @@ package org.tmt.aps.peas.procedure.ui;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +20,6 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
-import javax.faces.event.ActionEvent;
 import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -31,6 +33,7 @@ import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
@@ -38,6 +41,8 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
+import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
@@ -62,6 +67,8 @@ public class ProcedureController implements Serializable {
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
+	CameraDefMgmt cameraDefMgmt;
+	@EJB
 	FrameSimulator frameSimulator;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
@@ -85,6 +92,9 @@ public class ProcedureController implements Serializable {
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 	private TreeNode visualizationDisplayRoot;
+	
+	String centroidXs;
+	String centroidYs;
 
 	@PostConstruct
 	private void init() {
@@ -107,6 +117,8 @@ public class ProcedureController implements Serializable {
 		node0.setExpanded(true);
 		node1.setExpanded(true);
 		
+		
+		updateCentroidOffsetsDisplay();
 	}
 
 	public Procedure getProcedure() {
@@ -135,6 +147,22 @@ public class ProcedureController implements Serializable {
 
 	public UploadedFile getUploadFitsFile() {
 		return uploadFitsFile;
+	}
+
+	public String getCentroidXs() {
+		return centroidXs;
+	}
+
+	public void setCentroidXs(String centroidXs) {
+		this.centroidXs = centroidXs;
+	}
+
+	public String getCentroidYs() {
+		return centroidYs;
+	}
+
+	public void setCentroidYs(String centroidYs) {
+		this.centroidYs = centroidYs;
 	}
 
 	public StreamedContent getGraphicImage() {
@@ -360,4 +388,45 @@ public class ProcedureController implements Serializable {
 	public void doCancelSaveExecutionPreferences() {
 
 	}
+	
+	
+	private void updateCentroidOffsetsDisplay() {
+
+		PupilMaskType pupilMaskType = cameraDefMgmt.findPupilMaskType(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+
+		
+		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
+
+		Map<String, Integer> spots = new LinkedHashMap<String, Integer>();
+		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
+			spots.put("spot  # " + i, i);
+		}
+
+		// TODO: read in subimageDefList based on pupilMaskType
+		List<Subimage> subimageDefList = new ArrayList<Subimage>();
+		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
+			for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
+				Subimage subimage = new Subimage(i + 1, Subimage.PT_DEF_X_ARRAY[i], Subimage.PT_DEF_Y_ARRAY[i]);
+				subimageDefList.add(subimage);
+			}
+		}
+
+		// generate centroid numbers, x and y positions
+		StringBuffer numBuf = new StringBuffer();
+		StringBuffer xBuf = new StringBuffer();
+		StringBuffer yBuf = new StringBuffer();
+		for (Subimage subimage : subimageDefList) {
+			numBuf.append(subimage.getSubimageNumber() + ",");
+			xBuf.append(subimage.getxCcd() + ",");
+			yBuf.append(subimage.getyCcd() + ",");
+		}
+		numBuf.deleteCharAt(numBuf.length() - 1);
+		xBuf.deleteCharAt(xBuf.length() - 1);
+		yBuf.deleteCharAt(yBuf.length() - 1);
+		centroidXs = xBuf.toString();
+		centroidYs = yBuf.toString();
+
+	}
+
+	
 }

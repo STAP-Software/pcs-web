@@ -23,6 +23,7 @@ public class MissingSpotsMgmt {
 	
 	
 	public MissingSpotList findMissingSpotList(int spotListType, Long pupilMaskTypeId) {
+		logger.debug("findMissingSpotList::");
 		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeAndMask", MissingSpotList.class);
 		query.setParameter("spotListType", spotListType);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);

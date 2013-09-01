@@ -1,0 +1,66 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+$(function() {
+	$('#offsetsDrawDiv').svg({onLoad: drawCentroidOffsets});
+});
+
+function runDrawCentroidOffsets(){
+	$('#offsetsDrawDiv').svg();
+	var svg = $('#offsetsDrawDiv').svg('get');
+	drawCentroidOffsets(svg);
+}
+
+function drawCentroidOffsets(svg) {
+    
+	
+	var xField = document.getElementById('graphicDialogForm:centroidXs').value;
+	//var xField = "100,200,300,400";
+ 	var xArray = xField.split(','); 
+ 	
+	var yField = document.getElementById('graphicDialogForm:centroidYs').value;
+	//var yField = "100,200,300,400";
+ 	var yArray = yField.split(','); 
+   
+	
+	var g0 = svg.group({transform: "translate(-25, -15) scale(0.61)"});
+
+	
+
+	for (var i = 0; i < xArray.length; i++) {
+		
+		svg.circle(g0, xArray[i], yArray[i], 5, {fill: 'red', stroke: 'black', strokeWidth: 1}); 
+		
+		var dx = parseInt(xArray[i]) + ((Math.random() * 2.0) - 1.0) * 30.0;
+		var dy = parseInt(yArray[i]) + ((Math.random() * 2.0) - 1.0) * 30.0;
+
+		svg.line(g0, parseInt(xArray[i]), parseInt(yArray[i]), dx, dy, {stroke: 'black', strokeWidth: 1});
+		
+	}
+
+	
+}
+//]]>  
+</script>   
+
+
+		<p:dialog id="centroidOffsetDialog" header="Visualization Display" widgetVar="centroidOffsetDisplayDialog" closable="false" >  
+    		<div id="offsetsDrawDiv" style="width:600px; height:600px"></div>  
+    		<h:form id="graphicDialogForm">
+
+			      		
+    		<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
+			<h:inputHidden id="centroidYs" value="#{procedureController.centroidYs}" />
+    			
+    		
+    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
+			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>
