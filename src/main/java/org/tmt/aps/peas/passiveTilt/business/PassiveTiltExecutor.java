@@ -18,7 +18,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.fortran.FortranProxy;
+import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
@@ -61,7 +61,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
-	private FortranProxy fortranProxy;
+	private ComputationLibrary computationLibrary;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
 
@@ -214,7 +214,7 @@ public class PassiveTiltExecutor {
 
 			imageProcessor.calculateCentroidStats();
 
-			fortranProxy.actuatorLengths();
+			computationLibrary.actuatorLengths();
 			
 			userPromptMgmt.displayYesNoDialog("here is some text");
 			
