@@ -19,6 +19,7 @@ import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Named
 @SessionScoped
@@ -37,6 +38,18 @@ public class AsyncController {
 	@Inject
 	StatusLogController statusLogController;
 	
+	UserPrompt currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "Default Text");
+	
+	public UserPrompt getCurrentPrompt() {
+		return currentPrompt;
+	}
+
+	public void setCurrentPrompt(UserPrompt currentPrompt) {
+		this.currentPrompt = currentPrompt;
+	}
+
+	
+	
 	public void asyncListener() {
 
 		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
@@ -44,8 +57,10 @@ public class AsyncController {
 		// ask user prompt display manager for any pending user prompts
 		// ask graphic display manager for any pending displays
 		if (userPromptMgmt.getPendingPrompt() != null) {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			currentPrompt = userPromptMgmt.getPendingPrompt();
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + currentPrompt.getMessage());
 			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update(":promptDialogForm"); 
 			requestContext.execute("userPromptDialog.show()");
 			userPromptMgmt.setPendingPrompt(null);
 		}

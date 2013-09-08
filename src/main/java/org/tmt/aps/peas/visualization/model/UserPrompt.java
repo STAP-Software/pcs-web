@@ -12,10 +12,11 @@ public class UserPrompt {
 	
 	
 	int promptType;
+	String message;
 	
-	
-	public UserPrompt(int type) {
+	public UserPrompt(int type, String message) {
 		this.promptType = type;
+		this.message = message;
 	}
 
 	public int getPromptType() {
@@ -24,6 +25,14 @@ public class UserPrompt {
 
 	public void setPromptType(int promptType) {
 		this.promptType = promptType;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
 	}
 	
 	

@@ -158,9 +158,7 @@
 		<p:dialog id="promptDialog" header="User Prompt" widgetVar="userPromptDialog" closable="false">  
     		<div>
     		<br/>
-    		The value for something has exceeded the threshold of some value:
-    		<br/>
-    		3452.0000 56.0 342
+    		<h:outputText value="#{asyncController.currentPrompt.message}" />
     		<br/>
     		<br/>
     		Do you want to send commands?

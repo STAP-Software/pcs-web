@@ -18,7 +18,9 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibrarySimulator;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
@@ -61,7 +63,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
-	private ComputationLibrary computationLibrary;
+	private ComputationContext computationContext;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
 
@@ -94,6 +96,8 @@ public class PassiveTiltExecutor {
 		try {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
+			
+			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 			
@@ -214,10 +218,14 @@ public class PassiveTiltExecutor {
 
 			imageProcessor.calculateCentroidStats();
 
-			computationLibrary.actuatorLengths();
+			float a = 1.0f;
+			float b = 2.2f;
 			
-			userPromptMgmt.displayYesNoDialog("here is some text");
+			float c = computationLibrary.actuatorLengths(a, b);
 			
+			userPromptMgmt.displayYesNoDialog("Can you see this text?");
+			statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
+						
 			wait(134);
 			statusLogger.log("Passive Tilt Test Completed");
 			statusLogger.log("Exiting Passive Tilt Test");

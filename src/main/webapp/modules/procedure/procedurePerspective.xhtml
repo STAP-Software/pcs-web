@@ -11,7 +11,7 @@
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":procedureDetailForm :growl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
+				update=":procedureDetailForm :growl :menuForm :advancedForm :executionPrefsForm :promptDialogForm" listener="#{asyncController.asyncListener}"
 				stop="#{!asyncController.executionStatus}" />
 		</h:form>
 

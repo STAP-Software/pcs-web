@@ -46,7 +46,7 @@ public class UserPromptMgmt implements Serializable {
 
 	public void displayYesNoDialog(String text) {
 		
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO);
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, text);
 		
 		waitForReturnState();
 	}

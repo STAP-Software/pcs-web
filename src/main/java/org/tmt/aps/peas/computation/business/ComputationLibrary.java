@@ -5,18 +5,9 @@
  */
 package org.tmt.aps.peas.computation.business;
 
-import javax.ejb.Stateless;
 
-import org.apache.log4j.Logger;
+public interface ComputationLibrary {
 
-@Stateless
-public class ComputationLibrary {
-
-	Logger logger = Logger.getLogger(this.getClass());
-
-
-	public void actuatorLengths() {
-		
-	}
+	public float actuatorLengths(float a, float b);
 	
 }
