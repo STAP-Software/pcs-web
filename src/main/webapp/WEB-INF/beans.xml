@@ -4,4 +4,9 @@
       http://java.sun.com/xml/ns/javaee 
       http://java.sun.com/xml/ns/javaee/beans_1_0.xsd">
 
+	<interceptors>
+	  <class>org.tmt.aps.peas.common.cdi.LoggingInterceptor</class>
+	  <class>org.tmt.aps.peas.common.cdi.ProcedureExceptionInterceptor</class>
+   </interceptors>
+
 </beans>
