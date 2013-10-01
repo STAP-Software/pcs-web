@@ -5,10 +5,17 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.Set;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.enterprise.inject.Any;
+import javax.enterprise.inject.spi.Bean;
+import javax.enterprise.inject.spi.BeanManager;
+import javax.enterprise.util.AnnotationLiteral;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
@@ -19,6 +26,9 @@ public class ComputationContext {
 
 	@EJB 
 	PeasProperties peasProperties;
+	
+	@Inject
+	BeanManager beanManager;
 	
 	// caches the current state of the ACS for use in PEAS PCS
 	Logger logger = Logger.getLogger(this.getClass());
@@ -40,10 +50,16 @@ public class ComputationContext {
 	
 
 	public ComputationLibrary getComputationLibrary() {
+		
+		try {
 		if (fortranInstalled) {
 			return new ComputationLibraryImpl();
 		} else {
 			return new ComputationLibrarySimulator();
+		}
+		} catch (Exception e) {
+			logger.error("", e);
+			return null;
 		}
 	}
 

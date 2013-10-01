@@ -8,6 +8,6 @@ package org.tmt.aps.peas.computation.business;
 
 public interface ComputationLibrary {
 
-	public float actuatorLengths(float a, float b);
+	public float actuatorLengths(float a, float b) throws ComputationException;
 	
 }
