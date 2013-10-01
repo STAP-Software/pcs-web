@@ -26,10 +26,7 @@ public class ComputationContext {
 
 	@EJB 
 	PeasProperties peasProperties;
-	
-	@Inject
-	BeanManager beanManager;
-	
+		
 	// caches the current state of the ACS for use in PEAS PCS
 	Logger logger = Logger.getLogger(this.getClass());
 	

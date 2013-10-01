@@ -22,7 +22,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	StatusLogger statusLogger;
 	
 	// package protected constructor
-	ComputationLibraryImpl() throws Exception{
+	ComputationLibraryImpl() throws Exception {
 		
 		statusLogger = (StatusLogger)InitialContext.doLookup("java:module/StatusLogger");
 		
