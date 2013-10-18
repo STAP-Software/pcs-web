@@ -26,7 +26,7 @@ public class IntegerListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<Integer> numberList = new ArrayList<Integer>();
 		for (String item : items) {
-			Integer number = new Integer(item);
+			Integer number = new Integer(item.trim());
 			numberList.add(number);
 		}
 		return numberList;

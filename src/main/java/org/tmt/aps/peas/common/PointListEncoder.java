@@ -27,7 +27,7 @@ public class PointListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<Point> pointList = new ArrayList<Point>();
 		for (int i=0; i<items.size()/2; i++) {
-			Point point = new Point(new Integer(items.get(i*2)), new Integer(items.get((i*2)+1)));
+			Point point = new Point(new Integer(items.get(i*2).trim()), new Integer(items.get((i*2)+1).trim()));
 			pointList.add(point);
 		}
 		return pointList;

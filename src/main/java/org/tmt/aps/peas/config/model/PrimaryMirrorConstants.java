@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.config.model;
 
+import java.util.Arrays;
+
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 
@@ -137,6 +139,53 @@ public class PrimaryMirrorConstants {
 			buf.append(saveMinusPiston[i] + ", ");
 		}
 		
+		buf.append("\nsegmentRow = ");
+		for (int i=0; i<segmentRow.length; i++) {
+			buf.append(segmentRow[i] + ", ");
+		}
+		
+		buf.append("\nsegmentCol = ");
+		for (int i=0; i<segmentCol.length; i++) {
+			buf.append(segmentCol[i] + ", ");
+		}
+		
+		buf.append("\nedgeAngle = ");
+		for (int i=0; i<edgeAngle.length; i++) {
+			buf.append(edgeAngle[i] + ", ");
+		}
+
+		buf.append("\nnEdge = ");
+		for (int i=0; i<nEdge.length; i++) {
+			buf.append(nEdge[i] + ", ");
+		}
+
+		buf.append("\nnormAngle = ");
+		for (int i=0; i<normAngle.length; i++) {
+			buf.append(normAngle[i] + ", ");
+		}
+
+		buf.append("\nneighbors = ");
+		for (int i=0; i<neighbors.length; i++) {
+			buf.append("[");
+			for (int j=0; j<neighbors[0].length; j++) {
+				buf.append(neighbors[i][j] + ", ");
+			}
+			buf.append("],");
+		}
+
+		buf.append("\ncenterSpot = ");
+		for (int i=0; i<centerSpot.length; i++) {
+			buf.append(centerSpot[i] + ", ");
+		}
+		
+		buf.append("\nact1Pos = ");
+		for (int i=0; i<act1Pos.length; i++) {
+			buf.append(act1Pos[i] + ", ");
+		}
+		
+		buf.append("\naHex = " + aHex);
+		buf.append("\nprimaryActuatorTriangle = " + primaryActuatorTriangle);
+
 		buf.append("\n");
 		return buf.toString();
 	}

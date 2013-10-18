@@ -40,13 +40,16 @@ public class Constants {
 		
 		List<Object> instances = new ArrayList<Object>();
 		instances.add(primaryMirrorConstants);
-		instances.add(primaryMirrorConstants);
+		instances.add(primaryMirrorSegmentConstants);
 		instances.add(phasingConstants);
 		
 		// populate constants
 		constantsMgmt.loadConstants(instances);
 		
-		logger.info("Constant OUTPUT IS: " + primaryMirrorConstants);
+		logger.info("\n\nPrimary Mirror Constants: \n" + primaryMirrorConstants);
+		logger.info("\n\nPrimary Mirror Segment Constants: \n" + primaryMirrorSegmentConstants);
+		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
+
 	}
 
 

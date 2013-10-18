@@ -143,12 +143,14 @@ public class ConstantsMgmt {
 						int k=0;
 						for (int i=0; i<constant.getDimension1(); i++) {
 							for (int j=0; j<constant.getDimension2(); j++) {
-								int2dArray[i][j] = intArray[k++];
+								
+								int2dArray[i][j] = intArray[k++].intValue();
 							}
 						}
 						
 						method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), int[][].class);
 						method.invoke(constantsInstance, (Object)int2dArray);
+						
 						break;
 
 					case Constant.DATA_TYPE_FLOAT:
@@ -160,7 +162,7 @@ public class ConstantsMgmt {
 						int fk=0;
 						for (int fi=0; fi<constant.getDimension1(); fi++) {
 							for (int fj=0; fj<constant.getDimension2(); fj++) {
-								float2dArray[fi][fj] = floatArray[fk++];
+								float2dArray[fi][fj] = floatArray[fk++].floatValue();
 							}
 						}
 						

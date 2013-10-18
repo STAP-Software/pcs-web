@@ -29,7 +29,7 @@ public class FloatListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<Float> numberList = new ArrayList<Float>();
 		for (String item : items) {
-			Float number = new Float(item);
+			Float number = new Float(item.trim());
 			numberList.add(number);
 		}
 		return numberList;
