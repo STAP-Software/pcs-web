@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
-public class NumberListEncoder {
+public class IntegerListEncoder {
 
 	Logger logger = Logger.getLogger(this.getClass());
 	
