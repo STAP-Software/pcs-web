@@ -25,7 +25,19 @@ public class PhasingConstants {
 		this.phTmplSize = phTmplSize;
 	}
 	
-	
+	public String toString() {
+		
+		StringBuffer buf = new StringBuffer();
+		buf.append("\nringMode = ");
+		for (int i=0; i<ringMode.length; i++) {
+			buf.append(ringMode[i] + ", ");
+		}
+		
+		buf.append("\nphTmplSize = " + phTmplSize);
+		
+		buf.append("\n");
+		return buf.toString();
+	}
 
 	
 	
