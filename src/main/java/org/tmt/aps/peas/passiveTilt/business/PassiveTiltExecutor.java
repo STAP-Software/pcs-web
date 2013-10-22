@@ -130,10 +130,10 @@ public class PassiveTiltExecutor {
 
 				// FIXME
 				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
-			}
-
-			statusLogger.log("Current frame being used for test ");
-			statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
+				}
+	
+				statusLogger.log("Current frame being used for test ");
+				statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
 		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
@@ -146,7 +146,13 @@ public class PassiveTiltExecutor {
 				wait(567);
 
 				statusLogger.log("Calling Find and Identify ");
-				List<Point> subimageList = imageProcessor.findAndIdentify(ccdFrame);
+				List<Point> subimageList = null;
+				
+				float centroids[][] = new float [36][2];
+				computationLibrary.findAndIdentify(ccdFrame.getValue(), centroids);
+				for (int j=0;j<36;j++) {
+					statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
+				}
 				
 				// TODO: this is where we display the marked frame
 
@@ -221,10 +227,10 @@ public class PassiveTiltExecutor {
 			float a = 1.0f;
 			float b = 2.2f;
 			
-			float c = computationLibrary.actuatorLengths(a, b);
+		//	float c = computationLibrary.actuatorLengths(a, b);
 			
 			userPromptMgmt.displayYesNoDialog("Can you see this text?");
-			statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
+		//	statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
 						
 			wait(134);
 			statusLogger.log("Passive Tilt Test Completed");

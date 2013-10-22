@@ -39,6 +39,12 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 		
 	}
+
+	@Override
+	public void findAndIdentify(float[][] frame, float[][] centroids) throws ComputationException {
+		// TODO Auto-generated method stub
+		
+	}
 	
 	
 }

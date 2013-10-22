@@ -9,5 +9,6 @@ package org.tmt.aps.peas.computation.business;
 public interface ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException;
+	public void findAndIdentify(float[][] frame, float[][] centroids ) throws ComputationException;
 	
 }

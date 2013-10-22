@@ -52,6 +52,8 @@ public class CcdFrame {
 	@Transient
 	protected short result[][];
 	
+	@Transient
+	protected float values[][];
 	
 	public int getNoOfAxes() {
 		return noOfAxes;
@@ -103,6 +105,16 @@ public class CcdFrame {
 		this.createDate = createDate;
 	}
 
+	public float[][] getValue() {
+		float[][] value = new float[1024][1024];
+		for (int i=0; i<1024; i++) {
+			for (int j=0; j<1024; j++) {
+				value[i][j] = result[i][j];
+			}
+		}
+			return value;
+	}
+	
 	@Transient
 	byte[] falseColorPng;
 	public byte[] getFalseColorPng() {

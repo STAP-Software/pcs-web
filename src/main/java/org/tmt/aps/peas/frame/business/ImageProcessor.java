@@ -20,10 +20,7 @@ public class ImageProcessor {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
-	public List<Point> findAndIdentify(CcdFrame frame) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	public RegistrationDelta pupilRegistration36(List<Point> subimageList) {
 		// TODO Auto-generated method stub
