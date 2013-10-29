@@ -149,7 +149,7 @@ public class PassiveTiltExecutor {
 				List<Point> subimageList = null;
 				
 				float centroids[][] = new float [36][2];
-				computationLibrary.findAndIdentify(ccdFrame.getValue(), centroids);
+				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
 				for (int j=0;j<36;j++) {
 					statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
 				}

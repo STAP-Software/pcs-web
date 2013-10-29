@@ -28,101 +28,120 @@ import org.primefaces.model.StreamedContent;
 
 })
 public class CcdFrame {
-	
+
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long ccdFrameId;
 
-	@Column(length=200)
+	@Column(length = 200)
 	private String fitsFilename;
-	
+
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
 	@Transient
-	protected int noOfAxes; 
+	protected int noOfAxes;
 	@Transient
-	protected int axes1; 
+	protected int axes1;
 	@Transient
 	protected int axes2;
 	@Transient
-	protected int bitPix; 
-	
+	protected int bitPix;
+
 	// are these next three required by FITS standard
 	@Transient
-	protected short result[][];
-	
+	protected short rawFrame[][];
+
 	@Transient
-	protected float values[][];
-	
+	protected float correctedFrame[][];
+
 	public int getNoOfAxes() {
 		return noOfAxes;
 	}
+
 	public void setNoOfAxes(int noOfAxes) {
 		this.noOfAxes = noOfAxes;
 	}
+
 	public int getAxes1() {
 		return axes1;
 	}
+
 	public void setAxes1(int axes1) {
 		this.axes1 = axes1;
 	}
+
 	public int getAxes2() {
 		return axes2;
 	}
+
 	public void setAxes2(int axes2) {
 		this.axes2 = axes2;
 	}
+
 	public int getBitPix() {
 		return bitPix;
 	}
+
 	public void setBitPix(int bitPix) {
 		this.bitPix = bitPix;
 	}
 
-	public short[][] getResult() {
-		return result;
+	public short[][] getRawFrame() {
+		return rawFrame;
 	}
-	public void setResult(short[][] result) {
-		this.result = result;
+
+	public void setRawFrame(short[][] rawFrame) {
+		this.rawFrame = rawFrame;
 	}
+
 	public Long getCcdFrameId() {
 		return ccdFrameId;
 	}
+
 	public void setCcdFrameId(Long ccdFrameId) {
 		this.ccdFrameId = ccdFrameId;
 	}
+
 	public String getFitsFilename() {
 		return fitsFilename;
 	}
+
 	public void setFitsFilename(String fitsFilename) {
 		this.fitsFilename = fitsFilename;
 	}
+
 	public Date getCreateDate() {
 		return createDate;
 	}
+
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
 	}
 
-	public float[][] getValue() {
-		float[][] value = new float[1024][1024];
-		for (int i=0; i<1024; i++) {
-			for (int j=0; j<1024; j++) {
-				value[i][j] = result[i][j];
+	public float[][] getCorrectedFrame() {
+		
+		// TODO: for now we copy directly from raw frame if the corrected frame is desired and not yet initialized
+		if (correctedFrame == null) {
+			correctedFrame = new float[1024][1024];
+			for (int i = 0; i < 1024; i++) {
+				for (int j = 0; j < 1024; j++) {
+					correctedFrame[i][j] = rawFrame[i][j];
+				}
 			}
 		}
-			return value;
+		return correctedFrame;
 	}
-	
+
 	@Transient
 	byte[] falseColorPng;
+
 	public byte[] getFalseColorPng() {
 		return falseColorPng;
 	}
+
 	public void setFalseColorPng(byte[] falseColorPng) {
 		this.falseColorPng = falseColorPng;
 	}
-
 
 }

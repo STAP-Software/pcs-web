@@ -236,7 +236,7 @@ public class FrameMgmt {
 
 				fb.setAxes2(axes[0]);
 
-				fb.setResult(shortArray);
+				fb.setRawFrame(shortArray);
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
@@ -258,7 +258,7 @@ public class FrameMgmt {
 		myFits = new Fits();
 
 		// Now create three extensions.
-		myFits.addHDU(HDU.create(ccdFrame.getResult()));
+		myFits.addHDU(HDU.create(ccdFrame.getRawFrame()));
 
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(ccdFrame.getFitsFilename());
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
@@ -281,7 +281,7 @@ public class FrameMgmt {
 				return falseColorPng;
 			} catch (Exception e) {
 				FalseColorProcessor falseColorer = new FalseColorProcessor();
-				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getResult());
+				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
 
 				FileUtils.writeByteArrayToFile(pngFile, falseColorPng);
 				return falseColorPng;
