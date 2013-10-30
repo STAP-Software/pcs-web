@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.PhasingConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorSegmentConstants;
+import org.tmt.aps.peas.config.model.SufsConstants;
 
 @Singleton
 @Startup
@@ -30,6 +31,7 @@ public class Constants {
 	private PrimaryMirrorConstants primaryMirrorConstants;
 	private PrimaryMirrorSegmentConstants primaryMirrorSegmentConstants;
 	private PhasingConstants phasingConstants;
+	private SufsConstants sufsConstants;
 	
 
 	@PostConstruct
@@ -37,11 +39,13 @@ public class Constants {
 		primaryMirrorConstants = new PrimaryMirrorConstants();
 		primaryMirrorSegmentConstants = new PrimaryMirrorSegmentConstants();
 		phasingConstants = new PhasingConstants();
+		sufsConstants = new SufsConstants();
 		
 		List<Object> instances = new ArrayList<Object>();
 		instances.add(primaryMirrorConstants);
 		instances.add(primaryMirrorSegmentConstants);
 		instances.add(phasingConstants);
+		instances.add(sufsConstants);
 		
 		// populate constants
 		constantsMgmt.loadConstants(instances);
@@ -49,6 +53,7 @@ public class Constants {
 		logger.info("\n\nPrimary Mirror Constants: \n" + primaryMirrorConstants);
 		logger.info("\n\nPrimary Mirror Segment Constants: \n" + primaryMirrorSegmentConstants);
 		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
+		logger.info("\n\nSUFS Constants: \n" + sufsConstants);
 
 	}
 
@@ -63,6 +68,10 @@ public class Constants {
 
 	public PhasingConstants getPhasingConstants() {
 		return phasingConstants;
+	}
+
+	public SufsConstants getSufsConstants() {
+		return sufsConstants;
 	}
 
 	
