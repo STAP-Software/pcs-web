@@ -10,13 +10,15 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.instrument.business.ActiveInstrument;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 
@@ -31,7 +33,7 @@ public class CoarseTiltMirrorController implements Serializable {
 	@EJB
 	private PeasProperties peasProperties;
 	@EJB
-	private ActiveInstrument activeInstrument;
+	private PhysicalModel physicalModel;
 	
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -41,7 +43,7 @@ public class CoarseTiltMirrorController implements Serializable {
 	@PostConstruct
 	private void init() {
 			
-		coarseTiltMirror = activeInstrument.getInstrument().getCamera().getCoarseTiltMirror();
+		coarseTiltMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
 	}
 
 
@@ -57,9 +59,7 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	public String doViewCoarseTiltMirror() {
 
-		System.out.println("doViewCoarseTiltMirror");
-		
-		breadcrumbMenuBean.addItem("Coarse Tilt Mirror", "doViewFilter()");
+		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "doViewCoarseTiltMirror()");
 
 		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
 	}
@@ -67,9 +67,17 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	public String doSaveCoarseTiltMirror() {
 
+		try {
+		
 		cameraDefMgmt.updateCoarseTiltMirror(coarseTiltMirror);
 		
-		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating Coarse Tilt Mirror Configuration", ""));
+			return null;
+		}
+		FacesContext.getCurrentInstance().addMessage(null,  new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully updated Coarse Tilt Mirror Configuration", ""));
+		
+		return null;
 	}
 
 	public String doCancelSaveCoarseTiltMirror() {

@@ -5,71 +5,121 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
+@Entity
+@Table(name = "FineTiltMirror")
 public class FineTiltMirror {
 	
-	double xLeverArm;
-	double windowThickness;
-	double indexOfRefraction;
+	@Id
+	private Long fineTiltMirrorId;
 	
+	private float mechanismLeverArmX;
+	private float mechanismLeverArmY;
+	private float windowThickness;
+	private float xbk7;
+	private float pupilMagnification;
 
 	@Transient
-	private float x;
-	@Transient
-	private float y;
+	private FloatPoint currentPosition;
 
-	FineTiltMirror(float x, float y) {
-		this.x = x;
-		this.y = y;
-	}
-	
-	public float getX() {
-		return x;
-	}
-
-	public void setX(float x) {
-		this.x = x;
-	}
-
-	public float getY() {
-		return y;
-	}
-
-	public void setY(float y) {
-		this.y = y;
-	}
-
+	@OneToOne
+	@JoinColumn(name = "cameraId")
+	private Camera camera;
 
 	
-	public double getxLeverArm() {
-		return xLeverArm;
+	public FineTiltMirror(FloatPoint currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+	public FineTiltMirror() {
 	}
 
-	public void setxLeverArm(double xLeverArm) {
-		this.xLeverArm = xLeverArm;
+	public FloatPoint getMechanismLeverArm() {
+		return new FloatPoint(mechanismLeverArmX, mechanismLeverArmY);
 	}
 
-	public double getWindowThickness() {
+	public void setMechanismLeverArm(FloatPoint mechanismLeverArm) {
+		this.mechanismLeverArmX = mechanismLeverArm.getX();
+		this.mechanismLeverArmY = mechanismLeverArm.getY();
+	}
+	
+	
+	public Long getFineTiltMirrorId() {
+		return fineTiltMirrorId;
+	}
+	
+	public void setFineTiltMirrorId(Long fineTiltMirrorId) {
+		this.fineTiltMirrorId = fineTiltMirrorId;
+	}
+	
+	public float getMechanismLeverArmX() {
+		return mechanismLeverArmX;
+	}
+	
+	public void setMechanismLeverArmX(float mechanismLeverArmX) {
+		this.mechanismLeverArmX = mechanismLeverArmX;
+	}
+	
+	public float getMechanismLeverArmY() {
+		return mechanismLeverArmY;
+	}
+	
+	public void setMechanismLeverArmY(float mechanismLeverArmY) {
+		this.mechanismLeverArmY = mechanismLeverArmY;
+	}
+	
+	public float getWindowThickness() {
 		return windowThickness;
 	}
-
-	public void setWindowThickness(double windowThickness) {
+	
+	public void setWindowThickness(float windowThickness) {
 		this.windowThickness = windowThickness;
 	}
-
-	public double getIndexOfRefraction() {
-		return indexOfRefraction;
-	}
-
-	public void setIndexOfRefraction(double indexOfRefraction) {
-		this.indexOfRefraction = indexOfRefraction;
-	}
-
-	public double getxScale() {
-		
-		return xLeverArm/windowThickness * indexOfRefraction /(indexOfRefraction - 1.0);
 	
+	public float getXbk7() {
+		return xbk7;
 	}
+	
+	public void setXbk7(float xbk7) {
+		this.xbk7 = xbk7;
+	}
+	
+	public float getPupilMagnification() {
+		return pupilMagnification;
+	}
+	
+	public void setPupilMagnification(float pupilMagnification) {
+		this.pupilMagnification = pupilMagnification;
+	}
+	
+	public FloatPoint getCurrentPosition() {
+		return currentPosition;
+	}
+	
+	public void setCurrentPosition(FloatPoint currentPosition) {
+		this.currentPosition = currentPosition;
+	}
+	
+	public Camera getCamera() {
+		return camera;
+	}
+	
+	public void setCamera(Camera camera) {
+		this.camera = camera;
+	}
+	
+	
+	
+
+
+
+	
 
 }

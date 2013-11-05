@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
+import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -86,15 +87,15 @@ public class CameraDefMgmt {
 		return em.find(PupilMaskType.class, pupilMaskTypeId);
 	}
 
-
-	public void createCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
-		em.persist(coarseTiltMirror);
-
-	}
-
 	public void updateCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
 
 		em.merge(coarseTiltMirror);
+
+	}
+
+	public void updateFineTiltMirror(FineTiltMirror fineTiltMirror) {
+
+		em.merge(fineTiltMirror);
 
 	}
 

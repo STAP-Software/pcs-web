@@ -18,7 +18,7 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 @Singleton
 @Startup
 @DependsOn("PeasProperties")
-public class ActiveInstrument {
+public class PhysicalModel {
 
 	Logger logger = Logger.getLogger(this.getClass());
 

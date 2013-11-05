@@ -13,23 +13,29 @@
 			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 				<f:facet name="header">
-					<h:outputText value="Coarse Mirror Information" />
+					<h:outputText value="Fine Tilt Mirror Information" />
 				</f:facet>
 
 				<h:outputLabel value="Mechanism Lever Arm (x)" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmX}" />
+				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.mechanismLeverArmX}" />
 
 				<h:outputLabel value="Mechanism Lever Arm (y)" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmY}" />
+				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.mechanismLeverArmY}" />
 
-				<h:outputLabel value="ORA Factor (radians/mm)" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.orafactor}" />
+				<h:outputLabel value="Window Thickness (um)" />
+				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.windowThickness}" />
+
+				<h:outputLabel value="Index of BK7 at 633nm used in tilt plate " />
+				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.xbk7}" />
+
+				<h:outputLabel value="Pupil Magnification (N)" />
+				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.pupilMagnification}" />
 
 				<f:facet name="footer">
 					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
-						action="#{coarseTiltMirrorController.doSaveCoarseTiltMirror}" />
+						action="#{fineTiltMirrorController.doSaveFineTiltMirror}" />
 					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
-						action="#{coarseTiltMirrorController.doCancelSaveCoarseTiltMirror}" />
+						action="#{fineTiltMirrorController.doCancelSaveFineTiltMirror}" />
 				</f:facet>
 			</p:panelGrid>
 

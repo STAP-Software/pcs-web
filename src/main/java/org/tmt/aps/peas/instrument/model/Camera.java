@@ -17,8 +17,6 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.tmt.aps.peas.common.FloatPoint;
-
 @Entity
 @Table(name = "Camera")
 @NamedQueries({
@@ -38,8 +36,6 @@ public class Camera {
 	@Transient
 	private Shutter shutter;
 	@Transient
-	private FineTiltMirror fineTilt;
-	@Transient
 	private TwoPosMechanism twoPosMechanism;
 	@Transient
 	private float instrumentTemperature;
@@ -52,6 +48,9 @@ public class Camera {
 
 	@OneToOne (mappedBy="camera")
 	private CoarseTiltMirror coarseTiltMirror;
+
+	@OneToOne (mappedBy="camera")
+	private FineTiltMirror fineTiltMirror;
 
 	@OneToOne (mappedBy="camera")
 	private PupilWheel pupilWheel;
@@ -74,7 +73,6 @@ public class Camera {
 		//this.filter = filter;
 		this.currentRefBeam = currentRefBeam;
 		this.shutter = new Shutter(shutterState, shutterExposureTime);
-		this.fineTilt = new FineTiltMirror(fineTiltX, fineTiltY);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
@@ -104,12 +102,12 @@ public class Camera {
 		this.coarseTiltMirror = coarseTiltMirror;
 	}
 
-	public FineTiltMirror getFineTilt() {
-		return fineTilt;
+	public FineTiltMirror getFineTiltMirror() {
+		return fineTiltMirror;
 	}
 
-	public void setFineTilt(FineTiltMirror fineTilt) {
-		this.fineTilt = fineTilt;
+	public void setFineTiltMirror(FineTiltMirror fineTiltMirror) {
+		this.fineTiltMirror = fineTiltMirror;
 	}
 
 	public TwoPosMechanism getTwoPosMechanism() {
