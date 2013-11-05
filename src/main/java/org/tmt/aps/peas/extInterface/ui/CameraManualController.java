@@ -17,8 +17,6 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.instrument.model.Camera;
-import org.tmt.aps.peas.instrument.model.KnifeEdge;
-import org.tmt.aps.peas.instrument.model.PreflashLEDs;
 import org.tmt.aps.peas.instrument.model.Shutter;
 
 @Named
@@ -57,7 +55,7 @@ public class CameraManualController implements Serializable {
 	}
 
 	public void refreshCamera() {
-		camera = new Camera(1, 1, 1, 1, 23.0f, 1, 0.0f, 
+		camera = new Camera(1, 1, 1, 1, 23.0f,  
 				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
 				 1,  -43.2f);
 		commandSelection = 1;
@@ -66,11 +64,6 @@ public class CameraManualController implements Serializable {
 	public boolean getRenderExposureTime() {
 		return (commandSelection == 4) && (camera.getShutter().getState() == Shutter.STATE_TIMED_EXPOSURE);
 	}
-	
-	public boolean getRenderPreflashTime() {
-		return (commandSelection == 5) && (camera.getPreflashLEDs().getState() == PreflashLEDs.STATE_TIMED_FLASH);
-	}
-	
 	
 	public String doViewCameraDiagnostic() {
 

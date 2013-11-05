@@ -202,8 +202,6 @@
             		<f:selectItem itemLabel="Timed Flash" itemValue="3" />  
             		<p:ajax update="commandPanel" />
  				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Flash Duration (sec) &#160;&#160;" rendered="#{cameraManualController.renderPreflashTime}"/>	
-        		<p:inputText value="#{cameraManualController.camera.preflashLEDs.flashDuration}"  size="5" rendered="#{cameraManualController.renderPreflashTime}"/>
  				
         		<h:outputText value="x (microns) &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
         		<p:inputText value="#{cameraManualController.camera.fineTilt.x}"  size="5" rendered="#{cameraManualController.commandSelection eq 6}"/>

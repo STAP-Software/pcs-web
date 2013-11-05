@@ -39,6 +39,10 @@ public class Ccd {
 	private String ccdName;	
 	private String ccdDescription;	
 	private String hotPixelListEncoded;  // encoded as x1,y1,x2,y2, etc
+	private int rowCount;
+	private int colCount;
+	private int colOffset;
+	
 	
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
@@ -95,21 +99,41 @@ public class Ccd {
 		return hotPixelListEncoded;
 	}
 
-
 	public void setHotPixelListEncoded(String hotPixelListEncoded) {
 		this.hotPixelListEncoded = hotPixelListEncoded;
 	}
-
 
 	public Instrument getInstrument() {
 		return instrument;
 	}
 
-
 	public void setInstrument(Instrument instrument) {
 		this.instrument = instrument;
 	}
 
+	public int getRowCount() {
+		return rowCount;
+	}
+
+	public void setRowCount(int rowCount) {
+		this.rowCount = rowCount;
+	}
+
+	public int getColCount() {
+		return colCount;
+	}
+
+	public void setColCount(int colCount) {
+		this.colCount = colCount;
+	}
+
+	public int getColOffset() {
+		return colOffset;
+	}
+
+	public void setColOffset(int colOffset) {
+		this.colOffset = colOffset;
+	}
 
 	public int getState() {
 		return state;

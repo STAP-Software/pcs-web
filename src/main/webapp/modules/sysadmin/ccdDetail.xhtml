@@ -16,13 +16,21 @@
 
 					<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-						<h:outputLabel value="CCD Name" />
-						<p:inputText value="#{ccdDefController.ccd.ccdName}" />
+						<h:outputLabel value="CCD Name" for="ccdName" />
+						<p:inputText id="ccdName" value="#{ccdDefController.ccd.ccdName}" required="true"/>
 
 
 						<h:outputLabel value="CCD Description" />
 						<p:inputTextarea value="#{ccdDefController.ccd.ccdDescription}" rows="2" cols="70" />
+						
+						<h:outputLabel value="CCD Rows" for="rowCount" />
+						<p:inputText id="rowCount" value="#{ccdDefController.ccd.rowCount}" size="3" required="true" />
 
+						<h:outputLabel value="CCD Columns" for="colCount" />
+						<p:inputText id="colCount" value="#{ccdDefController.ccd.colCount}" size="3" required="true"/>
+
+						<h:outputLabel value="CCD Column Offset" for="colOffset"/>
+						<p:inputText id="colOffset" value="#{ccdDefController.ccd.colOffset}" size="3" required="true" />
 
 						<f:facet name="footer">
 							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"

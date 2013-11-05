@@ -1,0 +1,42 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="coarseForm" style="margin:30px">
+
+			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Coarse Mirror Information" />
+				</f:facet>
+
+				<h:outputLabel value="Mechanism Lever Arm (x)" />
+				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmX}" />
+
+				<h:outputLabel value="Mechanism Lever Arm (y)" />
+				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmY}" />
+
+				<h:outputLabel value="ORA Factor (radians)" />
+				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.orafactor}" />
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+						action="#{coarseTiltMirrorController.doSaveCoarseTiltMirror}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+						action="#{coarseTiltMirrorController.doCancelSaveCoarseTiltMirror}" />
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

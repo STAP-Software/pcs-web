@@ -17,10 +17,12 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
 @Entity
 @Table(name = "Camera")
 @NamedQueries({
-	@NamedQuery(name = "findCamera", query = "SELECT o from Camera o where cameraId = :cameraId" )
+	@NamedQuery(name = "findCamera", query = "SELECT o from Camera o where cameraId = :cameraId" ),
 })
 public class Camera {
 
@@ -36,10 +38,6 @@ public class Camera {
 	@Transient
 	private Shutter shutter;
 	@Transient
-	private PreflashLEDs preflashLEDs;
-	@Transient
-	private CoarseTiltMirror coarseTilt;
-	@Transient
 	private FineTiltMirror fineTilt;
 	@Transient
 	private TwoPosMechanism twoPosMechanism;
@@ -51,6 +49,9 @@ public class Camera {
 	@OneToOne
 	@JoinColumn(name="instrumentId")
 	private Instrument instrument;
+
+	@OneToOne (mappedBy="camera")
+	private CoarseTiltMirror coarseTiltMirror;
 
 	@OneToOne (mappedBy="camera")
 	private PupilWheel pupilWheel;
@@ -65,8 +66,7 @@ public class Camera {
 		
 	}
 	
-	public Camera (int pupilMask, int filter, int refBeam, int shutterState, float shutterExposureTime, 
-			int preflashLEDState, float preflashLEDFlashDuration, 
+	public Camera (int pupilMask, int filter, int currentRefBeam, int shutterState, float shutterExposureTime, 
 			float coarseTiltX, float coarseTiltY, float fineTiltX, float fineTiltY, int twoPosMechanismState, 
 			float instrumentTemperature, float electronicsBoxTemperature) {
 		
@@ -74,8 +74,6 @@ public class Camera {
 		//this.filter = filter;
 		this.currentRefBeam = currentRefBeam;
 		this.shutter = new Shutter(shutterState, shutterExposureTime);
-		this.preflashLEDs = new PreflashLEDs(preflashLEDState, preflashLEDFlashDuration);
-		this.coarseTilt = new CoarseTiltMirror(coarseTiltX, coarseTiltY);
 		this.fineTilt = new FineTiltMirror(fineTiltX, fineTiltY);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
 		this.instrumentTemperature = instrumentTemperature;
@@ -98,20 +96,12 @@ public class Camera {
 		this.shutter = shutter;
 	}
 
-	public PreflashLEDs getPreflashLEDs() {
-		return preflashLEDs;
+	public CoarseTiltMirror getCoarseTiltMirror() {
+		return coarseTiltMirror;
 	}
 
-	public void setPreflashLEDs(PreflashLEDs preflashLEDs) {
-		this.preflashLEDs = preflashLEDs;
-	}
-
-	public CoarseTiltMirror getCoarseTilt() {
-		return coarseTilt;
-	}
-
-	public void setCoarseTilt(CoarseTiltMirror coarseTilt) {
-		this.coarseTilt = coarseTilt;
+	public void setCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
+		this.coarseTiltMirror = coarseTiltMirror;
 	}
 
 	public FineTiltMirror getFineTilt() {

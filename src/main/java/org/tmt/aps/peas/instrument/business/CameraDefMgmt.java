@@ -13,8 +13,10 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
@@ -27,7 +29,6 @@ public class CameraDefMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
-	
 	public List<Filter> findAllFilters() {
 		TypedQuery<Filter> query = em.createNamedQuery("findAllFilters", Filter.class);
 
@@ -36,19 +37,19 @@ public class CameraDefMgmt {
 
 	public void createFilter(Filter filter) {
 		em.persist(filter);
-		
+
 	}
 
 	public void updateFilter(Filter filter) {
-		
+
 		em.merge(filter);
-		
+
 	}
-	
+
 	public void updateFilterWheel(FilterWheel filterWheel) {
-		
+
 		em.merge(filterWheel);
-		
+
 	}
 
 	public List<PupilMask> findAllPupilMasks() {
@@ -58,20 +59,20 @@ public class CameraDefMgmt {
 	}
 
 	public void createPupilMask(PupilMask pupilMask) {
-		
+
 		em.persist(pupilMask);
-		
+
 	}
 
 	public void updatePupilMask(PupilMask pupilMask) {
-		
+
 		em.merge(pupilMask);
 	}
 
 	public void updatePupilWheel(PupilWheel pupilWheel) {
-		
+
 		em.merge(pupilWheel);
-		
+
 	}
 
 	public List<PupilMaskType> findAllPupilMaskTypes() {
@@ -81,11 +82,29 @@ public class CameraDefMgmt {
 	}
 
 	public PupilMaskType findPupilMaskType(Long pupilMaskTypeId) {
-		
+
 		return em.find(PupilMaskType.class, pupilMaskTypeId);
 	}
 
 
+	public void createCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
+		em.persist(coarseTiltMirror);
+
+	}
+
+	public void updateCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
+
+		em.merge(coarseTiltMirror);
+
+	}
+
+	public Instrument findInstrument(Long instrumentId) {
+
+		TypedQuery<Instrument> query = em.createNamedQuery("findInstrument", Instrument.class);
+		query.setParameter("instrumentId", instrumentId);
+
+		return query.getSingleResult();
+	}
 	
 	
 }
