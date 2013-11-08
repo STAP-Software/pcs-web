@@ -21,6 +21,7 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
+import org.tmt.aps.peas.instrument.model.SufsGroup;
 
 @Stateless
 public class CameraDefMgmt {
@@ -105,6 +106,18 @@ public class CameraDefMgmt {
 		query.setParameter("instrumentId", instrumentId);
 
 		return query.getSingleResult();
+	}
+
+	public void createSufsGroup(SufsGroup sufsGroup) {
+		
+		em.persist(sufsGroup);
+
+	}
+	
+	public void updateSufsGroup(SufsGroup sufsGroup) {
+		
+		em.merge(sufsGroup);
+
 	}
 	
 	

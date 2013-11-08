@@ -94,6 +94,7 @@
 							<p:menuitem value="Manage Coarse Tilt Mirror" action="#{coarseTiltMirrorController.doViewCoarseTiltMirror}" />
 							<p:menuitem value="Manage Fine Tilt Mirror" action="#{fineTiltMirrorController.doViewFineTiltMirror}" />
 						</p:submenu>
+						<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{sessionController.inPassiveTilt}" >

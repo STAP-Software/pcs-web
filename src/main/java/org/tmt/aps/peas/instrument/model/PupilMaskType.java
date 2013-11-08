@@ -80,6 +80,10 @@ public class PupilMaskType {
 		return pupilMaskTypeId == null;
 	}
 
+	public boolean isPupilMaskTypeSufs() {
+		return pupilMaskTypeId == PUPIL_MASK_TYPE_ID_SUFS;
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof PupilMaskType) {
 			PupilMaskType candidate = (PupilMaskType) obj;

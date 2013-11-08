@@ -128,7 +128,28 @@ public class PupilWheel {
 	}
 
 	
-
+	public PupilMask getSufsPupilMask() {
+		if (pupilMask1.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask1;
+		}
+		if (pupilMask2.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask2;
+		}
+		if (pupilMask3.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask3;
+		}
+		if (pupilMask4.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask4;
+		}
+		if (pupilMask5.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask5;
+		}
+		if (pupilMask6.getPupilMaskType().isPupilMaskTypeSufs()) {
+			return pupilMask6;
+		}
+		
+		return null;
+	}
 	
 	
 }

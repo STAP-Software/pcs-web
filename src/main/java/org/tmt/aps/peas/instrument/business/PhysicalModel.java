@@ -28,17 +28,18 @@ public class PhysicalModel {
 	private PeasProperties peasProperties;
 	
 	private Instrument instrument;
-	
+	private Long instrumentId = null;
 
 	@PostConstruct
 	public void init() throws Exception {
 		
-		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
-		System.out.println("instrumentId = " + instrumentId);
-		instrument = cameraDefMgmt.findInstrument(instrumentId);
-		
+		refresh();
 	}
 
+	public void refresh() throws Exception {
+		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
+		instrument = cameraDefMgmt.findInstrument(instrumentId);		
+	}
 
 	public Instrument getInstrument() {
 		return instrument;

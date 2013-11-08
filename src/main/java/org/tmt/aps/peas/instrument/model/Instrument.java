@@ -19,6 +19,8 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findAllInstruments", query = "SELECT o from Instrument o" ),
 	@NamedQuery(name = "findInstrument", query = "SELECT o from Instrument o INNER JOIN FETCH o.camera c "
 			+ "INNER JOIN FETCH c.coarseTiltMirror INNER JOIN FETCH c.fineTiltMirror "
+			+ "INNER JOIN FETCH c.pupilWheel pw INNER JOIN FETCH c.filterWheel fw "
+			+ "LEFT OUTER JOIN FETCH pw.pupilMaskList "
 			+ "where o.instrumentId = :instrumentId" )
 })
 public class Instrument {

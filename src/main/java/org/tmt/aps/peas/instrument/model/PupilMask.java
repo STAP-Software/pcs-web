@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -13,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 @Entity
@@ -45,7 +48,10 @@ public class PupilMask {
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
-	
+
+	@OneToMany (mappedBy="pupilMask")
+	private List<SufsGroup> sufsGroupList;
+
 	
 
 	public Long getPupilMaskId() {
@@ -126,6 +132,14 @@ public class PupilMask {
 
 	public void setPcsFocusToAcs(float pcsFocusToAcs) {
 		this.pcsFocusToAcs = pcsFocusToAcs;
+	}
+	
+	public List<SufsGroup> getSufsGroupList() {
+		return sufsGroupList;
+	}
+
+	public void setSufsGroupList(List<SufsGroup> sufsGroupList) {
+		this.sufsGroupList = sufsGroupList;
 	}
 
 	
