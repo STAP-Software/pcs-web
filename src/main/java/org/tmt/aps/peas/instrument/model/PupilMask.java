@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.instrument.model;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -50,7 +51,7 @@ public class PupilMask {
 	private PupilMaskType pupilMaskType;
 
 	@OneToMany (mappedBy="pupilMask")
-	private List<SufsGroup> sufsGroupList;
+	private Set<SufsGroup> sufsGroupSet;
 
 	
 
@@ -133,13 +134,13 @@ public class PupilMask {
 	public void setPcsFocusToAcs(float pcsFocusToAcs) {
 		this.pcsFocusToAcs = pcsFocusToAcs;
 	}
-	
-	public List<SufsGroup> getSufsGroupList() {
-		return sufsGroupList;
+
+	public Set<SufsGroup> getSufsGroupSet() {
+		return sufsGroupSet;
 	}
 
-	public void setSufsGroupList(List<SufsGroup> sufsGroupList) {
-		this.sufsGroupList = sufsGroupList;
+	public void setSufsGroupSet(Set<SufsGroup> sufsGroupSet) {
+		this.sufsGroupSet = sufsGroupSet;
 	}
 
 	

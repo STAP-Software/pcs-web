@@ -5,9 +5,11 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -17,20 +19,18 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "PupilWheel")
-
 public class PupilWheel {
 
 	@Id
 	private Long pupilWheelId;
-	
+
 	@OneToOne
-	@JoinColumn (name="cameraId")
+	@JoinColumn(name = "cameraId")
 	private Camera camera;
-	
-	@OneToMany (mappedBy="pupilWheel")
+
+	@OneToMany(mappedBy = "pupilWheel", fetch=FetchType.LAZY)
 	List<PupilMask> pupilMaskList;
 
-	
 	@Transient
 	private PupilMask selectedPupilMask;
 
@@ -46,7 +46,7 @@ public class PupilWheel {
 	private PupilMask pupilMask5;
 	@Transient
 	private PupilMask pupilMask6;
-	
+
 	public Long getPupilWheelId() {
 		return pupilWheelId;
 	}
@@ -71,13 +71,70 @@ public class PupilWheel {
 		this.selectedPupilMask = selectedPupilMask;
 	}
 
-	public List<PupilMask> getPupilMaskList() {
+	public List<PupilMask> getOrigPupilMaskList() {
+		
 		return pupilMaskList;
+	}
+
+	public List<PupilMask> getNewPupilMaskList() {
+		
+		List<PupilMask> newList = new ArrayList<PupilMask>();
+		
+		if (pupilMask1 != null) newList.add(pupilMask1);
+		if (pupilMask2 != null) newList.add(pupilMask2);
+		if (pupilMask3 != null) newList.add(pupilMask3);
+		if (pupilMask4 != null) newList.add(pupilMask4);
+		if (pupilMask5 != null) newList.add(pupilMask5);
+		if (pupilMask6 != null) newList.add(pupilMask6);
+		
+		return newList;
 	}
 
 	public void setPupilMaskList(List<PupilMask> pupilMaskList) {
 		this.pupilMaskList = pupilMaskList;
 	}
+	
+	public void updateSlotsFromList() {
+		pupilMask1 = null;
+		pupilMask2 = null;
+		pupilMask3 = null;
+		pupilMask4 = null;
+		pupilMask5 = null;
+		pupilMask6 = null;
+		
+		for (PupilMask pupilMask : pupilMaskList) {
+			switch (pupilMask.getWheelPosition()) {
+			case 1:
+				pupilMask1 = pupilMask;
+				break;
+			case 2:
+				pupilMask2 = pupilMask;
+				break;
+			case 3:
+				pupilMask3 = pupilMask;
+				break;
+			case 4:
+				pupilMask4 = pupilMask;
+				break;
+			case 5:
+				pupilMask5 = pupilMask;
+				break;
+			case 6:
+				pupilMask6 = pupilMask;
+				break;
+			}
+		}
+	}
+	
+	public void updatePupilMaskStates() {
+		if (pupilMask1 != null) pupilMask1.setWheelPosition(1);
+		if (pupilMask2 != null) pupilMask2.setWheelPosition(2);
+		if (pupilMask3 != null) pupilMask3.setWheelPosition(3);
+		if (pupilMask4 != null) pupilMask4.setWheelPosition(4);
+		if (pupilMask5 != null) pupilMask5.setWheelPosition(5);
+		if (pupilMask6 != null) pupilMask6.setWheelPosition(6);
+	}
+	
 
 	public PupilMask getPupilMask1() {
 		return pupilMask1;
@@ -127,29 +184,15 @@ public class PupilWheel {
 		this.pupilMask6 = pupilMask6;
 	}
 
-	
 	public PupilMask getSufsPupilMask() {
-		if (pupilMask1.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask1;
-		}
-		if (pupilMask2.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask2;
-		}
-		if (pupilMask3.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask3;
-		}
-		if (pupilMask4.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask4;
-		}
-		if (pupilMask5.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask5;
-		}
-		if (pupilMask6.getPupilMaskType().isPupilMaskTypeSufs()) {
-			return pupilMask6;
-		}
 		
+		for (PupilMask pupilMask : pupilMaskList) {
+			if (pupilMask.getPupilMaskType().isPupilMaskTypeSufs()) {
+				return pupilMask;
+			}
+		}
+
 		return null;
 	}
-	
-	
+
 }

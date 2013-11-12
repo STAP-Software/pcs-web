@@ -11,12 +11,15 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
@@ -27,9 +30,11 @@ public class PupilMaskController implements Serializable {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
-	@EJB 
+	@EJB
 	CameraDefMgmt cameraDefMgmt;
-	
+	@EJB
+	PhysicalModel physicalModel;
+
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
@@ -40,10 +45,14 @@ public class PupilMaskController implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		
-		refreshPupilMaskList();
-		refreshPupilWheel();
-		pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
+
+		try {
+			refreshPupilMaskList();
+			refreshPupilWheel();
+			pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
+		} catch (Exception e) {
+			logger.error("", e);
+		}
 	}
 
 	public List<PupilMask> getPupilMaskList() {
@@ -75,16 +84,14 @@ public class PupilMaskController implements Serializable {
 	}
 
 	private void refreshPupilMaskList() {
-		pupilMaskList =cameraDefMgmt.findAllPupilMasks();
+		pupilMaskList = cameraDefMgmt.findAllPupilMasks();
 	}
-	
-	private void refreshPupilWheel() {
-		
-		//String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 
-		// TODO: implement
-		// the idea here may be that the entire instrument is loaded at system startup
-		// and the tree is parsed to get the appropriate pupil wheel.
+	private void refreshPupilWheel() throws Exception {
+
+		physicalModel.refresh();
+		pupilWheel = physicalModel.getInstrument().getCamera().getPupilWheel();	
+		pupilWheel.updateSlotsFromList();
 	}
 
 	public String doViewPupilMaskList() {
@@ -102,16 +109,25 @@ public class PupilMaskController implements Serializable {
 	}
 
 	public String doViewPupilWheel() {
+		
+		try {
+			
+			refreshPupilWheel();
 
-		breadcrumbMenuBean.addItem("PCS Pupil Wheel", "doViewPupilWheel()");
+			breadcrumbMenuBean.addItem("PCS Pupil Wheel", "doViewPupilWheel()");
 
-		return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
+			return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
+		} catch (Exception e) {
+			logger.error("", e);
+			return null;
+		}
+		
 	}
 
 	public String doNewPupilMask() {
 
 		pupilMask = new PupilMask();
-		
+
 		breadcrumbMenuBean.addItem("New Pupil Mask", "doNewPupilMask()");
 
 		return "/modules/sysadmin/pupilMaskDetail.xhtml?faces-redirect=true";
@@ -121,11 +137,10 @@ public class PupilMaskController implements Serializable {
 	public String doSavePupilMask() {
 		if (pupilMask.isNewRecord()) {
 			cameraDefMgmt.createPupilMask(pupilMask);
-			
+
 		} else {
 			cameraDefMgmt.updatePupilMask(pupilMask);
 		}
-
 
 		refreshPupilMaskList();
 		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
@@ -138,17 +153,42 @@ public class PupilMaskController implements Serializable {
 		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 
 	}
-	
+
 	public String doSavePupilWheel() {
 
-		cameraDefMgmt.updatePupilWheel(pupilWheel);
-		
-		refreshPupilMaskList();
-		return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
+		pupilWheel.updatePupilMaskStates();
+		try {
+
+			cameraDefMgmt.updatePupilWheel(pupilWheel);
+
+			// clear old pupil masks states
+			for (PupilMask pupilMask : pupilWheel.getOrigPupilMaskList()) {
+				pupilMask.setWheelPosition(0);
+				pupilMask.setPupilWheel(null);
+				cameraDefMgmt.updatePupilMask(pupilMask);
+			}
+
+			// add in new masks
+			for (PupilMask pupilMask : pupilWheel.getNewPupilMaskList()) {
+				pupilMask.setPupilWheel(pupilWheel);
+				cameraDefMgmt.updatePupilMask(pupilMask);
+			}
+
+			refreshPupilWheel();
+			
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Record update successful", ""));
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating Database.  Check logs for details", ""));
+			logger.error("", e);
+		}
+
+		return null;
 	}
 
 	public String doCancelSavePupilWheel() {
-
 
 		return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
 

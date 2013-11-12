@@ -6,6 +6,8 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -16,12 +18,12 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
 @Named
@@ -67,7 +69,8 @@ public class SufsGroupController implements Serializable {
 
 	public void refreshSufsGroupList() throws Exception {
 		physicalModel.refresh();
-		sufsGroupList = physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().getSufsGroupList();
+		sufsGroupList = new ArrayList<SufsGroup>(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().getSufsGroupSet());
+		Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}
 
 	public String doViewSufsGroupList() {
@@ -76,7 +79,8 @@ public class SufsGroupController implements Serializable {
 			refreshSufsGroupList();
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No SUFS Mask Defined.  A SUFS mask must be defined first.", ""));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No SUFS Mask Defined.  A SUFS mask must be defined in the pupil wheel first.", ""));
+			logger.error("", e);
 			return null;
 		}
 		breadcrumbMenuBean.addFirstItem("Sufs Groups", "doViewSufsGroupList()");
@@ -105,9 +109,25 @@ public class SufsGroupController implements Serializable {
 
 		try {
 
+			// validate against group number to make sure group numbers are unique and between 1 and 7
+			for (SufsGroup candidate : sufsGroupList) {
+				if (sufsGroup.getGroupNumber() == candidate.getGroupNumber()) {
+					FacesContext.getCurrentInstance().addMessage(null,
+							new FacesMessage(FacesMessage.SEVERITY_ERROR, "SUFS Group Number already exsits", ""));
+					throw new Exception("SUFS Group Number already exsits");
+				}
+			}
+			if (sufsGroup.getGroupNumber() > 7 || sufsGroup.getGroupNumber() < 1) {
+				FacesContext.getCurrentInstance().addMessage(null,
+						new FacesMessage(FacesMessage.SEVERITY_ERROR, "SUFS Group Number must be between 1 and 7", ""));
+				throw new Exception("SUFS Group Number must be between 1 and 7");
+				
+			}
+			
 			if (sufsGroup.isNewRecord()) {
 				
-				// TODO: need to validate against group number to make sure group numbers are unique and between 1 and 7
+				
+				
 				
 				cameraDefMgmt.createSufsGroup(sufsGroup);
 			} else {

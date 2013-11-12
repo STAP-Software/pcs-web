@@ -81,7 +81,7 @@ public class PupilMaskType {
 	}
 
 	public boolean isPupilMaskTypeSufs() {
-		return pupilMaskTypeId == PUPIL_MASK_TYPE_ID_SUFS;
+		return pupilMaskTypeId.longValue() == PUPIL_MASK_TYPE_ID_SUFS.longValue();
 	}
 	
 	public boolean equals(Object obj) {
