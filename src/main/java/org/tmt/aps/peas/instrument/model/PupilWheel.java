@@ -72,6 +72,16 @@ public class PupilWheel {
 		this.selectedPupilMask = selectedPupilMask;
 	}
 
+	public void setSelectedPupilMaskNumber(int maskNumber) {
+		
+		for (PupilMask pupilMask : pupilMaskSet) {
+			if (pupilMask.getWheelPosition() == maskNumber) {
+				setSelectedPupilMask(pupilMask);
+			}
+
+		}	
+	}
+	
 	public List<PupilMask> getOrigPupilMaskList() {
 		
 		return new ArrayList<PupilMask>(pupilMaskSet);

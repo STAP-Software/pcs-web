@@ -193,10 +193,10 @@
 						<p:panelGrid columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Pupil Mask" />
-							<h:outputText value="#{cameraManualController.camera.pupilWheel.selectedPupilMask}" />
+							<h:outputText value="#{cameraManualController.camera.pupilWheel.selectedPupilMask.maskName}" />
 
 							<h:outputLabel value="Filter" />
-							<h:outputText value="#{cameraManualController.camera.filterWheel.selectedFilter}" />
+							<h:outputText value="#{cameraManualController.camera.filterWheel.selectedFilter.filterName}" />
 
 							<h:outputLabel value="Ref. Beam" />
 							<h:outputText value="#{cameraManualController.camera.currentRefBeam}" />
@@ -204,21 +204,18 @@
 							<h:outputLabel value="Shutter" />
 							<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" />
 
-							<h:outputLabel value="Preflash LEDs" />
-							<h:outputText value="#{cameraManualController.camera.preflashLEDs.displayString}" />
-
 							<h:outputLabel value="Fine Tilt (x, y &#181;m)" />
 							<h:panelGroup>
-								<h:outputText value="#{cameraManualController.camera.fineTilt.x}" />
+								<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" />
 								<h:outputText value=", " />
-								<h:outputText value="#{cameraManualController.camera.fineTilt.y}" />
+								<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" />
 							</h:panelGroup>
 
 							<h:outputLabel value="Coarse Tilt (x, y &#181;m)" />
 							<h:panelGroup>
-								<h:outputText value="#{cameraManualController.camera.coarseTilt.x}" />
+								<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" />
 								<h:outputText value=", " />
-								<h:outputText value="#{cameraManualController.camera.coarseTilt.y}" />
+								<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" />
 							</h:panelGroup>
 
 							<h:outputLabel value="Two Position Mech" />
@@ -309,23 +306,16 @@
  				</p:selectOneMenu>  
         		<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" 	rendered="#{cameraManualController.renderExposureTime}"/>	
         		<p:inputText value="#{cameraManualController.camera.shutter.exposureTime}"  size="5" rendered="#{cameraManualController.renderExposureTime}"/>
- 				
-				<p:selectOneMenu value="#{cameraManualController.camera.preflashLEDs.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 5}">  
-            		<f:selectItem itemLabel="On" itemValue="1" />  
-            		<f:selectItem itemLabel="Off" itemValue="2" />  
-            		<f:selectItem itemLabel="Timed Flash" itemValue="3" />  
-            		<p:ajax update="cameraCommandPanel" />
- 				</p:selectOneMenu>  
- 				
+ 				 				
         		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.camera.fineTilt.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
+        		<p:inputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
         		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.camera.fineTilt.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
+        		<p:inputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
  				
         		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraManualController.camera.coarseTilt.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
+        		<p:inputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
         		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraManualController.camera.coarseTilt.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
+        		<p:inputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
  				
  				<p:selectOneMenu value="#{cameraManualController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
             		<f:selectItem itemLabel="Extend" itemValue="1" />  

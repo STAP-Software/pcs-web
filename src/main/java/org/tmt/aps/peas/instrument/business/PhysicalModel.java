@@ -28,7 +28,6 @@ public class PhysicalModel {
 	private PeasProperties peasProperties;
 	
 	private Instrument instrument;
-	private Long instrumentId = null;
 
 	@PostConstruct
 	public void init() throws Exception {

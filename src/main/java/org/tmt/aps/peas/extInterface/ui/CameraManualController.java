@@ -8,6 +8,7 @@ package org.tmt.aps.peas.extInterface.ui;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
@@ -16,6 +17,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.Shutter;
 
@@ -25,6 +27,9 @@ public class CameraManualController implements Serializable {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
+	@EJB
+	PhysicalModel physicalModel;
+	
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
@@ -55,7 +60,10 @@ public class CameraManualController implements Serializable {
 	}
 
 	public void refreshCamera() {
-		camera = new Camera(1, 1, 1, 1, 23.0f,  
+		
+		camera = physicalModel.getInstrument().getCamera();
+		
+		camera.setCurrentState(1, 1, 1, 1, 23.0f,  
 				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
 				 1,  -43.2f);
 		commandSelection = 1;

@@ -7,6 +7,7 @@ package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -63,7 +64,7 @@ public class CcdManualController implements Serializable {
 	public boolean getShowIntegrationTime() {
 		return ccdCommand == 12;
 	}
-
+	
 	public String doViewCcdDiagnostic() {
 
 		ccdCommand = 1;

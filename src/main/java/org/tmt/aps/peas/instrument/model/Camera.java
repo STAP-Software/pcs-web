@@ -17,6 +17,8 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
 @Entity
 @Table(name = "Camera")
 @NamedQueries({
@@ -65,17 +67,19 @@ public class Camera {
 		
 	}
 	
-	public Camera (int pupilMask, int filter, int currentRefBeam, int shutterState, float shutterExposureTime, 
+	public void setCurrentState(int selectedPupilMaskNum, int selectedFilterNum, int currentRefBeam, int shutterState, float shutterExposureTime, 
 			float coarseTiltX, float coarseTiltY, float fineTiltX, float fineTiltY, int twoPosMechanismState, 
 			float instrumentTemperature, float electronicsBoxTemperature) {
 		
-		//this.pupilMask = pupilMask;
-		//this.filter = filter;
+		this.pupilWheel.setSelectedPupilMaskNumber(selectedPupilMaskNum);
+		this.filterWheel.setSelectedFilterNumber(selectedFilterNum);
 		this.currentRefBeam = currentRefBeam;
 		this.shutter = new Shutter(shutterState, shutterExposureTime);
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
+		this.coarseTiltMirror.setCurrentPosition(new FloatPoint(coarseTiltX, coarseTiltY));
+		this.fineTiltMirror.setCurrentPosition(new FloatPoint(fineTiltX, fineTiltY));
 	}
 	
 	public int getCurrentRefBeam() {

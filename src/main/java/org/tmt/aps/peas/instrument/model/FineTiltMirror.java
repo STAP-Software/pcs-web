@@ -113,10 +113,7 @@ public class FineTiltMirror {
 	
 	public void setCamera(Camera camera) {
 		this.camera = camera;
-	}
-	
-	
-	
+	}	
 
 
 

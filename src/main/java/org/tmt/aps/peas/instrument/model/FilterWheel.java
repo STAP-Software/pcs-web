@@ -74,6 +74,15 @@ public class FilterWheel {
 		this.selectedFilter = selectedFilter;
 	}
 
+	public void setSelectedFilterNumber(int filterNumber) {
+		
+		for (Filter filter : filterSet) {
+			if (filter.getWheelPosition() == filterNumber) {
+				setSelectedFilter(filter);
+			}
+		}	
+	}
+
 	
 	public List<Filter> getOrigFilterList() {
 		
@@ -187,6 +196,7 @@ public class FilterWheel {
 	public void setFilter6(Filter filter6) {
 		this.filter6 = filter6;
 	}
+
 
 
 
