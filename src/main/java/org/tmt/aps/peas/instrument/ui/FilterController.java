@@ -12,6 +12,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -19,8 +21,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 
 @Named
 @SessionScoped
@@ -32,7 +36,9 @@ public class FilterController implements Serializable {
 	private CameraDefMgmt cameraDefMgmt;
 	@EJB
 	private PeasProperties peasProperties;
-	
+	@EJB
+	PhysicalModel physicalModel;
+
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
@@ -43,9 +49,13 @@ public class FilterController implements Serializable {
 	@PostConstruct
 	private void init() {
 
-		refreshFilterList();
-		refreshFilterWheel();
-				
+		try {
+			refreshFilterList();
+			refreshFilterWheel();
+		} catch (Exception e) {
+			logger.error("", e);
+		}
+
 	}
 
 	public List<Filter> getFilterList() {
@@ -75,18 +85,14 @@ public class FilterController implements Serializable {
 	private void refreshFilterList() {
 		filterList = cameraDefMgmt.findAllFilters();
 	}
-	
-	private void refreshFilterWheel() {
-		
-		//String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 
-		// TODO: implement
-		// the idea here may be that the entire instrument is loaded at system startup
-		// and the tree is parsed to get the appropriate filter wheel.
+	private void refreshFilterWheel() throws Exception {
+		physicalModel.refresh();
+		filterWheel = physicalModel.getInstrument().getCamera().getFilterWheel();
+		filterWheel.updateSlotsFromList();
+
 	}
-	
-	
-	
+
 	public String doViewFilterList() {
 
 		breadcrumbMenuBean.addFirstItem("PCS Filters", "doViewFilterList()");
@@ -103,15 +109,25 @@ public class FilterController implements Serializable {
 
 	public String doViewFilterWheel() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Filter Wheel", "doViewFilterWheel()");
+		try {
+			
+			refreshFilterWheel();
 
-		return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
+			breadcrumbMenuBean.addFirstItem("PCS Filter Wheel", "doViewFilterWheel()");
+
+			return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
+			
+		} catch (Exception e) {
+			logger.error("", e);
+			return null;
+		}
+
 	}
 
 	public String doNewFilter() {
 
 		filter = new Filter();
-		
+
 		breadcrumbMenuBean.addItem("New Filter", "doNewFilter()");
 
 		return "/modules/sysadmin/filterDetail.xhtml?faces-redirect=true";
@@ -122,10 +138,10 @@ public class FilterController implements Serializable {
 
 		if (filter.isNewRecord()) {
 			cameraDefMgmt.createFilter(filter);
-			
+
 		} else {
 			cameraDefMgmt.updateFilter(filter);
-		
+
 		}
 		refreshFilterList();
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
@@ -139,10 +155,41 @@ public class FilterController implements Serializable {
 
 	}
 
+	
+	
+	
 	public String doSaveFilterWheel() {
 
-		cameraDefMgmt.updateFilterWheel(filterWheel);
-		return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
+		filterWheel.updateFilterStates();
+		try {
+
+			cameraDefMgmt.updateFilterWheel(filterWheel);
+
+			// clear old filter masks states
+			for (Filter filter : filterWheel.getOrigFilterList()) {
+				filter.setWheelPosition(0);
+				filter.setFilterWheel(null);
+				cameraDefMgmt.updateFilter(filter);
+			}
+
+			// add in new masks
+			for (Filter filter : filterWheel.getNewFilterList()) {
+				filter.setFilterWheel(filterWheel);
+				cameraDefMgmt.updateFilter(filter);
+			}
+
+			refreshFilterWheel();
+			
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_INFO, "Record update successful", ""));
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating Database.  Check logs for details", ""));
+			logger.error("", e);
+		}
+
+		return null;
 	}
 
 	public String doCancelSaveFilterWheel() {
@@ -150,5 +197,7 @@ public class FilterController implements Serializable {
 		return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
 
 	}
+
+
 
 }

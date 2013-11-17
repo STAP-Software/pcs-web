@@ -17,13 +17,17 @@ import javax.persistence.Table;
 @Table(name = "Instrument")
 @NamedQueries({
 	@NamedQuery(name = "findAllInstruments", query = "SELECT o from Instrument o" ),
-	@NamedQuery(name = "findInstrument", query = "SELECT o from Instrument o INNER JOIN FETCH o.camera c "
+	@NamedQuery(name = "findInstrument", query = "SELECT DISTINCT o from Instrument o INNER JOIN FETCH o.camera c "
+			+ "LEFT OUTER JOIN FETCH c.referenceBeamSet "
 			+ "INNER JOIN FETCH c.coarseTiltMirror INNER JOIN FETCH c.fineTiltMirror "
 			+ "INNER JOIN FETCH c.pupilWheel pw INNER JOIN FETCH c.filterWheel fw "
-			+ "LEFT OUTER JOIN FETCH pw.pupilMaskList pml "
+			+ "LEFT OUTER JOIN FETCH pw.pupilMaskSet pml "
 			+ "LEFT OUTER JOIN FETCH pml.sufsGroupSet "
+			+ "LEFT OUTER JOIN FETCH fw.filterSet "
+			+ "LEFT OUTER JOIN FETCH o.ccd "
 			+ "where o.instrumentId = :instrumentId" )
 })
+
 public class Instrument {
 
 	@Id

@@ -5,9 +5,12 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
@@ -27,8 +30,8 @@ public class FilterWheel {
 	@JoinColumn (name="cameraId")
 	private Camera camera;
 	
-	@OneToMany (mappedBy="filterWheel")
-	List<Filter> filterList;
+	@OneToMany (mappedBy="filterWheel", fetch=FetchType.LAZY)
+	Set<Filter> filterSet;
 	
 	@Transient
 	private Filter selectedFilter;
@@ -71,13 +74,71 @@ public class FilterWheel {
 		this.selectedFilter = selectedFilter;
 	}
 
-	public List<Filter> getFilterList() {
-		return filterList;
+	
+	public List<Filter> getOrigFilterList() {
+		
+		return new ArrayList<Filter>(filterSet);
 	}
 
-	public void setFilterList(List<Filter> filterList) {
-		this.filterList = filterList;
+	public List<Filter> getNewFilterList() {
+		
+		List<Filter> newList = new ArrayList<Filter>();
+		
+		if (filter1 != null) newList.add(filter1);
+		if (filter2 != null) newList.add(filter2);
+		if (filter3 != null) newList.add(filter3);
+		if (filter4 != null) newList.add(filter4);
+		if (filter5 != null) newList.add(filter5);
+		if (filter6 != null) newList.add(filter6);
+		
+		return newList;
 	}
+
+	public void setFilterSet(Set<Filter> filterList) {
+		this.filterSet =  filterList;
+	}
+	
+	public void updateSlotsFromList() {
+		filter1 = null;
+		filter2 = null;
+		filter3 = null;
+		filter4 = null;
+		filter5 = null;
+		filter6 = null;
+		
+		for (Filter filter : filterSet) {
+			switch (filter.getWheelPosition()) {
+			case 1:
+				filter1 = filter;
+				break;
+			case 2:
+				filter2 = filter;
+				break;
+			case 3:
+				filter3 = filter;
+				break;
+			case 4:
+				filter4 = filter;
+				break;
+			case 5:
+				filter5 = filter;
+				break;
+			case 6:
+				filter6 = filter;
+				break;
+			}
+		}
+	}
+	
+	public void updateFilterStates() {
+		if (filter1 != null) filter1.setWheelPosition(1);
+		if (filter2 != null) filter2.setWheelPosition(2);
+		if (filter3 != null) filter3.setWheelPosition(3);
+		if (filter4 != null) filter4.setWheelPosition(4);
+		if (filter5 != null) filter5.setWheelPosition(5);
+		if (filter6 != null) filter6.setWheelPosition(6);
+	}
+	
 
 	public Filter getFilter1() {
 		return filter1;

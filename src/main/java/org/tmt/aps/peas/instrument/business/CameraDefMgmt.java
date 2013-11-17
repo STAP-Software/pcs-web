@@ -21,6 +21,7 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
 @Stateless
@@ -119,6 +120,20 @@ public class CameraDefMgmt {
 		em.merge(sufsGroup);
 
 	}
+	
+	
+	public void createReferenceBeam(ReferenceBeam referenceBeam) {
+			
+		em.persist(referenceBeam);
+		
+	}
+
+	public void updateReferenceBeam(ReferenceBeam referenceBeam) {
+
+		em.merge(referenceBeam);
+		
+	}
+
 	
 	
 }

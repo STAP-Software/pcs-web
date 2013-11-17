@@ -16,6 +16,9 @@ public class TwoPosMechanism {
 		this.state = state;
 	}
 
+	public TwoPosMechanism() {
+	}
+
 
 	public int getState() {
 		return state;

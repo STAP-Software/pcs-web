@@ -6,17 +6,17 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
-import java.util.List;
 
 import javax.annotation.PostConstruct;
+import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Instrument;
 
 @Named
 @SessionScoped
@@ -26,52 +26,31 @@ public class CameraDefController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
+	@EJB
+	PhysicalModel physicalModel;
 
-	private List<ReferenceBeam> attachedReferenceBeamList;
-	private List<ReferenceBeam> availableReferenceBeamList;
-	
+	private Instrument instrument;
 
 	@PostConstruct
 	private void init() {
-
-	}
-
-	public List<ReferenceBeam> getAttachedReferenceBeamList() {
-		return attachedReferenceBeamList;
-	}
-
-	public void setAttachedReferenceBeamList(List<ReferenceBeam> attachedReferenceBeamList) {
-		this.attachedReferenceBeamList = attachedReferenceBeamList;
-	}
-
-	public List<ReferenceBeam> getAvailableReferenceBeamList() {
-		return availableReferenceBeamList;
-	}
-
-	public void setAvailableReferenceBeamList(List<ReferenceBeam> availableReferenceBeamList) {
-		this.availableReferenceBeamList = availableReferenceBeamList;
-	}
-
-	public String doViewReferenceBeams() {
-
-		breadcrumbMenuBean.addFirstItem("PCS Filters", "doViewFilterList()");
-
-		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
-	}
-
-
-	public void doSaveReferenceBeams() {
-
 		
-		
+		try {
+		physicalModel.refresh();
+		instrument = physicalModel.getInstrument();
+
+		} catch (Exception e) {
+			logger.error("", e);
+		}
 	}
 
-	public String doCancelSaveReferenceBeams() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Reference Beams", "doViewReferenceBeams()");
-
-		return "/modules/sysadmin/referenceBeams.xhtml?faces-redirect=true";
-
+	public Instrument getInstrument() {
+		return instrument;
 	}
+
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
+	}
+
 
 }

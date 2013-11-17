@@ -7,6 +7,7 @@ package org.tmt.aps.peas.instrument.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,7 +30,7 @@ public class PupilWheel {
 	private Camera camera;
 
 	@OneToMany(mappedBy = "pupilWheel", fetch=FetchType.LAZY)
-	List<PupilMask> pupilMaskList;
+	Set<PupilMask> pupilMaskSet;
 
 	@Transient
 	private PupilMask selectedPupilMask;
@@ -73,7 +74,7 @@ public class PupilWheel {
 
 	public List<PupilMask> getOrigPupilMaskList() {
 		
-		return pupilMaskList;
+		return new ArrayList<PupilMask>(pupilMaskSet);
 	}
 
 	public List<PupilMask> getNewPupilMaskList() {
@@ -90,8 +91,8 @@ public class PupilWheel {
 		return newList;
 	}
 
-	public void setPupilMaskList(List<PupilMask> pupilMaskList) {
-		this.pupilMaskList = pupilMaskList;
+	public void setPupilMaskSet(Set<PupilMask> pupilMaskList) {
+		this.pupilMaskSet =  pupilMaskList;
 	}
 	
 	public void updateSlotsFromList() {
@@ -102,7 +103,7 @@ public class PupilWheel {
 		pupilMask5 = null;
 		pupilMask6 = null;
 		
-		for (PupilMask pupilMask : pupilMaskList) {
+		for (PupilMask pupilMask : pupilMaskSet) {
 			switch (pupilMask.getWheelPosition()) {
 			case 1:
 				pupilMask1 = pupilMask;
@@ -186,7 +187,7 @@ public class PupilWheel {
 
 	public PupilMask getSufsPupilMask() {
 		
-		for (PupilMask pupilMask : pupilMaskList) {
+		for (PupilMask pupilMask : pupilMaskSet) {
 			if (pupilMask.getPupilMaskType().isPupilMaskTypeSufs()) {
 				return pupilMask;
 			}

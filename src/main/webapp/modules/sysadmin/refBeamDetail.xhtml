@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="refBeamForm" style="margin:30px">
+
+
+			<f:event listener="#{refBeamController.validate}" type="postValidate" />
+
+			<h:inputHidden id="referenceBeamId" value="#{refBeamController.referenceBeam.referenceBeamId}"/>
+
+			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Reference Beam Information" />
+				</f:facet>
+
+
+				<p:outputLabel value="Reference Beam Number" for="refBeamNum"/>
+				<p:inputText id="refBeamNum" value="#{refBeamController.referenceBeam.refBeamNum}" required="true" disabled="#{!refBeamController.referenceBeam.newRecord}" >
+					<f:validateLongRange minimum="1" maximum="9" />
+				</p:inputText>
+				
+				<p:outputLabel value="Wavelength" for="wavelength"/>
+				<p:inputText id="wavelength" value="#{refBeamController.referenceBeam.wavelength}" required="true" />
+
+				<p:outputLabel value="Aligned To Segment #" for="segAlign"/>
+				<p:inputText id="segAlign" value="#{refBeamController.referenceBeam.segmentNumAlignment}" required="true" >
+					<f:validateLongRange minimum="0" maximum="36" />
+				</p:inputText>
+
+
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+						action="#{refBeamController.doSaveReferenceBeam}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+						action="#{refBeamController.doCancelSaveReferenceBeam}" />
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

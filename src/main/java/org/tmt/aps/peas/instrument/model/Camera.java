@@ -5,7 +5,7 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
-import java.util.List;
+import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.Id;
@@ -34,9 +34,9 @@ public class Camera {
 	@Transient
 	private int currentRefBeam;
 	@Transient
-	private Shutter shutter;
+	private Shutter shutter = new Shutter();
 	@Transient
-	private TwoPosMechanism twoPosMechanism;
+	private TwoPosMechanism twoPosMechanism = new TwoPosMechanism();
 	@Transient
 	private float instrumentTemperature;
 	@Transient
@@ -59,7 +59,7 @@ public class Camera {
 	private FilterWheel filterWheel;
 	
 	@OneToMany (mappedBy="camera")
-	List<ReferenceBeam> referenceBeamList;
+	Set<ReferenceBeam> referenceBeamSet;
 
 	public Camera() {
 		
@@ -158,12 +158,13 @@ public class Camera {
 		this.filterWheel = filterWheel;
 	}
 
-	public List<ReferenceBeam> getReferenceBeamList() {
-		return referenceBeamList;
+
+	public Set<ReferenceBeam> getReferenceBeamSet() {
+		return referenceBeamSet;
 	}
 
-	public void setReferenceBeamList(List<ReferenceBeam> referenceBeamList) {
-		this.referenceBeamList = referenceBeamList;
+	public void setReferenceBeamSet(Set<ReferenceBeam> referenceBeamSet) {
+		this.referenceBeamSet = referenceBeamSet;
 	}
 
 	public Long getCameraId() {

@@ -18,6 +18,9 @@ public class Shutter {
 		this.state = state;
 		this.exposureTime = exposureTime;
 	}
+	
+	public Shutter() {
+	}
 
 	public int getState() {
 		return state;
