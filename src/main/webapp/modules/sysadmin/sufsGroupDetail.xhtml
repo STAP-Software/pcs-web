@@ -10,29 +10,34 @@
 
 		<h:form id="sufsGroupForm" style="margin:30px">
 
+			<f:event listener="#{sufsGroupController.validate}" type="postValidate" />
+			<h:inputHidden id="sufsGroupId" value="#{sufsGroupController.sufsGroup.sufsGroupId}"/>
+
 			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 				<f:facet name="header">
 					<h:outputText value="Sufs Group Instrument/Telescope related Configuation Information" />
 				</f:facet>
 
-				<h:outputLabel value="Group Number" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.groupNumber}" />
+				<p:outputLabel value="Group Number" for="groupNumber"/>
+				<p:inputText id="groupNumber" value="#{sufsGroupController.sufsGroup.groupNumber}" required="true"  disabled="#{!sufsGroupController.sufsGroup.newRecord}" >
+					<f:validateLongRange minimum="1" maximum="6" />
+				</p:inputText>
 
-				<h:outputLabel value="Coarse Mirror Pos X" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.coarseMirrorPosX}" />
+				<p:outputLabel value="Coarse Mirror Pos X" for="coarseMirrorPosX"/>
+				<p:inputText id="coarseMirrorPosX" value="#{sufsGroupController.sufsGroup.coarseMirrorPosX}" required="true" />
 
-				<h:outputLabel value="Coarse Mirror Pos Y" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.coarseMirrorPosY}" />
+				<p:outputLabel value="Coarse Mirror Pos Y" for="coarseMirrorPosY"/>
+				<p:inputText id="coarseMirrorPosY" value="#{sufsGroupController.sufsGroup.coarseMirrorPosY}" required="true" />
 
-				<h:outputLabel value="Telescope Offset (Az) from Group 0" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.telPosAz}" />
+				<p:outputLabel value="Telescope Offset (Az) from Group 0" for="telPosAz" />
+				<p:inputText id="telPosAz" value="#{sufsGroupController.sufsGroup.telPosAz}" required="true" />
 
-				<h:outputLabel value="Telescope Offset (El) from Group 0" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.telPosEl}" />
+				<p:outputLabel value="Telescope Offset (El) from Group 0" for="telPosEl"/>
+				<p:inputText id="telPosEl" value="#{sufsGroupController.sufsGroup.telPosEl}" required="true" />
 
-				<h:outputLabel value="Default Reference Beam" />
-				<p:inputText value="#{sufsGroupController.sufsGroup.defaultRefBeamNum}" />
+				<p:outputLabel value="Default Reference Beam" for="defaultRefBeamNum" />
+				<p:inputText id="defaultRefBeamNum" value="#{sufsGroupController.sufsGroup.defaultRefBeamNum}" required="true" />
 
 
 				<f:facet name="footer">

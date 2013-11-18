@@ -14,7 +14,10 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
+import javax.faces.component.UIComponent;
+import javax.faces.component.UIInput;
 import javax.faces.context.FacesContext;
+import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -24,6 +27,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
 @Named
@@ -73,6 +77,38 @@ public class SufsGroupController implements Serializable {
 		Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}
 
+	public void validate(ComponentSystemEvent event) {
+		 
+		  FacesContext fc = FacesContext.getCurrentInstance();
+	 
+		  UIComponent components = event.getComponent();
+	 
+		  UIInput sufsGroupIdInput = (UIInput) components.findComponent("sufsGroupId");
+		  if (sufsGroupIdInput.getLocalValue() == null) {
+		  
+		  // get group number
+		  UIInput groupNumberInput = (UIInput) components.findComponent("groupNumber");
+		  String groupNumberStr = groupNumberInput.getLocalValue() == null ? "" : groupNumberInput.getLocalValue().toString();
+		  String groupNumberId = groupNumberInput.getClientId();
+		  
+		  int groupNumber = new Integer(groupNumberStr);
+		  
+		  for (SufsGroup sufsGroup : sufsGroupList) {
+			  
+			  if (sufsGroup.getGroupNumber() == groupNumber) {
+				  
+					FacesMessage msg = new FacesMessage("SUFS Group Number " + groupNumber + " is already defined.");
+					msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+					fc.addMessage(groupNumberId, msg);
+					fc.renderResponse();
+
+			  }
+			  
+		  }
+		  }
+		  
+	}
+	
 	public String doViewSufsGroupList() {
 
 		try {
