@@ -16,6 +16,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -28,7 +29,18 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Entity
 @Table(name = "RefBeamMap")
 @NamedQueries({
-
+	@NamedQuery(name = "findCurrentRefBeamMap", query = "SELECT rb from RefBeamMap rb "
+			+ "where rb.instrumentId = :instrumentId AND rb.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "and rb.firstRefBeamMapFlg = 0 and rb.refBeamDefMapFlg = 0 "
+			+ "ORDER BY rb.createDate desc"),
+	@NamedQuery(name = "findFirstRefBeamMap", query = "SELECT rb from RefBeamMap rb "
+			+ "where rb.instrumentId = :instrumentId AND rb.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "and rb.firstRefBeamMapFlg = 1 and rb.refBeamDefMapFlg = 0 "
+			+ "ORDER BY rb.createDate desc"),
+	@NamedQuery(name = "findRefBeamDefMap", query = "SELECT rb from RefBeamMap rb "
+			+ "where rb.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "and rb.firstRefBeamMapFlg = 0 and rb.refBeamDefMapFlg = 1 "
+			+ "ORDER BY rb.createDate desc")
 })
 public class RefBeamMap {
 
@@ -36,7 +48,14 @@ public class RefBeamMap {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long refBeamMapId;
 
+	@Column(insertable=false, updatable=false)
+	private Long instrumentId;
+	
+	@Column(insertable=false, updatable=false)
+	private Long pupilMaskTypeId;
+	
 	int firstRefBeamMapFlg;
+	int refBeamDefMapFlg;
 	
 	@Column
 	String refBeamMapData;
@@ -54,7 +73,7 @@ public class RefBeamMap {
 
 
 	@Transient
-	protected List<FloatPoint> valueList;
+	protected List<FloatPoint> values;
 
 
 	public Long getRefBeamMapId() {
@@ -71,6 +90,30 @@ public class RefBeamMap {
 
 	public void setFirstRefBeamMapFlg(int firstRefBeamMapFlg) {
 		this.firstRefBeamMapFlg = firstRefBeamMapFlg;
+	}
+
+	public Long getInstrumentId() {
+		return instrumentId;
+	}
+
+	public void setInstrumentId(Long instrumentId) {
+		this.instrumentId = instrumentId;
+	}
+
+	public Long getPupilMaskTypeId() {
+		return pupilMaskTypeId;
+	}
+
+	public void setPupilMaskTypeId(Long pupilMaskTypeId) {
+		this.pupilMaskTypeId = pupilMaskTypeId;
+	}
+
+	public int getRefBeamDefMapFlg() {
+		return refBeamDefMapFlg;
+	}
+
+	public void setRefBeamDefMapFlg(int refBeamDefMapFlg) {
+		this.refBeamDefMapFlg = refBeamDefMapFlg;
 	}
 
 	public String getRefBeamMapData() {
@@ -105,12 +148,26 @@ public class RefBeamMap {
 		this.pupilMaskType = pupilMaskType;
 	}
 
-	public List<FloatPoint> getValueList() {
-		return valueList;
+	public List<FloatPoint> getValues() {
+		return values;
 	}
 
-	public void setValueList(List<FloatPoint> valueList) {
-		this.valueList = valueList;
+	public void setValues(List<FloatPoint> values) {
+		this.values = values;
+	}
+
+
+	public String toString() {
+		
+		StringBuffer buf = new StringBuffer();
+		
+		buf.append("\nvalues = ");
+		for (int i=0; i<values.size(); i++) {
+			buf.append(values.get(i) + ", ");
+		}
+		buf.append("\n");
+		return buf.toString();
+
 	}
 
 
