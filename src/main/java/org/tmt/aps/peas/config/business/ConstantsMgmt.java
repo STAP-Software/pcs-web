@@ -54,6 +54,13 @@ public class ConstantsMgmt {
 				continue;
 			}
 
+			// call
+			
+		}
+	}
+			
+	private void encodeObjectFieldValue(Object constantsInstance, Constant constant) throws Exception {
+			
 			// get the named field's setter method
 			Method method = null;
 
@@ -175,8 +182,6 @@ public class ConstantsMgmt {
 
 			}
 
-		}
 
 	}
-
 }
