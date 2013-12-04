@@ -26,7 +26,7 @@ public class ProcedureOutputField {
 	
 	String className;
 	String fieldName;
-	String type;
+	String dataType;
 	int dimension1;
 	int dimension2;
 	String units;
@@ -59,14 +59,14 @@ public class ProcedureOutputField {
 		this.fieldName = fieldName;
 	}
 	
-	public String getType() {
-		return type;
+	public String getDataType() {
+		return dataType;
 	}
-	
-	public void setType(String type) {
-		this.type = type;
+
+	public void setDataType(String dataType) {
+		this.dataType = dataType;
 	}
-	
+
 	public int getDimension1() {
 		return dimension1;
 	}

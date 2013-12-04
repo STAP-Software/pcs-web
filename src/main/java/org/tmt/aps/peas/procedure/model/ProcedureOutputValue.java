@@ -29,6 +29,7 @@ public class ProcedureOutputValue {
 	private Long procedureOutputValueId;
 	
 	Long procedureId;
+	Integer iteration;
 	
 	@Column(nullable=false, length=10000)
 	private String data;
@@ -69,6 +70,14 @@ public class ProcedureOutputValue {
 
 	public void setProcedureOutputField(ProcedureOutputField procedureOutputField) {
 		this.procedureOutputField = procedureOutputField;
+	}
+
+	public Integer getIteration() {
+		return iteration;
+	}
+
+	public void setIteration(Integer iteration) {
+		this.iteration = iteration;
 	}
 	
 	
