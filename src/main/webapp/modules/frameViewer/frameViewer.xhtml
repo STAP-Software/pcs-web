@@ -81,17 +81,9 @@
 							<h:outputLabel value="CCD Command" />
 							<h:panelGroup id="commandPanel">
 								<p:selectOneMenu id="options" value="#{ccdManualController.ccdCommand}" style="top:2px">
-									<f:selectItem itemLabel="Open CCD Channel" itemValue="1" />
-									<f:selectItem itemLabel="Close CCD Channel" itemValue="2" />
-									<f:selectItem itemLabel="Clear CCD" itemValue="3" />
-									<f:selectItem itemLabel="Wipe CCD" itemValue="4" />
-									<f:selectItem itemLabel="Fastwipe CCD" itemValue="5" />
-									<f:selectItem itemLabel="Send Utility Word to CCD" itemValue="6" />
-									<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="7" />
-									<f:selectItem itemLabel="Set Continuous Wipe Off" itemValue="8" />
-									<f:selectItem itemLabel="Set Residual Image Fix On" itemValue="9" />
-									<f:selectItem itemLabel="Set Residual Image Fix Off" itemValue="10" />
-									<f:selectItem itemLabel="Read CCD Raw" itemValue="11" />
+									<f:selectItem itemLabel="Fastwipe CCD" itemValue="1" />
+									<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="2" />
+									<f:selectItem itemLabel="Read CCD Raw" itemValue="3" />
 									<p:ajax update="commandExtDataPanel" />
 								</p:selectOneMenu>
 							</h:panelGroup>
@@ -257,12 +249,7 @@
             		<f:selectItem itemLabel="Coarse Tilt (&#181;m)" itemValue="7" />  
             		<f:selectItem itemLabel="Two Position Mech" itemValue="8" />  
             		<f:selectItem itemLabel="CCD Power" itemValue="9" />  
- <!-- 
-            		<f:selectItem itemLabel="Knife Edge Position" itemValue="13" />  
-            		<f:selectItem itemLabel="Knife Edge Rate" itemValue="14" />  
- -->
-             		<f:selectItem itemLabel="Video CCD Expose" itemValue="15" />  
-            		<f:selectItem itemLabel="Video CCD Power" itemValue="16" />  
+
              		<p:ajax update="cameraCommandPanel" />
          		</p:selectOneMenu>  				
  				<h:outputLabel value="" />

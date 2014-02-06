@@ -1,6 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:p="http://primefaces.org/ui">
 
 
 
@@ -15,23 +18,29 @@
 				<p:tab title="Session Detail">
 
 					<p:panelGrid columns="2" styleClass="btmsForm">
-						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+						<p:panelGrid columns="2" styleClass="btmsForm"
+							columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Description" />
-							<p:inputTextarea value="#{sessionController.session.description}" rows="5" cols="100" />
+							<p:inputTextarea value="#{sessionController.session.description}"
+								rows="5" cols="100" />
 
 						</p:panelGrid>
-						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+						<p:panelGrid columns="2" styleClass="btmsForm"
+							columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 							<h:outputLabel value="Observers" />
-							<p:inputTextarea value="#{sessionController.session.observers}" rows="2" cols="70" />
+							<p:inputTextarea value="#{sessionController.session.observers}"
+								rows="2" cols="70" />
 
 						</p:panelGrid>
 
 						<f:facet name="footer">
-							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+							<p:commandButton id="saveButton" value="Save" ajax="true"
+								icon="ui-icon-check" style="float:right" update="@form :growl"
 								action="#{sessionController.doSaveSession}" />
-							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+							<p:commandButton id="closeButton" value="Close"
+								icon="ui-icon-cancel" style="float:right" update="@form :growl"
 								action="#{sessionController.doCancelSaveSession}" />
 						</f:facet>
 					</p:panelGrid>
@@ -39,27 +48,40 @@
 
 				<p:tab title="Procedures">
 
- 					<h:commandLink>
+					<h:commandLink>
 						<p:graphicImage value="../../images/excel.png" />
-						<p:dataExporter type="xls" target="sessionTable" fileName="mitch" />
+						<p:dataExporter type="xls" target="sessionTableExport"
+							fileName="session" />
 					</h:commandLink>
-					<p:dataTable id="sessionTable" var="procedure" value="#{sessionController.session.procedureList}">
+					<h:commandLink>
+						<p:graphicImage value="../../images/csv.png" />
+						<p:dataExporter type="csv" target="sessionTableExport"
+							fileName="session" />
+					</h:commandLink>
+
+					<p:dataTable id="sessionTable" var="procedure"
+						value="#{sessionController.session.procedureList}">
 						<f:facet name="header">
 							<h:outputText value="Session Summary: " />
 							<h:outputText value="&#160;&#160;&#160;&#160;" />
-							<h:outputText value="#{sessionController.currentSession.telescope.telescopeName}" />
+							<h:outputText
+								value="#{sessionController.currentSession.telescope.telescopeName}" />
 							<h:outputText value="&#160;&#160;&#160;&#160;" />
-							<h:outputText value="#{sessionController.currentSession.sessionDate}">
+							<h:outputText
+								value="#{sessionController.currentSession.sessionDate}">
 								<f:convertDateTime pattern="MM/dd/yyyy " />
 							</h:outputText>
 						</f:facet>
 
-       					<p:column style="width:2%">  
-            				<p:rowToggler />  
-        				</p:column>  
+						<p:column style="width:2%">
+							<p:rowToggler />
+						</p:column>
 						<p:column>
-							<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{procedureController.doViewProcedure}">
-								<f:setPropertyActionListener target="#{procedureController.procedure}" value="#{procedure}" />
+							<p:commandLink value="" styleClass="ui-icon ui-icon-search"
+								style="float:left"
+								action="#{procedureController.doViewProcedure}">
+								<f:setPropertyActionListener
+									target="#{procedureController.procedure}" value="#{procedure}" />
 							</p:commandLink>
 						</p:column>
 						<p:column headerText="Procedure Number">
@@ -69,7 +91,8 @@
 							<h:outputText value="1" />
 						</p:column>
 						<p:column headerText="Procedure Type">
-							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
+							<h:outputText
+								value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>
 						<p:column headerText="Started">
 							<h:outputText value="#{procedure.executionStartTime}" />
@@ -78,62 +101,168 @@
 							<h:outputText value="Procedure specific comments" />
 						</p:column>
 
-        <p:rowExpansion>  
-            <p:panelGrid columns="4" style="margin:20px; width:550px" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">  
-  
-  
-                <h:outputLabel value="Integration Time (sec)" />  
-                <h:outputText value="15.00" />  
- 
-                <h:outputLabel value="Telescope Elevation (deg)" />  
-                <h:outputText value="66.25"/>  
-  
-                <h:outputLabel value="FWHM (pix)" />  
-                <h:outputText value="2.90"/>  
-                
-                <h:outputLabel value="ACS commands sent" />  
-                <h:outputText value="No"/>  
-   
-                <h:outputLabel value="Theta80 (pix)" />  
-                <h:outputText value="6.36"/>  
-                
-                <h:outputLabel value="Number of Frames" />  
-                <h:outputText value="1"/>  
-  
-                <h:outputLabel value="Centroid RMS (pix)" />  
-                <h:outputText value="1.74"/>  
+						<p:rowExpansion>
+							<p:panelGrid columns="4" style="margin:20px; width:550px"
+								styleClass="pcsForm"
+								columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
 
-                <h:outputLabel value="ACS Snap # After" />  
-                <h:outputText value="#{procedure.acsSnapNumberAfter}"/>  
-  
-                <h:outputLabel value="Act Cmd RMS (nm)" />  
-                <h:outputText value="nan"/>  
- 
-                <h:outputLabel value="Star Name" />  
-                <h:outputText value="#{procedure.starName}"/>  
-  
-                <h:outputLabel value="Equiv. Focus Mode (nm)" />  
-                <h:outputText value="0.0"/>  
 
-                <h:outputLabel value="Star Sp Type" />  
-                <h:outputText value="#{procedure.starSpType}"/>  
-  
-                <h:outputLabel value="Coarse Mirror X (um)" />  
-                <h:outputText value="264"/>  
- 
-                <h:outputLabel value="Star Vmag" />  
-                <h:outputText value="#{procedure.starVmag}"/>  
-  
-                <h:outputLabel value="Coarse Mirror Y (um)" />  
-                <h:outputText value="-1"/>  
-  
-                 
-            </p:panelGrid>  
-  
-        </p:rowExpansion>  
+								<h:outputLabel value="Integration Time (sec)" />
+								<h:outputText value="15.00" />
+
+								<h:outputLabel value="Telescope Elevation (deg)" />
+								<h:outputText value="66.25" />
+
+								<h:outputLabel value="FWHM (pix)" />
+								<h:outputText value="2.90" />
+
+								<h:outputLabel value="ACS commands sent" />
+								<h:outputText value="No" />
+
+								<h:outputLabel value="Theta80 (pix)" />
+								<h:outputText value="6.36" />
+
+								<h:outputLabel value="Number of Frames" />
+								<h:outputText value="1" />
+
+								<h:outputLabel value="Centroid RMS (pix)" />
+								<h:outputText value="1.74" />
+
+								<h:outputLabel value="ACS Snap # After" />
+								<h:outputText value="#{procedure.acsSnapNumberAfter}" />
+
+								<h:outputLabel value="Act Cmd RMS (nm)" />
+								<h:outputText value="nan" />
+
+								<h:outputLabel value="Star Name" />
+								<h:outputText value="#{procedure.starName}" />
+
+								<h:outputLabel value="Equiv. Focus Mode (nm)" />
+								<h:outputText value="0.0" />
+
+								<h:outputLabel value="Star Sp Type" />
+								<h:outputText value="#{procedure.starSpType}" />
+
+								<h:outputLabel value="Coarse Mirror X (um)" />
+								<h:outputText value="264" />
+
+								<h:outputLabel value="Star Vmag" />
+								<h:outputText value="#{procedure.starVmag}" />
+
+								<h:outputLabel value="Coarse Mirror Y (um)" />
+								<h:outputText value="-1" />
+
+
+							</p:panelGrid>
+
+						</p:rowExpansion>
 
 
 					</p:dataTable>
+
+			<p:dataTable id="sessionTableExport" var="procedure"
+				value="#{sessionController.session.procedureList}" style="display:none">
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Procedure Number" /></f:facet>
+					<h:outputText value="#{procedure.procedureNumber}" />
+				</p:column>
+				<p:column>
+				<f:facet name="header"><h:outputText value="Test Number" /></f:facet>
+					<h:outputText value="1" />
+				</p:column>
+				<p:column>
+				<f:facet name="header"><h:outputText value="Procedure Type" /></f:facet>
+					<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
+				</p:column>
+				<p:column>
+				<f:facet name="header"><h:outputText value="Started" /></f:facet>
+					<h:outputText value="#{procedure.executionStartTime}" />
+				</p:column>
+				<p:column>
+				<f:facet name="header"><h:outputText value="Comments" /></f:facet>
+					<h:outputText value="Procedure specific comments" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Integration Time (sec)" /></f:facet>
+					<h:outputText value="15.00" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="FWHM (pix)" /></f:facet>
+					<h:outputText value="2.90" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Theta80 (pix)" /></f:facet>
+					<h:outputText value="6.36" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Centroid RMS (pix)" /></f:facet>
+					<h:outputText value="1.74" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Act Cmd RMS (nm)" /></f:facet>
+					<h:outputText value="nan" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Equiv. Focus Mode (nm)" /></f:facet>
+					<h:outputText value="0.0" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Coarse Mirror X (um)" /></f:facet>
+					<h:outputText value="264" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Coarse Mirror Y (um)" /></f:facet>
+					<h:outputText value="-1" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Telescope Elevation (deg)" /></f:facet>
+					<h:outputText value="66.25" />
+				</p:column>
+				
+				<p:column>
+				<f:facet name="header"><h:outputText value="ACS commands sent" /></f:facet>
+					<h:outputText value="No" />
+				</p:column>
+				
+				<p:column>
+				<f:facet name="header"><h:outputText value="Number of Frames" /></f:facet>
+					<h:outputText value="1" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="ACS Snap # After" /></f:facet>
+					<h:outputText value="#{procedure.acsSnapNumberAfter}" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Star Name" /></f:facet>
+					<h:outputText value="#{procedure.starName}" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Star Sp Type" /></f:facet>
+					<h:outputText value="#{procedure.starSpType}" />
+				</p:column>
+
+				<p:column>
+				<f:facet name="header"><h:outputText value="Star Vmag" /></f:facet>
+					<h:outputText value="#{procedure.starVmag}" />
+				</p:column>
+
+
+
+			</p:dataTable>
+
 				</p:tab>
 			</p:accordionPanel>
 			<br />

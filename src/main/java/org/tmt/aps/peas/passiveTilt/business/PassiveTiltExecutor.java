@@ -44,8 +44,7 @@ public class PassiveTiltExecutor {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
-	@EJB
-	private SessionMgmt sessionMgmt;
+
 	@EJB
 	private CameraMgmt cameraMgmt;
 	@EJB
