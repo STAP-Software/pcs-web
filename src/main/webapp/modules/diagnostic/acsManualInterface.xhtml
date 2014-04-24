@@ -11,7 +11,7 @@
 
 	<ui:define name="content">
 
-		<h:form id="dcsManualForm">
+		<h:form id="acsManualForm">
 
 
 			<p:panelGrid columns="3" style="margin:10px;"
@@ -22,19 +22,19 @@
 					ACS Command Tool
 					</f:facet>
 
-					<p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" paginator="true" rows="10">
+					<p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" paginator="true" rows="12">
 
 						<p:column headerText="Segment">
 							<h:outputLabel value="#{rowIndex + 1}" />
 						</p:column>
 						<p:column headerText="Actuator 1 (um)">
-							<p:inputText size="4" value="#{segAct[0]}" />
+							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][0]}" />
 						</p:column>
 						<p:column headerText="Actuator 2 (um)">
-							<p:inputText size="4" value="#{segAct[1]}" />
+							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][1]}" />
 						</p:column>
 						<p:column headerText="Actuator 3 (um)">
-							<p:inputText size="4" value="#{segAct[2]}" />
+							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][2]}" />
 						</p:column>
 						
 
@@ -44,119 +44,13 @@
 
 					<f:facet name="footer">
 						<p:commandButton value="Send Commands" icon="ui-icon-check"
-							ajax="true" action="#{ccdManualController.doSendCommand}"
+							ajax="false" action="#{acsManualController.doSendCommand}"
 							update=":growl" />
 					</f:facet>
 
 				</p:panelGrid>
 
-				<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm"
-					columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
 
-					<f:facet name="header">
-					DCS Status
-				</f:facet>
-
-					<h:outputLabel style="height: 8px" />
-					<h:outputLabel />
-
-					<h:outputLabel value="DCS Status" />
-					<h:outputText value="Status Unknown" />
-
-					<h:outputLabel value="Tertiary Mirror" />
-					<h:outputText value="?????" />
-
-					<h:outputLabel value="Secondary Mirror" />
-					<h:outputText value="" />
-
-					<h:outputLabel value="" />
-					<h:panelGroup>
-						<h:outputText value="Actuator #1: " />
-						<p:spacer width="5px" />
-						<h:outputText value="0.000000 nm" />
-					</h:panelGroup>
-
-					<h:outputLabel value="" />
-					<h:panelGroup>
-						<h:outputText value="Actuator #2: " />
-						<p:spacer width="5px" />
-						<h:outputText value="0.000000 nm" />
-					</h:panelGroup>
-
-					<h:outputLabel value="" />
-					<h:panelGroup>
-						<h:outputText value="Actuator #3: " />
-						<p:spacer width="5px" />
-						<h:outputText value="0.000000 nm" />
-					</h:panelGroup>
-
-					<h:outputLabel value="Instrument Rotator" />
-					<h:outputText value="0.0 deg" />
-
-					<h:outputLabel value="Telescope" />
-					<h:outputText value="" />
-
-					<h:outputLabel value="" />
-					<h:panelGroup>
-						<h:outputText value="Azimuth: " />
-						<p:spacer width="12px" />
-						<h:outputText value="0.000000 nm" />
-					</h:panelGroup>
-
-					<h:outputLabel value="" />
-					<h:panelGroup>
-						<h:outputText value="Elevation: " />
-						<p:spacer width="5px" />
-						<h:outputText value="0.000000 nm" />
-					</h:panelGroup>
-
-
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-
-					<f:facet name="footer">
-						<p:commandButton value="Query All Status" icon="ui-icon-check"
-							ajax="true" action="#{ccdManualController.doSendCommand}"
-							update=":growl" />
-					</f:facet>
-
-				</p:panelGrid>
-
-				<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm"
-					columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
-
-					<f:facet name="header">
-					DCS Status Query Tool
-				</f:facet>
-
-					<h:outputLabel style="height: 8px" />
-					<h:outputLabel />
-
-					<h:outputLabel value="DCS Status" />
-					<p:selectBooleanCheckbox value="false" />
-
-					<h:outputLabel value="Tertiary Mirror Status" />
-					<p:selectBooleanCheckbox value="false" />
-
-					<h:outputLabel value="Secondary Mirror Status" />
-					<p:selectBooleanCheckbox value="false" />
-
-					<h:outputLabel value="Instrument Rotator Status" />
-					<p:selectBooleanCheckbox value="false" />
-
-					<h:outputLabel value="Telescope Status" />
-					<p:selectBooleanCheckbox value="false" />
-
-					<h:outputLabel style="height: 132px" />
-					<h:outputLabel style="height: 132px" />
-
-					<f:facet name="footer">
-						<p:commandButton value="Send Queries" icon="ui-icon-check"
-							ajax="true" action="#{ccdManualController.doSendCommand}"
-							update=":growl" />
-					</f:facet>
-
-				</p:panelGrid>
 			</p:panelGrid>
 
 		</h:form>
