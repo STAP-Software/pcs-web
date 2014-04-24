@@ -33,21 +33,40 @@ public class AcsManualController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 
+	float actDeltas[][] = new float[36][3];
 
 	
 
 	@PostConstruct
 	public void init() {
 
+		for (int i=0; i<36; i++) {
+			for (int j=0; j<3; j++) {
+				actDeltas[i][j] = (i+1)*10 + j + 1;
+			}
+		}
 
 	}
 
 
-	public String doViewDcsManualInterface() {
+	public float[][] getActDeltas() {
+		return actDeltas;
+	}
 
-		breadcrumbMenuBean.addFirstItem("DCS Manual Interface", "doViewDcsManualInterface()");
 
-		return "/modules/diagnostic/dcsManualInterface.xhtml?faces-redirect=true";
+	public void setActDeltas(float[][] actDeltas) {
+		this.actDeltas = actDeltas;
+	}
+
+
+	public String doViewAcsManualInterface() {
+		
+		init();
+		
+
+		breadcrumbMenuBean.addFirstItem("ACS Manual Interface", "doViewAcsManualInterface()");
+
+		return "/modules/diagnostic/acsManualInterface.xhtml?faces-redirect=true";
 
 	}
 
