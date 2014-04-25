@@ -210,6 +210,12 @@
 		<scope>provided</scope>
 	</dependency>
 
+	<dependency>
+		<groupId>org.tmt.aps.peas</groupId>
+		<artifactId>pcs-extinf</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+
 
 
    </dependencies>
