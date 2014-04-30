@@ -17,7 +17,7 @@ public class TestJfindCentGauss {
 		// pass in filename, irad, imargin, i_init, j_init, itermax, nspot_type and ngauss
 
 		if (args.length != 8) {
-			System.out.println("usage: TestJfindCentGauss filename, irad, imargin, i_init, j_init, itermax, nspot_type, ngauss");
+			System.out.println("usage: java org.tmt.aps.peas.lang.interop.test.TestJfindCentGauss filename, irad, imargin, i_init, j_init, itermax, nspot_type, ngauss");
 			System.exit(1);
 		}
 
