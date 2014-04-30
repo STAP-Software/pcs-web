@@ -1,5 +1,8 @@
 package org.tmt.aps.peas.lang.interop.test;
 
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import org.tmt.aps.peas.lang.interop.JfindCentGauss;
 import org.tmt.aps.peas.lang.interop.RetVal;
 
@@ -9,30 +12,59 @@ public class TestJfindCentGauss {
 		// TODO Auto-generated method stub
 
 		JfindCentGauss jfindCentGauss = new JfindCentGauss();
-		RetVal  retVal = new RetVal();
-		int irad = 10;
-		int imargin = 2;
-		int i_init = 512;
-		int j_init = 100;
-		int itermax = 1;
-		int nspot_type = 1;
-		int ngauss = 0;
-		
+		RetVal retVal = new RetVal();
+
+		// pass in filename, irad, imargin, i_init, j_init, itermax, nspot_type and ngauss
+
+		if (args.length != 8) {
+			System.out.println("usage: TestJfindCentGauss filename, irad, imargin, i_init, j_init, itermax, nspot_type, ngauss");
+			System.exit(1);
+		}
+
+		String filename = args[0];
 		float[][] ccd = new float[1024][1024];
-		for (int i=0; i<1024; i++) {
-			for (int j=0; j<1024; j++) {
-				ccd[i][j] = i*1025 + j;
+
+		int irad = new Integer(args[1]);
+		int imargin = new Integer(args[2]);
+		int i_init = new Integer(args[3]);
+		int j_init = new Integer(args[4]);
+		int itermax = new Integer(args[5]);
+		int nspot_type = new Integer(args[6]);
+		int ngauss = new Integer(args[7]);
+
+		FileReader fr = null;
+		BufferedReader reader = null;
+		try {
+			fr = new FileReader(filename);
+			reader = new BufferedReader(fr);
+			String line = null;
+			for (int i = 0; i < 1024; i++) {
+				for (int j = 0; j < 1024; j++) {
+					line = reader.readLine();
+					if (line == null) {
+						throw new Exception("Not enough 1024x1024 lines in file");
+					}
+					ccd[i][j] = new Float(line);
+				}
+			}
+
+		} catch (Exception e) {
+			System.out.println("" + e);
+		} finally {
+			try {
+			reader.close();
+			fr.close();
+			} catch (Exception e1) {
+				e1.printStackTrace();
 			}
 		}
-		
-		
-		Object[] result = jfindCentGauss.jfindCentGauss(retVal,
-				ccd, irad, imargin, i_init, j_init, itermax, nspot_type, ngauss);
-		
+
+		Object[] result = jfindCentGauss.jfindCentGauss(retVal, ccd, irad, imargin, i_init, j_init, itermax, nspot_type, ngauss);
+
 		System.out.println("X Cent: " + result[0]);
 		System.out.println("Y Cent: " + result[1]);
 		System.out.println("Good or bad: " + result[2]);
-		
+
 	}
 
 }
