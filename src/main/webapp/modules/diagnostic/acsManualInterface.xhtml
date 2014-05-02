@@ -14,12 +14,11 @@
 		<h:form id="acsManualForm">
 
 
-			<p:panelGrid columns="3" style="margin:10px;"
-				styleClass="pcsExecutionPanel">
+			<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsExecutionPanel">
 				<p:panelGrid columns="1" style="margin:10px;" styleClass="pcsForm">
 
 					<f:facet name="header">
-					ACS Command Tool
+					ACS Actuator Delta Command Tool
 					</f:facet>
 
 					<p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" paginator="true" rows="12">
@@ -44,13 +43,79 @@
 
 					<f:facet name="footer">
 						<p:commandButton value="Send Commands" icon="ui-icon-check"
-							ajax="false" action="#{acsManualController.doSendCommand}"
+							ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
 							update=":growl" />
 					</f:facet>
 
 				</p:panelGrid>
+				
+				<p:panelGrid columns="1" style="margin-top:5px;" styleClass="pcsFormNoBorder">
+				<p:panelGrid columns="3" style="margin:0px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
+					<f:facet name="header">
+						ACS Query Tool
+					</f:facet>
+					
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+					
+					<h:outputLabel value="Mirror Temp (C)" style="position:relative; top:5px" />
+					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:8px"/>
+					<p:commandButton value="Query" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
+							update=":growl" />		
+										
+					<h:outputLabel value="Is Running" style="position:relative; top:5px" />
+					<h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:8px"/>
+					<p:commandButton value="Query" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doQueryRunning}"
+							update=":growl" />		
+						
+					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:5px" />
+					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:8px"/>
+					<p:commandButton value="Query" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doQueryRmsActMove}"
+							update=":growl" />		
+						
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+						
+					<f:facet name="footer">
+						<p:commandButton value="Query All" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doQueryAll}"
+							update=":growl" />
+					
+					</f:facet>
+				</p:panelGrid>
+				
+				<p:panelGrid columns="2" style="margin-top:30px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					<f:facet name="header">
+						ACS Snapshot Tool
+					</f:facet>
+					
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+					
+					<h:outputLabel value="Snapshot number" />
+					<p:inputText size="6" value="#{acsManualController.snapshotNumber}" />
+						
+					<h:outputLabel style="height: 10px" />
+					<h:outputLabel style="height: 10px" />
+						
+					<f:facet name="footer">
+						<p:commandButton value="Load Snapshot" icon="ui-icon-transferthick-e-w"
+							ajax="false" action="#{acsManualController.doLoadSnapshot}"
+							update=":growl" />
+					
+						<p:commandButton value="Take Snapshot" icon="ui-icon-check"
+							ajax="false" action="#{acsManualController.doTakeSnapshot}"
+							update=":growl" />
+					</f:facet>
+				</p:panelGrid>
 
 
+			</p:panelGrid>
 			</p:panelGrid>
 
 		</h:form>
