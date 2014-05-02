@@ -16,9 +16,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
-import org.tmt.aps.peas.config.model.GlobalConfig;
-import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.extinf.StarInfo;
 
 @Named
 @SessionScoped
@@ -33,13 +31,40 @@ public class DcsManualController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 
-
+	int dcsStatus = 2;
+	StarInfo star = new StarInfo("SomeName", 6.3f, "blue");
+	float[] telescopePosition = new float[2];
 	
 
 	@PostConstruct
 	public void init() {
+		telescopePosition[0] = 0.345f;
+		telescopePosition[1] = 4.111f;
+	}
 
 
+	public int getDcsStatus() {
+		return dcsStatus;
+	}
+
+	public void setDcsStatus(int dcsStatus) {
+		this.dcsStatus = dcsStatus;
+	}
+
+	public StarInfo getStar() {
+		return star;
+	}
+
+	public void setStar(StarInfo star) {
+		this.star = star;
+	}
+
+	public float[] getTelescopePosition() {
+		return telescopePosition;
+	}
+
+	public void setTelescopePosition(float[] telescopePosition) {
+		this.telescopePosition = telescopePosition;
 	}
 
 
@@ -50,5 +75,25 @@ public class DcsManualController implements Serializable {
 		return "/modules/diagnostic/dcsManualInterface.xhtml?faces-redirect=true";
 
 	}
+	
+	public void doQueryTelescopePosition() {
 
+
+	}
+
+	public void doQueryStar() {
+
+
+	}
+
+	public void doQueryDcsStatus() {
+
+
+	}
+
+	public void doQueryAll() {
+
+	}
 }
+
+
