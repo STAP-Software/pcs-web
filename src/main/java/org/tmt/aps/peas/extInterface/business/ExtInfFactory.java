@@ -7,6 +7,7 @@ package org.tmt.aps.peas.extInterface.business;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.security.Permission;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -66,6 +67,7 @@ public class ExtInfFactory {
 				return new AcsCommandSimulator();
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			logger.error("", e);
 			return null;
 		}
@@ -73,8 +75,13 @@ public class ExtInfFactory {
 
 	private AcsCommand getAcsCommandRemote() {
 		try {
+			//if (System.getSecurityManager() == null) {
+			//	System.setSecurityManager(new MySecurityManager());
+			//}
+			
 			String name = "AcsCommand";
-			Registry registry = LocateRegistry.getRegistry("192.168.0.3");
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + extInfServer);
+			Registry registry = LocateRegistry.getRegistry(extInfServer);
 			AcsCommand acsCommand = (AcsCommand) registry.lookup(name);
 			return acsCommand;
 		} catch (Exception e) {
@@ -84,4 +91,11 @@ public class ExtInfFactory {
 		}
 	}
 
+	private class MySecurityManager extends SecurityManager {
+		@Override
+		public void checkPermission(Permission perm) {
+			return;
+		}
+	}
+	
 }
