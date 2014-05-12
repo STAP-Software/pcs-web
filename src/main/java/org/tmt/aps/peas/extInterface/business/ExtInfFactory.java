@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.extinf.AcsCommand;
+import org.tmt.aps.peas.extinf.CameraCommand;
 
 @Singleton
 @Startup
@@ -66,6 +67,23 @@ public class ExtInfFactory {
 			} else {
 				return new AcsCommandSimulator();
 			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			return null;
+		}
+	}
+
+	public CameraCommand getCameraCommand() {
+
+		try {
+			//if (acsEnabled) {
+			//	return getCameraCommandRemote();
+			//} else {
+				return new CameraCommandSimulator();
+			//}
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("", e);

@@ -20,19 +20,17 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.business.ComputationLibrarySimulator;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.model.RegistrationDelta;
-import org.tmt.aps.peas.instrument.business.CameraMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
-import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -116,16 +114,16 @@ public class PassiveTiltExecutor {
 				// TODO: implement
 				// autoPointTelescope();
 
-				cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
+				//cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
 
-				cameraMgmt.commandFilter(procedureConfig.getFilter());
+				//cameraMgmt.commandFilter(procedureConfig.getFilter());
 
 				// TODO: implement
 				// autoRefmapCheck();
 
-				cameraMgmt.readyCamera();
+				//cameraMgmt.readyCamera();
 
-				cameraMgmt.selectRefBeam(); // check if this is a command or something else
+				//cameraMgmt.selectRefBeam(); // check if this is a command or something else
 
 				// FIXME
 				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
