@@ -21,8 +21,9 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.Shutter;
+import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 
 @Named
 @SessionScoped
@@ -41,6 +42,7 @@ public class CameraManualController implements Serializable {
 
 
 	Camera camera;
+	Ccd ccd;
 	int commandSelection;
 	int selectedPupilMaskPos = 1;
 	int selectedFilterWheelPos = 1;
@@ -54,7 +56,7 @@ public class CameraManualController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		refreshCamera();
+		
 	}
 	
 	
@@ -64,6 +66,14 @@ public class CameraManualController implements Serializable {
 
 	public void setCamera(Camera camera) {
 		this.camera = camera;
+	}
+
+	public Ccd getCcd() {
+		return ccd;
+	}
+
+	public void setCcd(Ccd ccd) {
+		this.ccd = ccd;
 	}
 
 	public int getCommandSelection() {
@@ -147,28 +157,32 @@ public class CameraManualController implements Serializable {
 	}
 
 
-	public void refreshCamera() {
+	public void refreshCamera() throws Exception {
 		
+		physicalModel.refresh();
 		camera = physicalModel.getInstrument().getCamera();
 		
 		camera.setCurrentState(1, 1, 1, 1, 23.0f,  
 				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
 				 1,  -43.2f);
 		commandSelection = 1;
+		
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
+		
+		ccd = physicalModel.getInstrument().getCcd();
+		
 	}
 	
 	public boolean getRenderExposureTime() {
-		return (commandSelection == 4) && (camera.getShutter().getState() == Shutter.STATE_TIMED_EXPOSURE);
+		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
 	}
 	
 	public String doViewCameraDiagnostic() {
-
-		
-		refreshCamera();
 		
 		breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
 
 		return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
+		
 	}
 
 
@@ -202,12 +216,17 @@ public class CameraManualController implements Serializable {
 			break;
 			
 		case 4: // Shutter
-			if (shutterCmd == 0 || shutterCmd == 1) {
-				int state = cameraMgmt.commandCcdShutterState(shutterCmd);
-				camera.getShutter().setState(state);
+						
+			if (shutterCmd == Shutter.STATE_CLOSE) {
+				int state = cameraMgmt.commandCcdShutterState(0);
+				camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			} else if (shutterCmd == Shutter.STATE_OPEN) {
+				int state = cameraMgmt.commandCcdShutterState(1);
+				camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 			} else {
 				// timed exposure
 				cameraMgmt.commandCcdShutterExposure((int)(ccdExposureTime/1000));
+				camera.getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
 			}
 			break;
 			
@@ -226,11 +245,23 @@ public class CameraManualController implements Serializable {
 			break;
 			
 		case 7: // Two Position Mech
-			cameraMgmt.commandTwoPositionDevice(twoPosCmd);
+			if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) {
+				int twoPosState = cameraMgmt.commandTwoPositionDevice(1);
+				camera.getTwoPosMechanism().setState(twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+				
+			} else if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT) {
+				int twoPosState = cameraMgmt.commandTwoPositionDevice(0);
+				camera.getTwoPosMechanism().setState(twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+				
+			} 
+			
+			
+			
 			break;
 			
 		case 8: // CCD Power
-			cameraMgmt.commandCcdPowerState(ccdPowerCmd);
+			int ccdState = cameraMgmt.commandCcdPowerState(ccdPowerCmd);
+			ccd.setState(ccdState);
 			break;
 			
 		default:

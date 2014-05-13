@@ -19,6 +19,8 @@ import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -30,6 +32,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -42,6 +45,8 @@ public class FrameController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
+	@Inject
+	private CameraManualController cameraManualController;
 
 	@EJB
 	FrameMgmt frameMgmt;
@@ -54,7 +59,7 @@ public class FrameController implements Serializable {
 	private int searchRadius;
 
 	Map<String, List<FitsFilename>> type2Fits;
-	
+
 	public TreeNode getSessionRoot() {
 		return sessionRoot;
 	}
@@ -70,7 +75,7 @@ public class FrameController implements Serializable {
 	public void setSelectedNode(TreeNode selectedNode) {
 		this.selectedNode = selectedNode;
 	}
-	
+
 	public int getSearchRadius() {
 		return searchRadius;
 	}
@@ -83,17 +88,18 @@ public class FrameController implements Serializable {
 		if (selectedNode == null) {
 			return null;
 		}
-		FrameTreeElement fte = (FrameTreeElement)selectedNode.getData();
+		FrameTreeElement fte = (FrameTreeElement) selectedNode.getData();
 		return fte.getFileName();
 	}
 
 	public StreamedContent getGraphicImage() {
 		return graphicImage;
 	}
-	
+
 	public List<FitsFilename> getProcedureFitsFiles(String procedureTypeCd) {
 		return type2Fits.get(procedureTypeCd);
 	}
+
 	public List<FitsFilename> getAllFitsFiles() {
 		List<FitsFilename> allFitsFiles = new ArrayList<FitsFilename>();
 		for (String key : type2Fits.keySet()) {
@@ -113,7 +119,7 @@ public class FrameController implements Serializable {
 		// search folder for fits files
 
 		Map<Integer, Map<Date, List<FitsFilename>>> telescope2Fits = new HashMap<Integer, Map<Date, List<FitsFilename>>>();
-		
+
 		type2Fits = new HashMap<String, List<FitsFilename>>();
 
 		try {
@@ -129,8 +135,8 @@ public class FrameController implements Serializable {
 						telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
 					}
 
-					//logger.debug("map get filename = " + fitsFile.getFileName());
-					//logger.debug("map get dateString = " + fitsFile.getDate());
+					// logger.debug("map get filename = " + fitsFile.getFileName());
+					// logger.debug("map get dateString = " + fitsFile.getDate());
 
 					List<FitsFilename> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
 					if (dateFitsList == null) {
@@ -139,17 +145,13 @@ public class FrameController implements Serializable {
 					}
 					dateFitsList.add(fitsFile);
 
-					
 					List<FitsFilename> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
 					if (typeFitsList == null) {
 						typeFitsList = new ArrayList<FitsFilename>();
 						type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
 					}
 					typeFitsList.add(fitsFile);
-					
-					
-					
-					
+
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -185,18 +187,17 @@ public class FrameController implements Serializable {
 				// TODO: order dateFitsList by procedure number
 				Collections.sort(typeFitsList, new BeanComparator("telescope"));
 				for (FitsFilename fitsFile : typeFitsList) {
-					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getFileName(), fitsFile.getFileName()), typeNode);
+					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getFileName(),
+							fitsFile.getFileName()), typeNode);
 				}
-
 
 			}
 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
-		}		
+		}
 	}
-	
+
 	public void onNodeSelect(NodeSelectEvent event) {
 
 		try {
@@ -206,8 +207,8 @@ public class FrameController implements Serializable {
 			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(selectedElement.getFileName());
 
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame);
-						
-	        graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");   
+
+			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
 		} catch (Exception e) {
 
@@ -219,11 +220,21 @@ public class FrameController implements Serializable {
 
 	public String doSetupFrameViewer() {
 
+		try {
+			cameraManualController.refreshCamera();
 
+			breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "newProcedure.xhtml");
 
-		breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "newProcedure.xhtml");
+			return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
 
-		return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error querying camera database", e.getMessage()));
+			return null;
+		}
+
 	}
 
 }

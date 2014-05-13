@@ -21,32 +21,32 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 5;
+		return pupilMaskPosition;
 	}
 
 	@Override
 	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 4;
+		return filterWheelPosition;
 	}
 
 	@Override
 	public int commandXTiltPlate(int xTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 42;
+		return xTiltPlatePosition;
 	}
 
 	@Override
 	public int commandYTiltPlate(int yTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 24;
+		return yTiltPlatePosition;
 	}
 
 	@Override
 	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws CommunicationException, TimeoutException,
 			CommandFailureException {
 		// TODO Auto-generated method stub
-		return 1;
+		return twoPositionDevicePosition;
 	}
 
 	@Override
@@ -56,9 +56,9 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 	@Override
-	public int commandCcdShutterState(int ccdShuterState) throws CommunicationException, TimeoutException, CommandFailureException {
+	public int commandCcdShutterState(int ccdShutterState) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 1;
+		return ccdShutterState;
 	}
 
 	@Override
@@ -71,19 +71,19 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public int commandCcdPowerState(int ccdPowerState) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 0;
+		return ccdPowerState;
 	}
 
 	@Override
 	public int commandXSteeringMirror(int xSteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 43;
+		return xSteeringMirrorPosition;
 	}
 
 	@Override
 	public int commandYSteeringMirror(int ySteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return 34;
+		return ySteeringMirrorPosition;
 	}
 
 

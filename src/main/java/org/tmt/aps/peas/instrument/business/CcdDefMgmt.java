@@ -7,6 +7,7 @@ package org.tmt.aps.peas.instrument.business;
 
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -22,6 +23,9 @@ public class CcdDefMgmt {
 
 	@PersistenceContext
 	private EntityManager em;
+	
+	@EJB
+	PhysicalModel physicalModel;
 
 	
 	public List<Ccd> findAllCcds() {
@@ -41,7 +45,18 @@ public class CcdDefMgmt {
 		
 	}
 	
-
+	public void assignCcdToInstrument(Ccd ccd) {
+		// remove current assigned ccd, if it exists
+		Ccd oldCcd = physicalModel.getInstrument().getCcd();
+		if (oldCcd != null) {
+			oldCcd.setInstrument(null);
+			em.merge(oldCcd);
+		}
+		
+		// assign this Ccd to the instrument
+		ccd.setInstrument(physicalModel.getInstrument());
+		em.merge(ccd);
+	}
 
 
 

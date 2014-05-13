@@ -191,7 +191,7 @@
 							<h:outputText value="#{cameraManualController.camera.filterWheel.selectedFilter.filterName}" />
 
 							<h:outputLabel value="Ref. Beam" />
-							<h:outputText value="#{cameraManualController.camera.currentRefBeam}" />
+							<h:outputText value="#{cameraManualController.camera.currentRefBeamDisplayString}" />
 
 							<h:outputLabel value="Shutter" />
 							<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" />
@@ -214,10 +214,10 @@
 							<h:outputText value="#{cameraManualController.camera.twoPosMechanism.displayString}" />
 
 							<h:outputLabel value="CCD Power" />
-							<h:outputText value="#{ccdDefController.ccd.displayString}" />
+							<h:outputText value="#{cameraManualController.ccd.displayString}" />
 
 							<h:outputLabel value="CCD Temp" />
-							<h:outputText value="#{ccdDefController.ccd.temperature}" />
+							<h:outputText value="#{cameraManualController.ccd.temperature}" />
 
 							<h:outputLabel value="Instrument Temp" />
 							<h:outputText value="#{cameraManualController.camera.instrumentTemperature}" />
@@ -305,10 +305,10 @@
  				
  				<p:selectOneMenu value="#{cameraManualController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 7}">  
             		<f:selectItem itemLabel="Extend" itemValue="1" />  
-            		<f:selectItem itemLabel="Retract" itemValue="0" />  
+            		<f:selectItem itemLabel="Retract" itemValue="2" />  
   				</p:selectOneMenu>  
  				
- 				<p:selectOneMenu value="#{ccdDefController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
+ 				<p:selectOneMenu value="#{cameraManualController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
             		<f:selectItem itemLabel="On" itemValue="1" />  
             		<f:selectItem itemLabel="Off" itemValue="0" />  
   				</p:selectOneMenu>  

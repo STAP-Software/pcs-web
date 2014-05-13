@@ -12,6 +12,8 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -38,6 +40,7 @@ public class CcdDefController implements Serializable {
 	private Integer xHotPixel;  // FIXME: these should be deprecated and use the hotPixel Point
 	private Integer yHotPixel;
 	private Point hotPixel;
+	private Ccd selectedCcd;
 
 	@PostConstruct
 	private void init() {
@@ -87,6 +90,14 @@ public class CcdDefController implements Serializable {
 
 	private void refreshCcdList() {
 		ccdList = ccdDefMgmt.findAllCcds();
+	}
+
+	public Ccd getSelectedCcd() {
+		return selectedCcd;
+	}
+
+	public void setSelectedCcd(Ccd selectedCcd) {
+		this.selectedCcd = selectedCcd;
 	}
 
 	public String doViewCcdList() {
@@ -153,4 +164,39 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	public String doViewCcdSelectList() {
+
+		breadcrumbMenuBean.addFirstItem("Select a CCD", "doViewCcdSelectList()");
+
+		return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
+	}
+
+	
+	public String doSaveCcdSelection() {
+		
+		try {
+		ccdDefMgmt.assignCcdToInstrument(selectedCcd);
+
+		FacesContext context = FacesContext.getCurrentInstance();  
+        
+        context.addMessage(null, new FacesMessage("Successful", "CCD Assigned")); 
+        
+		} catch (Exception e) {
+			e.printStackTrace();
+			
+			FacesContext context = FacesContext.getCurrentInstance(); 
+	        context.addMessage(null, new FacesMessage("Error", e.getMessage())); 
+
+		}
+		
+		return null;
+
+	}
+
+	public String doCancelSaveCcdSelection() {
+
+		return null;
+
+	}
+	
 }

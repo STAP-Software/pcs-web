@@ -82,6 +82,14 @@ public class Camera {
 		this.fineTiltMirror.setCurrentPosition(new Point((int)fineTiltX, (int)fineTiltY));
 	}
 	
+	public String getCurrentRefBeamDisplayString() {
+		if (currentRefBeam == 0) {
+			return "Off";
+		} else {
+			return "" + currentRefBeam;
+		}
+	}
+	
 	public int getCurrentRefBeam() {
 		return currentRefBeam;
 	}
