@@ -254,14 +254,19 @@ public class CameraManualController implements Serializable {
 				camera.getTwoPosMechanism().setState(twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
 				
 			} 
-			
-			
-			
 			break;
 			
 		case 8: // CCD Power
-			int ccdState = cameraMgmt.commandCcdPowerState(ccdPowerCmd);
-			ccd.setState(ccdState);
+			
+			if (ccdPowerCmd == Ccd.POWER_STATE_ON) {
+				int ccdState = cameraMgmt.commandCcdPowerState(1);
+				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+				
+			} else if (ccdPowerCmd == Ccd.POWER_STATE_OFF) {
+				int ccdState = cameraMgmt.commandTwoPositionDevice(0);
+				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+				
+			} 
 			break;
 			
 		default:
