@@ -21,7 +21,7 @@ import javax.persistence.Transient;
 @Entity
 @Table(name = "FilterWheel")
 
-public class FilterWheel {
+public class FilterWheel implements DeviceStates {
 
 	@Id
 	private Long filterWheelId;
@@ -35,6 +35,9 @@ public class FilterWheel {
 	
 	@Transient
 	private Filter selectedFilter;
+	@Transient
+	private int state;
+	
 	@Transient
 	private Filter filter1;
 	@Transient
@@ -82,8 +85,19 @@ public class FilterWheel {
 			}
 		}	
 	}
-
 	
+	public String getStateDisplayString() {
+		return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedFilter.getWheelPosition() + " (" + selectedFilter.getFilterName() + ")";
+	}
+
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
 	public List<Filter> getOrigFilterList() {
 		
 		return new ArrayList<Filter>(filterSet);

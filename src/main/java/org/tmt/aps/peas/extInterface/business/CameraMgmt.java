@@ -10,8 +10,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
@@ -24,8 +24,12 @@ public class CameraMgmt {
 	@EJB
 	ExtInfFactory extInfFactory;
 
-	// All ACS Commands should be defined here
+	// All Camera Commands should be defined here
 
+
+	public CameraQueryResult queryCamera(int deviceCode) throws CommunicationException, TimeoutException, CommandFailureException {
+		return extInfFactory.getCameraCommand().queryCamera(deviceCode);
+	}
 
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		return extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);

@@ -19,9 +19,12 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.Ccd;
+import org.tmt.aps.peas.instrument.model.DeviceStates;
 import org.tmt.aps.peas.instrument.model.Shutter;
 import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 
@@ -33,13 +36,12 @@ public class CameraManualController implements Serializable {
 
 	@EJB
 	PhysicalModel physicalModel;
-	
+
 	@EJB
 	CameraMgmt cameraMgmt;
-	
+
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
-
 
 	Camera camera;
 	Ccd ccd;
@@ -56,10 +58,9 @@ public class CameraManualController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-		
+
 	}
-	
-	
+
 	public Camera getCamera() {
 		return camera;
 	}
@@ -156,132 +157,231 @@ public class CameraManualController implements Serializable {
 		this.ccdPowerCmd = ccdPowerCmd;
 	}
 
-
 	public void refreshCamera() throws Exception {
-		
+
 		physicalModel.refresh();
 		camera = physicalModel.getInstrument().getCamera();
-		
-		camera.setCurrentState(1, 1, 1, 1, 23.0f,  
-				 6.22f,  0.43f,  7.54f,  -0.32f,  1, 
-				 1,  -43.2f);
+
+		camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
 		commandSelection = 1;
-		
+
 		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
-		
+
 		ccd = physicalModel.getInstrument().getCcd();
-		
+
 	}
-	
+
 	public boolean getRenderExposureTime() {
 		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
 	}
-	
+
 	public String doViewCameraDiagnostic() {
-		
+
 		breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
 
 		return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
-		
-	}
 
+	}
 
 	public String doCancel() {
 
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
-	
+
 	public void doSendCommand() {
-		
-		
+
 		try {
-		
-		switch (commandSelection) {
-		
-		case 1:	// Pupil Mask
-			int maskNumber = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
-			// update position
-			camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
-			break;
-			
-		case 2: // Filter
-			int filterNumber = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
-			// update position
-			camera.getFilterWheel().setSelectedFilterNumber(filterNumber);
-			break;
-			
-		case 3: // Ref Beam
-			cameraMgmt.commandReferenceBeamState(selectedRefBeam);
-			camera.setCurrentRefBeam(selectedRefBeam);
-			break;
-			
-		case 4: // Shutter
-						
-			if (shutterCmd == Shutter.STATE_CLOSE) {
-				int state = cameraMgmt.commandCcdShutterState(0);
-				camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
-			} else if (shutterCmd == Shutter.STATE_OPEN) {
-				int state = cameraMgmt.commandCcdShutterState(1);
-				camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
-			} else {
-				// timed exposure
-				cameraMgmt.commandCcdShutterExposure((int)(ccdExposureTime/1000));
-				camera.getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
+
+			switch (commandSelection) {
+
+			case 1: // Pupil Mask
+				int maskNumber = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
+				// update position
+				camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+				camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				break;
+
+			case 2: // Filter
+				int filterNumber = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
+				// update position
+				camera.getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
+				camera.getFilterWheel().setSelectedFilterNumber(filterNumber);
+				break;
+
+			case 3: // Ref Beam
+				cameraMgmt.commandReferenceBeamState(selectedRefBeam);
+				camera.setCurrentRefBeam(selectedRefBeam);
+				break;
+
+			case 4: // Shutter
+
+				if (shutterCmd == Shutter.STATE_CLOSE) {
+					int state = cameraMgmt.commandCcdShutterState(0);
+					camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+				} else if (shutterCmd == Shutter.STATE_OPEN) {
+					int state = cameraMgmt.commandCcdShutterState(1);
+					camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+				} else {
+					// timed exposure
+					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime / 1000));
+					camera.getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
+				}
+				break;
+
+			case 5: // Fine Tilt
+				Point fineResult = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
+
+				camera.getFineTiltMirror().setCurrentPosition(fineResult);
+
+				camera.getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+				camera.getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				break;
+
+			case 6: // Coarse Tilt
+				Point coarseResult = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
+
+				camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
+
+				camera.getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+				camera.getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				break;
+
+			case 7: // Two Position Mech
+				if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) {
+					int twoPosState = cameraMgmt.commandTwoPositionDevice(1);
+					camera.getTwoPosMechanism().setState(
+							twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+
+				} else if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT) {
+					int twoPosState = cameraMgmt.commandTwoPositionDevice(0);
+					camera.getTwoPosMechanism().setState(
+							twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+
+				}
+				break;
+
+			case 8: // CCD Power
+
+				if (ccdPowerCmd == Ccd.POWER_STATE_ON) {
+					int ccdState = cameraMgmt.commandCcdPowerState(1);
+					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+
+				} else if (ccdPowerCmd == Ccd.POWER_STATE_OFF) {
+					int ccdState = cameraMgmt.commandTwoPositionDevice(0);
+					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+
+				}
+				break;
+
+			default:
+
 			}
-			break;
-			
-		case 5: // Fine Tilt
-			Point fineResult = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
-			
-			camera.getFineTiltMirror().setCurrentPosition(fineResult);
-			
-			System.out.println("got " + fineResult);
-			break;
-			
-		case 6: // Coarse Tilt
-			Point coarseResult = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
-			
-			camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
-			break;
-			
-		case 7: // Two Position Mech
-			if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) {
-				int twoPosState = cameraMgmt.commandTwoPositionDevice(1);
-				camera.getTwoPosMechanism().setState(twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-				
-			} else if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT) {
-				int twoPosState = cameraMgmt.commandTwoPositionDevice(0);
-				camera.getTwoPosMechanism().setState(twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-				
-			} 
-			break;
-			
-		case 8: // CCD Power
-			
-			if (ccdPowerCmd == Ccd.POWER_STATE_ON) {
-				int ccdState = cameraMgmt.commandCcdPowerState(1);
-				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-				
-			} else if (ccdPowerCmd == Ccd.POWER_STATE_OFF) {
-				int ccdState = cameraMgmt.commandTwoPositionDevice(0);
-				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-				
-			} 
-			break;
-			
-		default:
-			
-		}
-		
-		FacesContext context = FacesContext.getCurrentInstance();  
-        
-        context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0")); 
-        
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
+
 		} catch (Exception e) {
 			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
+	}
+
+	public void doRefresh() {
+
+		try {
+
+			CameraQueryResult result = null;
+			CameraQueryResult result2 = null;
 			
-			FacesContext context = FacesContext.getCurrentInstance(); 
-	        context.addMessage(null, new FacesMessage("Error", e.getMessage())); 
+			// Pupil Mask
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_PUPIL_WHEEL);
+			camera.getPupilWheel().setState(result.getState());
+			camera.getPupilWheel().setSelectedPupilMaskNumber(result.getStateValue());
+
+			
+			// Filter
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_FILTER_WHEEL);
+			camera.getFilterWheel().setState(result.getState());
+			camera.getFilterWheel().setSelectedFilterNumber(result.getStateValue());
+
+			// Ref Beam
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_FILTER_WHEEL);
+			camera.setCurrentRefBeam(result.getState() == 0 ? 0 : result.getStateValue());
+
+			// Shutter
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_SHUTTER);
+			
+			if (result.getState() == DeviceStates.STATE_IN_TRANSIT) {
+				camera.getShutter().setState(Shutter.STATE_IN_TRANSIT);
+			} else {
+				camera.getShutter().setState(result.getStateValue() == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			}
+
+			
+			// Fine Tilt
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_X_TILT_PLATE);
+			camera.getFineTiltMirror().setStateX(result.getState());
+			
+			result2 = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_Y_TILT_PLATE);
+			camera.getFineTiltMirror().setStateY(result2.getState());
+			
+			Point fineResult = new Point(result.getStateValue(), result2.getStateValue());
+			camera.getFineTiltMirror().setCurrentPosition(fineResult);
+
+
+			
+			// Coarse Tilt
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_X_STEERING_MIRROR);
+			camera.getCoarseTiltMirror().setStateX(result.getState());
+			
+			result2 = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR);
+			camera.getCoarseTiltMirror().setStateY(result2.getState());
+			
+			Point coarseResult = new Point(result.getStateValue(), result2.getStateValue());
+			camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
+
+			
+			// Two Position Mech
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE);
+			if (result.getState() == DeviceStates.STATE_IN_TRANSIT) {
+				camera.getTwoPosMechanism().setState(TwoPosMechanism.TWO_POS_MECH_STATE_IN_TRANSIT);
+			} else {
+				camera.getTwoPosMechanism().setState(
+						result.getStateValue() == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+			}
+						
+			// CCD Power
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_POWER);			
+			ccd.setState(result.getState() == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+
+			
+			// CCD Temperature
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE);
+			ccd.setTemperature(((float)result.getStateValue())/10.0f);
+			
+			// Instrument Temperature
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE);
+			camera.setInstrumentTemperature(((float)result.getStateValue())/10.0f);
+			
+			// Electronics Box Temperature
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
+			camera.setElectronicsBoxTemperature(((float)result.getStateValue())/10.0f);
+			
+			
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
 
 		}
 	}

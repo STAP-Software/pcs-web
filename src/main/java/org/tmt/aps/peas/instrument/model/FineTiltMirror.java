@@ -17,7 +17,7 @@ import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "FineTiltMirror")
-public class FineTiltMirror {
+public class FineTiltMirror implements DeviceStates {
 	
 	@Id
 	private Long fineTiltMirrorId;
@@ -30,6 +30,11 @@ public class FineTiltMirror {
 
 	@Transient
 	private Point currentPosition;
+	@Transient 
+	int stateX;
+	@Transient
+	int stateY;
+	
 
 	@OneToOne
 	@JoinColumn(name = "cameraId")
@@ -42,6 +47,15 @@ public class FineTiltMirror {
 	public FineTiltMirror() {
 	}
 
+	public String getStateXDisplayString() {
+		return (stateX == STATE_IN_TRANSIT) ? "In Transit" : "" + currentPosition.x;
+	}
+
+	public String getStateYDisplayString() {
+		return (stateY == STATE_IN_TRANSIT) ? "In Transit" : "" + currentPosition.y;
+	}
+
+	
 	public FloatPoint getMechanismLeverArm() {
 		return new FloatPoint(mechanismLeverArmX, mechanismLeverArmY);
 	}
@@ -114,6 +128,18 @@ public class FineTiltMirror {
 	
 	public void setCamera(Camera camera) {
 		this.camera = camera;
+	}
+	public int getStateX() {
+		return stateX;
+	}
+	public void setStateX(int stateX) {
+		this.stateX = stateX;
+	}
+	public int getStateY() {
+		return stateY;
+	}
+	public void setStateY(int stateY) {
+		this.stateY = stateY;
 	}	
 
 

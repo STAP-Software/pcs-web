@@ -14,8 +14,39 @@ public class CameraCommandSimulator implements CameraCommand {
 
 	@Override
 	public CameraQueryResult queryCamera(int deviceCode) throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
-		return null;
+		
+		switch (deviceCode) {
+		
+		case DEVICE_CODE_CCD_POWER:
+			return new CameraQueryResult(1,0);
+		case DEVICE_CODE_CCD_SHUTTER:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_CCD_TEMPERATURE:
+			return new CameraQueryResult(0,103);
+		case DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE:
+			return new CameraQueryResult(0,482);
+		case DEVICE_CODE_FILTER_WHEEL: 
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
+			return new CameraQueryResult(0,247);
+		case DEVICE_CODE_PUPIL_WHEEL:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_REFERENCE_BEAMS:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_TWO_POSITION_DEVICE:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_X_STEERING_MIRROR:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_Y_STEERING_MIRROR:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_X_TILT_PLATE:
+			return new CameraQueryResult(0,0);
+		case DEVICE_CODE_Y_TILT_PLATE:
+			return new CameraQueryResult(0,0);
+		default:
+			return new CameraQueryResult(0,0);
+		}
+		
 	}
 
 	@Override

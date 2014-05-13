@@ -9,6 +9,7 @@ public class TwoPosMechanism {
 
 	public static final int TWO_POS_MECH_STATE_EXTEND = 1;
 	public static final int TWO_POS_MECH_STATE_RETRACT = 2;
+	public static final int TWO_POS_MECH_STATE_IN_TRANSIT = 3;
 
 	private int state;
 
@@ -34,6 +35,8 @@ public class TwoPosMechanism {
 			return "Extended";
 		case TWO_POS_MECH_STATE_RETRACT:
 			return "Retracted";
+		case TWO_POS_MECH_STATE_IN_TRANSIT:
+			return "In Transit";
 		}
 		return "";
 	}

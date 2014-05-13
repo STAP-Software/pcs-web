@@ -17,7 +17,7 @@ import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "CoarseTiltMirror")
-public class CoarseTiltMirror {
+public class CoarseTiltMirror implements DeviceStates {
 
 	@Id
 	private Long coarseTiltMirrorId;
@@ -28,6 +28,10 @@ public class CoarseTiltMirror {
 
 	@Transient
 	private Point currentPosition;
+	@Transient 
+	int stateX;
+	@Transient
+	int stateY;
 
 
 	@OneToOne
@@ -39,6 +43,14 @@ public class CoarseTiltMirror {
 		this.currentPosition = currentPosition;
 	}
 	public CoarseTiltMirror() {
+	}
+	
+	public String getStateXDisplayString() {
+		return (stateX == STATE_IN_TRANSIT) ? "In Transit" : "" + currentPosition.x;
+	}
+
+	public String getStateYDisplayString() {
+		return (stateY == STATE_IN_TRANSIT) ? "In Transit" : "" + currentPosition.y;
 	}
 	
 	public Long getCoarseTiltMirrorId() {
@@ -96,6 +108,18 @@ public class CoarseTiltMirror {
 
 	public void setMechanismLeverArmY(float mechanismLeverArmY) {
 		this.mechanismLeverArmY = mechanismLeverArmY;
+	}
+	public int getStateX() {
+		return stateX;
+	}
+	public void setStateX(int stateX) {
+		this.stateX = stateX;
+	}
+	public int getStateY() {
+		return stateY;
+	}
+	public void setStateY(int stateY) {
+		this.stateY = stateY;
 	}
 	
 }

@@ -20,7 +20,7 @@ import javax.persistence.Transient;
 
 @Entity
 @Table(name = "PupilWheel")
-public class PupilWheel {
+public class PupilWheel implements DeviceStates {
 
 	@Id
 	private Long pupilWheelId;
@@ -34,6 +34,8 @@ public class PupilWheel {
 
 	@Transient
 	private PupilMask selectedPupilMask;
+	@Transient
+	private int state = 1;
 
 	@Transient
 	private PupilMask pupilMask1;
@@ -80,6 +82,18 @@ public class PupilWheel {
 			}
 
 		}	
+	}
+	
+	public int getState() {
+		return state;
+	}
+
+	public void setState(int state) {
+		this.state = state;
+	}
+
+	public String getStateDisplayString() {
+		return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedPupilMask.getWheelPosition() + " (" + selectedPupilMask.getMaskName() + ")";
 	}
 	
 	public List<PupilMask> getOrigPupilMaskList() {
