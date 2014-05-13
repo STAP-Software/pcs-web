@@ -262,7 +262,7 @@
             		<f:selectItem itemLabel="Position 6" itemValue="6" />  
 				</p:selectOneMenu>  
  				
-				<p:selectOneMenu value="#{cameraManualController.camera.filterWheel.selectedFilter}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 2}">  
+				<p:selectOneMenu value="#{cameraManualController.selectedFilterWheelPos}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 2}">  
             		<f:selectItem itemLabel="Position 1" itemValue="1" />  
             		<f:selectItem itemLabel="Position 2" itemValue="2" />  
             		<f:selectItem itemLabel="Position 3" itemValue="3" />  
@@ -271,7 +271,7 @@
             		<f:selectItem itemLabel="Position 6" itemValue="6" />  
 				</p:selectOneMenu>  
  				
-				<p:selectOneMenu value="#{cameraManualController.camera.currentRefBeam}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 3}">  
+				<p:selectOneMenu value="#{cameraManualController.selectedRefBeam}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 3}">  
             		<f:selectItem itemLabel="Ref. Beam 1" itemValue="1" />  
             		<f:selectItem itemLabel="Ref. Beam 2" itemValue="2" />  
             		<f:selectItem itemLabel="Ref. Beam 3" itemValue="3" />  
@@ -284,33 +284,33 @@
             		<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />  
 				</p:selectOneMenu>  
 
-				<p:selectOneMenu value="#{cameraManualController.camera.shutter.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 4}">  
+				<p:selectOneMenu value="#{cameraManualController.shutterCmd}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 4}">  
             		<f:selectItem itemLabel="Open" itemValue="1" />  
             		<f:selectItem itemLabel="Close" itemValue="2" />  
             		<f:selectItem itemLabel="Timed Exposure" itemValue="3" />  
             		<p:ajax update="cameraCommandPanel" />
  				</p:selectOneMenu>  
         		<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" 	rendered="#{cameraManualController.renderExposureTime}"/>	
-        		<p:inputText value="#{cameraManualController.camera.shutter.exposureTime}"  size="5" rendered="#{cameraManualController.renderExposureTime}"/>
+        		<p:inputText value="#{cameraManualController.ccdExposureTime}"  size="5" rendered="#{cameraManualController.renderExposureTime}"/>
  				 				
+        		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}"/>	
+        		<p:inputText value="#{cameraManualController.fineTiltCmd.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 5}"/>
+        		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}"/>	
+        		<p:inputText value="#{cameraManualController.fineTiltCmd.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 5}"/>
+ 				
         		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
+        		<p:inputText value="#{cameraManualController.coarseTiltCmd.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
         		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
+        		<p:inputText value="#{cameraManualController.coarseTiltCmd.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
  				
-        		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
-        		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 7}"/>	
-        		<p:inputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 7}"/>
- 				
- 				<p:selectOneMenu value="#{cameraManualController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
+ 				<p:selectOneMenu value="#{cameraManualController.camera.twoPosMechanism.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 7}">  
             		<f:selectItem itemLabel="Extend" itemValue="1" />  
-            		<f:selectItem itemLabel="Retract" itemValue="2" />  
+            		<f:selectItem itemLabel="Retract" itemValue="0" />  
   				</p:selectOneMenu>  
  				
- 				<p:selectOneMenu value="#{ccdDefController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 9}">  
+ 				<p:selectOneMenu value="#{ccdDefController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
             		<f:selectItem itemLabel="On" itemValue="1" />  
-            		<f:selectItem itemLabel="Off" itemValue="2" />  
+            		<f:selectItem itemLabel="Off" itemValue="0" />  
   				</p:selectOneMenu>  
 
  				
@@ -320,7 +320,7 @@
  				<p:spacer height="1px"/>
  				
       			<f:facet name="footer">
-					<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendCommand}" update="cameraPanel :growl"/>
 				</f:facet>
  
  

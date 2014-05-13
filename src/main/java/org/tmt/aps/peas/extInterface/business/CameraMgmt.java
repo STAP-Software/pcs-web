@@ -10,6 +10,8 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
@@ -37,26 +39,6 @@ public class CameraMgmt {
 	 */
 	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {	
 		return extInfFactory.getCameraCommand().commandFilterWheel(filterWheelPosition);
-	}
-	
-	/**
-	 * Move X axis of tilt plate to specified location<br/>
-	 * Timeout: 90 sec
-	 * @param xTiltPlatePosition Desired X tilt plate position	-5000 to 5000 (microns)	
-	 * @return achieved X Tilt Plate Position (microns) 
-	 */
-	public int commandXTiltPlate(int xTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
-		return extInfFactory.getCameraCommand().commandXTiltPlate(xTiltPlatePosition);
-	}
-	
-	/**
-	 * Move Y axis of tilt plate to specified location<br/>
-	 * Timeout: 90 sec
-	 * @param yTiltPlatePosition Desired Y tilt plate position	-5000 to 5000 (microns)	
-	 * @return achieved Y Tilt Plate Position (microns) 
-	 */
-	public int commandYTiltPlate(int yTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
-		return extInfFactory.getCameraCommand().commandYTiltPlate(yTiltPlatePosition);
 	}
 		
 	/**
@@ -111,24 +93,22 @@ public class CameraMgmt {
 		return extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
 	}
 
-	/**
-	 * Move X axis of steering mirror to specified location<br/>
-	 * Timeout: 90 sec
-	 * @param xSteeringMirrorPosition Desired X steering mirror position -5000 to 5000 microns		
-	 * @return achieved X Steering Mirror Position (microns)
-	 */
-	public int commandXSteeringMirror(int xSteeringMirrorPosition)  throws CommunicationException, TimeoutException, CommandFailureException {
-		return extInfFactory.getCameraCommand().commandXSteeringMirror(xSteeringMirrorPosition);
-	}
 							
-	/**
-	 * Move Y axis of steering mirror to specified location<br/>
-	 * Timeout: 90 sec
-	 * @param ySteeringMirrorPosition Desired Y steering mirror position -5000 to 5000 microns		
-	 * @return achieved Y Steering Mirror Position (microns)
-	 */
-	public int commandYSteeringMirror(int ySteeringMirrorPosition)  throws CommunicationException, TimeoutException, CommandFailureException {
-		return extInfFactory.getCameraCommand().commandYSteeringMirror(ySteeringMirrorPosition);
+
+	public Point commandFineTiltMirror(Point fineTiltCmd) throws CommunicationException, TimeoutException, CommandFailureException {
+		int xValue = extInfFactory.getCameraCommand().commandXTiltPlate((int)fineTiltCmd.x);
+		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate((int)fineTiltCmd.y);
+		
+		return new Point(xValue, yValue);
+		
+	}
+
+	public Point commandCoarseTiltMirror(Point coarseTiltCmd) throws CommunicationException, TimeoutException, CommandFailureException {
+		int xValue = extInfFactory.getCameraCommand().commandXSteeringMirror((int)coarseTiltCmd.x);
+		int yValue = extInfFactory.getCameraCommand().commandYSteeringMirror((int)coarseTiltCmd.y);
+		
+		return new Point(xValue, yValue);
+		
 	}
 							
 

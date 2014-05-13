@@ -13,6 +13,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "FineTiltMirror")
@@ -28,14 +29,14 @@ public class FineTiltMirror {
 	private float pupilMagnification;
 
 	@Transient
-	private FloatPoint currentPosition;
+	private Point currentPosition;
 
 	@OneToOne
 	@JoinColumn(name = "cameraId")
 	private Camera camera;
 
 	
-	public FineTiltMirror(FloatPoint currentPosition) {
+	public FineTiltMirror(Point currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 	public FineTiltMirror() {
@@ -99,11 +100,11 @@ public class FineTiltMirror {
 		this.pupilMagnification = pupilMagnification;
 	}
 	
-	public FloatPoint getCurrentPosition() {
+	public Point getCurrentPosition() {
 		return currentPosition;
 	}
 	
-	public void setCurrentPosition(FloatPoint currentPosition) {
+	public void setCurrentPosition(Point currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 	

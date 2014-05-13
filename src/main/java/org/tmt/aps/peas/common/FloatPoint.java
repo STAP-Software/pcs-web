@@ -46,20 +46,25 @@ public class FloatPoint {
         this.y = y;
     }
 
-    /**
-     */
+
+
     public float getX() {
-        return x;
-    }
+		return x;
+	}
 
-    /**
-     */
-    public float getY() {
-        return y;
-    }
+	public void setX(float x) {
+		this.x = x;
+	}
 
+	public float getY() {
+		return y;
+	}
 
-    /**
+	public void setY(float y) {
+		this.y = y;
+	}
+
+	/**
      * Returns a string representation of this point and its location
      * in the {@code (x,y)} coordinate space. This method is
      * intended to be used only for debugging purposes, and the content

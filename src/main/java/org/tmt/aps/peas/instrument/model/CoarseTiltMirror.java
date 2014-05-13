@@ -8,13 +8,12 @@ package org.tmt.aps.peas.instrument.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "CoarseTiltMirror")
@@ -28,7 +27,7 @@ public class CoarseTiltMirror {
 	private float orafactor;
 
 	@Transient
-	private FloatPoint currentPosition;
+	private Point currentPosition;
 
 
 	@OneToOne
@@ -36,7 +35,7 @@ public class CoarseTiltMirror {
 	private Camera camera;
 
 	
-	public CoarseTiltMirror(FloatPoint currentPosition) {
+	public CoarseTiltMirror(Point currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 	public CoarseTiltMirror() {
@@ -67,11 +66,11 @@ public class CoarseTiltMirror {
 		this.orafactor = orafactor;
 	}
 
-	public FloatPoint getCurrentPosition() {
+	public Point getCurrentPosition() {
 		return currentPosition;
 	}
 
-	public void setCurrentPosition(FloatPoint currentPosition) {
+	public void setCurrentPosition(Point currentPosition) {
 		this.currentPosition = currentPosition;
 	}
 

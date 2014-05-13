@@ -46,19 +46,24 @@ public class Point {
         this.y = y;
     }
 
-    /**
-     */
+
     public int getX() {
-        return x;
-    }
+		return x;
+	}
 
-    /**
-     */
-    public int getY() {
-        return y;
-    }
+	public void setX(int x) {
+		this.x = x;
+	}
 
-    /**
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	/**
      * Returns the location of this point.
      * This method is included for completeness, to parallel the
      * <code>getLocation</code> method of <code>Component</code>.

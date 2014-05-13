@@ -17,7 +17,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "Camera")
@@ -78,8 +78,8 @@ public class Camera {
 		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
 		this.instrumentTemperature = instrumentTemperature;
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
-		this.coarseTiltMirror.setCurrentPosition(new FloatPoint(coarseTiltX, coarseTiltY));
-		this.fineTiltMirror.setCurrentPosition(new FloatPoint(fineTiltX, fineTiltY));
+		this.coarseTiltMirror.setCurrentPosition(new Point((int)coarseTiltX, (int)coarseTiltY));
+		this.fineTiltMirror.setCurrentPosition(new Point((int)fineTiltX, (int)fineTiltY));
 	}
 	
 	public int getCurrentRefBeam() {
