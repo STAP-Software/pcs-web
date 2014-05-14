@@ -78,11 +78,11 @@ public class ExtInfFactory {
 	public CameraCommand getCameraCommand() {
 
 		try {
-			//if (acsEnabled) {
-			//	return getCameraCommandRemote();
-			//} else {
+			if (cameraEnabled) {
+				return getCameraCommandRemote();
+			} else {
 				return new CameraCommandSimulator();
-			//}
+			}
 			
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -93,12 +93,8 @@ public class ExtInfFactory {
 
 	private AcsCommand getAcsCommandRemote() {
 		try {
-			//if (System.getSecurityManager() == null) {
-			//	System.setSecurityManager(new MySecurityManager());
-			//}
 			
 			String name = "AcsCommand";
-			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>" + extInfServer);
 			Registry registry = LocateRegistry.getRegistry(extInfServer);
 			AcsCommand acsCommand = (AcsCommand) registry.lookup(name);
 			return acsCommand;
@@ -109,11 +105,19 @@ public class ExtInfFactory {
 		}
 	}
 
-	private class MySecurityManager extends SecurityManager {
-		@Override
-		public void checkPermission(Permission perm) {
-			return;
+	private CameraCommand getCameraCommandRemote() {
+		try {
+			
+			String name = "CameraCommand";
+			Registry registry = LocateRegistry.getRegistry(extInfServer);
+			CameraCommand cameraCommand = (CameraCommand) registry.lookup(name);
+			return cameraCommand;
+		} catch (Exception e) {
+			System.err.println("Camera Command exception:");
+			e.printStackTrace();
+			return null;
 		}
 	}
+
 	
 }
