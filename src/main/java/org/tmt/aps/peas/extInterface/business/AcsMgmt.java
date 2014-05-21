@@ -46,11 +46,6 @@ public class AcsMgmt {
 	}
 
 	public void commandActuatorDelta(double[] actDeltas) throws Exception {
-		System.out.println(actDeltas);
-		for (int i=0; i<109; i++) {
-			System.out.println("actDeltaCmds[" + i + "] = " + actDeltas[i]);
-		}
-
 		extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
 	}
 

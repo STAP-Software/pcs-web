@@ -7,7 +7,6 @@ package org.tmt.aps.peas.extInterface.business;
 
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.security.Permission;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -18,6 +17,8 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CcdCommand;
+import org.tmt.aps.peas.extinf.DcsCommand;
 
 @Singleton
 @Startup
@@ -29,47 +30,18 @@ public class ExtInfFactory {
 	// caches the current state of the ACS for use in PEAS PCS
 	Logger logger = Logger.getLogger(this.getClass());
 
-	String extInfServer;
-	boolean acsEnabled;
-	boolean dcsEnabled;
-	boolean cameraEnabled;
-	boolean ccdEnabled;
-	String acsServiceName;
-	String dcsServiceName;
-	String cameraServiceName;
-	String ccdServiceName;
 
 
 	@PostConstruct
 	void init() {
 
-		try {
-
-			extInfServer = peasProperties.getProp("org.tmt.aps.peas.ext_inf_server");
-			
-
-			String dcsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.dcs_enabled");
-			dcsEnabled = new Boolean(dcsEnabledStr);
-
-
-			String ccdEnabledStr = peasProperties.getProp("org.tmt.aps.peas.ccd_enabled");
-			ccdEnabled = new Boolean(ccdEnabledStr);
-
-
-			dcsServiceName = peasProperties.getProp("org.tmt.aps.peas.dcs_service_name");
-
-			ccdServiceName = peasProperties.getProp("org.tmt.aps.peas.ccd_service_name");
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public AcsCommand getAcsCommand() {
 
 		try {
 			String acsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.acs_enabled");
-			acsEnabled = new Boolean(acsEnabledStr);
+			boolean acsEnabled = new Boolean(acsEnabledStr);
 
 			if (acsEnabled) {
 				return getAcsCommandRemote();
@@ -88,7 +60,7 @@ public class ExtInfFactory {
 
 		try {
 			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
-			cameraEnabled = new Boolean(cameraEnabledStr);
+			boolean cameraEnabled = new Boolean(cameraEnabledStr);
 
 			if (cameraEnabled) {
 				return getCameraCommandRemote();
@@ -102,13 +74,53 @@ public class ExtInfFactory {
 			return null;
 		}
 	}
+	
+	public CcdCommand getCcdCommand() {
+
+		try {
+			String ccdEnabledStr = peasProperties.getProp("org.tmt.aps.peas.ccd_enabled");
+			boolean ccdEnabled = new Boolean(ccdEnabledStr);
+
+			if (ccdEnabled) {
+				return getCcdCommandRemote();
+			} else {
+				return new CcdCommandSimulator();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			return null;
+		}
+	}
+
+	public DcsCommand getDcsCommand() {
+
+		try {
+			String dcsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.dcs_enabled");
+			boolean dcsEnabled = new Boolean(dcsEnabledStr);
+
+			if (dcsEnabled) {
+				return getDcsCommandRemote();
+			} else {
+				return new DcsCommandSimulator();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			return null;
+		}
+	}
+
+
 
 	private AcsCommand getAcsCommandRemote() {
 		try {
+			String acsExtInfServer = peasProperties.getProp("org.tmt.aps.peas.acs_ext_inf_server");
+			String acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
 			
-			acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
-			
-			Registry registry = LocateRegistry.getRegistry(extInfServer);
+			Registry registry = LocateRegistry.getRegistry(acsExtInfServer);
 			AcsCommand acsCommand = (AcsCommand) registry.lookup(acsServiceName);
 			return acsCommand;
 		} catch (Exception e) {
@@ -120,13 +132,44 @@ public class ExtInfFactory {
 
 	private CameraCommand getCameraCommandRemote() {
 		try {
-			cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
+			String cameraExtInfServer = peasProperties.getProp("org.tmt.aps.peas.camera_ext_inf_server");
+			String cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
 
-			Registry registry = LocateRegistry.getRegistry(extInfServer);
+			Registry registry = LocateRegistry.getRegistry(cameraExtInfServer);
 			CameraCommand cameraCommand = (CameraCommand) registry.lookup(cameraServiceName);
 			return cameraCommand;
 		} catch (Exception e) {
 			System.err.println("Camera Command exception:");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private CcdCommand getCcdCommandRemote() {
+		try {
+			String ccdExtInfServer = peasProperties.getProp("org.tmt.aps.peas.ccd_ext_inf_server");
+			String ccdServiceName = peasProperties.getProp("org.tmt.aps.peas.ccd_service_name");
+
+			Registry registry = LocateRegistry.getRegistry(ccdExtInfServer);
+			CcdCommand ccdCommand = (CcdCommand) registry.lookup(ccdServiceName);
+			return ccdCommand;
+		} catch (Exception e) {
+			System.err.println("Ccd Command exception:");
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
+	private DcsCommand getDcsCommandRemote() {
+		try {
+			String dcsExtInfServer = peasProperties.getProp("org.tmt.aps.peas.dcs_ext_inf_server");
+			String dcsServiceName = peasProperties.getProp("org.tmt.aps.peas.dcs_service_name");
+
+			Registry registry = LocateRegistry.getRegistry(dcsExtInfServer);
+			DcsCommand dcsCommand = (DcsCommand) registry.lookup(dcsServiceName);
+			return dcsCommand;
+		} catch (Exception e) {
+			System.err.println("Dcs Command exception:");
 			e.printStackTrace();
 			return null;
 		}

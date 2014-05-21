@@ -42,6 +42,8 @@
 					<h:outputLabel style="height: 10px" />
 
 					<f:facet name="footer">
+						<p:commandButton value=""
+							ajax="false" action="#{acsManualController.doNothing}" style="position: relative; left: -1000px"/>
 						<p:commandButton value="Send Commands" icon="ui-icon-check"
 							ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
 							update=":growl" />

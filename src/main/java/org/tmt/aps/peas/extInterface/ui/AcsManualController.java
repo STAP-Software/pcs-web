@@ -37,7 +37,7 @@ public class AcsManualController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
-	Double actDeltas[][] = new Double[36][3];
+	Integer actDeltas[][] = new Integer[36][3];
 	int snapshotNumber;
 	double mirrorTemp;
 	boolean acsRunning;
@@ -48,8 +48,7 @@ public class AcsManualController implements Serializable {
 
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
-				//actDeltas[i][j] = (double) ((i + 1) * 10 + j + 1);
-				actDeltas[i][j] = (double) (0.0);
+				actDeltas[i][j] = 0;
 			}
 		}
 
@@ -87,11 +86,11 @@ public class AcsManualController implements Serializable {
 		this.rmsActuatorMove = rmsActuatorMove;
 	}
 
-	public Double[][] getActDeltas() {
+	public Integer[][] getActDeltas() {
 		return actDeltas;
 	}
 
-	public void setActDeltas(Double[][] actDeltas) {
+	public void setActDeltas(Integer[][] actDeltas) {
 		this.actDeltas = actDeltas;
 	}
 
@@ -103,6 +102,11 @@ public class AcsManualController implements Serializable {
 
 	}
 
+	public void doNothing() {
+		
+	}
+	
+	
 	public void doSendActDeltaCommands() {
 
 		// interface requires that we use indexes 1-108
@@ -115,15 +119,18 @@ public class AcsManualController implements Serializable {
 		}
 
 		try {
-
+			logger.info("doSendActDeltaCommands: actDeltaCmds = ");
+			for (int i=0; i<109; i++) {
+				logger.info(actDeltaCmds[i]);
+			}
 			// send out the commands
 			acsCommand.commandActuatorDelta(actDeltaCmds);
-
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Actuator Delta Send Successful"));
+			logger.info("doSendActDeltaCommands: success");
 		} catch (Exception e) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending actuator deltas"));
 		}
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Actuator Delta Send Successful"));
 		// remember to clear the list when done
 		init();
 	}
@@ -131,8 +138,12 @@ public class AcsManualController implements Serializable {
 	public void doLoadSnapshot() {
 
 		try {
+			logger.info("doLoadSnapshot: snapshotNumber = " + snapshotNumber);
+
 			acsCommand.commandLoadSnap(snapshotNumber);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Load Successful"));
+			logger.info("doLoadSnapshot: success");
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error loading snapshot"));
@@ -143,7 +154,9 @@ public class AcsManualController implements Serializable {
 	public void doTakeSnapshot() {
 
 		try {
+			logger.info("doTakeSnapshot: ");
 			snapshotNumber = acsCommand.commandTakeSnap();
+			logger.info("doTakeSnapshot successful, snapshot number = " + snapshotNumber);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Successful"));
 		} catch (Exception e) {
 			e.printStackTrace();
