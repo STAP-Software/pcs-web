@@ -27,11 +27,11 @@ public class CameraMgmt {
 	// All Camera Commands should be defined here
 
 
-	public CameraQueryResult queryCamera(int deviceCode) throws CommunicationException, TimeoutException, CommandFailureException {
+	public CameraQueryResult queryCamera(int deviceCode) throws Exception {
 		return extInfFactory.getCameraCommand().queryCamera(deviceCode);
 	}
 
-	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
+	public int commandPupilMask(int pupilMaskPosition) throws Exception {
 		return extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);
 	}
 
@@ -41,7 +41,7 @@ public class CameraMgmt {
 	 * @param filterWheelPosition filter wheel position	1-6	
 	 * @return achieved Filter Wheel Position 
 	 */
-	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {	
+	public int commandFilterWheel(int filterWheelPosition) throws Exception {	
 		return extInfFactory.getCameraCommand().commandFilterWheel(filterWheelPosition);
 	}
 		
@@ -51,7 +51,7 @@ public class CameraMgmt {
 	 * @param twoPositionDevicePosition Desired mechanism position (0 = retracted,1=extended)	0 or 1		
 	 * @return achieved Two Position Device Position (0 = retracted,1=extended)
 	 */
-	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws CommunicationException, TimeoutException, CommandFailureException {
+	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws Exception {
 		return extInfFactory.getCameraCommand().commandTwoPositionDevice(twoPositionDevicePosition);
 	}
 	
@@ -61,7 +61,7 @@ public class CameraMgmt {
 	 * @param ccdExposureTime Desired exposure time	100 to 360000	milliseconds		
 	 * @return  
 	 */
-	public void commandCcdShutterExposure(int ccdExposureTime) throws CommunicationException, TimeoutException, CommandFailureException {
+	public void commandCcdShutterExposure(int ccdExposureTime) throws Exception {
 		extInfFactory.getCameraCommand().commandCcdShutterExposure(ccdExposureTime);
 	}
 	
@@ -71,7 +71,7 @@ public class CameraMgmt {
 	 * @param ccdShuterState Desired CCD shutter state (0 = closed, 1 = open)	0 or 1		
 	 * @return achived CCD Shuter State (0 = closed, 1 = open)
 	 */
-	public int commandCcdShutterState(int ccdShuterState) throws CommunicationException, TimeoutException, CommandFailureException {
+	public int commandCcdShutterState(int ccdShuterState) throws Exception {
 		return extInfFactory.getCameraCommand().commandCcdShutterState(ccdShuterState);
 	}
 
@@ -81,7 +81,7 @@ public class CameraMgmt {
 	 * @param referenceBeamCommand Number of the desired reference beam to turn on, 0 turns off all reference beams. Multiple reference beams can be on at the same time.	0-9		
 	 * @return  
 	 */
-	public void commandReferenceBeamState(int referenceBeamCommand)	throws CommunicationException, TimeoutException, CommandFailureException {
+	public void commandReferenceBeamState(int referenceBeamCommand)	throws Exception {
 		extInfFactory.getCameraCommand().commandReferenceBeamState(referenceBeamCommand);
 	}
 
@@ -93,13 +93,13 @@ public class CameraMgmt {
 	 * @param ccdPowerState Desired CCD power state (0 = off, 1 = on)	0 or 1		
 	 * @return achieved CCD Power State (0 = off, 1 = on)
 	 */
-	public int commandCcdPowerState(int ccdPowerState)  throws CommunicationException, TimeoutException, CommandFailureException {
+	public int commandCcdPowerState(int ccdPowerState)  throws Exception {
 		return extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
 	}
 
 							
 
-	public Point commandFineTiltMirror(Point fineTiltCmd) throws CommunicationException, TimeoutException, CommandFailureException {
+	public Point commandFineTiltMirror(Point fineTiltCmd) throws Exception {
 		int xValue = extInfFactory.getCameraCommand().commandXTiltPlate((int)fineTiltCmd.x);
 		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate((int)fineTiltCmd.y);
 		
@@ -107,7 +107,7 @@ public class CameraMgmt {
 		
 	}
 
-	public Point commandCoarseTiltMirror(Point coarseTiltCmd) throws CommunicationException, TimeoutException, CommandFailureException {
+	public Point commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
 		int xValue = extInfFactory.getCameraCommand().commandXSteeringMirror((int)coarseTiltCmd.x);
 		int yValue = extInfFactory.getCameraCommand().commandYSteeringMirror((int)coarseTiltCmd.y);
 		
