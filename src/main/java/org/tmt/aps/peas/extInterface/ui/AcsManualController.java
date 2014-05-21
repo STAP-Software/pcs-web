@@ -45,13 +45,13 @@ public class AcsManualController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
+/*
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
 				actDeltas[i][j] = (double) ((i + 1) * 10 + j + 1);
 			}
 		}
-
+*/
 	}
 
 	public int getSnapshotNumber() {
