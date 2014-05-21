@@ -35,7 +35,7 @@ public class PeasProperties {
 	public void init() {
 
 		try {
-
+			System.out.println(">>>>>>>>>>>>>>>>>>> updating PeasProperties");
 			String propertiesPath = System.getProperty("org.tmt.aps.peas.peasPropertiesPath");
 
 			properties = new Properties();
