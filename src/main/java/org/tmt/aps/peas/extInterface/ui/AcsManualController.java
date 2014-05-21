@@ -116,10 +116,6 @@ public class AcsManualController implements Serializable {
 
 		try {
 
-			System.out.println(actDeltaCmds);
-			for (int i=0; i<109; i++) {
-				System.out.println("actDeltaCmds[" + i + "] = " + actDeltaCmds[i]);
-			}
 			// send out the commands
 			acsCommand.commandActuatorDelta(actDeltaCmds);
 
