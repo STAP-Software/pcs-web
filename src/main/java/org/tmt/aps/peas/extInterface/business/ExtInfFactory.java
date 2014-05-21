@@ -47,23 +47,16 @@ public class ExtInfFactory {
 
 			extInfServer = peasProperties.getProp("org.tmt.aps.peas.ext_inf_server");
 			
-			String acsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.acs_enabled");
-			acsEnabled = new Boolean(acsEnabledStr);
 
 			String dcsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.dcs_enabled");
 			dcsEnabled = new Boolean(dcsEnabledStr);
 
-			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
-			cameraEnabled = new Boolean(cameraEnabledStr);
 
 			String ccdEnabledStr = peasProperties.getProp("org.tmt.aps.peas.ccd_enabled");
 			ccdEnabled = new Boolean(ccdEnabledStr);
 
-			acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
 
 			dcsServiceName = peasProperties.getProp("org.tmt.aps.peas.dcs_service_name");
-
-			cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
 
 			ccdServiceName = peasProperties.getProp("org.tmt.aps.peas.ccd_service_name");
 
@@ -107,6 +100,10 @@ public class ExtInfFactory {
 	private AcsCommand getAcsCommandRemote() {
 		try {
 			
+			String acsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.acs_enabled");
+			acsEnabled = new Boolean(acsEnabledStr);
+			acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
+			
 			Registry registry = LocateRegistry.getRegistry(extInfServer);
 			AcsCommand acsCommand = (AcsCommand) registry.lookup(acsServiceName);
 			return acsCommand;
@@ -119,7 +116,10 @@ public class ExtInfFactory {
 
 	private CameraCommand getCameraCommandRemote() {
 		try {
-			
+			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
+			cameraEnabled = new Boolean(cameraEnabledStr);
+			cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
+
 			Registry registry = LocateRegistry.getRegistry(extInfServer);
 			CameraCommand cameraCommand = (CameraCommand) registry.lookup(cameraServiceName);
 			return cameraCommand;
