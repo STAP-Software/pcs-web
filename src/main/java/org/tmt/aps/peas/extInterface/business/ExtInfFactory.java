@@ -34,6 +34,11 @@ public class ExtInfFactory {
 	boolean dcsEnabled;
 	boolean cameraEnabled;
 	boolean ccdEnabled;
+	String acsServiceName;
+	String dcsServiceName;
+	String cameraServiceName;
+	String ccdServiceName;
+
 
 	@PostConstruct
 	void init() {
@@ -53,6 +58,14 @@ public class ExtInfFactory {
 
 			String ccdEnabledStr = peasProperties.getProp("org.tmt.aps.peas.ccd_enabled");
 			ccdEnabled = new Boolean(ccdEnabledStr);
+
+			acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
+
+			dcsServiceName = peasProperties.getProp("org.tmt.aps.peas.dcs_service_name");
+
+			cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
+
+			ccdServiceName = peasProperties.getProp("org.tmt.aps.peas.ccd_service_name");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -94,9 +107,8 @@ public class ExtInfFactory {
 	private AcsCommand getAcsCommandRemote() {
 		try {
 			
-			String name = "AcsCommand";
 			Registry registry = LocateRegistry.getRegistry(extInfServer);
-			AcsCommand acsCommand = (AcsCommand) registry.lookup(name);
+			AcsCommand acsCommand = (AcsCommand) registry.lookup(acsServiceName);
 			return acsCommand;
 		} catch (Exception e) {
 			System.err.println("Acs Command exception:");
@@ -108,9 +120,8 @@ public class ExtInfFactory {
 	private CameraCommand getCameraCommandRemote() {
 		try {
 			
-			String name = "CameraCommand";
 			Registry registry = LocateRegistry.getRegistry(extInfServer);
-			CameraCommand cameraCommand = (CameraCommand) registry.lookup(name);
+			CameraCommand cameraCommand = (CameraCommand) registry.lookup(cameraServiceName);
 			return cameraCommand;
 		} catch (Exception e) {
 			System.err.println("Camera Command exception:");
