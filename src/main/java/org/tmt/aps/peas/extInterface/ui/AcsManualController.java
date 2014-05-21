@@ -108,7 +108,6 @@ public class AcsManualController implements Serializable {
 		// interface requires that we use indexes 1-108
 		double[] actDeltaCmds = new double[109];
 
-		System.out.println(actDeltaCmds + "::" + actDeltas);
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
 				actDeltaCmds[1 + i * 3 + j] = actDeltas[i][j];
@@ -117,6 +116,10 @@ public class AcsManualController implements Serializable {
 
 		try {
 
+			System.out.println(actDeltaCmds);
+			for (int i=0; i<109; i++) {
+				System.out.println("actDeltaCmds[i]");
+			}
 			// send out the commands
 			acsCommand.commandActuatorDelta(actDeltaCmds);
 
@@ -124,7 +127,7 @@ public class AcsManualController implements Serializable {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending actuator deltas"));
 		}
-
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Actuator Delta Send Successful"));
 		// remember to clear the list when done
 		init();
 	}
