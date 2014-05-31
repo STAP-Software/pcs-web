@@ -30,11 +30,11 @@ public class ExtInfFactory {
 	// caches the current state of the ACS for use in PEAS PCS
 	Logger logger = Logger.getLogger(this.getClass());
 
-
+	DcsCommandSimulator dcsCommandSimulator;
 
 	@PostConstruct
 	void init() {
-
+		dcsCommandSimulator = new DcsCommandSimulator();
 	}
 
 	public AcsCommand getAcsCommand() {
@@ -103,7 +103,7 @@ public class ExtInfFactory {
 			if (dcsEnabled) {
 				return getDcsCommandRemote();
 			} else {
-				return new DcsCommandSimulator();
+				return dcsCommandSimulator;
 			}
 			
 		} catch (Exception e) {

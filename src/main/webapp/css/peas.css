@@ -221,6 +221,10 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	width: 100%;
 }
 
+.pcsForm tbody tr td {
+	vertical-align: bottom !important;
+}
+
 .btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn, .pcsFormNoBorder .btmsFormLabelColumn {
 	padding: 4px 4px 4px 10px;
 }

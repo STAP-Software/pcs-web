@@ -32,7 +32,7 @@ public class AcsManualController implements Serializable {
 	@EJB
 	PeasProperties peasProperties;
 	@EJB
-	AcsMgmt acsCommand;
+	AcsMgmt acsMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -124,7 +124,7 @@ public class AcsManualController implements Serializable {
 				logger.info(actDeltaCmds[i]);
 			}
 			// send out the commands
-			acsCommand.commandActuatorDelta(actDeltaCmds);
+			acsMgmt.commandActuatorDelta(actDeltaCmds);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Actuator Delta Send Successful"));
 			logger.info("doSendActDeltaCommands: success");
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ public class AcsManualController implements Serializable {
 		try {
 			logger.info("doLoadSnapshot: snapshotNumber = " + snapshotNumber);
 
-			acsCommand.commandLoadSnap(snapshotNumber);
+			acsMgmt.commandLoadSnap(snapshotNumber);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Load Successful"));
 			logger.info("doLoadSnapshot: success");
 
@@ -155,7 +155,7 @@ public class AcsManualController implements Serializable {
 
 		try {
 			logger.info("doTakeSnapshot: ");
-			snapshotNumber = acsCommand.commandTakeSnap();
+			snapshotNumber = acsMgmt.commandTakeSnap();
 			logger.info("doTakeSnapshot successful, snapshot number = " + snapshotNumber);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Successful"));
 		} catch (Exception e) {
@@ -167,7 +167,7 @@ public class AcsManualController implements Serializable {
 
 	public void doQueryMirrorTemp() {
 		try {
-			mirrorTemp = acsCommand.queryMirrorTemp();
+			mirrorTemp = acsMgmt.queryMirrorTemp();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
 			
 		} catch (Exception e) {
@@ -178,7 +178,7 @@ public class AcsManualController implements Serializable {
 
 	public void doQueryRunning() {
 		try {
-			acsRunning = acsCommand.queryRunning();
+			acsRunning = acsMgmt.queryRunning();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -188,7 +188,7 @@ public class AcsManualController implements Serializable {
 
 	public void doQueryRmsActMove() {
 		try {
-			rmsActuatorMove = acsCommand.queryRmsActuMove();
+			rmsActuatorMove = acsMgmt.queryRmsActuMove();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -198,9 +198,9 @@ public class AcsManualController implements Serializable {
 
 	public void doQueryAll() {
 		try {
-			mirrorTemp = acsCommand.queryMirrorTemp();
-			rmsActuatorMove = acsCommand.queryRmsActuMove();
-			acsRunning = acsCommand.queryRunning();
+			mirrorTemp = acsMgmt.queryMirrorTemp();
+			rmsActuatorMove = acsMgmt.queryRmsActuMove();
+			acsRunning = acsMgmt.queryRunning();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
 		} catch (Exception e) {
 			e.printStackTrace();

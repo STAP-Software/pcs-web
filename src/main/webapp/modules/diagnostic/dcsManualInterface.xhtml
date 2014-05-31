@@ -15,65 +15,67 @@
        		
   
        		<p:panelGrid columns="3" style="margin:10px;" styleClass="pcsExecutionPanel">
-         		<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
+  
+         		<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
        		
        			<f:facet name="header">
 					DCS Command Tool
 				</f:facet>
  
-        		<h:outputLabel style="height: 8px" />
-       			<h:outputLabel />
+        		<h:outputLabel style="height: 2px" />
+        		<h:outputLabel style="height: 2px" />
       
-
+ 				<p:fieldset legend="Secondary Mirror Actuator Deltas">
+ 
+    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
+				<h:panelGroup>
+				<h:outputText value="Actuator #1 (mm): " />
+				<p:spacer width="5px"/>								
+          		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[0]}" size="4" />	
+ 				</h:panelGroup>
  				
-   				<h:outputLabel value="Command Secondary Mirror Actuator Deltas" />
- 				<h:outputLabel />
+ 				<h:panelGroup>
+          		<h:outputText value="Actuator #2 (mm): " />	
+  				<p:spacer width="5px"/>				
+         		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[1]}" size="4" />	
+          		</h:panelGroup>
 
-   				<h:outputLabel value="" />
  				<h:panelGroup>
- 				<h:outputLabel value="Actuator 1 (mm): "/>
-          		<p:inputText size="4" />  
+          		<h:outputText value="Actuator #3 (mm): " />	
+				<p:spacer width="5px"/>				
+         		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[2]}" size="4" />	
           		</h:panelGroup>
-         		
-   				<h:outputLabel value="" />
- 				<h:panelGroup>
- 				<h:outputLabel value="Actuator 2 (mm): "/>
-          		<p:inputText size="4" />  
-          		</h:panelGroup>
-         		
-   				<h:outputLabel value="" />
- 				<h:panelGroup>
- 				<h:outputLabel value="Actuator 3 (mm): "/>
-          		<p:inputText size="4" />  
-          		</h:panelGroup>
-         		
-
- 				<h:outputLabel value="Command Telescope" />
- 				<h:panelGroup>
-          		<h:outputLabel /> 
-          		</h:panelGroup>
+				</p:panelGrid>
+				</p:fieldset>
+      			<p:commandButton value="Send Commands" icon="ui-icon-check" 
+							ajax="false" action="#{dcsManualController.doCommandSecondary}" 
+							update=":growl" />	
 				
-    			<h:outputLabel value="" />
+				
+ 				<p:fieldset legend="Telescope">
+    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
+ 				
  				<h:panelGroup>
-  				<p:spacer width="5px"/>
- 				<h:outputLabel value="Delta Asimuth (&#181;rad): "/>
-          		<p:inputText size="4" />  
+          		<h:outputText value="Delta Asimuth (&#181;rad): " />	
+ 				<p:spacer width="12px"/>				
+         		<p:inputText value="#{dcsManualController.telescopeDeltaCmds[0]}" size="4" />	
           		</h:panelGroup>
-       			
-    			<h:outputLabel value="" />
+ 				
  				<h:panelGroup>
- 				<h:outputLabel value="Delta Elevation (&#181;rad): "/>
-          		<p:inputText size="4" />  
+          		<h:outputText value="Delta Elevation (&#181;rad): " />	
+ 				<p:spacer width="5px"/>				
+         		<p:inputText value="#{dcsManualController.telescopeDeltaCmds[1]}" size="4" />	
           		</h:panelGroup>
+       			</p:panelGrid>
+ 				</p:fieldset>
+ 				<p:commandButton value="Send Commands" icon="ui-icon-check" 
+							ajax="false" action="#{dcsManualController.doCommandTelescopeDelta}"
+							update=":growl" />
+ 								          		
        			
+         		<h:outputLabel style="height: 2px" />
+        		<h:outputLabel style="height: 2px" />
        			
-       			<h:outputLabel style="height: 10px" />
-       			<h:outputLabel style="height: 10px" />
-       			
-       			<f:facet name="footer">
-					<p:commandButton value="Send Commands" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
-				</f:facet>
-
         	</p:panelGrid>
    
        		<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
@@ -82,151 +84,106 @@
 					DCS Status
 				</f:facet>
  
-        		<h:outputLabel style="height: 8px" />
-       			<h:outputLabel />
-       
-   				<h:outputLabel value="DCS Status" />
-          		<h:outputText value="Status Unknown" />	
-
- 				<h:outputLabel value="Tertiary Mirror" />
-          		<h:outputText value="?????" />	
+        		<h:outputLabel style="height: 2px" />
+        		<h:outputLabel style="height: 2px" />
+        
+        		<p:fieldset legend="DCS Status">
+   				
+   				<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
+          		<h:outputText value="#{dcsManualController.dcsStatusDisplayString}" />
+          		</p:panelGrid>
+          		</p:fieldset>	
+       			<p:commandButton value="Query" icon="ui-icon-refresh" 
+							ajax="false" action="#{dcsManualController.doQueryDcsStatus}" 
+							update=":growl" />	
  
-   				<h:outputLabel value="Secondary Mirror" />
-          		<h:outputText value="" />	
-
-				<h:outputLabel value="" />
+ 
+ 				<p:fieldset legend="Secondary Mirror">
+ 
+    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
 				<h:panelGroup>
 				<h:outputText value="Actuator #1: " />
 				<p:spacer width="5px"/>				
-          		<h:outputText value="0.000000 nm" />	
+          		<h:outputText value="#{dcsManualController.m2Pos[0]} nm" />	
  				</h:panelGroup>
  				
-   				<h:outputLabel value="" />
  				<h:panelGroup>
           		<h:outputText value="Actuator #2: " />	
   				<p:spacer width="5px"/>				
-         		<h:outputText value="0.000000 nm" />	
+         		<h:outputText value="#{dcsManualController.m2Pos[1]} nm" />	
           		</h:panelGroup>
 
-   				<h:outputLabel value="" />
  				<h:panelGroup>
           		<h:outputText value="Actuator #3: " />	
 				<p:spacer width="5px"/>				
-         		<h:outputText value="0.000000 nm" />	
+         		<h:outputText value="#{dcsManualController.m2Pos[2]} nm" />	
           		</h:panelGroup>
-
-   				<h:outputLabel value="Instrument Rotator" />
-          		<h:outputText value="0.0 deg" />	
-
- 				<h:outputLabel value="Telescope" />
-          		<h:outputText value="" />	
+				</p:panelGrid>
+				</p:fieldset>
+      			<p:commandButton value="Query" icon="ui-icon-refresh" 
+							ajax="false" action="#{dcsManualController.doQuerySecondary}" 
+							update=":growl" />	
+				
+				
+ 				<p:fieldset legend="Telescope">
+    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
  				
- 				<h:outputLabel value="" />
  				<h:panelGroup>
-          		<h:outputText value="Azimuth: " />	
+          		<h:outputText value="Azimuth (rads): " />	
  				<p:spacer width="12px"/>				
-         		<h:outputText value="0.000000 nm" />	
+         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" />	
           		</h:panelGroup>
  				
-  				<h:outputLabel value="" />
  				<h:panelGroup>
-          		<h:outputText value="Elevation: " />	
+          		<h:outputText value="Elevation (rads): " />	
  				<p:spacer width="5px"/>				
-         		<h:outputText value="0.000000 nm" />	
+         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" />	
           		</h:panelGroup>
- 				          		
+       			</p:panelGrid>
+ 				</p:fieldset>
+ 				<p:commandButton value="Query" icon="ui-icon-refresh" 
+							ajax="false" action="#{dcsManualController.doQueryTelescopePosition}"
+							update=":growl" />
+ 								          		
+				<p:fieldset legend="Star">
+   				<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
+ 				
+ 				<h:panelGroup>
+          		<h:outputText value="Name: " />	
+ 				<p:spacer width="12px"/>				
+         		<h:outputText value="#{dcsManualController.starInfo.starName}" />	
+          		</h:panelGroup>
+ 				
+ 				<h:panelGroup>
+          		<h:outputText value="Mag: " />	
+ 				<p:spacer width="5px"/>				
+         		<h:outputText value="#{dcsManualController.starInfo.starMag}" />	
+          		</h:panelGroup>
+ 				          		 				          		
+ 				<h:panelGroup>
+          		<h:outputText value="Color: " />	
+ 				<p:spacer width="5px"/>				
+         		<h:outputText value="#{dcsManualController.starInfo.starColor}" />	
+          		</h:panelGroup>
+       			</p:panelGrid>
+ 				</p:fieldset>
+ 				<p:commandButton value="Query" icon="ui-icon-refresh" 
+							ajax="false" action="#{dcsManualController.doQueryStar}"
+							update=":growl" />
+ 								          		 				          		
+ 							
+        		<h:outputLabel style="height: 2px" />
+        		<h:outputLabel style="height: 2px" />
  
-       			<h:outputLabel style="height: 10px" />
-       			<h:outputLabel style="height: 10px" />
         			
        			<f:facet name="footer">
-					<p:commandButton value="Query All Status" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
+       				<p:commandButton value="Query All" icon="ui-icon-refresh"
+							ajax="false" action="#{dcsManualController.doQueryAll}"
+							update=":growl" />
 				</f:facet>
 
         	</p:panelGrid>
          	
-				<p:panelGrid columns="1" style="margin-top:5px;" styleClass="pcsFormNoBorder">
-				<p:panelGrid columns="3" style="margin:0px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
-					<f:facet name="header">
-						ACS Query Tool
-					</f:facet>
-					
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					
-					<h:outputLabel value="DCS Status" style="position:relative; top:5px; font-weight:bold" />
-					<h:outputText value="#{dcsManualController.dcsStatus}" style="position:relative; top:8px"/>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{dcsManualController.doQueryDcsStatus}" 
-							update=":growl" />		
-										
-					<h:outputLabel value="Telescope Position (rads)" style="position:relative; top:5px; font-weight:bold" />
-					<h:panelGroup>
-					<h:outputText value="Az: " style="position:relative; top:8px; font-weight:bold"/>
-					<h:outputText value="#{dcsManualController.telescopePosition[0]},  " style="position:relative; top:8px"/>
-					<h:outputText value="El: " style="position:relative; top:8px; font-weight:bold"/>
-					<h:outputText value="#{dcsManualController.telescopePosition[1]}" style="position:relative; top:8px"/>
-					</h:panelGroup>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{dcsManualController.doQueryTelescopePosition}"
-							update=":growl" />		
-						
-						
-					<h:outputLabel value="Star" style="position:relative; top:5px; font-weight:bold" />
-					<h:panelGroup>
-					<h:outputText value="Name:" style="position:relative; top:8px; font-weight:bold"/>
-					<h:outputText value=" #{dcsManualController.star.starName},  " style="position:relative; top:8px"/>
-					
-					<h:outputText value="Mag: " style="position:relative; top:8px; font-weight:bold"/>
-					<h:outputText value="#{dcsManualController.star.starMag},  " style="position:relative; top:8px"/>
-					
-					<h:outputText value="Color: " style="position:relative; top:8px; font-weight:bold"/>
-					<h:outputText value="#{dcsManualController.star.starColor}" style="position:relative; top:8px"/>
-					</h:panelGroup>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{dcsManualController.doQueryStar}"
-							update=":growl" />		
-						
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-						
-					<f:facet name="footer">
-						<p:commandButton value="Query All" icon="ui-icon-refresh"
-							ajax="false" action="#{dcsManualController.doQueryAll}"
-							update=":growl" />
-					
-					</f:facet>
-				</p:panelGrid>
-				
-				<p:panelGrid columns="2" style="margin-top:30px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-					<f:facet name="header">
-						ACS Snapshot Tool
-					</f:facet>
-					
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					
-					<h:outputLabel value="Snapshot number" />
-					<p:inputText size="6" value="#{acsManualController.snapshotNumber}" />
-						
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-						
-					<f:facet name="footer">
-						<p:commandButton value="Load Snapshot" icon="ui-icon-transferthick-e-w"
-							ajax="false" action="#{acsManualController.doLoadSnapshot}"
-							update=":growl" />
-					
-						<p:commandButton value="Take Snapshot" icon="ui-icon-check"
-							ajax="false" action="#{acsManualController.doTakeSnapshot}"
-							update=":growl" />
-					</f:facet>
-				</p:panelGrid>
-
-
-			</p:panelGrid>
         	</p:panelGrid>
     		
        	</h:form>
