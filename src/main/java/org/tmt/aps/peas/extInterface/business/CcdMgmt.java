@@ -10,11 +10,6 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.extinf.CameraQueryResult;
-import org.tmt.aps.peas.extinf.CommandFailureException;
-import org.tmt.aps.peas.extinf.CommunicationException;
-import org.tmt.aps.peas.extinf.TimeoutException;
 
 @Stateless
 public class CcdMgmt {

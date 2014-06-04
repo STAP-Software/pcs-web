@@ -310,7 +310,7 @@ public class CameraManualController implements Serializable {
 			camera.getFilterWheel().setSelectedFilterNumber(result.getStateValue());
 
 			// Ref Beam
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_FILTER_WHEEL);
+			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS);
 			camera.setCurrentRefBeam(result.getStateValue() == 0 ? 0 : result.getStateValue());
 
 			// Shutter
