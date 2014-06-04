@@ -41,7 +41,8 @@ public class CameraMgmt {
 	 * @param filterWheelPosition filter wheel position	1-6	
 	 * @return achieved Filter Wheel Position 
 	 */
-	public int commandFilterWheel(int filterWheelPosition) throws Exception {	
+	public int commandFilterWheel(int filterWheelPosition) throws Exception {
+		logger.info("camera command = " + extInfFactory.getCameraCommand());
 		return extInfFactory.getCameraCommand().commandFilterWheel(filterWheelPosition);
 	}
 		
