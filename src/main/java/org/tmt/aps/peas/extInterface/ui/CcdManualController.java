@@ -72,20 +72,21 @@ public class CcdManualController implements Serializable {
 			switch (commandSelection) {
 
 			case 1: // FastWipe
-				// update position
 				ccdMgmt.fastWipeCcd();
 				break;
 
 			case 2: // Continuous Wipe on
-				// update position
-				//camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
-				//camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				ccdMgmt.wipeOn();
 				break;
 
 			case 3: // Read CCD Raw
-				// update position
-				//camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
-				//camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				int[][] frame = ccdMgmt.getImage();
+				for (int[] rows: frame) {
+					for (int col: rows) {
+						System.out.print("[" + col + "]");
+					}
+					System.out.println();
+				}
 				break;
 
 

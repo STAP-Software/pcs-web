@@ -21,6 +21,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.Ccd;
@@ -281,11 +282,16 @@ public class CameraManualController implements Serializable {
 
 			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
 
+		} catch (CommandFailureException e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
 
 		}
 	}
