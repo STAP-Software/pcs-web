@@ -311,7 +311,7 @@ public class CameraManualController implements Serializable {
 
 			// Ref Beam
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_FILTER_WHEEL);
-			camera.setCurrentRefBeam(result.getState() == 0 ? 0 : result.getStateValue());
+			camera.setCurrentRefBeam(result.getStateValue() == 0 ? 0 : result.getStateValue());
 
 			// Shutter
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_SHUTTER);
@@ -357,7 +357,7 @@ public class CameraManualController implements Serializable {
 						
 			// CCD Power
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_POWER);			
-			ccd.setState(result.getState() == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+			ccd.setState(result.getStateValue() == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
 
 			
 			// CCD Temperature

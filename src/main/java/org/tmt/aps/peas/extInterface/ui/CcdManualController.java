@@ -66,7 +66,7 @@ public class CcdManualController implements Serializable {
 		return "/modules/diagnostic/ccdDiagnostic.xhtml?faces-redirect=true";
 	}
 
-	public void sendCcdCommand() {
+	public void doSendCommand() {
 		try {
 
 			switch (commandSelection) {
@@ -110,11 +110,6 @@ public class CcdManualController implements Serializable {
 
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
-	public void doSendCommand() {
 
-		FacesContext context = FacesContext.getCurrentInstance();  
-        
-        context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0")); 
-	}
 
 }
