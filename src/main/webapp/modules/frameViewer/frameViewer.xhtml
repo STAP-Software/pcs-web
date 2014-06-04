@@ -80,19 +80,13 @@
 
 							<h:outputLabel value="CCD Command" />
 							<h:panelGroup id="commandPanel">
-								<p:selectOneMenu id="options" value="#{ccdManualController.ccdCommand}" style="top:2px">
+								<p:selectOneMenu id="options" value="#{ccdManualController.commandSelection}" style="top:2px">
 									<f:selectItem itemLabel="Fastwipe CCD" itemValue="1" />
 									<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="2" />
 									<f:selectItem itemLabel="Read CCD Raw" itemValue="3" />
-									<p:ajax update="commandExtDataPanel" />
 								</p:selectOneMenu>
 							</h:panelGroup>
 							<h:outputLabel value="" />
-							<h:panelGroup id="commandExtDataPanel">
-								<h:outputLabel value="Utility Word (Decimal)" rendered="#{ccdManualController.showUtilityWord}" />
-								<p:inputText id="utilityWord" value="#{ccdManualController.utilityWord}" size="5"
-									rendered="#{ccdManualController.showUtilityWord}" />
-							</h:panelGroup>
 
 							<f:facet name="footer">
 								<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"

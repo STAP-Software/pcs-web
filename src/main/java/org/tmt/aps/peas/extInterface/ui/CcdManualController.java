@@ -7,7 +7,6 @@ package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
@@ -17,6 +16,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 
 @Named
 @SessionScoped
@@ -27,27 +27,23 @@ public class CcdManualController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
+	@EJB
+	CcdMgmt ccdMgmt;
 
-	int ccdCommand;
-	String utilityWord;
+	int commandSelection;
 	int integrationTime;
 	
 	
-	public int getCcdCommand() {
-		return ccdCommand;
+
+
+	public int getCommandSelection() {
+		return commandSelection;
 	}
 
-	public void setCcdCommand(int ccdCommand) {
-		this.ccdCommand = ccdCommand;
+	public void setCommandSelection(int commandSelection) {
+		this.commandSelection = commandSelection;
 	}
 
-	public String getUtilityWord() {
-		return utilityWord;
-	}
-
-	public void setUtilityWord(String utilityWord) {
-		this.utilityWord = utilityWord;
-	}
 
 	public int getIntegrationTime() {
 		return integrationTime;
@@ -57,24 +53,58 @@ public class CcdManualController implements Serializable {
 		this.integrationTime = integrationTime;
 	}
 
-	public boolean getShowUtilityWord() {
-		return ccdCommand == 6;
-	}
-
 	public boolean getShowIntegrationTime() {
-		return ccdCommand == 12;
+		return commandSelection == 12;
 	}
 	
 	public String doViewCcdDiagnostic() {
 
-		ccdCommand = 1;
-		utilityWord = "";
+		commandSelection = 1;
 		
 		breadcrumbMenuBean.addFirstItem("CCD Diagnostic", "doViewCcdDiagnostic()");
 
 		return "/modules/diagnostic/ccdDiagnostic.xhtml?faces-redirect=true";
 	}
 
+	public void sendCcdCommand() {
+		try {
+
+			switch (commandSelection) {
+
+			case 1: // FastWipe
+				// update position
+				ccdMgmt.fastWipeCcd();
+				break;
+
+			case 2: // Continuous Wipe on
+				// update position
+				//camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+				//camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				break;
+
+			case 3: // Read CCD Raw
+				// update position
+				//camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+				//camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				break;
+
+
+			default:
+
+			}
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
+	}
 
 	public String doCancel() {
 

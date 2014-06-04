@@ -299,6 +299,7 @@ public class CameraManualController implements Serializable {
 			
 			// Pupil Mask
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_PUPIL_WHEEL);
+			logger.info("camera = " + camera + ", result = " + result);
 			camera.getPupilWheel().setState(result.getState());
 			camera.getPupilWheel().setSelectedPupilMaskNumber(result.getStateValue());
 
@@ -361,15 +362,15 @@ public class CameraManualController implements Serializable {
 			
 			// CCD Temperature
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE);
-			ccd.setTemperature(((float)result.getStateValue())/10.0f);
+			ccd.setTemperature(((float)result.getDoubleVal()));
 			
 			// Instrument Temperature
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE);
-			camera.setInstrumentTemperature(((float)result.getStateValue())/10.0f);
+			camera.setInstrumentTemperature(((float)result.getDoubleVal()));
 			
 			// Electronics Box Temperature
 			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
-			camera.setElectronicsBoxTemperature(((float)result.getStateValue())/10.0f);
+			camera.setElectronicsBoxTemperature(((float)result.getDoubleVal()));
 			
 			
 
