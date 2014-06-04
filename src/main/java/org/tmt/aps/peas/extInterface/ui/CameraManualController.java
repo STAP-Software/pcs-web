@@ -193,6 +193,7 @@ public class CameraManualController implements Serializable {
 
 		try {
 
+			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {
 
 			case 1: // Pupil Mask
