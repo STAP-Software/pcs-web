@@ -53,6 +53,7 @@ public class CameraMgmt {
 	 * @return achieved Two Position Device Position (0 = retracted,1=extended)
 	 */
 	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws Exception {
+		logger.info("commandTwoPositionDevice: command is: " + twoPositionDevicePosition);
 		return extInfFactory.getCameraCommand().commandTwoPositionDevice(twoPositionDevicePosition);
 	}
 	
@@ -115,7 +116,8 @@ public class CameraMgmt {
 		return new Point(xValue, yValue);
 		
 	}
-							
+	
+	
 
 
 }
