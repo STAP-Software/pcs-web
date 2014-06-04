@@ -224,7 +224,7 @@ public class CameraManualController implements Serializable {
 					camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 				} else {
 					// timed exposure
-					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime / 1000));
+					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime * 1000));
 					camera.getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
 				}
 				break;
