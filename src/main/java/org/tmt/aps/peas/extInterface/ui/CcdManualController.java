@@ -17,6 +17,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 
 @Named
 @SessionScoped
@@ -98,13 +99,20 @@ public class CcdManualController implements Serializable {
 
 			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
 
+
+		} catch (CommandFailureException e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
 		} catch (Exception e) {
 			e.printStackTrace();
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
 
 		}
+
 	}
 
 	public String doCancel() {
