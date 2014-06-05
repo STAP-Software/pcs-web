@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
+import org.tmt.aps.peas.frame.ui.FrameController;
 
 @Named
 @SessionScoped
@@ -31,6 +32,9 @@ public class CcdManualController implements Serializable {
 	@EJB
 	CcdMgmt ccdMgmt;
 
+	@Inject
+	FrameController frameController;
+	
 	int commandSelection;
 	int integrationTime;
 	
@@ -82,12 +86,13 @@ public class CcdManualController implements Serializable {
 
 			case 3: // Read CCD Raw
 				int[][] frame = ccdMgmt.getImage();
-				for (int[] rows: frame) {
-					for (int col: rows) {
-						System.out.print("[" + col + "]");
+				short[][] rawFrame = new short[frame.length][frame[0].length];
+				for (int i=0; i< frame.length; i++) {
+					for (int j=0; j<frame[i].length; j++) {
+						rawFrame[i][j] = (short)frame[i][j];
 					}
-					System.out.println();
 				}
+				frameController.setupFrameToolFrameDisplay(rawFrame);
 				break;
 
 

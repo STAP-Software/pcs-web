@@ -266,7 +266,7 @@ public class FrameMgmt {
 
 	}
 
-	public byte[] loadPng(CcdFrame ccdFrame) {
+	public byte[] loadPng(CcdFrame ccdFrame, boolean writeToFile) {
 
 		try {
 			String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -283,7 +283,9 @@ public class FrameMgmt {
 				FalseColorProcessor falseColorer = new FalseColorProcessor();
 				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
 
-				FileUtils.writeByteArrayToFile(pngFile, falseColorPng);
+				if (writeToFile) {
+					FileUtils.writeByteArrayToFile(pngFile, falseColorPng);
+				}
 				return falseColorPng;
 			}
 

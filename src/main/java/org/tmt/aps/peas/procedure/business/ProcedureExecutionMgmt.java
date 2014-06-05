@@ -82,7 +82,7 @@ public class ProcedureExecutionMgmt {
 				}
 
 				// if a png file for display exists, read it in. Otherwise create it.
-				byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+				byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 			}

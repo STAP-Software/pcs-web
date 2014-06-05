@@ -217,7 +217,7 @@ public class ProcedureController implements Serializable {
 
 			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
 
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 
 			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -233,7 +233,7 @@ public class ProcedureController implements Serializable {
 			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
 
 			// if a png file for display exists, read it in. Otherwise create it.
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 
 			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
@@ -360,7 +360,7 @@ public class ProcedureController implements Serializable {
 			}
 
 			// if a png file for display exists, read it in. Otherwise create it.
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile);
+			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 			procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 		}

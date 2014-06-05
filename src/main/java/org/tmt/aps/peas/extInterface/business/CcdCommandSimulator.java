@@ -10,7 +10,14 @@ public class CcdCommandSimulator implements CcdCommand {
 	@Override
 	public int[][] getImage() throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
-		return null;
+		int[][] frame = new int[1024][1024];
+		for (int i=0; i<1024; i++) {
+			for (int j=0; j<1024; j++) {
+				
+				frame[i][j] = j + i;
+			}
+		}
+		return frame;
 	}
 
 	@Override

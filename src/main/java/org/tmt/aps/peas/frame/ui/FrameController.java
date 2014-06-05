@@ -206,7 +206,7 @@ public class FrameController implements Serializable {
 
 			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(selectedElement.getFileName());
 
-			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame);
+			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 
 			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
@@ -237,4 +237,14 @@ public class FrameController implements Serializable {
 
 	}
 
+	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
+		
+		CcdFrame ccdFrame = new CcdFrame();
+		ccdFrame.setRawFrame(rawFrame);
+
+		byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, false);
+
+		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+
+	}
 }
