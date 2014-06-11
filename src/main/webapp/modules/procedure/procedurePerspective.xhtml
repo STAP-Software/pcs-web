@@ -11,11 +11,12 @@
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":procedureDetailForm :growl :menuForm :advancedForm :executionPrefsForm :promptDialogForm" listener="#{asyncController.asyncListener}"
+				update=":growl :menuForm :advancedForm :executionPrefsForm :promptDialogForm" listener="#{asyncController.asyncListener}"
 				stop="#{!asyncController.executionStatus}" />
 		</h:form>
 
 		<h:form id="procedureDetailForm">
+			
 
 
 			<p:spacer height="10px" />
@@ -152,6 +153,8 @@
 				</p:accordionPanel>
 
 				<h:panelGroup id="framePanel">
+				<h:inputHidden id="centroidXs" value="#{frameController.centroidXs}" />
+				<h:inputHidden id="centroidYs" value="#{frameController.centroidYs}" />
 					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
 						rendered="#{procedureController.procedure.procedureState eq 1}">
 
@@ -181,7 +184,10 @@
 						</f:facet>
 
 
-						<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
+						<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+					
+					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;" >
+Your browser does not support the HTML5 canvas tag.</canvas>
 
 						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
@@ -248,7 +254,7 @@
 					</p:panelGrid>
 				</h:panelGroup>
 
-				<p:accordionPanel multiple="true" activeIndex="0,1">
+				<p:accordionPanel id="miscPanel" multiple="true" activeIndex="0,1">
 
 					<p:tab title="Procedure Context">
 
@@ -333,6 +339,53 @@
 		<ui:include src="executionPreferences.xhtml" />
 		<ui:include src="fitsFileLoadDialog.xhtml" />
 
+<script>
+
+//<![CDATA[
+
+	
+	function drawFrame() {
+		window.setTimeout("drawFrame2()", 100);
+	}
+		
+	function markFrame() {
+		window.setTimeout("markFrame2()", 100);
+	}
+	
+	function drawFrame2() {
+		var c = document.getElementById("frameCanvas");
+		var ctx = c.getContext("2d");
+		//ctx.clearRect(0,0,c.width, c.height);
+		var img = document.getElementById("procedureDetailForm:frameImage");
+		
+		ctx.drawImage(img,0,0,c.width,c.height);
+		
+	}
+		
+	function markFrame2() {
+		
+		var c = document.getElementById("frameCanvas");
+		var ctx = c.getContext("2d");
+		
+		var xField = document.getElementById('procedureDetailForm:centroidXs').value;
+	 	var xArray = xField.split(','); 
+		var yField = document.getElementById('procedureDetailForm:centroidYs').value;
+	 	var yArray = yField.split(','); 
+		
+		for (var i = 0; i < xArray.length; i++) {
+			ctx.beginPath();
+			// divide by 2 when frame is displayed 512x512
+			ctx.arc(xArray[i]/2,yArray[i]/2,15,0,2*Math.PI);
+			ctx.strokeStyle = '#ffffaa';
+			ctx.lineWidth = 2;
+			ctx.stroke();
+		}
+
+	}
+	
+	//]]>
+	
+</script>
 	</ui:define>
 </ui:composition>
 </html>

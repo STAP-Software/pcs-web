@@ -21,6 +21,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
@@ -51,6 +52,8 @@ public class PassiveTiltExecutor {
 	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
+	@EJB
+	private FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -138,9 +141,10 @@ public class PassiveTiltExecutor {
 				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 				
 				// TODO: this is where we display the frame
+				// tell the async controller to update the frame
+				frameDisplayMgmt.displayFrame();
 				
-				
-				wait(567);
+				wait(5670);
 
 				statusLogger.log("Calling Find and Identify ");
 				List<Point> subimageList = null;
@@ -152,8 +156,9 @@ public class PassiveTiltExecutor {
 				}
 				
 				// TODO: this is where we display the marked frame
+				frameDisplayMgmt.displayMarkedFrame();
 
-				wait(689);
+				wait(6890);
 				
 				statusLogger.log(">>> Search count = 1");
 				statusLogger.log(">>> Frame Scale: 0.9530617");

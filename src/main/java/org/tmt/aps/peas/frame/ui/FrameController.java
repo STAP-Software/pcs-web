@@ -32,10 +32,12 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Named
 @SessionScoped
@@ -57,6 +59,8 @@ public class FrameController implements Serializable {
 	private TreeNode selectedNode;
 	private StreamedContent graphicImage;
 	private int searchRadius;
+	private String centroidXs;
+	private String centroidYs;
 
 	Map<String, List<FitsFilename>> type2Fits;
 
@@ -74,6 +78,22 @@ public class FrameController implements Serializable {
 
 	public void setSelectedNode(TreeNode selectedNode) {
 		this.selectedNode = selectedNode;
+	}
+
+	public String getCentroidXs() {
+		return centroidXs;
+	}
+
+	public void setCentroidXs(String centroidXs) {
+		this.centroidXs = centroidXs;
+	}
+
+	public String getCentroidYs() {
+		return centroidYs;
+	}
+
+	public void setCentroidYs(String centroidYs) {
+		this.centroidYs = centroidYs;
 	}
 
 	public int getSearchRadius() {
@@ -196,6 +216,20 @@ public class FrameController implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+
+		// TEST ONLY
+		StringBuffer xBuf = new StringBuffer();
+		StringBuffer yBuf = new StringBuffer();
+		for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
+			xBuf.append(Subimage.CPH_DEF_X_ARRAY[i] + ",");
+			yBuf.append(Subimage.CPH_DEF_Y_ARRAY[i] + ",");
+		}
+		xBuf.deleteCharAt(xBuf.length() - 1);
+		yBuf.deleteCharAt(yBuf.length() - 1);
+		
+		centroidXs = xBuf.toString();
+		centroidYs = yBuf.toString();
+
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
@@ -238,7 +272,7 @@ public class FrameController implements Serializable {
 	}
 
 	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
-		
+
 		CcdFrame ccdFrame = new CcdFrame();
 		ccdFrame.setRawFrame(rawFrame);
 

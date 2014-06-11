@@ -11,6 +11,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -29,6 +30,8 @@ public class ProcedureExecutionMgmt {
 	@EJB
 	private FrameMgmt frameMgmt;
 	@EJB
+	private FrameDisplayMgmt frameDisplayMgmt;
+	@EJB
 	private StatusLogger statusLogger;
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
@@ -42,6 +45,8 @@ public class ProcedureExecutionMgmt {
 		procedureExecutionState.setPercentComplete(0);
 
 		statusLogger.initLog();
+		
+		frameDisplayMgmt.init();
 
 	}
 
