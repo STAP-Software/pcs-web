@@ -19,6 +19,7 @@ import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
+import org.tmt.aps.peas.extinf.InstrumentInterface;
 
 @Singleton
 @Startup
@@ -112,6 +113,25 @@ public class ExtInfFactory {
 			return null;
 		}
 	}
+	
+	public InstrumentInterface getInstrumentCommand() {
+
+		try {
+			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
+			boolean instrumentEnabled = new Boolean(instrumentEnabledStr);
+
+			if (instrumentEnabled) {
+				return getInstrumentCommandRemote();
+			} else {
+				return new InstrumentCommandSimulator();
+			}
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			logger.error("", e);
+			return null;
+		}
+	}
 
 
 
@@ -170,6 +190,21 @@ public class ExtInfFactory {
 			return dcsCommand;
 		} catch (Exception e) {
 			System.err.println("Dcs Command exception:");
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+	private InstrumentInterface getInstrumentCommandRemote() {
+		try {
+			String instrumentExtInfServer = peasProperties.getProp("org.tmt.aps.peas.instrument_ext_inf_server");
+			String instrumentServiceName = peasProperties.getProp("org.tmt.aps.peas.instrument_service_name");
+
+			Registry registry = LocateRegistry.getRegistry(instrumentExtInfServer);
+			InstrumentInterface instCommand = (InstrumentInterface) registry.lookup(instrumentServiceName);
+			return instCommand;
+		} catch (Exception e) {
+			System.err.println("Instrument Command exception:");
 			e.printStackTrace();
 			return null;
 		}

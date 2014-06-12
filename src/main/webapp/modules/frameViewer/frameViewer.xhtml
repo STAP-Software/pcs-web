@@ -18,7 +18,7 @@
 			<p:panelGrid columns="3" styleClass="pcsExecutionPanel">
 
 
-				<p:accordionPanel id="loadPanel" multiple="true" activeIndex="0,1,2">
+				<p:accordionPanel id="loadPanel" multiple="true" activeIndex="0,2">
 
 					<p:tab title="FITS File Browsing">
 
@@ -69,8 +69,8 @@
 						<p:panelGrid styleClass="pcsFormNoBorder">
 							<p:row>
 								<p:column colspan="2">
-									<p:fileUpload fileUploadListener="#{procedureController.handleFileUpload}" mode="advanced"
-										update=":growl :frameViewerForm:framePanel" sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
+									<p:fileUpload fileUploadListener="#{procedureController.handleFileUpload}" mode="advanced" update=":growl :frameViewerForm:framePanel"
+										sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
 								</p:column>
 							</p:row>
 
@@ -82,7 +82,7 @@
 
 							<h:outputLabel value="CCD Command" />
 							<h:panelGroup id="commandPanel">
-								<p:selectOneMenu id="options" value="#{ccdManualController.commandSelection}" style="top:2px">
+								<p:selectOneMenu value="#{ccdManualController.commandSelection}" style="top:2px">
 									<f:selectItem itemLabel="Fastwipe CCD" itemValue="1" />
 									<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="2" />
 									<f:selectItem itemLabel="Read CCD Raw" itemValue="3" />
@@ -92,12 +92,79 @@
 
 							<f:facet name="footer">
 								<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-									update=":growl :frameViewerForm:framePanel" />
+									update=":growl" />
 							</f:facet>
 
 						</p:panelGrid>
 
 					</p:tab>
+					<p:tab id="advTab" title="Advanced Instrument Status">
+						<p:panelGrid columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="Plate Scale" />
+							<h:outputText value="#{ccdManualController.plateScale}" style="position:relative; top:2px" />
+
+							<h:outputLabel value="Image Size (width, height px)" />
+							<h:panelGroup style="position:relative; top:3px">
+								<h:outputText value="#{ccdManualController.imageSize[0]}" />
+								<h:outputText value=", " />
+								<h:outputText value="#{ccdManualController.imageSize[0]}" />
+							</h:panelGroup>
+
+							<f:facet name="footer">
+								<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefresh}" update="advTab :growl" />
+							</f:facet>
+
+						</p:panelGrid>
+					</p:tab>
+					
+					<p:tab title="Advanced Instrument Control">
+						
+						<p:panelGrid columns="2" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+							<h:outputLabel value="CCD Command" />
+							<p:selectOneMenu value="#{ccdManualController.advCommandSelection}" style="top:2px">
+								<f:selectItem itemLabel="Set Gain" itemValue="1" />
+								<f:selectItem itemLabel="Set Offset" itemValue="2" />
+								<f:selectItem itemLabel="Set Binning" itemValue="3" />
+								<f:selectItem itemLabel="Get Image" itemValue="4" />
+
+								<p:ajax update="instrumentCommandPanel" />
+							</p:selectOneMenu>
+							
+							<h:outputLabel value="" />
+							<h:panelGroup id="instrumentCommandPanel">
+								<h:outputText value="&#160;&#160;&#160;&#160;Channel: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 1}" />
+								<p:inputText value="#{ccdManualController.channel}" size="5" rendered="#{ccdManualController.advCommandSelection eq 1}" />
+								<h:outputText value="&#160;&#160;&#160;&#160;Gain: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 1}" />
+								<p:inputText value="#{ccdManualController.gain}" size="5" rendered="#{ccdManualController.advCommandSelection eq 1}" />
+
+								<h:outputText value="&#160;&#160;&#160;&#160;Channel: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 2}" />
+								<p:inputText value="#{ccdManualController.channel}" size="5" rendered="#{ccdManualController.advCommandSelection eq 2}" />
+								<h:outputText value="&#160;&#160;&#160;&#160;Offset: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 2}" />
+								<p:inputText value="#{ccdManualController.offset}" size="5" rendered="#{ccdManualController.advCommandSelection eq 2}" />
+
+								<h:outputText value="&#160;&#160;&#160;&#160;X: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 3}" />
+								<p:inputText value="#{ccdManualController.binning[0]}" size="5" rendered="#{ccdManualController.advCommandSelection eq 3}" />
+								<h:outputText value="&#160;&#160;&#160;&#160;Y: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 3}" />
+								<p:inputText value="#{ccdManualController.binning[1]}" size="5" rendered="#{ccdManualController.advCommandSelection eq 3}" />
+
+								<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 4}" />
+								<p:inputText value="#{ccdManualController.exposureTime}" size="5" rendered="#{ccdManualController.advCommandSelection eq 4}" />
+								<h:outputText value="&#160;&#160;&#160;&#160;Use Shutter: &#160;&#160;" rendered="#{ccdManualController.advCommandSelection eq 4}" />
+								<p:selectBooleanCheckbox value="#{ccdManualController.useShutter}" rendered="#{ccdManualController.advCommandSelection eq 4}" style="position:relative; top:4px" />
+
+							</h:panelGroup>
+
+							<f:facet name="footer">
+								<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendAdvCommand}"
+									update=":growl" />
+							</f:facet>
+
+						</p:panelGrid>
+
+					</p:tab>
+					
 					
 					
 				</p:accordionPanel>
@@ -107,36 +174,43 @@
 						<h:outputText value="#{frameController.selectedFitsFilename}" />
 					</f:facet>
 
-				<p:menubar>
-				
-					<p:submenu label="File" icon="ui-icon-disk">
-						<p:menuitem value="Save" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
-					<p:submenu label="Display" icon="ui-icon-image">
-						<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
-					<p:submenu label="Modify" icon="ui-icon-copy">
-						<p:menuitem value="Flatten Frame" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
-					<p:submenu label="Marking" icon="ui-icon-pencil">
-						<p:menuitem value="Display Marking Info" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Analyze Single Subimages" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
-					<p:submenu label="Operations" icon="ui-icon-gear">
-						<p:menuitem value="Find and Identify Subimages" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Centroid Offsets" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Generate Cross Correlation Tables" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Frame Statistics" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
-					</p:submenu>
+					<p:menubar>
+
+						<p:submenu label="File" icon="ui-icon-disk">
+							<p:menuitem value="Save" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
+						</p:submenu>
+						<p:submenu label="Display" icon="ui-icon-image">
+							<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
+						</p:submenu>
+						<p:submenu label="Modify" icon="ui-icon-copy">
+							<p:menuitem value="Flatten Frame" ajax="false" action="#{sessionController.doViewSessionList}"
+								disabled="#{sessionController.procedureExecuting}" />
+						</p:submenu>
+						<p:submenu label="Marking" icon="ui-icon-pencil">
+							<p:menuitem value="Display Marking Info" ajax="false" action="#{sessionController.doViewSessionList}"
+								disabled="#{sessionController.procedureExecuting}" />
+							<p:menuitem value="Analyze Single Subimages" ajax="false" action="#{sessionController.doViewCurrentSession}"
+								disabled="#{sessionController.procedureExecuting}" />
+						</p:submenu>
+						<p:submenu label="Operations" icon="ui-icon-gear">
+							<p:menuitem value="Find and Identify Subimages" ajax="false" action="#{sessionController.doViewSessionList}"
+								disabled="#{sessionController.procedureExecuting}" />
+							<p:menuitem value="Centroid Offsets" ajax="false" action="#{sessionController.doViewCurrentSession}"
+								disabled="#{sessionController.procedureExecuting}" />
+							<p:menuitem value="Generate Cross Correlation Tables" ajax="false" action="#{sessionController.doViewCurrentSession}"
+								disabled="#{sessionController.procedureExecuting}" />
+							<p:menuitem value="Frame Statistics" ajax="false" action="#{sessionController.doViewCurrentSession}"
+								disabled="#{sessionController.procedureExecuting}" />
+						</p:submenu>
 
 
-				</p:menubar>
+					</p:menubar>
 
-					
-					<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px"/>
-					
-					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;" >
-Your browser does not support the HTML5 canvas tag.</canvas>
+
+					<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+
+					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas
+					tag.</canvas>
 					<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 						<p:row>
@@ -144,14 +218,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 								<h:outputLabel value="Search Radius (pixels):" />
 							</p:column>
 							<p:column styleClass="peasFormInputColumn" style="width:15%">
-								<p:selectOneMenu value="#{frameController.searchRadius}">  
-             						<f:selectItem itemLabel="6" itemValue="6" />  
-             						<f:selectItem itemLabel="7" itemValue="7" />  
-             						<f:selectItem itemLabel="10" itemValue="10" />  
-             						<f:selectItem itemLabel="12" itemValue="12" />  
-             						<f:selectItem itemLabel="15" itemValue="15" />  
-             						<f:selectItem itemLabel="20" itemValue="20" />  
-        						</p:selectOneMenu> 
+								<p:selectOneMenu value="#{frameController.searchRadius}">
+									<f:selectItem itemLabel="6" itemValue="6" />
+									<f:selectItem itemLabel="7" itemValue="7" />
+									<f:selectItem itemLabel="10" itemValue="10" />
+									<f:selectItem itemLabel="12" itemValue="12" />
+									<f:selectItem itemLabel="15" itemValue="15" />
+									<f:selectItem itemLabel="20" itemValue="20" />
+								</p:selectOneMenu>
 							</p:column>
 							<p:column styleClass="peasFormLabelColumn" style="width:15%">
 								<h:outputLabel value="SNR:" />
@@ -163,10 +237,9 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 				</p:panelGrid>
 					<f:facet name="footer">
 						<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
-						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-							action="#{globalConfigController.doCancelSaveSetup}" />
-						<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-							action="#{ccdManualController.doSendCommand}" update=":growl" oncomplete="markFrame()" />
+						<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" />
+						<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
+							update=":growl" oncomplete="markFrame()" />
 					</f:facet>
 				</p:panelGrid>
 
@@ -190,7 +263,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 							<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" style="position:relative; top:2px" />
 
 							<h:outputLabel value="Fine Tilt (x, y &#181;m)" />
-							<h:panelGroup style="position:relative; top:3px" >
+							<h:panelGroup style="position:relative; top:3px">
 								<h:outputText value="#{cameraManualController.camera.fineTiltMirror.stateXDisplayString}" />
 								<h:outputText value=", " />
 								<h:outputText value="#{cameraManualController.camera.fineTiltMirror.stateYDisplayString}" />
@@ -220,105 +293,107 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 
 							<f:facet name="footer">
-								<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{cameraManualController.doRefresh}"
-									update="cameraPanel :growl" />
+								<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{cameraManualController.doRefresh}" update="cameraPanel :growl" />
 							</f:facet>
 
 						</p:panelGrid>
 
 					</p:tab>
 					<p:tab title="Camera Manual Control">
-					
-				<p:panelGrid columns="2" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
- 				
- 				<h:outputLabel value="Command" />
-    			<p:selectOneMenu value="#{cameraManualController.commandSelection}" style="top:2px">  
-            		<f:selectItem itemLabel="Pupil Mask" itemValue="1" />  
-            		<f:selectItem itemLabel="Filter" itemValue="2" />  
-            		<f:selectItem itemLabel="Ref. Beam" itemValue="3" />  
-            		<f:selectItem itemLabel="Shutter" itemValue="4" />  
-             		<f:selectItem itemLabel="Fine Tilt (&#181;m)" itemValue="5" />  
-            		<f:selectItem itemLabel="Coarse Tilt (&#181;m)" itemValue="6" />  
-            		<f:selectItem itemLabel="Two Position Mech" itemValue="7" />  
-            		<f:selectItem itemLabel="CCD Power" itemValue="8" />  
 
-             		<p:ajax update="cameraCommandPanel" />
-         		</p:selectOneMenu>  				
- 				<h:outputLabel value="" />
- 				<h:panelGroup id="cameraCommandPanel">
- 				<p:selectOneMenu value="#{cameraManualController.selectedPupilMaskPos}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 1}">  
-            		<f:selectItem itemLabel="Position 1" itemValue="1" />  
-            		<f:selectItem itemLabel="Position 2" itemValue="2" />  
-            		<f:selectItem itemLabel="Position 3" itemValue="3" />  
-            		<f:selectItem itemLabel="Position 4" itemValue="4" />  
-            		<f:selectItem itemLabel="Position 5" itemValue="5" />  
-            		<f:selectItem itemLabel="Position 6" itemValue="6" />  
-				</p:selectOneMenu>  
- 				
-				<p:selectOneMenu value="#{cameraManualController.selectedFilterWheelPos}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 2}">  
-            		<f:selectItem itemLabel="Position 1" itemValue="1" />  
-            		<f:selectItem itemLabel="Position 2" itemValue="2" />  
-            		<f:selectItem itemLabel="Position 3" itemValue="3" />  
-            		<f:selectItem itemLabel="Position 4" itemValue="4" />  
-            		<f:selectItem itemLabel="Position 5" itemValue="5" />  
-            		<f:selectItem itemLabel="Position 6" itemValue="6" />  
-				</p:selectOneMenu>  
- 				
-				<p:selectOneMenu value="#{cameraManualController.selectedRefBeam}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 3}">  
-            		<f:selectItem itemLabel="Ref. Beam 1" itemValue="1" />  
-            		<f:selectItem itemLabel="Ref. Beam 2" itemValue="2" />  
-            		<f:selectItem itemLabel="Ref. Beam 3" itemValue="3" />  
-            		<f:selectItem itemLabel="Ref. Beam 4" itemValue="4" />  
-            		<f:selectItem itemLabel="Ref. Beam 5" itemValue="5" />  
-            		<f:selectItem itemLabel="Ref. Beam 6" itemValue="6" />  
-            		<f:selectItem itemLabel="Ref. Beam 7" itemValue="7" />  
-            		<f:selectItem itemLabel="Ref. Beam 8" itemValue="8" />  
-            		<f:selectItem itemLabel="Ref. Beam 9" itemValue="9" />  
-            		<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />  
-				</p:selectOneMenu>  
+						<p:panelGrid columns="2" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-				<p:selectOneMenu value="#{cameraManualController.shutterCmd}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 4}">  
-            		<f:selectItem itemLabel="Open" itemValue="1" />  
-            		<f:selectItem itemLabel="Close" itemValue="2" />  
-            		<f:selectItem itemLabel="Timed Exposure" itemValue="3" />  
-            		<p:ajax update="cameraCommandPanel" />
- 				</p:selectOneMenu>  
-        		<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" 	rendered="#{cameraManualController.renderExposureTime}"/>	
-        		<p:inputText value="#{cameraManualController.ccdExposureTime}"  size="5" rendered="#{cameraManualController.renderExposureTime}"/>
- 				 				
-        		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}"/>	
-        		<p:inputText value="#{cameraManualController.fineTiltCmd.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 5}"/>
-        		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}"/>	
-        		<p:inputText value="#{cameraManualController.fineTiltCmd.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 5}"/>
- 				
-        		<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.coarseTiltCmd.x}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
-        		<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}"/>	
-        		<p:inputText value="#{cameraManualController.coarseTiltCmd.y}"  size="3" rendered="#{cameraManualController.commandSelection eq 6}"/>
- 				
- 				<p:selectOneMenu value="#{cameraManualController.twoPosCmd}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 7}">  
-            		<f:selectItem itemLabel="Extend" itemValue="1" />  
-            		<f:selectItem itemLabel="Retract" itemValue="2" />  
-  				</p:selectOneMenu>  
- 				
- 				<p:selectOneMenu value="#{cameraManualController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">  
-            		<f:selectItem itemLabel="On" itemValue="1" />  
-            		<f:selectItem itemLabel="Off" itemValue="2" />  
-  				</p:selectOneMenu>  
+							<h:outputLabel value="Command" />
+							<p:selectOneMenu value="#{cameraManualController.commandSelection}" style="top:2px">
+								<f:selectItem itemLabel="Pupil Mask" itemValue="1" />
+								<f:selectItem itemLabel="Filter" itemValue="2" />
+								<f:selectItem itemLabel="Ref. Beam" itemValue="3" />
+								<f:selectItem itemLabel="Shutter" itemValue="4" />
+								<f:selectItem itemLabel="Fine Tilt (&#181;m)" itemValue="5" />
+								<f:selectItem itemLabel="Coarse Tilt (&#181;m)" itemValue="6" />
+								<f:selectItem itemLabel="Two Position Mech" itemValue="7" />
+								<f:selectItem itemLabel="CCD Power" itemValue="8" />
 
- 				
- 				</h:panelGroup>
- 				
- 				<p:spacer height="1px"/>
- 				<p:spacer height="1px"/>
- 				
-      			<f:facet name="footer">
-					<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendCommand}" update="cameraPanel :growl"/>
-				</f:facet>
- 
- 
-       		</p:panelGrid>
-					
+								<p:ajax update="cameraCommandPanel" />
+							</p:selectOneMenu>
+							<h:outputLabel value="" />
+							<h:panelGroup id="cameraCommandPanel">
+								<p:selectOneMenu value="#{cameraManualController.selectedPupilMaskPos}" style="top:2px"
+									rendered="#{cameraManualController.commandSelection eq 1}">
+									<f:selectItem itemLabel="Position 1" itemValue="1" />
+									<f:selectItem itemLabel="Position 2" itemValue="2" />
+									<f:selectItem itemLabel="Position 3" itemValue="3" />
+									<f:selectItem itemLabel="Position 4" itemValue="4" />
+									<f:selectItem itemLabel="Position 5" itemValue="5" />
+									<f:selectItem itemLabel="Position 6" itemValue="6" />
+								</p:selectOneMenu>
+
+								<p:selectOneMenu value="#{cameraManualController.selectedFilterWheelPos}" style="top:2px"
+									rendered="#{cameraManualController.commandSelection eq 2}">
+									<f:selectItem itemLabel="Position 1" itemValue="1" />
+									<f:selectItem itemLabel="Position 2" itemValue="2" />
+									<f:selectItem itemLabel="Position 3" itemValue="3" />
+									<f:selectItem itemLabel="Position 4" itemValue="4" />
+									<f:selectItem itemLabel="Position 5" itemValue="5" />
+									<f:selectItem itemLabel="Position 6" itemValue="6" />
+								</p:selectOneMenu>
+
+								<p:selectOneMenu value="#{cameraManualController.selectedRefBeam}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 3}">
+									<f:selectItem itemLabel="Ref. Beam 1" itemValue="1" />
+									<f:selectItem itemLabel="Ref. Beam 2" itemValue="2" />
+									<f:selectItem itemLabel="Ref. Beam 3" itemValue="3" />
+									<f:selectItem itemLabel="Ref. Beam 4" itemValue="4" />
+									<f:selectItem itemLabel="Ref. Beam 5" itemValue="5" />
+									<f:selectItem itemLabel="Ref. Beam 6" itemValue="6" />
+									<f:selectItem itemLabel="Ref. Beam 7" itemValue="7" />
+									<f:selectItem itemLabel="Ref. Beam 8" itemValue="8" />
+									<f:selectItem itemLabel="Ref. Beam 9" itemValue="9" />
+									<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />
+								</p:selectOneMenu>
+
+								<p:selectOneMenu value="#{cameraManualController.shutterCmd}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 4}">
+									<f:selectItem itemLabel="Open" itemValue="1" />
+									<f:selectItem itemLabel="Close" itemValue="2" />
+									<f:selectItem itemLabel="Timed Exposure" itemValue="3" />
+									<p:ajax update="cameraCommandPanel" />
+								</p:selectOneMenu>
+								<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" rendered="#{cameraManualController.renderExposureTime}" />
+								<p:inputText value="#{cameraManualController.ccdExposureTime}" size="5" rendered="#{cameraManualController.renderExposureTime}" />
+
+								<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}" />
+								<p:inputText value="#{cameraManualController.fineTiltCmd.x}" size="3" rendered="#{cameraManualController.commandSelection eq 5}" />
+								<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 5}" />
+								<p:inputText value="#{cameraManualController.fineTiltCmd.y}" size="3" rendered="#{cameraManualController.commandSelection eq 5}" />
+
+								<h:outputText value="x &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}" />
+								<p:inputText value="#{cameraManualController.coarseTiltCmd.x}" size="3" rendered="#{cameraManualController.commandSelection eq 6}" />
+								<h:outputText value="&#160;&#160;y &#160;&#160;" rendered="#{cameraManualController.commandSelection eq 6}" />
+								<p:inputText value="#{cameraManualController.coarseTiltCmd.y}" size="3" rendered="#{cameraManualController.commandSelection eq 6}" />
+
+								<p:selectOneMenu value="#{cameraManualController.twoPosCmd}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 7}">
+									<f:selectItem itemLabel="Extend" itemValue="1" />
+									<f:selectItem itemLabel="Retract" itemValue="2" />
+								</p:selectOneMenu>
+
+								<p:selectOneMenu value="#{cameraManualController.ccd.state}" style="top:2px" rendered="#{cameraManualController.commandSelection eq 8}">
+									<f:selectItem itemLabel="On" itemValue="1" />
+									<f:selectItem itemLabel="Off" itemValue="2" />
+								</p:selectOneMenu>
+
+
+							</h:panelGroup>
+
+							<p:spacer height="1px" />
+							<p:spacer height="1px" />
+
+							<f:facet name="footer">
+								<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendCommand}"
+									update="cameraPanel :growl" />
+							</f:facet>
+
+
+						</p:panelGrid>
+
 					</p:tab>
 
 				</p:accordionPanel>
@@ -327,50 +402,50 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 			</p:panelGrid>
 		</h:form>
 
-<script>
+		<script>
+			//<![CDATA[
 
-//<![CDATA[
+			function markFrame() {
+				window.setTimeout("drawFrame2(true)", 100);
+			}
 
-	function markFrame() {
-		window.setTimeout("drawFrame2(true)", 100);
-	}
-	
-	function drawFrame() {
-		window.setTimeout("drawFrame2(false)", 100);
-	}
-		
-	function drawFrame2(mark) {
-		var c = document.getElementById("frameCanvas");
-		var ctx = c.getContext("2d");
-		//ctx.clearRect(0,0,c.width, c.height);
-		var img = document.getElementById("frameViewerForm:frameImage");
-		
-		ctx.drawImage(img,0,0,c.width,c.height);
-		
-		if (mark) markFrame2(ctx, img, c)
-	}
-		
-	function markFrame2(ctx, img, c) {
-		
-		
-		var xField = document.getElementById('frameViewerForm:centroidXs').value;
-	 	var xArray = xField.split(','); 
-		var yField = document.getElementById('frameViewerForm:centroidYs').value;
-	 	var yArray = yField.split(','); 
-		
-		for (var i = 0; i < xArray.length; i++) {
-			ctx.beginPath();
-			// divide by 2 when frame is displayed 512x512
-			ctx.arc(xArray[i]/2,yArray[i]/2,15,0,2*Math.PI);
-			ctx.strokeStyle = '#ffffaa';
-			ctx.lineWidth = 2;
-			ctx.stroke();
-		}
-	}
-	
-	//]]>
-	
-</script>
+			function drawFrame() {
+				window.setTimeout("drawFrame2(false)", 100);
+			}
+
+			function drawFrame2(mark) {
+				var c = document.getElementById("frameCanvas");
+				var ctx = c.getContext("2d");
+				//ctx.clearRect(0,0,c.width, c.height);
+				var img = document.getElementById("frameViewerForm:frameImage");
+
+				ctx.drawImage(img, 0, 0, c.width, c.height);
+
+				if (mark)
+					markFrame2(ctx, img, c)
+			}
+
+			function markFrame2(ctx, img, c) {
+
+				var xField = document
+						.getElementById('frameViewerForm:centroidXs').value;
+				var xArray = xField.split(',');
+				var yField = document
+						.getElementById('frameViewerForm:centroidYs').value;
+				var yArray = yField.split(',');
+
+				for (var i = 0; i < xArray.length; i++) {
+					ctx.beginPath();
+					// divide by 2 when frame is displayed 512x512
+					ctx.arc(xArray[i] / 2, yArray[i] / 2, 15, 0, 2 * Math.PI);
+					ctx.strokeStyle = '#ffffaa';
+					ctx.lineWidth = 2;
+					ctx.stroke();
+				}
+			}
+
+			//]]>
+		</script>
 
 	</ui:define>
 </ui:composition>

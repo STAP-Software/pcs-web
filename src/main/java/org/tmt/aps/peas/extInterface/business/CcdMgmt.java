@@ -10,6 +10,9 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.extinf.CommandFailureException;
+import org.tmt.aps.peas.extinf.CommunicationException;
+import org.tmt.aps.peas.extinf.TimeoutException;
 
 @Stateless
 public class CcdMgmt {
@@ -36,6 +39,40 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getImage();	
 	}
 
+	public void setGain(int channel, double gain) throws CommandFailureException, CommunicationException {
+		extInfFactory.getInstrumentCommand().setGain(channel, gain);
+		
+	}
 
+	public void setOffset(int channel, double offset) throws CommandFailureException, CommunicationException {
+		// TODO Auto-generated method stub
+		extInfFactory.getInstrumentCommand().setOffset(channel, offset);
+	}
+
+	public int getImageWidth() throws CommandFailureException, CommunicationException {
+		// TODO Auto-generated method stub
+		return extInfFactory.getInstrumentCommand().getImageWidth();
+	}
+
+	public int getImageHeight() throws CommandFailureException, CommunicationException {
+		// TODO Auto-generated method stub
+		return extInfFactory.getInstrumentCommand().getImageHeight();
+	}
+
+	public double getPlateScale() throws CommandFailureException, CommunicationException {
+		// TODO Auto-generated method stub
+		return extInfFactory.getInstrumentCommand().getPlateScale();
+	}
+
+	public void setBinning(int x, int y) throws CommandFailureException, CommunicationException {
+		// TODO Auto-generated method stub
+		extInfFactory.getInstrumentCommand().setBinning(x, y);
+	}
+
+	public int[][] getImage(double exposureTime, boolean useShutter) throws CommandFailureException, CommunicationException,
+			TimeoutException {
+		// TODO Auto-generated method stub
+		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
+	}
 
 }
