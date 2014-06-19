@@ -11,12 +11,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
 @Entity
 @Table(name = "SufsGroup")
+@NamedQueries({ @NamedQuery(name = "findAllSufsGroups", query = "SELECT o from SufsGroup o") })
 public class SufsGroup {
 
 	@Id

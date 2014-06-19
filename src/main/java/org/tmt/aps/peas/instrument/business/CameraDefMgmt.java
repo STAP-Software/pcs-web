@@ -121,6 +121,11 @@ public class CameraDefMgmt {
 
 	}
 	
+	public List<SufsGroup> findSufsGroups() {
+		TypedQuery<SufsGroup> query = em.createNamedQuery("findAllSufsGroups", SufsGroup.class);
+		return query.getResultList();
+
+	}
 	
 	public void createReferenceBeam(ReferenceBeam referenceBeam) {
 			

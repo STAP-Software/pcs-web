@@ -7,24 +7,27 @@ package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.instrument.model.SufsGroup;
+
 
 @Named
 @SessionScoped
@@ -44,7 +47,7 @@ public class MissingSpotsController implements Serializable {
 
 	private List<Integer> selectedSpots;
 
-	private Map<String, Integer> spots;
+	private List<Integer> spots;
 
 	private List<Subimage> subimageDefList;
 
@@ -57,6 +60,8 @@ public class MissingSpotsController implements Serializable {
 	private MissingSpotList missingSpotList;
 	private List<PupilMaskType> pupilMaskTypeList;
 	private PupilMaskType pupilMaskType;
+	private SufsGroup sufsGroup;
+	private List<SufsGroup> sufsGroupList;
 
 	@PostConstruct
 	public void init() {
@@ -64,6 +69,9 @@ public class MissingSpotsController implements Serializable {
 		try {
 
 			pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
+			pupilMaskType = pupilMaskTypeList.get(0);
+			spotListType = 1;
+			sufsGroupList = cameraDefMgmt.findSufsGroups();
 
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
@@ -75,15 +83,20 @@ public class MissingSpotsController implements Serializable {
 
 	private void updateCentroidDisplay() {
 
+		initMissingSpots();
+		
 		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
-
-		spots = new LinkedHashMap<String, Integer>();
-		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
-			spots.put("spot  # " + i, i);
-		}
 
 		// TODO: read in subimageDefList based on pupilMaskType
 		subimageDefList = new ArrayList<Subimage>();
+
+		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
+			for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
+				Subimage subimage = new Subimage(i + 1, Subimage.PT_DEF_X_ARRAY[i], Subimage.PT_DEF_Y_ARRAY[i]);
+				subimageDefList.add(subimage);
+			}
+		}
+
 		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
 			for (int i = 0; i < Subimage.CPH_DEF_X_ARRAY.length; i++) {
 				Subimage subimage = new Subimage(i + 1, Subimage.CPH_DEF_X_ARRAY[i], Subimage.CPH_DEF_Y_ARRAY[i]);
@@ -96,9 +109,6 @@ public class MissingSpotsController implements Serializable {
 				subimageDefList.add(subimage);
 			}
 		}
-
-		// display takes the list as a comma sep list, which is our encoding
-		missingSpots = missingSpotList.getMissingSpotListEncoded();
 
 		// generate centroid numbers, x and y positions
 		StringBuffer numBuf = new StringBuffer();
@@ -119,6 +129,49 @@ public class MissingSpotsController implements Serializable {
 
 	}
 
+	private void initMissingSpots() {
+		
+		spots = new ArrayList<Integer>();
+		selectedSpots = new ArrayList<Integer>();
+		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
+			spots.add(i);
+			selectedSpots.add(i);
+		}
+		
+		// display takes the list as a comma sep list, which is our encoding
+		missingSpots = missingSpotList.getMissingSpotListEncoded();
+		List<Integer> missingSpotListDecoded = IntegerListEncoder.decodeList(missingSpots);
+		for (Integer spot : missingSpotListDecoded) {
+			// remove all the missing spots from the selected ones
+			selectedSpots.remove(selectedSpots.indexOf(spot));
+		}
+	}
+	
+	private void refreshMissingSpots() {
+		
+		List<Integer> missingSpotsInt = new ArrayList<Integer>();
+		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
+			missingSpotsInt.add(i);
+		}
+		
+		// removeAll should work, but it doesn't!!
+		//missingSpotsInt.removeAll(selectedSpots);
+		
+		for (Iterator<Integer> it = missingSpotsInt.iterator(); it.hasNext(); ) {
+			Integer value = it.next();
+			for (Integer candidate : selectedSpots) {
+				if (candidate.intValue() == value.intValue()) {
+					it.remove();
+					break;
+				}
+			}
+		}
+		
+		// display takes the list as a comma sep list, which is our encoding
+		missingSpots = IntegerListEncoder.encodeList(missingSpotsInt);
+
+	}
+
 	public List<Integer> getSelectedSpots() {
 		return selectedSpots;
 	}
@@ -127,7 +180,7 @@ public class MissingSpotsController implements Serializable {
 		this.selectedSpots = selectedSpots;
 	}
 
-	public Map<String, Integer> getSpots() {
+	public List<Integer> getSpots() {
 		return spots;
 	}
 
@@ -195,13 +248,44 @@ public class MissingSpotsController implements Serializable {
 		this.pupilMaskType = pupilMaskType;
 	}
 
+	public SufsGroup getSufsGroup() {
+		return sufsGroup;
+	}
+
+	public void setSufsGroup(SufsGroup sufsGroup) {
+		this.sufsGroup = sufsGroup;
+	}
+
+	public List<SufsGroup> getSufsGroupList() {
+		return sufsGroupList;
+	}
+
+	public void setSufsGroupList(List<SufsGroup> sufsGroupList) {
+		this.sufsGroupList = sufsGroupList;
+	}
+
+	public boolean getRenderSufsGroup() {
+		return pupilMaskType.isPupilMaskTypeSufs();
+	}
+
 	public void listViewChangeListener() {
 		// values have changed, refresh display values
 		logger.debug("missingSpotsMgmt = " + missingSpotsMgmt);
 		logger.debug("pupilMaskTypeId = " + pupilMaskType.getPupilMaskTypeId());
-		missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+		try {
+			missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
 
-		updateCentroidDisplay();
+			updateCentroidDisplay();
+		} catch (Exception e) {
+			// TODO
+		}
+	}
+
+	public void spotChangeListener(AjaxBehaviorEvent event) {
+
+		refreshMissingSpots();
+
+		// System.out.println(event.getBehavior());
 	}
 
 	public String doViewMissingSpots() {
