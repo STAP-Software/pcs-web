@@ -3,17 +3,17 @@
 
 <script type="text/javascript">  
 //<![CDATA[
-$(function() {
-	$('#centroidDrawDiv').svg({onLoad: drawMissingSpots});
-});
 
-function runDrawMissingSpots(){
-	$('#centroidDrawDiv').svg();
-	var svg = $('#centroidDrawDiv').svg('get');
-	drawMissingSpots(svg);
+
+function runDrawMissingSpots() {	
+	window.setTimeout("drawSpots()", 100);
 }
 
-function drawMissingSpots(svg) {
+function drawSpots() {
+	var c = document.getElementById("spotCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,c.width, c.height);
+	
 
 	var numbersField = document.getElementById('missingSpotsForm:centroidNbrs').value;
  	var numbersArray = numbersField.split(','); 
@@ -26,9 +26,8 @@ function drawMissingSpots(svg) {
 	var msField = document.getElementById('missingSpotsForm:missingSpots').value;
  	var msArray = msField.split(','); 
     
- 	
-	var g0 = svg.group({transform: "translate(-25, -15) scale(0.61)"});
-		
+	ctx.font = "12px Arial";
+ 			
 	for (var i = 0; i < numbersArray.length; i++) {
 		var missingSpot = false;
 		for (var j = 0; j < msArray.length; j++) {
@@ -38,16 +37,17 @@ function drawMissingSpots(svg) {
 		}
 		
 		if (missingSpot) {
-		    svg.text(g0, xArray[i], yArray[i], numbersArray[i], {fontFamily: "Verdana", fontSize: "16", fill: "red"});			
+			ctx.fillStyle = "red";			
 		} else {
-		    svg.text(g0, xArray[i], yArray[i], numbersArray[i], {fontFamily: "Verdana", fontSize: "16", fill: "blue"});
+	 		ctx.fillStyle = "blue";
 		}
+		ctx.fillText(numbersArray[i], (xArray[i] * 0.61) - 25, yArray[i] * 0.61);	
 	}
 }
 //]]>  
 </script>  
 
+<canvas id="spotCanvas" width="600px" height="600px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
 
-<div id="centroidDrawDiv" style="height:600px;width:600px;"></div>  
 
 </ui:composition>

@@ -31,12 +31,8 @@
 					<h:panelGroup id="maskPanel">
 					    <p:selectOneMenu value="#{missingSpotsController.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
 							<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
-							<p:ajax update="maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" />
+							<p:ajax update="maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
 						</p:selectOneMenu>
-						<h:outputText value="&#160;&#160;&#160;&#160;&#160;&#160;" />
-						<h:outputText value="Utility Word (Decimal) &#160;&#160;" rendered="#{ccdManualController.showUtilityWord}" />
-						<p:inputText id="utilityWord" value="#{ccdManualController.utilityWord}" size="5"
-							rendered="#{ccdManualController.showUtilityWord}" />
 					</h:panelGroup>
 
 					<h:outputLabel value="Spot Selection" />

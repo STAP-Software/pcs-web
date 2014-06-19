@@ -104,12 +104,10 @@ public class PassiveTiltExecutor {
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
-			
 			statusLogger.log("Camera is not properly initialized.  Proceed with caution."); 
 			statusLogger.log("Entering Passive Tilt Test");
 
 
-			
 			wait(1);
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
@@ -158,7 +156,7 @@ public class PassiveTiltExecutor {
 				// TODO: this is where we display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();
 
-				wait(6890);
+				wait(2000);
 				
 				statusLogger.log(">>> Search count = 1");
 				statusLogger.log(">>> Frame Scale: 0.9530617");
