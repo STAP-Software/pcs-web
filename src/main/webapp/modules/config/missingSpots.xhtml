@@ -56,14 +56,21 @@
 					
 				
 					<f:facet name="footer">
-						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl" />
-						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{ccdManualController.doCancel}" />
+						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{missingSpotsController.doSave}" update=":growl" />
+						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{missingSpotsController.doViewMissingSpots}" />
 					</f:facet>
 				</p:panelGrid>
 																
 			</p:panelGrid>
 		</h:form>
 
+
+<script>
+jQuery(document).ready(function() {
+		runDrawMissingSpots();
+    });
+</script>
+ 
 	</ui:define>
 </ui:composition>
 </html>

@@ -27,7 +27,7 @@ public class MissingSpotList {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long MissingSpotListId;
+	private Long missingSpotListId;
 	private int spotListType;
 	private Integer ufsSegment;	
 	private Integer sufsGroup;	
@@ -41,11 +41,11 @@ public class MissingSpotList {
 	
 
 	public Long getMissingSpotListId() {
-		return MissingSpotListId;
+		return missingSpotListId;
 	}
 
 	public void setMissingSpotListId(Long missingSpotListId) {
-		MissingSpotListId = missingSpotListId;
+		this.missingSpotListId = missingSpotListId;
 	}
 
 	public String getMissingSpotListEncoded() {
@@ -89,4 +89,7 @@ public class MissingSpotList {
 	}
  
 
+	public boolean isNewRecord() {
+		return missingSpotListId == null;
+	}
 }

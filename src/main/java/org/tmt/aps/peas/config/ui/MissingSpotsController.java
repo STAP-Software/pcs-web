@@ -13,11 +13,14 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
+import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.IntegerListEncoder;
@@ -270,28 +273,53 @@ public class MissingSpotsController implements Serializable {
 
 	public void listViewChangeListener() {
 		// values have changed, refresh display values
-		logger.debug("missingSpotsMgmt = " + missingSpotsMgmt);
-		logger.debug("pupilMaskTypeId = " + pupilMaskType.getPupilMaskTypeId());
 		try {
 			missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
-
+			System.out.println(spotListType + "::" + pupilMaskType.getPupilMaskTypeId());
 			updateCentroidDisplay();
 		} catch (Exception e) {
-			// TODO
+			e.printStackTrace();
 		}
 	}
 
 	public void spotChangeListener(AjaxBehaviorEvent event) {
 
 		refreshMissingSpots();
-
-		// System.out.println(event.getBehavior());
 	}
 
 	public String doViewMissingSpots() {
+		try {
+			missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+			updateCentroidDisplay();
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
 		breadcrumbMenuBean.addFirstItem("Missing Spots Configuration", "doViewMissingSpots()");
 
+		//RequestContext.getCurrentInstance().execute("runDrawMissingSpots()");
+		
 		return "/modules/config/missingSpots.xhtml?faces-redirect=true";
+
+	}
+
+	public void doSave() {
+		try {
+			refreshMissingSpots();
+			missingSpotList.setMissingSpotListEncoded(missingSpots);
+			
+			if (missingSpotList.isNewRecord()) {
+				missingSpotsMgmt.createMissingSpotList(missingSpotList);
+			} else {
+				missingSpotsMgmt.updateMissingSpotList(missingSpotList);
+			}
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Record Saved Successfully"));
+			logger.info("doSave: success");
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error saving record"));
+		}
 
 	}
 

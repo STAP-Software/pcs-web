@@ -19,7 +19,7 @@ public class IntegerListEncoder {
 	public static List<Integer> decodeList(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
-			return null;
+			return new ArrayList<Integer>();
 		}
 
 		// list is encoded as num1, num2, etc

@@ -5,7 +5,9 @@
 //<![CDATA[
 
 
-function runDrawMissingSpots() {	
+    
+function runDrawMissingSpots() {
+	
 	window.setTimeout("drawSpots()", 100);
 }
 
@@ -13,7 +15,6 @@ function drawSpots() {
 	var c = document.getElementById("spotCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,c.width, c.height);
-	
 
 	var numbersField = document.getElementById('missingSpotsForm:centroidNbrs').value;
  	var numbersArray = numbersField.split(','); 

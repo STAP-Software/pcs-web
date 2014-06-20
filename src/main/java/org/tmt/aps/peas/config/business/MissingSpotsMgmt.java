@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.MissingSpotList;
+import org.tmt.aps.peas.instrument.model.Ccd;
 
 @Stateless
 public class MissingSpotsMgmt {
@@ -32,5 +33,17 @@ public class MissingSpotsMgmt {
 		
 		return query.getSingleResult();
 	}
+	
+	public void createMissingSpotList(MissingSpotList missingSpotList) {
+		em.persist(missingSpotList);
+		
+	}
+
+	public void updateMissingSpotList(MissingSpotList missingSpotList) {
+		
+		em.merge(missingSpotList);
+		
+	}
+
 
 }
