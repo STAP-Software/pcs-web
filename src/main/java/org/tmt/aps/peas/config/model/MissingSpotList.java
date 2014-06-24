@@ -21,7 +21,9 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Table(name = "MissingSpotList")
 @NamedQueries({
 	@NamedQuery(name = "findSpotListByTypeAndMask", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId" )
+			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId" ),
+	@NamedQuery(name = "findSpotListByTypeMaskGroup", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p "
+			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and o.sufsGroup = :sufsGroup" )
 })
 public class MissingSpotList {
 
@@ -31,7 +33,7 @@ public class MissingSpotList {
 	private int spotListType;
 	private Integer ufsSegment;	
 	private Integer sufsGroup;	
-	private String missingSpotListEncoded;  
+	private String missingSpotListEncoded = "";  
 	
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")

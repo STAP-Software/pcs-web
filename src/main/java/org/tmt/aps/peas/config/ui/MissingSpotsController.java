@@ -112,6 +112,13 @@ public class MissingSpotsController implements Serializable {
 				subimageDefList.add(subimage);
 			}
 		}
+		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS)) {
+			for (int i = 0; i < Subimage.SUFS_DEF_X_ARRAY.length; i++) {
+				Subimage subimage = new Subimage(i + 1, Subimage.SUFS_DEF_X_ARRAY[i], Subimage.SUFS_DEF_Y_ARRAY[i]);
+				subimageDefList.add(subimage);
+			}
+		}
+
 
 		// generate centroid numbers, x and y positions
 		StringBuffer numBuf = new StringBuffer();
@@ -274,12 +281,19 @@ public class MissingSpotsController implements Serializable {
 	public void listViewChangeListener() {
 		// values have changed, refresh display values
 		try {
-			missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
-			System.out.println(spotListType + "::" + pupilMaskType.getPupilMaskTypeId());
-			updateCentroidDisplay();
+			if (pupilMaskType.isPupilMaskTypeSufs()) {
+				System.out.println(sufsGroup);
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
+			} else {
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+			}
+			System.out.println(missingSpotList.getMissingSpotListEncoded());
 		} catch (Exception e) {
-			e.printStackTrace();
+			//e.printStackTrace();
+			missingSpotList = new MissingSpotList();	
 		}
+		updateCentroidDisplay();
+
 	}
 
 	public void spotChangeListener(AjaxBehaviorEvent event) {
@@ -289,7 +303,11 @@ public class MissingSpotsController implements Serializable {
 
 	public String doViewMissingSpots() {
 		try {
-			missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+			if (pupilMaskType.isPupilMaskTypeSufs()) {
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
+			} else {
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+			}
 			updateCentroidDisplay();
 		
 		} catch (Exception e) {

@@ -8,7 +8,7 @@
     
 function runDrawMissingSpots() {
 	
-	window.setTimeout("drawSpots()", 100);
+	window.setTimeout("drawSpots()", 10);
 }
 
 function drawSpots() {
@@ -27,12 +27,24 @@ function drawSpots() {
 	var msField = document.getElementById('missingSpotsForm:missingSpots').value;
  	var msArray = msField.split(','); 
     
-	ctx.font = "12px Arial";
+ 	
+ 	var fontSize;
+ 	if (numbersArray.length > 1000) {
+ 		fontSize = 8;
+ 	} else if (numbersArray.length > 200) {
+ 		fontSize = 10;
+ 	} else if (numbersArray.length > 100) {
+ 		fontSize = 12;
+ 	} else {
+ 		fontSize = 14;
+ 	}
+ 	
+	ctx.font = fontSize + "px Arial";
  			
-	for (var i = 0; i < numbersArray.length; i++) {
+	for (i = 0; i < numbersArray.length; i++) {
 		var missingSpot = false;
-		for (var j = 0; j < msArray.length; j++) {
-			if (numbersArray[i] == msArray[j]) {
+		for (j = 0; j < msArray.length; j++) {
+			if (numbersArray[i] == msArray[j].trim()) {
 				missingSpot = true;
 			}
 		}
@@ -42,13 +54,13 @@ function drawSpots() {
 		} else {
 	 		ctx.fillStyle = "blue";
 		}
-		ctx.fillText(numbersArray[i], (xArray[i] * 0.61) - 25, yArray[i] * 0.61);	
+		ctx.fillText(numbersArray[i], (xArray[i] * 0.78) - 45, (yArray[i] * 0.78) - 20);	
 	}
 }
 //]]>  
 </script>  
 
-<canvas id="spotCanvas" width="600px" height="600px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+<canvas id="spotCanvas" width="750px" height="750px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
 
 
 </ui:composition>

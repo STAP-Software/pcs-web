@@ -34,6 +34,18 @@ public class MissingSpotsMgmt {
 		return query.getSingleResult();
 	}
 	
+	public MissingSpotList findMissingSpotList(int spotListType, Long pupilMaskTypeId, int sufsGroup) {
+		logger.debug("findMissingSpotList::");
+		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeMaskGroup", MissingSpotList.class);
+		query.setParameter("spotListType", spotListType);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("sufsGroup", sufsGroup);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();
+	}
+	
 	public void createMissingSpotList(MissingSpotList missingSpotList) {
 		em.persist(missingSpotList);
 		
