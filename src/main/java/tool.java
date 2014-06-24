@@ -17,7 +17,7 @@ public class tool {
 		List<String> oneList = new ArrayList<String>();
 
 		try {
-			fis = new FileInputStream("/opt/apps/workspaces/peas-pcs/pcs-fortran-work/pcs_data/config/spot_flag_sufs_gp01.dat");
+			fis = new FileInputStream("/opt/apps/workspaces/peas-pcs/pcs-fortran-work/pcs_data/config/spot_flag_sufs_gp00.dat");
 			br = new BufferedReader(new InputStreamReader(fis));
 			
 			while ((line = br.readLine()) != null) {
@@ -33,16 +33,30 @@ public class tool {
 			}
 		
 			StringBuffer buf = new StringBuffer();
+			int pos = 0;
+			buf.append("'");
 			for (String string : fAndIList) {
-				buf.append(string + ", ");
+				buf.append(string + ",");
+				if ((buf.length() - pos) > 150) {
+					buf.append("' ||\n'");
+					pos = buf.length();
+				}
 			}
-			System.out.println("buf = " + buf.toString());
+			buf.append("'");
+			System.out.println("type 1 = " + buf.toString());
 			
 			StringBuffer buf2 = new StringBuffer();
+			pos = 0;
+			buf2.append("'");
 			for (String string : analList) {
-				buf2.append(string + ", ");
+				buf2.append(string + ",");
+				if ((buf2.length() - pos) > 150) {
+					buf2.append("' ||\n'");
+					pos = buf2.length();
+				}
 			}
-			System.out.println(buf2.toString());
+			buf2.append("'");
+			System.out.println("type 2 = " + buf2.toString());
 
 		} catch (Exception e) {
 
