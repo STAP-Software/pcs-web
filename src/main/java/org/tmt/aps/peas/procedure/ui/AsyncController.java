@@ -40,6 +40,8 @@ public class AsyncController {
 	SessionController sessionController;
 	@Inject
 	StatusLogController statusLogController;
+	@Inject
+	ProcedureController procedureController;
 	
 	UserPrompt currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "Default Text");
 	
@@ -77,7 +79,7 @@ public class AsyncController {
 		if (userPromptMgmt.getPendingPrompt() != null) {
 			currentPrompt = userPromptMgmt.getPendingPrompt();
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + currentPrompt.getMessage());
-			requestContext.update(":promptDialogForm"); 
+			requestContext.update("promptDialogForm"); 
 			requestContext.execute("userPromptDialog.show()");
 			userPromptMgmt.setPendingPrompt(null);
 		}
@@ -85,7 +87,13 @@ public class AsyncController {
 		// ask graphic display manager for any pending displays
 		if (graphicDisplayMgmt.getPendingDisplay() != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
-			requestContext.execute("centroidOffsetDisplayDialog.show()");
+			// get data into form
+			procedureController.doUpdateDisplays();
+			// update form values 
+			// TODO: update other visualization displays once developed
+			requestContext.update("offsetsForm");
+			requestContext.update("spotsForm");
+			requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
 			graphicDisplayMgmt.setPendingDisplay(null);
 		}
 		
