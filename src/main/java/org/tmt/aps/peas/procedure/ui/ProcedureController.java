@@ -51,6 +51,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
+import org.tmt.aps.peas.visualization.ui.VisualizationDisplayLink;
 
 @Named
 @SessionScoped
@@ -95,6 +96,7 @@ public class ProcedureController implements Serializable {
 	
 	String centroidXs;
 	String centroidYs;
+	String centroidNbrs;
 
 	@PostConstruct
 	private void init() {
@@ -104,21 +106,21 @@ public class ProcedureController implements Serializable {
 		TreeNode node0 = new DefaultTreeNode("folder", "Iteration 1", visualizationDisplayRoot);
 		TreeNode node1 = new DefaultTreeNode("folder", "Iteration 2", visualizationDisplayRoot);
 		
-		TreeNode node00 = new DefaultTreeNode("link", "Centroids", node0);
-		TreeNode node01 = new DefaultTreeNode("link", "Centroid Offsets", node0);
-		TreeNode node02 = new DefaultTreeNode("link", "Avg. Centroid Offsets", node0);
-		TreeNode node03 = new DefaultTreeNode("link", "Actuator Deltas", node0);
+		TreeNode node00 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "runDrawSpots();centroidsDisplayDialog.show()"), node0);
+		TreeNode node01 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "runDrawOffsets(); centroidOffsetDisplayDialog.show()"), node0);
+		TreeNode node02 = new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node0);
+		TreeNode node03 = new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node0);
 
-		TreeNode node10 = new DefaultTreeNode("link", "Centroids", node1);
-		TreeNode node11 = new DefaultTreeNode("link", "Centroid Offsets", node1);
-		TreeNode node12 = new DefaultTreeNode("link", "Avg. Centroid Offsets", node1);
-		TreeNode node13 = new DefaultTreeNode("link", "Actuator Deltas", node1);
+		TreeNode node10 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "centroidsDisplayDialog.show()"), node1);
+		TreeNode node11 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node1);
+		TreeNode node12 = new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node1);
+		TreeNode node13 = new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node1);
 
 		node0.setExpanded(true);
 		node1.setExpanded(true);
 		
 		
-		updateCentroidOffsetsDisplay();
+		//updateCentroidOffsetsDisplay();
 	}
 
 	public Procedure getProcedure() {
@@ -163,6 +165,14 @@ public class ProcedureController implements Serializable {
 
 	public void setCentroidYs(String centroidYs) {
 		this.centroidYs = centroidYs;
+	}
+
+	public String getCentroidNbrs() {
+		return centroidNbrs;
+	}
+
+	public void setCentroidNbrs(String centroidNbrs) {
+		this.centroidNbrs = centroidNbrs;
 	}
 
 	public StreamedContent getGraphicImage() {
@@ -389,12 +399,23 @@ public class ProcedureController implements Serializable {
 
 	}
 	
+	// ====================================================================================== //
+	//   Visualization Displays                                                               //
+	// ================================================================================	alert(xArray.length);====== //
 	
-	private void updateCentroidOffsetsDisplay() {
+	public void doUpdateDisplays() {
 
-		PupilMaskType pupilMaskType = cameraDefMgmt.findPupilMaskType(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-
+		// TODO - this needs to know which node was selected
 		
+		List<Subimage> subimageDefList = getSubimageDefsForMask(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+
+		encodeSubimageHiddenVars(subimageDefList);
+	}
+	
+	private List<Subimage> getSubimageDefsForMask(Long maskTypeId) {
+		
+		PupilMaskType pupilMaskType = cameraDefMgmt.findPupilMaskType(maskTypeId);
+
 		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
 
 		Map<String, Integer> spots = new LinkedHashMap<String, Integer>();
@@ -410,12 +431,16 @@ public class ProcedureController implements Serializable {
 				subimageDefList.add(subimage);
 			}
 		}
-
+		return subimageDefList;
+	}
+	
+	private void encodeSubimageHiddenVars(List<Subimage> subimageList) {
+		
 		// generate centroid numbers, x and y positions
 		StringBuffer numBuf = new StringBuffer();
 		StringBuffer xBuf = new StringBuffer();
 		StringBuffer yBuf = new StringBuffer();
-		for (Subimage subimage : subimageDefList) {
+		for (Subimage subimage : subimageList) {
 			numBuf.append(subimage.getSubimageNumber() + ",");
 			xBuf.append(subimage.getxCcd() + ",");
 			yBuf.append(subimage.getyCcd() + ",");
@@ -425,6 +450,7 @@ public class ProcedureController implements Serializable {
 		yBuf.deleteCharAt(yBuf.length() - 1);
 		centroidXs = xBuf.toString();
 		centroidYs = yBuf.toString();
+		centroidNbrs = numBuf.toString();
 
 	}
 

@@ -1,0 +1,72 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+
+
+    
+function runDrawSpots() {
+	
+	window.setTimeout("drawSpots()", 10);
+}
+
+function drawSpots() {
+	var c = document.getElementById("spotCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,c.width, c.height);
+
+	var numbersField = document.getElementById('spotsForm:centroidNbrs').value;
+ 	var numbersArray = numbersField.split(','); 
+    
+	var xField = document.getElementById('spotsForm:centroidXs').value;
+ 	var xArray = xField.split(','); 
+    
+	var yField = document.getElementById('spotsForm:centroidYs').value;
+ 	var yArray = yField.split(','); 
+    
+ 	ctx.translate(-25,-10);
+ 	ctx.scale(0.61, 0.61);
+ 	
+ 	var fontSize;
+ 	if (numbersArray.length > 1000) {
+ 		fontSize = 16;
+ 	} else if (numbersArray.length > 200) {
+ 		fontSize = 20;
+ 	} else if (numbersArray.length > 100) {
+ 		fontSize = 24;
+ 	} else {
+ 		fontSize = 28;
+ 	}
+ 	
+	ctx.font = fontSize + "px Arial";
+ 	ctx.fillStyle = "blue";
+		
+	for (i = 0; i < numbersArray.length; i++) {
+		ctx.fillText(numbersArray[i], xArray[i], yArray[i]);	
+	}
+}
+//]]>  
+</script>  
+
+
+
+		<p:dialog id="centroidsDialog" header="Centroids Visualization Display" widgetVar="centroidsDisplayDialog" closable="false" >  
+    		<h:form id="spotsForm">
+
+			      		
+    		<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
+			<h:inputHidden id="centroidYs" value="#{procedureController.centroidYs}" />
+ 			<h:inputHidden id="centroidNbrs" value="#{procedureController.centroidNbrs}" />
+    			
+    		<canvas id="spotCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<br/>
+    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
+			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>

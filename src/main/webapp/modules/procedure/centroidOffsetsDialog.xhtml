@@ -3,40 +3,42 @@
 
 <script type="text/javascript">  
 //<![CDATA[
-$(function() {
-	$('#offsetsDrawDiv').svg({onLoad: drawCentroidOffsets});
-});
 
-function runDrawCentroidOffsets(){
-	$('#offsetsDrawDiv').svg();
-	var svg = $('#offsetsDrawDiv').svg('get');
-	drawCentroidOffsets(svg);
+function runDrawOffsets() {
+	
+	window.setTimeout("drawCentroidOffsets()", 10);
 }
 
 function drawCentroidOffsets(svg) {
     
+	var c = document.getElementById("offsetsCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,c.width, c.height);
 	
-	var xField = document.getElementById('graphicDialogForm:centroidXs').value;
-	//var xField = "100,200,300,400";
+	var xField = document.getElementById('offsetsForm:centroidXs').value;
  	var xArray = xField.split(','); 
  	
-	var yField = document.getElementById('graphicDialogForm:centroidYs').value;
-	//var yField = "100,200,300,400";
+	var yField = document.getElementById('offsetsForm:centroidYs').value;
  	var yArray = yField.split(','); 
    
-	
-	var g0 = svg.group({transform: "translate(-25, -15) scale(0.61)"});
-
-	
+	ctx.translate(-25,-10);
+	ctx.scale(0.61, 0.61);
 
 	for (var i = 0; i < xArray.length; i++) {
 		
-		svg.circle(g0, xArray[i], yArray[i], 5, {fill: 'red', stroke: 'black', strokeWidth: 1}); 
-		
+		ctx.beginPath();
+		ctx.arc(xArray[i], yArray[i], 5, 0, 2*Math.PI);
+		ctx.stroke();
+		ctx.fillStyle = 'black';
+	    ctx.fill();
+				
 		var dx = parseInt(xArray[i]) + ((Math.random() * 2.0) - 1.0) * 30.0;
 		var dy = parseInt(yArray[i]) + ((Math.random() * 2.0) - 1.0) * 30.0;
 
-		svg.line(g0, parseInt(xArray[i]), parseInt(yArray[i]), dx, dy, {stroke: 'black', strokeWidth: 1});
+		ctx.beginPath();
+	    ctx.moveTo(xArray[i], yArray[i]);
+	    ctx.lineTo(dx, dy);
+	    ctx.stroke();
 		
 	}
 
@@ -47,13 +49,14 @@ function drawCentroidOffsets(svg) {
 
 
 		<p:dialog id="centroidOffsetDialog" header="Visualization Display" widgetVar="centroidOffsetDisplayDialog" closable="false" >  
-    		<div id="offsetsDrawDiv" style="width:600px; height:600px"></div>  
-    		<h:form id="graphicDialogForm">
+     		<h:form id="offsetsForm">
 
 			      		
     		<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{procedureController.centroidYs}" />
     			
+    		<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<br/>
     		
     		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />

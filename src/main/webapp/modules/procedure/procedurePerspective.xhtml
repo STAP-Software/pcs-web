@@ -299,7 +299,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 									<h:outputText value="#{node}"  />
 								</p:treeNode>
 								<p:treeNode type="link">
-									<p:commandLink value="#{node}" onclick="centroidOffsetDisplayDialog.show();" />
+									<p:commandLink value="#{node.name}" action="#{procedureController.doUpdateDisplays}" update=":spotsForm :offsetsForm" oncomplete="#{node.onclick}" />
 								</p:treeNode>
 							</p:tree>
 
