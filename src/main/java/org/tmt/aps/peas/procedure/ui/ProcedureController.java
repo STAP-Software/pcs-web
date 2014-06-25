@@ -43,9 +43,9 @@ import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.passiveTilt.business.PassiveTiltMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
+import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -64,7 +64,7 @@ public class ProcedureController implements Serializable {
 	@EJB
 	ProcedureMgmt procedureMgmt;
 	@EJB
-	PassiveTiltMgmt passiveTiltMgmt;
+	PassiveTiltExecutor passiveTiltExecutor;
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
@@ -343,7 +343,7 @@ public class ProcedureController implements Serializable {
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
-		passiveTiltMgmt.executeProcedure(procedure, sessionController.getCurrentSession());
+		passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		logger.debug("doExecuteProcedure::after to call passiveTiltMgmt");
 
 	}
