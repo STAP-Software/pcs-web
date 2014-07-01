@@ -45,6 +45,7 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
+import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -65,6 +66,8 @@ public class ProcedureController implements Serializable {
 	ProcedureMgmt procedureMgmt;
 	@EJB
 	PassiveTiltExecutor passiveTiltExecutor;
+	@EJB
+	CreateRefMapExecutor createRefMapExecutor;
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
@@ -264,7 +267,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderPupilMaskSelect() {
-		return procedureType.isCreateRefBeam();
+		return procedureType.isCreateRefMap();
 	}
 	
 	
@@ -292,10 +295,10 @@ public class ProcedureController implements Serializable {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE);
 	}
 	public String doNewCreateRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
 	}
 	public String doNewCreateFirstRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP);
 	}
 	
 	public String doNewProcedure(Long procedureTypeId) {
@@ -371,8 +374,8 @@ public class ProcedureController implements Serializable {
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
-		if (procedure.getProcedureConfig().getFilter() != 611) {
-
+		if (procedureType.isPassiveTilt() && procedure.getProcedureConfig().getFilter() != 611) {
+			
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));
 
@@ -380,8 +383,15 @@ public class ProcedureController implements Serializable {
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
-		passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
-		logger.debug("doExecuteProcedure::after to call passiveTiltMgmt");
+		
+		if (procedureType.isCreateRefMap()) {
+			createRefMapExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedureType.isPassiveTilt()) {
+			passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		}
+		
+		
+		logger.debug("doExecuteProcedure::after executor call");
 
 	}
 

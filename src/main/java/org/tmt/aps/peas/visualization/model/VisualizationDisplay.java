@@ -27,6 +27,12 @@ public class VisualizationDisplay {
 		this.displayType = displayType;
 	}
 	
+	public boolean isDisplayTypeCentroids() {
+		return displayType == DISPLAY_TYPE_CENTROIDS;
+	}
 	
+	public boolean isDisplayTypeCentroidOffsets() {
+		return displayType == DISPLAY_TYPE_CENTROID_OFFSETS;
+	}
 	
 }

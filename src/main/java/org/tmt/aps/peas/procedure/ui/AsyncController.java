@@ -21,6 +21,7 @@ import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
+import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Named
 @SessionScoped
@@ -85,15 +86,25 @@ public class AsyncController {
 		}
 
 		// ask graphic display manager for any pending displays
-		if (graphicDisplayMgmt.getPendingDisplay() != null) {
+		VisualizationDisplay visualizationDisplay = graphicDisplayMgmt.getPendingDisplay();
+		if (visualizationDisplay != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			
 			// get data into form
 			procedureController.doUpdateDisplays();
 			// update form values 
 			// TODO: update other visualization displays once developed
 			requestContext.update("offsetsForm");
 			requestContext.update("spotsForm");
-			requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+			
+			if (visualizationDisplay.isDisplayTypeCentroids()) {
+				requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
+			}
+			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
+				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+			}
+			
+			
 			graphicDisplayMgmt.setPendingDisplay(null);
 		}
 		
