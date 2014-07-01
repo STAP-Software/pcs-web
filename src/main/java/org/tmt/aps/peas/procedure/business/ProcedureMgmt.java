@@ -13,6 +13,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Stateless
 public class ProcedureMgmt {
@@ -29,6 +30,9 @@ public class ProcedureMgmt {
 		return query.getSingleResult();
 	}
 
+	public ProcedureType findProcedureType(Long procedureTypeId) {
+		return em.find(ProcedureType.class, procedureTypeId);
+	}
 	
 	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {
 		TypedQuery<ProcedureConfig> query = em.createNamedQuery("findDefaultProcedureConfig", ProcedureConfig.class);

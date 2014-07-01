@@ -62,14 +62,14 @@
 				
 					<p:submenu label="Run" icon="ui-icon-gear" >
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Phasing" action="#{phasingController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Fine Screen" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="UFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="SUFS" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:separator />
-						<p:menuitem value="Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="First Reference Beam" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Pupil Registration" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="First Reference Beam" action="#{procedureController.doNewCreateFirstRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 					<p:submenu label="Tools" icon="ui-icon-contact">
 						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>

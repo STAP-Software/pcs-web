@@ -258,15 +258,39 @@ public class ProcedureController implements Serializable {
 		logger.debug("Frame Source Listener");
 	}
 
-	// TODO: this should be split into a generic doNewProcedure
+	// setup for each procedure type
 	public String doNewPassiveTilt() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
+	}
+	public String doNewPhasing() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING);
+	}
+	public String doNewFineScreen() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN);
+	}
+	public String doNewSufs() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS);
+	}
+	public String doNewPupilRegistration() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);
+	}
+	public String doNewCenterTelescope() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE);
+	}
+	public String doNewCreateRefBeam() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM);
+	}
+	public String doNewCreateFirstRefBeam() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM);
+	}
+	
+	public String doNewProcedure(Long procedureTypeId) {
 
 		try {
 			procedure = new Procedure();
 
-			// ProcedureConfig procedureConfig = new ProcedureConfig();
 			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(),
-					sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
+					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
 
 			procedure.setProcedureConfig(procedureConfig);
 
@@ -275,13 +299,11 @@ public class ProcedureController implements Serializable {
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
-			// TODO: this should come from a MetaData component
-			ProcedureType procedureType = new ProcedureType();
-			procedureType.setProcedureTypeId(new Long(1));
-			procedureType.setProcedureTypeName("Passive Tilt");
-
+			// get the procedure type object
+			ProcedureType procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 			procedure.setProcedureType(procedureType);
-			sessionController.setInPassiveTilt(true);
+			
+			sessionController.setCurrentProcedureTypeId(procedureTypeId);
 
 		} catch (Exception e) {
 			e.printStackTrace();

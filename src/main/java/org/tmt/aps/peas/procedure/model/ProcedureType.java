@@ -20,6 +20,13 @@ import javax.persistence.Table;
 public class ProcedureType {
 
 	public static final Long PROCEDURE_TYPE_ID_PASSIVE_TILT = new Long(1);
+	public static final Long PROCEDURE_TYPE_ID_FINE_SCREEN = new Long(2);
+	public static final Long PROCEDURE_TYPE_ID_PHASING = new Long(3);
+	public static final Long PROCEDURE_TYPE_ID_SUFS = new Long(5);
+	public static final Long PROCEDURE_TYPE_ID_PUPIL_REGISTRATION = new Long(6);
+	public static final Long PROCEDURE_TYPE_ID_CENTER_TELESCOPE = new Long(7);
+	public static final Long PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM = new Long(8);
+	public static final Long PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM = new Long(9);
 	
 	@Id
 	private Long procedureTypeId;

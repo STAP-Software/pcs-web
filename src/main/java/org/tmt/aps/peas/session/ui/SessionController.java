@@ -27,6 +27,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -49,7 +50,7 @@ public class SessionController implements Serializable {
 	Session session;
 	List<Session> sessionList;
 	List<String> frameList;
-	boolean inPassiveTilt;
+	Long currentProcedureTypeId;
 	boolean procedureExecuting;
 	Telescope telescope;
 	Instrument instrument;
@@ -110,14 +111,18 @@ public class SessionController implements Serializable {
 		this.instrument = instrument;
 	}
 
+	public Long getCurrentProcedureTypeId() {
+		return currentProcedureTypeId;
+	}
+
+	public void setCurrentProcedureTypeId(Long currentProcedureTypeId) {
+		this.currentProcedureTypeId = currentProcedureTypeId;
+	}
 
 	public boolean isInPassiveTilt() {
-		return inPassiveTilt;
+		return currentProcedureTypeId == ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT;
 	}
 
-	public void setInPassiveTilt(boolean inPassiveTilt) {
-		this.inPassiveTilt = inPassiveTilt;
-	}
 
 
 	public boolean isProcedureExecuting() {
