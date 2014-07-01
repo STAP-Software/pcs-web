@@ -56,6 +56,10 @@ public class ProcedureType {
 	public void setProcedureTypeCd(String procedureTypeCd) {
 		this.procedureTypeCd = procedureTypeCd;
 	}
+	public boolean isCreateRefBeam() {
+		// TODO Auto-generated method stub
+		return procedureTypeId == PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM;
+	}
 	
 	
 	

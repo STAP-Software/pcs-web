@@ -20,8 +20,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
@@ -51,6 +53,9 @@ public class ProcedureConfig {
 	private Date updateDate;
 
 	private int filter;
+	@Transient
+	private PupilMask pupilMask;  // TODO: make this non-transient
+	
 	private float integrationTime;
 	@Column(name="numTrials")
 	private int numberOfTrials = 1;
@@ -235,6 +240,16 @@ public class ProcedureConfig {
 
 	public void setSufsGroup(Integer sufsGroup) {
 		this.sufsGroup = sufsGroup;
+	}
+
+
+
+	public PupilMask getPupilMask() {
+		return pupilMask;
+	}
+
+	public void setPupilMask(PupilMask pupilMask) {
+		this.pupilMask = pupilMask;
 	}
 
 	public boolean isFrameFromFile() {

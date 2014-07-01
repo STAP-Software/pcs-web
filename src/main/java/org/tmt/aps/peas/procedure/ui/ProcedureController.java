@@ -86,6 +86,7 @@ public class ProcedureController implements Serializable {
 	private FrameController frameController;
 
 	Procedure procedure;
+	ProcedureType procedureType;
 
 	List<Procedure> procedureList;
 	float integrationAddTime;
@@ -129,6 +130,14 @@ public class ProcedureController implements Serializable {
 
 	public void setProcedure(Procedure procedure) {
 		this.procedure = procedure;
+	}
+
+	public ProcedureType getProcedureType() {
+		return procedureType;
+	}
+
+	public void setProcedureType(ProcedureType procedureType) {
+		this.procedureType = procedureType;
 	}
 
 	public float getIntegrationAddTime() {
@@ -254,6 +263,11 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	public boolean getRenderPupilMaskSelect() {
+		return procedureType.isCreateRefBeam();
+	}
+	
+	
 	public void frameSourceListener() {
 		logger.debug("Frame Source Listener");
 	}
@@ -300,10 +314,15 @@ public class ProcedureController implements Serializable {
 			sessionController.setupNewProcedure(procedure);
 
 			// get the procedure type object
-			ProcedureType procedureType = procedureMgmt.findProcedureType(procedureTypeId);
+			procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 			procedure.setProcedureType(procedureType);
 			
 			sessionController.setCurrentProcedureTypeId(procedureTypeId);
+			
+			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
+			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+			Date date = new Date();
+			breadcrumbMenuBean.addFirstItem(procedureType.getProcedureTypeName() + " - " + sdf.format(date), "newProcedure.xhtml");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -312,10 +331,6 @@ public class ProcedureController implements Serializable {
 			return null;
 		}
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Date date = new Date();
-		breadcrumbMenuBean.addFirstItem("Passive Tilt - " + sdf.format(date), "newProcedure.xhtml");
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}

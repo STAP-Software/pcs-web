@@ -29,6 +29,17 @@
 					<p:tab title="Procedure Configuration">
 
 						<p:panelGrid id="configPanel" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
+							<p:row rendered="#{procedureController.renderPupilMaskSelect}">
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Mask" />
+								</p:column>
+								<p:column styleClass="btmsFormInputColumn">
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
+										<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
 
 							<p:row>
 								<p:column styleClass="btmsFormLabelColumn">
@@ -101,7 +112,7 @@
 
 						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 							<h:outputLabel value="Procedure Type" />
-							<h:outputText value="Passive Tilt" />
+							<h:outputText value="#{procedureController.procedureType.procedureTypeName}" />
 							<h:outputLabel value="Procedure #" />
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
 							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
