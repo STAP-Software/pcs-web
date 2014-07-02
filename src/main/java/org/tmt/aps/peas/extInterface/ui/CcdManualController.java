@@ -177,7 +177,9 @@ public class CcdManualController implements Serializable {
 							buf.append("[" + rawFrame[i][j] + "]");
 						}
 					}
+					if (buf.length() > 0) {
 					logger.debug(buf);
+					}
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);
 				
