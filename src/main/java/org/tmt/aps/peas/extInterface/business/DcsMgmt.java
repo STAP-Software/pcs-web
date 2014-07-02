@@ -42,7 +42,7 @@ public class DcsMgmt {
 
 
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
-		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0], telescopeDeltas[1]);
+		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0]/1.0e6, telescopeDeltas[1]/1.0e6);
 	}
 	
 	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {
