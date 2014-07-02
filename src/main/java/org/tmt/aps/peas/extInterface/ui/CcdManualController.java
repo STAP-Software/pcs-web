@@ -170,9 +170,12 @@ public class CcdManualController implements Serializable {
 				int[][] frame = ccdMgmt.getImage();
 				short[][] rawFrame = new short[frame.length][frame[0].length];
 				for (int i=0; i< frame.length; i++) {
+					StringBuffer buf = new StringBuffer();
 					for (int j=0; j<frame[i].length; j++) {
 						rawFrame[i][j] = (short)frame[i][j];
+						buf.append("[" + frame[i][j] + "::" + rawFrame[i][j] + "]");
 					}
+					logger.debug(buf);
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);
 				
