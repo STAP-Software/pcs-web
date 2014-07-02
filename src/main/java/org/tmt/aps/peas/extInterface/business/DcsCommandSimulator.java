@@ -8,24 +8,24 @@ import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class DcsCommandSimulator implements DcsCommand {
 
-	float[] dcsM2Pos = {0.1f, 0.2f, 0.3f};
-	float[] telPos = {1.1f, 2.2f};
+	double[] dcsM2Pos = {0.1f, 0.2f, 0.3f};
+	double[] telPos = {1.1f, 2.2f};
 	
 	@Override
-	public void commandDcsOffset(float deltaAz, float deltaEl) throws CommunicationException, TimeoutException, CommandFailureException {
+	public void commandDcsOffset(double deltaAz, double deltaEl) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		telPos[0] += (deltaAz / 1000000.0);
 		telPos[1] += (deltaEl / 1000000.0);
 	}
 
 	@Override
-	public float[] queryDcsM2Pos() throws CommunicationException, TimeoutException, CommandFailureException {
+	public double[] queryDcsM2Pos() throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		return dcsM2Pos;
 	}
 
 	@Override
-	public void commandDcsM2PosDelta(float[] m2PosDelta) throws CommunicationException, TimeoutException, CommandFailureException {
+	public void commandDcsM2PosDelta(double[] m2PosDelta) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		for (int i=0; i<3; i++) {
 			dcsM2Pos[i] += m2PosDelta[i];
@@ -39,7 +39,7 @@ public class DcsCommandSimulator implements DcsCommand {
 	}
 
 	@Override
-	public float[] queryTelPos() throws CommunicationException, TimeoutException, CommandFailureException {
+	public double[] queryTelPos() throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		return telPos;
 	}

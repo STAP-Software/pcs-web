@@ -39,10 +39,10 @@ public class DcsManualController implements Serializable {
 
 	int dcsStatus = 2;
 	StarInfo starInfo = new StarInfo("SomeName", 6.3f, "blue");
-	float[] telescopePosition = new float[2];
-	float[] m2Pos = new float[3];
-	Float[] telescopeDeltaCmds = new Float[2];
-	Float[] secondaryDeltaCmds = new Float[3];
+	double[] telescopePosition = new double[2];
+	double[] m2Pos = new double[3];
+	Double[] telescopeDeltaCmds = new Double[2];
+	Double[] secondaryDeltaCmds = new Double[3];
 	
 
 	@PostConstruct
@@ -86,35 +86,35 @@ public class DcsManualController implements Serializable {
 		this.starInfo = starInfo;
 	}
 
-	public float[] getTelescopePosition() {
+	public double[] getTelescopePosition() {
 		return telescopePosition;
 	}
 
-	public void setTelescopePosition(float[] telescopePosition) {
+	public void setTelescopePosition(double[] telescopePosition) {
 		this.telescopePosition = telescopePosition;
 	}
 
-	public float[] getM2Pos() {
+	public double[] getM2Pos() {
 		return m2Pos;
 	}
 
-	public void setM2Pos(float[] m2Pos) {
+	public void setM2Pos(double[] m2Pos) {
 		this.m2Pos = m2Pos;
 	}
 
-	public Float[] getTelescopeDeltaCmds() {
+	public Double[] getTelescopeDeltaCmds() {
 		return telescopeDeltaCmds;
 	}
 
-	public void setTelescopeDeltaCmds(Float[] telescopeDeltaCmds) {
+	public void setTelescopeDeltaCmds(Double[] telescopeDeltaCmds) {
 		this.telescopeDeltaCmds = telescopeDeltaCmds;
 	}
 
-	public Float[] getSecondaryDeltaCmds() {
+	public Double[] getSecondaryDeltaCmds() {
 		return secondaryDeltaCmds;
 	}
 
-	public void setSecondaryDeltaCmds(Float[] secondaryDeltaCmds) {
+	public void setSecondaryDeltaCmds(Double[] secondaryDeltaCmds) {
 		this.secondaryDeltaCmds = secondaryDeltaCmds;
 	}
 
@@ -178,7 +178,7 @@ public class DcsManualController implements Serializable {
 	public void doCommandTelescopeDelta() {
 		
 		try {
-			float[] deltaCmds = new float[2];
+			double[] deltaCmds = new double[2];
 			logger.info("doCommandTelescopeDelta: deltaCmds = ");
 			for (int i=0; i<2; i++) {
 				logger.info(telescopeDeltaCmds[i]);
@@ -198,7 +198,7 @@ public class DcsManualController implements Serializable {
 	
 	public void doCommandSecondary() {
 		try {
-			float[] deltaCmds = new float[3];
+			double[] deltaCmds = new double[3];
 			logger.info("doCommandSecondaryDelta: secondaryDeltaCmds = ");
 			for (int i=0; i<3; i++) {
 				logger.info(secondaryDeltaCmds[i]);

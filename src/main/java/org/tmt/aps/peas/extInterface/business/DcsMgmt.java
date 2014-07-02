@@ -28,7 +28,7 @@ public class DcsMgmt {
 		return extInfFactory.getDcsCommand().queryDcsStatus();
 	}
 
-	public float[] querySecondary() throws Exception {
+	public double[] querySecondary() throws Exception {
 		return extInfFactory.getDcsCommand().queryDcsM2Pos();
 	}
 
@@ -36,16 +36,16 @@ public class DcsMgmt {
 		return extInfFactory.getDcsCommand().queryStar();
 	}
 
-	public float[] queryTelescopePosition() throws Exception {
+	public double[] queryTelescopePosition() throws Exception {
 		return extInfFactory.getDcsCommand().queryTelPos();
 	}
 
 
-	public void commandTelescopeDeltas(float[] telescopeDeltas) throws Exception {
+	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
 		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0], telescopeDeltas[1]);
 	}
 	
-	public void commandSecondaryDeltas(float[] secondaryDeltas) throws Exception {
+	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
 	}
 
