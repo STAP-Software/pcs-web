@@ -105,7 +105,7 @@ public class CreateRefMapExecutor {
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
 			statusLogger.log("Camera is not properly initialized.  Proceed with caution."); 
-			statusLogger.log("Entering Passive Tilt Test");
+			statusLogger.log("Entering Create Ref Map Test");
 
 
 			wait(1);
