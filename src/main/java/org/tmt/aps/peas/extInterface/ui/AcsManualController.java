@@ -38,7 +38,7 @@ public class AcsManualController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
-	Integer actDeltas[][] = new Integer[36][3];
+	Double actDeltas[][] = new Double[36][3];
 	int snapshotNumber;
 	double mirrorTemp;
 	boolean acsRunning;
@@ -49,7 +49,7 @@ public class AcsManualController implements Serializable {
 
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
-				actDeltas[i][j] = 0;
+				actDeltas[i][j] = 0.0;
 			}
 		}
 
@@ -87,11 +87,11 @@ public class AcsManualController implements Serializable {
 		this.rmsActuatorMove = rmsActuatorMove;
 	}
 
-	public Integer[][] getActDeltas() {
+	public Double[][] getActDeltas() {
 		return actDeltas;
 	}
 
-	public void setActDeltas(Integer[][] actDeltas) {
+	public void setActDeltas(Double[][] actDeltas) {
 		this.actDeltas = actDeltas;
 	}
 	
@@ -107,7 +107,7 @@ public class AcsManualController implements Serializable {
 					String line = br.readLine();
 					if (line == null) break;
 					Double temp = new Double(line);
-					actDeltas[i][j] = temp.intValue();
+					actDeltas[i][j] = temp;
 				}
 			}
 
@@ -140,7 +140,7 @@ public class AcsManualController implements Serializable {
 	public void doClear() {
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
-				actDeltas[i][j] = 0;
+				actDeltas[i][j] = 0.0;
 			}
 		}
 	}
