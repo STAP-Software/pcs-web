@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.extInterface.ui;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
@@ -16,12 +18,11 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.event.FileUploadEvent;
+import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
-import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
-import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Named
 @SessionScoped
@@ -93,6 +94,36 @@ public class AcsManualController implements Serializable {
 	public void setActDeltas(Integer[][] actDeltas) {
 		this.actDeltas = actDeltas;
 	}
+	
+	public void handleFileUpload(FileUploadEvent event) {
+
+		BufferedReader br = null;
+		try {
+			UploadedFile file = event.getFile();
+			br = new BufferedReader(new InputStreamReader(file.getInputstream()));
+
+			for (int i = 0; i < 36; i++) {
+				for (int j = 0; j < 3; j++) {
+					String line = br.readLine();
+					if (line == null) break;
+					Double temp = new Double(line);
+					actDeltas[i][j] = temp.intValue();
+				}
+			}
+
+			FacesMessage msg = new FacesMessage("values uploaded successfully");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			try {
+				br.close();
+			} catch (Exception e2) {
+				e2.printStackTrace();
+			}
+		}
+	}
 
 	public String doViewAcsManualInterface() {
 
@@ -104,6 +135,14 @@ public class AcsManualController implements Serializable {
 
 	public void doNothing() {
 		
+	}
+	
+	public void doClear() {
+		for (int i = 0; i < 36; i++) {
+			for (int j = 0; j < 3; j++) {
+				actDeltas[i][j] = 0;
+			}
+		}
 	}
 	
 	

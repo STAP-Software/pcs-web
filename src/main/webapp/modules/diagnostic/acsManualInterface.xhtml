@@ -15,11 +15,12 @@
 
 
 			<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsExecutionPanel">
-				<p:panelGrid columns="1" style="margin:10px;" styleClass="pcsForm">
+				<p:panelGrid columns="1" style="margin:0" styleClass="pcsForm">
 
 					<f:facet name="header">
 					ACS Actuator Delta Command Tool
 					</f:facet>
+					
 
 					<p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" paginator="true" rows="12">
 
@@ -39,11 +40,25 @@
 
 					</p:dataTable>
 
-					<h:outputLabel style="height: 10px" />
+						<p:panelGrid styleClass="pcsFormNoBorder">
+							<p:row>
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
+								</p:column>
+								<p:column>
+									<p:fileUpload fileUploadListener="#{acsManualController.handleFileUpload}" mode="advanced" update=":growl @form"
+										sizeLimit="40000" auto="true" styleClass="no-expand"/>
+								</p:column>
+							</p:row>
 
+						</p:panelGrid>
+					
+
+					<h:outputLabel style="height: 0px" />
+											
 					<f:facet name="footer">
-						<p:commandButton value=""
-							ajax="false" action="#{acsManualController.doNothing}" style="position: relative; left: -1000px"/>
+						<p:commandButton value="Reset" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doClear}" update="@form"/>
 						<p:commandButton value="Send Commands" icon="ui-icon-check"
 							ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
 							update=":growl" />

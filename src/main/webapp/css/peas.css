@@ -294,6 +294,18 @@ div.btmsBreadcrumb ul li a.ui-icon {
     padding: 0px;
 }
 
+.no-expand .fileupload-content {
+	position: absolute;
+	left: -1000px;
+}
+.no-expand .fileupload-buttonbar {
+	position: relative;
+	left: -1000px;
+}
+.no-expand .fileinput-button {
+	position: relative;
+	left: 1000px;
+}
 .noupdate {
 /* class that indicates to primefaces not to update */
 }
