@@ -231,7 +231,7 @@ public class CcdManualController implements Serializable {
 				break;
 
 			case 4: // Get Image
-				int[][] frame = ccdMgmt.getImage(exposureTime, useShutter);
+				int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, useShutter);
 				short[][] rawFrame = new short[frame.length][frame[0].length];
 				for (int i=0; i< frame.length; i++) {
 					for (int j=0; j<frame[i].length; j++) {
