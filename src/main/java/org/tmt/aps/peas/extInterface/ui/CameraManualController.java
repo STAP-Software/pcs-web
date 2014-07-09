@@ -292,7 +292,8 @@ public class CameraManualController implements Serializable {
 			e.printStackTrace();
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
+			// TODO: generic way to output errors that give all info to user on screen
+			context.addMessage(null, new FacesMessage("Error: " + e.getMessage() + e.getClass().getName() + " " + e.getStackTrace()[0]));
 
 		}
 	}
@@ -389,7 +390,9 @@ public class CameraManualController implements Serializable {
 			e.printStackTrace();
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error: " + e.getClass().getName() + " " + e.getStackTrace()[0]));
+			
+			// TODO: generic way to output errors that give all info to user on screen
+			context.addMessage(null, new FacesMessage("Error: " + e.getMessage() + e.getClass().getName() + " " + e.getStackTrace()[0]));
 
 		}
 	}
