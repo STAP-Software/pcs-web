@@ -39,37 +39,37 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getImage();	
 	}
 
-	public void setGain(int channel, double gain) throws CommandFailureException, CommunicationException {
+	public void setGain(int channel, double gain) throws Exception {
 		extInfFactory.getInstrumentCommand().setGain(channel, gain);
 		
 	}
 
-	public void setOffset(int channel, double offset) throws CommandFailureException, CommunicationException {
+	public void setOffset(int channel, double offset) throws Exception {
 		// TODO Auto-generated method stub
 		extInfFactory.getInstrumentCommand().setOffset(channel, offset);
 	}
 
-	public int getImageWidth() throws CommandFailureException, CommunicationException {
+	public int getImageWidth() throws Exception {
 		// TODO Auto-generated method stub
 		return extInfFactory.getInstrumentCommand().getImageWidth();
 	}
 
-	public int getImageHeight() throws CommandFailureException, CommunicationException {
+	public int getImageHeight() throws Exception {
 		// TODO Auto-generated method stub
 		return extInfFactory.getInstrumentCommand().getImageHeight();
 	}
 
-	public double getPlateScale() throws CommandFailureException, CommunicationException {
+	public double getPlateScale() throws Exception {
 		// TODO Auto-generated method stub
 		return extInfFactory.getInstrumentCommand().getPlateScale();
 	}
 
-	public void setBinning(int x, int y) throws CommandFailureException, CommunicationException {
+	public void setBinning(int x, int y) throws Exception {
 		// TODO Auto-generated method stub
 		extInfFactory.getInstrumentCommand().setBinning(x, y);
 	}
 
-	public int[][] getImage(double exposureTime, boolean useShutter) throws CommandFailureException, CommunicationException,
+	public int[][] getImage(double exposureTime, boolean useShutter) throws Exception,
 			TimeoutException {
 		// TODO Auto-generated method stub
 		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
