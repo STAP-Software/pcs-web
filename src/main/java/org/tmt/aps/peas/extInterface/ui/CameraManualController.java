@@ -389,7 +389,7 @@ public class CameraManualController implements Serializable {
 			e.printStackTrace();
 
 			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error" + e.getMessage()));
+			context.addMessage(null, new FacesMessage("Error: " + e.getClass().getName() + " " + e.getStackTrace()[0]));
 
 		}
 	}
