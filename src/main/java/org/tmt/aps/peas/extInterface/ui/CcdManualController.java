@@ -275,7 +275,7 @@ public class CcdManualController implements Serializable {
 
 			imageSize[0] = ccdMgmt.getImageWidth();
 			imageSize[1] = ccdMgmt.getImageHeight();
-			plateScale = ccdMgmt.getPlateScale();
+			//plateScale = ccdMgmt.getPlateScale();
 			
 			FacesContext context = FacesContext.getCurrentInstance();
 
