@@ -64,6 +64,10 @@ public class ProcedureType {
 		// TODO Auto-generated method stub
 		return procedureTypeId == PROCEDURE_TYPE_ID_PASSIVE_TILT;
 	}
+	public boolean isCenterTelescope() {
+		// TODO Auto-generated method stub
+		return procedureTypeId == PROCEDURE_TYPE_ID_CENTER_TELESCOPE;
+	}
 	
 	
 	

@@ -11,9 +11,11 @@
 
 		<p:spacer height="10px" />
 
-		<h:form id="frameViewerForm">
+		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{frameController.centroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{frameController.centroidYs}" />
+		</h:form>
+		<h:form id="frameViewerForm">
 
 			<p:panelGrid columns="3" styleClass="pcsExecutionPanel">
 
@@ -400,10 +402,26 @@
 
 
 			</p:panelGrid>
-		</h:form>
+			<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
+			
+		</h:form> 
 
 		<script>
 			//<![CDATA[
+			           
+     		function initCanvasEvents() {
+    			var canvas = document.getElementById("frameCanvas");
+    			canvas.addEventListener("mousedown", doMouseDown, false);
+    		}
+    		
+    		function doMouseDown(event) {  			
+    			var canvas = $('#frameCanvas');
+    			canvas_x = event.pageX - canvas.offset().left;
+    			canvas_y = event.pageY - canvas.offset().top;
+    			// call javascript function that is defined in <p:remote>
+    			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
+    		}
+			           
 
 			function markFrame() {
 				window.setTimeout("drawFrame2(true)", 100);
@@ -421,6 +439,8 @@
 
 				ctx.drawImage(img, 0, 0, c.width, c.height);
 
+				initCanvasEvents();
+				
 				if (mark)
 					markFrame2(ctx, img, c)
 			}
@@ -428,10 +448,10 @@
 			function markFrame2(ctx, img, c) {
 
 				var xField = document
-						.getElementById('frameViewerForm:centroidXs').value;
+						.getElementById('frameHiddenForm:centroidXs').value;
 				var xArray = xField.split(',');
 				var yField = document
-						.getElementById('frameViewerForm:centroidYs').value;
+						.getElementById('frameHiddenForm:centroidYs').value;
 				var yArray = yField.split(',');
 
 				for (var i = 0; i < xArray.length; i++) {
@@ -442,6 +462,8 @@
 					ctx.lineWidth = 2;
 					ctx.stroke();
 				}
+				initCanvasEvents();
+
 			}
 
 			//]]>

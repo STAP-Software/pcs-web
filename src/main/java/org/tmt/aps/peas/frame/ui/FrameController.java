@@ -26,6 +26,7 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -216,20 +217,6 @@ public class FrameController implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-
-		// TEST ONLY
-		StringBuffer xBuf = new StringBuffer();
-		StringBuffer yBuf = new StringBuffer();
-		for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
-			xBuf.append(Subimage.CPH_DEF_X_ARRAY[i] + ",");
-			yBuf.append(Subimage.CPH_DEF_Y_ARRAY[i] + ",");
-		}
-		xBuf.deleteCharAt(xBuf.length() - 1);
-		yBuf.deleteCharAt(yBuf.length() - 1);
-		
-		centroidXs = xBuf.toString();
-		centroidYs = yBuf.toString();
-
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
@@ -280,5 +267,17 @@ public class FrameController implements Serializable {
 
 		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
+	}
+	
+	public void doHandMark() {
+		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
+		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
+		
+		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
+		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+		// add to the centroid hidden form vars
+		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
+		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
+		
 	}
 }

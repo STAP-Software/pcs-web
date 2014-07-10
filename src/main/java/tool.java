@@ -27,7 +27,7 @@ public class tool {
 				if (type == 0) {
 					fAndIList.add(spotNum);
 				}
-				if (type == 1) {
+				if (type == 1 || type == 2) {
 					analList.add(spotNum);
 				}
 			}

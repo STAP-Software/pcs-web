@@ -45,6 +45,7 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
+import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -68,6 +69,8 @@ public class ProcedureController implements Serializable {
 	PassiveTiltExecutor passiveTiltExecutor;
 	@EJB
 	CreateRefMapExecutor createRefMapExecutor;
+	@EJB
+	CenterTelescopeExecutor centerTelescopeExecutor;
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
@@ -227,7 +230,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public List<FitsFilename> getAvailableFitsFiles() {
-		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles("PT");
+		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles(procedureType.getProcedureTypeCd());
 		logger.debug("FitsFileList size = " + fitsFileList.size());
 		return fitsFileList;
 	}
@@ -388,6 +391,8 @@ public class ProcedureController implements Serializable {
 			createRefMapExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedureType.isPassiveTilt()) {
 			passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedureType.isCenterTelescope()) {
+			centerTelescopeExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		}
 		
 		
@@ -448,7 +453,7 @@ public class ProcedureController implements Serializable {
 	
 	// ====================================================================================== //
 	//   Visualization Displays                                                               //
-	// ================================================================================	alert(xArray.length);====== //
+	// ====================================================================================== //
 	
 	public void doUpdateDisplays() {
 
