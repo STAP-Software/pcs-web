@@ -278,6 +278,5 @@ public class FrameController implements Serializable {
 		// add to the centroid hidden form vars
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
-		
 	}
 }

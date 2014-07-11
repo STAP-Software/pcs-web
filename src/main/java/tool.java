@@ -17,7 +17,7 @@ public class tool {
 		List<String> oneList = new ArrayList<String>();
 
 		try {
-			fis = new FileInputStream("/opt/apps/workspaces/peas-pcs/pcs-fortran-work/pcs_data/config/spot_flag_sufs_gp00.dat");
+			fis = new FileInputStream("/opt/apps/workspaces/peas-pcs/pcs-fortran-work/pcs_data/config/spot_flag_sufs_gp06.dat");
 			br = new BufferedReader(new InputStreamReader(fis));
 			
 			while ((line = br.readLine()) != null) {
@@ -27,7 +27,7 @@ public class tool {
 				if (type == 0) {
 					fAndIList.add(spotNum);
 				}
-				if (type == 1 || type == 2) {
+				if (type == 1 || type == 0) {
 					analList.add(spotNum);
 				}
 			}
