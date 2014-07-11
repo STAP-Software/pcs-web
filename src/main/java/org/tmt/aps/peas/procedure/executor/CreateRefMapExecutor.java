@@ -145,6 +145,8 @@ public class CreateRefMapExecutor {
 				wait(4670);
 
 				statusLogger.log("Calling Find and Identify ");
+				
+				statusLogger.log("FI Matchbox = " + procedure.getFiConfig().getMatchbox());
 				List<Point> subimageList = null;
 				
 				float centroids[][] = new float [36][2];

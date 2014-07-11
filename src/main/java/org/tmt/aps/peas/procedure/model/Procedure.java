@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,12 +20,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
-import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -114,6 +113,9 @@ public class Procedure {
 	@OneToMany (mappedBy="procedure")
 	List<ProcedureCcdFrame> procedureCcdFrameList;
 
+	@Transient
+	private FIConfig fiConfig;
+	
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
 	}
@@ -264,8 +266,14 @@ public class Procedure {
 		this.procedureCcdFrameList = procedureCcdFrameList;
 	}
 
-	
-	
+	public FIConfig getFiConfig() {
+		return fiConfig;
+	}
+
+	public void setFiConfig(FIConfig fiConfig) {
+		this.fiConfig = fiConfig;
+	}
+
 	public String getProcedureStateDisplayString() {
 
 		switch (procedureState) {

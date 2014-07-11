@@ -33,6 +33,8 @@ import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -79,6 +81,8 @@ public class ProcedureController implements Serializable {
 	FrameSimulator frameSimulator;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
+	@EJB
+	GlobalConfigMgmt globalConfigMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -359,6 +363,11 @@ public class ProcedureController implements Serializable {
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
+		
+		// add the FIConfig for the procedure
+		FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
+				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		procedure.setFiConfig(fiConfig);
 
 		procedureExecutionState.init(procedure);
 

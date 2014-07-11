@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 
 @Stateless
@@ -32,4 +33,14 @@ public class GlobalConfigMgmt {
 		return query.getSingleResult();
 	}
 
+	public FIConfig findFIConfig(Long instrumentId, Long pupilMaskTypeId) {
+		TypedQuery<FIConfig> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfig.class);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("instrumentId", instrumentId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();
+
+	}
 }
