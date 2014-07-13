@@ -178,8 +178,8 @@
 
 					<p:menubar>
 
-						<p:submenu label="File" icon="ui-icon-disk">
-							<p:menuitem value="Save" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
+						<p:submenu label="File" icon="ui-icon-disk"> 
+							<p:menuitem value="Save" ajax="false" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" />
 						</p:submenu>
 						<p:submenu label="Display" icon="ui-icon-image">
 							<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />

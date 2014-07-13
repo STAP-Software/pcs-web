@@ -26,19 +26,17 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 
 @Named
 @SessionScoped
@@ -53,6 +51,8 @@ public class FrameController implements Serializable {
 
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	PhysicalModel physicalModel;
 
 	private TreeNode sessionRoot;
 	private TreeNode typeRoot;
@@ -62,6 +62,9 @@ public class FrameController implements Serializable {
 	private int searchRadius;
 	private String centroidXs;
 	private String centroidYs;
+	
+	private CcdFrame ccdFrame;
+	private boolean allowFrameSave = false;
 
 	Map<String, List<FitsFilename>> type2Fits;
 
@@ -127,6 +130,9 @@ public class FrameController implements Serializable {
 			allFitsFiles.addAll(type2Fits.get(key));
 		}
 		return allFitsFiles;
+	}
+	public boolean isSaveAllowed() {
+		return allowFrameSave;
 	}
 
 	@PostConstruct
@@ -225,11 +231,14 @@ public class FrameController implements Serializable {
 
 			FrameTreeElement selectedElement = (FrameTreeElement) event.getTreeNode().getData();
 
-			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(selectedElement.getFileName());
+			ccdFrame = frameMgmt.loadFitsFrame(selectedElement.getFileName());
 
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 
 			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+			
+			// do not save files from selected nodes
+			allowFrameSave = false;
 
 		} catch (Exception e) {
 
@@ -260,13 +269,14 @@ public class FrameController implements Serializable {
 
 	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
 
-		CcdFrame ccdFrame = new CcdFrame();
+		ccdFrame = new CcdFrame();
 		ccdFrame.setRawFrame(rawFrame);
 
 		byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, false);
 
 		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
+		allowFrameSave = true;
 	}
 	
 	public void doHandMark() {
@@ -278,5 +288,35 @@ public class FrameController implements Serializable {
 		// add to the centroid hidden form vars
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
+	}
+	
+	public void doSaveFrame() {
+		
+		try {
+			
+			String newName = new FitsFilename(physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), 
+					0).generateFileName();
+			
+			// determine 'iteration' number if multiple frames of this mask taken today
+			int iterationNumber = frameMgmt.findMatchingFitsFiles(newName.substring(0, newName.length()-8) + "*").size();
+			
+			FitsFilename fitsFilename = new FitsFilename(physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), 
+					iterationNumber);
+			
+			ccdFrame.setFitsFilename(fitsFilename.generateFileName());
+			frameMgmt.saveFitsFrame(ccdFrame);
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Successfully saved frame", ""));
+			
+			// update tree list
+			init();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error saving frame", e.getMessage()));
+		}
 	}
 }

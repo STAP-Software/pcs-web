@@ -10,6 +10,8 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
+
 public class FitsFilename {
 
 	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMMyy");
@@ -38,6 +40,22 @@ public class FitsFilename {
 		
 		this.fileName = generateFileName();
 	}
+	
+	// constructor for ad-hoc files
+	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration) {
+		
+		this.telescope = (int)telescopeId.longValue();
+		this.date = new Date();
+		this.procedureTypeCd = pupilMaskType.getPupilMaskTypeName();
+		this.procedureNumber = 0;
+		this.iteration = iteration;
+		this.ufsSegment = 0;
+		this.sufsGroup = 0;
+		this.phasingStep = 0;
+		
+		this.fileName = generateFileName();
+	}
+
 	
 	public FitsFilename(String fitsFileName) {
 

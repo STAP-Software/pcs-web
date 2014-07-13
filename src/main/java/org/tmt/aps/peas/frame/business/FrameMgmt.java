@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.frame.business;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,6 +27,7 @@ import nom.tam.fits.PrimaryHDU;
 import nom.tam.util.BufferedDataOutputStream;
 
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
@@ -179,6 +181,35 @@ public class FrameMgmt {
 
 		return fitsFileList;
 	}
+	
+	public List<FitsFilename> findMatchingFitsFiles(String filter) throws Exception {
+
+		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
+
+		logger.debug("frame folder = " + frameFolder);
+
+		// read in and parse each frame and build up
+		File folder = new File(frameFolder);
+
+		List<FitsFilename> fitsFileList = new ArrayList<FitsFilename>();
+
+		FileFilter fileFilter = new WildcardFileFilter(filter);
+		
+		for (File fileEntry : folder.listFiles(fileFilter)) {
+
+			String filename = fileEntry.getName();
+			
+			if (filename.toLowerCase().endsWith(".fts")) {
+
+				FitsFilename fitsFile = new FitsFilename(filename);
+
+				fitsFileList.add(fitsFile);
+				
+			}
+		}
+
+		return fitsFileList;
+	}
 
 	public CcdFrame loadFitsFrame(InputStream is, String filename) throws Exception {
 		Fits fitsFile = new Fits(is);
@@ -243,27 +274,28 @@ public class FrameMgmt {
 				Header header = hdu.getHeader();
 
 				logger.debug("header = " + header);
-
 			}
 
 		}
 		return fb;
 	}
 
-	// FIXME: built without an example. This may not work
 	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {
+		
+		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 
-		Fits myFits;
+		System.out.println("ccdFrame = " + ccdFrame);
+		String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
+
 		// First create a null FITS object.
-		myFits = new Fits();
+		Fits myFits = new Fits();
 
 		// Now create three extensions.
 		myFits.addHDU(HDU.create(ccdFrame.getRawFrame()));
 
-		java.io.FileOutputStream fo = new java.io.FileOutputStream(ccdFrame.getFitsFilename());
+		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
 		myFits.write(o);
-
 	}
 
 	public byte[] loadPng(CcdFrame ccdFrame, boolean writeToFile) {
