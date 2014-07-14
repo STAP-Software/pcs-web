@@ -317,7 +317,7 @@ public class ProcedureController implements Serializable {
 					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
 
 			procedure.setProcedureConfig(procedureConfig);
-
+			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 			// add it to the session and give it a procedure number
@@ -353,7 +353,7 @@ public class ProcedureController implements Serializable {
 	//public void doExecuteProcedure(ActionEvent actionEvent) {
 	public void doExecuteProcedure() {
 
-		logger.debug(" ###############################  doExecuteProcedure:: starting");
+		logger.debug(" ###############################  doExecuteProcedure:: starting: ");
 
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
