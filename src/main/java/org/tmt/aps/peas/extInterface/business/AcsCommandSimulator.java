@@ -26,7 +26,7 @@ public class AcsCommandSimulator implements AcsCommand {
 
 	public double getMirrTemp() 
 			throws CommunicationException, CommandFailureException {
-		return 45.2;
+		return 0.2;
 	}
 
 	public boolean isRunning() 
@@ -36,7 +36,7 @@ public class AcsCommandSimulator implements AcsCommand {
 	
 	public double getRMSActuMove() 
 			throws CommunicationException, CommandFailureException {
-		return 0.00342;
+		return 2.2;
 	}
 
 	public int takeSnap() 
