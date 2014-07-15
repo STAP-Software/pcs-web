@@ -141,18 +141,22 @@ public class CenterTelescopeExecutor {
 				// tell the async controller to update the frame
 				frameDisplayMgmt.displayFrame();
 				
-				wait(4670);
+				frameDisplayMgmt.setPendingMarkAction(true);
+				// wait for user to mark frame
+				while (frameDisplayMgmt.getPendingMarkAction()) {
+					Thread.sleep(500);
+				}
 
 				List<Point> subimageList = null;
 				
-				float centroids[][] = new float [36][2];
+				float centroids[][] = new float [1][2];
 				//computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
-				for (int j=0;j<36;j++) {
+				for (int j=0;j<1;j++) {
 					statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
 				}
 				
 				// TODO: this is where we display the marked frame
-				frameDisplayMgmt.displayMarkedFrame();
+				//frameDisplayMgmt.displayMarkedFrame();
 
 				wait(2000);
 				

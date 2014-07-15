@@ -23,11 +23,13 @@ public class FrameDisplayMgmt implements Serializable {
 
 	private boolean pendingDisplay;
 	private boolean pendingMarkedDisplay;
+	private boolean pendingMarkAction;
 
 	@PostConstruct
 	public void init() {
 		pendingDisplay = false;
 		pendingMarkedDisplay = false;
+		pendingMarkAction = false;
 	}
 	
 	@Lock(LockType.READ)
@@ -40,7 +42,11 @@ public class FrameDisplayMgmt implements Serializable {
 		return pendingMarkedDisplay;
 	}
 
-
+	@Lock(LockType.READ)
+	public boolean getPendingMarkAction() {
+		return pendingMarkAction;
+	}
+	
 	public void displayFrame() {
 		pendingDisplay = true;
 		
@@ -60,6 +66,9 @@ public class FrameDisplayMgmt implements Serializable {
 		pendingMarkedDisplay = b;
 	}
 	
+	public void setPendingMarkAction(boolean b) {
+		pendingMarkAction = b;
+	}
 
 
 }

@@ -37,6 +37,7 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
+import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -75,6 +76,8 @@ public class ProcedureController implements Serializable {
 	CenterTelescopeExecutor centerTelescopeExecutor;
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
 	CameraDefMgmt cameraDefMgmt;
 	@EJB
@@ -365,9 +368,11 @@ public class ProcedureController implements Serializable {
 		procedure.setTelescope(sessionController.getTelescope());
 		
 		// add the FIConfig for the procedure
-		FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+			FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-		procedure.setFiConfig(fiConfig);
+			procedure.setFiConfig(fiConfig);
+		}
 
 		procedureExecutionState.init(procedure);
 
@@ -515,5 +520,27 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	public void doHandMark() {
+		
+		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
+		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
+		
+		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
+		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+		// add to the centroid hidden form vars
+		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
+		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
+	
+	}
+	
+	public void doApplyMarking() {
+		// TODO: put this in the action for the apply marking on the frame
+		frameDisplayMgmt.setPendingMarkAction(false);
+	}
+	
+	public void doResetMarking() {
+		centroidXs = null;
+		centroidYs = null;
+	}
 	
 }

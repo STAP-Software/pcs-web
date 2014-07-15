@@ -69,6 +69,9 @@ public class AsyncController {
 		frameDisplayMgmt.setPendingMarkedDisplay(false);
 	}
 
+	public boolean getFrameMarkActionPending() {
+		return frameDisplayMgmt.getPendingMarkAction();
+	}
 
 
 	public void asyncListener() {
