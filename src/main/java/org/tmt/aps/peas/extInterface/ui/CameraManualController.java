@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
+import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -197,14 +198,23 @@ public class CameraManualController implements Serializable {
 			switch (commandSelection) {
 
 			case 1: // Pupil Mask
-				int maskNumber = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
+				Future<Integer> pupilCmdFuture = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
+				while (!pupilCmdFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				int maskNumber = pupilCmdFuture.get();
+				
 				// update position
 				camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
 				camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
 				break;
 
 			case 2: // Filter
-				int filterNumber = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
+				Future<Integer> filterCmdFuture = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
+				while (!filterCmdFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				int filterNumber = filterCmdFuture.get(); 
 				// update position
 				camera.getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
 				camera.getFilterWheel().setSelectedFilterNumber(filterNumber);
@@ -231,8 +241,13 @@ public class CameraManualController implements Serializable {
 				break;
 
 			case 5: // Fine Tilt
-				Point fineResult = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
-
+				
+				Future<Point> fineFuture = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
+				while (!fineFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				Point fineResult = fineFuture.get();
+				
 				camera.getFineTiltMirror().setCurrentPosition(fineResult);
 
 				camera.getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
@@ -240,7 +255,11 @@ public class CameraManualController implements Serializable {
 				break;
 
 			case 6: // Coarse Tilt
-				Point coarseResult = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
+				Future<Point> coarseFuture = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
+				while (!coarseFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				Point coarseResult = coarseFuture.get();
 
 				camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
 
@@ -249,17 +268,15 @@ public class CameraManualController implements Serializable {
 				break;
 
 			case 7: // Two Position Mech
-				if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) {
-					int twoPosState = cameraMgmt.commandTwoPositionDevice(1);
-					camera.getTwoPosMechanism().setState(
-							twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-
-				} else if (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT) {
-					int twoPosState = cameraMgmt.commandTwoPositionDevice(0);
-					camera.getTwoPosMechanism().setState(
-							twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-
+				int command = (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) ? 1 : 0;
+				Future<Integer> twoPosFuture = cameraMgmt.commandTwoPositionDevice(command);
+				while (!twoPosFuture.isDone()) {
+					Thread.sleep(500);
 				}
+				int twoPosState = twoPosFuture.get();
+				camera.getTwoPosMechanism().setState(
+						twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+
 				break;
 
 			case 8: // CCD Power
@@ -269,7 +286,7 @@ public class CameraManualController implements Serializable {
 					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
 
 				} else if (ccdPowerCmd == Ccd.POWER_STATE_OFF) {
-					int ccdState = cameraMgmt.commandTwoPositionDevice(0);
+					int ccdState = cameraMgmt.commandCcdPowerState(0);
 					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
 
 				}

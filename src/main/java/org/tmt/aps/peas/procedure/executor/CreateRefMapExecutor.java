@@ -27,7 +27,6 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
-import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -115,23 +114,36 @@ public class CreateRefMapExecutor {
 				// TODO: implement
 				// autoPointTelescope();
 
-				//cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
+				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
 
-				//cameraMgmt.commandFilter(procedureConfig.getFilter());
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter());
 
 				// TODO: implement
 				// autoRefmapCheck();
 
+				Future<Point> coarseFuture = cameraMgmt.commandCoarseTiltMirror(new Point(0,0));
+				Future<Point> fineFuture = cameraMgmt.commandFineTiltMirror(new Point(0,0));
+				
 				//cameraMgmt.readyCamera();
 
 				//cameraMgmt.selectRefBeam(); // check if this is a command or something else
 
 				// FIXME
-				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
+				// cameraMgmt.cameraCommand("45E"); //extend two position mirror, for ref map is this retract??
+				
+				// wait for 
+				while (!pupilMaskCommandFuture.isDone() || !filterCommandFuture.isDone()) {
+					// wait and try again
+					Thread.sleep(500);
 				}
+				while (!coarseFuture.isDone() || !fineFuture.isDone()) {
+					// wait and try again
+					Thread.sleep(500);
+				}
+			}
 	
-				statusLogger.log("Current frame being used for test ");
-				statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
+			statusLogger.log("Current frame being used for test ");
+			statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
 		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 

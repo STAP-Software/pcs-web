@@ -6,15 +6,16 @@
 package org.tmt.aps.peas.extInterface.business;
 
 
+import java.util.concurrent.Future;
+
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
-import org.tmt.aps.peas.extinf.CommandFailureException;
-import org.tmt.aps.peas.extinf.CommunicationException;
-import org.tmt.aps.peas.extinf.TimeoutException;
 
 @Stateless
 public class CameraMgmt {
@@ -31,8 +32,10 @@ public class CameraMgmt {
 		return extInfFactory.getCameraCommand().queryCamera(deviceCode);
 	}
 
-	public int commandPupilMask(int pupilMaskPosition) throws Exception {
-		return extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);
+	@Asynchronous
+	public Future<Integer> commandPupilMask(int pupilMaskPosition) throws Exception {
+		int result = extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);
+		return new AsyncResult<Integer>(result);
 	}
 
 	/**
@@ -41,9 +44,11 @@ public class CameraMgmt {
 	 * @param filterWheelPosition filter wheel position	1-6	
 	 * @return achieved Filter Wheel Position 
 	 */
-	public int commandFilterWheel(int filterWheelPosition) throws Exception {
+	@Asynchronous
+	public Future<Integer> commandFilterWheel(int filterWheelPosition) throws Exception {
 		logger.info("camera command = " + extInfFactory.getCameraCommand());
-		return extInfFactory.getCameraCommand().commandFilterWheel(filterWheelPosition);
+		int result = extInfFactory.getCameraCommand().commandFilterWheel(filterWheelPosition);
+		return new AsyncResult<Integer>(result);
 	}
 		
 	/**
@@ -52,9 +57,11 @@ public class CameraMgmt {
 	 * @param twoPositionDevicePosition Desired mechanism position (0 = retracted,1=extended)	0 or 1		
 	 * @return achieved Two Position Device Position (0 = retracted,1=extended)
 	 */
-	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws Exception {
+	@Asynchronous
+	public Future<Integer> commandTwoPositionDevice(int twoPositionDevicePosition) throws Exception {
 		logger.info("commandTwoPositionDevice: command is: " + twoPositionDevicePosition);
-		return extInfFactory.getCameraCommand().commandTwoPositionDevice(twoPositionDevicePosition);
+		int result = extInfFactory.getCameraCommand().commandTwoPositionDevice(twoPositionDevicePosition);
+		return new AsyncResult<Integer>(result);
 	}
 	
 	/**
@@ -97,27 +104,56 @@ public class CameraMgmt {
 	 */
 	public int commandCcdPowerState(int ccdPowerState)  throws Exception {
 		return extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
+	}				
+
+	@Asynchronous
+	public Future<Point> commandFineTiltMirror(Point fineTiltCmd) throws Exception {
+		Future<Integer> xFuture = commandFineTiltMirrorX((int)fineTiltCmd.x);
+		Future<Integer> yFuture = commandFineTiltMirrorY((int)fineTiltCmd.y);
+		
+		while (!xFuture.isDone() || !yFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Point result = new Point(xFuture.get(), yFuture.get());	
+		return new AsyncResult<Point>(result);
 	}
-
-							
-
-	public Point commandFineTiltMirror(Point fineTiltCmd) throws Exception {
-		int xValue = extInfFactory.getCameraCommand().commandXTiltPlate((int)fineTiltCmd.x);
-		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate((int)fineTiltCmd.y);
-		
-		return new Point(xValue, yValue);
-		
+	
+	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorX(int cmd) throws Exception {
+		int xValue = extInfFactory.getCameraCommand().commandXTiltPlate(cmd);
+		return new AsyncResult<Integer>(xValue);
 	}
-
-	public Point commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
-		int xValue = extInfFactory.getCameraCommand().commandXSteeringMirror((int)coarseTiltCmd.x);
-		int yValue = extInfFactory.getCameraCommand().commandYSteeringMirror((int)coarseTiltCmd.y);
-		
-		return new Point(xValue, yValue);
-		
+	
+	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorY(int cmd) throws Exception {
+		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate(cmd);
+		return new AsyncResult<Integer>(yValue);
 	}
 	
 	
+	@Asynchronous
+	public Future<Point> commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
+		Future<Integer> xFuture = commandCoarseTiltMirrorX((int)coarseTiltCmd.x);
+		Future<Integer> yFuture = commandCoarseTiltMirrorY((int)coarseTiltCmd.y);
+		
+		while (!xFuture.isDone() || !yFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Point result = new Point(xFuture.get(), yFuture.get());	
+		return new AsyncResult<Point>(result);
+	}
+	
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorX(int cmd) throws Exception {
+		int xValue = extInfFactory.getCameraCommand().commandXSteeringMirror(cmd);
+		return new AsyncResult<Integer>(xValue);
+	}
+	
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorY(int cmd) throws Exception {
+		int yValue = extInfFactory.getCameraCommand().commandYSteeringMirror(cmd);
+		return new AsyncResult<Integer>(yValue);
+	}
 
 
 }

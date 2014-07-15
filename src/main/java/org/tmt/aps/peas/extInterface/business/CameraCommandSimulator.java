@@ -52,24 +52,44 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return pupilMaskPosition;
 	}
 
 	@Override
 	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return filterWheelPosition;
 	}
 
 	@Override
 	public int commandXTiltPlate(int xTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(10000);
+		} catch (Exception e) {
+			
+		}
 		return xTiltPlatePosition;
 	}
 
 	@Override
 	public int commandYTiltPlate(int yTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return yTiltPlatePosition;
 	}
 
@@ -77,12 +97,22 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandTwoPositionDevice(int twoPositionDevicePosition) throws CommunicationException, TimeoutException,
 			CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return twoPositionDevicePosition;
 	}
 
 	@Override
 	public void commandCcdShutterExposure(int ccdExposureTime) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(ccdExposureTime * 1000);
+		} catch (Exception e) {
+			
+		}
 		
 	}
 
@@ -95,6 +125,11 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public void commandReferenceBeamState(int referenceBeamCommand) throws CommunicationException, TimeoutException,
 			CommandFailureException {
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		// TODO Auto-generated method stub
 		
 	}
@@ -102,18 +137,33 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public int commandCcdPowerState(int ccdPowerState) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return ccdPowerState;
 	}
 
 	@Override
 	public int commandXSteeringMirror(int xSteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return xSteeringMirrorPosition;
 	}
 
 	@Override
 	public int commandYSteeringMirror(int ySteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
+		try {
+			Thread.sleep(750);
+		} catch (Exception e) {
+			
+		}
 		return ySteeringMirrorPosition;
 	}
 

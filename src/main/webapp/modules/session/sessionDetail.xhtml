@@ -21,17 +21,12 @@
 						<p:panelGrid columns="2" styleClass="btmsForm"
 							columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+							<h:outputLabel value="Observers" />
+							<p:inputTextarea value="#{sessionController.session.observers}"
+								rows="1" cols="30" />
 							<h:outputLabel value="Description" />
 							<p:inputTextarea value="#{sessionController.session.description}"
 								rows="5" cols="100" />
-
-						</p:panelGrid>
-						<p:panelGrid columns="2" styleClass="btmsForm"
-							columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-							<h:outputLabel value="Observers" />
-							<p:inputTextarea value="#{sessionController.session.observers}"
-								rows="2" cols="70" />
 
 						</p:panelGrid>
 
