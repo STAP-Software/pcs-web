@@ -130,6 +130,7 @@ public class CameraMgmt {
 	
 	@Asynchronous
 	public Future<Integer> commandFineTiltMirrorY(int cmd) throws Exception {
+		System.out.println("commandFineTiltMirrorY: cmd = " + cmd);
 		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate(cmd);
 		return new AsyncResult<Integer>(yValue);
 	}
