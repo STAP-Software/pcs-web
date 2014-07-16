@@ -53,7 +53,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		try {
-			Thread.sleep(750);
+			Thread.sleep(10000);
 		} catch (Exception e) {
 			
 		}
@@ -86,7 +86,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandYTiltPlate(int yTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		try {
-			Thread.sleep(750);
+			Thread.sleep(10000);
 		} catch (Exception e) {
 			
 		}

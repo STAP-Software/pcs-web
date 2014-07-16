@@ -18,14 +18,12 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 
 @Stateless
-public class CameraMgmt {
+public class CameraMgmtAsync {
 
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	@EJB
 	ExtInfFactory extInfFactory;
-	@EJB
-	CameraMgmtAsync cameraMgmtAsync;
 
 	// All Camera Commands should be defined here
 
@@ -115,19 +113,26 @@ public class CameraMgmt {
 	@Asynchronous
 	public Future<Point> commandFineTiltMirror(Point fineTiltCmd) throws Exception {
 		
+		Point result = notAsync(fineTiltCmd);
+		
+		return new AsyncResult<Point>(result);
+	}
+	
+	public Point notAsync(Point fineTiltCmd) throws Exception {
+		
 		System.out.println("about to call commandFineTiltMirrorX");
-		Future<Integer> xFuture = cameraMgmtAsync.commandFineTiltMirrorX(fineTiltCmd.x);
+		Future<Integer> xFuture = commandFineTiltMirrorX(fineTiltCmd.x);
 		System.out.println("commandFineTiltMirrorX = " + fineTiltCmd.x);
-		Future<Integer> yFuture = cameraMgmtAsync.commandFineTiltMirrorY(fineTiltCmd.y);
+		Future<Integer> yFuture = commandFineTiltMirrorY(fineTiltCmd.y);
 		System.out.println("commandFineTiltMirrorY = " + fineTiltCmd.y);
 		
 		while (!xFuture.isDone() || !yFuture.isDone()) {
 			Thread.sleep(300);
 		}
 		Point result = new Point(xFuture.get(), yFuture.get());	
-		return new AsyncResult<Point>(result);
+		return result;
+		
 	}
-	
 	
 	@Asynchronous
 	public Future<Integer> commandFineTiltMirrorX(int cmd) throws Exception {
