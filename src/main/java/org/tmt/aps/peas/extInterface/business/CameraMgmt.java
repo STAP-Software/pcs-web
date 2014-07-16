@@ -115,38 +115,21 @@ public class CameraMgmt {
 	@Asynchronous
 	public Future<Point> commandFineTiltMirror(Point fineTiltCmd) throws Exception {
 		
-		System.out.println("about to call commandFineTiltMirrorX");
 		Future<Integer> xFuture = cameraMgmtAsync.commandFineTiltMirrorX(fineTiltCmd.x);
-		System.out.println("commandFineTiltMirrorX = " + fineTiltCmd.x);
 		Future<Integer> yFuture = cameraMgmtAsync.commandFineTiltMirrorY(fineTiltCmd.y);
-		System.out.println("commandFineTiltMirrorY = " + fineTiltCmd.y);
 		
 		while (!xFuture.isDone() || !yFuture.isDone()) {
 			Thread.sleep(300);
 		}
 		Point result = new Point(xFuture.get(), yFuture.get());	
 		return new AsyncResult<Point>(result);
-	}
-	
-	
-	@Asynchronous
-	public Future<Integer> commandFineTiltMirrorX(int cmd) throws Exception {
-		int xValue = extInfFactory.getCameraCommand().commandXTiltPlate(cmd);
-		return new AsyncResult<Integer>(xValue);
-	}
-	
-	@Asynchronous
-	public Future<Integer> commandFineTiltMirrorY(int cmd) throws Exception {
-		System.out.println("commandFineTiltMirrorY: cmd = " + cmd);
-		int yValue = extInfFactory.getCameraCommand().commandYTiltPlate(cmd);
-		return new AsyncResult<Integer>(yValue);
 	}
 	
 	
 	@Asynchronous
 	public Future<Point> commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
-		Future<Integer> xFuture = commandCoarseTiltMirrorX((int)coarseTiltCmd.x);
-		Future<Integer> yFuture = commandCoarseTiltMirrorY((int)coarseTiltCmd.y);
+		Future<Integer> xFuture = cameraMgmtAsync.commandCoarseTiltMirrorX((int)coarseTiltCmd.x);
+		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int)coarseTiltCmd.y);
 		
 		while (!xFuture.isDone() || !yFuture.isDone()) {
 			Thread.sleep(300);
@@ -155,17 +138,7 @@ public class CameraMgmt {
 		return new AsyncResult<Point>(result);
 	}
 	
-	@Asynchronous
-	public Future<Integer> commandCoarseTiltMirrorX(int cmd) throws Exception {
-		int xValue = extInfFactory.getCameraCommand().commandXSteeringMirror(cmd);
-		return new AsyncResult<Integer>(xValue);
-	}
-	
-	@Asynchronous
-	public Future<Integer> commandCoarseTiltMirrorY(int cmd) throws Exception {
-		int yValue = extInfFactory.getCameraCommand().commandYSteeringMirror(cmd);
-		return new AsyncResult<Integer>(yValue);
-	}
+
 
 
 }
