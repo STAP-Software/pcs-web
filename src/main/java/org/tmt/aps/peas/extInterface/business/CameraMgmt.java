@@ -37,7 +37,7 @@ public class CameraMgmt {
 		System.out.println("in commandPupilMask");
 		int result = extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);
 		System.out.println("returning");
-		AsyncResult as = new AsyncResult<Integer>(result);
+		AsyncResult<Integer> as = new AsyncResult<Integer>(result);
 		System.out.println("completed");
 		return as;
 	}
