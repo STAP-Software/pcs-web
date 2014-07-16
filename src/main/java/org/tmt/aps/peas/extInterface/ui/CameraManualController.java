@@ -200,8 +200,10 @@ public class CameraManualController implements Serializable {
 			case 1: // Pupil Mask
 				Future<Integer> pupilCmdFuture = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
 				while (!pupilCmdFuture.isDone()) {
+					System.out.println("Thread waiting");
 					Thread.sleep(500);
 				}
+				System.out.println("PupilCmdFuture is Done");
 				int maskNumber = pupilCmdFuture.get();
 				
 				// update position
@@ -296,6 +298,7 @@ public class CameraManualController implements Serializable {
 
 			}
 
+			System.out.println("Returning");
 			FacesContext context = FacesContext.getCurrentInstance();
 
 			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
@@ -313,6 +316,7 @@ public class CameraManualController implements Serializable {
 			context.addMessage(null, new FacesMessage("Error: " + e.getMessage() + e.getClass().getName() + " " + e.getStackTrace()[0]));
 
 		}
+		
 	}
 
 	public void doRefresh() {
