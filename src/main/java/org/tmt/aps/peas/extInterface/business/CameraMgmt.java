@@ -34,8 +34,12 @@ public class CameraMgmt {
 
 	@Asynchronous
 	public Future<Integer> commandPupilMask(int pupilMaskPosition) throws Exception {
+		System.out.println("in commandPupilMask");
 		int result = extInfFactory.getCameraCommand().commandPupilMask(pupilMaskPosition);
-		return new AsyncResult<Integer>(result);
+		System.out.println("returning");
+		AsyncResult as = new AsyncResult<Integer>(result);
+		System.out.println("completed");
+		return as;
 	}
 
 	/**
