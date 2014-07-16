@@ -321,6 +321,9 @@ public class ProcedureController implements Serializable {
 
 			procedure.setProcedureConfig(procedureConfig);
 			
+			// TODO: default mask type per procedure
+			
+			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 			// add it to the session and give it a procedure number
