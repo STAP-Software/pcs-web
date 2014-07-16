@@ -112,9 +112,10 @@ public class CameraMgmt {
 
 	@Asynchronous
 	public Future<Point> commandFineTiltMirror(Point fineTiltCmd) throws Exception {
-		Future<Integer> xFuture = commandFineTiltMirrorX((int)Math.round(fineTiltCmd.x));
-		System.out.println("commandFineTiltMirrorX = " + (int)Math.round(fineTiltCmd.x));
-		Future<Integer> yFuture = commandFineTiltMirrorY((int)Math.round(fineTiltCmd.y));
+		Future<Integer> xFuture = commandFineTiltMirrorX(fineTiltCmd.x);
+		System.out.println("commandFineTiltMirrorX = " + fineTiltCmd.x);
+		Future<Integer> yFuture = commandFineTiltMirrorY(fineTiltCmd.y);
+		System.out.println("commandFineTiltMirrorY = " + fineTiltCmd.y);
 		
 		while (!xFuture.isDone() || !yFuture.isDone()) {
 			Thread.sleep(300);
