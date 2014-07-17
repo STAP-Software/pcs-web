@@ -45,6 +45,8 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
@@ -316,24 +318,36 @@ public class ProcedureController implements Serializable {
 		try {
 			procedure = new Procedure();
 
+			// get the procedure type object
+			procedureType = procedureMgmt.findProcedureType(procedureTypeId);
+			procedure.setProcedureType(procedureType);
+			
+			sessionController.setCurrentProcedureTypeId(procedureTypeId);
+
 			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(),
 					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
 
+			// get the default mask, if it is installed on the wheel
+			PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureType.getDefaultPupilMaskType().getPupilMaskTypeId(), 
+					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+			
+			procedureConfig.setPupilMask(defaultMask);
+			
+			// get the filter to default to if it exists
+			Filter defaultFilter = cameraDefMgmt.getFilterByWavelengthAndWheel(procedureConfig.getFilterType(), 
+					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+			
+			procedureConfig.setFilter(defaultFilter);
+			
 			procedure.setProcedureConfig(procedureConfig);
-			
-			// TODO: default mask type per procedure
-			
+						
 			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
-			// get the procedure type object
-			procedureType = procedureMgmt.findProcedureType(procedureTypeId);
-			procedure.setProcedureType(procedureType);
-			
-			sessionController.setCurrentProcedureTypeId(procedureTypeId);
+			logger.info("default mask = " + defaultMask);
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -346,7 +360,6 @@ public class ProcedureController implements Serializable {
 					new FacesMessage("Error Initializing Procedure, check log files for details"));
 			return null;
 		}
-
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
@@ -394,7 +407,7 @@ public class ProcedureController implements Serializable {
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
-		if (procedureType.isPassiveTilt() && procedure.getProcedureConfig().getFilter() != 611) {
+		if (procedureType.isPassiveTilt() && procedure.getProcedureConfig().getFilter().getWavelength() == 611.0) {
 			
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));

@@ -22,6 +22,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -30,9 +31,9 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "ProcedureConfig")
 @NamedQueries({
 		@NamedQuery(name = "findAllProcedureConfigs", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-				+ "INNER JOIN FETCH p.procedureType "),
+				+ "INNER JOIN FETCH p.procedureType"),
 		@NamedQuery(name = "findDefaultProcedureConfig", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope tel INNER JOIN FETCH p.instrument inst "
-				+ "INNER JOIN FETCH p.procedureType pt "
+				+ "INNER JOIN FETCH p.procedureType pt  "
 				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId AND defaultFlg = TRUE "
 				+ "ORDER BY p.updateDate desc ")
 
@@ -52,9 +53,12 @@ public class ProcedureConfig {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateDate;
 
-	private int filter;
 	@Transient
 	private PupilMask pupilMask;  // TODO: make this non-transient
+	@Transient
+	Filter filter;
+	
+	private int filterType;
 	
 	private float integrationTime;
 	@Column(name="numTrials")
@@ -65,6 +69,7 @@ public class ProcedureConfig {
 	private Integer sufsGroup;
 	
 	private Integer calculationOptions; // nullable
+
 
 	@Column(name="imageScaleRotationRemoval")
 	private int frameScaleRotationRemoval;
@@ -90,11 +95,20 @@ public class ProcedureConfig {
 	@JoinColumn(name = "procedureTypeId")
 	ProcedureType procedureType;
 
-	public int getFilter() {
+	
+	public int getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(int filterType) {
+		this.filterType = filterType;
+	}
+
+	public Filter getFilter() {
 		return filter;
 	}
 
-	public void setFilter(int filter) {
+	public void setFilter(Filter filter) {
 		this.filter = filter;
 	}
 

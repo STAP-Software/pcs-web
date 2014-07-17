@@ -31,7 +31,11 @@ public class ProcedureMgmt {
 	}
 
 	public ProcedureType findProcedureType(Long procedureTypeId) {
-		return em.find(ProcedureType.class, procedureTypeId);
+		TypedQuery<ProcedureType> query = em.createNamedQuery("findProcedureType", ProcedureType.class);
+		query.setParameter("procedureTypeId", procedureTypeId);
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();
 	}
 	
 	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {

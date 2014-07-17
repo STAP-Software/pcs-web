@@ -114,9 +114,9 @@ public class CreateRefMapExecutor {
 				// TODO: implement
 				// autoPointTelescope();
 
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
+				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
 
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter());
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
 				// TODO: implement
 				// autoRefmapCheck();

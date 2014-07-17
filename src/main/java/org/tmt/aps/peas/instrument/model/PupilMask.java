@@ -22,7 +22,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "PupilMask")
 @NamedQueries({
-	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType" )
+	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType" ),
+	@NamedQuery(name = "findByPupilMaskTypeAndWheel", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType t INNER JOIN FETCH o.pupilWheel pw "
+			+ "WHERE t.pupilMaskTypeId = :pupilMaskTypeId and pw.pupilWheelId = :pupilWheelId" )
 })
 public class PupilMask {
 
@@ -160,6 +162,8 @@ public class PupilMask {
 		return false;
 	}
 
-	
+	public String toString() {
+		return "Pupil Mask: " + maskName;
+	}
 	
 }

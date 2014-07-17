@@ -110,35 +110,71 @@ public class CameraDefMgmt {
 	}
 
 	public void createSufsGroup(SufsGroup sufsGroup) {
-		
+
 		em.persist(sufsGroup);
 
 	}
-	
+
 	public void updateSufsGroup(SufsGroup sufsGroup) {
-		
+
 		em.merge(sufsGroup);
 
 	}
-	
+
 	public List<SufsGroup> findSufsGroups() {
 		TypedQuery<SufsGroup> query = em.createNamedQuery("findAllSufsGroups", SufsGroup.class);
 		return query.getResultList();
 
 	}
-	
+
 	public void createReferenceBeam(ReferenceBeam referenceBeam) {
-			
+
 		em.persist(referenceBeam);
-		
+
 	}
 
 	public void updateReferenceBeam(ReferenceBeam referenceBeam) {
 
 		em.merge(referenceBeam);
-		
+
 	}
 
-	
-	
+	public PupilMask getPupilMaskByTypeAndWheel(Long pupilMaskTypeId, Long pupilWheelId) {
+		// get the pupil mask of the defined type that is currently on the wheel
+		try {
+
+			logger.debug("pupilMaskTypeId = " + pupilMaskTypeId + ", pupilWheelId = " + pupilWheelId);
+			TypedQuery<PupilMask> query = em.createNamedQuery("findByPupilMaskTypeAndWheel", PupilMask.class);
+			query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+			query.setParameter("pupilWheelId", pupilWheelId);
+
+			List<PupilMask> resultList = query.getResultList();
+			if (resultList.size() == 0) {
+				return null;
+			}
+			return resultList.get(0);
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
+	public Filter getFilterByWavelengthAndWheel(float wavelength, Long filterWheelId) {
+		// get the pupil mask of the defined type that is currently on the wheel
+		try {
+			TypedQuery<Filter> query = em.createNamedQuery("findByWavelengthAndWheel", Filter.class);
+			query.setParameter("wavelength", wavelength);
+			query.setParameter("filterWheelId", filterWheelId);
+
+			return query.getSingleResult();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+	}
+
 }
