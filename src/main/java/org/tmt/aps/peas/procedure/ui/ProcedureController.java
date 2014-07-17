@@ -109,6 +109,7 @@ public class ProcedureController implements Serializable {
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 	private TreeNode visualizationDisplayRoot;
+	PupilMask defaultMask; // current default mask for procedure type
 	
 	String centroidXs;
 	String centroidYs;
@@ -279,7 +280,12 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderPupilMaskSelect() {
-		return procedureType.isCreateRefMap();
+		return defaultMask == null;
+	}
+	
+	public boolean getRenderNumTrials() {
+		System.out.println("type   =  " + procedureType + ", id = " + procedureType.getProcedureTypeId());
+		return procedureType.isFineScreen() || procedureType.isPassiveTilt();
 	}
 	
 	
@@ -328,7 +334,7 @@ public class ProcedureController implements Serializable {
 					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
 
 			// get the default mask, if it is installed on the wheel
-			PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureType.getDefaultPupilMaskType().getPupilMaskTypeId(), 
+			defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureType.getDefaultPupilMaskType().getPupilMaskTypeId(), 
 					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
 			
 			procedureConfig.setPupilMask(defaultMask);

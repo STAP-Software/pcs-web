@@ -76,16 +76,20 @@ public class ProcedureType {
 		this.defaultPupilMaskType = defaultPupilMaskType;
 	}
 	public boolean isCreateRefMap() {
-		// TODO Auto-generated method stub
-		return procedureTypeId == PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP;
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
 	}
 	public boolean isPassiveTilt() {
-		// TODO Auto-generated method stub
-		return procedureTypeId == PROCEDURE_TYPE_ID_PASSIVE_TILT;
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_PASSIVE_TILT);
 	}
 	public boolean isCenterTelescope() {
-		// TODO Auto-generated method stub
-		return procedureTypeId == PROCEDURE_TYPE_ID_CENTER_TELESCOPE;
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_CENTER_TELESCOPE);
+	}
+	public boolean isFineScreen() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_FINE_SCREEN);
+	}
+	
+	public String toString() {
+		return procedureTypeName;
 	}
 	
 	
