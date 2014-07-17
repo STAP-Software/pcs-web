@@ -119,11 +119,6 @@ public class SessionController implements Serializable {
 		this.currentProcedureTypeId = currentProcedureTypeId;
 	}
 
-	public boolean isInPassiveTilt() {
-		return currentProcedureTypeId == ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT;
-	}
-
-
 
 	public boolean isProcedureExecuting() {
 		return procedureExecuting;

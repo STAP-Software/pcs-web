@@ -11,24 +11,13 @@
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />
 
-					<h:outputLabel value="Calculation Options" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.calculationOptions}" disabled="#{procedureController.procedure.procedureState gt 1}">
-						<f:selectItem itemLabel="Select One" itemValue="" />
-						<f:selectItem itemLabel="Pure Tilts" itemValue="1" />
-						<f:selectItem itemLabel="Focus Mode Pistons" itemValue="2" />
-						<f:selectItem itemLabel="Pure Tilts + Focus Mode Pistons" itemValue="3" />
-						<f:selectItem itemLabel="Pure Focus Mode" itemValue="4" />
-						<f:selectItem itemLabel="Pure Tilts + Optimal Pistons" itemValue="5" />
-						<f:selectItem itemLabel="Optimal Pistons" itemValue="6" />
+					<h:outputLabel value="Filter" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.filter}"
+						disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{filterConverter}">
+					<f:selectItem itemLabel="Select One" itemValue=""/> 
+					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
 					</p:selectOneMenu>
 
-	
-					<h:outputLabel value="Add Integration Times to Menu" />
-					<h:panelGroup>
-					<h:outputText value="This can now be performed by entering the value "/>
-					<br/>
-					<h:outputText value="directly into the integration time combo box "/>
-					</h:panelGroup>
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />
 
