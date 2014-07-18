@@ -5,10 +5,14 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
 
 public interface ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException;
 	public void findAndIdentify(float[][] frame, float[][] centroids ) throws ComputationException;
+	
+	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel);  // local java routine
 	
 }

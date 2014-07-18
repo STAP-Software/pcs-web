@@ -8,6 +8,8 @@ package org.tmt.aps.peas.computation.business;
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -46,5 +48,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 	}
 	
-	
+	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel) {
+		return JavaComputations.pixOffsetsToArcSeconds(measuredPix, secPerPixel);
+	}
 }

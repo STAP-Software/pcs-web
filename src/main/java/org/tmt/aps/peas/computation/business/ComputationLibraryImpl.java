@@ -8,6 +8,8 @@ package org.tmt.aps.peas.computation.business;
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -53,10 +55,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		if (retVal.getCode() > 0) {
 		//	statusLogger.log(retVal);
 		}
-		
-		
 	}
 	
+	// TODO: move to Fortran?
+	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel) {
 
+		return JavaComputations.pixOffsetsToArcSeconds(measuredPix, secPerPixel);
+	}
 	
 }

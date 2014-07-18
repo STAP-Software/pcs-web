@@ -145,8 +145,8 @@ public class CenterTelescopeExecutor {
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
 			
-			// TODO: this should be in the library
-			FloatPoint deltaAzEl = CenterTelescopeCalc.centerTelescopeCalc(guess, mask.getSecPerPixel());
+			// get Az, El deltas
+			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(guess, mask.getSecPerPixel());
 			
 			// display result and ask if we should move telescope
 			String text = "The telescope needs to be moved \n" + deltaAzEl.x + " arc sec. in AZ \n" + deltaAzEl.y + " arc sec. in EL \n";
