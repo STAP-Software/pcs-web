@@ -7,6 +7,8 @@ package org.tmt.aps.peas.frame.business;
 
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Lock;
@@ -14,6 +16,7 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
 
 @Singleton
 @Lock(LockType.READ)
@@ -24,6 +27,8 @@ public class FrameDisplayMgmt implements Serializable {
 	private boolean pendingDisplay;
 	private boolean pendingMarkedDisplay;
 	private boolean pendingMarkAction;
+	
+	private List<FloatPoint> markList;
 
 	@PostConstruct
 	public void init() {
@@ -68,6 +73,18 @@ public class FrameDisplayMgmt implements Serializable {
 	
 	public void setPendingMarkAction(boolean b) {
 		pendingMarkAction = b;
+	}
+
+	public void setMarking(List<Float> xList, List<Float> yList) {
+		markList = new ArrayList<FloatPoint>();
+		for (int i=0; i< xList.size(); i++) {
+			FloatPoint fp = new FloatPoint(xList.get(i), yList.get(i));
+			markList.add(fp);
+		}
+	}
+	
+	public List<FloatPoint> getMarkList() {
+		return markList;
 	}
 
 

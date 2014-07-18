@@ -33,6 +33,8 @@ import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.Subimage;
@@ -355,7 +357,7 @@ public class ProcedureController implements Serializable {
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
-			logger.info("default mask = " + defaultMask);
+			logger.info("default mask = " + procedure.getProcedureConfig().getPupilMask());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -377,10 +379,9 @@ public class ProcedureController implements Serializable {
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
-	//public void doExecuteProcedure(ActionEvent actionEvent) {
 	public void doExecuteProcedure() {
 
-		logger.debug(" ###############################  doExecuteProcedure:: starting: ");
+		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = " + procedure.getProcedureConfig().getPupilMask());
 
 		// TODO: maybe this should be a bean that backs the menu bar
 		sessionController.setProcedureExecuting(true);
@@ -411,7 +412,7 @@ public class ProcedureController implements Serializable {
 
 		}
 
-		logger.debug("doExecuteProcedure::");
+		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfig().getPupilMask());
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
@@ -527,21 +528,36 @@ public class ProcedureController implements Serializable {
 	private void encodeSubimageHiddenVars(List<Subimage> subimageList) {
 		
 		// generate centroid numbers, x and y positions
-		StringBuffer numBuf = new StringBuffer();
-		StringBuffer xBuf = new StringBuffer();
-		StringBuffer yBuf = new StringBuffer();
+		//StringBuffer numBuf = new StringBuffer();
+		//StringBuffer xBuf = new StringBuffer();
+		//StringBuffer yBuf = new StringBuffer();
+		
+		List<Float> xList = new ArrayList<Float>();
+		List<Float> yList = new ArrayList<Float>();
+		List<Integer> numList = new ArrayList<Integer>();
 		for (Subimage subimage : subimageList) {
-			numBuf.append(subimage.getSubimageNumber() + ",");
-			xBuf.append(subimage.getxCcd() + ",");
-			yBuf.append(subimage.getyCcd() + ",");
+			
+			numList.add(subimage.getSubimageNumber());
+			xList.add(subimage.getxCcd());
+			yList.add(subimage.getyCcd());
+			
+			//numBuf.append(subimage.getSubimageNumber() + ",");
+			//xBuf.append(subimage.getxCcd() + ",");
+			//yBuf.append(subimage.getyCcd() + ",");
 		}
+		
+		centroidXs = FloatListEncoder.encodeList(xList);
+		centroidYs = FloatListEncoder.encodeList(yList);
+		centroidNbrs = IntegerListEncoder.encodeList(numList);
+		
+		/*
 		numBuf.deleteCharAt(numBuf.length() - 1);
 		xBuf.deleteCharAt(xBuf.length() - 1);
 		yBuf.deleteCharAt(yBuf.length() - 1);
 		centroidXs = xBuf.toString();
 		centroidYs = yBuf.toString();
 		centroidNbrs = numBuf.toString();
-
+		*/
 	}
 
 	public void doHandMark() {
@@ -555,6 +571,8 @@ public class ProcedureController implements Serializable {
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
 	
+		// make marking available to executor
+		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
 	
 	public void doApplyMarking() {

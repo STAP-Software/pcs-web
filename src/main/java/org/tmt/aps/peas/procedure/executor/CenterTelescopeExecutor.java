@@ -17,10 +17,10 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
@@ -45,6 +45,8 @@ public class CenterTelescopeExecutor {
 
 	@EJB
 	private CameraMgmt cameraMgmt;
+	@EJB
+	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
 	@EJB
@@ -90,7 +92,7 @@ public class CenterTelescopeExecutor {
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 
-		logger.info("CreateRefMapExecutor::executeProcedure::");
+		logger.info("CenterTelescopeExecutor::executeProcedure::" );
 
 		try {
 
@@ -99,43 +101,33 @@ public class CenterTelescopeExecutor {
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			procedureExecutionMgmt.performProcedureStartup(procedure);
-
-			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
-
-			statusLogger.log("Camera is not properly initialized.  Proceed with caution.");
-			statusLogger.log("Entering Center Telescope Test");
-
-			wait(1);
+					
+			statusLogger.log("Entering Center Telescope Procedure ");
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			
+				// command to mask selected
+				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
+				// command to filter selected
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
-				// TODO: implement
-				// autoPointTelescope();
+				// TODO: call readyCamera
 
-				// cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
+				// TODO: we need a light source advanced option: star vs led - default to led for ref beam tests, star for all other ones
 
-				// cameraMgmt.commandFilter(procedureConfig.getFilter());
-
-				// TODO: implement
-				// autoRefmapCheck();
-
-				// cameraMgmt.readyCamera();
-
-				// cameraMgmt.selectRefBeam(); // check if this is a command or something else
-
-				// FIXME
-				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
-			}
-
-
-			statusLogger.log("Current frame being used for test ");
-			statusLogger.log("Routine will only take 1 trial");
+				// TODO: command leds if light source is led - the led chosen depends on the filter selected. This used to be filt_pos
+				// but that is wrong and should be stored with each filter which led to use.
+			
+				// TODO: wait for all futures to complete
+			
+			} 
+			
+			statusLogger.log("Getting Corrected Frame");
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
-			// TODO: this is where we display the frame
-			// tell the async controller to update the frame
+			// this is where we display the frame; tell the async controller to update the frame
 			frameDisplayMgmt.displayFrame();
 
 			frameDisplayMgmt.setPendingMarkAction(true);
@@ -144,58 +136,41 @@ public class CenterTelescopeExecutor {
 				Thread.sleep(500);
 			}
 
-			List<Point> subimageList = null;
-
-			float centroids[][] = new float[1][2];
-			// computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
-			for (int j = 0; j < 1; j++) {
-				statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
+			// get marking data from the frame display
+			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
+			statusLogger.log("marked guess: " + guess);
+			
+			PupilMask mask = procedureConfig.getPupilMask();
+			logger.debug("mask = " + mask);
+			// TODO: this should be in the library
+			FloatPoint deltaAzEl = CenterTelescopeCalc.centerTelescopeCalc(guess, mask.getSecPerPixel());
+			
+			// display result and ask if we should move telescope
+			String text = "The telescope needs to be moved \n" + deltaAzEl.x + " arc sec. in AZ \n" + deltaAzEl.y + " arc sec. in EL \n";
+			statusLogger.log(text);
+			
+			userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
+			
+			// TODO: depending on what user answers, either command telescope or abort
+			
+			if (false) {
+				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
 			}
-
-			// TODO: this is where we display the marked frame
-			// frameDisplayMgmt.displayMarkedFrame();
-
-			wait(2000);
-
-			statusLogger.log(">>> Search count = 1");
-			statusLogger.log(">>> Frame Scale: 0.9530617");
-			statusLogger.log(">>> Rotation: 0.3370904  degrees");
-			statusLogger.log(">>> Frame Scale: 0.9840439");
-			statusLogger.log(">>> Calculating center of image");
-			statusLogger.log("All centroids found and identified.");
-
-			graphicDisplayMgmt.displaySubimageCentroids(subimageList);
-
-			// TODO: if not frame_ok (global variable), then ask user if they want to retake frame
-			// this construct will probably work
-
-			wait(967);
+			
 
 			int trialPct = (int) ((((0) * 100) / 1) * 0.95);
 
 			procedureExecutionState.setPercentComplete(trialPct);
 
-			// FIXME: what is this really? we need to abstract this
-			// cameraMgmt.cameraCommand("RBF"); //
 
-			/*
-			 * float a = 1.0f; float b = 2.2f;
-			 * 
-			 * float c = computationLibrary.actuatorLengths(a, b);
-			 */
-
-			// userPromptMgmt.displayYesNoDialog("Can you see this text?");
-			// statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
-
-			wait(134);
-			statusLogger.log("Create Ref Beam Test Completed");
-			statusLogger.log("Exiting Create Ref Beam Test");
+			statusLogger.log("Center Telescope Procedure Completed");
+			statusLogger.log("Exiting Center Telescope Procedure");
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Exception e) {
-
+			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure);
 
 		}

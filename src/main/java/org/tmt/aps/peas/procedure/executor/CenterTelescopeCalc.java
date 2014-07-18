@@ -26,27 +26,33 @@ public class CenterTelescopeCalc {
 		};
 	
 	
-	public void centerTelescopeCalc(ProcedureConfig procedureConfig) {
+	public static FloatPoint centerTelescopeCalc(FloatPoint measuredPix, double secPerPixel) {
 
-		// measured is what the user selected
-		FloatPoint measuredPix = new FloatPoint();
 		// desired is 512,512 - the center of the image
-		FloatPoint desiredPix = new FloatPoint(512, 512);
+		FloatPoint desiredPix = new FloatPoint(0, 0);
 		FloatPoint deltaPix = new FloatPoint(measuredPix.x - desiredPix.x, measuredPix.y - desiredPix.y);
 
-		PupilMask mask = procedureConfig.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask();
-
-		double scale = 1.0 / mask.getSecPerPixel();
+		float scale = (float)(1.0 / secPerPixel);
 
 		// Convert offsets to arc sec.
-		double deltaEl = (0.866 * deltaPix.x + 0.500 * deltaPix.y) / scale;
-		double deltaAz = (0.500 * deltaPix.x + 0.866 * deltaPix.y) / scale;
+		float deltaEl = (float)(0.866 * deltaPix.x + 0.500 * deltaPix.y) / scale;
+		float deltaAz = (float)(0.500 * deltaPix.x + 0.866 * deltaPix.y) / scale;
 
-		// TODO: az, el will need to be saved with the procedure
-
+		FloatPoint deltaAzEl = new FloatPoint(deltaAz, deltaEl);
+		
+		return deltaAzEl;
+	}
+	
+	public void centerTelescopeToleranceTests(FloatPoint deltaAzEl, ProcedureConfig procedureConfig) {
+		
+		double deltaAz = deltaAzEl.x;
+		double deltaEl = deltaAzEl.y;
+		
 		// TODO: az, el should be formatted as F6.2
 		String text = "The telescope needs to be moved \n" + deltaAz + " arc sec. in AZ \n" + deltaEl + " arc sec. in EL \n";
 
+		
+		
 		boolean automodeAbort = false;
 
 		// temp stuff for now

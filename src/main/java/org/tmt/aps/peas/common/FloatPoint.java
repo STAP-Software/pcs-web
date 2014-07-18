@@ -46,7 +46,12 @@ public class FloatPoint {
         this.y = y;
     }
 
-
+    public double[] asDoubleArray() {
+    	double[] array = new double[2];
+    	array[0] = x;
+    	array[1] = y;
+    	return array;
+    }
 
     public float getX() {
 		return x;
