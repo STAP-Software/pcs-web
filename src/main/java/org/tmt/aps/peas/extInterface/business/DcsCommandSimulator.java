@@ -16,6 +16,11 @@ public class DcsCommandSimulator implements DcsCommand {
 		// TODO Auto-generated method stub
 		telPos[0] += (deltaAz / 1000000.0);
 		telPos[1] += (deltaEl / 1000000.0);
+		try {
+			Thread.sleep(2000);
+		} catch (InterruptedException e) {
+			
+		}
 	}
 
 	@Override

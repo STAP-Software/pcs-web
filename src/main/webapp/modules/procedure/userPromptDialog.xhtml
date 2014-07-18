@@ -1,0 +1,20 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+  
+		<p:dialog id="promptDialog" header="User Prompt" widgetVar="userPromptDialog" closable="false">  
+    		<h:form id="promptDialogForm">
+    		<div style="margin: 20px">
+    		<br/>
+    		<h:outputText escape="false" value="#{procedureController.currentPrompt.message}" />
+    		<br/>
+    		<br/>
+    		</div>      		  
+    		<p:commandButton id="saveButton" value="Yes" style="float:right" update=":growl"
+					action="#{asyncController.doCloseUserPromptYes}" oncomplete="userPromptDialog.hide();" />
+			<p:commandButton id="closeButton" value="No" style="float:right" update=":growl"
+					action="#{asyncController.doCloseUserPromptNo}" oncomplete="userPromptDialog.hide();" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>

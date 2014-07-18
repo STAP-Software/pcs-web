@@ -11,7 +11,7 @@
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":growl :menuForm :advancedForm :executionPrefsForm :promptDialogForm" listener="#{asyncController.asyncListener}"
+				update=":growl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
 				stop="#{!asyncController.executionStatus}" />
 		</h:form>
 		<h:form id="frameHiddenForm">
@@ -21,8 +21,6 @@
 
 		<h:form id="procedureDetailForm">
 			
-
-
 			<p:spacer height="10px" />
 
 
@@ -178,7 +176,6 @@
 						<f:facet name="header">
 							<h:outputText id="fitsFilename" value="#{procedureController.procedure.latestProcedureCcdFrame.ccdFrame.fitsFilename}" />
 						</f:facet>
-
 
 						<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 					

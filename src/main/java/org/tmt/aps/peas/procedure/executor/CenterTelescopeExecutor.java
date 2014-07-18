@@ -128,10 +128,12 @@ public class CenterTelescopeExecutor {
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
 			// this is where we display the frame; tell the async controller to update the frame
-			frameDisplayMgmt.displayFrame();
-
+			// put up some display that tells user to click on the star
+			frameDisplayMgmt.displayFrame("Please mark the spot on the frame,\nthen press Apply Marking.");
+						
 			frameDisplayMgmt.setPendingMarkAction(true);
 			// wait for user to mark frame
+			statusLogger.log("Waiting for user to mark frame");
 			while (frameDisplayMgmt.getPendingMarkAction()) {
 				Thread.sleep(500);
 			}
@@ -142,6 +144,7 @@ public class CenterTelescopeExecutor {
 			
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
+			
 			// TODO: this should be in the library
 			FloatPoint deltaAzEl = CenterTelescopeCalc.centerTelescopeCalc(guess, mask.getSecPerPixel());
 			
@@ -149,12 +152,13 @@ public class CenterTelescopeExecutor {
 			String text = "The telescope needs to be moved \n" + deltaAzEl.x + " arc sec. in AZ \n" + deltaAzEl.y + " arc sec. in EL \n";
 			statusLogger.log(text);
 			
-			userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
+			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
 			
-			// TODO: depending on what user answers, either command telescope or abort
-			
-			if (false) {
+			// depending on what user answers, either command telescope or quit
+			if (cmdTelescope) {
+				statusLogger.log("Commanding telescope move");
 				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+				statusLogger.log("Telescope move completed");
 			}
 			
 

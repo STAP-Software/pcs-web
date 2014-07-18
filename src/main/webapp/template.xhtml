@@ -127,13 +127,12 @@
 
 		</p:layout>
 
-		<!--  
-		<ui:include src="modules/procedure/mirrorDialog.xhtml"/>
-		-->
 		<ui:include src="modules/procedure/centroidOffsetsDialog.xhtml"/>
 
 		<ui:include src="modules/procedure/centroidsDialog.xhtml"/>
 		
+		<ui:include src="modules/procedure/userPromptDialog.xhtml"/>
+		<ui:include src="modules/procedure/instructionDialog.xhtml"/>
 
 		<p:dialog id="helpAboutDlg" header="About PEAS PCS" widgetVar="helpAboutDialog">  
     		<div>
@@ -154,22 +153,6 @@
 			</div>
 		</p:dialog> 
 
-		<p:dialog id="promptDialog" header="User Prompt" widgetVar="userPromptDialog" closable="false">  
-    		<div>
-    		<br/>
-    		<h:outputText value="#{asyncController.currentPrompt.message}" />
-    		<br/>
-    		<br/>
-    		Do you want to send commands?
-    		</div>  
-    		  
-    		<h:form id="promptDialogForm">
-    		<p:commandButton id="saveButton" value="Yes" style="float:right" update=":growl"
-					action="#{asyncController.doCloseUserPrompt}" oncomplete="userPromptDialog.hide();" />
-			<p:commandButton id="closeButton" value="No" style="float:right" update=":growl"
-					action="#{asyncController.doCloseUserPrompt}" oncomplete="userPromptDialog.hide();" />
-    		</h:form>
-		</p:dialog> 
 
 		<ui:include src="modules/config/globalConfig.xhtml" />
 

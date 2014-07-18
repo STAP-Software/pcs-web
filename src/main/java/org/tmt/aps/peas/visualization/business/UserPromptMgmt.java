@@ -44,11 +44,14 @@ public class UserPromptMgmt implements Serializable {
 		this.returnState = returnState;
 	}
 
-	public void displayYesNoDialog(String text) {
+	public boolean displayYesNoDialog(String text) {
 		
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, text);
+		// change \n to <br/>
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
+		
+		return (returnState.intValue() == 1) ? true : false;
 	}
 	
 	private void waitForReturnState() {

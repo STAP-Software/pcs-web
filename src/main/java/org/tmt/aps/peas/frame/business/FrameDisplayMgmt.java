@@ -29,6 +29,7 @@ public class FrameDisplayMgmt implements Serializable {
 	private boolean pendingMarkAction;
 	
 	private List<FloatPoint> markList;
+	private String frameInstructions;
 
 	@PostConstruct
 	public void init() {
@@ -54,13 +55,17 @@ public class FrameDisplayMgmt implements Serializable {
 	
 	public void displayFrame() {
 		pendingDisplay = true;
-		
+		this.frameInstructions = null;
+	}
+	public void displayFrame(String frameInstructions) {
+		pendingDisplay = true;
+		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
 	}
 	
 	public void displayMarkedFrame() {
 		pendingMarkedDisplay = true;
 		pendingDisplay = false;
-		
+		this.frameInstructions = null;
 	}
 
 	public void setPendingDisplay(boolean b) {
@@ -87,5 +92,8 @@ public class FrameDisplayMgmt implements Serializable {
 		return markList;
 	}
 
+	public String getFrameInstructions() {
+		return frameInstructions;
+	}
 
 }

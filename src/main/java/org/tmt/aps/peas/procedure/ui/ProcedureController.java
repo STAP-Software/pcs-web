@@ -25,6 +25,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -60,6 +61,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.ui.VisualizationDisplayLink;
 
 @Named
@@ -117,8 +119,13 @@ public class ProcedureController implements Serializable {
 	String centroidYs;
 	String centroidNbrs;
 
+	UserPrompt currentPrompt;
+	
+	
 	@PostConstruct
 	private void init() {
+		
+		currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
 
 		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
 		
@@ -200,6 +207,18 @@ public class ProcedureController implements Serializable {
 
 	public void setCentroidNbrs(String centroidNbrs) {
 		this.centroidNbrs = centroidNbrs;
+	}
+	
+	public UserPrompt getCurrentPrompt() {
+		return currentPrompt;
+	}
+
+	public void setCurrentPrompt(UserPrompt currentPrompt) {
+		this.currentPrompt = currentPrompt;
+	}
+
+	public String getFrameInstructions() {
+		return frameDisplayMgmt.getFrameInstructions();
 	}
 
 	public StreamedContent getGraphicImage() {
@@ -288,6 +307,9 @@ public class ProcedureController implements Serializable {
 	public boolean getRenderNumTrials() {
 		System.out.println("type   =  " + procedureType + ", id = " + procedureType.getProcedureTypeId());
 		return procedureType.isFineScreen() || procedureType.isPassiveTilt();
+	}
+	public boolean getRenderFrameInstructions() {
+		return frameDisplayMgmt.getFrameInstructions() != null;
 	}
 	
 	
@@ -578,6 +600,8 @@ public class ProcedureController implements Serializable {
 	public void doApplyMarking() {
 		// TODO: put this in the action for the apply marking on the frame
 		frameDisplayMgmt.setPendingMarkAction(false);
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("instructionDialog.hide()");
 	}
 	
 	public void doResetMarking() {
