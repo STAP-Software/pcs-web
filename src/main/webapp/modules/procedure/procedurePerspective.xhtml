@@ -139,8 +139,8 @@
 										<f:convertDateTime pattern="hh:mm:ss" />
 									</h:outputText>
 								</p:column>
-								<p:column headerText="Status">
-									<h:outputText value="#{logEntry.status}" style="font-size: 10px" />
+								<p:column headerText="Status" style="white-space:pre-wrap">
+									<h:outputText escape="false" value="#{logEntry.status}" style="font-size: 10px; white-space:pre-wrap" />
 								</p:column>
 
 							</p:dataTable>
