@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -102,7 +103,7 @@ public class CenterTelescopeExecutor {
 
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 					
-			statusLogger.log("Entering Center Telescope Procedure ");
+			statusLogger.log(MessageGenerator.generateMessage("procedure.start", procedure.getProcedureType().getProcedureTypeName()));
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
@@ -122,25 +123,25 @@ public class CenterTelescopeExecutor {
 			
 			} 
 			
-			statusLogger.log("Getting Corrected Frame");
+			statusLogger.log(MessageGenerator.generateMessage("frame.get"));
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
 			// this is where we display the frame; tell the async controller to update the frame
 			// put up some display that tells user to click on the star
-			frameDisplayMgmt.displayFrame("Please mark the spot on the frame,\nthen press Apply Marking.");
+			frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.ct"));
 						
 			frameDisplayMgmt.setPendingMarkAction(true);
 			// wait for user to mark frame
-			statusLogger.log("Waiting for user to mark frame");
+			statusLogger.log(MessageGenerator.generateMessage("frame.mark_waiting"));
 			while (frameDisplayMgmt.getPendingMarkAction()) {
 				Thread.sleep(500);
 			}
 
 			// get marking data from the frame display
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
-			statusLogger.log("marked guess: " + guess);
+			statusLogger.log(MessageGenerator.generateMessage("frame.mark_guess", guess));
 			
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
@@ -149,26 +150,23 @@ public class CenterTelescopeExecutor {
 			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(guess, mask.getSecPerPixel());
 			
 			// display result and ask if we should move telescope
-			String text = "The telescope needs to be moved \n" + deltaAzEl.x + " arc sec. in AZ \n" + deltaAzEl.y + " arc sec. in EL \n";
+			String text = MessageGenerator.generateMessage("telescope.desired_move", deltaAzEl);
 			statusLogger.log(text);
 			
 			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
 			
 			// depending on what user answers, either command telescope or quit
 			if (cmdTelescope) {
-				statusLogger.log("Commanding telescope move");
+				statusLogger.log(MessageGenerator.generateMessage("telescope.cmd.start"));
 				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
-				statusLogger.log("Telescope move completed");
+				statusLogger.log(MessageGenerator.generateMessage("telescope.cmd.end"));
 			}
 			
-
 			int trialPct = (int) ((((0) * 100) / 1) * 0.95);
 
 			procedureExecutionState.setPercentComplete(trialPct);
-
-
-			statusLogger.log("Center Telescope Procedure Completed");
-			statusLogger.log("Exiting Center Telescope Procedure");
+			
+			statusLogger.log(MessageGenerator.generateMessage("procedure.end",  procedure.getProcedureType().getProcedureTypeName()));
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);

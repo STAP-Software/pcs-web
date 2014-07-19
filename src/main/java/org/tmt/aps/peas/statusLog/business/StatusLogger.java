@@ -5,15 +5,13 @@
  */
 package org.tmt.aps.peas.statusLog.business;
 
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
-
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
 
@@ -45,7 +43,7 @@ public class StatusLogger {
 	public void log(RetVal retVal) {
 		
 		// get the text from the resource bundle
-		String message = generateErrorMessage(retVal);
+		String message = MessageGenerator.generateErrorMessage(retVal);
 		procedureStatusLog.addEntry(message);
 	}
 	
@@ -54,27 +52,6 @@ public class StatusLogger {
 	}
 	
 	
-	private String generateErrorMessage(RetVal retVal) {
-		String key = "E" + String.format("%05d", retVal.getCode());
-		String pattern = ResourceBundle.getBundle("errorCodes").getString(key);
-		
-		
-		Double[] args = new Double[10];
-		args[0] = retVal.getArg0();
-		args[1] = retVal.getArg1();
-		args[2] = retVal.getArg2();
-		args[3] = retVal.getArg3();
-		args[4] = retVal.getArg4();
-		args[5] = retVal.getArg5();
-		args[6] = retVal.getArg6();
-		args[7] = retVal.getArg7();
-		args[8] = retVal.getArg8();
-		args[9] = retVal.getArg9();
-		
-		String message = MessageFormat.format(pattern, (Object[])args);
-		
-		return message;
-
-	}		
+	
 
 }
