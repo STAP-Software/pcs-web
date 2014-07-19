@@ -104,8 +104,8 @@ public class PassiveTiltExecutor {
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
-			statusLogger.log("Camera is not properly initialized.  Proceed with caution."); 
-			statusLogger.log("Entering Passive Tilt Test");
+			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+			statusLogger.log("camera.not_init"); 
 
 
 			wait(1);
@@ -130,8 +130,8 @@ public class PassiveTiltExecutor {
 				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
 				}
 	
-				statusLogger.log("Current frame being used for test ");
-				statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
+			statusLogger.log("procedure.using_curr_frame");
+			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
@@ -144,31 +144,29 @@ public class PassiveTiltExecutor {
 				
 				wait(5670);
 
-				statusLogger.log("Calling Find and Identify ");
+				statusLogger.log("fandi.start");
 				List<Point> subimageList = null;
 				
 				float centroids[][] = new float [36][2];
 				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
-				for (int j=0;j<36;j++) {
-					statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
-				}
 				
 				// TODO: this is where we display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();
 
 				wait(2000);
 				
-				statusLogger.log(">>> Search count = 1");
-				statusLogger.log(">>> Frame Scale: 0.9530617");
-				statusLogger.log(">>> Rotation: 0.3370904  degrees");
-				statusLogger.log(">>> Frame Scale: 0.9840439");
-				statusLogger.log(">>> Calculating center of image");
-				statusLogger.log("All centroids found and identified.");
+				statusLogger.log("fandi.search_count", 1);
+				statusLogger.log("fandi.frame_scale", 0.9530617);
+				statusLogger.log("fandi.rotation", 0.3370904);
+				statusLogger.log("fandi.frame_scale", 0.9840439);
+				statusLogger.log("fandi.center_calc");
+				
+				statusLogger.log("fandi.end.success");
 
 				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
 
 				wait(554);
-				statusLogger.log("Calculating Centroid Residuals");
+				statusLogger.log("calc.centroid_resid");
 			
 				// TODO: argument list is not complete
 				RegistrationDelta registrationDelta = imageProcessor.pupilRegistration36(subimageList);
@@ -210,9 +208,9 @@ public class PassiveTiltExecutor {
 
 				wait(967);
 				
-				statusLogger.log("Rigid body rotation is 0.284E-03 Rads");
-				statusLogger.log("The telescope needs to be moved  0.04 arc sec. in AZ.  0.14 arc sec. in EL.");
-
+				statusLogger.log("calc.rigid_body_rot", 0.284E-03);
+				
+				statusLogger.log("telescope.desired_move", 0.04, 0.14);
 				
 				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
@@ -233,8 +231,7 @@ public class PassiveTiltExecutor {
 		//	statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
 						
 			wait(134);
-			statusLogger.log("Passive Tilt Test Completed");
-			statusLogger.log("Exiting Passive Tilt Test");
+			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);

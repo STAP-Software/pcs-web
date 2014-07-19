@@ -103,8 +103,8 @@ public class CreateRefMapExecutor {
 			
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
-			statusLogger.log("Camera is not properly initialized.  Proceed with caution."); 
-			statusLogger.log("Entering Create Ref Map Test");
+			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+			statusLogger.log("camera.not_init"); 
 
 
 			wait(1);
@@ -142,8 +142,8 @@ public class CreateRefMapExecutor {
 				}
 			}
 	
-			statusLogger.log("Current frame being used for test ");
-			statusLogger.log("Routine will only take " + procedureConfig.getNumberOfTrials() + " trial(s)");
+			statusLogger.log("procedure.using_curr_frame");
+			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 		
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
@@ -156,28 +156,25 @@ public class CreateRefMapExecutor {
 				
 				wait(4670);
 
-				statusLogger.log("Calling Find and Identify ");
+				statusLogger.log("fandi.start");
 				
-				statusLogger.log("FI Matchbox = " + procedure.getFiConfig().getMatchbox());
 				List<Point> subimageList = null;
 				
 				float centroids[][] = new float [36][2];
 				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
-				for (int j=0;j<36;j++) {
-					statusLogger.log("centroids[" + j + "] = " + centroids[j][0] + "," + centroids[j][1]);
-				}
 				
 				// TODO: this is where we display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();
 
 				wait(2000);
 				
-				statusLogger.log(">>> Search count = 1");
-				statusLogger.log(">>> Frame Scale: 0.9530617");
-				statusLogger.log(">>> Rotation: 0.3370904  degrees");
-				statusLogger.log(">>> Frame Scale: 0.9840439");
-				statusLogger.log(">>> Calculating center of image");
-				statusLogger.log("All centroids found and identified.");
+				statusLogger.log("fandi.search_count", 1);
+				statusLogger.log("fandi.frame_scale", 0.9530617);
+				statusLogger.log("fandi.rotation", 0.3370904);
+				statusLogger.log("fandi.frame_scale", 0.9840439);
+				statusLogger.log("fandi.center_calc");
+				
+				statusLogger.log("fandi.end.success");
 
 				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
 
@@ -210,8 +207,7 @@ public class CreateRefMapExecutor {
 		//	statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
 						
 			wait(134);
-			statusLogger.log("Create Ref Beam Test Completed");
-			statusLogger.log("Exiting Create Ref Beam Test");
+			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);

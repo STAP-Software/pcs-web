@@ -11,7 +11,9 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
 
@@ -36,8 +38,29 @@ public class StatusLogger {
 		return procedureStatusLog;
 	}
 	
-	public void log(String entry) {
-		procedureStatusLog.addEntry(entry);
+	public void log(String key) {
+		String message = MessageGenerator.generateMessage(key);
+		procedureStatusLog.addEntry(message);
+	}
+	
+	public void log(String key, Object arg1) {
+		String message = MessageGenerator.generateMessage(key, arg1);
+		procedureStatusLog.addEntry(message);
+	}
+	
+	public void log(String key, Object arg1, Object arg2) {
+		String message = MessageGenerator.generateMessage(key, arg1, arg2);
+		procedureStatusLog.addEntry(message);
+	}
+	
+	public void log(String key, Point arg1) {
+		String message = MessageGenerator.generateMessage(key, arg1);
+		procedureStatusLog.addEntry(message);
+	}
+	
+	public void log(String key, FloatPoint arg1) {
+		String message = MessageGenerator.generateMessage(key, arg1);
+		procedureStatusLog.addEntry(message);
 	}
 	
 	public void log(RetVal retVal) {

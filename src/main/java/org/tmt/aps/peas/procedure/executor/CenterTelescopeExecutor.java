@@ -103,7 +103,7 @@ public class CenterTelescopeExecutor {
 
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 					
-			statusLogger.log(MessageGenerator.generateMessage("procedure.start", procedure.getProcedureType().getProcedureTypeName()));
+			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
@@ -123,7 +123,7 @@ public class CenterTelescopeExecutor {
 			
 			} 
 			
-			statusLogger.log(MessageGenerator.generateMessage("frame.get"));
+			statusLogger.log("frame.get");
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
@@ -134,14 +134,14 @@ public class CenterTelescopeExecutor {
 						
 			frameDisplayMgmt.setPendingMarkAction(true);
 			// wait for user to mark frame
-			statusLogger.log(MessageGenerator.generateMessage("frame.mark_waiting"));
+			statusLogger.log("frame.mark_waiting");
 			while (frameDisplayMgmt.getPendingMarkAction()) {
 				Thread.sleep(500);
 			}
 
 			// get marking data from the frame display
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
-			statusLogger.log(MessageGenerator.generateMessage("frame.mark_guess", guess));
+			statusLogger.log("frame.mark_guess", guess);
 			
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
@@ -150,23 +150,23 @@ public class CenterTelescopeExecutor {
 			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(guess, mask.getSecPerPixel());
 			
 			// display result and ask if we should move telescope
-			String text = MessageGenerator.generateMessage("telescope.desired_move", deltaAzEl);
-			statusLogger.log(text);
+			statusLogger.log("telescope.desired_move", deltaAzEl);
 			
+			String text = MessageGenerator.generateMessage("telescope.desired_move", deltaAzEl);
 			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
 			
 			// depending on what user answers, either command telescope or quit
 			if (cmdTelescope) {
-				statusLogger.log(MessageGenerator.generateMessage("telescope.cmd.start"));
+				statusLogger.log("telescope.cmd.start");
 				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
-				statusLogger.log(MessageGenerator.generateMessage("telescope.cmd.end"));
+				statusLogger.log("telescope.cmd.end");
 			}
 			
 			int trialPct = (int) ((((0) * 100) / 1) * 0.95);
 
 			procedureExecutionState.setPercentComplete(trialPct);
 			
-			statusLogger.log(MessageGenerator.generateMessage("procedure.end",  procedure.getProcedureType().getProcedureTypeName()));
+			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
