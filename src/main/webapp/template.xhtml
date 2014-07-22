@@ -113,6 +113,13 @@
 				 	<p:submenu label="Help" icon="ui-icon-help">
 						<p:menuitem value="About..."  onclick="helpAboutDialog.show();" />
 					</p:submenu>
+					
+					<f:facet name="options">
+            			
+            			<p:selectBooleanButton id="value2" value="#{sessionController.advancedViewMode}" onLabel="Expert Mode" offLabel="OA Mode"  style="margin-right:10px">
+            				<p:ajax update="@form" listener="#{sessionController.modeChangeListener}"/> 
+        				</p:selectBooleanButton>
+        			</f:facet>
 
 				</p:menubar>
 			</h:form>
@@ -152,6 +159,23 @@
 			The authors would like to thank the Thirty Meter Telescope Corporation and<br/>the W. M. Keck Observatory for their support. 
 			<br/><br/>
 			</div>
+		</p:dialog> 
+		
+		<p:dialog id="loginDlg" header="Expert Login" widgetVar="loginDialog">  
+    		<h:form> 
+
+                    <p:panelGrid columns="2"> 
+  
+                        <h:outputLabel for="password" value="Password:" /> 
+                        <p:password  value="#{sessionController.password}" id="password" label="password" required="true"/> 
+
+                        <f:facet name="footer"> 
+                            <p:commandButton id="loginButton" value="Login" update=":growl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
+                        </f:facet> 
+                    </p:panelGrid> 
+
+
+                </h:form>  
 		</p:dialog> 
 
 

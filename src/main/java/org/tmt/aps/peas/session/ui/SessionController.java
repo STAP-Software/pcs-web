@@ -23,6 +23,7 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -54,6 +55,9 @@ public class SessionController implements Serializable {
 	boolean procedureExecuting;
 	Telescope telescope;
 	Instrument instrument;
+	
+	boolean advancedViewMode;
+	String password;
 
 	@PostConstruct
 	private void init() {
@@ -76,6 +80,7 @@ public class SessionController implements Serializable {
 			Collections.sort(currentSession.getProcedureList(), new BeanComparator("procedureNumber"));
 		}
 		
+		advancedViewMode = false;
 		
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -134,6 +139,24 @@ public class SessionController implements Serializable {
 	}
 	public void setCurrentSession(Session currentSession) {
 		this.currentSession = currentSession;
+	}
+	
+	public boolean isAdvancedViewMode() {
+		return advancedViewMode;
+	}
+
+	public void setAdvancedViewMode(boolean advancedViewMode) {
+		this.advancedViewMode = advancedViewMode;
+	}
+
+
+	public String getPassword() {
+		return password;
+	}
+
+
+	public void setPassword(String password) {
+		this.password = password;
 	}
 
 
@@ -215,5 +238,20 @@ public class SessionController implements Serializable {
 		
 	}
 	
+	public void modeChangeListener() {
+		// here we check the mode and popup dialog at correct state change
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		if (advancedViewMode == true) {
+			requestContext.execute("loginDialog.show()");
+		}
+	}
+	
+	public void login() {
+		// here we check the password and change the mode accordingly
+		if (!password.equals("ekinrez")) {
+			advancedViewMode = false;
+		}
+
+	}
 	
 }
