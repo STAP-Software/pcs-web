@@ -184,7 +184,7 @@ public class CcdManualController implements Serializable {
 				frameController.setupFrameToolFrameDisplay(rawFrame);
 				
 				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.update("frameViewerForm:framePanel");
+				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
 				break;
@@ -240,7 +240,7 @@ public class CcdManualController implements Serializable {
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);
 				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.update("frameViewerForm:framePanel");
+				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
 				

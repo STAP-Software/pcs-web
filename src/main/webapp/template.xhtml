@@ -73,6 +73,7 @@
 					</p:submenu>
 					<p:submenu label="Tools" icon="ui-icon-contact">
 						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">

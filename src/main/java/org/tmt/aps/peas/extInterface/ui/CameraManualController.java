@@ -60,7 +60,7 @@ public class CameraManualController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
+	
 	}
 
 	public Camera getCamera() {
@@ -179,10 +179,21 @@ public class CameraManualController implements Serializable {
 
 	public String doViewCameraDiagnostic() {
 
-		breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
+		try {
+			refreshCamera();
 
-		return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
+			breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
 
+			return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error querying camera database", e.getMessage()));
+			return null;
+		}
+		
 	}
 
 	public String doCancel() {

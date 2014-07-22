@@ -1,0 +1,25 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+	<p:panelGrid columns="2" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+		<h:outputLabel value="CCD Command" />
+		<h:panelGroup id="commandPanel">
+			<p:selectOneMenu value="#{ccdManualController.commandSelection}" style="top:2px">
+				<f:selectItem itemLabel="Fastwipe CCD" itemValue="1" />
+				<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="2" />
+				<f:selectItem itemLabel="Read CCD Raw" itemValue="3" />
+			</p:selectOneMenu>
+		</h:panelGroup>
+		<h:outputLabel value="" />
+
+		<f:facet name="footer">
+			<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
+				update=":growl" />
+		</f:facet>
+
+	</p:panelGrid>
+
+
+</ui:composition>

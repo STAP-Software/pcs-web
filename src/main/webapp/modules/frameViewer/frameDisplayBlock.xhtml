@@ -1,0 +1,145 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+	<p:panelGrid id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
+		<f:facet name="header">
+			<h:outputText value="#{frameController.selectedFitsFilename}" />
+		</f:facet>
+
+		<p:menubar>
+
+			<p:submenu label="File" icon="ui-icon-disk"> 
+				<!-- TODO update loadPanel -->
+				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl"/>
+			</p:submenu>
+			<p:submenu label="Display" icon="ui-icon-image">
+				<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
+			</p:submenu>
+			<p:submenu label="Modify" icon="ui-icon-copy">
+				<p:menuitem value="Flatten Frame" ajax="false" action="#{sessionController.doViewSessionList}"
+					disabled="#{sessionController.procedureExecuting}" />
+			</p:submenu>
+			<p:submenu label="Marking" icon="ui-icon-pencil">
+				<p:menuitem value="Display Marking Info" ajax="false" action="#{sessionController.doViewSessionList}"
+					disabled="#{sessionController.procedureExecuting}" />
+				<p:menuitem value="Analyze Single Subimages" ajax="false" action="#{sessionController.doViewCurrentSession}"
+					disabled="#{sessionController.procedureExecuting}" />
+			</p:submenu>
+			<p:submenu label="Operations" icon="ui-icon-gear">
+				<p:menuitem value="Find and Identify Subimages" ajax="false" action="#{sessionController.doViewSessionList}"
+					disabled="#{sessionController.procedureExecuting}" />
+				<p:menuitem value="Centroid Offsets" ajax="false" action="#{sessionController.doViewCurrentSession}"
+					disabled="#{sessionController.procedureExecuting}" />
+				<p:menuitem value="Generate Cross Correlation Tables" ajax="false" action="#{sessionController.doViewCurrentSession}"
+					disabled="#{sessionController.procedureExecuting}" />
+				<p:menuitem value="Frame Statistics" ajax="false" action="#{sessionController.doViewCurrentSession}"
+					disabled="#{sessionController.procedureExecuting}" />
+			</p:submenu>
+
+
+		</p:menubar>
+
+
+		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+
+		<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas
+		tag.</canvas>
+		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+
+			<p:row>
+				<p:column styleClass="peasFormLabelColumn" style="width:35%">
+					<h:outputLabel value="Search Radius (pixels):" />
+				</p:column>
+				<p:column styleClass="peasFormInputColumn" style="width:15%">
+					<p:selectOneMenu value="#{frameController.searchRadius}">
+						<f:selectItem itemLabel="6" itemValue="6" />
+						<f:selectItem itemLabel="7" itemValue="7" />
+						<f:selectItem itemLabel="10" itemValue="10" />
+						<f:selectItem itemLabel="12" itemValue="12" />
+						<f:selectItem itemLabel="15" itemValue="15" />
+						<f:selectItem itemLabel="20" itemValue="20" />
+					</p:selectOneMenu>
+				</p:column>
+				<p:column styleClass="peasFormLabelColumn" style="width:15%">
+					<h:outputLabel value="SNR:" />
+				</p:column>
+				<p:column styleClass="peasFormOutputColumn" style="width:35%">
+					<h:outputText value="10.8" />
+				</p:column>
+			</p:row>>
+		</p:panelGrid>
+		<f:facet name="footer">
+			<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
+			<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" />
+			<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
+				update=":growl" oncomplete="markFrame()" />
+		</f:facet>
+	</p:panelGrid>
+	<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
+
+
+	<script>
+		//<![CDATA[
+		           
+	   		function initCanvasEvents() {
+	  			var canvas = document.getElementById("frameCanvas");
+	  			canvas.addEventListener("mousedown", doMouseDown, false);
+	  		}
+	  		
+	  		function doMouseDown(event) {  			
+	  			var canvas = $('#frameCanvas');
+	  			canvas_x = event.pageX - canvas.offset().left;
+	  			canvas_y = event.pageY - canvas.offset().top;
+	  			// call javascript function that is defined in <p:remote>
+	  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
+	  		}
+		           
+	
+		function markFrame() {
+			window.setTimeout("drawFrame2(true)", 100);
+		}
+	
+		function drawFrame() {
+			window.setTimeout("drawFrame2(false)", 100);
+		}
+	
+		function drawFrame2(mark) {
+			var c = document.getElementById("frameCanvas");
+			var ctx = c.getContext("2d");
+			//ctx.clearRect(0,0,c.width, c.height);
+			var img = document.getElementById("frameDisplayForm:frameImage");
+	
+			ctx.drawImage(img, 0, 0, c.width, c.height);
+	
+			initCanvasEvents();
+			
+			if (mark)
+				markFrame2(ctx, img, c)
+		}
+	
+		function markFrame2(ctx, img, c) {
+	
+			var xField = document
+					.getElementById('frameHiddenForm:centroidXs').value;
+			var xArray = xField.split(',');
+			var yField = document
+					.getElementById('frameHiddenForm:centroidYs').value;
+			var yArray = yField.split(',');
+	
+			for (var i = 0; i < xArray.length; i++) {
+				ctx.beginPath();
+				// divide by 2 when frame is displayed 512x512
+				ctx.arc(xArray[i] / 2, yArray[i] / 2, 15, 0, 2 * Math.PI);
+				ctx.strokeStyle = '#ffffaa';
+				ctx.lineWidth = 2;
+				ctx.stroke();
+			}
+			initCanvasEvents();
+	
+		}
+	
+		//]]>
+	</script>
+
+
+</ui:composition>
