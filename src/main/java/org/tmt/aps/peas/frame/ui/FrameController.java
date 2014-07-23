@@ -251,7 +251,6 @@ public class FrameController implements Serializable {
 	public String doSetupFrameViewer() {
 
 		try {
-			cameraManualController.refreshCamera();
 
 			breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "newProcedure.xhtml");
 

@@ -70,7 +70,7 @@
 								</p:column>
 							</p:row>
 
-							<p:row>
+							<p:row rendered="#{sessionController.advancedViewMode}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Frame Source" />
 								</p:column>
@@ -248,6 +248,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 				<p:accordionPanel id="miscPanel" multiple="true" activeIndex="0,1">
 
+					<p:tab title="Phasing Camera State">
+						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
+					</p:tab>
+					
 					<p:tab title="Procedure Context">
 
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
@@ -257,15 +261,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 							<h:outputLabel value="ACS Snap # After" />
 							<p:inputText size="4" value="#{procedureController.procedure.acsSnapNumberAfter}" />
-
-							<h:outputLabel value="Star Name" />
-							<p:inputText size="20" value="#{procedureController.procedure.starName}" />
-
-							<h:outputLabel value="Star Sp Type" />
-							<p:inputText size="4" value="#{procedureController.procedure.starSpType}" />
-
-							<h:outputLabel value="Star Vmag" />
-							<p:inputText size="4" value="#{procedureController.procedure.starVmag}" />
 
 							<h:outputLabel value="Comments" />
 							<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
@@ -277,8 +272,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 							</f:facet>
 						</p:panelGrid>
 					</p:tab>
-
-
 
 					<p:tab title="Visualization Displays">
 						<p:panelGrid columns="1" styleClass="btmsForm">
@@ -298,29 +291,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						
 						</p:panelGrid>
 					</p:tab>
-					<p:tab title="Phasing Camera State">
-						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
-							<h:outputLabel value="Coarse Mirror Offset" />
-							<h:outputText value="" />
-							<h:outputLabel value="x (&#181;m)" />
-							<h:outputText value="5.0" />
-							<h:outputLabel value="y (&#181;m)" />
-							<h:outputText value="-12.3" />
-							<h:outputLabel value="Fine Mirror Offset" />
-							<h:outputText value="" />
-							<h:outputLabel value="x (&#181;m)" />
-							<h:outputText value="32.1" />
-							<h:outputLabel value="y (&#181;m)" />
-							<h:outputText value="-16.0" />
-							<h:outputLabel value="Filter Wheel Position" />
-							<h:outputText value="611 nm" />
-							<h:outputLabel value="Pupil Mask Wheel Position" />
-							<h:outputText value="036" />
-							<h:outputLabel value="CCD Temperature" />
-							<h:outputText value="-60.2 C" />
-						</p:panelGrid>
-					</p:tab>
 				</p:accordionPanel>
 
 			</p:panelGrid>

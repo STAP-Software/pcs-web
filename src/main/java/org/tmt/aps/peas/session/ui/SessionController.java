@@ -251,7 +251,8 @@ public class SessionController implements Serializable {
 		if (!password.equals("ekinrez")) {
 			advancedViewMode = false;
 		}
-
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.update("procedureDetailForm");
 	}
 	
 }

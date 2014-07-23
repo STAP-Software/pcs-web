@@ -72,20 +72,20 @@
 						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 					<p:submenu label="Tools" icon="ui-icon-contact">
-						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
 						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
 						<p:menuitem value="Global Config" type="button" onclick="globalConfigDlg.show();" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}"/>
 						<p:separator />
-						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}">
+						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}">
 							<p:menuitem value="Manage CCDs" action="#{ccdDefController.doViewCcdList}" />
 							<p:menuitem value="Manage Filters" action="#{filterController.doViewFilterList}" />
 							<p:menuitem value="Manage Pupil Masks" action="#{pupilMaskController.doViewPupilMaskList}" />
 						</p:submenu>
-						<p:submenu label="#{cameraDefController.instrument.instrumentName} Configuration"  disabled="#{sessionController.procedureExecuting}">
+						<p:submenu label="#{cameraDefController.instrument.instrumentName} Configuration"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" >
 							<p:menuitem value="Manage Filter Wheel" action="#{filterController.doViewFilterWheel}" />
 							<p:menuitem value="Manage Pupil Wheel" action="#{pupilMaskController.doViewPupilWheel}" />
 							<p:menuitem value="Manage Reference Beams" action="#{refBeamController.doViewReferenceBeamList}" />
@@ -98,13 +98,13 @@
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" >
 						<p:menuitem value="Advanced Options" type="button" onclick="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Load Default Values" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Load Last Session Values" url="#" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Load Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Load Last Session Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
 					</p:submenu>
 
-				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true">
+				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.advancedViewMode}">
 						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 							

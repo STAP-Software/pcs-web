@@ -59,8 +59,17 @@ public class CameraManualController implements Serializable {
 	int ccdPowerCmd = 0;
 
 	@PostConstruct
-	public void init() {
-	
+	public void init() throws Exception {
+		
+		physicalModel.refresh();
+		camera = physicalModel.getInstrument().getCamera();
+
+		camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
+		commandSelection = 1;
+
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
+
+		ccd = physicalModel.getInstrument().getCcd();
 	}
 
 	public Camera getCamera() {
@@ -159,20 +168,6 @@ public class CameraManualController implements Serializable {
 		this.ccdPowerCmd = ccdPowerCmd;
 	}
 
-	public void refreshCamera() throws Exception {
-
-		physicalModel.refresh();
-		camera = physicalModel.getInstrument().getCamera();
-
-		camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
-		commandSelection = 1;
-
-		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
-
-		ccd = physicalModel.getInstrument().getCcd();
-
-	}
-
 	public boolean getRenderExposureTime() {
 		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
 	}
@@ -180,8 +175,6 @@ public class CameraManualController implements Serializable {
 	public String doViewCameraDiagnostic() {
 
 		try {
-			refreshCamera();
-
 			breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
 
 			return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
