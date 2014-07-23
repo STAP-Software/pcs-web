@@ -235,6 +235,8 @@ public class CameraMgmt {
 		result = queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
 		camera.setElectronicsBoxTemperature(((float) result.getDoubleVal()));
 
+		logger.info(">> status refresh compete <<");
+		
 		return new AsyncResult<Boolean>(true);
 	}
 

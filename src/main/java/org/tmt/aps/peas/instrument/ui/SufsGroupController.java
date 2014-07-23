@@ -72,7 +72,6 @@ public class SufsGroupController implements Serializable {
 	}
 
 	public void refreshSufsGroupList() throws Exception {
-		physicalModel.refresh();
 		sufsGroupList = new ArrayList<SufsGroup>(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().getSufsGroupSet());
 		Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}

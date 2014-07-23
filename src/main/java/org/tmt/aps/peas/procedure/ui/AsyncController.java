@@ -156,15 +156,7 @@ public class AsyncController {
 	}
 
 	private void checkCameraDisplay() {
-		if (procedureExecutionMgmt.getExecutionStatus()) {
-			// check to see if camera status query is complete, and if so kick off another one
-			try {
-				logger.debug("CheckCameraDisplay::refreshing status");
-				cameraMgmt.refreshStatus();
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
-		}
+
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.update("procedureDetailForm:miscPanel:cameraStatusPanel");
 	}

@@ -16,7 +16,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public CameraQueryResult queryCamera(int deviceCode) throws CommunicationException, TimeoutException, CommandFailureException {
 		
-		int state = (int)(System.currentTimeMillis() % 6l);
+		int state = (int)(System.currentTimeMillis() % 6) + 1;
 		int tState = (int)((System.currentTimeMillis() % 200)/10.0);
 		
 		switch (deviceCode) {
@@ -30,11 +30,12 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE:
 			return new CameraQueryResult(0,tState);
 		case DEVICE_CODE_FILTER_WHEEL: 
-			return new CameraQueryResult(1,state + 1);
+			return new CameraQueryResult(1, state);
 		case DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
 			return new CameraQueryResult(0,tState);
 		case DEVICE_CODE_PUPIL_WHEEL:
-			return new CameraQueryResult(1,state + 1);
+			System.out.println("pupil wheel = " + state);
+			return new CameraQueryResult(1,state);
 		case DEVICE_CODE_REFERENCE_BEAMS:
 			return new CameraQueryResult(0,0);
 		case DEVICE_CODE_TWO_POSITION_DEVICE:

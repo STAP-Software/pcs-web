@@ -74,7 +74,6 @@ public class RefBeamController implements Serializable {
 	private void refreshReferenceBeamList() {
 
 		try {
-			physicalModel.refresh();
 			referenceBeamList = new ArrayList<ReferenceBeam>(physicalModel.getInstrument().getCamera().getReferenceBeamSet());
 			
 			Collections.sort(referenceBeamList, new BeanComparator("refBeamNum"));

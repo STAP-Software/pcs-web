@@ -61,10 +61,10 @@ public class CameraManualController implements Serializable {
 	@PostConstruct
 	public void init() throws Exception {
 		
-		physicalModel.refresh();
+		//physicalModel.refresh();
 		camera = physicalModel.getInstrument().getCamera();
 
-		camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
+		//camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
 		commandSelection = 1;
 
 		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
@@ -323,29 +323,5 @@ public class CameraManualController implements Serializable {
 		
 	}
 
-	public void doRefresh() {
-		
-		try {
-			
-			Future<Boolean> statusFuture = cameraMgmt.refreshStatus();
-			while (!statusFuture.isDone()) {
-				System.out.println("Thread waiting");
-				Thread.sleep(500);
-			}
-
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
-
-		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			
-			// TODO: generic way to output errors that give all info to user on screen
-			context.addMessage(null, new FacesMessage("Error: " + e.getMessage() + e.getClass().getName() + " " + e.getStackTrace()[0]));
-
-		}
-	}
 
 }

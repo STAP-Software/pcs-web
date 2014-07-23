@@ -35,7 +35,6 @@ public class CameraDefController implements Serializable {
 	private void init() {
 		
 		try {
-		physicalModel.refresh();
 		instrument = physicalModel.getInstrument();
 
 		} catch (Exception e) {
