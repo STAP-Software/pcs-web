@@ -161,13 +161,19 @@
 			</div>
 		</p:dialog> 
 		
-		<p:dialog id="loginDlg" header="Expert Login" widgetVar="loginDialog">  
+		<p:dialog id="loginDlg" header="Expert Login" widgetVar="loginDialog" closable="false" modal="true" resizable="false">  
     		<h:form> 
 
-                    <p:panelGrid columns="2"> 
+                    <p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn"> 
+  
+  						<p:spacer height="10px"/>
+  						<p:spacer height="10px"/>
   
                         <h:outputLabel for="password" value="Password:" /> 
-                        <p:password  value="#{sessionController.password}" id="password" label="password" required="true"/> 
+                        <p:password  value="#{sessionController.password}" id="password" label="password" /> 
+
+  						<p:spacer height="10px"/>
+  						<p:spacer height="10px"/>
 
                         <f:facet name="footer"> 
                             <p:commandButton id="loginButton" value="Login" update=":growl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
