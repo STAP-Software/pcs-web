@@ -324,88 +324,14 @@ public class CameraManualController implements Serializable {
 	}
 
 	public void doRefresh() {
-
+		
 		try {
-
-			CameraQueryResult result = null;
-			CameraQueryResult result2 = null;
 			
-			// Pupil Mask
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_PUPIL_WHEEL);
-			logger.info("camera = " + camera + ", result = " + result);
-			camera.getPupilWheel().setState(result.getState());
-			camera.getPupilWheel().setSelectedPupilMaskNumber(result.getStateValue());
-
-			
-			// Filter
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_FILTER_WHEEL);
-			camera.getFilterWheel().setState(result.getState());
-			camera.getFilterWheel().setSelectedFilterNumber(result.getStateValue());
-
-			// Ref Beam
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS);
-			camera.setCurrentRefBeam(result.getStateValue() == 0 ? 0 : result.getStateValue());
-
-			// Shutter
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_SHUTTER);
-			
-			if (result.getState() == DeviceStates.STATE_IN_TRANSIT) {
-				camera.getShutter().setState(Shutter.STATE_IN_TRANSIT);
-			} else {
-				camera.getShutter().setState(result.getStateValue() == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			Future<Boolean> statusFuture = cameraMgmt.refreshStatus();
+			while (!statusFuture.isDone()) {
+				System.out.println("Thread waiting");
+				Thread.sleep(500);
 			}
-
-			
-			// Fine Tilt
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_X_TILT_PLATE);
-			camera.getFineTiltMirror().setStateX(result.getState());
-			
-			result2 = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_Y_TILT_PLATE);
-			camera.getFineTiltMirror().setStateY(result2.getState());
-			
-			Point fineResult = new Point(result.getStateValue(), result2.getStateValue());
-			camera.getFineTiltMirror().setCurrentPosition(fineResult);
-
-
-			
-			// Coarse Tilt
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_X_STEERING_MIRROR);
-			camera.getCoarseTiltMirror().setStateX(result.getState());
-			
-			result2 = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR);
-			camera.getCoarseTiltMirror().setStateY(result2.getState());
-			
-			Point coarseResult = new Point(result.getStateValue(), result2.getStateValue());
-			camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
-
-			
-			// Two Position Mech
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE);
-			if (result.getState() == DeviceStates.STATE_IN_TRANSIT) {
-				camera.getTwoPosMechanism().setState(TwoPosMechanism.TWO_POS_MECH_STATE_IN_TRANSIT);
-			} else {
-				camera.getTwoPosMechanism().setState(
-						result.getStateValue() == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-			}
-						
-			// CCD Power
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_POWER);			
-			ccd.setState(result.getStateValue() == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-
-			
-			// CCD Temperature
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE);
-			ccd.setTemperature(((float)result.getDoubleVal()));
-			
-			// Instrument Temperature
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE);
-			camera.setInstrumentTemperature(((float)result.getDoubleVal()));
-			
-			// Electronics Box Temperature
-			result = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
-			camera.setElectronicsBoxTemperature(((float)result.getDoubleVal()));
-			
-			
 
 			FacesContext context = FacesContext.getCurrentInstance();
 
