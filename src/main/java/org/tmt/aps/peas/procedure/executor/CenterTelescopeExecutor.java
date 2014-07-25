@@ -22,6 +22,7 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
@@ -107,20 +108,34 @@ public class CenterTelescopeExecutor {
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
+				Future<Integer> twoPosCommandFuture = null;
+				Future<Integer> refBeamFuture = null;
 				// command to mask selected
 				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
 				// command to filter selected
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
-				// TODO: call readyCamera
+		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+		        	// TODO: select ref beam based on filter position: This used to be filt_pos
+					// but that is wrong and should be stored with each filter which led to use.
+		        	//cameraMgmt.selectRefBeam(); 
 
-				// TODO: we need a light source advanced option: star vs led - default to led for ref beam tests, star for all other ones
+					// extend two pos mirror
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
+		        } else {
+		        	// TODO: turn off reference beams
+		        	//cameraMgmt.selectRefBeam(); 
 
-				// TODO: command leds if light source is led - the led chosen depends on the filter selected. This used to be filt_pos
-				// but that is wrong and should be stored with each filter which led to use.
+					// FIXME: retract two pos mirror
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
+		        }
 			
-				// TODO: wait for all futures to complete
-			
+				// wait for all commands to complete
+				while (!pupilMaskCommandFuture.isDone() || !filterCommandFuture.isDone() || !twoPosCommandFuture.isDone() || !refBeamFuture.isDone()) {
+					// wait and try again
+					Thread.sleep(500);
+				}
+	
 			} 
 			
 			statusLogger.log("frame.get");

@@ -28,7 +28,6 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
-import org.tmt.aps.peas.frame.model.RegistrationDelta;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -69,9 +68,6 @@ public class PassiveTiltExecutor {
 	private PupilRegistrator pupilRegistrator;
 
 	private List<String> logMessages;
-
-	// TODO: make this a procedure option
-	private int lightSource;
 	
 	public List<String> getLogMessages() {
 		return logMessages;
@@ -131,7 +127,7 @@ public class PassiveTiltExecutor {
 		        //TEXT = 'Proceeding to Ready the Camera'                                  
 				// cameraMgmt.readyCamera();
 
-		        if (lightSource == Constants.LIGHT_SOURCE_LED) {
+		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 		        	// TODO: select ref beam based on filter position
 		        	//cameraMgmt.selectRefBeam(); 
 
@@ -236,7 +232,7 @@ public class PassiveTiltExecutor {
 			
 			// TODO: somewhere here we need to command the mirrors
 			
-	        if (lightSource == Constants.LIGHT_SOURCE_LED) {
+	        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 	        	// turn off reference beams
 	        	// TODO: make a Future and wait.
 	        	// TODO: futures should have a command 'wait' function that we apply to a set of futures

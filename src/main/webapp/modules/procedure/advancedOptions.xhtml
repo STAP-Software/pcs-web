@@ -17,6 +17,13 @@
 					<f:selectItem itemLabel="Select One" itemValue=""/> 
 					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
 					</p:selectOneMenu>
+					
+					<h:outputLabel value="Light Source" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.lightSource}"
+						disabled="#{procedureController.procedure.procedureState gt 1}" >
+					<f:selectItem itemLabel="Star" itemValue="1"/> 
+					<f:selectItem itemLabel="LED" itemValue="2"/>
+					</p:selectOneMenu>
 
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />

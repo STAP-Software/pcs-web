@@ -43,6 +43,8 @@ public class ProcedureConfig {
 	public static final int FRAME_SOURCE_CCD = 1;
 	public static final int FRAME_SOURCE_FILE = 2;
 	
+	public static final int LIGHT_SOURCE_STAR = 1;
+	public static final int LIGHT_SOURCE_LED = 2;
 	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -64,6 +66,7 @@ public class ProcedureConfig {
 	@Column(name="numTrials")
 	private int numberOfTrials = 1;
 	private int frameSource;
+	private int lightSource;
 
 	private Integer ufsSegment;
 	private Integer sufsGroup;
@@ -257,6 +260,14 @@ public class ProcedureConfig {
 	}
 
 
+
+	public int getLightSource() {
+		return lightSource;
+	}
+
+	public void setLightSource(int lightSource) {
+		this.lightSource = lightSource;
+	}
 
 	public PupilMask getPupilMask() {
 		return pupilMask;

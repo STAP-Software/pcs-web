@@ -10,9 +10,6 @@ public class Constants {
 	public static final int FRAME_SOURCE_CCD = 1;
 	public static final int FRAME_SOURCE_FILE = 2;
 	
-	public static final int LIGHT_SOURCE_STAR = 1;
-	public static final int LIGHT_SOURCE_LED = 2;
-	
 	public static final int PUPIL_MASK_PASSIVE_TILT = 1;
 	public static final int PUPIL_MASK_PHASING = 2;
 	public static final int PUPIL_MASK_FINE_SCREEN = 3;
