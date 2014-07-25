@@ -21,6 +21,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
@@ -69,6 +70,9 @@ public class PassiveTiltExecutor {
 
 	private List<String> logMessages;
 
+	// TODO: make this a procedure option
+	private int lightSource;
+	
 	public List<String> getLogMessages() {
 		return logMessages;
 	}
@@ -107,54 +111,70 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			statusLogger.log("camera.not_init"); 
 
-
-			wait(1);
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
 				// TODO: implement
 				// autoPointTelescope();
 
-				//cameraMgmt.commandPupilMask(Constants.PUPIL_MASK_PASSIVE_TILT);
+		        // TEXT = 'Selecting The Passive Tilt Array'                                                             
 
-				//cameraMgmt.commandFilter(procedureConfig.getFilter());
+				// command to mask selected
+				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
+				// command to filter selected
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
 				// TODO: implement
 				// autoRefmapCheck();
 
-				//cameraMgmt.readyCamera();
+				// TODO:
+		        //TEXT = 'Proceeding to Ready the Camera'                                  
+				// cameraMgmt.readyCamera();
 
-				//cameraMgmt.selectRefBeam(); // check if this is a command or something else
+		        if (lightSource == Constants.LIGHT_SOURCE_LED) {
+		        	// TODO: select ref beam based on filter position
+		        	//cameraMgmt.selectRefBeam(); 
 
-				// FIXME
-				// cameraMgmt.cameraCommand("45E"); // what is this really? we need to abstract this
-				}
+					// extend two pos mirror
+		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
+		        } else {
+		        	// TODO: turn off reference beams
+		        	//cameraMgmt.selectRefBeam(); 
+
+					// FIXME: retract two pos mirror
+		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
+		        }
+		        
+		        // TODO: wait for all futures to complete
+		        
+			}
 	
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 		
+			
+			// TODO: zero totals centroid array (for summing centroids for all trials)
+			
 			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
 
+				try {
+				
 				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), i, i);
 				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 				
-				// TODO: this is where we display the frame
 				// tell the async controller to update the frame
 				frameDisplayMgmt.displayFrame();
 				
-				wait(5670);
-
 				statusLogger.log("fandi.start");
 				List<Point> subimageList = null;
 				
 				float centroids[][] = new float [36][2];
 				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
 				
-				// TODO: this is where we display the marked frame
+				// display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();
 
-				wait(2000);
-				
+				// TODO: what is this?
 				statusLogger.log("fandi.search_count", 1);
 				statusLogger.log("fandi.frame_scale", 0.9530617);
 				statusLogger.log("fandi.rotation", 0.3370904);
@@ -165,48 +185,16 @@ public class PassiveTiltExecutor {
 
 				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
 
-				wait(554);
 				statusLogger.log("calc.centroid_resid");
 			
-				// TODO: argument list is not complete
-				RegistrationDelta registrationDelta = imageProcessor.pupilRegistration36(subimageList);
-
-				// FIXME: in PCS Fortran pupilRegistration36 always returns true
-				if (true) {
-
-					pupilRegistrator.centerPupil(registrationDelta); // this should do the generate misregistration string if simulation
-																		// mode
-					// TODO: investigate automode_abort flag. Need to exit gracefully (non-exception) if set.
-
-				} else {
-
-					// FIXME: this might be removed
-
-					// TODO: tell user that auto pupil registration failed
-					// centerPupilManual(); // this would know how to handle simulation modes.
-
-				}
-
-				// TODO: if not frame_ok (global variable), then ask user if they want to retake frame
-				// this construct will probably work
-				if (false) {
-					i--;
-					continue;
-				}
-				// TODO:
+				// TODO: centroid offsets throws an exception if telescope pointing out of tolerance
 				List<Point> referenceSubimageList = null;
+				
 				List<Point> centroidOffsets = imageProcessor.calculateCentroidOffsets(subimageList, referenceSubimageList);
 
-				// TODO: if not frame_ok (global variable), then ask user if they want to retake frame
-				// this construct will probably work
-				if (false) {
-					i--;
-					continue;
-				}
+				// TODO: we need to save the centroid offsets, image rotation, translation and scale for each trial for later calculation
 
 				graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
-
-				wait(967);
 				
 				statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 				
@@ -215,22 +203,48 @@ public class PassiveTiltExecutor {
 				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
 				procedureExecutionState.setPercentComplete(trialPct);
+				
+				} catch (Exception e) {
+					
+					// TODO: ask user if they want to re-take the frame
+					boolean reply = userPromptMgmt.displayYesNoDialog("Can you see this text?");
+					
+					if (reply) {
+						// go back and re-take frame
+						i--;
+						continue;
+					}
+				}
 			}
 
-			// FIXME: what is this really? we need to abstract this
-			// cameraMgmt.cameraCommand("RBF"); //
-
+			// TODO: calc average offsets and calc avg translation, rotation and scale from average offsets
+			
 			imageProcessor.calculateCentroidStats();
 
-			float a = 1.0f;
-			float b = 2.2f;
+			// TODO: we should persist image rotation, scale, rrmsTotal, focusError, enclosedEnergy and enclosed50Energy
+			// TODO: and also: ZPROCLOG_DATA_ACS_FOCUS = ZPROCLOG_DATA_PRIMARY_ACT_FM_RMS/41.1
+			// TODO: and these: procedure number and all frame heading records
 			
-		//	float c = computationLibrary.actuatorLengths(a, b);
+			// TODO: also whatever this does
+			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 			
-			userPromptMgmt.displayYesNoDialog("Can you see this text?");
-		//	statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
-						
-			wait(134);
+			// TODO: display the average centroid offsets
+			//graphicDisplayMgmt.displayCentroidOffsets(????);
+			
+			// TODO: implement actuator lengths
+			// computationLibrary.actuatorLengths(a, b);
+			
+			// TODO: somewhere here we need to command the mirrors
+			
+	        if (lightSource == Constants.LIGHT_SOURCE_LED) {
+	        	// turn off reference beams
+	        	// TODO: make a Future and wait.
+	        	// TODO: futures should have a command 'wait' function that we apply to a set of futures
+	        	cameraMgmt.commandReferenceBeamState(0);
+	        }	
+	        
+	        // TODO: wait for futures
+			
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
@@ -248,6 +262,23 @@ public class PassiveTiltExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
+	/*
+
+// Let's be nice and turn off the lights
+
+    IF (GET_SYMBOL('STUB_DEMO')) OK = CAMERA_COMMAND( 'RBF')
+C
+C Put centroid offsets into its own array again
+C
+
+	 * 
+	 * 
+	 */
+	
+	
+
+	
+	
 	private void wait(int ms) {
 		// here we wait until the pending display is cleared
 		try {
