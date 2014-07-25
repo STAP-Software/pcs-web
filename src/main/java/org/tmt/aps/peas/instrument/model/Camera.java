@@ -187,6 +187,22 @@ public class Camera {
 		this.cameraId = cameraId;
 	}
 
-
+	// return the ref beam with the closest wavelength
+	public ReferenceBeam getReferenceBeamByWavelength(float wavelength) {
+		
+		ReferenceBeam bestCandidate = null;
+		float lowestDifference = 100000.0f;
+		
+		for (ReferenceBeam candidate : referenceBeamSet) {
+			
+			float difference = Math.abs(candidate.getWavelength() - wavelength);
+			
+			if (difference < lowestDifference) {
+				lowestDifference = difference;
+				bestCandidate = candidate;
+			}
+		}
+		return bestCandidate;
+	}
 
 }

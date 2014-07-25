@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
@@ -258,8 +259,6 @@ public class ProcedureConfig {
 	public void setSufsGroup(Integer sufsGroup) {
 		this.sufsGroup = sufsGroup;
 	}
-
-
 
 	public int getLightSource() {
 		return lightSource;

@@ -116,8 +116,10 @@ public class CameraMgmt {
 	 *            the same time. 0-9
 	 * @return
 	 */
-	public void commandReferenceBeamState(int referenceBeamCommand) throws Exception {
+	@Asynchronous
+	public Future<Integer> commandReferenceBeamState(int referenceBeamCommand) throws Exception {
 		extInfFactory.getCameraCommand().commandReferenceBeamState(referenceBeamCommand);
+		return new AsyncResult<Integer>(referenceBeamCommand);
 	}
 
 	/**

@@ -1,0 +1,29 @@
+package org.tmt.aps.peas.common;
+
+import java.util.concurrent.Future;
+
+public class Utils {
+
+	public static void waitForComplete(Future...futures) {
+		
+		while (true) {
+			
+			boolean allDone = true;
+			for(Future f : futures) {
+				if (!f.isDone()) {
+					allDone = false;
+				}
+			}
+			if (allDone) break;
+			
+			// wait and try again
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+	
+	
+}

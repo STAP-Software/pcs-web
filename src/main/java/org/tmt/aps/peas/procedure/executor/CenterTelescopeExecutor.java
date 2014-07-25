@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -29,7 +30,9 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -69,6 +72,8 @@ public class CenterTelescopeExecutor {
 	private ComputationContext computationContext;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
+	@EJB
+	private PhysicalModel physicalModel;
 
 	private List<String> logMessages;
 
@@ -111,31 +116,34 @@ public class CenterTelescopeExecutor {
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
 				// command to mask selected
+				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
 				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
 				// command to filter selected
+				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
 		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-		        	// TODO: select ref beam based on filter position: This used to be filt_pos
-					// but that is wrong and should be stored with each filter which led to use.
-		        	//cameraMgmt.selectRefBeam(); 
+		        	// select ref beam based on filter wavelength
+		        	ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 
 					// extend two pos mirror
+		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
 		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
 		        } else {
-		        	// TODO: turn off reference beams
-		        	//cameraMgmt.selectRefBeam(); 
+		        	// turn off reference beams
+					statusLogger.log("camera.cmd.ref_beam", 0);
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(0); 
 
-					// FIXME: retract two pos mirror
+					// retract two pos mirror
+		        	statusLogger.log("camera.cmd.two_pos_device", "retract");
 		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
 		        }
 			
 				// wait for all commands to complete
-				while (!pupilMaskCommandFuture.isDone() || !filterCommandFuture.isDone() || !twoPosCommandFuture.isDone() || !refBeamFuture.isDone()) {
-					// wait and try again
-					Thread.sleep(500);
-				}
-	
+		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete");
 			} 
 			
 			statusLogger.log("frame.get");
@@ -187,6 +195,7 @@ public class CenterTelescopeExecutor {
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Exception e) {
+			statusLogger.log("procedure.exception");
 			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure);
 
@@ -198,14 +207,7 @@ public class CenterTelescopeExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
-	private void wait(int ms) {
-		// here we wait until the pending display is cleared
-		try {
-			Thread.sleep(ms);
-		} catch (InterruptedException e) {
+	
 
-		}
-
-	}
-
+	
 }
