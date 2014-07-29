@@ -150,6 +150,7 @@ public class CenterTelescopeExecutor {
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+			
 
 			// this is where we display the frame; tell the async controller to update the frame
 			// put up some display that tells user to click on the star
@@ -166,11 +167,18 @@ public class CenterTelescopeExecutor {
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
 			statusLogger.log("frame.mark_guess", guess);
 			
+			FloatPoint centroid = computationLibrary.findCentGauss(ccdFrame.getCorrectedFrame(), guess);
+			// display with recalculated centroid
+			frameDisplayMgmt.setMarking(centroid);
+			frameDisplayMgmt.displayMarkedFrame();
+			statusLogger.log("frame.mark_guess", centroid);
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
 			
+			wait(4000);
+			
 			// get Az, El deltas
-			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(guess, mask.getSecPerPixel());
+			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(centroid, mask.getSecPerPixel());
 			
 			// display result and ask if we should move telescope
 			statusLogger.log("telescope.desired_move", deltaAzEl);
@@ -207,7 +215,15 @@ public class CenterTelescopeExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
-	
+	private void wait(int ms) {
+		// here we wait until the pending display is cleared
+		try {
+			Thread.sleep(ms);
+		} catch (InterruptedException e) {
+
+		}
+
+	}
 
 	
 }

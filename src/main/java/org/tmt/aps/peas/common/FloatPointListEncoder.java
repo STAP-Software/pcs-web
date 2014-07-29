@@ -45,6 +45,32 @@ public class FloatPointListEncoder {
 		return buf.toString();
 	}
 	
+	public static String encodeXList(List<FloatPoint> pointList) {
+		StringBuffer buf = new StringBuffer();
+		if (pointList == null) return null;
+		for (FloatPoint point : pointList) {
+			buf.append(point.x + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+
+	}
+	
+	public static String encodeYList(List<FloatPoint> pointList) {
+		StringBuffer buf = new StringBuffer();
+		if (pointList == null) return null;
+		for (FloatPoint point : pointList) {
+			buf.append(point.y + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+
+	}
+	
 	public static List<FloatPoint> removePoint(List<FloatPoint> pointList, FloatPoint point) {
 		
 		for (Iterator<FloatPoint> it = pointList.iterator(); it.hasNext(); ) {

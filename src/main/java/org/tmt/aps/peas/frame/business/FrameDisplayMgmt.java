@@ -88,10 +88,15 @@ public class FrameDisplayMgmt implements Serializable {
 		}
 	}
 	
+	public void setMarking(FloatPoint centroid) {
+		markList = new ArrayList<FloatPoint>();
+		markList.add(centroid);
+	}
+	
 	public List<FloatPoint> getMarkList() {
 		return markList;
 	}
-
+	
 	public String getFrameInstructions() {
 		return frameInstructions;
 	}

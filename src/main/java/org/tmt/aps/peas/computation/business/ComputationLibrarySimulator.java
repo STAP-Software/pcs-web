@@ -51,4 +51,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel) {
 		return JavaComputations.pixOffsetsToArcSeconds(measuredPix, secPerPixel);
 	}
+
+	@Override
+	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess) {
+		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
+	}
+	
+	
 }

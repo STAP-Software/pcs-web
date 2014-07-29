@@ -14,6 +14,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -137,8 +138,16 @@ public class AsyncController {
 	private void checkFrameDisplay() {
 		
 		if (getDisplayNewFrame() || getMarkNewFrame()) {
+			
+			// get the marking to the procedure
+			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
+			String yList = FloatPointListEncoder.encodeYList(frameDisplayMgmt.getMarkList());
+			procedureController.setCentroidXs(xList);
+			procedureController.setCentroidYs(yList);
+			
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:framePanel");
+			requestContext.update("frameHiddenForm");
 			requestContext.execute("drawFrame()");
 			
 			if (frameDisplayMgmt.getFrameInstructions() != null) {

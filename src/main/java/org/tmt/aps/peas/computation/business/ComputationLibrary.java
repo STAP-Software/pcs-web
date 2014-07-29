@@ -15,4 +15,6 @@ public interface ComputationLibrary {
 	
 	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel);  // local java routine
 	
+	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess) throws ComputationException;
+	
 }

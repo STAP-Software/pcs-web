@@ -16,4 +16,10 @@ public class ComputationException extends Exception {
 		super(message);
 		this.errorCode = errorCode;
 	}
+
+	public ComputationException(String message) {
+		super(message);
+	}
+
+
 }
