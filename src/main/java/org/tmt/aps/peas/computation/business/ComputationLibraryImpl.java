@@ -48,11 +48,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		JfindCentGauss jfindCentGauss = new JfindCentGauss();
 		RetVal retVal = new RetVal();
 		// temporary only.  The following vars will be in configuration maybe 
-		int itermax = 6;
-		int irad = 5;
-		int imargin = 2;
-		int nspotType = 1;
-		int ngauss = 1;
+		int itermax = 80; // global config
+		int irad = 20; // box radius - property of the mask
+		int imargin = 40; // property of the mask
+		int nspotType = 1; // peripheral or not (this needs to be passed in)
+		int ngauss = 0; // property of the mask
 		
 		Object[] result = jfindCentGauss.jfindCentGauss(retVal, frame, irad, imargin, (int)guess.x, (int)guess.y, itermax, nspotType, ngauss);
 		
