@@ -53,6 +53,8 @@ public class StatusLogController implements Serializable {
 		this.procedureStatusLog = statusLogMgmt.getProcedureStatusLog(procedureController.getProcedure().getProcedureId());
 	}
 	
-
+	public void clearProcedureStatusLog() {
+		procedureStatusLog = new ProcedureStatusLog();
+	}
 	
 }

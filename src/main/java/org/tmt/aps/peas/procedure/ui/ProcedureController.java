@@ -379,10 +379,13 @@ public class ProcedureController implements Serializable {
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 			
-			
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
+			
+			// clear the status log
+			statusLogController.clearProcedureStatusLog();
+			
 			logger.info("default mask = " + procedure.getProcedureConfig().getPupilMask());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
