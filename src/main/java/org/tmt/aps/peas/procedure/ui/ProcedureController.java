@@ -40,6 +40,8 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
+import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
@@ -92,6 +94,8 @@ public class ProcedureController implements Serializable {
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	GlobalConfigMgmt globalConfigMgmt;
+	@EJB
+	DcsMgmt dcsMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -432,6 +436,17 @@ public class ProcedureController implements Serializable {
 				e.printStackTrace();
 			}
 
+		} else {
+			// get the star info from the DCS interface
+			try {
+				StarInfo starInfo = dcsMgmt.queryStar();
+				procedure.setStarName(starInfo.getStarName());
+				procedure.setStarSpType(starInfo.getStarColor());
+				procedure.setStarVmag(String.format("%.2f", starInfo.getStarMag()));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 
 		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfig().getPupilMask());
