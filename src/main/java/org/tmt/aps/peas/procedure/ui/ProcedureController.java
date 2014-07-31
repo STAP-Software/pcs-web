@@ -38,6 +38,7 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -426,7 +427,11 @@ public class ProcedureController implements Serializable {
 			FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 			procedure.setFiConfig(fiConfig);
-		}
+		} 
+		
+		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
+				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			procedure.setFindCentConfig(findCentConfig);
 
 		procedureExecutionState.init(procedure);
 

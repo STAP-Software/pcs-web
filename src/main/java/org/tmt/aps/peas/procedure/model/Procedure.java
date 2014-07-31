@@ -26,6 +26,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -115,6 +116,8 @@ public class Procedure {
 
 	@Transient
 	private FIConfig fiConfig;
+	@Transient
+	private FindCentConfig findCentConfig;
 	
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
@@ -272,6 +275,14 @@ public class Procedure {
 
 	public void setFiConfig(FIConfig fiConfig) {
 		this.fiConfig = fiConfig;
+	}
+
+	public FindCentConfig getFindCentConfig() {
+		return findCentConfig;
+	}
+
+	public void setFindCentConfig(FindCentConfig findCentConfig) {
+		this.findCentConfig = findCentConfig;
 	}
 
 	public String getProcedureStateDisplayString() {

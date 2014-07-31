@@ -12,6 +12,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 
 @Stateless
@@ -42,5 +43,15 @@ public class GlobalConfigMgmt {
 		
 		return query.getSingleResult();
 
+	}
+
+	public FindCentConfig findFindCentConfig(Long pupilMaskTypeId) {
+		
+		TypedQuery<FindCentConfig> query = em.createNamedQuery("findByMaskType", FindCentConfig.class);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
 	}
 }

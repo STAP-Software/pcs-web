@@ -167,7 +167,9 @@ public class CenterTelescopeExecutor {
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
 			statusLogger.log("frame.mark_guess", guess);
 			
-			FloatPoint centroid = computationLibrary.findCentGauss(ccdFrame.getCorrectedFrame(), guess);
+			// call find cent with the guess
+			FloatPoint centroid = computationLibrary.findCentGauss(ccdFrame.getCorrectedFrame(), guess, procedure.getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
+			
 			// display with recalculated centroid
 			frameDisplayMgmt.setMarking(centroid);
 			frameDisplayMgmt.displayMarkedFrame();

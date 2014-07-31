@@ -8,6 +8,7 @@ package org.tmt.aps.peas.computation.business;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCentGauss;
 import org.tmt.aps.peas.lang.interop.Jsum;
@@ -43,18 +44,13 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return c[0];
 	}
 
-	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess) throws ComputationException {
+	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 		
 		JfindCentGauss jfindCentGauss = new JfindCentGauss();
 		RetVal retVal = new RetVal();
-		// temporary only.  The following vars will be in configuration maybe 
-		int itermax = 80; // global config
-		int irad = 20; // box radius - property of the mask
-		int imargin = 40; // property of the mask
-		int nspotType = 1; // peripheral or not (this needs to be passed in)
-		int ngauss = 0; // property of the mask
 		
-		Object[] result = jfindCentGauss.jfindCentGauss(retVal, frame, irad, imargin, (int)guess.x, (int)guess.y, itermax, nspotType, ngauss);
+		Object[] result = jfindCentGauss.jfindCentGauss(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
+				(int)guess.x, (int)guess.y, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);

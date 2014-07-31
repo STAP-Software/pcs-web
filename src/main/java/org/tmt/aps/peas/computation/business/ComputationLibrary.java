@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.computation.business;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 
 
 public interface ComputationLibrary {
@@ -15,6 +16,6 @@ public interface ComputationLibrary {
 	
 	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel);  // local java routine
 	
-	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess) throws ComputationException;
+	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
 	
 }

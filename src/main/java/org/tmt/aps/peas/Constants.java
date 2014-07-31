@@ -47,6 +47,7 @@ public class Constants {
 	public static final int AUTO_TAKE_REF_MAPS_NO = 2;
 	public static final int AUTO_TAKE_REF_MAPS_PROMPT = 3;
 
-	
+	public static final int SPOT_TYPE_INTERIOR = 1;
+	public static final int SPOT_TYPE_PERIPHERAL = 2;
 	
 }

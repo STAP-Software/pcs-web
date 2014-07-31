@@ -10,6 +10,7 @@ import javax.naming.InitialContext;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -53,7 +54,10 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess) {
+	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
+			throws ComputationException {
+		// TODO Auto-generated method stub
+		logger.debug("findCentConfig = " + findCentConfig);
 		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
 	}
 	
