@@ -39,7 +39,6 @@ public class ProcedureOutputValue {
 	ProcedureOutputField procedureOutputField;
 
 	
-	
 	public Long getProcedureOutputValueId() {
 		return procedureOutputValueId;
 	}

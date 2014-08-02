@@ -23,6 +23,7 @@ public class Constant {
 	public static final int DATA_TYPE_DOUBLE = 2;
 	public static final int DATA_TYPE_INT_POINT = 3;  // x1,y1,x2,y1,etc - only used in array types
 	public static final int DATA_TYPE_FLOAT_POINT = 4;  // x1,y1,x2,y1,etc - only used in array types
+	public static final int DATA_TYPE_BOOLEAN = 5;
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

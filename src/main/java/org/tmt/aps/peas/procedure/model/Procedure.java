@@ -118,6 +118,8 @@ public class Procedure {
 	private FIConfig fiConfig;
 	@Transient
 	private FindCentConfig findCentConfig;
+	@Transient
+	private ProcedureOutput procedureOutput;
 	
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
@@ -283,6 +285,14 @@ public class Procedure {
 
 	public void setFindCentConfig(FindCentConfig findCentConfig) {
 		this.findCentConfig = findCentConfig;
+	}
+
+	public ProcedureOutput getProcedureOutput() {
+		return procedureOutput;
+	}
+
+	public void setProcedureOutput(ProcedureOutput procedureOutput) {
+		this.procedureOutput = procedureOutput;
 	}
 
 	public String getProcedureStateDisplayString() {

@@ -75,10 +75,8 @@ public class SessionController implements Serializable {
 		
 		if (currentSession == null) {
 			currentSession = createNewSession();
-		} else {
-			// order procedures by procedure number
-			Collections.sort(currentSession.getProcedureList(), new BeanComparator("procedureNumber"));
-		}
+		} 
+		
 		
 		advancedViewMode = false;
 		
@@ -197,6 +195,9 @@ public class SessionController implements Serializable {
 		
 		session = sessionMgmt.findSession(session.getSessionId());
 		
+		// order procedures by procedure number
+		Collections.sort(session.getProcedureList(), new BeanComparator("procedureNumber"));
+		
 		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 
@@ -233,9 +234,7 @@ public class SessionController implements Serializable {
 	public void setupNewProcedure(Procedure procedure) {
 		int procNum = sessionMgmt.getNextProcedureNumber(currentSession.getSessionId());
 		procedure.setProcedureNumber(procNum);
-
-		currentSession.getProcedureList().add(procedure);
-		
+		currentSession.getProcedureList().add(procedure);		
 	}
 	
 	public void modeChangeListener() {

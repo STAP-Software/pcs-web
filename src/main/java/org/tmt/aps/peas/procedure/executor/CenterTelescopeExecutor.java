@@ -35,6 +35,7 @@ import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.session.model.Session;
@@ -104,7 +105,9 @@ public class CenterTelescopeExecutor {
 		try {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
-
+			
+			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();
+			
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			procedureExecutionMgmt.performProcedureStartup(procedure);
@@ -165,10 +168,12 @@ public class CenterTelescopeExecutor {
 
 			// get marking data from the frame display
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
+			procedureOutput.setCentroidGuess(guess);
 			statusLogger.log("frame.mark_guess", guess);
 			
 			// call find cent with the guess
 			FloatPoint centroid = computationLibrary.findCentGauss(ccdFrame.getCorrectedFrame(), guess, procedure.getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
+			procedureOutput.setCentroid(centroid);
 			
 			// display with recalculated centroid
 			frameDisplayMgmt.setMarking(centroid);
@@ -181,12 +186,14 @@ public class CenterTelescopeExecutor {
 			
 			// get Az, El deltas
 			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(centroid, mask.getSecPerPixel());
+			procedureOutput.setDeltaAzEl(deltaAzEl);
 			
 			// display result and ask if we should move telescope
 			statusLogger.log("telescope.desired_move", deltaAzEl);
 			
 			String text = MessageGenerator.generateMessage("telescope.desired_move", deltaAzEl);
 			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
+			procedureOutput.setCmdTelescope(cmdTelescope);
 			
 			// depending on what user answers, either command telescope or quit
 			if (cmdTelescope) {

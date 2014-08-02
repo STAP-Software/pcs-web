@@ -35,6 +35,8 @@ public class ProcedureExecutionMgmt {
 	private StatusLogger statusLogger;
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
+	@EJB
+	private ProcedureOutputMgmt procedureOutputMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 
@@ -93,6 +95,9 @@ public class ProcedureExecutionMgmt {
 			}
 
 			statusLogger.saveLog(procedure.getProcedureId());
+			
+			// persist the procedure output
+			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
 
 		} catch (Exception e) {
 			e.printStackTrace();

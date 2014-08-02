@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ProcedureOutputField")
 @NamedQueries({
-	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where className = :className" )
+	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className" )
 })
 public class ProcedureOutputField {
 	

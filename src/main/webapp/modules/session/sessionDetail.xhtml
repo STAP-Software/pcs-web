@@ -79,13 +79,13 @@
 									target="#{procedureController.procedure}" value="#{procedure}" />
 							</p:commandLink>
 						</p:column>
-						<p:column headerText="Procedure Number">
+						<p:column headerText="Procedure Number" sortBy="#{procedure.procedureNumber}">
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
 						<p:column headerText="Test Number">
 							<h:outputText value="1" />
 						</p:column>
-						<p:column headerText="Procedure Type">
+						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
 							<h:outputText
 								value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>

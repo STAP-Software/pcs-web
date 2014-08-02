@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.business;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -13,6 +14,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Stateless
@@ -23,11 +25,19 @@ public class ProcedureMgmt {
 	@PersistenceContext
 	private EntityManager em;
 	
+	@EJB
+	ProcedureOutputMgmt procedureOutputMgmt;
+	
 	public Procedure findProcedure(Long procedureId) {
 		TypedQuery<Procedure> query = em.createNamedQuery("findProcedure", Procedure.class);
 		query.setParameter("procedureId", procedureId);
 		
-		return query.getSingleResult();
+		Procedure procedure = query.getSingleResult();
+		
+		ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedureId);
+		procedure.setProcedureOutput(procedureOutput);
+		
+		return procedure;
 	}
 
 	public ProcedureType findProcedureType(Long procedureTypeId) {

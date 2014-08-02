@@ -99,7 +99,13 @@
 							<h:outputLabel value="Procedure Type" />
 							<h:outputText value="#{procedureController.procedureType.procedureTypeName}" />
 							<h:outputLabel value="Procedure #" />
+							<h:panelGroup>
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
+							<p:spacer height="1px" width="15px"/>
+							<p:commandLink ajax="true" update=":procedureLogForm" oncomplete="procedureLogDialog.show();" style="text-weight:normal;text-color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
+								<h:outputText value="Procedure Log"/>
+							</p:commandLink>
+							</h:panelGroup>
 							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
 							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}"
 								rendered="#{procedureController.procedure.procedureState ge 3}" />
@@ -299,6 +305,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		</h:form>
 
 		<ui:include src="advancedOptions.xhtml" />
+		<ui:include src="procedureLogDialog.xhtml" />
 		<ui:include src="executionPreferences.xhtml" />
 		<ui:include src="fitsFileLoadDialog.xhtml" />
 

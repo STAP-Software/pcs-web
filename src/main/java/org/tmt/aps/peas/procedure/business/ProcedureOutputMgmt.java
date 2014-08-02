@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
+import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
@@ -35,7 +36,7 @@ public class ProcedureOutputMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
-	public ProcedureOutput createProcedureOutput(ProcedureOutput procedureOutput) throws Exception {
+	public ProcedureOutput createProcedureOutput(ProcedureOutput procedureOutput, Long procedureId) throws Exception {
 
 		// generate all the ProcedureOutputValues for this procedureOutput
 		// get all field methods from the class
@@ -44,7 +45,7 @@ public class ProcedureOutputMgmt {
 		Method[] methods = poClass.getMethods();
 
 		// get the fieldId from the metadata
-		Map<String, ProcedureOutputField> outputFieldMap = getOuputFieldMapForClass(poClass.getName());
+		Map<String, ProcedureOutputField> outputFieldMap = getOuputFieldMapForClass(poClass.getSimpleName());
 
 		// loop over all getter methods
 		for (Method method : methods) {
@@ -54,31 +55,43 @@ public class ProcedureOutputMgmt {
 
 				ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
 
-				// construct a new ProcedureOutputValue
-				ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
-				procedureOutputValue.setProcedureId(procedureOutput.getProcedureId());
-				procedureOutputValue.setProcedureOutputField(procedureOutputField);
+				if (procedureOutputField != null) {
 
-				// encode the field data for store
-				String data = encodeObjectFieldValue(procedureOutput, method);
+					// construct a new ProcedureOutputValue
+					ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
+					procedureOutputValue.setProcedureId(procedureId);
+					procedureOutputValue.setProcedureOutputField(procedureOutputField);
+					procedureOutputValue.setIteration(1);
 
-				procedureOutputValue.setData(data);
+					// encode the field data for store
+					String data = encodeObjectFieldValue(procedureOutput, method);
 
-				em.persist(procedureOutputValue);
+					procedureOutputValue.setData(data);
 
+					em.persist(procedureOutputValue);
+				}
 			}
 		}
 
-		em.persist(procedureOutput);
-		
+		// em.persist(procedureOutput);
+
 		return procedureOutput;
 	}
 
 	public ProcedureOutput findProcedureOutput(Long procedureId) {
 
-		// TODO: fill out an entire ProcedureOutput object 
+		// fill out a list of ProcedureOutputValues
 		
-		return null;
+		// FIXME: not sure if we have a case where we need the values populating a subclass of ProcedureOutput
+		ProcedureOutput procedureOutput = new ProcedureOutput();
+		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputValuesForProcedure", ProcedureOutputValue.class);
+		query.setParameter("procedureId", procedureId);
+
+		List<ProcedureOutputValue> procedureOutputList = query.getResultList();
+
+		procedureOutput.setProcedureOutputList(procedureOutputList);
+		
+		return procedureOutput;
 	}
 
 	// returns a map of field names to field Ids for procedureOutputFields
@@ -112,34 +125,34 @@ public class ProcedureOutputMgmt {
 		// extract and convert the data
 		Class returnTypeClass = method.getReturnType();
 		Object[] args = new Object[0];
-		
+
 		if (returnTypeClass.isArray()) {
-			
-			Object[] returnArray = (Object[])method.invoke(object, args);
-			
+
+			Object[] returnArray = (Object[]) method.invoke(object, args);
+
 			StringBuffer buf = new StringBuffer();
 			for (Object element : returnArray) {
-				
+
 				if (element.getClass().isArray()) {
-					
+
 					for (Object subelement : returnArray) {
-					
+
 						buf.append("" + subelement + ", ");
 					}
-					
+
 				} else {
 					buf.append("" + element + ", ");
 				}
-				
+
 			}
-			
-			buf.delete(buf.length()-2, buf.length());
+
+			buf.delete(buf.length() - 2, buf.length());
 			return buf.toString();
-			
+
 		} else {
 			return "" + method.invoke(object, args);
 		}
-		
+
 	}
 
 	private void decodeAndSetObjectFieldValue(Object constantsInstance, Constant constant) throws Exception {
@@ -168,6 +181,12 @@ public class ProcedureOutputMgmt {
 				Double doubleValue = new Double(constant.getData());
 				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), double.class);
 				method.invoke(constantsInstance, doubleValue);
+				break;
+
+			case Constant.DATA_TYPE_BOOLEAN:
+				Boolean booleanValue = new Boolean(constant.getData());
+				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), boolean.class);
+				method.invoke(constantsInstance, booleanValue);
 				break;
 
 			}

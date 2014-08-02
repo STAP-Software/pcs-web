@@ -59,8 +59,11 @@ import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
+import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
+import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOuput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
@@ -324,31 +327,31 @@ public class ProcedureController implements Serializable {
 
 	// setup for each procedure type
 	public String doNewPassiveTilt() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT, new PassiveTiltProcedureOuput());
 	}
 	public String doNewPhasing() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING, null);
 	}
 	public String doNewFineScreen() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN, null);
 	}
 	public String doNewSufs() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS, null);
 	}
 	public String doNewPupilRegistration() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION, null);
 	}
 	public String doNewCenterTelescope() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE, new CenterTelescopeProcedureOutput());
 	}
 	public String doNewCreateRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, null);
 	}
 	public String doNewCreateFirstRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);
 	}
 	
-	public String doNewProcedure(Long procedureTypeId) {
+	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
 		try {
 			procedure = new Procedure();
@@ -356,6 +359,8 @@ public class ProcedureController implements Serializable {
 			// get the procedure type object
 			procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 			procedure.setProcedureType(procedureType);
+			
+			procedure.setProcedureOutput(procedureOutput);
 			
 			sessionController.setCurrentProcedureTypeId(procedureTypeId);
 
@@ -487,6 +492,8 @@ public class ProcedureController implements Serializable {
 	public String doViewProcedure() {
 
 		procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
+		
+		procedureType = procedure.getProcedureType();
 
 		statusLogController.refreshProcedureStatusLog();
 
@@ -508,7 +515,7 @@ public class ProcedureController implements Serializable {
 			// if a png file for display exists, read it in. Otherwise create it.
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 			procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
-
+			
 		}
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
@@ -534,7 +541,7 @@ public class ProcedureController implements Serializable {
 	public void doCancelSaveExecutionPreferences() {
 
 	}
-	
+		
 	// ====================================================================================== //
 	//   Visualization Displays                                                               //
 	// ====================================================================================== //
