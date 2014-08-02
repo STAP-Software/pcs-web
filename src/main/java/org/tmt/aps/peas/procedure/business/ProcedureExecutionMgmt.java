@@ -98,6 +98,8 @@ public class ProcedureExecutionMgmt {
 			
 			// persist the procedure output
 			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
+			// set up for immediate viewing
+			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
 		} catch (Exception e) {
 			e.printStackTrace();

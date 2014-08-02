@@ -49,9 +49,10 @@ public class ProcedureOutputMgmt {
 
 		// loop over all getter methods
 		for (Method method : methods) {
-			if (method.getName().startsWith("get")) {
+			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
 
 				String fieldName = deriveFieldNameFromGetter(method.getName());
+				System.out.println("fieldName = " + fieldName);
 
 				ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
 
@@ -115,9 +116,8 @@ public class ProcedureOutputMgmt {
 
 	private String deriveFieldNameFromGetter(String getterMethodName) {
 
-		String string = getterMethodName.substring(3);
+		String string = (getterMethodName.startsWith("is")) ? getterMethodName.substring(2) : getterMethodName.substring(3);
 		return Character.toLowerCase(string.charAt(0)) + (string.length() > 1 ? string.substring(1) : "");
-
 	}
 
 	private String encodeObjectFieldValue(Object object, Method method) throws Exception {
