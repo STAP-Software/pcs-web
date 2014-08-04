@@ -11,8 +11,6 @@ import javax.ejb.AsyncResult;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
@@ -131,8 +129,10 @@ public class CameraMgmt {
 	 *            Desired CCD power state (0 = off, 1 = on) 0 or 1
 	 * @return achieved CCD Power State (0 = off, 1 = on)
 	 */
-	public int commandCcdPowerState(int ccdPowerState) throws Exception {
-		return extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
+	@Asynchronous
+	public Future<Integer> commandCcdPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
 	@Asynchronous

@@ -287,15 +287,12 @@ public class CameraManualController implements Serializable {
 
 			case 8: // CCD Power
 
-				if (ccdPowerCmd == Ccd.POWER_STATE_ON) {
-					int ccdState = cameraMgmt.commandCcdPowerState(1);
-					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-
-				} else if (ccdPowerCmd == Ccd.POWER_STATE_OFF) {
-					int ccdState = cameraMgmt.commandCcdPowerState(0);
-					ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-
+				Future<Integer> ccdPowerFuture = cameraMgmt.commandCcdPowerState(ccdPowerCmd == Ccd.POWER_STATE_ON ? 1 : 0);
+				while (!ccdPowerFuture.isDone()) {
+					Thread.sleep(500);
 				}
+				int ccdState = ccdPowerFuture.get();
+				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
 				break;
 
 			default:
