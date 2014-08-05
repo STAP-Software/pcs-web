@@ -18,15 +18,19 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -65,6 +69,8 @@ public class CreateRefMapExecutor {
 	private ComputationContext computationContext;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
+	@EJB
+	private PhysicalModel physicalModel;
 
 	private List<String> logMessages;
 
@@ -104,109 +110,139 @@ public class CreateRefMapExecutor {
 			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+			
+			// TODO: what is this message for??
 			statusLogger.log("camera.not_init"); 
 
+			 // TODO: mask chosen will determine the type of ref beam map
+			 // TODO: the integration time is given by the filter and mask type chosen - this will be a new table
+			 //       This should probably be a default given that can be overridden by the operator.  Not sure who should be able to override, though.
+			 // Spot_Count is numSpots from pupilMaskType
+			
+		    // TODO: Special logic for SUFS                                                    
+			/*
+			IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
+		           REF_SUFS_GROUP = CURRENT_SUFS_GROUP
 
-			wait(1);
+			END IF
+			*/
+
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
-				// TODO: implement
-				// autoPointTelescope();
+				// TODO: SUFS Specific code
+				/*
+				IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN  ! SUfs specific code
+		           OK = SUFS_GROUP_SELECT(ZREFMAP_GROUP)
+		           IF (.NOT.OK) THEN
+		              TEXT = 'Group not positioned correctly error.'
+		              CALL DISP_WRITE(TEXT, LEN(TEXT))
 
+		              GOTO 900
+		           END IF
+		        END IF
+				*/
+				
+				// TODO: Special logic for selecting which ref beam for UFS/SUFS
+				/*
+				IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
+					IF(ZREFMAP_REF.GT.9) THEN
+						REFNUM = 'F'
+					ELSE
+						WRITE(UNIT=REFNUM, FMT='(I1)') ZREFMAP_REF
+					END IF
+					OK = ACTIVATE_REF_BEAM(REFNUM)
+				END IF
+				*/
+				
+
+				Future<Integer> twoPosCommandFuture = null;
+				Future<Integer> refBeamFuture = null;
+				// command to mask selected
+				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
 				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-
+				// command to filter selected
+				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
-				// TODO: implement
-				// autoRefmapCheck();
+		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+		        	// select ref beam based on filter wavelength
+		        	ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 
-				Future<Point> coarseFuture = cameraMgmt.commandCoarseTiltMirror(new Point(0,0));
-				Future<Point> fineFuture = cameraMgmt.commandFineTiltMirror(new Point(0,0));
+					// extend two pos mirror
+		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
+		        } else {
+		        	// turn off reference beams
+					statusLogger.log("camera.cmd.ref_beam", 0);
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(0); 
+
+					// retract two pos mirror
+		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
+		        }
+			
+				// wait for all commands to complete
+		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete");
 				
-				//cameraMgmt.readyCamera();
-
-				//cameraMgmt.selectRefBeam(); // check if this is a command or something else
-
-				// FIXME
-				// cameraMgmt.cameraCommand("45E"); //extend two position mirror, for ref map is this retract??
-				
-				// wait for 
-				while (!pupilMaskCommandFuture.isDone() || !filterCommandFuture.isDone()) {
-					// wait and try again
-					Thread.sleep(500);
-				}
-				while (!coarseFuture.isDone() || !fineFuture.isDone()) {
-					// wait and try again
-					Thread.sleep(500);
-				}
 			}
 	
-			statusLogger.log("procedure.using_curr_frame");
-			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
+			statusLogger.log("frame.get");
+			
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
+			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+			
+			// TODO: this is where we display the frame
+			// tell the async controller to update the frame
+			frameDisplayMgmt.displayFrame();
+			
+			 
+			statusLogger.log("fandi.start");
+			
+			List<Point> subimageList = null;
+			
+			// TODO: use NumSpots and maybe findAndIdentify should take an array of FloatPoints
+			float centroids[][] = new float [36][2];
+			computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
+			
+			// TODO: this is where we display the marked frame
+			frameDisplayMgmt.displayMarkedFrame();
+
+			statusLogger.log("fandi.search_count", 1);
+			statusLogger.log("fandi.frame_scale", 0.9530617);
+			statusLogger.log("fandi.rotation", 0.3370904);
+			statusLogger.log("fandi.frame_scale", 0.9840439);
+			statusLogger.log("fandi.center_calc");
+			
+			statusLogger.log("fandi.end.success");
+
+			graphicDisplayMgmt.displaySubimageCentroids(subimageList);
+
+			
+
+		// TODO: do a status log of the following
+        // This test has successfully completed\n and the reference beam map is created.\nThe map is now ready to save to disk.                  
+
+		 
+		// TODO: test against auto-save-map option, ask user if they want to save the map if needed
 		
-			for (int i = 0; i < procedureConfig.getNumberOfTrials(); i++) {
+		// TODO: implement save 
+        //  CALL REF_MAP_SAVE_INIT()
+	   	//  CALL SAVE_REF_MAP(ZREFMAP_SAVE_FILE)
 
-				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), i, i);
-				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
-				
-				// TODO: this is where we display the frame
-				// tell the async controller to update the frame
-				frameDisplayMgmt.displayFrame();
-				
-				wait(4670);
-
-				statusLogger.log("fandi.start");
-				
-				List<Point> subimageList = null;
-				
-				float centroids[][] = new float [36][2];
-				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
-				
-				// TODO: this is where we display the marked frame
-				frameDisplayMgmt.displayMarkedFrame();
-
-				wait(2000);
-				
-				statusLogger.log("fandi.search_count", 1);
-				statusLogger.log("fandi.frame_scale", 0.9530617);
-				statusLogger.log("fandi.rotation", 0.3370904);
-				statusLogger.log("fandi.frame_scale", 0.9840439);
-				statusLogger.log("fandi.center_calc");
-				
-				statusLogger.log("fandi.end.success");
-
-				graphicDisplayMgmt.displaySubimageCentroids(subimageList);
-
-				// TODO: if not frame_ok (global variable), then ask user if they want to retake frame
-				// this construct will probably work
-				if (false) {
-					i--;
-					continue;
-				}
-				// TODO:
-
-				wait(967);
+                                                                       
+		// TODO: if SUFS, then Home the coarse mirror 
+		// CALL UFS_SEGMENT_SELECT(0)
+		// CALL UFS_SEG_POS_WRITE
+			
 								
-				int trialPct = (int) ((((i+1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
+			int trialPct = (int) ((((1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
-				procedureExecutionState.setPercentComplete(trialPct);
-			}
-
-			// FIXME: what is this really? we need to abstract this
-			// cameraMgmt.cameraCommand("RBF"); //
-
-			/*
-			float a = 1.0f;
-			float b = 2.2f;
-			
-			float c = computationLibrary.actuatorLengths(a, b);
-			*/
-			
-			//userPromptMgmt.displayYesNoDialog("Can you see this text?");
-		//	statusLogger.log("computationLibrary: a,b,c = " + a + " " + b + " " + c);
+			procedureExecutionState.setPercentComplete(trialPct);
 						
-			wait(134);
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
