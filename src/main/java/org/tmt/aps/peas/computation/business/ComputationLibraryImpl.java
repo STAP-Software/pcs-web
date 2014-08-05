@@ -54,12 +54,9 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-		}
-
-		if ((Boolean)result[2]) {
 			throw new ComputationException("No good centroid could be found");
 		}
-		
+
 		FloatPoint centroid = new FloatPoint((Float)result[0], (Float)result[1]);
 
 		return centroid;
