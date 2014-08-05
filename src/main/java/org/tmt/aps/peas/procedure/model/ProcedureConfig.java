@@ -25,7 +25,6 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
@@ -63,7 +62,7 @@ public class ProcedureConfig {
 	
 	private int filterType;
 	
-	private float integrationTime;
+	private Float integrationTime;
 	@Column(name="numTrials")
 	private int numberOfTrials = 1;
 	private int frameSource;
@@ -116,11 +115,11 @@ public class ProcedureConfig {
 		this.filter = filter;
 	}
 
-	public float getIntegrationTime() {
+	public Float getIntegrationTime() {
 		return integrationTime;
 	}
 
-	public void setIntegrationTime(float integrationTime) {
+	public void setIntegrationTime(Float integrationTime) {
 		this.integrationTime = integrationTime;
 	}
 

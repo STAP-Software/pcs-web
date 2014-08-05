@@ -46,17 +46,12 @@
 
 							<p:row>
 								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Integration Time" />
+									<h:outputLabel value="Integration Time (sec)" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
-										disabled="#{procedureController.procedure.procedureState gt 1}"
-										ajax="true" update="@this" process="@this">
-										<f:selectItem itemLabel="Select One" itemValue="" />
-										<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
-										<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
-										<f:selectItem itemLabel="40.00 sec" itemValue="40.00" />
-										<f:selectItem itemLabel="50.00 sec" itemValue="50.00" />
+										disabled="#{procedureController.procedure.procedureState gt 1}" >
+										<f:selectItems value="#{procedureController.procedureType.integrationTimeList}" />
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
@@ -64,7 +59,7 @@
 							<p:row rendered="#{procedureController.renderNumTrials}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Number of Trials" />
-								</p:column>
+								</p:column>   
 								<p:column styleClass="btmsFormInputColumn">
 									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfig.numberOfTrials}"
 										size="2" disabled="#{procedureController.procedure.procedureState gt 1}" />

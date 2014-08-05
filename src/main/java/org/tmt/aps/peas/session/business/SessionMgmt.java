@@ -64,7 +64,7 @@ public class SessionMgmt {
 				return query.getSingleResult();
 
 			} catch (NoResultException nre) {
-				nre.printStackTrace();
+				logger.info("no current session found");
 				return null;
 			}
 		} catch (Exception e) {

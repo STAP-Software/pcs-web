@@ -12,6 +12,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -45,7 +46,9 @@ public class ProcedureMgmt {
 		query.setParameter("procedureTypeId", procedureTypeId);
 		query.setMaxResults(1);
 		
-		return query.getSingleResult();
+		ProcedureType procedureType = query.getSingleResult();
+			
+		return procedureType;
 	}
 	
 	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {

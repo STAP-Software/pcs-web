@@ -5,6 +5,9 @@
  */
 package org.tmt.aps.peas.procedure.model;
 
+import java.util.Collections;
+import java.util.List;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +17,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
@@ -48,6 +53,11 @@ public class ProcedureType {
 	@JoinColumn(name = "defaultMaskTypeId", referencedColumnName = "pupilMaskTypeId")
 	PupilMaskType defaultPupilMaskType;
 
+	@Column(nullable=false, length=255)
+	String defaultIntTimes;
+	
+	@Transient
+	List<Float> integrationTimeList;
 	
 	public Long getProcedureTypeId() {
 		return procedureTypeId;
@@ -87,7 +97,23 @@ public class ProcedureType {
 	public boolean isFineScreen() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_FINE_SCREEN);
 	}
+	public String getDefaultIntTimes() {
+		return defaultIntTimes;
+	}
+	public void setDefaultIntTimes(String defaultIntTimes) {
+		this.defaultIntTimes = defaultIntTimes;
+	}
 	
+	public List<Float> getIntegrationTimeList() {
+		if (integrationTimeList == null && defaultIntTimes != null) {
+			integrationTimeList =  FloatListEncoder.decodeList(defaultIntTimes);
+			Collections.sort(integrationTimeList);
+		} 
+		return integrationTimeList;
+	}
+	public void setIntegrationTimeList(List<Float> integrationTimeList) {
+		this.integrationTimeList = integrationTimeList;
+	}
 	public String toString() {
 		return procedureTypeName;
 	}
