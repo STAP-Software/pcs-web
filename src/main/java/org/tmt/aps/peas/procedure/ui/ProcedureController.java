@@ -36,6 +36,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
+import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -392,6 +393,16 @@ public class ProcedureController implements Serializable {
 			// clear the status log
 			statusLogController.clearProcedureStatusLog();
 			
+			// clear any selected FITS files
+			selectedFitsFiles = null;
+			
+			// clear any marking
+			frameDisplayMgmt.clearMarking();
+
+			// clean up from previous procedure state
+			procedureExecutionState.init(procedure);
+
+			
 			logger.info("default mask = " + procedure.getProcedureConfig().getPupilMask());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
@@ -438,7 +449,6 @@ public class ProcedureController implements Serializable {
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 			procedure.setFindCentConfig(findCentConfig);
 
-		procedureExecutionState.init(procedure);
 
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfig().isFrameFromFile()) {

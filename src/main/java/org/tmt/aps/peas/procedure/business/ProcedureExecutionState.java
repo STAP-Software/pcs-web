@@ -23,6 +23,8 @@ public class ProcedureExecutionState {
 
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
+		executionStatus = false;
+		percentComplete = 0;
 	}
 	
 	public boolean getExecutionStatus() {

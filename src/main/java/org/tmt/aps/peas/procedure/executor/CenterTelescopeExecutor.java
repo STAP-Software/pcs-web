@@ -181,9 +181,7 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("frame.mark_guess", centroid);
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
-			
-			wait(4000);
-			
+						
 			// get Az, El deltas
 			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(centroid, mask.getSecPerPixel());
 			procedureOutput.setDeltaAzEl(deltaAzEl);
