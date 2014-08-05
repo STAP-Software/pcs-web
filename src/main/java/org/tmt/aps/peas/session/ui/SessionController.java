@@ -27,8 +27,8 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -41,6 +41,8 @@ public class SessionController implements Serializable {
 
 	@EJB
 	SessionMgmt sessionMgmt;
+	@EJB
+	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	PeasProperties peasProperties;
 
@@ -122,14 +124,8 @@ public class SessionController implements Serializable {
 		this.currentProcedureTypeId = currentProcedureTypeId;
 	}
 
-
 	public boolean isProcedureExecuting() {
-		return procedureExecuting;
-	}
-
-
-	public void setProcedureExecuting(boolean procedureExecuting) {
-		this.procedureExecuting = procedureExecuting;
+		return procedureExecutionState.getExecutionStatus();
 	}
 	
 	public Session getCurrentSession() {

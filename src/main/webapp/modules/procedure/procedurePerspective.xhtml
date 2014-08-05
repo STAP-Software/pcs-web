@@ -50,7 +50,8 @@
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
-										disabled="#{procedureController.procedure.procedureState gt 1}">
+										disabled="#{procedureController.procedure.procedureState gt 1}"
+										ajax="true" update="@this" process="@this">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="20.00 sec" itemValue="20.00" />
 										<f:selectItem itemLabel="30.00 sec" itemValue="30.00" />
@@ -133,7 +134,10 @@
 							<p:ajax event="complete" listener="#{asyncController.onComplete}" update=":procedureDetailForm" />
 						</p:progressBar>
 						 -->
+						 
 						</h:panelGroup>
+						<br/>
+						<p:spacer height="1px" width="300px" />
 
 					</p:tab>
 					<p:tab title="Procedure Event Log">
@@ -313,7 +317,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 //<![CDATA[
     		
-    		
+  // prevent auto submit of form
+  $(document).ready(function() {
+	  $('input,select').keypress(function(event) { return event.keyCode != 13; });
+});	
+  
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
 		canvas.addEventListener("mousedown", doMouseDown, false);

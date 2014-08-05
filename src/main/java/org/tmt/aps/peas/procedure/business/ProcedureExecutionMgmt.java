@@ -55,6 +55,7 @@ public class ProcedureExecutionMgmt {
 	public void handleProcedureException(Procedure procedure) {
 
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
+		procedureExecutionState.setExecutionStatus(false);
 
 	}
 
@@ -101,6 +102,9 @@ public class ProcedureExecutionMgmt {
 			// set up for immediate viewing
 			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
+			procedureExecutionState.setExecutionStatus(false);
+
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

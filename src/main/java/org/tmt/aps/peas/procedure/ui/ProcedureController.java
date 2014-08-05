@@ -429,8 +429,8 @@ public class ProcedureController implements Serializable {
 
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = " + procedure.getProcedureConfig().getPupilMask());
 
-		// TODO: maybe this should be a bean that backs the menu bar
-		sessionController.setProcedureExecuting(true);
+		// tell the world so the UI can disable things the user cannot touch
+		procedureExecutionState.setExecutionStatus(true);
 
 		// TODO: global config needs to be altered and saved if it has changed from nominal
 		procedure.setGlobalConfig(globalConfigController.getGlobalConfig());

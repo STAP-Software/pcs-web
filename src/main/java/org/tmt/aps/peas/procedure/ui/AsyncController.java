@@ -36,10 +36,10 @@ public class AsyncController {
 	FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
 	UserPromptMgmt userPromptMgmt;
-	@EJB
-	ProcedureExecutionState procedureExecutionMgmt;
 	@EJB 
 	CameraMgmt cameraMgmt;
+	@EJB 
+	ProcedureExecutionState procedureExecutionState;
 	@Inject
 	SessionController sessionController;
 	@Inject
@@ -125,7 +125,6 @@ public class AsyncController {
 	}
 	
 	private void checkProcedureStatus() {
-		sessionController.setProcedureExecuting(procedureExecutionMgmt.getExecutionStatus());
 
 		// refresh the controller from the logger to get it to the display
 		statusLogController.refreshCurrentProcedureStatusLog();
@@ -195,13 +194,13 @@ public class AsyncController {
 
 
 	public boolean isExecutionStatus() {
-		return procedureExecutionMgmt.getExecutionStatus();
+		return procedureExecutionState.getExecutionStatus();
 	}
 
 
 	public int getPercentComplete() {
-		logger.debug("getPercentComplete::" + procedureExecutionMgmt.getPercentComplete());
-		return procedureExecutionMgmt.getPercentComplete();
+		logger.debug("getPercentComplete::" + procedureExecutionState.getPercentComplete());
+		return procedureExecutionState.getPercentComplete();
 	}
 
 
