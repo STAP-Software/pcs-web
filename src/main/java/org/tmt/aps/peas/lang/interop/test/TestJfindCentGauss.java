@@ -63,8 +63,6 @@ public class TestJfindCentGauss {
 
 		System.out.println("X Cent: " + result[0]);
 		System.out.println("Y Cent: " + result[1]);
-		System.out.println("Good or bad: " + result[2]);
-
 	}
 
 }
