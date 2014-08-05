@@ -93,6 +93,10 @@ public class FrameDisplayMgmt implements Serializable {
 		markList.add(centroid);
 	}
 	
+	public void clearMarking() {
+		markList = null;
+	}
+	
 	public List<FloatPoint> getMarkList() {
 		return markList;
 	}
