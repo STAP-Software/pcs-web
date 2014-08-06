@@ -42,8 +42,10 @@
 
 		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 
-		<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas
+		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas
 		tag.</canvas>
+		<p:spacer height="1px"/>
+		<canvas id="infoCanvas" width="512px" height="15px"></canvas>
 		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 			<p:row>
@@ -84,14 +86,27 @@
 	   		function initCanvasEvents() {
 	  			var canvas = document.getElementById("frameCanvas");
 	  			canvas.addEventListener("mousedown", doMouseDown, false);
+	  	      	canvas.addEventListener('mousemove', doMouseMove, false);
 	  		}
 	  		
+	   		function doMouseMove(event) {
+	   			var canvas = document.getElementById("frameCanvas");
+	   			var mousePos = getMousePos(canvas, event);
+	  			var message = '    Mouse position: ' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y);
+		        var infoCanvas = document.getElementById("infoCanvas");
+		        writeMessage(infoCanvas, message);
+	   		}
+	   		
 	  		function doMouseDown(event) {  			
-	  			var canvas = $('#frameCanvas');
-	  			canvas_x = event.pageX - canvas.offset().left;
-	  			canvas_y = event.pageY - canvas.offset().top;
+	  			var canvas = document.getElementById("frameCanvas");
+	  			
+		        var rect = canvas.getBoundingClientRect();
+		        canvas_x = event.clientX - rect.left;
+		        canvas_y = event.clientY - rect.top;
 	  			// call javascript function that is defined in <p:remote>
 	  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
+	  			
+
 	  		}
 		           
 	
@@ -137,7 +152,25 @@
 			initCanvasEvents();
 	
 		}
-	
+		
+		
+		function writeMessage(infoCanvas, message) {
+	        var context = infoCanvas.getContext('2d');
+	        context.clearRect(0, 0, 300, 15);
+	        context.font = '10pt Arial';
+	        context.fillStyle = '#444444';
+	        context.fillText(message, 1, 12);
+	      }
+	      function getMousePos(canvas, evt) {
+	    	var canvas = document.getElementById("frameCanvas");
+	        var rect = canvas.getBoundingClientRect();
+	        return {
+	          x: evt.clientX - rect.left,
+	          y: evt.clientY - rect.top
+	        };
+	      }
+	//  centroid was at 255, 261 == 510, 522
+		
 		//]]>
 	</script>
 
