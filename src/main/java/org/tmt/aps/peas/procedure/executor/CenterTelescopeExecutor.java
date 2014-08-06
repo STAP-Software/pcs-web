@@ -178,7 +178,7 @@ public class CenterTelescopeExecutor {
 			// display with recalculated centroid
 			frameDisplayMgmt.setMarking(centroid);
 			frameDisplayMgmt.displayMarkedFrame();
-			statusLogger.log("frame.mark_guess", centroid);
+			statusLogger.log("frame.mark_centroid", centroid);
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
 						

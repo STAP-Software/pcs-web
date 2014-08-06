@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import javax.naming.InitialContext;
+
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.java.JavaComputations;
@@ -26,7 +28,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	// package protected constructor
 	ComputationLibraryImpl() throws Exception {
 		
-	//	statusLogger = (StatusLogger)InitialContext.doLookup("java:module/StatusLogger");
+		statusLogger = (StatusLogger)InitialContext.doLookup("java:module/StatusLogger");
 		
 	}
 
