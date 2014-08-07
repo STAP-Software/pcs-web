@@ -216,6 +216,12 @@
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
 
+	<dependency>
+		<groupId>org.tmt.aps.peas</groupId>
+		<artifactId>pcs-extinf-impl</artifactId>
+		<version>0.0.1-SNAPSHOT</version>
+	</dependency>
+
 
 
    </dependencies>
@@ -224,6 +230,7 @@
       <!-- Set the name of the war, used as the context root when the app 
          is deployed -->
       <finalName>pcs-web</finalName>
+     
       <plugins>
          <plugin>
             <artifactId>maven-war-plugin</artifactId>
@@ -240,8 +247,10 @@
             <artifactId>jboss-as-maven-plugin</artifactId>
             <version>7.1.1.Final</version>
             <configuration>
-            	<jbossHome>C:\java\jboss-as-7.1.1.Final</jbossHome>
+            	<jbossHome>/opt/apps/jboss-as-7.1.1.Final</jbossHome>
             	<filename>pcs-web.war</filename>
+            	<username>admin</username>
+            	<password>password</password>
             </configuration>
          </plugin>
          <!-- Compiler plugin enforces Java 1.6 compatibility and activates 
@@ -254,7 +263,25 @@
                <target>1.6</target>
             </configuration>
          </plugin>
+         
+         <plugin>
+            <artifactId>exec-maven-plugin</artifactId>
+            <groupId>org.codehaus.mojo</groupId>
+            <version>1.3.2</version>
+            <executions>
+            	<execution>
+            	<id>Execute Test</id>
+            	<goals>
+            		<goal>exec</goal>
+            	</goals>
+             	</execution>
+            </executions>
+            <configuration>
+            	<executable>/opt/apps/jboss-as-7.1.1.Final/bin/restart.sh</executable>
+            </configuration>
+         </plugin>
       </plugins>
+
    </build>
 
 </project>
