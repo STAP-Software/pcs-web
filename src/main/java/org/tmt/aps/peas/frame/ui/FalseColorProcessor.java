@@ -33,9 +33,9 @@ public class FalseColorProcessor {
 
 		for (int i = 0; i < height; i++) { 
 			for (int j = 0; j < width; j++) { 
-				imageMax = (imageMax > grayArray[i][j] && imageMax < 6000) ? imageMax : grayArray[i][j];
-				imageMin = (imageMin < grayArray[i][j]) ? imageMin : grayArray[i][j];
-				gray[entry++] = grayArray[i][j]; 
+				imageMax = (imageMax > grayArray[j][i] && imageMax < 6000) ? imageMax : grayArray[j][i];
+				imageMin = (imageMin < grayArray[j][i]) ? imageMin : grayArray[j][i];
+				gray[entry++] = grayArray[j][i]; 
 			} 
 		} 
 

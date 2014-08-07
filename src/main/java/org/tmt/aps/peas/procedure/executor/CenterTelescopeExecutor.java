@@ -20,6 +20,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
+import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -183,7 +184,8 @@ public class CenterTelescopeExecutor {
 			logger.debug("mask = " + mask);
 						
 			// get Az, El deltas
-			FloatPoint deltaAzEl = computationLibrary.pixOffsetsToArcSeconds(centroid, mask.getSecPerPixel());
+			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
+			FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroid, desiredPixLocation, mask.getSecPerPixel());
 			procedureOutput.setDeltaAzEl(deltaAzEl);
 			
 			// display result and ask if we should move telescope
@@ -213,7 +215,6 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("procedure.exception");
 			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure);
-
 		}
 		/*
 		 * getProcStats();

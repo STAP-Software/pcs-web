@@ -13,7 +13,6 @@ import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCentGauss;
-import org.tmt.aps.peas.lang.interop.Jpeaker;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -50,11 +49,14 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 		
 		JfindCentGauss jfindCentGauss = new JfindCentGauss();
-		Jpeaker jpeaker = new Jpeaker();
 		RetVal retVal = new RetVal();
 		
+		logger.debug("findCentGauss::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+		
+		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+		
 		Object[] result = jfindCentGauss.jfindCentGauss(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
-				(int)guess.x, (int)guess.y, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
+				(int)guess.x + 1, (int)guess.y + 1, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -78,9 +80,9 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	// TODO: move to Fortran?
-	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel) {
+	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 
-		return JavaComputations.pixOffsetsToArcSeconds(measuredPix, secPerPixel);
+		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
 	}
 	
 }

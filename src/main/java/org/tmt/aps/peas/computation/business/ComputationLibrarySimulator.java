@@ -49,8 +49,8 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 	}
 	
-	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel) {
-		return JavaComputations.pixOffsetsToArcSeconds(measuredPix, secPerPixel);
+	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
+		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
 	}
 
 	@Override

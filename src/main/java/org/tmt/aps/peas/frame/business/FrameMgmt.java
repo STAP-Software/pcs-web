@@ -253,7 +253,7 @@ public class FrameMgmt {
 				logger.debug("data.getData: " + data.getData());
 
 				short[][] shortArray = (short[][]) data.getData();
-
+				
 				logger.debug(imhdu.getBitPix() + " bits per pixel");
 				logger.debug("Data = " + data.getData().getClass());
 
@@ -267,7 +267,15 @@ public class FrameMgmt {
 
 				fb.setAxes2(axes[0]);
 
-				fb.setRawFrame(shortArray);
+				short[][] rawFrame = new short[shortArray[0].length][shortArray.length];
+				
+				for (int i=0; i<shortArray[0].length; i++) {
+					for (int j=0; j<shortArray.length; j++) {
+						rawFrame[i][j] = shortArray[j][i];
+					}
+				}
+				
+				fb.setRawFrame(rawFrame);
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 

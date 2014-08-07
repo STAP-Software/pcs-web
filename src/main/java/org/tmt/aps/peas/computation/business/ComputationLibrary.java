@@ -14,7 +14,7 @@ public interface ComputationLibrary {
 	public float actuatorLengths(float a, float b) throws ComputationException;
 	public void findAndIdentify(float[][] frame, float[][] centroids ) throws ComputationException;
 	
-	public FloatPoint pixOffsetsToArcSeconds(FloatPoint measuredPix, double secPerPixel);  // local java routine
+	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel);  // local java routine
 	
 	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
 	
