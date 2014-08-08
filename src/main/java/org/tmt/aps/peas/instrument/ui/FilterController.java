@@ -87,6 +87,10 @@ public class FilterController implements Serializable {
 	}
 
 	private void refreshFilterWheel() throws Exception {
+		
+		// re-read in from database
+		physicalModel.refresh();
+		
 		filterWheel = physicalModel.getInstrument().getCamera().getFilterWheel();
 		filterWheel.updateSlotsFromList();
 

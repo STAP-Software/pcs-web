@@ -35,7 +35,7 @@ public class PhysicalModel {
 		refresh();
 	}
 
-	private void refresh() throws Exception {
+	public void refresh() throws Exception {
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		instrument = cameraDefMgmt.findInstrument(instrumentId);		
 	}

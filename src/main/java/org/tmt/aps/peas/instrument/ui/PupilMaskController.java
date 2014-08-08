@@ -88,6 +88,10 @@ public class PupilMaskController implements Serializable {
 	}
 
 	private void refreshPupilWheel() throws Exception {
+		
+		// re-read in from database
+		physicalModel.refresh();
+
 		pupilWheel = physicalModel.getInstrument().getCamera().getPupilWheel();	
 		pupilWheel.updateSlotsFromList();
 	}
