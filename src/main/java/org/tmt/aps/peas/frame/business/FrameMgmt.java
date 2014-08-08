@@ -175,7 +175,7 @@ public class FrameMgmt {
 				// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
 				//logger.info("file: " + filename);
 				//CcdFrame ccdFrame = loadFitsFrame(filename);
-				//loadPng(ccdFrame);
+				//loadPng(ccdFrame, true);
 			}
 		}
 
