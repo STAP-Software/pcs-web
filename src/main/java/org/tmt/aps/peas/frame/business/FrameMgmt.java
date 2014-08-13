@@ -31,6 +31,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -52,6 +53,8 @@ public class FrameMgmt {
 	FrameSimulator frameSimulator;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
+	@EJB
+	CcdMgmt ccdMgmt;
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
 
@@ -126,13 +129,39 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	public ProcedureCcdFrame getProcedureCcdFrame(int frameSource, int iteration, int frameNumber) {
+	public ProcedureCcdFrame getProcedureCcdFrame(int frameSource, int iteration, int frameNumber, double exposureTime) {
 
 		if (frameSource == Constants.FRAME_SOURCE_CCD) {
+			
+			try {
+			
 			// get the frame from CCD or from file, depending on the called type
+			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			short[][] rawFrame = new short[frame.length][frame[0].length];
+			for (int i=0; i< frame.length; i++) {
+				for (int j=0; j<frame[i].length; j++) {
+					rawFrame[i][j] = (short)frame[i][j];
+				}
+			}
 
+			CcdFrame ccdFrame = new CcdFrame();
+			ccdFrame.setAxes1(1024);
+			ccdFrame.setAxes2(1024);
+			ccdFrame.setRawFrame(rawFrame);
+			ccdFrame.setCreateDate(new Date());
+			ccdFrame.setNoOfAxes(2);
+			
+			// create the png
+			FalseColorProcessor falseColorer = new FalseColorProcessor();
+			byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
+			ccdFrame.setFalseColorPng(falseColorPng);
+			
 			// if we get from CCD, store into a file
 
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			
 		}
 
 		CcdFrame ccdFrame = frameSimulator.getFrame(frameNumber);

@@ -156,7 +156,8 @@ public class CenterTelescopeExecutor {
 			
 			statusLogger.log("frame.get");
 
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0);
+			
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0, procedureConfig.getIntegrationTime());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			
 
