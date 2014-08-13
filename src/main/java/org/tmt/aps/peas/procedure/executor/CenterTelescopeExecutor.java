@@ -138,7 +138,7 @@ public class CenterTelescopeExecutor {
 
 					// extend two pos mirror
 		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
-		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 		        } else {
 		        	// turn off reference beams
 					statusLogger.log("camera.cmd.ref_beam", 0);
@@ -146,7 +146,7 @@ public class CenterTelescopeExecutor {
 
 					// retract two pos mirror
 		        	statusLogger.log("camera.cmd.two_pos_device", "retract");
-		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 		        }
 			
 				// wait for all commands to complete

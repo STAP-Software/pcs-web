@@ -132,13 +132,13 @@ public class PassiveTiltExecutor {
 		        	//cameraMgmt.selectRefBeam(); 
 
 					// extend two pos mirror
-		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_EXTEND);
+		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 		        } else {
 		        	// TODO: turn off reference beams
 		        	//cameraMgmt.selectRefBeam(); 
 
 					// FIXME: retract two pos mirror
-		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.TWO_POSITION_DEVICE_RETRACT);
+		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 		        }
 		        
 		        // TODO: wait for all futures to complete
