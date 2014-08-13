@@ -5,6 +5,9 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -17,6 +20,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.common.Point;
 
 @Entity
@@ -205,4 +209,12 @@ public class Camera {
 		return bestCandidate;
 	}
 
+	public List<ReferenceBeam> getOrderedReferenceBeamList() {
+		List<ReferenceBeam> refBeamList = new ArrayList<ReferenceBeam>(referenceBeamSet);
+		
+		Collections.sort(refBeamList, new BeanComparator("refBeamNum"));
+		
+		return refBeamList;
+	}
+	
 }

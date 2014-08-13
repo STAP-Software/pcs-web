@@ -3,7 +3,7 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog">
+		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog" >
 
 			<h:form id="advancedForm">
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
@@ -23,6 +23,13 @@
 						disabled="#{procedureController.procedure.procedureState gt 1}" >
 					<f:selectItem itemLabel="Star" itemValue="1"/> 
 					<f:selectItem itemLabel="Reference Beam" itemValue="2"/>
+					<p:ajax update=":advancedDlg" oncomplete="advancedDialog.show();" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfig.lightSource eq 2}" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.referenceBeam}"
+						rendered="#{procedureController.procedure.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
+					<f:selectItems value="#{sessionController.instrument.camera.orderedReferenceBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
 					</p:selectOneMenu>
 
 					<p:spacer height="5px" />

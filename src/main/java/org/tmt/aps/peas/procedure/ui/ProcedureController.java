@@ -648,5 +648,5 @@ public class ProcedureController implements Serializable {
 		centroidXs = null;
 		centroidYs = null;
 	}
-	
+		
 }

@@ -77,7 +77,14 @@ public class ReferenceBeam {
 	}
 
 
-
+	@Override
+	public boolean equals(Object obj) {
+		if (obj instanceof ReferenceBeam) {
+			ReferenceBeam candidate = (ReferenceBeam)obj;
+			return candidate.getReferenceBeamId().equals(referenceBeamId);
+		}
+		return super.equals(obj);
+	}
 
 
 }

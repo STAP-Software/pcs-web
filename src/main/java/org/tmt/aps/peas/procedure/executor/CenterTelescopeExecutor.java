@@ -128,7 +128,11 @@ public class CenterTelescopeExecutor {
 
 		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 		        	// select ref beam based on filter wavelength
-		        	ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+		        	//ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+		        	
+		        	// use ref beam selected in advanced options
+		        	ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
+		        	
 					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
 		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 

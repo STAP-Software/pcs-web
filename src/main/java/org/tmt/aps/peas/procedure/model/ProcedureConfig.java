@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
@@ -59,6 +60,8 @@ public class ProcedureConfig {
 	private PupilMask pupilMask;  // TODO: make this non-transient
 	@Transient
 	Filter filter;
+	@Transient
+	ReferenceBeam referenceBeam;
 	
 	private int filterType;
 	
@@ -273,6 +276,14 @@ public class ProcedureConfig {
 
 	public void setPupilMask(PupilMask pupilMask) {
 		this.pupilMask = pupilMask;
+	}
+
+	public ReferenceBeam getReferenceBeam() {
+		return referenceBeam;
+	}
+
+	public void setReferenceBeam(ReferenceBeam referenceBeam) {
+		this.referenceBeam = referenceBeam;
 	}
 
 	public boolean isFrameFromFile() {
