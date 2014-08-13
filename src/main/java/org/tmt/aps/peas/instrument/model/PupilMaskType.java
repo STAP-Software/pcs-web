@@ -31,7 +31,6 @@ public class PupilMaskType {
 	private int numSpots;
 	private String pupilMaskTypeName;
 
-	private int isize;
 	private int subImageIntensityRadius;
 	
 	public Long getPupilMaskTypeId() {
@@ -58,14 +57,6 @@ public class PupilMaskType {
 		this.pupilMaskTypeName = pupilMaskTypeName;
 	}
 
-	public int getIsize() {
-		return isize;
-	}
-
-	public void setIsize(int isize) {
-		this.isize = isize;
-	}
-	
 	public int getSubImageIntensityRadius() {
 		return subImageIntensityRadius;
 	}
