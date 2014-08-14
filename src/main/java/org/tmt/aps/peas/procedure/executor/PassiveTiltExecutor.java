@@ -155,7 +155,8 @@ public class PassiveTiltExecutor {
 
 				try {
 				
-				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), i, i, procedureConfig.getIntegrationTime());
+				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
+					0, 0, procedureConfig.getIntegrationTime());
 				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 				
 				// tell the async controller to update the frame

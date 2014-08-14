@@ -38,6 +38,8 @@ import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 @Stateless
 public class FrameMgmt {
@@ -104,7 +106,19 @@ public class FrameMgmt {
 
 	// manual Ccd frame save
 	// FITS file name TBD
-	public void saveCcdFrame(CcdFrame ccdFrame) {
+	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, String procedureTypeCd, int procedureNumber) throws Exception {
+		
+		String newName = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, 0).generateFileName();
+
+		// determine 'iteration' number if multiple frames of this mask taken today
+		int iterationNumber = findMatchingFitsFiles(newName.substring(0, newName.length()-8) + "*").size();
+		
+		FitsFilename fitsFilename = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, iterationNumber);
+
+		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
+		saveFitsFrame(ccdFrame);
+
+		
 	}
 
 	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
@@ -129,18 +143,16 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	public ProcedureCcdFrame getProcedureCcdFrame(int frameSource, int iteration, int frameNumber, double exposureTime) {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber) {
+		try {
 
-		if (frameSource == Constants.FRAME_SOURCE_CCD) {
-			
-			try {
-			
 			// get the frame from CCD or from file, depending on the called type
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			
 			short[][] rawFrame = new short[frame.length][frame[0].length];
-			for (int i=0; i< frame.length; i++) {
-				for (int j=0; j<frame[i].length; j++) {
-					rawFrame[i][j] = (short)frame[i][j];
+			for (int i = 0; i < frame.length; i++) {
+				for (int j = 0; j < frame[i].length; j++) {
+					rawFrame[i][j] = (short) frame[i][j];
 				}
 			}
 
@@ -150,31 +162,41 @@ public class FrameMgmt {
 			ccdFrame.setRawFrame(rawFrame);
 			ccdFrame.setCreateDate(new Date());
 			ccdFrame.setNoOfAxes(2);
-			
+
 			// create the png
 			FalseColorProcessor falseColorer = new FalseColorProcessor();
 			byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
 			ccdFrame.setFalseColorPng(falseColorPng);
-			
-			// if we get from CCD, store into a file
 
-			} catch (Exception e) {
-				e.printStackTrace();
-			}
+			// generate filename and store into the FITS file
+			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureType.getProcedureTypeCd(), procedureNumber);
+
+			return ccdFrame;
 			
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
 		}
 
-		CcdFrame ccdFrame = frameSimulator.getFrame(frameNumber);
+	}
+	
+	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, int iteration, int frameNumber, double exposureTime) {
+
+		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
+			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber) :
+			frameSimulator.getFrame(frameNumber);
+		
+		
 		procedureExecutionState.setCurrentFrame(ccdFrame);
 		Procedure procedure = procedureExecutionState.getCurrentProcedure();
-		
+
 		ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
 		procedureCcdFrame.setCcdFrame(ccdFrame);
 		procedureCcdFrame.setNewFrameFlg(false); // frame from file
 		procedureCcdFrame.setProcedureFrameNumber(frameNumber);
 		procedureCcdFrame.setProcedureIterationNumber(iteration);
-		
-		// add it to the procedure 
+
+		// add it to the procedure
 		procedure.addProcedureCcdFrame(procedureCcdFrame);
 
 		return procedureCcdFrame;
@@ -194,23 +216,23 @@ public class FrameMgmt {
 		for (File fileEntry : folder.listFiles()) {
 
 			String filename = fileEntry.getName();
-			
+
 			if (filename.toLowerCase().endsWith(".fts")) {
 
 				FitsFilename fitsFile = new FitsFilename(filename);
 
 				fitsFileList.add(fitsFile);
-				
+
 				// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
-				//logger.info("file: " + filename);
-				//CcdFrame ccdFrame = loadFitsFrame(filename);
-				//loadPng(ccdFrame, true);
+				// logger.info("file: " + filename);
+				// CcdFrame ccdFrame = loadFitsFrame(filename);
+				// loadPng(ccdFrame, true);
 			}
 		}
 
 		return fitsFileList;
 	}
-	
+
 	public List<FitsFilename> findMatchingFitsFiles(String filter) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -223,17 +245,17 @@ public class FrameMgmt {
 		List<FitsFilename> fitsFileList = new ArrayList<FitsFilename>();
 
 		FileFilter fileFilter = new WildcardFileFilter(filter);
-		
+
 		for (File fileEntry : folder.listFiles(fileFilter)) {
 
 			String filename = fileEntry.getName();
-			
+
 			if (filename.toLowerCase().endsWith(".fts")) {
 
 				FitsFilename fitsFile = new FitsFilename(filename);
 
 				fitsFileList.add(fitsFile);
-				
+
 			}
 		}
 
@@ -261,7 +283,6 @@ public class FrameMgmt {
 		CcdFrame fb = new CcdFrame();
 		fb.setFitsFilename(fitsFilename);
 
-
 		if (bhdus != null) {
 
 			for (int index = 0; index < bhdus.length; index++) {
@@ -282,7 +303,7 @@ public class FrameMgmt {
 				logger.debug("data.getData: " + data.getData());
 
 				short[][] shortArray = (short[][]) data.getData();
-				
+
 				logger.debug(imhdu.getBitPix() + " bits per pixel");
 				logger.debug("Data = " + data.getData().getClass());
 
@@ -297,13 +318,13 @@ public class FrameMgmt {
 				fb.setAxes2(axes[0]);
 
 				short[][] rawFrame = new short[shortArray[0].length][shortArray.length];
-				
-				for (int i=0; i<shortArray[0].length; i++) {
-					for (int j=0; j<shortArray.length; j++) {
+
+				for (int i = 0; i < shortArray[0].length; i++) {
+					for (int j = 0; j < shortArray.length; j++) {
 						rawFrame[i][j] = shortArray[j][i];
 					}
 				}
-				
+
 				fb.setRawFrame(rawFrame);
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
@@ -318,7 +339,7 @@ public class FrameMgmt {
 	}
 
 	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {
-		
+
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 
 		System.out.println("ccdFrame = " + ccdFrame);
@@ -364,4 +385,6 @@ public class FrameMgmt {
 		return null;
 
 	}
+
+
 }

@@ -41,6 +41,21 @@ public class FitsFilename {
 		this.fileName = generateFileName();
 	}
 	
+	// non-phasing, non-SUFS constructor
+	public FitsFilename(Long telescopeId, String procedureTypeCd, int procedureNumber, int iteration) {
+		
+		this.telescope = (int)telescopeId.longValue();
+		this.date = new Date();
+		this.procedureTypeCd = procedureTypeCd;
+		this.procedureNumber = procedureNumber;
+		this.iteration = iteration;
+		this.ufsSegment = 0;
+		this.sufsGroup = 0;
+		this.phasingStep = 0;
+		
+		this.fileName = generateFileName();
+	}
+	
 	// constructor for ad-hoc files
 	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration) {
 		

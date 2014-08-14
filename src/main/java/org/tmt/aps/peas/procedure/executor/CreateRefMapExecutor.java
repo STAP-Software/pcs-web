@@ -192,7 +192,8 @@ public class CreateRefMapExecutor {
 	
 			statusLogger.log("frame.get");
 			
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig.getFrameSource(), 0, 0, procedureConfig.getIntegrationTime());
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
+					0, 0, procedureConfig.getIntegrationTime());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			
 			// TODO: this is where we display the frame
