@@ -190,6 +190,11 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.refBeamPos = 2;
 		cameraStatus.shutterState = CameraCommand.CLOSED;
 		cameraStatus.twoPosDevPos = CameraCommand.EXTENDED;
+		
+		cameraStatus.steeringMirrorX = 44;
+		cameraStatus.steeringMirrorY = -55;
+		cameraStatus.tiltPlateX = 301;
+		cameraStatus.tiltPlateY = -404;
 
 		return cameraStatus;
 	}

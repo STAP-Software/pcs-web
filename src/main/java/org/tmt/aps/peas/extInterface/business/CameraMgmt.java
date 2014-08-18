@@ -271,10 +271,14 @@ public class CameraMgmt {
 		camera.getShutter().setState(cameraStatus.shutterState == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 		
 		// Fine Tilt
-		//camera.getFineTiltMirror().setCurrentPosition(new Point(cameraStatus.???, cameraStatus.???));
+		camera.getFineTiltMirror().setCurrentPosition(new Point(cameraStatus.tiltPlateX, cameraStatus.tiltPlateY));
+		camera.getFineTiltMirror().setStateX(CameraQueryResult.IN_POSITION);
+		camera.getFineTiltMirror().setStateY(CameraQueryResult.IN_POSITION);
 
 		// Coarse Tilt
-		//camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraStatus.???, cameraStatus.???));
+		camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraStatus.steeringMirrorX, cameraStatus.steeringMirrorY));
+		camera.getCoarseTiltMirror().setStateX(CameraQueryResult.IN_POSITION);
+		camera.getCoarseTiltMirror().setStateY(CameraQueryResult.IN_POSITION);
 
 		// Two Position Mech
 		camera.getTwoPosMechanism().setState(cameraStatus.twoPosDevPos == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
