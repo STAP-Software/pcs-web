@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.Ccd;
@@ -39,6 +40,10 @@ public class CameraMgmt {
 
 	public CameraQueryResult queryCamera(int deviceCode) throws Exception {
 		return extInfFactory.getCameraCommand().queryCamera(deviceCode);
+	}
+
+	public CameraStatus queryCameraStatus() throws Exception {
+		return extInfFactory.getCameraCommand().getCameraStatus();
 	}
 
 	@Asynchronous
@@ -161,14 +166,15 @@ public class CameraMgmt {
 	}
 
 	@Asynchronous
-	public Future<Boolean> refreshStatus() throws Exception {
+	public Future<Boolean> refreshStatusOrig() throws Exception {
 
 		Camera camera = physicalModel.getInstrument().getCamera();
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 
 		CameraQueryResult result = null;
 		CameraQueryResult result2 = null;
-
+		
+		
 		// Pupil Mask
 		result = queryCamera(CameraCommand.DEVICE_CODE_PUPIL_WHEEL);
 		camera.getPupilWheel().setState(result.getState());
@@ -236,6 +242,54 @@ public class CameraMgmt {
 		// Electronics Box Temperature
 		result = queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
 		camera.setElectronicsBoxTemperature(((float) result.getDoubleVal()));
+
+		logger.info(">> status refresh compete <<");
+		
+		return new AsyncResult<Boolean>(true);
+	}
+
+	@Asynchronous
+	public Future<Boolean> refreshStatus() throws Exception {
+
+		Camera camera = physicalModel.getInstrument().getCamera();
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+
+		CameraStatus cameraStatus = queryCameraStatus();
+		
+		// Pupil Mask
+		camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+		camera.getPupilWheel().setSelectedPupilMaskNumber(cameraStatus.prismWheelPos);
+
+		// Filter
+		camera.getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
+		camera.getFilterWheel().setSelectedFilterNumber(cameraStatus.filterWheelPos);
+
+		// Ref Beam
+		camera.setCurrentRefBeam(cameraStatus.refBeamPos);
+
+		// Shutter
+		camera.getShutter().setState(cameraStatus.shutterState == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+		
+		// Fine Tilt
+		//camera.getFineTiltMirror().setCurrentPosition(new Point(cameraStatus.???, cameraStatus.???));
+
+		// Coarse Tilt
+		//camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraStatus.???, cameraStatus.???));
+
+		// Two Position Mech
+		camera.getTwoPosMechanism().setState(cameraStatus.twoPosDevPos == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+
+		// CCD Power
+		ccd.setState(cameraStatus.ccdPowerState == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+
+		// CCD Temperature
+		ccd.setTemperature(((float) cameraStatus.ccdTemp));
+
+		// Instrument Temperature
+		camera.setInstrumentTemperature(((float) cameraStatus.benchTemp));
+
+		// Electronics Box Temperature
+		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
 
 		logger.info(">> status refresh compete <<");
 		

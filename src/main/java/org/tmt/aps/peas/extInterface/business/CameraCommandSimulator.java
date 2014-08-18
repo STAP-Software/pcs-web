@@ -180,7 +180,18 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public CameraStatus getCameraStatus() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
 		// TODO Auto-generated method stub
-		return null;
+		CameraStatus cameraStatus = new CameraStatus();
+		cameraStatus.benchTemp = 12.3;
+		cameraStatus.boxTemp = 33.0;
+		cameraStatus.ccdPowerState = CameraCommand.ON;
+		cameraStatus.ccdTemp = -2.3;
+		cameraStatus.filterWheelPos = 2;
+		cameraStatus.prismWheelPos = 3;
+		cameraStatus.refBeamPos = 2;
+		cameraStatus.shutterState = CameraCommand.CLOSED;
+		cameraStatus.twoPosDevPos = CameraCommand.EXTENDED;
+
+		return cameraStatus;
 	}
 
 
