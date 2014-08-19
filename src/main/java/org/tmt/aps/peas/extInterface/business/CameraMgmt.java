@@ -257,11 +257,11 @@ public class CameraMgmt {
 		CameraStatus cameraStatus = queryCameraStatus();
 		
 		// Pupil Mask
-		camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+		camera.getPupilWheel().setState(cameraStatus.prismWheelIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 		camera.getPupilWheel().setSelectedPupilMaskNumber(cameraStatus.prismWheelPos);
 
 		// Filter
-		camera.getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
+		camera.getFilterWheel().setState(cameraStatus.filterWheelIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 		camera.getFilterWheel().setSelectedFilterNumber(cameraStatus.filterWheelPos);
 
 		// Ref Beam
@@ -272,13 +272,13 @@ public class CameraMgmt {
 		
 		// Fine Tilt
 		camera.getFineTiltMirror().setCurrentPosition(new Point(cameraStatus.tiltPlateX, cameraStatus.tiltPlateY));
-		camera.getFineTiltMirror().setStateX(CameraQueryResult.IN_POSITION);
-		camera.getFineTiltMirror().setStateY(CameraQueryResult.IN_POSITION);
+		camera.getFineTiltMirror().setStateX(cameraStatus.tiltPlateXIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getFineTiltMirror().setStateY(cameraStatus.tiltPlateYIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 
 		// Coarse Tilt
 		camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraStatus.steeringMirrorX, cameraStatus.steeringMirrorY));
-		camera.getCoarseTiltMirror().setStateX(CameraQueryResult.IN_POSITION);
-		camera.getCoarseTiltMirror().setStateY(CameraQueryResult.IN_POSITION);
+		camera.getCoarseTiltMirror().setStateX(cameraStatus.steeringMirrorXIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getCoarseTiltMirror().setStateY(cameraStatus.steeringMirrorYIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 
 		// Two Position Mech
 		camera.getTwoPosMechanism().setState(cameraStatus.twoPosDevPos == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);

@@ -196,6 +196,10 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.tiltPlateX = 301;
 		cameraStatus.tiltPlateY = -404;
 
+		cameraStatus.filterWheelIsInTransit = true;
+		cameraStatus.prismWheelIsInTransit = false;
+		cameraStatus.steeringMirrorXIsInTransit = true;
+		
 		return cameraStatus;
 	}
 
