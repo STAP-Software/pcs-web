@@ -13,26 +13,39 @@ import org.apache.log4j.Logger;
 
 @Singleton
 @Startup
-@DependsOn({"CameraMgmt", "PeasProperties"})
+@DependsOn({ "CameraMgmt", "PeasProperties" })
 @Lock(LockType.READ)
 public class CameraPoller {
-    @EJB
-    CameraMgmt cameraMgmt;
-    
-    Logger logger = Logger.getLogger(this.getClass());
-  
-    @PostConstruct
-    @Lock(LockType.WRITE)
-    @Schedule(second="*/5", minute="*",hour="*", persistent=false)
-    public void pollCamera(){
-    	
-    	try {
-    		
-    		logger.debug("refreshing camera status");
-    		cameraMgmt.refreshStatus();
-        
-    	} catch (Exception e) {
-    		logger.error("error refreshing camera status: " + e.getMessage());
-    	}
-    }
+	@EJB
+	CameraMgmt cameraMgmt;
+
+	private boolean doPoll = true;
+
+	Logger logger = Logger.getLogger(this.getClass());
+
+	@PostConstruct
+	@Lock(LockType.WRITE)
+	@Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
+	public void pollCamera() {
+
+		if (doPoll) {
+
+			try {
+
+				logger.debug("refreshing camera status");
+				cameraMgmt.refreshStatus();
+
+			} catch (Exception e) {
+				logger.error("error refreshing camera status: " + e.getMessage());
+			}
+
+		}
+	}
+
+	@Lock(LockType.WRITE)
+	public void setDoPoll(boolean doPoll) {
+		this.doPoll = doPoll;
+	}
+	
+	
 }

@@ -20,9 +20,9 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -76,7 +76,9 @@ public class CenterTelescopeExecutor {
 	private PupilRegistrator pupilRegistrator;
 	@EJB
 	private PhysicalModel physicalModel;
-
+	@EJB
+	private CameraPoller cameraPoller;
+	
 	private List<String> logMessages;
 
 	public List<String> getLogMessages() {
@@ -115,8 +117,12 @@ public class CenterTelescopeExecutor {
 					
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
+			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
+				cameraPoller.setDoPoll(false);
+				wait(2000);
+				
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
 				// command to mask selected
@@ -152,6 +158,9 @@ public class CenterTelescopeExecutor {
 				// wait for all commands to complete
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete");
+
+				cameraPoller.setDoPoll(true);
+
 			} 
 			
 			statusLogger.log("frame.get");
