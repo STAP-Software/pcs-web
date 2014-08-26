@@ -20,6 +20,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.model.Ccd;
 
@@ -37,14 +38,14 @@ public class CcdDefController implements Serializable {
 
 	private List<Ccd> ccdList;
 	private Ccd ccd;
-	private Integer xHotPixel;  // FIXME: these should be deprecated and use the hotPixel Point
-	private Integer yHotPixel;
-	private Point hotPixel;
+	private Rect hotPixelBoundingRect;
 	private Ccd selectedCcd;
 
 	@PostConstruct
 	private void init() {
 		refreshCcdList();
+		hotPixelBoundingRect = new Rect();
+		hotPixelBoundingRect.reset();
 	}
 
 	public List<Ccd> getCcdList() {
@@ -63,29 +64,12 @@ public class CcdDefController implements Serializable {
 		this.ccd = ccd;
 	}
 
-
-	public Integer getxHotPixel() {
-		return xHotPixel;
+	public Rect getHotPixelBoundingRect() {
+		return hotPixelBoundingRect;
 	}
 
-	public void setxHotPixel(Integer xHotPixel) {
-		this.xHotPixel = xHotPixel;
-	}
-
-	public Integer getyHotPixel() {
-		return yHotPixel;
-	}
-
-	public void setyHotPixel(Integer yHotPixel) {
-		this.yHotPixel = yHotPixel;
-	}
-
-	public Point getHotPixel() {
-		return hotPixel;
-	}
-
-	public void setHotPixel(Point hotPixel) {
-		this.hotPixel = hotPixel;
+	public void setHotPixelBoundingRect(Rect hotPixelBoundingRect) {
+		this.hotPixelBoundingRect = hotPixelBoundingRect;
 	}
 
 	private void refreshCcdList() {
@@ -126,7 +110,7 @@ public class CcdDefController implements Serializable {
 
 	public void doDeleteHotPixel() {
 
-		ccd.removeHotPixel(hotPixel);
+		ccd.removeHotPixel(hotPixelBoundingRect);
 		
 		ccdDefMgmt.updateCcd(ccd);
 
@@ -155,12 +139,11 @@ public class CcdDefController implements Serializable {
 	public void doAddHotPixel() {
 
 
-		ccd.addHotPixel(new Point(xHotPixel, yHotPixel));
+		ccd.addHotPixel(hotPixelBoundingRect);
 		
 		ccdDefMgmt.updateCcd(ccd);
 		
-		xHotPixel = null;
-		yHotPixel = null;
+		hotPixelBoundingRect.reset();
 
 	}
 

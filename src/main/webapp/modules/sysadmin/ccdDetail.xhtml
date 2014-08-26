@@ -46,28 +46,34 @@
 
 					<p:spacer width="100" height="10" />
 
-					<p:dataTable id="ccdBadPixelTable" var="hotPixel" value="#{ccdDefController.ccd.hotPixelList}" style="width: 300px">
+					<p:dataTable id="ccdBadPixelTable" var="hotPixel" value="#{ccdDefController.ccd.hotPixelList}" style="width: 300px"
+					columnClasses="btmsFormOutputColumn">
 
-						<p:column headerText="X">
-							<h:outputText value="#{hotPixel.x}" />
+						<p:column headerText="P1 (x,y)">
+							(<h:outputText value="#{hotPixel.p1.x}" />, <h:outputText value="#{hotPixel.p1.y}" />)
 						</p:column>
-						<p:column headerText="Y">
-							<h:outputText value="#{hotPixel.y}" />
+						<p:column headerText="P2 (x,y)">
+							(<h:outputText value="#{hotPixel.p2.x}" />, <h:outputText value="#{hotPixel.p2.y}" />)
 						</p:column>
 						<p:column headerText="Delete">
 							<p:commandLink action="#{ccdDefController.doDeleteHotPixel}" title="delete" styleClass="ui-icon ui-icon-closethick"
 								update="@form :growl">
-								<f:setPropertyActionListener target="#{ccdDefController.hotPixel}" value="#{hotPixel}" />
+								<f:setPropertyActionListener target="#{ccdDefController.hotPixelBoundingRect}" value="#{hotPixel}" />
 							</p:commandLink>
 						</p:column>
 
 					</p:dataTable>
 					<br/>
 					<h:panelGroup>
-						<h:outputText value="x: &#160;"/>
-						<p:inputText id="xHot" value="#{ccdDefController.xHotPixel}" size="2"/>
-						<h:outputText value="&#160;&#160;y: &#160;"/>
-						<p:inputText id="yHot" value="#{ccdDefController.yHotPixel}" size="2"/>
+						<h:outputText value="P1 (x): &#160;"/>
+						<p:inputText id="p1xHot" value="#{ccdDefController.hotPixelBoundingRect.p1.x}" size="2"/>
+						<h:outputText value="&#160;&#160;P1 (y): &#160;"/>
+						<p:inputText id="p1yHot" value="#{ccdDefController.hotPixelBoundingRect.p1.y}" size="2"/>
+						<p:spacer width="10px"/>
+						<h:outputText value="P2(x): &#160;"/>
+						<p:inputText id="p2xHot" value="#{ccdDefController.hotPixelBoundingRect.p2.x}" size="2"/>
+						<h:outputText value="&#160;&#160;P2 (y): &#160;"/>
+						<p:inputText id="p2yHot" value="#{ccdDefController.hotPixelBoundingRect.p2.y}" size="2"/>
 						<p:spacer width="10px"/>
 						<p:commandButton value="Add Hot Pixel" update="@form :growl"  
              				ajax="true" action="#{ccdDefController.doAddHotPixel}" /> 

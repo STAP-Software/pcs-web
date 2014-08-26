@@ -20,7 +20,8 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.PointListEncoder;
+import org.tmt.aps.peas.common.Rect;
+import org.tmt.aps.peas.common.RectListEncoder;
 
 @Entity
 @Table(name = "Ccd")
@@ -161,25 +162,25 @@ public class Ccd {
 		return "";
 	}
 
-	public List<Point> getHotPixelList() {
+	public List<Rect> getHotPixelList() {
 		
-		return PointListEncoder.decodeList(hotPixelListEncoded);
+		return RectListEncoder.decodeList(hotPixelListEncoded);
 	}
 	
 	
-	public void removeHotPixel(Point hotPixel) {
+	public void removeHotPixel(Rect boundingRect) {
 		
-		List<Point> hotPixelList = PointListEncoder.removePoint(getHotPixelList(), hotPixel);		
-		hotPixelListEncoded = PointListEncoder.encodeList(hotPixelList);
+		List<Rect> hotPixelList = RectListEncoder.removeRect(getHotPixelList(), boundingRect);		
+		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
 	
 	
 	
-	public void addHotPixel(Point hotPixel) {
+	public void addHotPixel(Rect hotPixel) {
 		
-		List<Point> hotPixelList = getHotPixelList();
+		List<Rect> hotPixelList = getHotPixelList();
 		hotPixelList.add(hotPixel);
 		
-		hotPixelListEncoded = PointListEncoder.encodeList(hotPixelList);
+		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
 }
