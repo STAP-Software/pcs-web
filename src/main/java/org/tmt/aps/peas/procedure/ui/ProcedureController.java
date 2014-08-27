@@ -375,7 +375,7 @@ public class ProcedureController implements Serializable {
 			procedureConfig.setPupilMask(defaultMask);
 			
 			// get the filter to default to if it exists
-			Filter defaultFilter = cameraDefMgmt.getFilterByWavelengthAndWheel(procedureConfig.getFilterType(), 
+			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType(), 
 					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
 			
 			procedureConfig.setFilter(defaultFilter);

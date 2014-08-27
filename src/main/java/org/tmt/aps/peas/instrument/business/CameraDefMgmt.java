@@ -161,11 +161,11 @@ public class CameraDefMgmt {
 
 	}
 
-	public Filter getFilterByWavelengthAndWheel(float wavelength, Long filterWheelId) {
+	public Filter getFilterByFilterTypeAndWheel(int filterType, Long filterWheelId) {
 		// get the pupil mask of the defined type that is currently on the wheel
 		try {
-			TypedQuery<Filter> query = em.createNamedQuery("findByWavelengthAndWheel", Filter.class);
-			query.setParameter("wavelength", wavelength);
+			TypedQuery<Filter> query = em.createNamedQuery("findByFilterTypeAndWheel", Filter.class);
+			query.setParameter("filterType", "%" + filterType + "%");
 			query.setParameter("filterWheelId", filterWheelId);
 
 			return query.getSingleResult();
