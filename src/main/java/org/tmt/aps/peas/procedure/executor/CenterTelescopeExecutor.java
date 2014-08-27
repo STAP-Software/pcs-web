@@ -117,11 +117,11 @@ public class CenterTelescopeExecutor {
 					
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
+			cameraPoller.setDoPoll(false);
+			wait(2000);
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
-				cameraPoller.setDoPoll(false);
-				wait(2000);
 				
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
@@ -159,7 +159,6 @@ public class CenterTelescopeExecutor {
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete");
 
-				cameraPoller.setDoPoll(true);
 
 			} 
 			
@@ -170,6 +169,7 @@ public class CenterTelescopeExecutor {
 			
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			
+			cameraPoller.setDoPoll(true);
 
 			// this is where we display the frame; tell the async controller to update the frame
 			// put up some display that tells user to click on the star
