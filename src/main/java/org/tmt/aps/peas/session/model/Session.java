@@ -31,7 +31,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Entity
 @Table(name = "Session")
 @NamedQueries({
-	@NamedQuery(name = "findAllSessions", query = "SELECT s from Session s" ),
+	@NamedQuery(name = "findAllSessions", query = "SELECT s from Session s where s.telescopeId = :telescopeId" ),
 	@NamedQuery(name = "findSessionByDate", query = "SELECT DISTINCT s from Session s "
 			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
 			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "

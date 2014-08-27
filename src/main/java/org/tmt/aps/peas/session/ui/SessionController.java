@@ -71,7 +71,7 @@ public class SessionController implements Serializable {
 		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 		instrument = sessionMgmt.findInstrument(new Long(instrumentIdStr));
 			
-		sessionList = sessionMgmt.findAllSessions();
+		sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
 		
 		currentSession = sessionMgmt.findCurrentSession();
 		
@@ -219,7 +219,7 @@ public class SessionController implements Serializable {
 	
 	public String doViewSessionList() {
 		
-		sessionList = sessionMgmt.findAllSessions();
+		sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
 		
 		breadcrumbMenuBean.addFirstItem("Sessions", "sessionList.xhtml");
 		return "/modules/session/sessionList.xhtml?faces-redirect=true";
