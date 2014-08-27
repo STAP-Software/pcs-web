@@ -50,7 +50,7 @@ public class SessionMgmt {
 		return query.getResultList();
 	}
 
-	public Session findCurrentSession() {
+	public Session findCurrentSession(Long telescopeId) {
 		// get the session for this date
 		try {
 			try {
@@ -61,6 +61,7 @@ public class SessionMgmt {
 
 				TypedQuery<Session> query = em.createNamedQuery("findSessionByDate", Session.class);
 				query.setParameter("sessionDate", dateWithoutTime);
+				query.setParameter("telescopeId", telescopeId);
 
 				return query.getSingleResult();
 

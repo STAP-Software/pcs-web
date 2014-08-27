@@ -73,7 +73,7 @@ public class SessionController implements Serializable {
 			
 		sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
 		
-		currentSession = sessionMgmt.findCurrentSession();
+		currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 		
 		if (currentSession == null) {
 			currentSession = createNewSession();
