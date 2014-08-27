@@ -163,6 +163,7 @@ public class CameraDefMgmt {
 
 	public Filter getFilterByFilterTypeAndWheel(int filterType, Long filterWheelId) {
 		// get the pupil mask of the defined type that is currently on the wheel
+		// the type is implicit in the name "611" filters require "611" in the name
 		try {
 			TypedQuery<Filter> query = em.createNamedQuery("findByFilterTypeAndWheel", Filter.class);
 			query.setParameter("filterType", "%" + filterType + "%");

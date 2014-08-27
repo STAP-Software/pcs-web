@@ -19,7 +19,7 @@ import javax.persistence.Table;
 @Table(name = "Filter")
 @NamedQueries({
 	@NamedQuery(name = "findAllFilters", query = "SELECT o from Filter o" ),
-	@NamedQuery(name = "findByWavelengthAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw "
+	@NamedQuery(name = "findByFilterTypeAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw "
 			+ "where o.filterName LIKE :filterType AND fw.filterWheelId = :filterWheelId" )
 })
 public class Filter {
