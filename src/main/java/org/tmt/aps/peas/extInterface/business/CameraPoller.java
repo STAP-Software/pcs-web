@@ -28,11 +28,13 @@ public class CameraPoller {
 	@Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
 	public void pollCamera() {
 
+		logger.info("polling camera: doPoll = " + doPoll);
+		
 		if (doPoll) {
 
 			try {
 
-				logger.debug("refreshing camera status");
+				logger.info("refreshing camera status");
 				cameraMgmt.refreshStatus();
 
 			} catch (Exception e) {
