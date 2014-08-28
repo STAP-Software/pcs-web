@@ -11,10 +11,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
@@ -37,6 +40,10 @@ public class ProcedureExecutionMgmt {
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private ProcedureOutputMgmt procedureOutputMgmt;
+	@EJB
+	private PhysicalModel physicalModel;
+	@EJB
+	private GlobalConfigMgmt globalConfigMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 
@@ -68,6 +75,12 @@ public class ProcedureExecutionMgmt {
 			// this persists the procedure
 			sessionMgmt.updateCurrentSession(currentSession);
 
+			// save the current coarse mirror state in global config
+			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
+			procedure.getGlobalConfig().setCoarseMirrorX(coarsePosition.x);
+			procedure.getGlobalConfig().setCoarseMirrorY(coarsePosition.y);
+			globalConfigMgmt.saveDefaultConfig(procedure.getGlobalConfig());
+			
 			// persist all the frames
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 				procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id

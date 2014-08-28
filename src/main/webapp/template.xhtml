@@ -77,7 +77,7 @@
 					</p:submenu>
 
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
-						<p:menuitem value="Global Config" type="button" onclick="globalConfigDlg.show();" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}"/>
 						<p:separator />
 						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}">
@@ -183,9 +183,6 @@
 
                 </h:form>  
 		</p:dialog> 
-
-
-		<ui:include src="modules/config/globalConfig.xhtml" />
 
 	</h:body>
 

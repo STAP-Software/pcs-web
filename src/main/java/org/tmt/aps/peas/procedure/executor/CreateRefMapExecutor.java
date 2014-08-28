@@ -155,6 +155,8 @@ public class CreateRefMapExecutor {
 				END IF
 				*/
 				
+				// always command the coarse mirror to setup values at the start of all procedures
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
 
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
@@ -185,7 +187,7 @@ public class CreateRefMapExecutor {
 		        }
 			
 				// wait for all commands to complete
-		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
+		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
 	        	statusLogger.log("camera.cmd.complete");
 				
 			}

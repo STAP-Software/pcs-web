@@ -18,6 +18,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -29,6 +30,7 @@ import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -116,36 +118,44 @@ public class PassiveTiltExecutor {
 				// TODO: implement
 				// autoPointTelescope();
 
-		        // TEXT = 'Selecting The Passive Tilt Array'                                                             
-
-				// command to mask selected
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-				// command to filter selected
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-
 				// TODO: implement
 				// autoRefmapCheck();
+				
+				// always command the coarse mirror to setup values at the start of all procedures
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
 
-				// TODO:
-		        //TEXT = 'Proceeding to Ready the Camera'                                  
-				// cameraMgmt.readyCamera();
+				Future<Integer> twoPosCommandFuture = null;
+				Future<Integer> refBeamFuture = null;
+				// command to mask selected
+				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
+				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
+				// command to filter selected
+				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
 		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-		        	// TODO: select ref beam based on filter position
-		        	//cameraMgmt.selectRefBeam(); 
+		        	// select ref beam based on filter wavelength
+		        	ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 
 					// extend two pos mirror
-		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
+		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 		        } else {
-		        	// TODO: turn off reference beams
-		        	//cameraMgmt.selectRefBeam(); 
+		        	// turn off reference beams
+					statusLogger.log("camera.cmd.ref_beam", 0);
+		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(0); 
 
-					// FIXME: retract two pos mirror
-		        	Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
+					// retract two pos mirror
+		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
+		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 		        }
-		        
-		        // TODO: wait for all futures to complete
-		        
+			
+				// wait for all commands to complete
+		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
+	        	statusLogger.log("camera.cmd.complete");
+				
 			}
 	
 			statusLogger.log("procedure.using_curr_frame");

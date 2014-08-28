@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
@@ -122,6 +123,8 @@ public class CenterTelescopeExecutor {
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
+				// always command the coarse mirror to setup values at the start of all procedures
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
 				
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
@@ -156,7 +159,7 @@ public class CenterTelescopeExecutor {
 		        }
 			
 				// wait for all commands to complete
-		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture);
+		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
 	        	statusLogger.log("camera.cmd.complete");
 
 

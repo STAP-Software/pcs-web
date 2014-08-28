@@ -33,6 +33,14 @@ public class GlobalConfigMgmt {
 		
 		return query.getSingleResult();
 	}
+	
+	public void saveDefaultConfig(GlobalConfig globalConfig) {
+		
+		em.merge(globalConfig);
+	}
+	
+	
+	
 
 	public FIConfig findFIConfig(Long instrumentId, Long pupilMaskTypeId) {
 		TypedQuery<FIConfig> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfig.class);
