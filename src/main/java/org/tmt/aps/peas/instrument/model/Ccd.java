@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.instrument.model;
 
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -19,7 +20,6 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.RectListEncoder;
 
@@ -40,6 +40,7 @@ public class Ccd {
 	private String ccdName;	
 	private String ccdDescription;	
 	private String hotPixelListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
+	private String hotColumnListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private int rowCount;
 	private int colCount;
 	private int colOffset;
@@ -55,10 +56,11 @@ public class Ccd {
 	private float temperature;
 
 	
-	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, Instrument instrument) {
+	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
 		this.ccdName = ccdName;
 		this.ccdDescription = ccdDescription;
 		this.hotPixelListEncoded = hotPixelListEncoded;
+		this.hotColumnListEncoded = hotColumnListEncoded;
 		this.instrument = instrument;
 	}
 	
@@ -103,6 +105,16 @@ public class Ccd {
 	public void setHotPixelListEncoded(String hotPixelListEncoded) {
 		this.hotPixelListEncoded = hotPixelListEncoded;
 	}
+
+	public String getHotColumnListEncoded() {
+		return hotColumnListEncoded;
+	}
+
+
+	public void setHotColumnListEncoded(String hotColumnListEncoded) {
+		this.hotColumnListEncoded = hotColumnListEncoded;
+	}
+
 
 	public Instrument getInstrument() {
 		return instrument;
@@ -167,14 +179,33 @@ public class Ccd {
 		return RectListEncoder.decodeList(hotPixelListEncoded);
 	}
 	
+	public List<Rect> getHotColumnList() {
+		
+		return RectListEncoder.decodeList(hotColumnListEncoded);
+	}
+	
+	// this method returns all rects in hot pixel list, plus generated rects for each pixel in each hot column
+	public List<Rect> getAllHotPixelRects() {
+		
+		List<Rect> allHotPixelRects = new ArrayList<Rect>();
+		
+		for (Rect colRect : getHotColumnList()) {
+			for (int i = colRect.p1.y; i<=colRect.p2.y; i++) {
+				allHotPixelRects.add(new Rect(colRect.p1.x-1, i, colRect.p1.x+1, i));
+			}
+		}
+		
+		allHotPixelRects.addAll(getHotPixelList());
+		
+		return allHotPixelRects;
+		
+	}
 	
 	public void removeHotPixel(Rect boundingRect) {
 		
 		List<Rect> hotPixelList = RectListEncoder.removeRect(getHotPixelList(), boundingRect);		
 		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
-	
-	
 	
 	public void addHotPixel(Rect hotPixel) {
 		
@@ -183,4 +214,19 @@ public class Ccd {
 		
 		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
+	
+	public void removeHotColumn(Rect boundingRect) {
+		
+		List<Rect> hotColumnList = RectListEncoder.removeRect(getHotColumnList(), boundingRect);		
+		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
+	}
+		
+	public void addHotColumn(Rect hotColumn) {
+		
+		List<Rect> hotColumnList = getHotColumnList();
+		hotColumnList.add(hotColumn);
+		
+		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
+	}
+
 }

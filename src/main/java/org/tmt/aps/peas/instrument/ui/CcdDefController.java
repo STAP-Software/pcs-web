@@ -40,6 +40,7 @@ public class CcdDefController implements Serializable {
 	private List<Ccd> ccdList;
 	private Ccd ccd;
 	private Rect hotPixelBoundingRect;
+	private Rect hotColumnBoundingRect;
 	private Ccd selectedCcd;
 
 	@PostConstruct
@@ -47,6 +48,8 @@ public class CcdDefController implements Serializable {
 		refreshCcdList();
 		hotPixelBoundingRect = new Rect();
 		hotPixelBoundingRect.reset();
+		hotColumnBoundingRect = new Rect();
+		hotColumnBoundingRect.reset();
 	}
 
 	public List<Ccd> getCcdList() {
@@ -71,6 +74,14 @@ public class CcdDefController implements Serializable {
 
 	public void setHotPixelBoundingRect(Rect hotPixelBoundingRect) {
 		this.hotPixelBoundingRect = hotPixelBoundingRect;
+	}
+
+	public Rect getHotColumnBoundingRect() {
+		return hotColumnBoundingRect;
+	}
+
+	public void setHotColumnBoundingRect(Rect hotColumnBoundingRect) {
+		this.hotColumnBoundingRect = hotColumnBoundingRect;
 	}
 
 	private void refreshCcdList() {
@@ -113,6 +124,24 @@ public class CcdDefController implements Serializable {
 
 		try {
 			ccd.removeHotPixel(hotPixelBoundingRect);
+
+			ccdDefMgmt.updateCcd(ccd);
+
+			physicalModel.refresh();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
+	}
+	
+	public void doDeleteHotColumn() {
+
+		try {
+			ccd.removeHotColumn(hotColumnBoundingRect);
 
 			ccdDefMgmt.updateCcd(ccd);
 
@@ -169,6 +198,27 @@ public class CcdDefController implements Serializable {
 			ccdDefMgmt.updateCcd(ccd);
 
 			hotPixelBoundingRect.reset();
+
+			physicalModel.refresh();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
+	}
+
+	public void doAddHotColumn() {
+
+		try {
+
+			ccd.addHotColumn(hotColumnBoundingRect);
+
+			ccdDefMgmt.updateCcd(ccd);
+
+			hotColumnBoundingRect.reset();
 
 			physicalModel.refresh();
 			
