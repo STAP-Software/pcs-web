@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.instrument.ui;
 
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -19,9 +18,9 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Ccd;
 
 @Named
@@ -32,6 +31,8 @@ public class CcdDefController implements Serializable {
 
 	@EJB
 	CcdDefMgmt ccdDefMgmt;
+	@EJB
+	PhysicalModel physicalModel;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -110,21 +111,44 @@ public class CcdDefController implements Serializable {
 
 	public void doDeleteHotPixel() {
 
-		ccd.removeHotPixel(hotPixelBoundingRect);
-		
-		ccdDefMgmt.updateCcd(ccd);
+		try {
+			ccd.removeHotPixel(hotPixelBoundingRect);
 
+			ccdDefMgmt.updateCcd(ccd);
+
+			physicalModel.refresh();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
 	}
 
 	public String doSaveCcd() {
 
-		ccdDefMgmt.createCcd(ccd);
+		try {
 
-		refreshCcdList();
+			ccdDefMgmt.createCcd(ccd);
 
-		breadcrumbMenuBean.addFirstItem("PCS CCDs", "doViewCcdList()");
+			refreshCcdList();
 
-		return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
+			physicalModel.refresh();
+			
+			breadcrumbMenuBean.addFirstItem("PCS CCDs", "doViewCcdList()");
+
+			return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+			return null;
+		}
 
 	}
 
@@ -138,13 +162,23 @@ public class CcdDefController implements Serializable {
 
 	public void doAddHotPixel() {
 
+		try {
 
-		ccd.addHotPixel(hotPixelBoundingRect);
-		
-		ccdDefMgmt.updateCcd(ccd);
-		
-		hotPixelBoundingRect.reset();
+			ccd.addHotPixel(hotPixelBoundingRect);
 
+			ccdDefMgmt.updateCcd(ccd);
+
+			hotPixelBoundingRect.reset();
+
+			physicalModel.refresh();
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
+
+		}
 	}
 
 	public String doViewCcdSelectList() {
@@ -154,24 +188,23 @@ public class CcdDefController implements Serializable {
 		return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
 	}
 
-	
 	public String doSaveCcdSelection() {
-		
-		try {
-		ccdDefMgmt.assignCcdToInstrument(selectedCcd);
 
-		FacesContext context = FacesContext.getCurrentInstance();  
-        
-        context.addMessage(null, new FacesMessage("Successful", "CCD Assigned")); 
-        
+		try {
+			ccdDefMgmt.assignCcdToInstrument(selectedCcd);
+
+			FacesContext context = FacesContext.getCurrentInstance();
+
+			context.addMessage(null, new FacesMessage("Successful", "CCD Assigned"));
+
 		} catch (Exception e) {
 			e.printStackTrace();
-			
-			FacesContext context = FacesContext.getCurrentInstance(); 
-	        context.addMessage(null, new FacesMessage("Error", e.getMessage())); 
+
+			FacesContext context = FacesContext.getCurrentInstance();
+			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
 
 		}
-		
+
 		return null;
 
 	}
@@ -181,5 +214,5 @@ public class CcdDefController implements Serializable {
 		return null;
 
 	}
-	
+
 }

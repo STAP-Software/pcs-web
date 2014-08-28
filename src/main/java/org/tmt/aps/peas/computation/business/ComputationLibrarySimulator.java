@@ -5,10 +5,13 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.List;
+
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -43,7 +46,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 	}
 
-	@Override
+	
 	public void findAndIdentify(float[][] frame, float[][] centroids) throws ComputationException {
 		// TODO Auto-generated method stub
 		
@@ -61,5 +64,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
 	}
 	
+	
+	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
+		
+		return frame;
+		
+	}
 	
 }

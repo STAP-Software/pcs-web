@@ -5,7 +5,10 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.List;
+
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 
 
@@ -18,4 +21,6 @@ public interface ComputationLibrary {
 	
 	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
 	
+	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
+
 }

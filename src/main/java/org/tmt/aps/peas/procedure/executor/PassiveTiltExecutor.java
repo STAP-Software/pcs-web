@@ -28,6 +28,7 @@ import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -66,6 +67,8 @@ public class PassiveTiltExecutor {
 	private ComputationContext computationContext;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
+	@EJB
+	PhysicalModel physicalModel;
 
 	private List<String> logMessages;
 	
@@ -156,7 +159,7 @@ public class PassiveTiltExecutor {
 				try {
 				
 				ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
-					0, 0, procedureConfig.getIntegrationTime());
+					0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getHotPixelList(), procedure.getGlobalConfig().isRemoveBadPixels());
 				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 				
 				// tell the async controller to update the frame

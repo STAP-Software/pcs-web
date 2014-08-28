@@ -5,14 +5,18 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.List;
+
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCentGauss;
+import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -68,6 +72,46 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return centroid;
 	}
 
+	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
+		
+		int[] x1 = new int[badPixelList.size()];
+		int[] x2 = new int[badPixelList.size()];
+		int[] y1 = new int[badPixelList.size()];
+		int[] y2 = new int[badPixelList.size()];
+		
+		logger.debug("removeBadPixels:: ");
+		int i=0;
+		for (Rect rect : badPixelList) {
+			logger.debug(rect);
+			x1[i] = rect.p1.x + 1;
+			y1[i] = rect.p1.y + 1;
+			x2[i] = rect.p2.x + 1;
+			y2[i] = rect.p2.y + 1;
+			i++;
+		}
+
+		JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
+		RetVal retVal = new RetVal();
+		
+		
+		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+		
+		int[][] arrayOut = new int[frame.length][frame[0].length];
+		
+		Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, arrayOut);
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Bad Pixel remove error");
+		}
+
+		return arrayOut;
+
+		
+		
+	}
+	
+	
 	public void findAndIdentify(float[][] frame, float[][] centroids) throws ComputationException {
 		
 		JfindAndIdentify jFindAndIdentify = new JfindAndIdentify();

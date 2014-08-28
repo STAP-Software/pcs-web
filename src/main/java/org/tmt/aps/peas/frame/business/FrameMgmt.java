@@ -31,6 +31,9 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.Rect;
+import org.tmt.aps.peas.computation.business.ComputationContext;
+import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -57,6 +60,9 @@ public class FrameMgmt {
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	CcdMgmt ccdMgmt;
+	@EJB
+	private ComputationContext computationContext;
+
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
 
@@ -143,11 +149,16 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber) {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) {
 		try {
 
 			// get the frame from CCD or from file, depending on the called type
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			
+			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
+				ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+				frame = computationLibrary.removeBadPixels(frame, badPixelList);
+			}
 			
 			short[][] rawFrame = new short[frame.length][frame[0].length];
 			for (int i = 0; i < frame.length; i++) {
@@ -180,10 +191,11 @@ public class FrameMgmt {
 
 	}
 	
-	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, int iteration, int frameNumber, double exposureTime) {
+	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, 
+			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) {
 
 		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
-			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber) :
+			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :
 			frameSimulator.getFrame(frameNumber);
 		
 		

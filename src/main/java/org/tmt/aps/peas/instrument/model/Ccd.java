@@ -39,7 +39,7 @@ public class Ccd {
 	private Long ccdId;
 	private String ccdName;	
 	private String ccdDescription;	
-	private String hotPixelListEncoded;  // encoded as x1,y1,x2,y2, etc
+	private String hotPixelListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private int rowCount;
 	private int colCount;
 	private int colOffset;
