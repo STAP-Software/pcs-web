@@ -219,7 +219,7 @@ public class CcdManualController implements Serializable {
 		try {
 			
 			cameraPoller.setDoPoll(false);
-			Thread.currentThread().wait(2000);
+			Thread.sleep(2000);
 
 			switch (advCommandSelection) {
 
