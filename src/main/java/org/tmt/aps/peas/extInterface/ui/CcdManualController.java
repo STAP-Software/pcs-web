@@ -18,9 +18,9 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
-import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.frame.ui.FrameController;
 
 @Named
@@ -34,6 +34,8 @@ public class CcdManualController implements Serializable {
 
 	@EJB
 	CcdMgmt ccdMgmt;
+	@EJB
+	CameraPoller cameraPoller;
 
 	@Inject
 	FrameController frameController;
@@ -215,6 +217,9 @@ public class CcdManualController implements Serializable {
 	}
 	public void doSendAdvCommand() {
 		try {
+			
+			cameraPoller.setDoPoll(false);
+			wait(2000);
 
 			switch (advCommandSelection) {
 
@@ -249,6 +254,8 @@ public class CcdManualController implements Serializable {
 			default:
 
 			}
+
+			cameraPoller.setDoPoll(true);
 
 			FacesContext context = FacesContext.getCurrentInstance();
 

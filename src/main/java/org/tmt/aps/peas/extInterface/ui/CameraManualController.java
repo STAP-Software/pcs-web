@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CommandFailureException;
@@ -41,6 +42,8 @@ public class CameraManualController implements Serializable {
 
 	@EJB
 	CameraMgmt cameraMgmt;
+	@EJB
+	CameraPoller cameraPoller;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -198,6 +201,10 @@ public class CameraManualController implements Serializable {
 
 		try {
 
+			cameraPoller.setDoPoll(false);
+			wait(2000);
+
+			
 			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {
 
@@ -299,6 +306,8 @@ public class CameraManualController implements Serializable {
 
 			}
 
+			cameraPoller.setDoPoll(true);
+			
 			System.out.println("Returning");
 			FacesContext context = FacesContext.getCurrentInstance();
 
