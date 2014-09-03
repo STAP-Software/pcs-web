@@ -25,6 +25,7 @@ public class Utils {
 				e.printStackTrace();
 			}
 		}
+		/*
 		try {
 			for (Future f : futures) {
 				f.get();
@@ -34,6 +35,7 @@ public class Utils {
 		} catch (InterruptedException e) {
 			throw new Exception(e.getCause());
 		}
+		*/
 	}
 
 }
