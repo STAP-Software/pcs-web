@@ -44,6 +44,13 @@ public class InstrumentCommandSimulator implements InstrumentInterface {
 		return cameraCommandSimulator.queryCamera(deviceCode);
 	}
 
+	
+	@Override
+	public void resetCamera() throws CommunicationException, CommandFailureException, RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
 	@Override
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException,
 			RemoteException {

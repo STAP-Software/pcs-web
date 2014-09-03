@@ -46,6 +46,10 @@ public class CameraMgmt {
 		return extInfFactory.getCameraCommand().getCameraStatus();
 	}
 
+	public void resetCamera() throws Exception {
+		extInfFactory.getCameraCommand().resetCamera();
+	}
+	
 	@Asynchronous
 	public Future<Integer> commandPupilMask(int pupilMaskPosition) throws Exception {
 		System.out.println("in commandPupilMask");

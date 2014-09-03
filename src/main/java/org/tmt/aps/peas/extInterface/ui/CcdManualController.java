@@ -18,6 +18,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
@@ -34,6 +35,8 @@ public class CcdManualController implements Serializable {
 
 	@EJB
 	CcdMgmt ccdMgmt;
+	@EJB
+	CameraMgmt cameraMgmt;
 	@EJB
 	CameraPoller cameraPoller;
 
@@ -220,6 +223,8 @@ public class CcdManualController implements Serializable {
 			
 			cameraPoller.setDoPoll(false);
 			Thread.sleep(5000);
+			cameraMgmt.resetCamera();
+
 
 			switch (advCommandSelection) {
 

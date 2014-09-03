@@ -1,21 +1,23 @@
 package org.tmt.aps.peas.common;
 
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
 public class Utils {
 
-	public static void waitForComplete(Future...futures) {
-		
+	public static void waitForComplete(Future... futures) throws Exception {
+
 		while (true) {
-			
+
 			boolean allDone = true;
-			for(Future f : futures) {
+			for (Future f : futures) {
 				if (!f.isDone()) {
 					allDone = false;
 				}
 			}
-			if (allDone) break;
-			
+			if (allDone)
+				break;
+
 			// wait and try again
 			try {
 				Thread.sleep(500);
@@ -23,7 +25,15 @@ public class Utils {
 				e.printStackTrace();
 			}
 		}
+		try {
+			for (Future f : futures) {
+				f.get();
+			}
+		} catch (ExecutionException e) {
+			throw new Exception(e.getCause());
+		} catch (InterruptedException e) {
+			throw new Exception(e.getCause());
+		}
 	}
-	
-	
+
 }

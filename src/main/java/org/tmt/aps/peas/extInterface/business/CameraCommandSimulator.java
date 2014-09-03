@@ -57,6 +57,15 @@ public class CameraCommandSimulator implements CameraCommand {
 		}
 		
 	}
+	
+	
+
+	@Override
+	public void resetCamera() throws CommunicationException, CommandFailureException, RemoteException {
+		// TODO Auto-generated method stub
+		
+	}
+
 
 	@Override
 	public int commandPupilMask(int pupilMaskPosition) throws CommunicationException, TimeoutException, CommandFailureException {
@@ -66,7 +75,8 @@ public class CameraCommandSimulator implements CameraCommand {
 		} catch (Exception e) {
 			
 		}
-		return pupilMaskPosition;
+		throw new CommandFailureException("my Exception");
+		//return pupilMaskPosition;
 	}
 
 	@Override

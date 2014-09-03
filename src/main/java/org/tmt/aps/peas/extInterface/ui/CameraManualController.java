@@ -21,8 +21,6 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
-import org.tmt.aps.peas.extinf.CameraCommand;
-import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
@@ -203,6 +201,7 @@ public class CameraManualController implements Serializable {
 
 			cameraPoller.setDoPoll(false);
 			Thread.sleep(5000);
+			cameraMgmt.resetCamera();
 			
 			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {

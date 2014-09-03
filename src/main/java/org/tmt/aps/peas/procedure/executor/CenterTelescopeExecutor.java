@@ -120,6 +120,7 @@ public class CenterTelescopeExecutor {
 
 			cameraPoller.setDoPoll(false);
 			Thread.sleep(5000);
+			cameraMgmt.resetCamera();
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
