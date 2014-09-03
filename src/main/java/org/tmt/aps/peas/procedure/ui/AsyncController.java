@@ -79,6 +79,8 @@ public class AsyncController {
 		
 		checkFrameDisplay();
 
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Update camera display...");
+
 		checkCameraDisplay();
 		
 	}
