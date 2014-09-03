@@ -153,6 +153,7 @@ public class FrameMgmt {
 		//try {
 
 			// get the frame from CCD or from file, depending on the called type
+			ccdMgmt.fastWipeCcd();
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
 			
 			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
