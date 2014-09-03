@@ -149,8 +149,8 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) {
-		try {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
+		//try {
 
 			// get the frame from CCD or from file, depending on the called type
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
@@ -184,15 +184,15 @@ public class FrameMgmt {
 
 			return ccdFrame;
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+		//} catch (Exception e) {
+		//	e.printStackTrace();
+		//	return null;
+		//}
 
 	}
 	
 	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, 
-			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) {
+			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
 		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
 			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :

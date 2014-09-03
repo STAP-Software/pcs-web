@@ -57,7 +57,6 @@ public class CcdConverter implements Converter, Serializable {
 
 	public String getAsString(FacesContext facesContext, UIComponent component, Object value) {
 		
-		logger.debug("getAsString::enter");
 		if (value == null || value.equals("")) {
 			return "";
 		} else {
