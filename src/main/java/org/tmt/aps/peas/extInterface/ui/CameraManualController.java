@@ -202,8 +202,7 @@ public class CameraManualController implements Serializable {
 		try {
 
 			cameraPoller.setDoPoll(false);
-			wait(2000);
-
+			Thread.currentThread().wait(2000);
 			
 			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {
