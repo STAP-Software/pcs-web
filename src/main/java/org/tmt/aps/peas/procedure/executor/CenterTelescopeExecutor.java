@@ -119,7 +119,7 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
 			cameraPoller.setDoPoll(false);
-			wait(2000);
+			Thread.sleep(5000);
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
