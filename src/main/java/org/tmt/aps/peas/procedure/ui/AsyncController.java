@@ -83,6 +83,8 @@ public class AsyncController {
 
 		checkCameraDisplay();
 		
+		checkMessages();
+		
 	}
 	
 	private void checkUserPrompt() {
@@ -171,7 +173,12 @@ public class AsyncController {
 		requestContext.update("procedureDetailForm:miscPanel:cameraStatusPanel");
 	}
 	
-	
+	private void checkMessages() {
+		if (procedureExecutionState.getProcedureException() != null) {
+			String message = procedureExecutionState.getProcedureException().getMessage();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Procedure Error: ", message));
+		}
+	}
 	
 	public void onComplete() {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));

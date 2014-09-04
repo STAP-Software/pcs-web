@@ -253,7 +253,7 @@ public class CreateRefMapExecutor {
 
 		} catch (Exception e) {
 			
-			procedureExecutionMgmt.handleProcedureException(procedure);
+			procedureExecutionMgmt.handleProcedureException(procedure, e);
 
 		}
 		/*

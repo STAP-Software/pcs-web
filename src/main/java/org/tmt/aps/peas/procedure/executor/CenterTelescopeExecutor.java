@@ -233,7 +233,7 @@ public class CenterTelescopeExecutor {
 		} catch (Exception e) {
 			statusLogger.log("procedure.exception", e.getMessage());
 			e.printStackTrace();
-			procedureExecutionMgmt.handleProcedureException(procedure);
+			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 		/*
 		 * getProcStats();

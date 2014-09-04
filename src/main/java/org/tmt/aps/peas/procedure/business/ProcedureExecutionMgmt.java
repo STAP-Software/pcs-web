@@ -59,10 +59,11 @@ public class ProcedureExecutionMgmt {
 
 	}
 
-	public void handleProcedureException(Procedure procedure) {
+	public void handleProcedureException(Procedure procedure, Exception exception) {
 
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		procedureExecutionState.setExecutionStatus(false);
+		procedureExecutionState.setProcedureException(exception);
 
 	}
 

@@ -20,6 +20,7 @@ public class ProcedureExecutionState {
 	private int percentComplete;
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
+	private Exception procedureException;
 
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
@@ -57,6 +58,14 @@ public class ProcedureExecutionState {
 
 	public void setCurrentProcedure(Procedure currentProcedure) {
 		this.currentProcedure = currentProcedure;
+	}
+
+	public Exception getProcedureException() {
+		return procedureException;
+	}
+
+	public void setProcedureException(Exception procedureException) {
+		this.procedureException = procedureException;
 	}
 
 
