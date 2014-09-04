@@ -75,7 +75,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		} catch (Exception e) {
 			
 		}
-		throw new CommandFailureException("my Exception");
+		throw new CommandFailureException("E00");
 		//return pupilMaskPosition;
 	}
 
