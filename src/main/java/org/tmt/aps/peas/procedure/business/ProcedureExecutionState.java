@@ -8,6 +8,7 @@ package org.tmt.aps.peas.procedure.business;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 
@@ -17,6 +18,7 @@ public class ProcedureExecutionState {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private boolean executionStatus;
+	private boolean abortRequested;
 	private int percentComplete;
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
@@ -27,6 +29,7 @@ public class ProcedureExecutionState {
 		executionStatus = false;
 		percentComplete = 0;
 		procedureException = null;
+		abortRequested = false;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -41,6 +44,7 @@ public class ProcedureExecutionState {
 		return percentComplete;
 	}
 
+	@Abortable
 	public void setPercentComplete(int percentComplete) {
 		this.percentComplete = percentComplete;
 	}
@@ -67,6 +71,15 @@ public class ProcedureExecutionState {
 
 	public void setProcedureException(Throwable procedureException) {
 		this.procedureException = procedureException;
+	}
+
+	public boolean getAbortRequested() {
+		
+		return abortRequested;
+	}
+
+	public void setAbortRequested(boolean abortRequested) {
+		this.abortRequested = abortRequested;
 	}
 
 

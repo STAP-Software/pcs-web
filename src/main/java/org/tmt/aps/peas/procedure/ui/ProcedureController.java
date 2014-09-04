@@ -534,6 +534,10 @@ public class ProcedureController implements Serializable {
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
+	public void doAbortProcedure() {
+		procedureExecutionState.setAbortRequested(true);
+	}
+	
 	// Maybe in another controller, not sure yet
 
 	public void doSaveAdvancedOptions() {

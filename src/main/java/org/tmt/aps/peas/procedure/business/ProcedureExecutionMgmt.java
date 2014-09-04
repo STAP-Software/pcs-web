@@ -5,9 +5,11 @@
  */
 package org.tmt.aps.peas.procedure.business;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.Date;
 
 import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
@@ -61,9 +63,32 @@ public class ProcedureExecutionMgmt {
 
 	public void handleProcedureException(Procedure procedure, Throwable exception) {
 
+		Throwable procedureException = exception;
+		
+		try {
+			throw exception;
+			
+		} catch (UnsatisfiedLinkError e) {
+			procedureException =  new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
+
+		} catch (EJBTransactionRolledbackException e) {
+			
+			if (e.getCause() instanceof UndeclaredThrowableException) {
+				UndeclaredThrowableException e1 = (UndeclaredThrowableException)e.getCausedByException();
+				Throwable e2 = e1.getCause();
+				procedureException = e2;
+			}
+			
+		} catch (Throwable e) {
+			procedureException = e;
+		}
+		
+		exception.printStackTrace();
+		statusLogger.log("procedure.exception", procedureException.getMessage());
+
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		procedureExecutionState.setExecutionStatus(false);
-		procedureExecutionState.setProcedureException(exception);
+		procedureExecutionState.setProcedureException(procedureException);
 
 	}
 

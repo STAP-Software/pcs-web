@@ -5,12 +5,14 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
+import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -242,13 +244,7 @@ public class CenterTelescopeExecutor {
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
-		} catch (UnsatisfiedLinkError e) {
-			statusLogger.log("procedure.exception", e.getMessage());
-			e.printStackTrace();
-			procedureExecutionMgmt.handleProcedureException(procedure, new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss."));
 		} catch (Throwable e) {
-			statusLogger.log("procedure.exception", e.getMessage());
-			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 		
