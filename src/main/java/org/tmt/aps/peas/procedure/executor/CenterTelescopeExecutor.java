@@ -230,7 +230,7 @@ public class CenterTelescopeExecutor {
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Exception e) {
-			statusLogger.log("procedure.exception" + e.getMessage());
+			statusLogger.log("procedure.exception", e.getMessage());
 			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure);
 		}
