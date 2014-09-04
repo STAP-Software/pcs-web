@@ -32,7 +32,7 @@ public class Utils {
 		
 		try {
 			for (Future f : futures) {
-				logger.debug("Testing Future: " + f);
+				logger.info("Testing Future: " + f);
 				f.get();
 			}
 		} catch (ExecutionException e) {
