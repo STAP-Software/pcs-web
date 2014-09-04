@@ -163,7 +163,6 @@ public class CenterTelescopeExecutor {
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
 	        	statusLogger.log("camera.cmd.complete");
 
-
 			} 
 			
 			statusLogger.log("frame.get");
