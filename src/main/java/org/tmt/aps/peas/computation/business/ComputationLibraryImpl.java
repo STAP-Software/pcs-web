@@ -83,10 +83,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int i=0;
 		for (Rect rect : badPixelList) {
 			logger.debug(rect);
-			x1[i] = rect.p1.x + 1;
-			y1[i] = rect.p1.y + 1;
-			x2[i] = rect.p2.x + 1;
-			y2[i] = rect.p2.y + 1;
+			x1[i] = rect.p1.x;
+			y1[i] = rect.p1.y;
+			x2[i] = rect.p2.x;
+			y2[i] = rect.p2.y;
 			i++;
 		}
 

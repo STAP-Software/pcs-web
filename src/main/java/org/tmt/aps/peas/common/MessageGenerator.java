@@ -54,9 +54,7 @@ public class MessageGenerator {
 		args[7] = retVal.getArg7();
 		args[8] = retVal.getArg8();
 		args[9] = retVal.getArg9();
-		
-		System.out.println("MessageGenerator:: " + args[0] +", " + args[1] +", " + args[2] +", " + args[3] +", " + args[4]);
-		
+				
 		String message = MessageFormat.format(pattern, (Object[])args);
 		
 		return message;
