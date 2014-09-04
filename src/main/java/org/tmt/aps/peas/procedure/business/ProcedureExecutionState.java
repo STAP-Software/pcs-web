@@ -20,12 +20,13 @@ public class ProcedureExecutionState {
 	private int percentComplete;
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
-	private Exception procedureException;
+	private Throwable procedureException;
 
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
 		executionStatus = false;
 		percentComplete = 0;
+		procedureException = null;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -60,11 +61,11 @@ public class ProcedureExecutionState {
 		this.currentProcedure = currentProcedure;
 	}
 
-	public Exception getProcedureException() {
+	public Throwable getProcedureException() {
 		return procedureException;
 	}
 
-	public void setProcedureException(Exception procedureException) {
+	public void setProcedureException(Throwable procedureException) {
 		this.procedureException = procedureException;
 	}
 

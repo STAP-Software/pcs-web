@@ -115,7 +115,9 @@ public class CenterTelescopeExecutor {
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			procedureExecutionMgmt.performProcedureStartup(procedure);
-					
+			
+			procedureExecutionState.setPercentComplete(5);
+			
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
 			cameraPoller.setDoPoll(false);
@@ -159,12 +161,16 @@ public class CenterTelescopeExecutor {
 		        	statusLogger.log("camera.cmd.two_pos_device", "retract");
 		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 		        }
+				
+				procedureExecutionState.setPercentComplete(10);
 			
 				// wait for all commands to complete
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
 	        	statusLogger.log("camera.cmd.complete");
 
 			} 
+			
+			procedureExecutionState.setPercentComplete(20);
 			
 			statusLogger.log("frame.get");
 
@@ -175,6 +181,8 @@ public class CenterTelescopeExecutor {
 			
 			cameraPoller.setDoPoll(true);
 
+			procedureExecutionState.setPercentComplete(40);
+			
 			// this is where we display the frame; tell the async controller to update the frame
 			// put up some display that tells user to click on the star
 			frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.ct"));
@@ -186,6 +194,8 @@ public class CenterTelescopeExecutor {
 				Thread.sleep(500);
 			}
 
+			procedureExecutionState.setPercentComplete(60);
+			
 			// get marking data from the frame display
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
 			procedureOutput.setCentroidGuess(guess);
@@ -194,6 +204,8 @@ public class CenterTelescopeExecutor {
 			// call find cent with the guess
 			FloatPoint centroid = computationLibrary.findCentGauss(ccdFrame.getCorrectedFrame(), guess, procedure.getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
 			procedureOutput.setCentroid(centroid);
+			
+			procedureExecutionState.setPercentComplete(80);
 			
 			// display with recalculated centroid
 			frameDisplayMgmt.setMarking(centroid);
@@ -206,6 +218,8 @@ public class CenterTelescopeExecutor {
 			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
 			FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroid, desiredPixLocation, mask.getSecPerPixel());
 			procedureOutput.setDeltaAzEl(deltaAzEl);
+			
+			procedureExecutionState.setPercentComplete(90);
 			
 			// display result and ask if we should move telescope
 			statusLogger.log("telescope.desired_move", deltaAzEl);
@@ -221,20 +235,23 @@ public class CenterTelescopeExecutor {
 				statusLogger.log("telescope.cmd.end");
 			}
 			
-			int trialPct = (int) ((((0) * 100) / 1) * 0.95);
-
-			procedureExecutionState.setPercentComplete(trialPct);
+			procedureExecutionState.setPercentComplete(95);
 			
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
-		} catch (Exception e) {
+		} catch (UnsatisfiedLinkError e) {
+			statusLogger.log("procedure.exception", e.getMessage());
+			e.printStackTrace();
+			procedureExecutionMgmt.handleProcedureException(procedure, new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss."));
+		} catch (Throwable e) {
 			statusLogger.log("procedure.exception", e.getMessage());
 			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
+		
 		/*
 		 * getProcStats();
 		 */

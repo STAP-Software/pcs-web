@@ -260,10 +260,14 @@ public class PassiveTiltExecutor {
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
-		} catch (Exception e) {
-			
+		} catch (UnsatisfiedLinkError e) {
+			statusLogger.log("procedure.exception", e.getMessage());
+			e.printStackTrace();
+			procedureExecutionMgmt.handleProcedureException(procedure, new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss."));
+		} catch (Throwable e) {
+			statusLogger.log("procedure.exception", e.getMessage());
+			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
-
 		}
 		/*
 		 * getProcStats();
