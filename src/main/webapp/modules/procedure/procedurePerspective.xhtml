@@ -12,7 +12,7 @@
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
 				update=":growl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
-				stop="#{!asyncController.executionStatus}" />
+				stop="#{!asyncController.executionStatus}" oncomplete="scrollStatusLog()"/>
 		</h:form>
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
@@ -132,20 +132,20 @@
 						 
 						</h:panelGroup>
 						<br/>
-						<p:spacer height="1px" width="300px" />
+						<p:spacer height="1px" width="320px" />
 
 					</p:tab>
 					<p:tab title="Procedure Event Log">
-						<p:scrollPanel style="width:100%;height:206px" mode="native">
-							<p:dataTable id="sessionTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
+						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:206px" mode="native">
+							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
 
 								<p:column headerText="Time">
 									<h:outputText value="#{logEntry.createDate}" style="font-size: 10px">
 										<f:convertDateTime pattern="hh:mm:ss" />
 									</h:outputText>
 								</p:column>
-								<p:column headerText="Status" style="white-space:pre-wrap">
-									<h:outputText escape="false" value="#{logEntry.status}" style="font-size: 10px; white-space:pre-wrap" />
+								<p:column headerText="Status" style="white-space:pre-wrap; ">
+									<h:outputText escape="false" value="#{logEntry.status}" style="font-size: 10px; white-space:pre-wrap;" />
 								</p:column>
 
 							</p:dataTable>
@@ -156,7 +156,6 @@
 				<h:panelGroup id="framePanel">
 					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
 						rendered="#{procedureController.procedure.procedureState eq 1}">
-
 
 						<p:panelGrid columns="1" style="padding:0;margin:0">
 
@@ -376,6 +375,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		initCanvasEvents();
 	}
 	
+	function scrollStatusLog() {
+		var objDiv = document.getElementById('procedureDetailForm:controlPanel:procedureEventLogPanel');
+		objDiv.scrollTop = objDiv.scrollHeight;
+	}
 	//]]>
 	
 </script>

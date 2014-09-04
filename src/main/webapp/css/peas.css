@@ -255,6 +255,10 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	padding: 4px 0px 4px 0px;
 }
 
+.eventLogTable tr td {
+	word-wrap: break-word;
+}
+
 /* fix the combo boxes 
 .ui-selectonemenu-label {
 	font-size: 10px !important;

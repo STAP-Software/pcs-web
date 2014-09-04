@@ -125,6 +125,7 @@ public class CenterTelescopeExecutor {
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
 				// always command the coarse mirror to setup values at the start of all procedures
+				statusLogger.log("camera.cmd.coarse_mirror", procedure.getGlobalConfig().getCoarseMirrorDefault());
 				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
 				
 				Future<Integer> twoPosCommandFuture = null;
