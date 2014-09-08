@@ -251,15 +251,10 @@ public class CreateRefMapExecutor {
 			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
-		} catch (UnsatisfiedLinkError e) {
-			statusLogger.log("procedure.exception", e.getMessage());
-			e.printStackTrace();
-			procedureExecutionMgmt.handleProcedureException(procedure, new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss."));
 		} catch (Throwable e) {
-			statusLogger.log("procedure.exception", e.getMessage());
-			e.printStackTrace();
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
+		
 		/*
 		 * getProcStats();
 		 */
