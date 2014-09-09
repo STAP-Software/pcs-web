@@ -9,6 +9,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.extinf.StarInfo;
 
 @Stateless
@@ -40,9 +41,9 @@ public class DcsMgmt {
 		return extInfFactory.getDcsCommand().queryTelPos();
 	}
 
-
+	// input in arcsec
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
-		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0]/1.0e6, telescopeDeltas[1]/1.0e6);
+		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] * 180.0/Constants.PI, telescopeDeltas[1] * 180.0/Constants.PI);
 	}
 	
 	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {

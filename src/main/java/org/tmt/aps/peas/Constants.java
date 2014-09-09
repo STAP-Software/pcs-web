@@ -50,4 +50,6 @@ public class Constants {
 	public static final int SPOT_TYPE_INTERIOR = 1;
 	public static final int SPOT_TYPE_PERIPHERAL = 2;
 	
+	
+	public static final double PI = 3.14159265;
 }
