@@ -164,7 +164,7 @@ public class FrameMgmt {
 			short[][] rawFrame = new short[frame.length][frame[0].length];
 			for (int i = 0; i < frame.length; i++) {
 				for (int j = 0; j < frame[i].length; j++) {
-					rawFrame[i][j] = (short) frame[i][j];
+					rawFrame[i][j] = (short) frame[j][i];
 				}
 			}
 
@@ -362,7 +362,15 @@ public class FrameMgmt {
 		Fits myFits = new Fits();
 
 		// Now create three extensions.
-		myFits.addHDU(HDU.create(ccdFrame.getRawFrame()));
+		// reverse the frame to match legacy frames
+		short[][] reversedFrame = new short[ccdFrame.getRawFrame().length][ccdFrame.getRawFrame()[0].length];
+		for (int i = 0; i < ccdFrame.getRawFrame().length; i++) {
+			for (int j = 0; j < ccdFrame.getRawFrame()[i].length; j++) {
+				reversedFrame[i][j] = ccdFrame.getRawFrame()[j][i];
+			}
+		}
+
+		myFits.addHDU(HDU.create(reversedFrame));
 
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
