@@ -56,7 +56,7 @@ public class ProcedureExecutionMgmt {
 		procedureExecutionState.setPercentComplete(0);
 
 		statusLogger.initLog();
-		
+
 		frameDisplayMgmt.init();
 
 	}
@@ -64,25 +64,25 @@ public class ProcedureExecutionMgmt {
 	public void handleProcedureException(Procedure procedure, Throwable exception) {
 
 		Throwable procedureException = exception;
-		
+
 		try {
 			throw exception;
-			
+
 		} catch (UnsatisfiedLinkError e) {
-			procedureException =  new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
+			procedureException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
 
 		} catch (EJBTransactionRolledbackException e) {
-			
+
 			if (e.getCause() instanceof UndeclaredThrowableException) {
-				UndeclaredThrowableException e1 = (UndeclaredThrowableException)e.getCausedByException();
+				UndeclaredThrowableException e1 = (UndeclaredThrowableException) e.getCausedByException();
 				Throwable e2 = e1.getCause();
 				procedureException = e2;
 			}
-			
+
 		} catch (Throwable e) {
 			procedureException = e;
 		}
-		
+
 		exception.printStackTrace();
 		statusLogger.log("procedure.exception", procedureException.getMessage());
 
@@ -106,36 +106,37 @@ public class ProcedureExecutionMgmt {
 			procedure.getGlobalConfig().setCoarseMirrorX(coarsePosition.x);
 			procedure.getGlobalConfig().setCoarseMirrorY(coarsePosition.y);
 			globalConfigMgmt.saveDefaultConfig(procedure.getGlobalConfig());
-			
+
 			// persist all the frames
-			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-				procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
-				frameMgmt.associateCcdFrame(procedureCcdFrame);
+			if (procedure.getProcedureCcdFrameList() != null) {
+				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+					procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
+					frameMgmt.associateCcdFrame(procedureCcdFrame);
 
-				
-				// load up png file again because associateCcdFrame reloads ccd frame fresh
-				// FIXME: we should not have to do this.
-				String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
+					// load up png file again because associateCcdFrame reloads ccd frame fresh
+					// FIXME: we should not have to do this.
+					String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
-				CcdFrame loadedFitsFile = null;
+					CcdFrame loadedFitsFile = null;
 
-				logger.debug("filename = " + filename);
-				try {
+					logger.debug("filename = " + filename);
+					try {
 
-					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+						loadedFitsFile = frameMgmt.loadFitsFrame(filename);
 
-				} catch (Exception e) {
-					e.printStackTrace();
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+
+					// if a png file for display exists, read it in. Otherwise create it.
+					byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
+					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
+
 				}
-
-				// if a png file for display exists, read it in. Otherwise create it.
-				byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
-				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
-
 			}
 
 			statusLogger.saveLog(procedure.getProcedureId());
-			
+
 			// persist the procedure output
 			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
 			// set up for immediate viewing
@@ -143,7 +144,6 @@ public class ProcedureExecutionMgmt {
 
 			procedureExecutionState.setExecutionStatus(false);
 
-			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}

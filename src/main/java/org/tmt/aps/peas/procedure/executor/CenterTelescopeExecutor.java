@@ -252,7 +252,10 @@ public class CenterTelescopeExecutor {
 		 * getProcStats();
 		 */
 
+		cameraPoller.setDoPoll(true);
+		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
+
 	}
 
 	private void wait(int ms) {
