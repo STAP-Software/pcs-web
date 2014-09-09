@@ -41,10 +41,12 @@ public class DcsMgmt {
 		return extInfFactory.getDcsCommand().queryTelPos();
 	}
 
-	// input in arcsec
+	// input in arcsec, sends in rads
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
-		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] * 180.0/Constants.PI, telescopeDeltas[1] * 180.0/Constants.PI);
+		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] / Constants.ARCSEC_PER_RAD, telescopeDeltas[1]/Constants.ARCSEC_PER_RAD);
 	}
+	
+	
 	
 	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
