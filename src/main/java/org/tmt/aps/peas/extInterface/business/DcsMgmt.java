@@ -41,9 +41,14 @@ public class DcsMgmt {
 		return extInfFactory.getDcsCommand().queryTelPos();
 	}
 
-	// input in arcsec, sends in rads
+	// input in arcsec, sends in rads (delte elevation is negated)
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
-		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180), -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180));
+		
+		double deltaAz = telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180);
+		double deltaEl = -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180);
+		logger.debug("commandTelescopeDeltas:: deltaAz = " + deltaAz + ", deltaEl = " + deltaEl);
+		
+		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
 	}
 	
 	
