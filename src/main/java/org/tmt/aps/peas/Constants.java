@@ -53,5 +53,4 @@ public class Constants {
 	
 	public static final double PI = 3.14159265;
 	
-	public static final double ARCSEC_PER_RAD = 206265.0;
 }
