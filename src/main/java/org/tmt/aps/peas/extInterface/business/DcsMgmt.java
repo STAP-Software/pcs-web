@@ -43,7 +43,7 @@ public class DcsMgmt {
 
 	// input in arcsec, sends in rads
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
-		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180), telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180));
+		extInfFactory.getDcsCommand().commandDcsOffset(telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180), -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180));
 	}
 	
 	
