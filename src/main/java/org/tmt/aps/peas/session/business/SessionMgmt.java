@@ -120,14 +120,14 @@ public class SessionMgmt {
 		// query the session for all the procedures, order by procedureNumber
 		TypedQuery<Procedure> query = em.createNamedQuery("findLatestSessionProcedure", Procedure.class);
 		query.setParameter("sessionId", sessionId);
-		query.setMaxResults(1);
+		//query.setMaxResults(1);
 		
 		List<Procedure> procedureList = query.getResultList();
 		
 		if (procedureList.isEmpty()) {
 			return 1;
 		} else {
-			return procedureList.get(0).getProcedureNumber() + 1;
+			return procedureList.size() + 1;
 		}
 		
 	}
