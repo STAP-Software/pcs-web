@@ -221,9 +221,9 @@ public class CcdManualController implements Serializable {
 	public void doSendAdvCommand() {
 		try {
 			
-			cameraPoller.setDoPoll(false);
-			Thread.sleep(5000);
-			cameraMgmt.resetCamera();
+			//cameraPoller.setDoPoll(false);
+			//Thread.sleep(5000);
+			//cameraMgmt.resetCamera();
 
 
 			switch (advCommandSelection) {
@@ -260,7 +260,7 @@ public class CcdManualController implements Serializable {
 
 			}
 
-			cameraPoller.setDoPoll(true);
+			//cameraPoller.setDoPoll(true);
 
 			FacesContext context = FacesContext.getCurrentInstance();
 

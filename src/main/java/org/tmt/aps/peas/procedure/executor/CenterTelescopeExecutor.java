@@ -252,7 +252,7 @@ public class CenterTelescopeExecutor {
 		 * getProcStats();
 		 */
 
-		cameraPoller.setDoPoll(true);
+		//cameraPoller.setDoPoll(true);
 		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 
