@@ -46,8 +46,8 @@ public class CameraManualController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
-	Camera camera;
-	Ccd ccd;
+	//Camera camera;
+	//Ccd ccd;
 	int commandSelection;
 	int selectedPupilMaskPos = 1;
 	int selectedFilterWheelPos = 1;
@@ -63,31 +63,31 @@ public class CameraManualController implements Serializable {
 	public void init() throws Exception {
 		
 		//physicalModel.refresh();
-		camera = physicalModel.getInstrument().getCamera();
+		//camera = physicalModel.getInstrument().getCamera();
 
 		//camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
 		commandSelection = 1;
 
 		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
 
-		ccd = physicalModel.getInstrument().getCcd();
+		//ccd = physicalModel.getInstrument().getCcd();
 	}
 
 	public Camera getCamera() {
-		return camera;
+		return physicalModel.getInstrument().getCamera();
 	}
 
-	public void setCamera(Camera camera) {
-		this.camera = camera;
-	}
+	//public void setCamera(Camera camera) {
+	//	this.camera = camera;
+	//}
 
 	public Ccd getCcd() {
-		return ccd;
+		return physicalModel.getInstrument().getCcd();
 	}
 
-	public void setCcd(Ccd ccd) {
-		this.ccd = ccd;
-	}
+	//public void setCcd(Ccd ccd) {
+	//	this.ccd = ccd;
+	//}
 
 	public int getCommandSelection() {
 		return commandSelection;
@@ -216,8 +216,8 @@ public class CameraManualController implements Serializable {
 				int maskNumber = pupilCmdFuture.get();
 				
 				// update position
-				camera.getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
-				camera.getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				getCamera().getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
+				getCamera().getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
 				break;
 
 			case 2: // Filter
@@ -227,27 +227,27 @@ public class CameraManualController implements Serializable {
 				}
 				int filterNumber = filterCmdFuture.get(); 
 				// update position
-				camera.getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
-				camera.getFilterWheel().setSelectedFilterNumber(filterNumber);
+				getCamera().getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
+				getCamera().getFilterWheel().setSelectedFilterNumber(filterNumber);
 				break;
 
 			case 3: // Ref Beam
 				cameraMgmt.commandReferenceBeamState(selectedRefBeam);
-				camera.setCurrentRefBeam(selectedRefBeam);
+				getCamera().setCurrentRefBeam(selectedRefBeam);
 				break;
 
 			case 4: // Shutter
 
 				if (shutterCmd == Shutter.STATE_CLOSE) {
 					int state = cameraMgmt.commandCcdShutterState(0);
-					camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+					getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 				} else if (shutterCmd == Shutter.STATE_OPEN) {
 					int state = cameraMgmt.commandCcdShutterState(1);
-					camera.getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+					getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 				} else {
 					// timed exposure
 					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime * 1000));
-					camera.getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
+					getCamera().getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
 				}
 				break;
 
@@ -259,10 +259,10 @@ public class CameraManualController implements Serializable {
 				}
 				Point fineResult = fineFuture.get();
 				
-				camera.getFineTiltMirror().setCurrentPosition(fineResult);
+				getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
 
-				camera.getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-				camera.getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+				getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
 				break;
 
 			case 6: // Coarse Tilt
@@ -272,10 +272,10 @@ public class CameraManualController implements Serializable {
 				}
 				Point coarseResult = coarseFuture.get();
 
-				camera.getCoarseTiltMirror().setCurrentPosition(coarseResult);
+				getCamera().getCoarseTiltMirror().setCurrentPosition(coarseResult);
 
-				camera.getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-				camera.getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				getCamera().getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+				getCamera().getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
 				break;
 
 			case 7: // Two Position Mech
@@ -285,7 +285,7 @@ public class CameraManualController implements Serializable {
 					Thread.sleep(500);
 				}
 				int twoPosState = twoPosFuture.get();
-				camera.getTwoPosMechanism().setState(
+				getCamera().getTwoPosMechanism().setState(
 						twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
 
 				break;
@@ -297,7 +297,7 @@ public class CameraManualController implements Serializable {
 					Thread.sleep(500);
 				}
 				int ccdState = ccdPowerFuture.get();
-				ccd.setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+				getCcd().setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
 				break;
 
 			default:
