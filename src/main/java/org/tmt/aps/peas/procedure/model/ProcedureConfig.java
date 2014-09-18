@@ -35,7 +35,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 				+ "INNER JOIN FETCH p.procedureType"),
 		@NamedQuery(name = "findDefaultProcedureConfig", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope tel INNER JOIN FETCH p.instrument inst "
 				+ "INNER JOIN FETCH p.procedureType pt  "
-				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId AND defaultFlg = TRUE "
+				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId AND p.defaultFlg = TRUE "
 				+ "ORDER BY p.updateDate desc ")
 
 })

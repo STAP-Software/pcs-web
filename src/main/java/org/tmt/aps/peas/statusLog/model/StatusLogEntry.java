@@ -22,7 +22,7 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "StatusLogEntry")
 @NamedQueries({
-	@NamedQuery(name = "findEntriesByProcedureId", query = "SELECT s from StatusLogEntry s where procedureId = :procedureId" )
+	@NamedQuery(name = "findEntriesByProcedureId", query = "SELECT s from StatusLogEntry s where s.procedureId = :procedureId" )
 })
 public class StatusLogEntry {
 

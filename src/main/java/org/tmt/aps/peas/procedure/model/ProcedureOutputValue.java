@@ -20,7 +20,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ProcedureOutputValue")
 @NamedQueries({
-	@NamedQuery(name = "findOutputValuesForProcedure", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField where procedureId = :procedureId" )
+	@NamedQuery(name = "findOutputValuesForProcedure", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField where p.procedureId = :procedureId" )
 })
 public class ProcedureOutputValue {
 	

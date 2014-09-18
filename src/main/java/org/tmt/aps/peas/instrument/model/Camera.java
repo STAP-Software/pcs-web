@@ -26,7 +26,7 @@ import org.tmt.aps.peas.common.Point;
 @Entity
 @Table(name = "Camera")
 @NamedQueries({
-	@NamedQuery(name = "findCamera", query = "SELECT o from Camera o where cameraId = :cameraId" ),
+	@NamedQuery(name = "findCamera", query = "SELECT o from Camera o where o.cameraId = :cameraId" ),
 })
 public class Camera {
 

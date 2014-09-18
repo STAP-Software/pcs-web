@@ -26,7 +26,7 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where ccdId = :ccdId" ),
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where o.ccdId = :ccdId" ),
 	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o LEFT OUTER JOIN o.instrument" )
 })
 public class Ccd {
