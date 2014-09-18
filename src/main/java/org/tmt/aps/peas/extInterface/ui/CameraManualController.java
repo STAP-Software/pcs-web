@@ -199,9 +199,9 @@ public class CameraManualController implements Serializable {
 
 		try {
 
-			cameraPoller.setDoPoll(false);
-			Thread.sleep(5000);
-			cameraMgmt.resetCamera();
+			//cameraPoller.setDoPoll(false);
+			//Thread.sleep(5000);
+			//cameraMgmt.resetCamera();
 			
 			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {
@@ -304,7 +304,7 @@ public class CameraManualController implements Serializable {
 
 			}
 
-			cameraPoller.setDoPoll(true);
+			//cameraPoller.setDoPoll(true);
 			
 			System.out.println("Returning");
 			FacesContext context = FacesContext.getCurrentInstance();
