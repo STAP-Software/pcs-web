@@ -122,9 +122,9 @@ public class CenterTelescopeExecutor {
 			
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
-			cameraPoller.setDoPoll(false);
-			Thread.sleep(5000);
-			cameraMgmt.resetCamera();
+			//cameraPoller.setDoPoll(false);
+			//Thread.sleep(5000);
+			//cameraMgmt.resetCamera();
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
@@ -181,7 +181,7 @@ public class CenterTelescopeExecutor {
 			
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			
-			cameraPoller.setDoPoll(true);
+			//cameraPoller.setDoPoll(true);
 
 			procedureExecutionState.setPercentComplete(40);
 			
