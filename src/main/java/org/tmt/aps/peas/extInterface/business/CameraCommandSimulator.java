@@ -11,6 +11,7 @@ import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class CameraCommandSimulator implements CameraCommand {
 
+	boolean steeringMirrorStateX = true;
 	
 	public CameraCommandSimulator() {
 
@@ -208,7 +209,8 @@ public class CameraCommandSimulator implements CameraCommand {
 
 		cameraStatus.filterWheelIsInTransit = true;
 		cameraStatus.prismWheelIsInTransit = false;
-		cameraStatus.steeringMirrorXIsInTransit = true;
+		steeringMirrorStateX = !steeringMirrorStateX;
+		cameraStatus.steeringMirrorXIsInTransit = steeringMirrorStateX;
 		
 		return cameraStatus;
 	}
