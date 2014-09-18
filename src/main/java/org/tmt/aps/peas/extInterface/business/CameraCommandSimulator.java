@@ -2,6 +2,7 @@ package org.tmt.aps.peas.extInterface.business;
 
 import java.rmi.RemoteException;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
@@ -11,6 +12,8 @@ import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class CameraCommandSimulator implements CameraCommand {
 
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	boolean steeringMirrorStateX = true;
 	
 	public CameraCommandSimulator() {
@@ -210,6 +213,9 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.filterWheelIsInTransit = true;
 		cameraStatus.prismWheelIsInTransit = false;
 		steeringMirrorStateX = !steeringMirrorStateX;
+		
+		logger.debug("steeringMirrorStateX = " + steeringMirrorStateX);
+		
 		cameraStatus.steeringMirrorXIsInTransit = steeringMirrorStateX;
 		
 		return cameraStatus;
