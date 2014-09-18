@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.extInterface.business;
 
 import java.rmi.RemoteException;
+import java.util.Random;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.extinf.CameraCommand;
@@ -13,8 +14,6 @@ import org.tmt.aps.peas.extinf.TimeoutException;
 public class CameraCommandSimulator implements CameraCommand {
 
 	Logger logger = Logger.getLogger(this.getClass());
-	
-	boolean steeringMirrorStateX = true;
 	
 	public CameraCommandSimulator() {
 
@@ -210,13 +209,16 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.tiltPlateX = 301;
 		cameraStatus.tiltPlateY = -404;
 
-		cameraStatus.filterWheelIsInTransit = true;
+		cameraStatus.filterWheelIsInTransit = false;
 		cameraStatus.prismWheelIsInTransit = false;
-		steeringMirrorStateX = !steeringMirrorStateX;
+		Random random = new Random();
 		
-		logger.debug("steeringMirrorStateX = " + steeringMirrorStateX);
+		cameraStatus.steeringMirrorX = random.nextInt(100);
+		cameraStatus.steeringMirrorY = random.nextInt(100);
+				
+		logger.debug("cameraStatus.steeringMirrorX = " + cameraStatus.steeringMirrorX);
 		
-		cameraStatus.steeringMirrorXIsInTransit = steeringMirrorStateX;
+		cameraStatus.steeringMirrorXIsInTransit = false;
 		
 		return cameraStatus;
 	}
