@@ -25,7 +25,7 @@ public class CameraPoller {
 
 	@PostConstruct
 	@Lock(LockType.WRITE)
-	@Schedule(second = "*/5", minute = "*", hour = "*", persistent = false)
+	@Schedule(second = "*/2", minute = "*", hour = "*", persistent = false)
 	public void pollCamera() {
 
 		logger.info("polling camera: doPoll = " + doPoll);
