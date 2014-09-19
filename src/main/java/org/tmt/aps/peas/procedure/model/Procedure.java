@@ -324,4 +324,8 @@ public class Procedure {
 		}
 		return procedureCcdFrameList.get(procedureCcdFrameList.size()-1);
 	}
+	
+	public boolean isNewRecord() {
+		return procedureId == null;
+	}
 }

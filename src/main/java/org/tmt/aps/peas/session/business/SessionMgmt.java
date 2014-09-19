@@ -138,22 +138,20 @@ public class SessionMgmt {
 		// if sessionId is null, we create instead
 		if (currentSession.getSessionId() == null) {
 			em.persist(currentSession);
-			for (Procedure procedure : currentSession.getProcedureList()) {
-				procedure.setSession(currentSession);
-				em.persist(procedure);
-			}
 		} else {
 			em.merge(currentSession);
-			for (Procedure procedure : currentSession.getProcedureList()) {
-				if (procedure.getSession() == null) {
+		}
+		
+		for (Procedure procedure : currentSession.getProcedureList()) {
+			if (procedure.getSession() == null) {
+				if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_NEW && procedure.isNewRecord()) {
+					// if it executed and is not in the DB, then save it
 					procedure.setSession(currentSession);
 					em.persist(procedure);
 				}
 			}
-
 		}
-		
-		
+
 	}
 
 }

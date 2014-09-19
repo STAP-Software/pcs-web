@@ -137,6 +137,9 @@ public class FrameController implements Serializable {
 
 	@PostConstruct
 	public void init() {
+		
+		long start = System.currentTimeMillis();
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
 
 		// dummy for session root
@@ -223,6 +226,9 @@ public class FrameController implements Serializable {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
+		long end = System.currentTimeMillis();
+		logger.info("Frame Tree loaded in " + (end-start) + " ms");
 	}
 
 	public void onNodeSelect(NodeSelectEvent event) {
@@ -252,6 +258,8 @@ public class FrameController implements Serializable {
 
 		try {
 
+			init();  // load frames each time in case the list has changed
+			
 			breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "newProcedure.xhtml");
 
 			return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
