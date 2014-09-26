@@ -53,6 +53,11 @@ public class FloatPoint {
     	return array;
     }
 
+    public Point asPoint() {
+    	Point point = new Point(Math.round(x), Math.round(y));
+    	return point;
+    }
+
     public float getX() {
 		return x;
 	}
@@ -78,5 +83,15 @@ public class FloatPoint {
      */
     public String toString() {
         return x + "," + y;
+    }
+    
+    public static Point[] roundToPoint(FloatPoint[] fArray) {
+    	Point[] pArray = new Point[fArray.length];
+    	
+    	for (int i=0; i<fArray.length; i++) {
+    		pArray[i] = fArray[i].asPoint();
+    	}
+    	
+    	return pArray;
     }
 }

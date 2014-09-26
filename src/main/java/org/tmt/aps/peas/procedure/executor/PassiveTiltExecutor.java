@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -178,8 +179,9 @@ public class PassiveTiltExecutor {
 				statusLogger.log("fandi.start");
 				List<Point> subimageList = null;
 				
-				float centroids[][] = new float [36][2];
-				computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
+				int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+				FloatPoint[] centroids;
+				centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
 				
 				// display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();

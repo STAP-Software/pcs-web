@@ -15,7 +15,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 public interface ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException;
-	public void findAndIdentify(float[][] frame, float[][] centroids ) throws ComputationException;
+	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots ) throws ComputationException;
 	
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel);  // local java routine
 	

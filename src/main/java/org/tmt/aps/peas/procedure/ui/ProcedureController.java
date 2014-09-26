@@ -61,6 +61,7 @@ import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
+import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOuput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -346,7 +347,7 @@ public class ProcedureController implements Serializable {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE, new CenterTelescopeProcedureOutput());
 	}
 	public String doNewCreateRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, null);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, new CreateRefBeamMapProcedureOutput());
 	}
 	public String doNewCreateFirstRefBeam() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);

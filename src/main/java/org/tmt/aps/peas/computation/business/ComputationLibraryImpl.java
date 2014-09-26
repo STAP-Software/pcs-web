@@ -112,15 +112,25 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	
-	public void findAndIdentify(float[][] frame, float[][] centroids) throws ComputationException {
+	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots) throws ComputationException {
 		
 		JfindAndIdentify jFindAndIdentify = new JfindAndIdentify();
 		RetVal retVal = new RetVal();
+		
+		float[][] centroids = new float[numSpots][2];
+		
 		jFindAndIdentify.jfindAndIdentify(retVal, frame, centroids);
 		
 		if (retVal.getCode() > 0) {
 		//	statusLogger.log(retVal);
 		}
+		
+		// return centroids as a FloatPoint
+		FloatPoint[] centArray = new FloatPoint[numSpots];
+		for (int i=0; i<numSpots; i++) {
+			centArray[i] = new FloatPoint(centroids[i][0], centroids[i][1]);
+		}
+		return centArray;
 	}
 	
 	// TODO: move to Fortran?

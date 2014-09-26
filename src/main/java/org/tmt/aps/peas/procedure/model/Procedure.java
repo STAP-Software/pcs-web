@@ -30,6 +30,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
@@ -119,6 +120,8 @@ public class Procedure {
 	private FindCentConfig findCentConfig;
 	@Transient
 	private ProcedureOutput procedureOutput;
+	@Transient 
+	private RefBeamMap refBeamMap;  // the refBeamMap taken and/or used in this procedure
 	
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
@@ -328,4 +331,14 @@ public class Procedure {
 	public boolean isNewRecord() {
 		return procedureId == null;
 	}
+
+	public RefBeamMap getRefBeamMap() {
+		return refBeamMap;
+	}
+
+	public void setRefBeamMap(RefBeamMap refBeamMap) {
+		this.refBeamMap = refBeamMap;
+	}
+
+
 }

@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.refBeamMap.business;
 
+import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -92,7 +94,15 @@ public class RefBeamMapMgmt {
 		return refBeamMap;
 	}
 
-	public void saveRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
+	public RefBeamMap saveRefBeamMap(List<FloatPoint> centroids, Procedure procedure) {
+
+		RefBeamMap refBeamMap = new RefBeamMap();
+		refBeamMap.setCreateDate(new Date());
+		refBeamMap.setFirstRefBeamMapFlg(0);
+		refBeamMap.setInstrument(procedure.getInstrument());
+		refBeamMap.setPupilMaskType(procedure.getProcedureConfig().getPupilMask().getPupilMaskType());
+		refBeamMap.setRefBeamDefMapFlg(0);
+		refBeamMap.setValues(centroids);
 
 		// encode String from transient FloatPoint map
 		String encodedData = FloatPointListEncoder.encodeList(refBeamMap.getValues());
@@ -100,7 +110,7 @@ public class RefBeamMapMgmt {
 		
 		em.persist(refBeamMap);
 
-		associateRefBeamMap(refBeamMap, procedure);
+		return refBeamMap;
 	}
 
 	public void associateRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {

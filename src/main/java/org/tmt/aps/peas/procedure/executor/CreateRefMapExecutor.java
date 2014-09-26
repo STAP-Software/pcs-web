@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -17,6 +18,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -33,8 +35,11 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.refBeamMap.business.RefBeamMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -71,6 +76,8 @@ public class CreateRefMapExecutor {
 	private PupilRegistrator pupilRegistrator;
 	@EJB
 	private PhysicalModel physicalModel;
+	@EJB
+	private RefBeamMapMgmt refBeamMapMgmt;
 
 	private List<String> logMessages;
 
@@ -104,20 +111,24 @@ public class CreateRefMapExecutor {
 			
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
+			CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
+			
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 			
 			
-			// TODO: frame simulation mode sets iterations = 1 (why?) - this should also be part of form validation
+			// TODO: frame simulation mode sets iterations = 1 (why?) - if implemented, this should be part of form validation
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
 			// TODO: what is this message for??
 			statusLogger.log("camera.not_init"); 
 
-			 // TODO: mask chosen will determine the type of ref beam map
-			 // TODO: the integration time is given by the filter and mask type chosen - this will be a new table
-			 //       This should probably be a default given that can be overridden by the operator.  Not sure who should be able to override, though.
-			 // Spot_Count is numSpots from pupilMaskType
+			
+			// TODO: the integration time is given by the filter and mask type chosen - this will be a new table
+			//       This should probably be a default given that can be overridden by the operator.  Not sure who should be able to override, though.
+			
+			// Spot_Count is numSpots from pupilMaskType
+			
 			
 		    // TODO: Special logic for SUFS                                                    
 			/*
@@ -156,6 +167,7 @@ public class CreateRefMapExecutor {
 				*/
 				
 				// always command the coarse mirror to setup values at the start of all procedures
+				statusLogger.log("camera.cmd.coarse_mirror", procedure.getGlobalConfig().getCoarseMirrorDefault());
 				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
 
 				Future<Integer> twoPosCommandFuture = null;
@@ -167,24 +179,17 @@ public class CreateRefMapExecutor {
 				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 
-		        if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-		        	// select ref beam based on filter wavelength
-		        	ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
-					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
-		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
+		        // select ref beam based on filter wavelength
+		        	
+		        // TODO: this is what we change
+		        ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+				statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
+		        refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 
-					// extend two pos mirror
-		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
-		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-		        } else {
-		        	// turn off reference beams
-					statusLogger.log("camera.cmd.ref_beam", 0);
-		        	refBeamFuture = cameraMgmt.commandReferenceBeamState(0); 
+				// extend two pos mirror
+		        statusLogger.log("camera.cmd.two_pos_device", "extend");
+		        twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 
-					// retract two pos mirror
-		        	statusLogger.log("camera.cmd.two_pos_device", "extend");
-		        	twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
-		        }
 			
 				// wait for all commands to complete
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
@@ -205,11 +210,9 @@ public class CreateRefMapExecutor {
 			 
 			statusLogger.log("fandi.start");
 			
-			List<Point> subimageList = null;
-			
-			// TODO: use NumSpots and maybe findAndIdentify should take an array of FloatPoints
-			float centroids[][] = new float [36][2];
-			computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), centroids);
+			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
+			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+			FloatPoint[] centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
 			
 			// TODO: this is where we display the marked frame
 			frameDisplayMgmt.displayMarkedFrame();
@@ -222,24 +225,27 @@ public class CreateRefMapExecutor {
 			
 			statusLogger.log("fandi.end.success");
 
-			graphicDisplayMgmt.displaySubimageCentroids(subimageList);
+			graphicDisplayMgmt.displaySubimageCentroids(Arrays.asList(FloatPoint.roundToPoint(centroids)));
 
+			statusLogger.log("procedure.refmap.created");                
+
+			// TODO: test against auto-save-map option, ask user if they want to save the map if needed - DO WE STILL WANT THIS??
+			boolean saveMap = true;
+			procedureOutput.setMapSaved(saveMap);
 			
-
-		// TODO: do a status log of the following
-        // This test has successfully completed\n and the reference beam map is created.\nThe map is now ready to save to disk.                  
-
-		 
-		// TODO: test against auto-save-map option, ask user if they want to save the map if needed
-		
-		// TODO: implement save 
-        //  CALL REF_MAP_SAVE_INIT()
-	   	//  CALL SAVE_REF_MAP(ZREFMAP_SAVE_FILE)
+			
+			// save the reference beam map
+			RefBeamMap refBeamMap = refBeamMapMgmt.saveRefBeamMap(Arrays.asList(centroids), procedure);
+			procedure.setRefBeamMap(refBeamMap);
+			
+			// TODO: make sure there is nothing in these legacy calls that isn't covered.
+			//  CALL REF_MAP_SAVE_INIT()
+			//  CALL SAVE_REF_MAP(ZREFMAP_SAVE_FILE)
 
                                                                        
-		// TODO: if SUFS, then Home the coarse mirror 
-		// CALL UFS_SEGMENT_SELECT(0)
-		// CALL UFS_SEG_POS_WRITE
+			// TODO: if SUFS, then Home the coarse mirror 
+			// CALL UFS_SEGMENT_SELECT(0)
+			// CALL UFS_SEG_POS_WRITE
 			
 								
 			int trialPct = (int) ((((1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
@@ -260,16 +266,6 @@ public class CreateRefMapExecutor {
 		 */
 		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
-	}
-
-	private void wait(int ms) {
-		// here we wait until the pending display is cleared
-		try {
-			Thread.sleep(ms);
-		} catch (InterruptedException e) {
-
-		}
-
 	}
 
 }

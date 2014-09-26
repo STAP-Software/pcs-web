@@ -21,6 +21,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.refBeamMap.business.RefBeamMapMgmt;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -46,6 +47,8 @@ public class ProcedureExecutionMgmt {
 	private PhysicalModel physicalModel;
 	@EJB
 	private GlobalConfigMgmt globalConfigMgmt;
+	@EJB
+	private RefBeamMapMgmt refBeamMapMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 
@@ -137,6 +140,11 @@ public class ProcedureExecutionMgmt {
 
 			statusLogger.saveLog(procedure.getProcedureId());
 
+			// associate ref beam map
+			if (procedure.getRefBeamMap() != null) {
+				refBeamMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
+			}
+			
 			// persist the procedure output
 			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
 			// set up for immediate viewing

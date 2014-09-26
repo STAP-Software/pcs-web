@@ -47,9 +47,10 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	
-	public void findAndIdentify(float[][] frame, float[][] centroids) throws ComputationException {
+	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots) throws ComputationException {
 		// TODO Auto-generated method stub
 		
+		return new FloatPoint[numSpots];
 	}
 	
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
