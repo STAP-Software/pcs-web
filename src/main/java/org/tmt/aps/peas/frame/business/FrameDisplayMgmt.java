@@ -31,6 +31,11 @@ public class FrameDisplayMgmt implements Serializable {
 	private List<FloatPoint> markList;
 	private String frameInstructions;
 
+	// marked centroids x and y
+	String centroidXs;
+	String centroidYs;
+
+	
 	@PostConstruct
 	public void init() {
 		pendingDisplay = false;
@@ -103,6 +108,22 @@ public class FrameDisplayMgmt implements Serializable {
 	
 	public String getFrameInstructions() {
 		return frameInstructions;
+	}
+
+	public String getCentroidXs() {
+		return centroidXs;
+	}
+
+	public void setCentroidXs(String centroidXs) {
+		this.centroidXs = centroidXs;
+	}
+
+	public String getCentroidYs() {
+		return centroidYs;
+	}
+
+	public void setCentroidYs(String centroidYs) {
+		this.centroidYs = centroidYs;
 	}
 
 }

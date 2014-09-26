@@ -36,7 +36,6 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
-import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -69,6 +68,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
+import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.ui.VisualizationDisplayLink;
 
@@ -113,6 +113,8 @@ public class ProcedureController implements Serializable {
 	private StatusLogController statusLogController;
 	@Inject
 	private FrameController frameController;
+	@Inject
+	private GraphicDisplayMgmt graphicDisplayMgmt;
 
 	Procedure procedure;
 	ProcedureType procedureType;
@@ -125,9 +127,6 @@ public class ProcedureController implements Serializable {
 	private TreeNode visualizationDisplayRoot;
 	PupilMask defaultMask; // current default mask for procedure type
 	
-	String centroidXs;
-	String centroidYs;
-	String centroidNbrs;
 
 	UserPrompt currentPrompt;
 	
@@ -196,29 +195,45 @@ public class ProcedureController implements Serializable {
 	}
 
 	public String getCentroidXs() {
-		return centroidXs;
+		return graphicDisplayMgmt.getCentroidXs();
 	}
 
 	public void setCentroidXs(String centroidXs) {
-		this.centroidXs = centroidXs;
+		graphicDisplayMgmt.setCentroidXs(centroidXs);
 	}
 
 	public String getCentroidYs() {
-		return centroidYs;
+		return graphicDisplayMgmt.getCentroidYs();
 	}
 
 	public void setCentroidYs(String centroidYs) {
-		this.centroidYs = centroidYs;
+		graphicDisplayMgmt.setCentroidYs(centroidYs);
 	}
 
 	public String getCentroidNbrs() {
-		return centroidNbrs;
+		return graphicDisplayMgmt.getCentroidNbrs();
 	}
 
 	public void setCentroidNbrs(String centroidNbrs) {
-		this.centroidNbrs = centroidNbrs;
+		graphicDisplayMgmt.setCentroidNbrs(centroidNbrs);
 	}
 	
+	public String getFrameCentroidXs() {
+		return frameDisplayMgmt.getCentroidXs();
+	}
+
+	public void setFrameCentroidXs(String centroidXs) {
+		frameDisplayMgmt.setCentroidXs(centroidXs);
+	}
+
+	public String getFrameCentroidYs() {
+		return frameDisplayMgmt.getCentroidYs();
+	}
+
+	public void setFrameCentroidYs(String centroidYs) {
+		frameDisplayMgmt.setCentroidYs(centroidYs);
+	}
+
 	public UserPrompt getCurrentPrompt() {
 		return currentPrompt;
 	}
@@ -565,9 +580,8 @@ public class ProcedureController implements Serializable {
 
 		// TODO - this needs to know which node was selected
 		
-		List<Subimage> subimageDefList = getSubimageDefsForMask(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-
-		encodeSubimageHiddenVars(subimageDefList);
+		//List<Subimage> subimageDefList = getSubimageDefsForMask(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+		//encodeSubimageHiddenVars(subimageDefList);
 	}
 	
 	private List<Subimage> getSubimageDefsForMask(Long maskTypeId) {
@@ -593,12 +607,7 @@ public class ProcedureController implements Serializable {
 	}
 	
 	private void encodeSubimageHiddenVars(List<Subimage> subimageList) {
-		
-		// generate centroid numbers, x and y positions
-		//StringBuffer numBuf = new StringBuffer();
-		//StringBuffer xBuf = new StringBuffer();
-		//StringBuffer yBuf = new StringBuffer();
-		
+				
 		List<Float> xList = new ArrayList<Float>();
 		List<Float> yList = new ArrayList<Float>();
 		List<Integer> numList = new ArrayList<Integer>();
@@ -606,25 +615,12 @@ public class ProcedureController implements Serializable {
 			
 			numList.add(subimage.getSubimageNumber());
 			xList.add(subimage.getxCcd());
-			yList.add(subimage.getyCcd());
-			
-			//numBuf.append(subimage.getSubimageNumber() + ",");
-			//xBuf.append(subimage.getxCcd() + ",");
-			//yBuf.append(subimage.getyCcd() + ",");
+			yList.add(subimage.getyCcd());			
 		}
 		
-		centroidXs = FloatListEncoder.encodeList(xList);
-		centroidYs = FloatListEncoder.encodeList(yList);
-		centroidNbrs = IntegerListEncoder.encodeList(numList);
-		
-		/*
-		numBuf.deleteCharAt(numBuf.length() - 1);
-		xBuf.deleteCharAt(xBuf.length() - 1);
-		yBuf.deleteCharAt(yBuf.length() - 1);
-		centroidXs = xBuf.toString();
-		centroidYs = yBuf.toString();
-		centroidNbrs = numBuf.toString();
-		*/
+		setCentroidXs(FloatListEncoder.encodeList(xList));
+		setCentroidYs(FloatListEncoder.encodeList(yList));
+		setCentroidNbrs(IntegerListEncoder.encodeList(numList));
 	}
 
 	public void doHandMark() {
@@ -635,9 +631,14 @@ public class ProcedureController implements Serializable {
 		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
 		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
 		// add to the centroid hidden form vars
+		
+		String centroidXs = getFrameCentroidXs();
+		String centroidYs = getFrameCentroidYs();
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
-	
+		setFrameCentroidXs(centroidXs);
+		setFrameCentroidYs(centroidYs);
+		
 		// make marking available to executor
 		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
@@ -650,8 +651,8 @@ public class ProcedureController implements Serializable {
 	}
 	
 	public void doResetMarking() {
-		centroidXs = null;
-		centroidYs = null;
+		setFrameCentroidXs(null);
+		setFrameCentroidYs(null);
 	}
 		
 }

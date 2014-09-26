@@ -117,8 +117,9 @@ public class AsyncController {
 			requestContext.update("offsetsForm");
 			requestContext.update("spotsForm");
 			
+			logger.debug("visualizationDisplayType = " + visualizationDisplay.getDisplayType());
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
-				requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
+				requestContext.execute("drawSpots(); centroidsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
 				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
@@ -145,8 +146,9 @@ public class AsyncController {
 			// get the marking to the procedure
 			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
 			String yList = FloatPointListEncoder.encodeYList(frameDisplayMgmt.getMarkList());
-			procedureController.setCentroidXs(xList);
-			procedureController.setCentroidYs(yList);
+			
+			procedureController.setFrameCentroidXs(xList);
+			procedureController.setFrameCentroidYs(yList);
 			
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:framePanel");

@@ -25,6 +25,37 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	private VisualizationDisplay pendingDisplay;
 	private Integer returnState;
+	
+	String centroidXs;
+	String centroidYs;
+	String centroidNbrs;
+
+
+	public String getCentroidXs() {
+		return centroidXs;
+	}
+
+	public void setCentroidXs(String centroidXs) {
+		this.centroidXs = centroidXs;
+	}
+
+	public String getCentroidYs() {
+		logger.debug(">>>>> getting <<<<< : " + centroidYs);
+		return centroidYs;
+	}
+
+	public void setCentroidYs(String centroidYs) {
+		new Exception().printStackTrace();
+		this.centroidYs = centroidYs;
+	}
+
+	public String getCentroidNbrs() {
+		return centroidNbrs;
+	}
+
+	public void setCentroidNbrs(String centroidNbrs) {
+		this.centroidNbrs = centroidNbrs;
+	}
 
 	@Lock(LockType.READ)
 	public VisualizationDisplay getPendingDisplay() {
@@ -48,6 +79,22 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void displaySubimageCentroids(List<Point> subimageList) {
 		
+		StringBuffer xBuf = new StringBuffer();
+		StringBuffer yBuf = new StringBuffer();
+		StringBuffer nBuf = new StringBuffer();
+		for (int i=0; i<subimageList.size(); i++) {
+			xBuf.append(subimageList.get(i).x + ",");
+			yBuf.append(subimageList.get(i).y + ",");
+			nBuf.append((i+1) + ",");
+		}
+		centroidXs = xBuf.substring(0, xBuf.length()-1);
+		centroidYs = yBuf.substring(0, yBuf.length()-1);
+		centroidNbrs = nBuf.substring(0, nBuf.length()-1);
+		
+		logger.debug("centroidNbrs = " + centroidNbrs);
+		logger.debug("centroidXs = " + centroidXs);
+		logger.debug("centroidYs = " + centroidYs);
+
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 		
 		waitForReturnState();
