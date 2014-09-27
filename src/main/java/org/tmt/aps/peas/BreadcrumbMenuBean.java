@@ -24,6 +24,7 @@ public class BreadcrumbMenuBean implements Serializable {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private MenuModel model;
+	String immediateUrl;
 
 	public BreadcrumbMenuBean() {
 		model = new DefaultMenuModel();
@@ -40,6 +41,7 @@ public class BreadcrumbMenuBean implements Serializable {
 		MenuItem item = new MenuItem();
 		item.setValue(name);
 		item.setUrl(url);
+		immediateUrl = url;
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.addMenuItem(item);
 	}
@@ -48,6 +50,7 @@ public class BreadcrumbMenuBean implements Serializable {
 		MenuItem item = new MenuItem();
 		item.setValue(name);
 		item.setUrl(url);
+		immediateUrl = url;
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.addMenuItem(item);
 	}
@@ -72,4 +75,10 @@ public class BreadcrumbMenuBean implements Serializable {
 	public MenuModel getModel() {
 		return model;
 	}
+
+	public String getImmediateUrl() {
+		return immediateUrl;
+	}
+	
+	
 }

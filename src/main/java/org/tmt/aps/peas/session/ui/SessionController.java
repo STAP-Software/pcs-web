@@ -183,7 +183,7 @@ public class SessionController implements Serializable {
 		
 		session = currentSession;
 		
-		breadcrumbMenuBean.addFirstItem("Current Session", "sessionDetail.xhtml");
+		breadcrumbMenuBean.addFirstItem("Current Session", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 
 	}
@@ -194,7 +194,7 @@ public class SessionController implements Serializable {
 		// order procedures by procedure number
 		Collections.sort(session.getProcedureList(), new BeanComparator("procedureNumber"));
 		
-		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "sessionDetail.xhtml");
+		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 
 	}
@@ -206,7 +206,7 @@ public class SessionController implements Serializable {
         FacesContext context = FacesContext.getCurrentInstance();          
         context.addMessage(null, new FacesMessage("Record Save Successful", "More text"));  
 	
-		breadcrumbMenuBean.addFirstItem("Session: " + session, "sessionDetail.xhtml");
+		breadcrumbMenuBean.addFirstItem("Session: " + session, "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml";
 		
 	}
@@ -221,7 +221,7 @@ public class SessionController implements Serializable {
 		
 		sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
 		
-		breadcrumbMenuBean.addFirstItem("Sessions", "sessionList.xhtml");
+		breadcrumbMenuBean.addFirstItem("Sessions", "/modules/session/sessionList.xhtml");
 		return "/modules/session/sessionList.xhtml?faces-redirect=true";
 
 	}

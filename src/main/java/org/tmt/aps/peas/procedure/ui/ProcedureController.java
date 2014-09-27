@@ -545,7 +545,7 @@ public class ProcedureController implements Serializable {
 		}
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
-				+ procedure.getProcedureType().getProcedureTypeName(), "newProcedure.xhtml");
+				+ procedure.getProcedureType().getProcedureTypeName(), null);
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
