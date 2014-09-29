@@ -120,7 +120,7 @@ public class DcsManualController implements Serializable {
 
 	public String doViewDcsManualInterface() {
 
-		breadcrumbMenuBean.addFirstItem("DCS Manual Interface", "doViewDcsManualInterface()");
+		breadcrumbMenuBean.addFirstItem("DCS Manual Interface", "/modules/diagnostic/dcsManualInterface.xhtml");
 
 		return "/modules/diagnostic/dcsManualInterface.xhtml?faces-redirect=true";
 

@@ -59,7 +59,7 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	public String doViewCoarseTiltMirror() {
 
-		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "doViewCoarseTiltMirror()");
+		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "/modules/sysadmin/coarseTiltMirrorDetail.xhtml");
 
 		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
 	}
@@ -82,7 +82,7 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	public String doCancelSaveCoarseTiltMirror() {
 
-		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "doViewCoarseTiltMirror()");
+		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "/modules/sysadmin/coarseTiltMirrorDetail.xhtml");
 
 		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
 

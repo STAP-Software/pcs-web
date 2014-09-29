@@ -176,7 +176,7 @@ public class CameraManualController implements Serializable {
 	public String doViewCameraDiagnostic() {
 
 		try {
-			breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "doViewCameraDiagnostic()");
+			breadcrumbMenuBean.addFirstItem("Camera Diagnostic", "/modules/diagnostic/cameraDiagnostic.xhtml");
 
 			return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
 

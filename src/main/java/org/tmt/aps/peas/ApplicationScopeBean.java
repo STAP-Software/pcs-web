@@ -15,6 +15,21 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.ui.GlobalConfigController;
+import org.tmt.aps.peas.config.ui.MissingSpotsController;
+import org.tmt.aps.peas.extInterface.ui.AcsManualController;
+import org.tmt.aps.peas.extInterface.ui.CameraManualController;
+import org.tmt.aps.peas.extInterface.ui.CcdManualController;
+import org.tmt.aps.peas.extInterface.ui.DcsManualController;
+import org.tmt.aps.peas.frame.ui.FrameController;
+import org.tmt.aps.peas.instrument.ui.CcdDefController;
+import org.tmt.aps.peas.instrument.ui.CoarseTiltMirrorController;
+import org.tmt.aps.peas.instrument.ui.FilterController;
+import org.tmt.aps.peas.instrument.ui.FineTiltMirrorController;
+import org.tmt.aps.peas.instrument.ui.PupilMaskController;
+import org.tmt.aps.peas.instrument.ui.RefBeamController;
+import org.tmt.aps.peas.instrument.ui.SufsGroupController;
+import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.session.ui.SessionController;
 
 @ManagedBean
@@ -25,7 +40,38 @@ public class ApplicationScopeBean {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
 	private SessionController sessionController;
+	@Inject
+	private SufsGroupController sufsGroupController;
+	@Inject
+	private RefBeamController refBeamController;
+	@Inject
+	private MissingSpotsController missingSpotsController;
+	@Inject
+	private ProcedureController procedureController;
+	@Inject
+	private AcsManualController acsManualController;
+	@Inject
+	private CcdManualController ccdManualController;
+	@Inject
+	private CameraManualController cameraManualController;
+	@Inject
+	private DcsManualController dcsManualController;
+	@Inject
+	private GlobalConfigController globalConfigController;
+	@Inject
+	private FrameController frameController;
+	@Inject
+	private CcdDefController ccdDefController;
+	@Inject
+	private CoarseTiltMirrorController coarseTiltMirrorController;
+	@Inject
+	private FineTiltMirrorController fineTiltMirrorController;
+	@Inject
+	private PupilMaskController pupilMaskController;
+	@Inject
+	private FilterController filterController;
 
+	
 	public void preRenderView(ComponentSystemEvent e) {
 
 		Logger logger = Logger.getLogger(this.getClass());
@@ -66,7 +112,55 @@ public class ApplicationScopeBean {
 			sessionController.doViewSessionList();
 		} else if (path.equals("/modules/session/sessionDetail.xhtml")) {
 			sessionController.doViewSession();
+		} else if (path.equals("/modules/sysadmin/sufsGroupList.xhtml")) {
+			sufsGroupController.doViewSufsGroupList();
+		} else if (path.equals("/modules/sysadmin/sufsGroupDetail.xhtml")) {
+			sufsGroupController.doViewSufsGroup();
+		} else if (path.equals("/modules/sysadmin/refBeamList.xhtml")) {
+			refBeamController.doViewReferenceBeamList();
+		} else if (path.equals("/modules/sysadmin/refBeamDetail.xhtml")) {
+			refBeamController.doViewReferenceBeam();
+		} else if (path.equals("/modules/config/missingSpots.xhtml")) {
+			missingSpotsController.doViewMissingSpots();
+		} else if (path.equals("/modules/procedure/procedurePerspective.xhtml")) {
+			procedureController.doViewProcedure();
+		} else if (path.equals("/modules/diagnostic/acsManualInterface.xhtml")) {
+			acsManualController.doViewAcsManualInterface();
+		} else if (path.equals("/modules/diagnostic/ccdDiagnostic.xhtml")) {
+			ccdManualController.doViewCcdDiagnostic();
+		} else if (path.equals("/modules/diagnostic/cameraDiagnostic.xhtml")) {
+			cameraManualController.doViewCameraDiagnostic();
+		} else if (path.equals("/modules/diagnostic/dcsManualInterface.xhtml")) {
+			dcsManualController.doViewDcsManualInterface();
+		} else if (path.equals("/modules/config/globalConfig.xhtml")) {
+			globalConfigController.doViewGlobalConfig();
+		} else if (path.equals("/modules/frameViewer/frameViewer.xhtml")) {
+			frameController.doSetupFrameViewer();
+		} else if (path.equals("/modules/sysadmin/ccdList.xhtml")) {
+			ccdDefController.doViewCcdList();
+		} else if (path.equals("/modules/sysadmin/ccdDetail.xhtml")) {
+			ccdDefController.doViewCcd();
+		} else if (path.equals("/modules/sysadmin/ccdSelectList.xhtml")) {
+			ccdDefController.doViewCcdSelectList();
+		} else if (path.equals("/modules/sysadmin/coarseTiltMirrorDetail.xhtml")) {
+			coarseTiltMirrorController.doViewCoarseTiltMirror();
+		} else if (path.equals("/modules/sysadmin/fineTiltMirrorDetail.xhtml")) {
+			fineTiltMirrorController.doViewFineTiltMirror();
+		} else if (path.equals("/modules/sysadmin/pupilMaskList.xhtml")) {
+			pupilMaskController.doViewPupilMaskList();
+		} else if (path.equals("/modules/sysadmin/pupilMaskDetail.xhtml")) {
+			pupilMaskController.doViewPupilMask();
+		} else if (path.equals("/modules/sysadmin/pupilWheel.xhtml")) {
+			pupilMaskController.doViewPupilWheel();
+		} else if (path.equals("/modules/sysadmin/filterList.xhtml")) {
+			filterController.doViewFilterList();
+		} else if (path.equals("/modules/sysadmin/filterDetail.xhtml")) {
+			filterController.doViewFilter();
+		} else if (path.equals("/modules/sysadmin/filterWheel.xhtml")) {
+			filterController.doViewFilterWheel();
 		}
-
+		
+		
+		
 	}
 }

@@ -314,7 +314,7 @@ public class MissingSpotsController implements Serializable {
 			e.printStackTrace();
 		}
 		
-		breadcrumbMenuBean.addFirstItem("Missing Spots Configuration", "doViewMissingSpots()");
+		breadcrumbMenuBean.addFirstItem("Missing Spots Configuration", "/modules/config/missingSpots.xhtml");
 
 		//RequestContext.getCurrentInstance().execute("runDrawMissingSpots()");
 		

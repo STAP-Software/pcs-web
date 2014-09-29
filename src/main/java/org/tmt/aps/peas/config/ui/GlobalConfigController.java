@@ -82,7 +82,7 @@ public class GlobalConfigController implements Serializable {
 	}
 
 	public String doViewGlobalConfig() {
-		breadcrumbMenuBean.addFirstItem("Global Configuration", "doViewGlobalConfig()");
+		breadcrumbMenuBean.addFirstItem("Global Configuration", "/modules/config/globalConfig.xhtml");
 
 		return "/modules/config/globalConfig.xhtml?faces-redirect=true";
 

@@ -98,14 +98,14 @@ public class FilterController implements Serializable {
 
 	public String doViewFilterList() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Filters", "doViewFilterList()");
+		breadcrumbMenuBean.addFirstItem("PCS Filters", "/modules/sysadmin/filterList.xhtml");
 
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewFilter() {
 
-		breadcrumbMenuBean.addItem(filter.getFilterName(), "doViewFilter()");
+		breadcrumbMenuBean.addItem(filter.getFilterName(), "/modules/sysadmin/filterDetail.xhtml");
 
 		return "/modules/sysadmin/filterDetail.xhtml?faces-redirect=true";
 	}
@@ -116,7 +116,7 @@ public class FilterController implements Serializable {
 			
 			refreshFilterWheel();
 
-			breadcrumbMenuBean.addFirstItem("PCS Filter Wheel", "doViewFilterWheel()");
+			breadcrumbMenuBean.addFirstItem("PCS Filter Wheel", "/modules/sysadmin/filterWheel.xhtml");
 
 			return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
 			
@@ -131,7 +131,7 @@ public class FilterController implements Serializable {
 
 		filter = new Filter();
 
-		breadcrumbMenuBean.addItem("New Filter", "doNewFilter()");
+		breadcrumbMenuBean.addItem("New Filter", "/modules/sysadmin/filterDetail.xhtml");
 
 		return "/modules/sysadmin/filterDetail.xhtml?faces-redirect=true";
 
@@ -152,7 +152,7 @@ public class FilterController implements Serializable {
 
 	public String doCancelSaveFilter() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Filters", "doViewFilterList()");
+		breadcrumbMenuBean.addFirstItem("PCS Filters", "/modules/sysadmin/filterList.xhtml");
 
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 

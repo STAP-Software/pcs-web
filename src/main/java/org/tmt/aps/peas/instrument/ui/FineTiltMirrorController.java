@@ -57,7 +57,7 @@ public class FineTiltMirrorController implements Serializable {
 
 	public String doViewFineTiltMirror() {
 
-		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "doViewFineTiltMirror()");
+		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "/modules/sysadmin/fineTiltMirrorDetail.xhtml");
 
 		return "/modules/sysadmin/fineTiltMirrorDetail.xhtml?faces-redirect=true";
 	}
@@ -79,9 +79,9 @@ public class FineTiltMirrorController implements Serializable {
 
 	public String doCancelSaveFineTiltMirror() {
 
-		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "doViewFineTiltMirror()");
+		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "/modules/sysadmin/fineTiltMirrorDetail.xhtml");
 
-		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
+		return "/modules/sysadmin/fineTiltMirrorDetail.xhtml?faces-redirect=true";
 
 	}
 

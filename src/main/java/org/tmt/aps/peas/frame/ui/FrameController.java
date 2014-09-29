@@ -260,7 +260,7 @@ public class FrameController implements Serializable {
 
 			init();  // load frames each time in case the list has changed
 			
-			breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "newProcedure.xhtml");
+			breadcrumbMenuBean.addFirstItem("Frame/Instrument Tools ", "/modules/frameViewer/frameViewer.xhtml");
 
 			return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
 

@@ -153,7 +153,7 @@ public class CcdManualController implements Serializable {
 
 		commandSelection = 1;
 		
-		breadcrumbMenuBean.addFirstItem("CCD Diagnostic", "doViewCcdDiagnostic()");
+		breadcrumbMenuBean.addFirstItem("CCD Diagnostic", "/modules/diagnostic/ccdDiagnostic.xhtml");
 
 		return "/modules/diagnostic/ccdDiagnostic.xhtml?faces-redirect=true";
 	}

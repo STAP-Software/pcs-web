@@ -127,7 +127,7 @@ public class AcsManualController implements Serializable {
 
 	public String doViewAcsManualInterface() {
 
-		breadcrumbMenuBean.addFirstItem("ACS Manual Interface", "doViewAcsManualInterface()");
+		breadcrumbMenuBean.addFirstItem("ACS Manual Interface", "/modules/diagnostic/acsManualInterface.xhtml");
 
 		return "/modules/diagnostic/acsManualInterface.xhtml?faces-redirect=true";
 

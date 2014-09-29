@@ -98,14 +98,14 @@ public class CcdDefController implements Serializable {
 
 	public String doViewCcdList() {
 
-		breadcrumbMenuBean.addFirstItem("PCS CCDs", "doViewCcdList()");
+		breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
 
 		return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewCcd() {
 
-		breadcrumbMenuBean.addItem(ccd.getCcdName(), "doViewCcd()");
+		breadcrumbMenuBean.addItem(ccd.getCcdName(), "/modules/sysadmin/ccdDetail.xhtml");
 
 		return "/modules/sysadmin/ccdDetail.xhtml?faces-redirect=true";
 	}
@@ -114,7 +114,7 @@ public class CcdDefController implements Serializable {
 
 		ccd = new Ccd();
 
-		breadcrumbMenuBean.addItem("New Ccd", "doNewCcd()");
+		breadcrumbMenuBean.addItem("New Ccd", "/modules/sysadmin/ccdDetail.xhtml");
 
 		return "/modules/sysadmin/ccdDetail.xhtml?faces-redirect=true";
 
@@ -166,7 +166,7 @@ public class CcdDefController implements Serializable {
 
 			physicalModel.refresh();
 			
-			breadcrumbMenuBean.addFirstItem("PCS CCDs", "doViewCcdList()");
+			breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
 
 			return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
 
@@ -183,7 +183,7 @@ public class CcdDefController implements Serializable {
 
 	public String doCancelSaveCcd() {
 
-		breadcrumbMenuBean.addFirstItem("PCS CCDs", "doViewCcdList()");
+		breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
 
 		return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
 
@@ -233,7 +233,7 @@ public class CcdDefController implements Serializable {
 
 	public String doViewCcdSelectList() {
 
-		breadcrumbMenuBean.addFirstItem("Select a CCD", "doViewCcdSelectList()");
+		breadcrumbMenuBean.addFirstItem("Select a CCD", "/modules/sysadmin/ccdSelectList.xhtml");
 
 		return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
 	}

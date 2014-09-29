@@ -118,14 +118,14 @@ public class RefBeamController implements Serializable {
 	
 	public String doViewReferenceBeamList() {
 
-		breadcrumbMenuBean.addFirstItem("Reference Beams", "doViewReferenceBeamList()");
+		breadcrumbMenuBean.addFirstItem("Reference Beams", "/modules/sysadmin/refBeamList.xhtml");
 
 		return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewReferenceBeam() {
 
-		breadcrumbMenuBean.addItem("" + referenceBeam.getRefBeamNum(), "doViewFilter()");
+		breadcrumbMenuBean.addItem("" + referenceBeam.getRefBeamNum(), "/modules/sysadmin/refBeamDetail.xhtml");
 
 		return "/modules/sysadmin/refBeamDetail.xhtml?faces-redirect=true";
 	}
@@ -136,7 +136,7 @@ public class RefBeamController implements Serializable {
 		
 		referenceBeam.setCamera(physicalModel.getInstrument().getCamera());
 
-		breadcrumbMenuBean.addItem("New Reference Beam", "doNewReferenceBeam()");
+		breadcrumbMenuBean.addItem("New Reference Beam", "/modules/sysadmin/refBeamDetail.xhtml");
 
 		return "/modules/sysadmin/refBeamDetail.xhtml?faces-redirect=true";
 
@@ -157,7 +157,7 @@ public class RefBeamController implements Serializable {
 
 	public String doCancelSaveReferenceBeam() {
 
-		breadcrumbMenuBean.addFirstItem("Reference Beams", "doViewReferenceBeamList()");
+		breadcrumbMenuBean.addFirstItem("Reference Beams", "/modules/sysadmin/refBeamList.xhtml");
 
 		return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
 

@@ -98,14 +98,14 @@ public class PupilMaskController implements Serializable {
 
 	public String doViewPupilMaskList() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "doViewPupilMaskList()");
+		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "/modules/sysadmin/pupilMaskList.xhtml");
 
 		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewPupilMask() {
 
-		breadcrumbMenuBean.addItem(pupilMask.getMaskName(), "doViewPupilMask()");
+		breadcrumbMenuBean.addItem(pupilMask.getMaskName(), "/modules/sysadmin/pupilMaskDetail.xhtml");
 
 		return "/modules/sysadmin/pupilMaskDetail.xhtml?faces-redirect=true";
 	}
@@ -116,7 +116,7 @@ public class PupilMaskController implements Serializable {
 			
 			refreshPupilWheel();
 
-			breadcrumbMenuBean.addItem("PCS Pupil Wheel", "doViewPupilWheel()");
+			breadcrumbMenuBean.addItem("PCS Pupil Wheel", "/modules/sysadmin/pupilWheel.xhtml");
 
 			return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
 		} catch (Exception e) {
@@ -130,7 +130,7 @@ public class PupilMaskController implements Serializable {
 
 		pupilMask = new PupilMask();
 
-		breadcrumbMenuBean.addItem("New Pupil Mask", "doNewPupilMask()");
+		breadcrumbMenuBean.addItem("New Pupil Mask", "/modules/sysadmin/pupilMaskDetail.xhtml");
 
 		return "/modules/sysadmin/pupilMaskDetail.xhtml?faces-redirect=true";
 
@@ -150,7 +150,7 @@ public class PupilMaskController implements Serializable {
 
 	public String doCancelSavePupilMask() {
 
-		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "doViewPupilMaskList()");
+		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "/modules/sysadmin/pupilMaskList.xhtml");
 
 		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 

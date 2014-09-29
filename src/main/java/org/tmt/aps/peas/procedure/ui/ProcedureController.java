@@ -424,7 +424,7 @@ public class ProcedureController implements Serializable {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date date = new Date();
-			breadcrumbMenuBean.addFirstItem(procedureType.getProcedureTypeName() + " - " + sdf.format(date), "newProcedure.xhtml");
+			breadcrumbMenuBean.addFirstItem(procedureType.getProcedureTypeName() + " - " + sdf.format(date), "/modules/procedure/procedurePerspective.xhtml");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -545,7 +545,7 @@ public class ProcedureController implements Serializable {
 		}
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
-				+ procedure.getProcedureType().getProcedureTypeName(), null);
+				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}

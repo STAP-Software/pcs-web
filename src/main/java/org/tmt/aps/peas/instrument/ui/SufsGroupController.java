@@ -118,14 +118,14 @@ public class SufsGroupController implements Serializable {
 			logger.error("", e);
 			return null;
 		}
-		breadcrumbMenuBean.addFirstItem("Sufs Groups", "doViewSufsGroupList()");
+		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
 
 		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewSufsGroup() {
 
-		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "doViewSufsGroup()");
+		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
@@ -135,7 +135,7 @@ public class SufsGroupController implements Serializable {
 		sufsGroup = new SufsGroup();
 		sufsGroup.setPupilMask(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask());
 		
-		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "doViewSufsGroup()");
+		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
@@ -178,14 +178,14 @@ public class SufsGroupController implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null,
 				new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully updated Sufs Group Configuration", ""));
 
-		breadcrumbMenuBean.addFirstItem("Sufs Groups", "doViewSufsGroupList()");
+		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
 
 		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 	}
 
 	public String doCancelSaveSufsGroup() {
 
-		breadcrumbMenuBean.addFirstItem("Sufs Groups", "doViewSufsGroupList()");
+		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
 
 		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 
