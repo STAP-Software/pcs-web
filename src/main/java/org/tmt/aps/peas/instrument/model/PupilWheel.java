@@ -93,7 +93,11 @@ public class PupilWheel implements DeviceStates {
 	}
 
 	public String getStateDisplayString() {
-		return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedPupilMask.getWheelPosition() + " (" + selectedPupilMask.getMaskName() + ")";
+		if (selectedPupilMask == null && state != STATE_IN_TRANSIT) {
+			return "Unknown";
+		} else {
+			return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedPupilMask.getWheelPosition() + " (" + selectedPupilMask.getMaskName() + ")";
+		}
 	}
 	
 	public List<PupilMask> getOrigPupilMaskList() {

@@ -80,5 +80,8 @@ public class BreadcrumbMenuBean implements Serializable {
 		return immediateUrl;
 	}
 	
+	public boolean getInProcedure() {
+		return immediateUrl != null && immediateUrl.contains("procedurePerspective");
+	}
 	
 }

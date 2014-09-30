@@ -96,7 +96,7 @@
 						</p:submenu>
 					</p:submenu>
 
-					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" >
+					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{breadcrumbMenuBean.inProcedure}">
 						<p:menuitem value="Advanced Options" type="button" onclick="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
 						<p:menuitem value="Load Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />

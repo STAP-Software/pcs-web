@@ -115,17 +115,12 @@ public class CreateRefMapExecutor {
 			
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 			
-			
-			// TODO: frame simulation mode sets iterations = 1 (why?) - if implemented, this should be part of form validation
-
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
-			// TODO: what is this message for??
-			statusLogger.log("camera.not_init"); 
-
 			
-			// TODO: the integration time is given by the filter and mask type chosen - this will be a new table
-			// This should probably be a default given that can be overridden by the operator.  Not sure who should be able to override, though.
+			// TODO: the default integration time is given by the filter and mask type chosen - this will be a new table
+			// This should probably be a default given that can be overridden by the operator.  Any authorization required to change default?
+			
 			
 		    // TODO: Special logic for SUFS                                                    
 			/*
