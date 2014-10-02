@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -161,12 +162,11 @@ public class CameraDefMgmt {
 
 	}
 
-	public Filter getFilterByFilterTypeAndWheel(int filterType, Long filterWheelId) {
+	public Filter getFilterByFilterTypeAndWheel(Long filterTypeId, Long filterWheelId) {
 		// get the pupil mask of the defined type that is currently on the wheel
-		// the type is implicit in the name "611" filters require "611" in the name
 		try {
 			TypedQuery<Filter> query = em.createNamedQuery("findByFilterTypeAndWheel", Filter.class);
-			query.setParameter("filterType", "%" + filterType + "%");
+			query.setParameter("filterTypeId", filterTypeId);
 			query.setParameter("filterWheelId", filterWheelId);
 
 			return query.getSingleResult();
@@ -176,6 +176,12 @@ public class CameraDefMgmt {
 			return null;
 		}
 
+	}
+
+	public List<FilterType> findAllFilterTypes() {
+		TypedQuery<FilterType> query = em.createNamedQuery("findAllFilterTypes", FilterType.class);
+
+		return query.getResultList();
 	}
 
 }

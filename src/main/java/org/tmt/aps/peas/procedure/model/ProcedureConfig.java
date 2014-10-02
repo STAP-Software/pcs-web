@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -32,9 +33,9 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "ProcedureConfig")
 @NamedQueries({
 		@NamedQuery(name = "findAllProcedureConfigs", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-				+ "INNER JOIN FETCH p.procedureType"),
+				+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.filterType "),
 		@NamedQuery(name = "findDefaultProcedureConfig", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope tel INNER JOIN FETCH p.instrument inst "
-				+ "INNER JOIN FETCH p.procedureType pt  "
+				+ "INNER JOIN FETCH p.procedureType pt  INNER JOIN FETCH p.filterType  "
 				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId AND p.defaultFlg = TRUE "
 				+ "ORDER BY p.updateDate desc ")
 
@@ -62,9 +63,7 @@ public class ProcedureConfig {
 	Filter filter;
 	@Transient
 	ReferenceBeam referenceBeam;
-	
-	private int filterType;
-	
+		
 	private Float integrationTime;
 	@Column(name="numTrials")
 	private int numberOfTrials = 1;
@@ -100,13 +99,18 @@ public class ProcedureConfig {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "procedureTypeId")
 	ProcedureType procedureType;
+	
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "filterTypeId")
+	FilterType filterType;
 
 	
-	public int getFilterType() {
+
+	public FilterType getFilterType() {
 		return filterType;
 	}
 
-	public void setFilterType(int filterType) {
+	public void setFilterType(FilterType filterType) {
 		this.filterType = filterType;
 	}
 

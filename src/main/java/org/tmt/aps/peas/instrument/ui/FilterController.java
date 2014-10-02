@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,8 +22,8 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
-import org.tmt.aps.peas.instrument.model.PupilMask;
 
 @Named
 @SessionScoped
@@ -45,13 +44,15 @@ public class FilterController implements Serializable {
 	private List<Filter> filterList;
 	private Filter filter;
 	private FilterWheel filterWheel;
-
+	private List<FilterType> filterTypeList;
+	
 	@PostConstruct
 	private void init() {
 
 		try {
 			refreshFilterList();
 			refreshFilterWheel();
+			filterTypeList = cameraDefMgmt.findAllFilterTypes();
 		} catch (Exception e) {
 			logger.error("", e);
 		}
@@ -80,6 +81,11 @@ public class FilterController implements Serializable {
 
 	public void setFilterWheel(FilterWheel filterWheel) {
 		this.filterWheel = filterWheel;
+	}
+
+	public List<FilterType> getFilterTypeList() {
+		// TODO Auto-generated method stub
+		return filterTypeList;
 	}
 
 	private void refreshFilterList() {
@@ -200,6 +206,7 @@ public class FilterController implements Serializable {
 		return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
 
 	}
+
 
 
 

@@ -19,6 +19,11 @@
 				<h:outputLabel value="Filter Name" />
 				<p:inputText value="#{filterController.filter.filterName}" />
 
+				<h:outputLabel value="Filter Type" />
+				<p:selectOneMenu value="#{filterController.filter.filterType}" converter="#{filterTypeConverter}">
+					<f:selectItems value="#{filterController.filterTypeList}" var="type" itemLabel="#{type.filterTypeName}" itemValue="#{type}" />
+				</p:selectOneMenu>
+				
 				<h:outputLabel value="Wavelength" />
 				<p:inputText value="#{filterController.filter.wavelength}" />
 

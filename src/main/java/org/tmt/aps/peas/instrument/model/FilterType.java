@@ -1,0 +1,72 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
+package org.tmt.aps.peas.instrument.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.Table;
+
+@Entity
+@Table(name = "FilterType")
+@NamedQueries({ @NamedQuery(name = "findAllFilterTypes", query = "SELECT o from FilterType o") })
+public class FilterType {
+
+	public static final Long FILTER_TYPE_ID_611 = new Long(1);
+	public static final Long FILTER_TYPE_ID_651 = new Long(2);
+	public static final Long FILTER_TYPE_ID_852 = new Long(3);
+	public static final Long FILTER_TYPE_ID_870 = new Long(4);
+	public static final Long FILTER_TYPE_ID_891 = new Long(5);
+	public static final Long FILTER_TYPE_ID_NONE = new Long(6);
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long filterTypeId;
+
+	private String filterTypeName;
+
+
+	
+	
+	public Long getFilterTypeId() {
+		return filterTypeId;
+	}
+
+
+	public void setFilterTypeId(Long filterTypeId) {
+		this.filterTypeId = filterTypeId;
+	}
+
+
+	public String getFilterTypeName() {
+		return filterTypeName;
+	}
+
+
+	public void setFilterTypeName(String filterTypeName) {
+		this.filterTypeName = filterTypeName;
+	}
+
+
+	public boolean isNewRecord() {
+		return filterTypeId == null;
+	}
+
+	
+	public boolean equals(Object obj) {
+		if (obj instanceof FilterType) {
+			FilterType candidate = (FilterType) obj;
+			if (candidate.getFilterTypeId().longValue() == this.getFilterTypeId().longValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
+
+}

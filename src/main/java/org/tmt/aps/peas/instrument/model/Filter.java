@@ -18,9 +18,9 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "Filter")
 @NamedQueries({
-	@NamedQuery(name = "findAllFilters", query = "SELECT o from Filter o" ),
-	@NamedQuery(name = "findByFilterTypeAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw "
-			+ "where o.filterName LIKE :filterType AND fw.filterWheelId = :filterWheelId" )
+	@NamedQuery(name = "findAllFilters", query = "SELECT o from Filter o INNER JOIN FETCH o.filterType" ),
+	@NamedQuery(name = "findByFilterTypeAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw INNER JOIN FETCH o.filterType ft "
+			+ "where ft.filterTypeId = :filterTypeId AND fw.filterWheelId = :filterWheelId" )
 })
 public class Filter {
 
@@ -43,6 +43,10 @@ public class Filter {
 	@ManyToOne
 	@JoinColumn (name="filterWheelId")
 	private FilterWheel filterWheel;
+
+	@ManyToOne
+	@JoinColumn (name="filterTypeId")
+	private FilterType filterType;
 
 	
 	
@@ -109,8 +113,15 @@ public class Filter {
 	public void setFilterWheel(FilterWheel filterWheel) {
 		this.filterWheel = filterWheel;
 	}
-
 	
+	public FilterType getFilterType() {
+		return filterType;
+	}
+
+	public void setFilterType(FilterType filterType) {
+		this.filterType = filterType;
+	}
+
 	public boolean isNewRecord() {
 		return filterId == null;
 	}
