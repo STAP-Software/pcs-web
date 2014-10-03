@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.instrument.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Set;
 
@@ -17,6 +18,8 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.apache.commons.beanutils.BeanComparator;
 
 @Entity
 @Table(name = "PupilWheel")
@@ -102,7 +105,9 @@ public class PupilWheel implements DeviceStates {
 	
 	public List<PupilMask> getOrigPupilMaskList() {
 		
-		return new ArrayList<PupilMask>(pupilMaskSet);
+		List<PupilMask> maskList = new ArrayList<PupilMask>(pupilMaskSet);
+		Collections.sort(maskList, new BeanComparator("maskName"));
+		return maskList;
 	}
 
 	public List<PupilMask> getNewPupilMaskList() {

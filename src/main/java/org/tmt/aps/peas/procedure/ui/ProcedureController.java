@@ -39,6 +39,7 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.config.model.RefMapDefaults;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -326,7 +327,9 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderPupilMaskSelect() {
-		return defaultMask == null;
+		
+		return procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+
 	}
 	
 	public boolean getRenderNumTrials() {
@@ -383,6 +386,9 @@ public class ProcedureController implements Serializable {
 
 			ProcedureConfig procedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(),
 					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
+			
+			procedure.setProcedureConfig(procedureConfig);
+			
 
 			// get the default mask, if it is installed on the wheel
 			defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureType.getDefaultPupilMaskType().getPupilMaskTypeId(), 
@@ -392,12 +398,17 @@ public class ProcedureController implements Serializable {
 			
 			// get the filter to default to if it exists
 			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(), 
-					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+					sessionController.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
 			
 			procedureConfig.setFilter(defaultFilter);
 			
-			procedure.setProcedureConfig(procedureConfig);
-						
+			// if procedure type is create ref map, then populate ref beam and integration times from the table
+			if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+				
+				// these get set into procedure config
+				setupCreateRefMapDefaults(defaultMask.getPupilMaskType().getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
+			}
+			
 			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
@@ -434,6 +445,16 @@ public class ProcedureController implements Serializable {
 		}
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
+	}
+	
+	private void setupCreateRefMapDefaults(Long pupilMaskTypeId, Long filterTypeId) {
+		RefMapDefaults refMapDefaults = globalConfigMgmt.findRefMapDefaults(pupilMaskTypeId, filterTypeId);
+		
+		// Set up default ref beam and int time
+		
+		procedure.getProcedureConfig().setFrameSource(ProcedureConfig.LIGHT_SOURCE_LED);
+		procedure.getProcedureConfig().setReferenceBeam(refMapDefaults.getReferenceBeam());
+		procedure.getProcedureConfig().setIntegrationTime(refMapDefaults.getIntegrationTime());
 	}
 
 	public String doCancelProcedure() {
@@ -570,6 +591,27 @@ public class ProcedureController implements Serializable {
 
 	public void doCancelSaveExecutionPreferences() {
 
+	}
+	
+	public void doUpdatePupilMask() {
+		
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+			
+			// change int time and selected ref beam settings in procedure config
+			setupCreateRefMapDefaults(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+					procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+
+	}
+	
+	public void doUpdateFilter() {
+		
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+			
+			// change int time and selected ref beam settings in procedure config
+			setupCreateRefMapDefaults(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+					procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
 	}
 		
 	// ====================================================================================== //

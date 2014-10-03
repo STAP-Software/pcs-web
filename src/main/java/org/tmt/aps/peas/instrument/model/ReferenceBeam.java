@@ -11,10 +11,15 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 @Entity
 @Table(name = "ReferenceBeam")
+@NamedQueries({
+	@NamedQuery(name = "findByNumber", query = "SELECT o from ReferenceBeam o where o.refBeamNum = :refBeamNum" )
+})
 public class ReferenceBeam {
 
 	@Id

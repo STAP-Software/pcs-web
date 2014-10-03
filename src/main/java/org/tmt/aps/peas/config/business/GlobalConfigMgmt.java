@@ -14,6 +14,8 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.RefMapDefaults;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Stateless
 public class GlobalConfigMgmt {
@@ -61,5 +63,29 @@ public class GlobalConfigMgmt {
 		query.setMaxResults(1);
 		
 		return query.getSingleResult();	
+	}
+	
+	
+	public RefMapDefaults findRefMapDefaults(Long pupilMaskTypeId, Long filterTypeId) {
+		TypedQuery<RefMapDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapDefaults.class);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("filterTypeId", filterTypeId);
+		
+		query.setMaxResults(1);
+		
+		RefMapDefaults refMapDefaults = query.getSingleResult();
+		
+		// get the reference beam by ref beam number
+		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
+		query2.setParameter("refBeamNum", refMapDefaults.getReferenceBeamNum());
+		
+		query2.setMaxResults(1);
+		
+		ReferenceBeam referenceBeam = query2.getSingleResult();
+	
+		refMapDefaults.setReferenceBeam(referenceBeam);
+		
+		return refMapDefaults;
+
 	}
 }

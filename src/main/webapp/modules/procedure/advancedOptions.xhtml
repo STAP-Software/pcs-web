@@ -16,6 +16,7 @@
 						disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{filterConverter}">
 					<f:selectItem itemLabel="Select One" itemValue=""/> 
 					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+					<p:ajax update=":advancedForm :procedureDetailForm:procedureDetailPanel" listener="#{procedureController.doUpdateFilter}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Light Source" />

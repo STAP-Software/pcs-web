@@ -38,7 +38,9 @@
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
-										<f:selectItems value="#{pupilMaskController.pupilMaskList}" var="pupilMask" itemLabel="#{pupilMask.maskName}" itemValue="#{pupilMask}" />
+										<f:selectItem itemLabel="Select One" itemValue=""/> 
+										<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
+										<p:ajax update=":advancedForm intTime" listener="#{procedureController.doUpdatePupilMask}" />
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
@@ -49,7 +51,7 @@
 									<h:outputLabel value="Integration Time (sec)" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
+									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
 										disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.procedureType.integrationTimeList}" />
 									</p:selectOneMenu>
