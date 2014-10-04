@@ -78,7 +78,7 @@
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="CCD" itemValue="1" />
 										<f:selectItem itemLabel="File" itemValue="2" />
-										<p:ajax update="configPanel" listener="#{procedureController.frameSourceListener}" />
+										<p:ajax update="configPanel startButton" listener="#{procedureController.frameSourceListener}" />
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
@@ -93,7 +93,7 @@
 
 					<p:tab id="statusAndControlTab" title="Status and Control">
 
-						<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+						<p:panelGrid id="statusAndControlPanel" columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 							<h:outputLabel value="Procedure Type" />
 							<h:outputText value="#{procedureController.procedureType.procedureTypeName}" />
 							<h:outputLabel value="Procedure #" />
@@ -117,9 +117,9 @@
 
 						<p:spacer height="10px" width="40px" />
 						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}">
-							<p:commandButton value="Start" icon="ui-icon-play" actionListener="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
+							<p:commandButton id="startButton" value="Start" icon="ui-icon-play" actionListener="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
 								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm"
-								disabled="#{asyncController.executionStatus}" />
+								disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
 							<p:spacer width="30px" />
 							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" /> 
 							<br />

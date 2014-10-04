@@ -339,6 +339,15 @@ public class ProcedureController implements Serializable {
 	public boolean getRenderFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions() != null;
 	}
+	// start button enable logic
+	public boolean isStartEnabled() {
+		if (procedure.getProcedureConfig().getFrameSource() == ProcedureConfig.FRAME_SOURCE_FILE) {
+			if (selectedFitsFiles == null || selectedFitsFiles.size() == 0) {
+				return false;
+			}
+		}
+		return true;
+	}
 	
 	
 	public void frameSourceListener() {
