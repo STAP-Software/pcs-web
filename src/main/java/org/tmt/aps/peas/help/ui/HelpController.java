@@ -98,7 +98,7 @@ public class HelpController implements Serializable {
 	}
 
 	// returns the content of the current page
-	public String getCurrentPage() {
+	public String getCurrentPageOrig() {
 
 		try {
 			String propertiesPath = System.getProperty("org.tmt.aps.peas.peasPropertiesPath");
@@ -113,6 +113,12 @@ public class HelpController implements Serializable {
 			e.printStackTrace();
 			return "Content Load Error";
 		}
+
+	}
+
+	public String getCurrentPage() {
+
+		return "/pcs-web/help/content/git-scm.com.htm";
 
 	}
 
