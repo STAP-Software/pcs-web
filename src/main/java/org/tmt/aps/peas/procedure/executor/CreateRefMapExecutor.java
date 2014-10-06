@@ -117,11 +117,7 @@ public class CreateRefMapExecutor {
 			
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
-			
-			// TODO: the default integration time is given by the filter and mask type chosen - this will be a new table
-			// This should probably be a default given that can be overridden by the operator.  Any authorization required to change default?
-			
-			
+						
 		    // TODO: Special logic for SUFS                                                    
 			/*
 			IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
@@ -170,10 +166,8 @@ public class CreateRefMapExecutor {
 				// command to filter selected
 				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-
-		        // select ref beam based on filter wavelength
 		        	
-		        // TODO: this is what we change
+		        // turn on ref beam
 		        ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
 				statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
 		        refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
@@ -181,7 +175,6 @@ public class CreateRefMapExecutor {
 				// extend two pos mirror
 		        statusLogger.log("camera.cmd.two_pos_device", "extend");
 		        twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-
 			
 				// wait for all commands to complete
 		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
@@ -205,7 +198,7 @@ public class CreateRefMapExecutor {
 			FloatPoint[] centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
 			
 			// display the marked frame
-			// TODO: test that this works
+			frameDisplayMgmt.setMarking(centroids);
 			frameDisplayMgmt.displayMarkedFrame();
 
 			// TODO: supply real numbers for the status logger outputs
