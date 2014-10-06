@@ -1,0 +1,45 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="documentationForm">
+
+
+			<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsExecutionPanel">
+				<p:panelGrid columns="1" style="margin:0" styleClass="pcsFormNoBorder">
+
+					<f:facet name="header">
+					Contents
+					</f:facet>
+
+					<p:tree value="#{helpController.helpContentRoot}" var="node" id="contentsTree" expanded="true" style="width:250px; border:0 none;">
+
+						<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed" type="folder">
+							<h:outputText style="font-weight:bold" value="#{node}" />
+						</p:treeNode>
+						<p:treeNode icon="ui-icon-document" type="link">
+							<p:commandLink value="#{node.name}" action="#{helpController.doUpdatePage}" update=":documentationForm" oncomplete="#{node.onclick}" />
+						</p:treeNode>
+					</p:tree>
+
+				</p:panelGrid>
+
+				<p:panelGrid columns="1" style="margin-top:5px;" styleClass="pcsFormNoBorder">
+
+					<h:outputText value="#{helpController.currentPage}" escape="false" />
+
+				</p:panelGrid>
+
+			</p:panelGrid>
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

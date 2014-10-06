@@ -254,4 +254,5 @@ public class SessionController implements Serializable {
 		requestContext.update("procedureDetailForm");
 	}
 	
+
 }

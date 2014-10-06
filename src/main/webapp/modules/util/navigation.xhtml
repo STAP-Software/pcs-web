@@ -1,0 +1,85 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+  
+			<h:form id="menuForm">
+			
+			
+				<p:menubar>
+				
+					<p:submenu label="Session" icon="ui-icon-document">
+						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Current Session" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+				
+					<p:submenu label="Run" icon="ui-icon-gear" >
+						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:separator />
+						<p:menuitem value="Create Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+					<p:submenu label="Tools" icon="ui-icon-contact">
+						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
+					</p:submenu>
+
+					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
+						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}"/>
+						<p:separator />
+						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}">
+							<p:menuitem value="Manage CCDs" action="#{ccdDefController.doViewCcdList}" />
+							<p:menuitem value="Manage Filters" action="#{filterController.doViewFilterList}" />
+							<p:menuitem value="Manage Pupil Masks" action="#{pupilMaskController.doViewPupilMaskList}" />
+						</p:submenu>
+						<p:submenu label="#{cameraDefController.instrument.instrumentName} Configuration"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" >
+							<p:menuitem value="Manage Filter Wheel" action="#{filterController.doViewFilterWheel}" />
+							<p:menuitem value="Manage Pupil Wheel" action="#{pupilMaskController.doViewPupilWheel}" />
+							<p:menuitem value="Manage Reference Beams" action="#{refBeamController.doViewReferenceBeamList}" />
+							<p:menuitem value="Select CCD" action="#{ccdDefController.doViewCcdSelectList}" />
+							<p:menuitem value="Manage Coarse Tilt Mirror" action="#{coarseTiltMirrorController.doViewCoarseTiltMirror}" />
+							<p:menuitem value="Manage Fine Tilt Mirror" action="#{fineTiltMirrorController.doViewFineTiltMirror}" />
+							<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.procedureExecuting}" update=":growl"/>
+						</p:submenu>
+					</p:submenu>
+
+					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{breadcrumbMenuBean.inProcedure}">
+						<p:menuitem value="Advanced Options" type="button" onclick="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Load Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Load Last Session Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
+					</p:submenu>
+
+				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.advancedViewMode}">
+						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
+							
+					</p:submenu>
+
+				 	<p:submenu label="Help" icon="ui-icon-help">
+						<p:menuitem value="About..."  onclick="helpAboutDialog.show();" />
+						<p:menuitem value="Page Help"  onclick="helpDialog.show();" />
+						<p:menuitem value="Documentation"  action="#{helpController.doViewDocumentation}" />
+					</p:submenu>
+					
+					<f:facet name="options">
+            			
+            			<p:selectBooleanButton id="value2" value="#{sessionController.advancedViewMode}" onLabel="Expert Mode" offLabel="OA Mode"  style="margin-right:10px">
+            				<p:ajax update="@form" listener="#{sessionController.modeChangeListener}"/> 
+        				</p:selectBooleanButton>
+        			</f:facet>
+
+				</p:menubar>
+			</h:form>
+			
+			
+			<h:form id="breadcrumbForm">
+				<p:breadCrumb model="#{breadcrumbMenuBean.model}" styleClass="btmsBreadcrumb" />
+			</h:form>
+			
+			
+</ui:composition>
