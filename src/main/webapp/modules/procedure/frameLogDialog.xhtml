@@ -1,0 +1,46 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+	<p:dialog id="frameLogDlg" header="Frame/Centroids Report" widgetVar="frameLogDialog">
+
+		<h:form id="frameLogForm">
+
+			<h:commandLink>
+				<p:graphicImage value="../../images/excel.png" />
+				<p:dataExporter type="xls" target="flogTable" fileName="plog" />
+			</h:commandLink>
+			<h:commandLink>
+				<p:graphicImage value="../../images/csv.png" />
+				<p:dataExporter type="csv" target="flogTable" fileName="plog" />
+			</h:commandLink>
+
+
+			<p:dataTable id="flogTable" var="flogValue" value="#{procedureController.procedure.procedureOutput.procedureOutputList}" style="margin:20px">
+				<f:facet name="header">
+        				Frame/Centroids Related Values
+    				</f:facet>
+
+				<p:column headerText="Name">
+					<h:outputText value="#{flogValue.procedureOutputField.displayLabel}" />
+				</p:column>
+				<p:column headerText="Units">
+					<h:outputText value="#{flogValue.procedureOutputField.units}" />
+				</p:column>
+				<p:column headerText="Description">
+					<h:outputText value="#{flogValue.procedureOutputField.description}" />
+				</p:column>
+				<p:column headerText="Value">
+					<h:outputText value="#{flogValue.data}" />
+				</p:column>
+
+			</p:dataTable>
+						
+
+		</h:form>
+	</p:dialog>
+
+</ui:composition>
+
+</html>

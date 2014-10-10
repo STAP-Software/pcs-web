@@ -197,68 +197,19 @@ public class CreateRefMapExecutor {
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			FloatPoint[] centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
 			
+			statusLogger.log("fandi.end.success");
+			
 			// display the marked frame
 			frameDisplayMgmt.setMarking(centroids);
 			frameDisplayMgmt.displayMarkedFrame();
-
-			// TODO: supply real numbers for the status logger outputs
-			statusLogger.log("fandi.search_count", 1);
-			statusLogger.log("fandi.frame_scale", 0.9530617);
-			statusLogger.log("fandi.rotation", 0.3370904);
-			statusLogger.log("fandi.frame_scale", 0.9840439);
-			statusLogger.log("fandi.center_calc");
 			
-			statusLogger.log("fandi.end.success");
-
 			graphicDisplayMgmt.displaySubimageCentroids(Arrays.asList(FloatPoint.roundToPoint(centroids)));
 
 			statusLogger.log("procedure.refmap.created");                
 
-			// just to have something to save to test with, ask Mitch what we really want
+			// TODO: remove this: just to have something to save
 			boolean saveMap = true;
 			procedureOutput.setMapSaved(saveMap);
-			
-			// TODO: we need to decide what to do with this code.  If offsets are required, perhaps we apply them when we use the maps
-			// not when they are created.  That way we always know that refMaps are the actual centroids in all cases.
-			
-			/*
-			IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_PH) THEN
-			C
-			C  We offset the 651, 891, 852, and 870 reference beam images
-			C  because the corresponding reference beams themselves are
-			C  physically displaced in the focal plane.  Otherwise the
-			C  operator will have to keep moving the telescope to compensate
-			C  for this physical offset.  The numerical offsets below were
-			C  determined in pixels and then converted to arcseconds so that
-			C  when we change CCDs the offsets will still be correct.
-			C
-			C  GC and MT (24 Jan 95)
-			C
-
-			           IF (REF_FILTER_NUMBER.EQ.FILT_POS_651) THEN
-
-			              FILTER_OFFSET_X = -15.07 * 0.1876 / SECPERPIX_160
-			              FILTER_OFFSET_Y = 0.74 * 0.1876 / SECPERPIX_160
-			C Uses ref beam 3/ 890 nm
-			           ELSE IF ((REF_FILTER_NUMBER.EQ.FILT_POS_891).OR.
-			     +               (REF_FILTER_NUMBER.EQ.FILT_POS_852).OR.
-			     +               (REF_FILTER_NUMBER.EQ.FILT_POS_870)) THEN 
-			              FILTER_OFFSET_X = 14.47 * 0.1876 / SECPERPIX_160
-			              FILTER_OFFSET_Y = 1.63 * 0.1876 / SECPERPIX_160
-			           ENDIF
-
-			           IF ((REF_FILTER_NUMBER.EQ.FILT_POS_651).OR.
-			     +        (REF_FILTER_NUMBER.EQ.FILT_POS_891).OR.
-			     +        (REF_FILTER_NUMBER.EQ.FILT_POS_852).OR.
-			     +        (REF_FILTER_NUMBER.EQ.FILT_POS_870)) THEN 
-			             DO J = 1, 203
-			                CENTROID(J,1) = CENTROID(J,1)  - FILTER_OFFSET_X
-			                CENTROID(J,2) = CENTROID(J,2)  - FILTER_OFFSET_Y
-			             ENDDO
-			           ENDIF
-			        ENDIF
-			*/
-			
 			
 			// save the reference beam map
 			RefBeamMap refBeamMap = refBeamMapMgmt.saveRefBeamMap(Arrays.asList(centroids), procedure);
