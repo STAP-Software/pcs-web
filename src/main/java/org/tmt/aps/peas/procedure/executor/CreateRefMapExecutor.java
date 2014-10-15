@@ -38,7 +38,7 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
-import org.tmt.aps.peas.refBeamMap.business.RefBeamMapMgmt;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -77,7 +77,7 @@ public class CreateRefMapExecutor {
 	@EJB
 	private PhysicalModel physicalModel;
 	@EJB
-	private RefBeamMapMgmt refBeamMapMgmt;
+	private CentroidMapMgmt refBeamMapMgmt;
 
 	private List<String> logMessages;
 

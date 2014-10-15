@@ -6,10 +6,10 @@
 package org.tmt.aps.peas.refBeamMap.model;
 
 import java.util.Date;
-import java.util.List;
 
-import javax.persistence.Column;
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -20,26 +20,20 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.persistence.Transient;
-
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "RefBeamMap")
 @NamedQueries({
 	@NamedQuery(name = "findCurrentRefBeamMap", query = "SELECT rb from RefBeamMap rb "
-			+ "where rb.instrumentId = :instrumentId AND rb.pupilMaskTypeId = :pupilMaskTypeId "
-			+ "and rb.firstRefBeamMapFlg = 0 and rb.refBeamDefMapFlg = 0 "
-			+ "ORDER BY rb.createDate desc"),
-	@NamedQuery(name = "findFirstRefBeamMap", query = "SELECT rb from RefBeamMap rb "
-			+ "where rb.instrumentId = :instrumentId AND rb.pupilMaskTypeId = :pupilMaskTypeId "
-			+ "and rb.firstRefBeamMapFlg = 1 and rb.refBeamDefMapFlg = 0 "
+			+ "inner join fetch rb.centroidMap cm "
+			+ "inner join fetch cm.ccdFrame f "
+			+ "where f.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "and rb.refBeamDefMapFlg = false "
 			+ "ORDER BY rb.createDate desc"),
 	@NamedQuery(name = "findRefBeamDefMap", query = "SELECT rb from RefBeamMap rb "
-			+ "where rb.pupilMaskTypeId = :pupilMaskTypeId "
-			+ "and rb.firstRefBeamMapFlg = 0 and rb.refBeamDefMapFlg = 1 "
+			+ "inner join fetch rb.centroidMap cm "
+			+ "where cm.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "and rb.refBeamDefMapFlg = true "
 			+ "ORDER BY rb.createDate desc")
 })
 public class RefBeamMap {
@@ -48,34 +42,17 @@ public class RefBeamMap {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long refBeamMapId;
 
-	@Column(insertable=false, updatable=false)
-	private Long instrumentId;
-	
-	@Column(insertable=false, updatable=false)
-	private Long pupilMaskTypeId;
-	
-	int firstRefBeamMapFlg;
-	int refBeamDefMapFlg;
-	
-	@Column
-	String refBeamMapData;
-	
+	boolean refBeamDefMapFlg;
+		
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 	
-	@ManyToOne
-	@JoinColumn (name="instrumentId")
-	private Instrument instrument;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn (name="centroidMapId")
+	private CentroidMap centroidMap;
 
-	@ManyToOne
-	@JoinColumn (name="pupilMaskTypeId")
-	private PupilMaskType pupilMaskType;
-
-
-	@Transient
-	protected List<FloatPoint> values;
-
-
+	
+	
 	public Long getRefBeamMapId() {
 		return refBeamMapId;
 	}
@@ -84,44 +61,12 @@ public class RefBeamMap {
 		this.refBeamMapId = refBeamMapId;
 	}
 
-	public int getFirstRefBeamMapFlg() {
-		return firstRefBeamMapFlg;
-	}
-
-	public void setFirstRefBeamMapFlg(int firstRefBeamMapFlg) {
-		this.firstRefBeamMapFlg = firstRefBeamMapFlg;
-	}
-
-	public Long getInstrumentId() {
-		return instrumentId;
-	}
-
-	public void setInstrumentId(Long instrumentId) {
-		this.instrumentId = instrumentId;
-	}
-
-	public Long getPupilMaskTypeId() {
-		return pupilMaskTypeId;
-	}
-
-	public void setPupilMaskTypeId(Long pupilMaskTypeId) {
-		this.pupilMaskTypeId = pupilMaskTypeId;
-	}
-
-	public int getRefBeamDefMapFlg() {
+	public boolean isRefBeamDefMapFlg() {
 		return refBeamDefMapFlg;
 	}
 
-	public void setRefBeamDefMapFlg(int refBeamDefMapFlg) {
+	public void setRefBeamDefMapFlg(boolean refBeamDefMapFlg) {
 		this.refBeamDefMapFlg = refBeamDefMapFlg;
-	}
-
-	public String getRefBeamMapData() {
-		return refBeamMapData;
-	}
-
-	public void setRefBeamMapData(String refBeamMapData) {
-		this.refBeamMapData = refBeamMapData;
 	}
 
 	public Date getCreateDate() {
@@ -132,43 +77,18 @@ public class RefBeamMap {
 		this.createDate = createDate;
 	}
 
-	public Instrument getInstrument() {
-		return instrument;
+	public CentroidMap getCentroidMap() {
+		return centroidMap;
 	}
 
-	public void setInstrument(Instrument instrument) {
-		this.instrument = instrument;
-	}
-
-	public PupilMaskType getPupilMaskType() {
-		return pupilMaskType;
-	}
-
-	public void setPupilMaskType(PupilMaskType pupilMaskType) {
-		this.pupilMaskType = pupilMaskType;
-	}
-
-	public List<FloatPoint> getValues() {
-		return values;
-	}
-
-	public void setValues(List<FloatPoint> values) {
-		this.values = values;
+	public void setCentroidMap(CentroidMap centroidMap) {
+		this.centroidMap = centroidMap;
 	}
 
 
-	public String toString() {
-		
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("\nvalues = ");
-		for (int i=0; i<values.size(); i++) {
-			buf.append(values.get(i) + ", ");
-		}
-		buf.append("\n");
-		return buf.toString();
 
-	}
+
+
 
 
 

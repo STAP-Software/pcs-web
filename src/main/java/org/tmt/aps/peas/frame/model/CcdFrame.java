@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.frame.model;
 
-import java.io.ByteArrayInputStream;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -19,9 +18,6 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.StreamedContent;
-
 @Entity
 @Table(name = "CcdFrame")
 @NamedQueries({
@@ -32,10 +28,12 @@ public class CcdFrame {
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long ccdFrameId;
-
+	
+	private Long instrumentId;  // the instrument this frame was taken with
+	
 	@Column(length = 200)
 	private String fitsFilename;
-
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
@@ -117,6 +115,14 @@ public class CcdFrame {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
+	}
+	
+	public Long getInstrumentId() {
+		return instrumentId;
+	}
+
+	public void setInstrumentId(Long instrumentId) {
+		this.instrumentId = instrumentId;
 	}
 
 	public float[][] getCorrectedFrame() {

@@ -102,6 +102,7 @@ public class FrameMgmt {
 		// save the frame to a FITS file
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
+		ccdFrame.setInstrumentId(procedureCcdFrame.getProcedure().getInstrument().getInstrumentId());
 		saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
@@ -112,7 +113,7 @@ public class FrameMgmt {
 
 	// manual Ccd frame save
 	// FITS file name TBD
-	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, String procedureTypeCd, int procedureNumber) throws Exception {
+	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, Long instrumentId, String procedureTypeCd, int procedureNumber) throws Exception {
 		
 		String newName = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, 0).generateFileName();
 
@@ -122,6 +123,7 @@ public class FrameMgmt {
 		FitsFilename fitsFilename = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, iterationNumber);
 
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
+		ccdFrame.setInstrumentId(instrumentId);
 		saveFitsFrame(ccdFrame);
 
 		
@@ -181,7 +183,9 @@ public class FrameMgmt {
 			ccdFrame.setFalseColorPng(falseColorPng);
 
 			// generate filename and store into the FITS file
-			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureType.getProcedureTypeCd(), procedureNumber);
+			
+			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureConfig.getInstrument().getInstrumentId(), 
+					procedureType.getProcedureTypeCd(), procedureNumber);
 
 			return ccdFrame;
 			

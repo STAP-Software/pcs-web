@@ -21,7 +21,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.refBeamMap.business.RefBeamMapMgmt;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -48,7 +48,7 @@ public class ProcedureExecutionMgmt {
 	@EJB
 	private GlobalConfigMgmt globalConfigMgmt;
 	@EJB
-	private RefBeamMapMgmt refBeamMapMgmt;
+	private CentroidMapMgmt refBeamMapMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 

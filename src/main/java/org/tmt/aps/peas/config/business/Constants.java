@@ -18,7 +18,7 @@ import org.tmt.aps.peas.config.model.PhasingConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorSegmentConstants;
 import org.tmt.aps.peas.config.model.SufsConstants;
-import org.tmt.aps.peas.refBeamMap.business.RefBeamMapMgmt;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Singleton
@@ -30,7 +30,7 @@ public class Constants {
 	@EJB
 	ConstantsMgmt constantsMgmt;
 	@EJB
-	RefBeamMapMgmt refBeamMapMgmt;
+	CentroidMapMgmt centroidMapMgmt;
 	
 	private PrimaryMirrorConstants primaryMirrorConstants;
 	private PrimaryMirrorSegmentConstants primaryMirrorSegmentConstants;
@@ -62,11 +62,11 @@ public class Constants {
 		*/
 		// get ref def maps
 		refBeamDefMapList = new ArrayList<RefBeamMap>();
-		refBeamDefMapList.add(refBeamMapMgmt.getRefBeamDefMap(new Long(1)));
-		refBeamDefMapList.add(refBeamMapMgmt.getRefBeamDefMap(new Long(2)));
-		refBeamDefMapList.add(refBeamMapMgmt.getRefBeamDefMap(new Long(3)));
-		refBeamDefMapList.add(refBeamMapMgmt.getRefBeamDefMap(new Long(4)));
-		refBeamDefMapList.add(refBeamMapMgmt.getRefBeamDefMap(new Long(5)));
+		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(1)));
+		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(2)));
+		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(3)));
+		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(4)));
+		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(5)));
 		/*
 		logger.info("\n\nRefDefMap 036: \n" + getRefBeamDefMap(new Long(1)));
 		logger.info("\n\nRefDefMap 160: \n" + getRefBeamDefMap(new Long(2)));

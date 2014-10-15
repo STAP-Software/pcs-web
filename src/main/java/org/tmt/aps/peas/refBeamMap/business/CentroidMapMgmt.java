@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.refBeamMap.business;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -18,11 +17,12 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Stateless
-public class RefBeamMapMgmt {
+public class CentroidMapMgmt {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -56,28 +56,13 @@ public class RefBeamMapMgmt {
 		RefBeamMap refBeamMap = query.getSingleResult();
 
 		// decode String into transient FloatPoint values
-		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getRefBeamMapData());
-		refBeamMap.setValues(values);
+		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+		refBeamMap.getCentroidMap().setValues(values);
 
 		return refBeamMap;
 	}
 
-	public RefBeamMap getFirstRefBeamMap(Long instrumentId, Long pupilMaskTypeId) {
 
-		TypedQuery<RefBeamMap> query = em.createNamedQuery("findFirstRefBeamMap", RefBeamMap.class);
-		query.setParameter("instrumentId", instrumentId);
-		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
-
-		query.setMaxResults(1);
-		RefBeamMap refBeamMap = query.getSingleResult();
-
-		// decode String into transient FloatPoint values
-		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getRefBeamMapData());
-		refBeamMap.setValues(values);
-		
-		return refBeamMap;
-		
-	}
 
 	public RefBeamMap getRefBeamDefMap(Long pupilMaskTypeId) {
 
@@ -88,25 +73,28 @@ public class RefBeamMapMgmt {
 		RefBeamMap refBeamMap = query.getSingleResult();
 
 		// decode String into transient FloatPoint values
-		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getRefBeamMapData());
-		refBeamMap.setValues(values);
+		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+		refBeamMap.getCentroidMap().setValues(values);
 
 		return refBeamMap;
 	}
 
 	public RefBeamMap saveRefBeamMap(List<FloatPoint> centroids, Procedure procedure) {
 
+		// TODO: add the scale and rotation values/inputs used in F&I
+		
 		RefBeamMap refBeamMap = new RefBeamMap();
 		refBeamMap.setCreateDate(new Date());
-		refBeamMap.setFirstRefBeamMapFlg(0);
-		refBeamMap.setInstrument(procedure.getInstrument());
-		refBeamMap.setPupilMaskType(procedure.getProcedureConfig().getPupilMask().getPupilMaskType());
-		refBeamMap.setRefBeamDefMapFlg(0);
-		refBeamMap.setValues(centroids);
+		//refBeamMap.setInstrument(procedure.getInstrument());
+		CentroidMap centroidMap = new CentroidMap();
+		refBeamMap.setCentroidMap(centroidMap);
+		centroidMap.setPupilMaskType(procedure.getProcedureConfig().getPupilMask().getPupilMaskType());
+		refBeamMap.setRefBeamDefMapFlg(false);
+		centroidMap.setValues(centroids);
 
 		// encode String from transient FloatPoint map
-		String encodedData = FloatPointListEncoder.encodeList(refBeamMap.getValues());
-		refBeamMap.setRefBeamMapData(encodedData);
+		String encodedData = FloatPointListEncoder.encodeList(centroidMap.getValues());
+		centroidMap.setCentroidMapData(encodedData);
 		
 		em.persist(refBeamMap);
 
