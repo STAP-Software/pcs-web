@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.session.business;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -22,6 +21,8 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.session.model.FieldMetaData;
+import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
@@ -152,6 +153,18 @@ public class SessionMgmt {
 			}
 		}
 
+	}
+	
+	public List<FieldMetaData> findAllFieldMetaData() {
+		TypedQuery<FieldMetaData> query = em.createNamedQuery("findAll", FieldMetaData.class);
+		
+		return query.getResultList();
+	}
+
+	public List<FrameFieldDisplay> findAllFrameFieldsToDisplay() {
+		TypedQuery<FrameFieldDisplay> query = em.createNamedQuery("findAllFields", FrameFieldDisplay.class);
+		
+		return query.getResultList();
 	}
 
 }

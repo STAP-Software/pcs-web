@@ -26,8 +26,7 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name = "findCurrentRefBeamMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
-			+ "inner join fetch cm.ccdFrame f "
-			+ "where f.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
 			+ "and rb.refBeamDefMapFlg = false "
 			+ "ORDER BY rb.createDate desc"),
 	@NamedQuery(name = "findRefBeamDefMap", query = "SELECT rb from RefBeamMap rb "
@@ -42,6 +41,8 @@ public class RefBeamMap {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long refBeamMapId;
 
+	private Long instrumentId;
+	
 	boolean refBeamDefMapFlg;
 		
 	@Temporal(TemporalType.TIMESTAMP)
@@ -59,6 +60,16 @@ public class RefBeamMap {
 
 	public void setRefBeamMapId(Long refBeamMapId) {
 		this.refBeamMapId = refBeamMapId;
+	}
+
+	
+	
+	public Long getInstrumentId() {
+		return instrumentId;
+	}
+
+	public void setInstrumentId(Long instrumentId) {
+		this.instrumentId = instrumentId;
 	}
 
 	public boolean isRefBeamDefMapFlg() {

@@ -7,6 +7,7 @@ package org.tmt.aps.peas.procedure.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
+import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -69,6 +70,9 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.session.business.FieldMetaDataCache;
+import org.tmt.aps.peas.session.business.SessionMgmt;
+import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -105,6 +109,10 @@ public class ProcedureController implements Serializable {
 	GlobalConfigMgmt globalConfigMgmt;
 	@EJB
 	DcsMgmt dcsMgmt;
+	@EJB
+	FieldMetaDataCache fieldMetaDataCache;
+	@EJB
+	SessionMgmt sessionMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -633,25 +641,34 @@ public class ProcedureController implements Serializable {
 		}
 	}
 		
-	public void selectFrameLogListener(ProcedureCcdFrame procedureCcdFrame) {
+	public void selectFrameLogListener(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		this.procedureCcdFrame = procedureCcdFrame;
 		
-		List<ProcedureOutputValue> procedureFrameOutputList = new ArrayList<ProcedureOutputValue>();
+		List<FrameFieldDisplay> displayList =  sessionMgmt.findAllFrameFieldsToDisplay();
 		
-		ProcedureOutputValue procedureFrameOutputValue = new ProcedureOutputValue();
-		procedureFrameOutputValue.setData("66.0");
-		ProcedureOutputField procedureOutputField = new ProcedureOutputField();
-		procedureOutputField.setDescription("This is a description of the variable");
-		procedureOutputField.setDisplayLabel("The Field Value");
-		procedureOutputField.setFieldName("The Field");
-		procedureOutputField.setUnits("m/s");
-		procedureFrameOutputValue.setProcedureOutputField(procedureOutputField);
-		// TODO: this needs to be generalized: we need to get the procedureOutputField values from 
-		// a metadata table that can reference single columns of other tables.
-		
-		procedureFrameOutputList.add(procedureFrameOutputValue);
-		
-		procedureCcdFrame.setProcedureFrameOutputList(procedureFrameOutputList);
+		for (FrameFieldDisplay fieldDisplay : displayList) {
+			
+			Object object;
+			// TODO: make this code generic later
+			if (fieldDisplay.getClassName().equals("org.tmt.aps.peas.refBeamMap.model.centroidMap")) {
+				object = procedureCcdFrame.getCentroidMap();
+			} else {
+				object = procedureCcdFrame.getCcdFrame();
+			}
+			
+			Class clazz = object.getClass();
+			
+			String fieldName = fieldDisplay.getFieldName();
+			String methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+			Method method = clazz.getMethod(methodName , null);
+			
+			String value = "" + method.invoke(object, null);
+			
+			fieldDisplay.setValue(value);
+			
+		}
+				
+		procedureCcdFrame.setFrameFieldDisplayList(displayList);
 	}
 	
 	// ====================================================================================== //

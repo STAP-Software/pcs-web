@@ -17,22 +17,22 @@
 			</h:commandLink>
 
 
-			<p:dataTable id="flogTable" var="flogValue" value="#{procedureController.procedureCcdFrame.procedureFrameOutputList}" style="margin:20px">
+			<p:dataTable id="flogTable" var="flogValue" value="#{procedureController.procedureCcdFrame.frameFieldDisplayList}" style="margin:20px">
 				<f:facet name="header">
         				Frame/Centroids Related Values
     				</f:facet>
 
 				<p:column headerText="Name">
-					<h:outputText value="#{flogValue.procedureOutputField.displayLabel}" />
+					<h:outputText value="#{flogValue.fieldMetaData.displayLabel}" />
 				</p:column>
 				<p:column headerText="Units">
-					<h:outputText value="#{flogValue.procedureOutputField.units}" />
+					<h:outputText value="#{flogValue.fieldMetaData.units}" />
 				</p:column>
 				<p:column headerText="Description">
-					<h:outputText value="#{flogValue.procedureOutputField.description}" />
+					<h:outputText value="#{flogValue.fieldMetaData.description}" />
 				</p:column>
 				<p:column headerText="Value">
-					<h:outputText value="#{flogValue.data}" />
+					<h:outputText value="#{flogValue.value}" />
 				</p:column>
 
 			</p:dataTable>

@@ -28,10 +28,7 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "CentroidMap")
-@NamedQueries({
-	@NamedQuery(name = "findCentroidMap", query = "SELECT cm from CentroidMap cm "
-			+ "where cm.ccdFrameId = :ccdFrameId ")
-})
+
 public class CentroidMap {
 
 	@Id
@@ -41,8 +38,6 @@ public class CentroidMap {
 	@Column(insertable=false, updatable=false)
 	private Long pupilMaskTypeId;
 	
-	@Column(insertable=false, updatable=false)
-	private Long ccdFrameId;
 		
 	float scale;
 	float rotation;
@@ -58,9 +53,6 @@ public class CentroidMap {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 	
-	@ManyToOne
-	@JoinColumn (name="ccdFrameId")
-	private CcdFrame ccdFrame;
 
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
@@ -81,14 +73,6 @@ public class CentroidMap {
 
 	public void setPupilMaskTypeId(Long pupilMaskTypeId) {
 		this.pupilMaskTypeId = pupilMaskTypeId;
-	}
-
-	public Long getCcdFrameId() {
-		return ccdFrameId;
-	}
-
-	public void setCcdFrameId(Long ccdFrameId) {
-		this.ccdFrameId = ccdFrameId;
 	}
 
 	public float getScale() {
@@ -153,14 +137,6 @@ public class CentroidMap {
 
 	public void setCreateDate(Date createDate) {
 		this.createDate = createDate;
-	}
-
-	public CcdFrame getCcdFrame() {
-		return ccdFrame;
-	}
-
-	public void setCcdFrame(CcdFrame ccdFrame) {
-		this.ccdFrame = ccdFrame;
 	}
 
 	public PupilMaskType getPupilMaskType() {

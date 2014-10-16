@@ -48,7 +48,7 @@ public class ProcedureExecutionMgmt {
 	@EJB
 	private GlobalConfigMgmt globalConfigMgmt;
 	@EJB
-	private CentroidMapMgmt refBeamMapMgmt;
+	private CentroidMapMgmt centroidMapMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 
@@ -135,6 +135,9 @@ public class ProcedureExecutionMgmt {
 					byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
+					// save the associated centroid map
+					centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
+					
 				}
 			}
 
@@ -142,7 +145,7 @@ public class ProcedureExecutionMgmt {
 
 			// associate ref beam map
 			if (procedure.getRefBeamMap() != null) {
-				refBeamMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
+				centroidMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
 			}
 			
 			// persist the procedure output

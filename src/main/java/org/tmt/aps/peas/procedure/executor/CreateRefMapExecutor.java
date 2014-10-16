@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -19,6 +20,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -39,6 +41,7 @@ import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -196,6 +199,19 @@ public class CreateRefMapExecutor {
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			FloatPoint[] centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
+			
+			// TODO: generalize this, does not need to be explicit in an executor
+			CentroidMap centroidMap = new CentroidMap();
+			String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(centroids));
+			centroidMap.setCentroidMapData(centroidMapData);
+			centroidMap.setForcedRotation(null);
+			centroidMap.setForcedRotationFlg(false);
+			centroidMap.setForcedScale(null);
+			centroidMap.setForcedScaleFlg(false);
+			centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
+			centroidMap.setRotation(0.22f);
+			centroidMap.setScale(1.023f);
+			procedureCcdFrame.setCentroidMap(centroidMap);
 			
 			statusLogger.log("fandi.end.success");
 			

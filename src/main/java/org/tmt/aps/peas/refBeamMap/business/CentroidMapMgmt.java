@@ -101,6 +101,13 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 
+	public CentroidMap saveCentroidMap(CentroidMap centroidMap) {
+
+		em.persist(centroidMap);
+
+		return centroidMap;
+	}
+
 	public void associateRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 
 		ProcedureRefBeamMap procedureRefBeamMap = new ProcedureRefBeamMap();

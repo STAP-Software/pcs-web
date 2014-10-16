@@ -22,6 +22,7 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 
 @Entity
 @Table(name = "ProcedureCcdFrame")
@@ -123,15 +124,17 @@ public class ProcedureCcdFrame {
 	}
 
 	@Transient
-	List<ProcedureOutputValue> procedureFrameOutputList;
+	List<FrameFieldDisplay> frameFieldDisplayList;
 
-	public List<ProcedureOutputValue> getProcedureFrameOutputList() {
-		return procedureFrameOutputList;
+
+	public List<FrameFieldDisplay> getFrameFieldDisplayList() {
+		return frameFieldDisplayList;
 	}
 
-	public void setProcedureFrameOutputList(List<ProcedureOutputValue> procedureFrameOutputList) {
-		this.procedureFrameOutputList = procedureFrameOutputList;
+	public void setFrameFieldDisplayList(List<FrameFieldDisplay> frameFieldDisplayList) {
+		this.frameFieldDisplayList = frameFieldDisplayList;
 	}
+
 
 
 	
