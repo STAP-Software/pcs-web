@@ -42,7 +42,8 @@
             		Associated Frames/Centroid Reports
         		</f:facet>
         		<p:spacer width="10px"/>
-       			<p:commandLink ajax="true" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
+
+       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
 					<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
 				</p:commandLink>
     		</p:dataList>

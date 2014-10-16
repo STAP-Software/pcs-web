@@ -18,6 +18,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+
 @Entity
 @Table(name = "CcdFrame")
 @NamedQueries({
@@ -52,7 +54,7 @@ public class CcdFrame {
 
 	@Transient
 	protected float correctedFrame[][];
-
+	
 	public int getNoOfAxes() {
 		return noOfAxes;
 	}
@@ -124,6 +126,7 @@ public class CcdFrame {
 	public void setInstrumentId(Long instrumentId) {
 		this.instrumentId = instrumentId;
 	}
+
 
 	public float[][] getCorrectedFrame() {
 		

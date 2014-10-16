@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.frame.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -15,14 +17,17 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 
 @Entity
 @Table(name = "ProcedureCcdFrame")
 @NamedQueries({
 	@NamedQuery(name = "findAllFramesForProcedure", query = "SELECT pcf from ProcedureCcdFrame pcf "
-			+ "INNER JOIN FETCH pcf.ccdFrame INNER JOIN FETCH pcf.procedure p where p.procedureId = :procedureId" )
+			+ "INNER JOIN FETCH pcf.ccdFrame INNER JOIN FETCH pcf.procedure p left outer join fetch pcf.centroidMap where p.procedureId = :procedureId" )
 })
 public class ProcedureCcdFrame {
 	
@@ -45,6 +50,11 @@ public class ProcedureCcdFrame {
 	@JoinColumn(name = "procedureId")
 	private Procedure procedure;
 
+	// a centroid map can be generated more than once for a frame (frame from file used in more than one procedure), 
+	// but only once for a frame within a procedure, which is why it appears in this join table
+	@OneToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "centroidMapId")
+	private CentroidMap centroidMap;
 	
 	
 	public Long getProcedureCcdFrameId() {
@@ -102,6 +112,25 @@ public class ProcedureCcdFrame {
 
 	public void setPhasingStepNumber(Integer phasingStepNumber) {
 		this.phasingStepNumber = phasingStepNumber;
+	}
+
+	public CentroidMap getCentroidMap() {
+		return centroidMap;
+	}
+
+	public void setCentroidMap(CentroidMap centroidMap) {
+		this.centroidMap = centroidMap;
+	}
+
+	@Transient
+	List<ProcedureOutputValue> procedureFrameOutputList;
+
+	public List<ProcedureOutputValue> getProcedureFrameOutputList() {
+		return procedureFrameOutputList;
+	}
+
+	public void setProcedureFrameOutputList(List<ProcedureOutputValue> procedureFrameOutputList) {
+		this.procedureFrameOutputList = procedureFrameOutputList;
 	}
 
 

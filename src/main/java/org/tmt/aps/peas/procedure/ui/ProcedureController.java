@@ -66,6 +66,8 @@ import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOuput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
+import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
+import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
@@ -127,7 +129,7 @@ public class ProcedureController implements Serializable {
 	byte[] falseColorPng;
 	private TreeNode visualizationDisplayRoot;
 	PupilMask defaultMask; // current default mask for procedure type
-	
+	ProcedureCcdFrame procedureCcdFrame;
 
 	UserPrompt currentPrompt;
 	
@@ -175,6 +177,10 @@ public class ProcedureController implements Serializable {
 		this.procedureType = procedureType;
 	}
 
+	public ProcedureCcdFrame getProcedureCcdFrame() {
+		return procedureCcdFrame;
+	}
+	
 	public float getIntegrationAddTime() {
 		return integrationAddTime;
 	}
@@ -623,6 +629,27 @@ public class ProcedureController implements Serializable {
 		}
 	}
 		
+	public void selectFrameLogListener(ProcedureCcdFrame procedureCcdFrame) {
+		this.procedureCcdFrame = procedureCcdFrame;
+		
+		List<ProcedureOutputValue> procedureFrameOutputList = new ArrayList<ProcedureOutputValue>();
+		
+		ProcedureOutputValue procedureFrameOutputValue = new ProcedureOutputValue();
+		procedureFrameOutputValue.setData("66.0");
+		ProcedureOutputField procedureOutputField = new ProcedureOutputField();
+		procedureOutputField.setDescription("This is a description of the variable");
+		procedureOutputField.setDisplayLabel("The Field Value");
+		procedureOutputField.setFieldName("The Field");
+		procedureOutputField.setUnits("m/s");
+		procedureFrameOutputValue.setProcedureOutputField(procedureOutputField);
+		// TODO: this needs to be generalized: we need to get the procedureOutputField values from 
+		// a metadata table that can reference single columns of other tables.
+		
+		procedureFrameOutputList.add(procedureFrameOutputValue);
+		
+		procedureCcdFrame.setProcedureFrameOutputList(procedureFrameOutputList);
+	}
+	
 	// ====================================================================================== //
 	//   Visualization Displays                                                               //
 	// ====================================================================================== //
