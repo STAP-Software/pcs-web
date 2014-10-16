@@ -17,14 +17,16 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.FilterType;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Entity
 @Table(name = "RefMapDefaults")
 @NamedQueries({
-	@NamedQuery(name = "findByMaskTypeAndFilterType", query = "SELECT o from RefMapDefaults o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.filterType ft "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and ft.filterTypeId = :filterTypeId" )
+	@NamedQuery(name = "findByMaskTypeAndFilterType", query = "SELECT o from RefMapDefaults o INNER JOIN FETCH o.pupilMaskType p "
+			+ "INNER JOIN FETCH o.filterType ft INNER JOIN FETCH o.instrument i "
+			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and ft.filterTypeId = :filterTypeId and i.instrumentId = :instrumentId " )
 })
 public class RefMapDefaults {
 
@@ -42,6 +44,10 @@ public class RefMapDefaults {
 	@ManyToOne
 	@JoinColumn (name="filterTypeId")
 	private FilterType filterType;
+
+	@ManyToOne
+	@JoinColumn (name="instrumentId")
+	private Instrument instrument;
 
 	@Transient
 	private ReferenceBeam referenceBeam;

@@ -421,7 +421,9 @@ public class ProcedureController implements Serializable {
 			if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 				
 				// these get set into procedure config
-				setupCreateRefMapDefaults(defaultMask.getPupilMaskType().getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
+				setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), 
+						defaultMask.getPupilMaskType().getPupilMaskTypeId(), 
+						defaultFilter.getFilterType().getFilterTypeId());
 			}
 			
 			
@@ -462,8 +464,8 @@ public class ProcedureController implements Serializable {
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 	
-	private void setupCreateRefMapDefaults(Long pupilMaskTypeId, Long filterTypeId) {
-		RefMapDefaults refMapDefaults = globalConfigMgmt.findRefMapDefaults(pupilMaskTypeId, filterTypeId);
+	private void setupCreateRefMapDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
+		RefMapDefaults refMapDefaults = globalConfigMgmt.findRefMapDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
 		
 		// Set up default ref beam and int time
 		
@@ -613,7 +615,8 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 			
 			// change int time and selected ref beam settings in procedure config
-			setupCreateRefMapDefaults(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), 
+					procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 					procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 
@@ -624,7 +627,8 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 			
 			// change int time and selected ref beam settings in procedure config
-			setupCreateRefMapDefaults(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(),
+					procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 					procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 	}

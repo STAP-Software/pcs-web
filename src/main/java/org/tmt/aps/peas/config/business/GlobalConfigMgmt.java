@@ -66,8 +66,9 @@ public class GlobalConfigMgmt {
 	}
 	
 	
-	public RefMapDefaults findRefMapDefaults(Long pupilMaskTypeId, Long filterTypeId) {
+	public RefMapDefaults findRefMapDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		TypedQuery<RefMapDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapDefaults.class);
+		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
 		
