@@ -211,6 +211,11 @@ public class CreateRefMapExecutor {
 			centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
 			centroidMap.setRotation(0.22f);
 			centroidMap.setScale(1.023f);
+			centroidMap.setFourierQuality(0.87f);
+			centroidMap.setFracFilledBoxes(0.936f);
+			centroidMap.setNumFilledBoxes(155);
+			centroidMap.setTranslationX(36.43f);
+			centroidMap.setTranslationY(12.002f);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 			
 			statusLogger.log("fandi.end.success");

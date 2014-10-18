@@ -25,14 +25,15 @@
 				<p:column headerText="Name">
 					<h:outputText value="#{plogValue.procedureOutputField.displayLabel}" />
 				</p:column>
+				<p:column headerText="Value">
+					<h:outputText value="#{plogValue.data}" />
+				</p:column>
+				
 				<p:column headerText="Units">
 					<h:outputText value="#{plogValue.procedureOutputField.units}" />
 				</p:column>
 				<p:column headerText="Description">
 					<h:outputText value="#{plogValue.procedureOutputField.description}" />
-				</p:column>
-				<p:column headerText="Value">
-					<h:outputText value="#{plogValue.data}" />
 				</p:column>
 
 			</p:dataTable>

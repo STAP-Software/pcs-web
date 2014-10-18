@@ -45,7 +45,11 @@ public class CentroidMap {
 	Float forcedScale;
 	boolean forcedRotationFlg;
 	Float forcedRotation;
-	
+	float translationX;   
+	float translationY;
+	float fourierQuality;
+	int numFilledBoxes;
+	float fracFilledBoxes;
 	
 	@Column
 	String centroidMapData;
@@ -145,6 +149,47 @@ public class CentroidMap {
 
 	public void setPupilMaskType(PupilMaskType pupilMaskType) {
 		this.pupilMaskType = pupilMaskType;
+	}
+
+
+	public float getTranslationX() {
+		return translationX;
+	}
+
+	public void setTranslationX(float translationX) {
+		this.translationX = translationX;
+	}
+
+	public float getTranslationY() {
+		return translationY;
+	}
+
+	public void setTranslationY(float translationY) {
+		this.translationY = translationY;
+	}
+
+	public float getFourierQuality() {
+		return fourierQuality;
+	}
+
+	public void setFourierQuality(float fourierQuality) {
+		this.fourierQuality = fourierQuality;
+	}
+
+	public int getNumFilledBoxes() {
+		return numFilledBoxes;
+	}
+
+	public void setNumFilledBoxes(int numFilledBoxes) {
+		this.numFilledBoxes = numFilledBoxes;
+	}
+
+	public float getFracFilledBoxes() {
+		return fracFilledBoxes;
+	}
+
+	public void setFracFilledBoxes(float fracFilledBoxes) {
+		this.fracFilledBoxes = fracFilledBoxes;
 	}
 
 

@@ -38,6 +38,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
@@ -659,7 +660,10 @@ public class ProcedureController implements Serializable {
 			Class clazz = object.getClass();
 			
 			String fieldName = fieldDisplay.getFieldName();
-			String methodName = "get" + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+			
+			String methodPrefix = fieldDisplay.getFieldMetaData().getDataType() == Constant.DATA_TYPE_BOOLEAN ? "is" : "get";
+			
+			String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 			Method method = clazz.getMethod(methodName , null);
 			
 			String value = "" + method.invoke(object, null);

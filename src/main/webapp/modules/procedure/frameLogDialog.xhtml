@@ -25,14 +25,15 @@
 				<p:column headerText="Name">
 					<h:outputText value="#{flogValue.fieldMetaData.displayLabel}" />
 				</p:column>
+				<p:column headerText="Value">
+					<h:outputText value="#{flogValue.value}" />
+				</p:column>
+				
 				<p:column headerText="Units">
 					<h:outputText value="#{flogValue.fieldMetaData.units}" />
 				</p:column>
 				<p:column headerText="Description">
 					<h:outputText value="#{flogValue.fieldMetaData.description}" />
-				</p:column>
-				<p:column headerText="Value">
-					<h:outputText value="#{flogValue.value}" />
 				</p:column>
 
 			</p:dataTable>

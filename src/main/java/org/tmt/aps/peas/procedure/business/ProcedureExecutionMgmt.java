@@ -136,8 +136,9 @@ public class ProcedureExecutionMgmt {
 					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 					// save the associated centroid map
-					centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
-					
+					if (procedureCcdFrame.getCentroidMap() != null) {
+						centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
+					}
 				}
 			}
 
