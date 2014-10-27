@@ -68,8 +68,6 @@ import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOuput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
-import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
-import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
@@ -77,7 +75,9 @@ import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
+import org.tmt.aps.peas.visualization.business.VisualizationDisplayMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
+import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 import org.tmt.aps.peas.visualization.ui.VisualizationDisplayLink;
 
 @Named
@@ -114,6 +114,8 @@ public class ProcedureController implements Serializable {
 	FieldMetaDataCache fieldMetaDataCache;
 	@EJB
 	SessionMgmt sessionMgmt;
+	@EJB
+	VisualizationDisplayMgmt visualizationDisplayMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -147,28 +149,39 @@ public class ProcedureController implements Serializable {
 	private void init() {
 		
 		currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
-
-		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
-		
-		TreeNode node0 = new DefaultTreeNode("folder", "Iteration 1", visualizationDisplayRoot);
-		TreeNode node1 = new DefaultTreeNode("folder", "Iteration 2", visualizationDisplayRoot);
-		
-		TreeNode node00 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "runDrawSpots();centroidsDisplayDialog.show()"), node0);
-		TreeNode node01 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "runDrawOffsets(); centroidOffsetDisplayDialog.show()"), node0);
-		TreeNode node02 = new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node0);
-		TreeNode node03 = new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node0);
-
-		TreeNode node10 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "centroidsDisplayDialog.show()"), node1);
-		TreeNode node11 = new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node1);
-		TreeNode node12 = new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node1);
-		TreeNode node13 = new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node1);
-
-		node0.setExpanded(true);
-		node1.setExpanded(true);
-		
 		
 		//updateCentroidOffsetsDisplay();
 	}
+	
+	private void initVisualizationDisplays(Long procedureTypeId) {
+		
+		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
+		
+		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
+		
+		TreeNode node0 = new DefaultTreeNode("folder", "Iteration 1", visualizationDisplayRoot);
+		
+		for (VisualizationDisplay visualizationDisplay : visualizationDisplayList) {
+
+			switch (visualizationDisplay.getVisualizationDisplayId().intValue()) {
+			case VisualizationDisplay.DISPLAY_TYPE_CENTROIDS:
+				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "runDrawSpots();centroidsDisplayDialog.show()"), node0);
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS:
+				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "runDrawOffsets(); centroidOffsetDisplayDialog.show()"), node0);
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_AVG_CENTROID_OFFSETS:
+				new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node0);
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
+				new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node0);
+				break;	
+			}
+		}
+
+		node0.setExpanded(true);
+	}
+	
 
 	public Procedure getProcedure() {
 		return procedure;
@@ -590,6 +603,10 @@ public class ProcedureController implements Serializable {
 			procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 			
 		}
+		
+		// set up visualization displays
+		initVisualizationDisplays(procedureType.getProcedureTypeId());
+
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");

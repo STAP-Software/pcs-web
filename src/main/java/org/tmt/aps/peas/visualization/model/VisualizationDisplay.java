@@ -5,34 +5,68 @@
  */
 package org.tmt.aps.peas.visualization.model;
 
+import java.util.Set;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+
+
+@Entity
+@Table(name = "VisualizationDisplay")
+@NamedQueries({
+	@NamedQuery(name = "findAllVisualizationDisplays", query = "SELECT p from VisualizationDisplay p " )
+})
 public class VisualizationDisplay {
 
 	public static final int DISPLAY_TYPE_CENTROIDS = 1;
 	public static final int DISPLAY_TYPE_CENTROID_OFFSETS = 2;
-	// TODO: add the others
+	public static final int DISPLAY_TYPE_AVG_CENTROID_OFFSETS = 3;
+	public static final int DISPLAY_TYPE_ACTUATOR_DELTAS = 4;
+
 	
+	@Id
+	private Long visualizationDisplayId;
 	
-	int displayType;
+	@Column(nullable=false, length=100)
+	private String displayName;
 	
+
+	public VisualizationDisplay() {
+		
+	}
 	
-	public VisualizationDisplay(int type) {
-		this.displayType = type;
+	public VisualizationDisplay(int visualizationDisplayType) {
+		this.visualizationDisplayId = new Long(visualizationDisplayType);
 	}
 
-	public int getDisplayType() {
-		return displayType;
+	
+	public Long getVisualizationDisplayId() {
+		return visualizationDisplayId;
 	}
 
-	public void setDisplayType(int displayType) {
-		this.displayType = displayType;
+	public void setVisualizationDisplayId(Long visualizationDisplayId) {
+		this.visualizationDisplayId = visualizationDisplayId;
 	}
-	
+
+	public String getDisplayName() {
+		return displayName;
+	}
+
+	public void setDisplayName(String displayName) {
+		this.displayName = displayName;
+	}
+
 	public boolean isDisplayTypeCentroids() {
-		return displayType == DISPLAY_TYPE_CENTROIDS;
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_CENTROIDS;
 	}
 	
 	public boolean isDisplayTypeCentroidOffsets() {
-		return displayType == DISPLAY_TYPE_CENTROID_OFFSETS;
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_CENTROID_OFFSETS;
 	}
 	
 }

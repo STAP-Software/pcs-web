@@ -117,7 +117,6 @@ public class AsyncController {
 			requestContext.update("offsetsForm");
 			requestContext.update("spotsForm");
 			
-			logger.debug("visualizationDisplayType = " + visualizationDisplay.getDisplayType());
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
 				requestContext.execute("drawSpots(); centroidsDisplayDialog.show()");
 			}

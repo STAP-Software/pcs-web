@@ -254,10 +254,6 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 				<p:accordionPanel id="miscPanel" multiple="true" activeIndex="0,1">
 
-					<p:tab title="Phasing Camera State">
-						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
-					</p:tab>
-					
 					<p:tab title="Procedure Context">
 
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
@@ -296,6 +292,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 						
 						</p:panelGrid>
+					</p:tab>
+					
+					<p:tab title="Phasing Camera State">
+						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
 					</p:tab>
 
 				</p:accordionPanel>
