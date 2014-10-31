@@ -377,7 +377,6 @@ public class ProcedureController implements Serializable {
 		return true;
 	}
 	
-	
 	public void frameSourceListener() {
 		logger.debug("Frame Source Listener");
 	}
@@ -468,6 +467,11 @@ public class ProcedureController implements Serializable {
 			// clean up from previous procedure state
 			procedureExecutionState.init(procedure);
 
+			// set up visualization display list for later
+			initVisualizationDisplays(procedureTypeId);
+			
+
+			
 			
 			logger.info("default mask = " + procedure.getProcedureConfig().getPupilMask());
 			

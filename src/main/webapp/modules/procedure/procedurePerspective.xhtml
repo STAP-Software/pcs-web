@@ -252,7 +252,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 					</p:panelGrid>
 				</h:panelGroup>
 
-				<p:accordionPanel id="miscPanel" multiple="true" activeIndex="0,1">
+
+ 				<p:accordionPanel id="miscPanel" multiple="true" activeIndex="0,1">
 
 					<p:tab title="Procedure Context">
 
@@ -275,7 +276,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						</p:panelGrid>
 					</p:tab>
 
-					<p:tab title="Visualization Displays">
+					<p:tab title="Visualization Displays" rendered="#{procedureController.procedure.procedureState gt 2}">
 						<p:panelGrid columns="1" styleClass="btmsForm">
 
 							  
@@ -294,10 +295,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						</p:panelGrid>
 					</p:tab>
 					
-					<p:tab title="Phasing Camera State">
+					<p:tab title="Phasing Camera State" rendered="#{procedureController.procedure.procedureState le 2}">
 						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
 					</p:tab>
-
+ 
 				</p:accordionPanel>
 
 			</p:panelGrid>

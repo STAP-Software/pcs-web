@@ -247,7 +247,7 @@ public class CameraMgmt {
 		result = queryCamera(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE);
 		camera.setElectronicsBoxTemperature(((float) result.getDoubleVal()));
 
-		logger.info(">> status refresh compete <<");
+		//logger.info(">> status refresh compete <<");
 		
 		return new AsyncResult<Boolean>(true);
 	}
@@ -284,7 +284,7 @@ public class CameraMgmt {
 		camera.getCoarseTiltMirror().setStateX(cameraStatus.steeringMirrorXIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 		camera.getCoarseTiltMirror().setStateY(cameraStatus.steeringMirrorYIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
 
-		logger.debug("###### Coarse Mirror: " + cameraStatus.steeringMirrorX + ", " + cameraStatus.steeringMirrorY + ", " + cameraStatus.steeringMirrorXIsInTransit + ", " + cameraStatus.steeringMirrorYIsInTransit);
+		//logger.debug("###### Coarse Mirror: " + cameraStatus.steeringMirrorX + ", " + cameraStatus.steeringMirrorY + ", " + cameraStatus.steeringMirrorXIsInTransit + ", " + cameraStatus.steeringMirrorYIsInTransit);
 		
 		// Two Position Mech
 		camera.getTwoPosMechanism().setState(cameraStatus.twoPosDevPos == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
@@ -301,7 +301,7 @@ public class CameraMgmt {
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
 
-		logger.info(">> status refresh compete <<");
+		//logger.info(">> status refresh compete <<");
 		
 		return new AsyncResult<Boolean>(true);
 	}

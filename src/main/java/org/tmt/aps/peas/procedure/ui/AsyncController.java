@@ -182,6 +182,7 @@ public class AsyncController {
 	}
 	
 	public void onComplete() {
+		
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
 		RequestContext.getCurrentInstance().update("procedureDetailForm");
 	}

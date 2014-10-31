@@ -216,7 +216,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.steeringMirrorX = random.nextInt(100);
 		cameraStatus.steeringMirrorY = random.nextInt(100);
 				
-		logger.debug("cameraStatus.steeringMirrorX = " + cameraStatus.steeringMirrorX);
+		//logger.debug("cameraStatus.steeringMirrorX = " + cameraStatus.steeringMirrorX);
 		
 		cameraStatus.steeringMirrorXIsInTransit = false;
 		
