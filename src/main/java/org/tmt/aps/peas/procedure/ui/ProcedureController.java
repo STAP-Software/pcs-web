@@ -263,6 +263,18 @@ public class ProcedureController implements Serializable {
 		frameDisplayMgmt.setCentroidYs(centroidYs);
 	}
 
+	// search radius is from findCentConfig
+	public String getFrameSearchRadius() {
+		if (procedure.getFindCentConfig() == null) {
+			return "6";
+		}
+		return "" + procedure.getFindCentConfig().getIrad();
+	}
+	
+	public void setFrameSearchRadius(String searchRadius) {
+		
+	}
+	
 	public UserPrompt getCurrentPrompt() {
 		return currentPrompt;
 	}

@@ -17,6 +17,7 @@
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{procedureController.frameCentroidYs}" />
+			<h:inputHidden id="spotRadius" value="#{procedureController.frameSearchRadius}" />
 		</h:form>
 
 		<h:form id="procedureDetailForm">
@@ -364,13 +365,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 	 	var xArray = xField.split(','); 
 		var yField = document.getElementById('frameHiddenForm:centroidYs').value;
 	 	var yArray = yField.split(','); 
-	 	
+		var spotRad = document.getElementById('frameHiddenForm:spotRadius').value;
+		
 	 	if (xField != null && xField.length > 0) {
 	 	
 			for (var i = 0; i < xArray.length; i++) {
 				ctx.beginPath();
 				// divide by 2 when frame is displayed 512x512
-				ctx.arc(xArray[i]/2,yArray[i]/2,15,0,2*Math.PI);
+				ctx.arc(xArray[i]/2,yArray[i]/2,spotRad,0,2*Math.PI);
 				ctx.strokeStyle = '#ffffaa';
 				ctx.lineWidth = 2;
 				ctx.stroke();

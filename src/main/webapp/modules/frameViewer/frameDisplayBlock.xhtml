@@ -140,11 +140,12 @@
 			var yField = document
 					.getElementById('frameHiddenForm:centroidYs').value;
 			var yArray = yField.split(',');
-	
+			var radius = document.getElementById('frameHiddenForm.spotRadius').value;
+				
 			for (var i = 0; i < xArray.length; i++) {
 				ctx.beginPath();
 				// divide by 2 when frame is displayed 512x512
-				ctx.arc(xArray[i] / 2, yArray[i] / 2, 15, 0, 2 * Math.PI);
+				ctx.arc(xArray[i] / 2, yArray[i] / 2, radius, 0, 2 * Math.PI);
 				ctx.strokeStyle = '#ffffaa';
 				ctx.lineWidth = 2;
 				ctx.stroke();
