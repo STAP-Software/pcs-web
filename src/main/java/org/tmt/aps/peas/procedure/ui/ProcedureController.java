@@ -459,6 +459,8 @@ public class ProcedureController implements Serializable {
 						defaultFilter.getFilterType().getFilterTypeId());
 			}
 			
+			// select defaults based on mask and light source
+			updateFIConfig();
 			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
@@ -517,6 +519,23 @@ public class ProcedureController implements Serializable {
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
+	private void updateFIConfig() {
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+
+			FIConfig fiConfig = globalConfigMgmt.findFIConfig(sessionController.getInstrument().getInstrumentId(), 
+				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
+				procedure.getProcedureConfig().getLightSource());
+			
+			// use defaults as actuals if user doesn't subsequently change them
+			fiConfig.setForceScale(fiConfig.isForceScaleDefault());
+			fiConfig.setForceRotation(fiConfig.isForceRotationDefault());
+			
+			procedure.setFiConfig(fiConfig);
+
+		}
+	}
+	
+	
 	public void doExecuteProcedure() {
 
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = " + procedure.getProcedureConfig().getPupilMask());
@@ -531,9 +550,11 @@ public class ProcedureController implements Serializable {
 		procedure.setTelescope(sessionController.getTelescope());
 		
 		// add the FIConfig for the procedure
+		// FIXME: we need to remove this and use updateFIConfig every time the pupil mask or light source is changed
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 			FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
-				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
+				procedure.getProcedureConfig().getLightSource());
 			procedure.setFiConfig(fiConfig);
 		} 
 		

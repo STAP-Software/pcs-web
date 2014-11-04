@@ -6,6 +6,12 @@
 		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog" >
 
 			<h:form id="advancedForm">
+			
+				<p:panelGrid columns="1" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+			
+			<p:fieldset legend="General">
+			
+				
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 					<p:spacer height="5px" />
@@ -36,6 +42,33 @@
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />
 
+				</p:panelGrid>
+				
+				</p:fieldset>
+				<p:fieldset legend="Find and Identify Options" style="margin-top:5px; margin-bottom:5px">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					<h:outputLabel value="Force Scale" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfig.forceScale}">
+            			<p:ajax update="advancedForm" />
+        			</p:selectBooleanCheckbox>
+        			<h:outputLabel value="Force Scale Source" />
+        			<p:selectOneMenu value="#{procedureController.procedure.fiConfig.forceScaleSource}"
+						disabled="#{not procedureController.procedure.fiConfig.forceScale}" >
+            			<f:selectItem itemLabel="Ref Map" itemValue="1" />
+            			<f:selectItem itemLabel="User Value" itemValue="2" />
+					<p:ajax update=":advancedForm" />
+					</p:selectOneMenu>
+        			
+ 
+         			
+					<h:outputLabel value="Force Rotation" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfig.forceRotation}">
+            			<p:ajax update="advancedForm" />
+        			</p:selectBooleanCheckbox>
+        			
+				</p:panelGrid>
+				</p:fieldset>
+				
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl"

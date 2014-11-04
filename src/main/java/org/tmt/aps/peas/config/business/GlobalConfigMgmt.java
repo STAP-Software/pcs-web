@@ -44,10 +44,11 @@ public class GlobalConfigMgmt {
 	
 	
 
-	public FIConfig findFIConfig(Long instrumentId, Long pupilMaskTypeId) {
+	public FIConfig findFIConfig(Long instrumentId, Long pupilMaskTypeId, int lightSource) {
 		TypedQuery<FIConfig> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfig.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("lightSource", lightSource);
 		
 		query.setMaxResults(1);
 		

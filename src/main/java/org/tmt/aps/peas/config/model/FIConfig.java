@@ -14,44 +14,49 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "FIConfig")
-@NamedQueries({
-	@NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfig o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.instrument i "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId" )
-})
+@NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfig o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.instrument i "
+		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and o.lightSource = :lightSource") })
 public class FIConfig {
 
-	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long fiConfigId;
 	
+	public static final int FORCE_SOURCE_REF_MAP = 1;
+	public static final int FORCE_SOURCE_USER_ENTERED = 2;
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long fiConfigId;
+
+	private int lightSource;
+
 	private float uEst;
 	private float uDelta0;
-	
+
 	private int matchbox;
 	private int nThresh0;
-	private int nCut;
+	private float matchFineThresh;
 	private int nPeakMinThresh;
 	private int nPeakMaxThresh;
 	private int lensletOrientation;
 	private int spiralRingCount;
-	private int thresholdCalcMethod;
-	
+
+	private boolean forceScaleDefault;
+	private boolean forceRotationDefault;
+
 	@ManyToOne
-	@JoinColumn (name="pupilMaskTypeId")
+	@JoinColumn(name = "pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
 
 	@ManyToOne
-	@JoinColumn (name="instrumentId")
+	@JoinColumn(name = "instrumentId")
 	private Instrument instrument;
 
-	
-	
 	public Long getFiConfigId() {
 		return fiConfigId;
 	}
@@ -92,12 +97,12 @@ public class FIConfig {
 		this.nThresh0 = nThresh0;
 	}
 
-	public int getnCut() {
-		return nCut;
+	public float getMatchFineThresh() {
+		return matchFineThresh;
 	}
 
-	public void setnCut(int nCut) {
-		this.nCut = nCut;
+	public void setMatchFineThresh(float matchFineThresh) {
+		this.matchFineThresh = matchFineThresh;
 	}
 
 	public int getnPeakMinThresh() {
@@ -132,14 +137,6 @@ public class FIConfig {
 		this.spiralRingCount = spiralRingCount;
 	}
 
-	public int getThresholdCalcMethod() {
-		return thresholdCalcMethod;
-	}
-
-	public void setThresholdCalcMethod(int thresholdCalcMethod) {
-		this.thresholdCalcMethod = thresholdCalcMethod;
-	}
-
 	public PupilMaskType getPupilMaskType() {
 		return pupilMaskType;
 	}
@@ -156,4 +153,94 @@ public class FIConfig {
 		this.instrument = instrument;
 	}
 
+	public int getLightSource() {
+		return lightSource;
+	}
+
+	public void setLightSource(int lightSource) {
+		this.lightSource = lightSource;
+	}
+
+	public boolean isForceScaleDefault() {
+		return forceScaleDefault;
+	}
+
+	public void setForceScaleDefault(boolean forceScaleDefault) {
+		this.forceScaleDefault = forceScaleDefault;
+	}
+
+	public boolean isForceRotationDefault() {
+		return forceRotationDefault;
+	}
+
+	public void setForceRotationDefault(boolean forceRotationDefault) {
+		this.forceRotationDefault = forceRotationDefault;
+	}
+
+	@Transient
+	private boolean forceScale;
+
+	public boolean isForceScale() {
+		return forceScale;
+	}
+
+	public void setForceScale(boolean forceScale) {
+		this.forceScale = forceScale;
+	}
+
+	@Transient
+	private boolean forceRotation;
+
+	public boolean isForceRotation() {
+		return forceRotation;
+	}
+
+	public void setForceRotation(boolean forceRotation) {
+		this.forceRotation = forceRotation;
+	}
+	
+	@Transient 
+	private int forceScaleSource;
+	
+	public int getForceScaleSource() {
+		return forceScaleSource;
+	}
+
+	public void setForceScaleSource(int forceScaleSource) {
+		this.forceScaleSource = forceScaleSource;
+	}
+
+	@Transient
+	private int forceRotationSource;
+	
+	public int getForceRotationSource() {
+		return forceRotationSource;
+	}
+
+	public void setForceRotationSource(int forceRotationSource) {
+		this.forceRotationSource = forceRotationSource;
+	}
+
+	@Transient
+	private float forceScaleValue;
+	
+	public float getForceScaleValue() {
+		return forceScaleValue;
+	}
+
+	public void setForceScaleValue(float forceScaleValue) {
+		this.forceScaleValue = forceScaleValue;
+	}
+
+	@Transient 
+	private float forceRotationValue;
+
+	public float getForceRotationValue() {
+		return forceRotationValue;
+	}
+
+	public void setForceRotationValue(float forceRotationValue) {
+		this.forceRotationValue = forceRotationValue;
+	}
+	
 }
