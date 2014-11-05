@@ -20,6 +20,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
@@ -181,8 +182,15 @@ public class SessionController implements Serializable {
 	
 	public String doViewCurrentSession() {
 		
-		session = currentSession;
+		try {
+			session = sessionMgmt.findSession(currentSession.getSessionId());
+		} catch (Exception e) {
+			session = currentSession;
+		}
 		
+		// order procedures by procedure number
+		Collections.sort(session.getProcedureList(), new BeanComparator("procedureNumber"));
+
 		breadcrumbMenuBean.addFirstItem("Current Session", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 

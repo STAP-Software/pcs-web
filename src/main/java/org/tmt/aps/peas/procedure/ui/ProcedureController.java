@@ -565,8 +565,10 @@ public class ProcedureController implements Serializable {
 		*/
 		
 		// add the associated ref def map to the fi config for this procedure
-		RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-		procedure.getFiConfig().setRefDefMap(refDefMap);
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			procedure.getFiConfig().setRefDefMap(refDefMap);
+		}
 		
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
