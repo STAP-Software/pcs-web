@@ -69,6 +69,8 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
@@ -116,6 +118,8 @@ public class ProcedureController implements Serializable {
 	SessionMgmt sessionMgmt;
 	@EJB
 	VisualizationDisplayMgmt visualizationDisplayMgmt;
+	@EJB
+	CentroidMapMgmt centroidMapMgmt;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -551,12 +555,18 @@ public class ProcedureController implements Serializable {
 		
 		// add the FIConfig for the procedure
 		// FIXME: we need to remove this and use updateFIConfig every time the pupil mask or light source is changed
+		/*
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 			FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
 				procedure.getProcedureConfig().getLightSource());
 			procedure.setFiConfig(fiConfig);
 		} 
+		*/
+		
+		// add the associated ref def map to the fi config for this procedure
+		RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		procedure.getFiConfig().setRefDefMap(refDefMap);
 		
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());

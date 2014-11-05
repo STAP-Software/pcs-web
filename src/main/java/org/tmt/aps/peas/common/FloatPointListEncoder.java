@@ -88,5 +88,44 @@ public class FloatPointListEncoder {
 		return pointList;
 	}
 	
+	public static float[] extractXArray(List<FloatPoint> pointList) {
+		
+		if (pointList == null) return null;
 	
+		float[] result = new float[pointList.size()];
+		
+		for (int i=0; i<pointList.size(); i++) {
+			result[i] = pointList.get(i).x;
+		}
+		
+		return result;
+
+	}
+	
+	public static float[] extractYArray(List<FloatPoint> pointList) {
+		
+		if (pointList == null) return null;
+
+		float[] result = new float[pointList.size()];
+		
+		for (int i=0; i<pointList.size(); i++) {
+			result[i] = pointList.get(i).y;
+		}
+		
+		return result;
+
+	}
+	
+	public static List<FloatPoint> constructFromXandY(float[] xArray, float[] yArray) {
+		
+		List<FloatPoint> resultList = new ArrayList<FloatPoint>();
+		
+		for (int i=0; i<xArray.length; i++) {
+			resultList.add(new FloatPoint(xArray[i], yArray[i]));
+		}
+		
+		return resultList;
+	}
+	
+
 }

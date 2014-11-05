@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -25,6 +24,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -198,7 +198,9 @@ public class CreateRefMapExecutor {
 			
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
-			FloatPoint[] centroids = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots);
+			
+			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig());
+			FloatPoint[] centroids = fiResult.getPeakLocationArray();
 			
 			// TODO: generalize this, does not need to be explicit in an executor
 			CentroidMap centroidMap = new CentroidMap();

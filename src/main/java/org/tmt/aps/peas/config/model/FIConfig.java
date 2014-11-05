@@ -18,6 +18,7 @@ import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Entity
 @Table(name = "FIConfig")
@@ -242,5 +243,17 @@ public class FIConfig {
 	public void setForceRotationValue(float forceRotationValue) {
 		this.forceRotationValue = forceRotationValue;
 	}
+
+	@Transient
+	private RefBeamMap refDefMap;
+
+	public RefBeamMap getRefDefMap() {
+		return refDefMap;
+	}
+
+	public void setRefDefMap(RefBeamMap refDefMap) {
+		this.refDefMap = refDefMap;
+	}
+	
 	
 }
