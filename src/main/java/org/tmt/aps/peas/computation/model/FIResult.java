@@ -12,8 +12,14 @@ public class FIResult {
 	float xPeak[];
 	float yPeak[];
 	int nDetect[]; 
-	float fiParam[]; 
+	
+	float fourierQuality;
+	float rotation;
+	float scale;
+	FloatPoint translation;
+	 
 	int n0123[];
+	
 	float ccdBoxesAll[][];
 	float ccdBoxesSha[][];
 	float ccdBoxesNum[][];
@@ -29,7 +35,6 @@ public class FIResult {
 		xPeak = new float[numSpots];
 		yPeak = new float[numSpots];
 		nDetect = new int[numSpots]; 
-		fiParam = new float[6]; 
 		n0123 = new int[4];
 		ccdBoxesAll = new float[frame.length][frame[0].length];
 		ccdBoxesSha = new float[frame.length][frame[0].length];
@@ -76,12 +81,36 @@ public class FIResult {
 		this.nDetect = nDetect;
 	}
 
-	public float[] getFiParam() {
-		return fiParam;
+	public float getFourierQuality() {
+		return fourierQuality;
 	}
 
-	public void setFiParam(float[] fiParam) {
-		this.fiParam = fiParam;
+	public void setFourierQuality(float fourierQuality) {
+		this.fourierQuality = fourierQuality;
+	}
+
+	public float getRotation() {
+		return rotation;
+	}
+
+	public void setRotation(float rotation) {
+		this.rotation = rotation;
+	}
+
+	public float getScale() {
+		return scale;
+	}
+
+	public void setScale(float scale) {
+		this.scale = scale;
+	}
+
+	public FloatPoint getTranslation() {
+		return translation;
+	}
+
+	public void setTranslation(FloatPoint translation) {
+		this.translation = translation;
 	}
 
 	public int[] getN0123() {

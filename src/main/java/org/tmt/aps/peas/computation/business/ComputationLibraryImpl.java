@@ -144,7 +144,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		RetVal retVal = new RetVal();
 		
 		float[][] centroids = new float[numSpots][2];
-		
+		float[] fiParams = new float[6];
 		
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
@@ -172,13 +172,19 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 				fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), 
 				fiConfig.getSpiralRingCount(), spot_flag,
 				fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), 
-				fiResult.getnDetect(), fiResult.getFiParam(), fiResult.getN0123(),
+				fiResult.getnDetect(), fiParams, fiResult.getN0123(),
 				fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
 			
 
 		if (retVal.getCode() > 0) {
 		//	statusLogger.log(retVal);
 		}
+		
+		// store fi_param values
+		fiResult.setFourierQuality(fiParams[0]);
+		fiResult.setScale(fiParams[1]);
+		fiResult.setRotation(fiParams[3]); // degrees
+		fiResult.setTranslation(new FloatPoint(fiParams[4], fiParams[5]));
 
 		// store scalars
 		fiResult.setNumFilledBoxes((Integer)output[0]);

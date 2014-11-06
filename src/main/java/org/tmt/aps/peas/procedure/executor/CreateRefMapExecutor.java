@@ -25,6 +25,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -202,22 +203,7 @@ public class CreateRefMapExecutor {
 			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig());
 			FloatPoint[] centroids = fiResult.getPeakLocationArray();
 			
-			// TODO: generalize this, does not need to be explicit in an executor
-			CentroidMap centroidMap = new CentroidMap();
-			String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(centroids));
-			centroidMap.setCentroidMapData(centroidMapData);
-			centroidMap.setForcedRotation(null);
-			centroidMap.setForcedRotationFlg(false);
-			centroidMap.setForcedScale(null);
-			centroidMap.setForcedScaleFlg(false);
-			centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
-			centroidMap.setRotation(0.22f);
-			centroidMap.setScale(1.023f);
-			centroidMap.setFourierQuality(0.87f);
-			centroidMap.setFracFilledBoxes(0.936f);
-			centroidMap.setNumFilledBoxes(155);
-			centroidMap.setTranslationX(36.43f);
-			centroidMap.setTranslationY(12.002f);
+			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 			
 			statusLogger.log("fandi.end.success");
@@ -262,5 +248,33 @@ public class CreateRefMapExecutor {
 		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
+	
+	// TODO: generalize this, does not need to be explicit in an executor
+	public CentroidMap buildCentroidMap(FloatPoint[] centroids, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) {
+		
+		CentroidMap centroidMap = new CentroidMap();
+		String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(centroids));
+		centroidMap.setCentroidMapData(centroidMapData);
+		
+		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());
+		centroidMap.setForcedRotationFlg(fiConfig.isForceRotation());
+		centroidMap.setForcedScale(fiConfig.getForceScaleValue());
+		centroidMap.setForcedScaleFlg(fiConfig.isForceScale());
+		
+		centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
+		
+		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
+		centroidMap.setNumFilledBoxes(fiResult.getNumFilledBoxes());
+
+		// TODO: need real values
+		centroidMap.setRotation(0.22f);
+		centroidMap.setScale(1.023f);
+		centroidMap.setFourierQuality(0.87f);
+		centroidMap.setTranslationX(36.43f);
+		centroidMap.setTranslationY(12.002f);
+
+		return centroidMap;
+	}
+	
 
 }
