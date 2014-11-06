@@ -513,7 +513,7 @@ public class ProcedureController implements Serializable {
 		
 		// Set up default ref beam and int time
 		
-		procedure.getProcedureConfig().setFrameSource(ProcedureConfig.LIGHT_SOURCE_LED);
+		procedure.getProcedureConfig().setLightSource(ProcedureConfig.LIGHT_SOURCE_LED);
 		procedure.getProcedureConfig().setReferenceBeam(refMapDefaults.getReferenceBeam());
 		procedure.getProcedureConfig().setIntegrationTime(refMapDefaults.getIntegrationTime());
 	}
