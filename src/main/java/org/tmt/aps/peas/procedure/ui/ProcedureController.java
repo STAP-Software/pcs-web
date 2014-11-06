@@ -488,9 +488,6 @@ public class ProcedureController implements Serializable {
 			// set up visualization display list for later
 			initVisualizationDisplays(procedureTypeId);
 			
-
-			
-			
 			logger.info("default mask = " + procedure.getProcedureConfig().getPupilMask());
 			
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
@@ -533,6 +530,10 @@ public class ProcedureController implements Serializable {
 			// use defaults as actuals if user doesn't subsequently change them
 			fiConfig.setForceScale(fiConfig.isForceScaleDefault());
 			fiConfig.setForceRotation(fiConfig.isForceRotationDefault());
+			fiConfig.setForceScaleSource(1);
+			fiConfig.setForceRotationSource(1);
+			fiConfig.setForceScaleValue(0.0f);
+			fiConfig.setForceRotationValue(0.0f);
 			
 			procedure.setFiConfig(fiConfig);
 

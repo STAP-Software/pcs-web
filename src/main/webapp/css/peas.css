@@ -314,4 +314,7 @@ div.btmsBreadcrumb ul li a.ui-icon {
 /* class that indicates to primefaces not to update */
 }
 
+.noPadding td {
+	padding: 0px;
+}
 

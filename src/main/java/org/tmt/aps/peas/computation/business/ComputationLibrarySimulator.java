@@ -84,7 +84,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 	
 	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig) throws ComputationException {
+	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
 		
 		JfiNew jfiNew = new JfiNew();
 		RetVal retVal = new RetVal();

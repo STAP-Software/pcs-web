@@ -200,7 +200,7 @@ public class CreateRefMapExecutor {
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
-			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig());
+			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
 			FloatPoint[] centroids = fiResult.getPeakLocationArray();
 			
 			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);

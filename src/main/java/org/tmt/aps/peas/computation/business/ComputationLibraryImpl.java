@@ -138,12 +138,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return centArray;
 	}
 	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig) throws ComputationException {
+	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
 		
 		JfiNew jfiNew = new JfiNew();
 		RetVal retVal = new RetVal();
 		
-		float[][] centroids = new float[numSpots][2];
 		float[] fiParams = new float[6];
 		
 		int nsp = -1; // segment number of current group
@@ -160,6 +159,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			spot_flag[i] = 2;
 		}
 		
+		// Force scale and rotation values, potentially coming from current ref map
+		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
+			currentRefMap.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
+		float forceRotationValue = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
+			currentRefMap.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
+						
 		// the result object
 		FIResult fiResult = new FIResult(numSpots, frame);
 		
@@ -167,8 +172,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		Object output[] = jfiNew.jfiNew(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, 
 				fiConfig.getuEst(), fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), 
 				fiConfig.getnPeakMinThresh(), fiConfig.getnPeakMaxThresh(),
-				fiConfig.isForceScale() ? 1 : 0, fiConfig.getForceScaleValue(),
-				fiConfig.isForceRotation() ? 1 : 0, fiConfig.getForceRotationValue(),
+				fiConfig.isForceScale() ? 1 : 0, forceScaleValue,
+				fiConfig.isForceRotation() ? 1 : 0, forceRotationValue,
 				fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), 
 				fiConfig.getSpiralRingCount(), spot_flag,
 				fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), 

@@ -46,31 +46,51 @@
 				
 				</p:fieldset>
 				
-				<!-- 
-				<p:fieldset legend="Find and Identify Options" style="margin-top:5px; margin-bottom:5px">
+				 
+				<p:fieldset legend="Find and Identify Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					<h:outputLabel value="Force Scale" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfig.forceScale}">
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
-        			<h:outputLabel value="Force Scale Source" />
-        			<p:selectOneMenu value="#{procedureController.procedure.fiConfig.forceScaleSource}"
-						disabled="#{not procedureController.procedure.fiConfig.forceScale}" >
-            			<f:selectItem itemLabel="Ref Map" itemValue="1" />
-            			<f:selectItem itemLabel="User Value" itemValue="2" />
-					<p:ajax update=":advancedForm" />
-					</p:selectOneMenu>
-        			
  
          			
+        			<h:outputLabel value="Force Scale Source" rendered="#{procedureController.procedure.fiConfig.forceScale}" />
+        			
+        			<p:panelGrid columns="3" id="forceScalePanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.fiConfig.forceScale}" >
+        			  
+        			<p:selectOneMenu value="#{procedureController.procedure.fiConfig.forceScaleSource}">
+            			<f:selectItem itemLabel="Ref Map" itemValue="1" />
+            			<f:selectItem itemLabel="User Value" itemValue="2" />
+					<p:ajax update="forceScalePanelGroup" />
+					</p:selectOneMenu>
+					<p:spacer height="1" width="10" />
+					<p:inputText size="4" value="#{procedureController.procedure.fiConfig.forceScaleValue}" 
+						rendered="#{procedureController.procedure.fiConfig.forceScaleSource eq 2}"  />
+        			</p:panelGrid>
+          			
 					<h:outputLabel value="Force Rotation" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfig.forceRotation}">
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
+
+       				<h:outputLabel value="Force Rotation Source" rendered="#{procedureController.procedure.fiConfig.forceRotation}" />
         			
+        			<p:panelGrid columns="3" id="forceRotationPanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.fiConfig.forceRotation}" >
+        			<p:selectOneMenu value="#{procedureController.procedure.fiConfig.forceRotationSource}">
+            			<f:selectItem itemLabel="Ref Map" itemValue="1" />
+            			<f:selectItem itemLabel="User Value" itemValue="2" />
+					<p:ajax update="forceRotationPanelGroup" />
+					</p:selectOneMenu>
+					<p:spacer height="1" width="10" />
+					<p:inputText size="4" value="#{procedureController.procedure.fiConfig.forceRotationValue}" 
+						rendered="#{procedureController.procedure.fiConfig.forceRotationSource eq 2}"  />
+        			</p:panelGrid>
+ 
 				</p:panelGrid>
 				</p:fieldset>
-				 -->
+				 
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl"

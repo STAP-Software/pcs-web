@@ -27,6 +27,6 @@ public interface ComputationLibrary {
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig) throws ComputationException;
+	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException;
 
 }
