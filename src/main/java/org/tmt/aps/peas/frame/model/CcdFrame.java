@@ -7,18 +7,22 @@ package org.tmt.aps.peas.frame.model;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.instrument.model.CameraState;
 
 @Entity
 @Table(name = "CcdFrame")
@@ -32,6 +36,11 @@ public class CcdFrame {
 	private Long ccdFrameId;
 	
 	private Long instrumentId;  // the instrument this frame was taken with
+	
+	@OneToOne(fetch = FetchType.LAZY)
+	@JoinColumn (name="cameraStateId")
+	private CameraState cameraState;
+
 	
 	@Column(length = 200)
 	private String fitsFilename;
@@ -97,6 +106,14 @@ public class CcdFrame {
 
 	public Long getCcdFrameId() {
 		return ccdFrameId;
+	}
+
+	public CameraState getCameraState() {
+		return cameraState;
+	}
+
+	public void setCameraState(CameraState cameraState) {
+		this.cameraState = cameraState;
 	}
 
 	public void setCcdFrameId(Long ccdFrameId) {

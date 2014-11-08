@@ -71,21 +71,6 @@ public class Camera {
 		
 	}
 	
-	public void setCurrentState(int selectedPupilMaskNum, int selectedFilterNum, int currentRefBeam, int shutterState, float shutterExposureTime, 
-			float coarseTiltX, float coarseTiltY, float fineTiltX, float fineTiltY, int twoPosMechanismState, 
-			float instrumentTemperature, float electronicsBoxTemperature) {
-		
-		this.pupilWheel.setSelectedPupilMaskNumber(selectedPupilMaskNum);
-		this.filterWheel.setSelectedFilterNumber(selectedFilterNum);
-		this.currentRefBeam = currentRefBeam;
-		this.shutter = new Shutter(shutterState, shutterExposureTime);
-		this.twoPosMechanism = new TwoPosMechanism(twoPosMechanismState);
-		this.instrumentTemperature = instrumentTemperature;
-		this.electronicsBoxTemperature = electronicsBoxTemperature;
-		this.coarseTiltMirror.setCurrentPosition(new Point((int)coarseTiltX, (int)coarseTiltY));
-		this.fineTiltMirror.setCurrentPosition(new Point((int)fineTiltX, (int)fineTiltY));
-	}
-	
 	public String getCurrentRefBeamDisplayString() {
 		if (currentRefBeam == 0) {
 			return "Off";

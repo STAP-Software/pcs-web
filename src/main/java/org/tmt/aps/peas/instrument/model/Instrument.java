@@ -13,6 +13,10 @@ import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraStatus;
+
 @Entity
 @Table(name = "Instrument")
 @NamedQueries({
@@ -75,5 +79,49 @@ public class Instrument {
 		this.ccd = ccd;
 	}
 	
+	
+	public void updateState(CameraStatus cameraStatus) {
+		
+		// Pupil Mask
+		camera.getPupilWheel().setState(cameraStatus.prismWheelIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getPupilWheel().setSelectedPupilMaskNumber(cameraStatus.prismWheelPos);
+
+		// Filter
+		camera.getFilterWheel().setState(cameraStatus.filterWheelIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getFilterWheel().setSelectedFilterNumber(cameraStatus.filterWheelPos);
+
+		// Ref Beam
+		camera.setCurrentRefBeam(cameraStatus.refBeamPos);
+
+		// Shutter
+		camera.getShutter().setState(cameraStatus.shutterState == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+		
+		// Fine Tilt
+		camera.getFineTiltMirror().setCurrentPosition(new Point(cameraStatus.tiltPlateX, cameraStatus.tiltPlateY));
+		camera.getFineTiltMirror().setStateX(cameraStatus.tiltPlateXIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getFineTiltMirror().setStateY(cameraStatus.tiltPlateYIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+
+		// Coarse Tilt
+		camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraStatus.steeringMirrorX, cameraStatus.steeringMirrorY));
+		camera.getCoarseTiltMirror().setStateX(cameraStatus.steeringMirrorXIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+		camera.getCoarseTiltMirror().setStateY(cameraStatus.steeringMirrorYIsInTransit ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+
+		//logger.debug("###### Coarse Mirror: " + cameraStatus.steeringMirrorX + ", " + cameraStatus.steeringMirrorY + ", " + cameraStatus.steeringMirrorXIsInTransit + ", " + cameraStatus.steeringMirrorYIsInTransit);
+		
+		// Two Position Mech
+		camera.getTwoPosMechanism().setState(cameraStatus.twoPosDevPos == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+
+		// CCD Power
+		ccd.setState(cameraStatus.ccdPowerState == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+
+		// CCD Temperature
+		ccd.setTemperature(((float) cameraStatus.ccdTemp));
+
+		// Instrument Temperature
+		camera.setInstrumentTemperature(((float) cameraStatus.benchTemp));
+
+		// Electronics Box Temperature
+		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
+	}
 	
 }

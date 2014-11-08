@@ -39,6 +39,10 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
+import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -56,6 +60,10 @@ public class FrameMgmt {
 	PeasProperties peasProperties;
 	@EJB
 	FrameSimulator frameSimulator;
+	@EJB
+	PhysicalModel physicalModel;
+	@EJB
+	CameraStateMgmt cameraStateMgmt;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
@@ -140,9 +148,16 @@ public class FrameMgmt {
 		if (ccdFrame == null) {
 			// we have to save it for the first time ourselves. This is how we avoid having to
 			// populate the database with legacy values using a script, just do it as needed.
-			ccdFrame = new CcdFrame();
-			ccdFrame.setCreateDate(new Date());
-			ccdFrame.setFitsFilename(procedureCcdFrame.getCcdFrame().getFitsFilename());
+			//ccdFrame = new CcdFrame();
+			//ccdFrame.setCreateDate(new Date());
+			//ccdFrame.setFitsFilename(procedureCcdFrame.getCcdFrame().getFitsFilename());
+			
+			ccdFrame = procedureCcdFrame.getCcdFrame();
+			
+			CameraState cameraState = ccdFrame.getCameraState();
+			
+			em.persist(cameraState);
+			
 			em.persist(ccdFrame);
 		}
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
@@ -182,11 +197,16 @@ public class FrameMgmt {
 			byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
 			ccdFrame.setFalseColorPng(falseColorPng);
 
-			// generate filename and store into the FITS file
-			
-			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureConfig.getInstrument().getInstrumentId(), 
-					procedureType.getProcedureTypeCd(), procedureNumber);
+			// save the camera state when the ccd frame was taken
+			Instrument instrument = physicalModel.getInstrument();
+			CameraState cameraState = new CameraState(instrument);
+			ccdFrame.setCameraState(cameraState);
+			ccdFrame.setInstrumentId(instrument.getInstrumentId());
 
+			// generate filename and store into the FITS file
+			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureConfig.getInstrument().getInstrumentId(), 
+					procedureType.getProcedureTypeCd(), procedureNumber);			
+			
 			return ccdFrame;
 			
 		//} catch (Exception e) {
