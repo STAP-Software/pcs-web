@@ -139,9 +139,7 @@ public class SessionMgmt {
 		// if sessionId is null, we create instead
 		if (currentSession.getSessionId() == null) {
 			em.persist(currentSession);
-		} else {
-			em.merge(currentSession);
-		}
+		} 
 		
 		for (Procedure procedure : currentSession.getProcedureList()) {
 			if (procedure.getSession() == null) {
@@ -152,6 +150,8 @@ public class SessionMgmt {
 				}
 			}
 		}
+		
+		em.merge(currentSession);
 
 	}
 	

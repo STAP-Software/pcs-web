@@ -156,7 +156,9 @@ public class FrameMgmt {
 			
 			CameraState cameraState = ccdFrame.getCameraState();
 			
-			em.persist(cameraState);
+			if (cameraState != null) {
+				em.persist(cameraState);
+			}
 			
 			em.persist(ccdFrame);
 		}

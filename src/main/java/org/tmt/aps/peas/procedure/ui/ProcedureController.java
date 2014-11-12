@@ -553,18 +553,7 @@ public class ProcedureController implements Serializable {
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
-		
-		// add the FIConfig for the procedure
-		// FIXME: we need to remove this and use updateFIConfig every time the pupil mask or light source is changed
-		/*
-		if (!procedure.getProcedureType().isCenterTelescope()) {
-			FIConfig fiConfig = globalConfigMgmt.findFIConfig(procedure.getInstrument().getInstrumentId(), 
-				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
-				procedure.getProcedureConfig().getLightSource());
-			procedure.setFiConfig(fiConfig);
-		} 
-		*/
-		
+				
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
@@ -657,6 +646,9 @@ public class ProcedureController implements Serializable {
 		// set up visualization displays
 		initVisualizationDisplays(procedureType.getProcedureTypeId());
 
+		// FIXME: this is not loading the actual values used in the procedure that was run
+		// it is loading the defaults.  Actual values used are not currently being stored.
+		procedure.setFiConfig(new FIConfig());
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
