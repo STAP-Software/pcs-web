@@ -276,27 +276,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 							</f:facet>
 						</p:panelGrid>
 					</p:tab>
-
-					<p:tab title="Visualization Displays" rendered="#{procedureController.procedure.procedureState gt 2}">
-						<p:panelGrid columns="1" styleClass="btmsForm">
-
-							  
-						  	<p:tree value="#{procedureController.visualizationDisplayRoot}" var="node" 
-								id="visualizationDisplayTree" expanded="true">
-
-								<p:treeNode type="folder">
-									<h:outputText value="#{node}"  />
-								</p:treeNode>
-								<p:treeNode type="link">
-									<p:commandLink value="#{node.name}" action="#{procedureController.doUpdateDisplays}" update=":spotsForm :offsetsForm" oncomplete="#{node.onclick}" />
-								</p:treeNode>
-							</p:tree>
-
-						
-						</p:panelGrid>
-					</p:tab>
 					
-					<p:tab title="Phasing Camera State" rendered="#{procedureController.procedure.procedureState le 2}">
+					<p:tab title="Phasing Camera State">
 						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
 					</p:tab>
  

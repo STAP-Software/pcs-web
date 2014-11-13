@@ -45,7 +45,6 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 	public void setCentroidYs(String centroidYs) {
-		new Exception().printStackTrace();
 		this.centroidYs = centroidYs;
 	}
 

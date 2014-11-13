@@ -53,7 +53,16 @@
 						<p:menuitem value="Load Last Session Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
 						<p:menuitem value="Save As Default Values" url="#" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.advancedViewMode}" />
 					</p:submenu>
-
+					
+					<p:submenu label="Procedure Displays" icon="ui-icon-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
+						<p:submenu label="Iteration 1" >
+							<p:menuitem value="Centroids" action="#{procedureController.doUpdateDisplays}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not procedureController.centroidDisplayEnabled}"/>
+							<p:menuitem value="Centroid Offsets" action="#{procedureController.doUpdateDisplays}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not procedureController.centroidOffsetDisplayEnabled}"/>
+							<p:menuitem value="Avg. Centroid Offsets" action="#{procedureController.doUpdateDisplays}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not procedureController.avgCentroidOffsetDisplayEnabled}"/>
+							<p:menuitem value="Actuator Deltas" action="#{procedureController.doUpdateDisplays}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not procedureController.actuatorDeltaDisplayEnabled}"/>
+						</p:submenu>
+					</p:submenu>
+					
 				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.advancedViewMode}">
 						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>

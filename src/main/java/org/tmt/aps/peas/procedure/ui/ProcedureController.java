@@ -36,6 +36,8 @@ import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.Constant;
@@ -70,6 +72,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
@@ -143,11 +146,16 @@ public class ProcedureController implements Serializable {
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 	private TreeNode visualizationDisplayRoot;
+	
 	PupilMask defaultMask; // current default mask for procedure type
 	ProcedureCcdFrame procedureCcdFrame;
 
 	UserPrompt currentPrompt;
 	
+	boolean centroidDisplayEnabled;
+	boolean centroidOffsetDisplayEnabled;
+	boolean avgCentroidOffsetDisplayEnabled;
+	boolean actuatorDeltaDisplayEnabled;	
 	
 	@PostConstruct
 	private void init() {
@@ -159,6 +167,11 @@ public class ProcedureController implements Serializable {
 	
 	private void initVisualizationDisplays(Long procedureTypeId) {
 		
+		centroidDisplayEnabled = false;
+		centroidOffsetDisplayEnabled = false;
+		avgCentroidOffsetDisplayEnabled = false;
+		actuatorDeltaDisplayEnabled = false;
+
 		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
 		
 		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
@@ -170,15 +183,19 @@ public class ProcedureController implements Serializable {
 			switch (visualizationDisplay.getVisualizationDisplayId().intValue()) {
 			case VisualizationDisplay.DISPLAY_TYPE_CENTROIDS:
 				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "runDrawSpots();centroidsDisplayDialog.show()"), node0);
+				centroidDisplayEnabled = true;
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS:
 				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "runDrawOffsets(); centroidOffsetDisplayDialog.show()"), node0);
+				centroidOffsetDisplayEnabled = true;
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_AVG_CENTROID_OFFSETS:
 				new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node0);
+				avgCentroidOffsetDisplayEnabled = true;
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
 				new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node0);
+				actuatorDeltaDisplayEnabled = true;
 				break;	
 			}
 		}
@@ -186,6 +203,23 @@ public class ProcedureController implements Serializable {
 		node0.setExpanded(true);
 	}
 	
+
+
+	public boolean isCentroidDisplayEnabled() {
+		return centroidDisplayEnabled;
+	}	
+
+	public boolean isCentroidOffsetDisplayEnabled() {
+		return centroidOffsetDisplayEnabled;
+	}
+
+	public boolean isAvgCentroidOffsetDisplayEnabled() {
+		return avgCentroidOffsetDisplayEnabled;
+	}
+
+	public boolean isActuatorDeltaDisplayEnabled() {
+		return actuatorDeltaDisplayEnabled;
+	}
 
 	public Procedure getProcedure() {
 		return procedure;
@@ -740,10 +774,12 @@ public class ProcedureController implements Serializable {
 	
 	public void doUpdateDisplays() {
 
-		// TODO - this needs to know which node was selected
+		// TODO - this needs to know which node was selected - for now, centroids display
+		// TODO - for now, just the first iteration
+		CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
+		List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
+		encodeOrderedPointList(centroids);
 		
-		//List<Subimage> subimageDefList = getSubimageDefsForMask(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-		//encodeSubimageHiddenVars(subimageDefList);
 	}
 	
 	private List<Subimage> getSubimageDefsForMask(Long maskTypeId) {
@@ -778,6 +814,24 @@ public class ProcedureController implements Serializable {
 			numList.add(subimage.getSubimageNumber());
 			xList.add(subimage.getxCcd());
 			yList.add(subimage.getyCcd());			
+		}
+		
+		setCentroidXs(FloatListEncoder.encodeList(xList));
+		setCentroidYs(FloatListEncoder.encodeList(yList));
+		setCentroidNbrs(IntegerListEncoder.encodeList(numList));
+	}
+	
+	private void encodeOrderedPointList(List<FloatPoint> inputList) {
+		
+		List<Float> xList = new ArrayList<Float>();
+		List<Float> yList = new ArrayList<Float>();
+		List<Integer> numList = new ArrayList<Integer>();
+		int i=1;
+		for (FloatPoint coord : inputList) {
+			
+			numList.add(i++);
+			xList.add(coord.x);
+			yList.add(coord.y);			
 		}
 		
 		setCentroidXs(FloatListEncoder.encodeList(xList));
