@@ -143,7 +143,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
+	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
 			throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);

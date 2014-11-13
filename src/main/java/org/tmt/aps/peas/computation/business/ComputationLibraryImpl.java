@@ -19,7 +19,7 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfiNew;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
-import org.tmt.aps.peas.lang.interop.JfindCentGauss;
+import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -55,16 +55,16 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return c[0];
 	}
 
-	public FloatPoint findCentGauss(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 		
-		JfindCentGauss jfindCentGauss = new JfindCentGauss();
+		JfindCent jfindCent = new JfindCent();
 		RetVal retVal = new RetVal();
 		
-		logger.debug("findCentGauss::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+		logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
 		
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 		
-		Object[] result = jfindCentGauss.jfindCentGauss(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
+		Object[] result = jfindCent.jfindCent(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
 				(int)guess.x + 1, (int)guess.y + 1, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
 		
 		if (retVal.getCode() > 0) {
