@@ -150,7 +150,12 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
 	}
 	
-	
+	public List<FloatPoint> findCentroids(float[][] frame, List<FloatPoint> guessList, FindCentConfig findCentConfig) throws ComputationException {
+		
+		return guessList;
+		
+	}
+
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
 		
 		return frame;

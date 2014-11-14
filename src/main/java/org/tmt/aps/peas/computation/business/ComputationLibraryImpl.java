@@ -10,9 +10,11 @@ import java.util.List;
 import javax.naming.InitialContext;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Rect;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -20,6 +22,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfiNew;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
+import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -77,6 +80,47 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return centroid;
 	}
 
+	public List<FloatPoint> findCentroids(float[][] frame, List<FloatPoint> guessList, FindCentConfig findCentConfig) throws ComputationException {
+		
+		JfindCentroids jfindCentroids = new JfindCentroids();
+		RetVal retVal = new RetVal();
+		
+		//logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+		
+		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+
+		int arrayLen = guessList.size();
+
+		int[] x_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractXArray(guessList));
+		int[] y_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractYArray(guessList));
+
+		// TODO: This needs to be generalized
+		
+		int[] nspotType = new int[arrayLen];
+		for (int i=0; i<arrayLen; i++) {
+			nspotType[i] = Constants.SPOT_TYPE_INTERIOR;  
+		}
+		
+		float[] x_cent = new float[arrayLen];
+		float[] y_cent = new float[arrayLen];
+		float[] intensity = new float[arrayLen];
+		
+		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
+				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity);
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("No good centroid could be found");
+		}
+
+		List<FloatPoint> centroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+		
+	
+		return centroids;
+		
+	}
+
+	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
 		
 		int[] x1 = new int[badPixelList.size()];

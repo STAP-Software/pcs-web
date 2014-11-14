@@ -6,7 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -201,7 +201,9 @@ public class CreateRefMapExecutor {
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
 			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
-			FloatPoint[] centroids = fiResult.getPeakLocationArray();
+			List<FloatPoint> guessList = fiResult.getPeakLocationList();
+			
+			List<FloatPoint> centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), guessList, procedure.getFindCentConfig());
 			
 			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
@@ -212,7 +214,7 @@ public class CreateRefMapExecutor {
 			frameDisplayMgmt.setMarking(centroids);
 			frameDisplayMgmt.displayMarkedFrame();
 			
-			graphicDisplayMgmt.displaySubimageCentroids(Arrays.asList(FloatPoint.roundToPoint(centroids)));
+			graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
 
 			statusLogger.log("procedure.refmap.created");                
 
@@ -221,7 +223,7 @@ public class CreateRefMapExecutor {
 			procedureOutput.setMapSaved(saveMap);
 			
 			// save the reference beam map
-			RefBeamMap refBeamMap = refBeamMapMgmt.saveRefBeamMap(Arrays.asList(centroids), procedure);
+			RefBeamMap refBeamMap = refBeamMapMgmt.saveRefBeamMap(centroids, procedure);
 			procedure.setRefBeamMap(refBeamMap);
                                                                        
 			// TODO: if SUFS, then Home the coarse mirror 
@@ -250,10 +252,10 @@ public class CreateRefMapExecutor {
 	}
 	
 	// TODO: generalize this, does not need to be explicit in an executor
-	public CentroidMap buildCentroidMap(FloatPoint[] centroids, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) {
+	public CentroidMap buildCentroidMap(List<FloatPoint> centroids, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) {
 		
 		CentroidMap centroidMap = new CentroidMap();
-		String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(centroids));
+		String centroidMapData = FloatPointListEncoder.encodeList(centroids);
 		centroidMap.setCentroidMapData(centroidMapData);
 		
 		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());

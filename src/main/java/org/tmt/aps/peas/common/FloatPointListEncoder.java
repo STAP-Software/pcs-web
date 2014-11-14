@@ -127,5 +127,16 @@ public class FloatPointListEncoder {
 		return resultList;
 	}
 	
+    public static List<Point> roundToPoint(List<FloatPoint> fpList) {
+    	
+    	List<Point> pList = new ArrayList<Point>();
+    	
+    	for (FloatPoint fp : fpList) {
+    		Point p = new Point((int)fp.x, (int)fp.y);
+    		pList.add(p);
+    	}
+    	
+    	return pList;
+    }
 
 }

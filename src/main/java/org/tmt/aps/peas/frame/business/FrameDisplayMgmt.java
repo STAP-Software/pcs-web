@@ -98,7 +98,7 @@ public class FrameDisplayMgmt implements Serializable {
 		markList.add(centroid);
 	}
 	
-	public void setMarking(FloatPoint[] centroids) {
+	public void setMarking(List<FloatPoint> centroids) {
 		markList = new ArrayList<FloatPoint>();
 		for (FloatPoint point : centroids) {
 			markList.add(point);

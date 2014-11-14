@@ -85,13 +85,4 @@ public class FloatPoint {
         return x + "," + y;
     }
     
-    public static Point[] roundToPoint(FloatPoint[] fArray) {
-    	Point[] pArray = new Point[fArray.length];
-    	
-    	for (int i=0; i<fArray.length; i++) {
-    		pArray[i] = fArray[i].asPoint();
-    	}
-    	
-    	return pArray;
-    }
 }
