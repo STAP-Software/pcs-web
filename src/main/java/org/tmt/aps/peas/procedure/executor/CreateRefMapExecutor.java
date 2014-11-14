@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -20,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -38,6 +38,8 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
@@ -48,6 +50,7 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -201,9 +204,30 @@ public class CreateRefMapExecutor {
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
 			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
-			List<FloatPoint> guessList = fiResult.getPeakLocationList();
 			
-			List<FloatPoint> centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), guessList, procedure.getFindCentConfig());
+			try {
+				
+				computationLibrary.evalFiResult(fiResult, procedure.getFiConfig());
+				
+			} catch (UserAssistRequiredException e) {
+				
+				// user interaction
+				statusLogger.log("procedure.exception", fiResult.getFourierQuality(), fiResult.getFracFilledBoxes(), 
+						procedure.getFiConfig().getFourierQualityThresh(), procedure.getFiConfig().getFracFilledThresh());
+
+				String text = MessageGenerator.generateMessage("fandi.end.question", fiResult.getFourierQuality(), fiResult.getFracFilledBoxes(), 
+						procedure.getFiConfig().getFourierQualityThresh(), procedure.getFiConfig().getFracFilledThresh());
+				int response = userPromptMgmt.displayFlowControlDialog(text);
+				
+				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+					throw new Exception("User Aborted Test");
+				}
+
+				// TODO: handle re-taking frame
+				
+			}
+						
+			List<FloatPoint> centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
 			
 			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);

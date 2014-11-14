@@ -569,6 +569,9 @@ public class ProcedureController implements Serializable {
 			fiConfig.setForceScaleValue(0.0f);
 			fiConfig.setForceRotationValue(0.0f);
 			
+			fiConfig.setFourierQualityThresh(fiConfig.getFourierQualityThreshDefault());
+			fiConfig.setFracFilledThresh(fiConfig.getFracFilledThreshDefault());
+			
 			procedure.setFiConfig(fiConfig);
 
 		}

@@ -22,6 +22,7 @@ import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Named
@@ -95,8 +96,10 @@ public class AsyncController {
 			procedureController.setCurrentPrompt(userPromptMgmt.getPendingPrompt());
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + procedureController.getCurrentPrompt().getMessage());
 			RequestContext requestContext = RequestContext.getCurrentInstance();
+			
 			requestContext.update("promptDialogForm"); 
 			requestContext.execute("userPromptDialog.show()");
+			
 			userPromptMgmt.setPendingPrompt(null);
 		}
 
@@ -195,12 +198,28 @@ public class AsyncController {
 		graphicDisplayMgmt.setReturnState(1);
 	}
 	
-	public void doCloseUserPromptYes() {
-		userPromptMgmt.setReturnState(1);
+	public void doCloseUserPrompt1() {
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
+		}
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE);
+		}
 	}
 
-	public void doCloseUserPromptNo() {
-		userPromptMgmt.setReturnState(0);
+	public void doCloseUserPrompt2() {
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_NO);
+		}
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY);
+		}
+	}
+
+	public void doCloseUserPrompt3() {
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT);
+		}
 	}
 
 

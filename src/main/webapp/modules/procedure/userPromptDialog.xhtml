@@ -8,12 +8,14 @@
     		<h:outputText escape="false" value="#{procedureController.currentPrompt.message}" style="white-space:pre-wrap" />
     		<br/>
     		<br/>
-    		</div>      		  
-    		<p:commandButton id="saveButton" value="Yes" style="float:right" update=":growl"
-					action="#{asyncController.doCloseUserPromptYes}" oncomplete="userPromptDialog.hide();" />
-			<p:commandButton id="closeButton" value="No" style="float:right" update=":growl"
-					action="#{asyncController.doCloseUserPromptNo}" oncomplete="userPromptDialog.hide();" />
-    		</h:form>
+    		</div>   
+    		<p:commandButton id="button3" value="#{procedureController.currentPrompt.button3Text}" style="float:right" update=":growl"
+					action="#{asyncController.doCloseUserPrompt3}" oncomplete="userPromptDialog.hide();" rendered="#{procedureController.currentPrompt.buttonCount gt 2}" />   	   		  
+			<p:commandButton id="button2" value="#{procedureController.currentPrompt.button2Text}" style="float:right" update=":growl"
+					action="#{asyncController.doCloseUserPrompt2}" oncomplete="userPromptDialog.hide();" rendered="#{procedureController.currentPrompt.buttonCount gt 1}" />
+    		<p:commandButton id="button1" value="#{procedureController.currentPrompt.button1Text}" style="float:right" update=":growl"
+					action="#{asyncController.doCloseUserPrompt1}" oncomplete="userPromptDialog.hide();" />
+			</h:form>
 		</p:dialog> 
 
 

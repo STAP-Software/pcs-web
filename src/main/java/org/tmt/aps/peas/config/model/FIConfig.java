@@ -49,6 +49,10 @@ public class FIConfig {
 
 	private boolean forceScaleDefault;
 	private boolean forceRotationDefault;
+	
+	private float fracFilledThreshDefault;
+	private float fourierQualityThreshDefault;
+
 
 	@ManyToOne
 	@JoinColumn(name = "pupilMaskTypeId")
@@ -178,6 +182,22 @@ public class FIConfig {
 		this.forceRotationDefault = forceRotationDefault;
 	}
 
+	public float getFracFilledThreshDefault() {
+		return fracFilledThreshDefault;
+	}
+
+	public void setFracFilledThreshDefault(float fracFilledThreshDefault) {
+		this.fracFilledThreshDefault = fracFilledThreshDefault;
+	}
+
+	public float getFourierQualityThreshDefault() {
+		return fourierQualityThreshDefault;
+	}
+
+	public void setFourierQualityThreshDefault(float fourierQualityThreshDefault) {
+		this.fourierQualityThreshDefault = fourierQualityThreshDefault;
+	}
+
 	@Transient
 	private boolean forceScale;
 
@@ -255,5 +275,27 @@ public class FIConfig {
 		this.refDefMap = refDefMap;
 	}
 	
+	@Transient
+	private float fracFilledThresh;
+	
+	public float getFracFilledThresh() {
+		return fracFilledThresh;
+	}
+
+	public void setFracFilledThresh(float fracFilledThresh) {
+		this.fracFilledThresh = fracFilledThresh;
+	}
+
+	@Transient
+	private float fourierQualityThresh;
+
+	public float getFourierQualityThresh() {
+		return fourierQualityThresh;
+	}
+
+	public void setFourierQualityThresh(float fourierQualityThresh) {
+		this.fourierQualityThresh = fourierQualityThresh;
+	}
+
 	
 }

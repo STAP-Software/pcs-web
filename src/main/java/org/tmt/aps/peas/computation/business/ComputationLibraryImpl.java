@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -26,6 +27,9 @@ import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -80,7 +84,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return centroid;
 	}
 
-	public List<FloatPoint> findCentroids(float[][] frame, List<FloatPoint> guessList, FindCentConfig findCentConfig) throws ComputationException {
+	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
 		
 		JfindCentroids jfindCentroids = new JfindCentroids();
 		RetVal retVal = new RetVal();
@@ -89,7 +93,20 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
-		int arrayLen = guessList.size();
+		
+		
+		int arrayLen = fiResult.getnDetect().length;
+		
+		// for our guesses, we use peak location if only one peak in the box, otherwise we use the estimated location
+		List<FloatPoint> guessList = new ArrayList<FloatPoint>();
+		for (int i=0; i<arrayLen; i++) {
+			if (fiResult.getnDetect()[i] == 1) {
+				guessList.add(fiResult.getPeakLocationList().get(i));
+			} else {
+				guessList.add(fiResult.getRstLocationList().get(i));
+			}
+		}
+		
 
 		int[] x_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractXArray(guessList));
 		int[] y_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractYArray(guessList));
@@ -245,9 +262,22 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	
-	
-	
-	
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
+		
+		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
+			throw new UserAssistRequiredException();
+		}
+		
+		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
+			throw new UserAssistRequiredException();
+		}
+		
+		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
+			throw new AbortProcedureException();
+		}
+		
+	}
+
 	// TODO: move to Fortran?
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 

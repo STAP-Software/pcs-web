@@ -54,6 +54,16 @@ public class UserPromptMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false;
 	}
 	
+	public int displayFlowControlDialog(String text) {
+		
+		// change \n to <br/>
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL, text.replace("\n", "<br/>"));
+		
+		waitForReturnState();
+		
+		return returnState.intValue();
+	}
+	
 	private void waitForReturnState() {
 		returnState = null;
 		// here we wait until the return state changes

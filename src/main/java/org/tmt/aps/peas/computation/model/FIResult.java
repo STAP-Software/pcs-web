@@ -185,4 +185,12 @@ public class FIResult {
 		return (FloatPoint[])getRstLocationList().toArray(new FloatPoint[0]);
 	}
 	
+	public boolean allDetectionsSinglePeaks() {
+		for (int peak : nDetect) {
+			if (peak != 1) {
+				return false;
+			}
+		}
+		return true;
+	}
 }

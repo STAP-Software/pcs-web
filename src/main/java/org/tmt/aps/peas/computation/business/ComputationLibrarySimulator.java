@@ -18,9 +18,9 @@ import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.Subimage;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.lang.interop.JfiNew;
 import org.tmt.aps.peas.lang.interop.RetVal;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -86,7 +86,6 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	
 	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
 		
-		JfiNew jfiNew = new JfiNew();
 		RetVal retVal = new RetVal();
 		
 		float[][] centroids = new float[numSpots][2];
@@ -150,15 +149,20 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
 	}
 	
-	public List<FloatPoint> findCentroids(float[][] frame, List<FloatPoint> guessList, FindCentConfig findCentConfig) throws ComputationException {
+	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
 		
-		return guessList;
+		return fiResult.getPeakLocationList();
 		
 	}
 
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
 		
 		return frame;
+		
+	}
+	
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
+		
 		
 	}
 	
