@@ -22,7 +22,7 @@
 
 				</p:panelGrid>
 
-				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :procedureDetailForm:framePanel :procedureDetailForm:controlPanel:startButton"
+				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel:startButton"
 					action="#{procedureController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
 				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
 					action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />

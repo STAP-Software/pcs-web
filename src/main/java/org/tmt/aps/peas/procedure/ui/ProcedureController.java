@@ -392,6 +392,9 @@ public class ProcedureController implements Serializable {
 
 			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
 
+			// set the frame source stored with the file
+			procedure.getProcedureConfig().setLightSource(loadedFitsFile.getFrameLightSource());
+			
 			// if a png file for display exists, read it in. Otherwise create it.
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 

@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 
 @Entity
 @Table(name = "CcdFrame")
@@ -168,6 +169,13 @@ public class CcdFrame {
 
 	public void setFalseColorPng(byte[] falseColorPng) {
 		this.falseColorPng = falseColorPng;
+	}
+	
+	public int getFrameLightSource() {
+		if (cameraState == null) {
+			return ProcedureConfig.LIGHT_SOURCE_STAR;
+		}
+		return (cameraState.getRefBeamPos() > 0) ? ProcedureConfig.LIGHT_SOURCE_LED : ProcedureConfig.LIGHT_SOURCE_STAR;
 	}
 
 }

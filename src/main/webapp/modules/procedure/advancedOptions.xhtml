@@ -88,6 +88,13 @@
 						rendered="#{procedureController.procedure.fiConfig.forceRotationSource eq 2}"  />
         			</p:panelGrid>
  
+ 					<h:outputLabel value="Fraction of Boxes Filled Threshold" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.fiConfig.fracFilledThresh}" />
+ 					
+ 					<h:outputLabel value="Fourier Quality Threshold" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.fiConfig.fourierQualityThresh}" />
+  
+ 
 				</p:panelGrid>
 				</p:fieldset>
 				 
