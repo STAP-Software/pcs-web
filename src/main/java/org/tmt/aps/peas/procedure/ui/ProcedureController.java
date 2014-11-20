@@ -56,7 +56,9 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -157,12 +159,17 @@ public class ProcedureController implements Serializable {
 	boolean avgCentroidOffsetDisplayEnabled;
 	boolean actuatorDeltaDisplayEnabled;	
 	
+	Instrument frameInstrument;
+
+	
 	@PostConstruct
-	private void init() {
+	private void init() throws Exception {
 		
 		currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
 		
-		//updateCentroidOffsetsDisplay();
+		// set up the instrument to be associated with each frame to display archived state
+		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
+		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);		
 	}
 	
 	private void initVisualizationDisplays(Long procedureTypeId) {
@@ -321,6 +328,15 @@ public class ProcedureController implements Serializable {
 		this.currentPrompt = currentPrompt;
 	}
 
+	public Instrument getFrameInstrument() {
+		return frameInstrument;
+	}
+
+	public void setFrameInstrument(Instrument frameInstrument) {
+		this.frameInstrument = frameInstrument;
+	}
+
+	
 	public String getFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions();
 	}
@@ -683,6 +699,9 @@ public class ProcedureController implements Serializable {
 			
 		}
 		
+		// set up display of camera state values for first frame
+		loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
+		
 		// set up visualization displays
 		initVisualizationDisplays(procedureType.getProcedureTypeId());
 
@@ -772,6 +791,10 @@ public class ProcedureController implements Serializable {
 		}
 				
 		procedureCcdFrame.setFrameFieldDisplayList(displayList);
+	}
+	
+	public void loadCameraState(CameraState cameraState) {
+		frameInstrument.updateState(cameraState);
 	}
 	
 	// ====================================================================================== //

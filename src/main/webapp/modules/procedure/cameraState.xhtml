@@ -1,0 +1,54 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+	<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+		<h:outputLabel value="Pupil Mask" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Filter" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Ref. Beam" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Shutter" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.shutter.shutterDisplayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Fine Tilt (x, y &#181;m)" />
+		<h:panelGroup style="position:relative; top:3px">
+			<h:outputText value="#{procedureController.frameInstrument.camera.fineTiltMirror.stateXDisplayString}" />
+			<h:outputText value=", " />
+			<h:outputText value="#{procedureController.frameInstrument.camera.fineTiltMirror.stateYDisplayString}" />
+		</h:panelGroup>
+
+		<h:outputLabel value="Coarse Tilt (x, y &#181;m)" />
+		<h:panelGroup style="position:relative; top:3px">
+			<h:outputText value="#{procedureController.frameInstrument.camera.coarseTiltMirror.stateXDisplayString}" />
+			<h:outputText value=", " />
+			<h:outputText value="#{procedureController.frameInstrument.camera.coarseTiltMirror.stateYDisplayString}" />
+		</h:panelGroup>
+
+		<h:outputLabel value="Two Position Mech" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="CCD Power" />
+		<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="CCD Temp" />
+		<h:outputText value="#{procedureController.frameInstrument.ccd.temperature}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Instrument Temp" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.instrumentTemperature}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Electronics Box Temp" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.electronicsBoxTemperature}" style="position:relative; top:2px" />
+
+
+
+	</p:panelGrid>
+
+
+
+</ui:composition>

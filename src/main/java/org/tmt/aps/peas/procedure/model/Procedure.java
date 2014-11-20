@@ -44,7 +44,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 	@NamedQuery(name = "findProcedure", query = "SELECT DISTINCT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig "
 			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "
-//			+ "LEFT OUTER JOIN FETCH cf.cameraState "
+			+ "LEFT OUTER JOIN FETCH cf.cameraState "
 			+ "WHERE p.procedureId = :procedureId" )
 	
 })
@@ -311,6 +311,10 @@ public class Procedure {
 		default:
 			return "Unknown";
 		}
+	}
+	
+	public boolean isArchivedProcedure() {
+		return procedureState == PROCEDURE_STATE_COMPLETED || procedureState == PROCEDURE_STATE_ABORTED;
 	}
 
 	public void addProcedureCcdFrame(ProcedureCcdFrame procedureCcdFrame) {

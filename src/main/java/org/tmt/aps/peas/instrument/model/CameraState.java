@@ -287,5 +287,4 @@ public class CameraState {
 	public void setSteeringMirrorYIsInTransit(boolean steeringMirrorYIsInTransit) {
 		this.steeringMirrorYIsInTransit = steeringMirrorYIsInTransit;
 	}
-	
 }

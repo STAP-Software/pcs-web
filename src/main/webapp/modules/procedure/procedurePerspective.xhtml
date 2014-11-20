@@ -277,8 +277,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						</p:panelGrid>
 					</p:tab>
 					
-					<p:tab title="Phasing Camera State">
-						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
+					<p:tab title="Phasing Camera State" rendered="#{not procedureController.procedure.archivedProcedure}" >
+						<ui:include src="../diagnostic/cameraStatusBlock.xhtml" />
+					</p:tab>
+					<p:tab title="Phasing Camera State for Current Frame" rendered="#{procedureController.procedure.archivedProcedure}" >
+						<ui:include src="cameraState.xhtml" />
 					</p:tab>
  
 				</p:accordionPanel>
