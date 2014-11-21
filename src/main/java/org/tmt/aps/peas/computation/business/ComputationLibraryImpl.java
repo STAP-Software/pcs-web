@@ -243,7 +243,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			
 
 		if (retVal.getCode() > 0) {
-		//	statusLogger.log(retVal);
+			statusLogger.log(retVal);
+			throw new ComputationException("Find and Identify Error");
 		}
 		
 		// store fi_param values
@@ -257,13 +258,20 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		fiResult.setFracFilledBoxes((Float)output[1]);
 		fiResult.setnSolution((Integer)output[2]);
 
+		//debug
+		//logger.info("fiNew :: ");
+		//logger.info(FloatPointListEncoder.encodeList(fiResult.getPeakLocationList()));
+		//logger.info(FloatPointListEncoder.encodeList(fiResult.getRstLocationList()));
 
 		return fiResult;
 	}
 	
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
-		
+	// Need to Check this first
+		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
+			throw new AbortProcedureException();
+		}
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
 			throw new UserAssistRequiredException();
 		}
@@ -272,9 +280,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			throw new UserAssistRequiredException();
 		}
 		
-		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
-			throw new AbortProcedureException();
-		}
+
 		
 	}
 
