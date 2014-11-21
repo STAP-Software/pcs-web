@@ -289,15 +289,14 @@ public class CreateRefMapExecutor {
 		
 		centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
 		
-		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
+		centroidMap.setFourierQuality(fiResult.getFourierQuality());
+		centroidMap.setScale(fiResult.getScale());
+		centroidMap.setRotation(fiResult.getRotation());
+		centroidMap.setTranslationX(fiResult.getTranslation().getX());
+		centroidMap.setTranslationY(fiResult.getTranslation().getY());
 		centroidMap.setNumFilledBoxes(fiResult.getNumFilledBoxes());
-
-		// TODO: need real values
-		centroidMap.setRotation(0.22f);
-		centroidMap.setScale(1.023f);
-		centroidMap.setFourierQuality(0.87f);
-		centroidMap.setTranslationX(36.43f);
-		centroidMap.setTranslationY(12.002f);
+		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
+		
 
 		return centroidMap;
 	}

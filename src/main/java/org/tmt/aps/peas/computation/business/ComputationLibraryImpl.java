@@ -260,8 +260,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		//debug
 		//logger.info("fiNew :: ");
-		//logger.info(FloatPointListEncoder.encodeList(fiResult.getPeakLocationList()));
-		//logger.info(FloatPointListEncoder.encodeList(fiResult.getRstLocationList()));
+		//logger.info("Xpeaks::\n" + FloatPointListEncoder.encodeXList(fiResult.getPeakLocationList()));
+		//logger.info("Ypeaks::\n"+FloatPointListEncoder.encodeYList(fiResult.getPeakLocationList()));
+   	    //logger.info("Xrst::\n"+FloatPointListEncoder.encodeXList(fiResult.getRstLocationList()));
+		//logger.info("Yrst::\n"+FloatPointListEncoder.encodeYList(fiResult.getRstLocationList()));
 
 		return fiResult;
 	}
