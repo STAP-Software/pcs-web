@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.model;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +26,7 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -266,6 +268,9 @@ public class Procedure {
 	}
 
 	public List<ProcedureCcdFrame> getProcedureCcdFrameList() {
+		if (procedureCcdFrameList != null) {
+			Collections.sort(procedureCcdFrameList, new BeanComparator("procedureFrameNumber"));
+		}
 		return procedureCcdFrameList;
 	}
 

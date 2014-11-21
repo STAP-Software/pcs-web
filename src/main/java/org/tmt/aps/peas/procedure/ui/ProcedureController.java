@@ -160,6 +160,8 @@ public class ProcedureController implements Serializable {
 	boolean actuatorDeltaDisplayEnabled;	
 	
 	Instrument frameInstrument;
+	int selectedFrameNumber;
+	ProcedureCcdFrame selectedFrame;
 
 	
 	@PostConstruct
@@ -336,7 +338,22 @@ public class ProcedureController implements Serializable {
 		this.frameInstrument = frameInstrument;
 	}
 
-	
+	public int getSelectedFrameNumber() {
+		return selectedFrameNumber;
+	}
+
+	public void setSelectedFrameNumber(int selectedFrameNumber) {
+		this.selectedFrameNumber = selectedFrameNumber;
+	}
+
+	public ProcedureCcdFrame getSelectedFrame() {
+		return selectedFrame;
+	}
+
+	public void setSelectedFrame(ProcedureCcdFrame selectedFrame) {
+		this.selectedFrame = selectedFrame;
+	}
+
 	public String getFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions();
 	}
@@ -350,22 +367,20 @@ public class ProcedureController implements Serializable {
 			return new DefaultStreamedContent();
 		} else {
 			// So, browser is requesting the image. Get ID value from actual request param.
-			String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
+			//String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
 
 			// index is passed when the procedure has completed execution and we need to know which one
 			// if index == null, then get the current procedure frame
 
-			ProcedureCcdFrame pcf = null;
 
-			logger.debug("indexStr = " + indexStr);
+//			if (indexStr == null) {
+//				pcf = procedure.getLatestProcedureCcdFrame();
+//			} else {
+				selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
+//			}
+			
 
-			if (indexStr == null) {
-				pcf = procedure.getLatestProcedureCcdFrame();
-			} else {
-				pcf = procedure.getProcedureCcdFrameList().get(new Integer(indexStr));
-			}
-
-			byte[] falseColorPng = pcf.getCcdFrame().getFalseColorPng();
+			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
 			logger.debug("falseColorPng = " + falseColorPng);
 
@@ -795,6 +810,12 @@ public class ProcedureController implements Serializable {
 	
 	public void loadCameraState(CameraState cameraState) {
 		frameInstrument.updateState(cameraState);
+	}
+		
+	public void frameSelectListener() {
+		
+		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
+		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
 	}
 	
 	// ====================================================================================== //

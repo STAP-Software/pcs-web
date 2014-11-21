@@ -102,7 +102,7 @@
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
 							<p:spacer height="1px" width="15px"/>
 							<p:commandLink ajax="true" update=":procedureLogForm" oncomplete="procedureLogDialog.show();" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
-								<h:outputText value="Procedure Log"/>
+								<h:outputText value="Procedure Log" />
 							</p:commandLink>
 							</h:panelGroup>
 							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
@@ -219,7 +219,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						rendered="#{procedureController.procedure.procedureState ge 3}">
 
 						<!--  show this when procedure is done -->
-						<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1">
+						<!-- 
+						<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1" >
 
 							<p:panelGrid columns="1" style="padding:0;margin:0">
 								<f:facet name="header">
@@ -230,7 +231,30 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 									<f:param name="frameIndex" value="#{procedureCcdFrame.procedureFrameNumber}" />
 								</p:graphicImage>
 							</p:panelGrid>
+														
 						</p:carousel>
+						 -->
+						<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
+							<f:facet name="header">
+								<h:panelGroup>
+								<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px"/>
+								<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
+									<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
+                       					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />
+            						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel"/>
+        						</p:selectOneButton>
+        						</h:panelGroup>
+							</f:facet>
+							
+							<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
+								<f:facet name="header">
+									<h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
+								</f:facet>
+								<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
+							</p:panelGrid>
+						</p:panelGrid>
+						
+						
 
 						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
@@ -302,14 +326,14 @@ Your browser does not support the HTML5 canvas tag.</canvas>
     		
   // prevent auto submit of form
   $(document).ready(function() {
-	  $('input,select').keypress(function(event) { return event.keyCode != 13; });
+	  $('input,select').keypress(function(event) { return event.keyCode != 13; }); 
 });	
-  
+
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
 		canvas.addEventListener("mousedown", doMouseDown, false);
 	}
-		
+	
 	function doMouseDown(event) {  		
 		
 		var canvas = $('#frameCanvas');
