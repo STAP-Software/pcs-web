@@ -105,7 +105,7 @@ public class ProcedureType {
 	}
 	
 	public List<Float> getIntegrationTimeList() {
-		if (integrationTimeList == null && defaultIntTimes != null) {
+		if (defaultIntTimes != null) {
 			integrationTimeList =  FloatListEncoder.decodeList(defaultIntTimes);
 			Collections.sort(integrationTimeList);
 		} 

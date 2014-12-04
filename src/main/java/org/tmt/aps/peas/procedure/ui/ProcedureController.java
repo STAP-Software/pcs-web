@@ -581,6 +581,9 @@ public class ProcedureController implements Serializable {
 		procedure.getProcedureConfig().setLightSource(ProcedureConfig.LIGHT_SOURCE_LED);
 		procedure.getProcedureConfig().setReferenceBeam(refMapDefaults.getReferenceBeam());
 		procedure.getProcedureConfig().setIntegrationTime(refMapDefaults.getIntegrationTime());
+		
+		// make the list of possible int times equal to the 'one' we have
+		procedureType.setDefaultIntTimes("" + refMapDefaults.getIntegrationTime());
 	}
 
 	public String doCancelProcedure() {
