@@ -54,37 +54,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	
-	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots) throws ComputationException {
-		// TODO Auto-generated method stub
-		
-		FloatPoint[] result = new FloatPoint[numSpots];
-				
-		if (numSpots == Subimage.PT_DEF_X_ARRAY.length) {
-			for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
-				result[i] = new FloatPoint((float)Subimage.PT_DEF_X_ARRAY[i], (float)Subimage.PT_DEF_Y_ARRAY[i]);
-			}
-		}
-		if (numSpots == Subimage.CPH_DEF_X_ARRAY.length) {
-			for (int i = 0; i < Subimage.CPH_DEF_X_ARRAY.length; i++) {
-				result[i] = new FloatPoint((float)Subimage.CPH_DEF_X_ARRAY[i], (float)Subimage.CPH_DEF_Y_ARRAY[i]);
-			}
-		}
-		if (numSpots == Subimage.FS_DEF_X_ARRAY.length) {
-			for (int i = 0; i < Subimage.FS_DEF_X_ARRAY.length; i++) {
-				result[i] = new FloatPoint((float)Subimage.FS_DEF_X_ARRAY[i], (float)Subimage.FS_DEF_Y_ARRAY[i]);
-			}
-		}
-		if (numSpots == Subimage.SUFS_DEF_X_ARRAY.length) {
-			for (int i = 0; i < Subimage.SUFS_DEF_X_ARRAY.length; i++) {
-				result[i] = new FloatPoint((float)Subimage.SUFS_DEF_X_ARRAY[i], (float)Subimage.SUFS_DEF_Y_ARRAY[i]);
-			}
-		}
-		
-		return result;
-	}
-	
-	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
 		
 		RetVal retVal = new RetVal();
 		

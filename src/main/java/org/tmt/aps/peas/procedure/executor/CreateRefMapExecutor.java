@@ -203,7 +203,7 @@ public class CreateRefMapExecutor {
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
-			FIResult fiResult = computationLibrary.fiNew(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
+			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
 			
 			try {
 				

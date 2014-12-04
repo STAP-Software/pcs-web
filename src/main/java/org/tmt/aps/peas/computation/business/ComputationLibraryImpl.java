@@ -20,7 +20,6 @@ import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
-import org.tmt.aps.peas.lang.interop.JfiNew;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
@@ -178,30 +177,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	
-	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots) throws ComputationException {
-		
-		JfindAndIdentify jFindAndIdentify = new JfindAndIdentify();
-		RetVal retVal = new RetVal();
-		
-		float[][] centroids = new float[numSpots][2];
-		
-		jFindAndIdentify.jfindAndIdentify(retVal, frame, centroids);
-		
-		if (retVal.getCode() > 0) {
-		//	statusLogger.log(retVal);
-		}
-		
-		// return centroids as a FloatPoint
-		FloatPoint[] centArray = new FloatPoint[numSpots];
-		for (int i=0; i<numSpots; i++) {
-			centArray[i] = new FloatPoint(centroids[i][0], centroids[i][1]);
-		}
-		return centArray;
-	}
+
 	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
 		
-		JfiNew jfiNew = new JfiNew();
+		JfindAndIdentify jfindAndIdentify = new JfindAndIdentify();
 		RetVal retVal = new RetVal();
 		
 		float[] fiParams = new float[6];
@@ -230,7 +210,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		FIResult fiResult = new FIResult(numSpots, frame);
 		
 
-		Object output[] = jfiNew.jfiNew(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, 
+		Object output[] = jfindAndIdentify.jfindAndIdentify(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, 
 				fiConfig.getuEst(), fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), 
 				fiConfig.getnPeakMinThresh(), fiConfig.getnPeakMaxThresh(),
 				fiConfig.isForceScale() ? 1 : 0, forceScaleValue,

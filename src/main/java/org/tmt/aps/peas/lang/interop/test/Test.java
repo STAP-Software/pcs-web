@@ -20,7 +20,7 @@ public class Test {
 
 		float[][] centroids = new float[36][2];
 
-		Object[] returnValues = jfid.jfindAndIdentify(retVal, frame, centroids);
+		//Object[] returnValues = jfid.jfindAndIdentify(retVal, frame, centroids);
 
 		System.out.println("retVal.code = " + retVal.getCode());
 		System.out.println("retVal.arg0 = " + retVal.getArg0());

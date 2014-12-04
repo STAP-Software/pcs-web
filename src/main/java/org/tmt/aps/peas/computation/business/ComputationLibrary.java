@@ -21,8 +21,6 @@ public interface ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException;
 	
-	public FloatPoint[] findAndIdentify(float[][] frame, int numSpots ) throws ComputationException;
-	
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel);  // local java routine
 	
 	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
@@ -31,7 +29,7 @@ public interface ComputationLibrary {
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	
-	public FIResult fiNew(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException;
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException;
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException;
 
