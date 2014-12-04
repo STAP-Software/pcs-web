@@ -31,8 +31,12 @@ public class CentroidMapMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
-	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId) {
-		RefBeamMap refBeamMap = getCurrentRefBeamMap(instrumentId, pupilMaskTypeId);
+	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
+		return getCurrentSessionRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, -1);
+	}
+		
+	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
+		RefBeamMap refBeamMap = getCurrentRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, sufsGroupNumber);
 		
 		if (refBeamMap == null) {
 			return null;
@@ -46,11 +50,19 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 	
-	public RefBeamMap getCurrentRefBeamMap(Long instrumentId, Long pupilMaskTypeId) {
+	public RefBeamMap getCurrentRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 
-		TypedQuery<RefBeamMap> query = em.createNamedQuery("findCurrentRefBeamMap", RefBeamMap.class);
+		TypedQuery<RefBeamMap> query;
+		if (sufsGroupNumber >= 0) {
+			query = em.createNamedQuery("findCurrentSufsRefBeamMap", RefBeamMap.class);
+			query.setParameter("sufsGroupNumber", sufsGroupNumber);
+		} else {
+			query = em.createNamedQuery("findCurrentRefBeamMap", RefBeamMap.class);			
+		}
+		 
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("filterTypeId", filterTypeId);
 
 		query.setMaxResults(1);
 		RefBeamMap refBeamMap = query.getSingleResult();
@@ -79,23 +91,10 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 
-	public RefBeamMap saveRefBeamMap(List<FloatPoint> centroids, Procedure procedure) {
+	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 
-		// TODO: add the scale and rotation values/inputs used in F&I
-		
-		RefBeamMap refBeamMap = new RefBeamMap();
 		refBeamMap.setCreateDate(new Date());
-		//refBeamMap.setInstrument(procedure.getInstrument());
-		CentroidMap centroidMap = new CentroidMap();
-		refBeamMap.setCentroidMap(centroidMap);
-		centroidMap.setPupilMaskType(procedure.getProcedureConfig().getPupilMask().getPupilMaskType());
-		refBeamMap.setRefBeamDefMapFlg(false);
-		centroidMap.setValues(centroids);
-
-		// encode String from transient FloatPoint map
-		String encodedData = FloatPointListEncoder.encodeList(centroidMap.getValues());
-		centroidMap.setCentroidMapData(encodedData);
-		
+				
 		em.persist(refBeamMap);
 
 		return refBeamMap;
@@ -103,6 +102,8 @@ public class CentroidMapMgmt {
 
 	public CentroidMap saveCentroidMap(CentroidMap centroidMap) {
 
+		centroidMap.setCreateDate(new Date());
+		
 		em.persist(centroidMap);
 
 		return centroidMap;
@@ -110,6 +111,11 @@ public class CentroidMapMgmt {
 
 	public void associateRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 
+		// if refBeam map does not exist, then create it
+		if (refBeamMap.isNewRecord()) {
+			saveRefBeamMap(refBeamMap, procedure);
+		}
+		
 		ProcedureRefBeamMap procedureRefBeamMap = new ProcedureRefBeamMap();
 		procedureRefBeamMap.setProcedure(procedure);
 		procedureRefBeamMap.setRefBeamMap(refBeamMap);

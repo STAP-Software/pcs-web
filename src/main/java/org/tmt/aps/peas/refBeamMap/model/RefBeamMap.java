@@ -27,6 +27,13 @@ import javax.persistence.TemporalType;
 	@NamedQuery(name = "findCurrentRefBeamMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
 			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "AND rb.filterTypeId = :filterTypeId "
+			+ "and rb.refBeamDefMapFlg = false "
+			+ "ORDER BY rb.createDate desc"),
+	@NamedQuery(name = "findCurrentSufsRefBeamMap", query = "SELECT rb from RefBeamMap rb "
+			+ "inner join fetch rb.centroidMap cm "
+			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
+			+ "AND rb.filterTypeId = :filterTypeId AND rb.sufsGroupNumber = :sufsGroupNumber "
 			+ "and rb.refBeamDefMapFlg = false "
 			+ "ORDER BY rb.createDate desc"),
 	@NamedQuery(name = "findRefBeamDefMap", query = "SELECT rb from RefBeamMap rb "
@@ -42,6 +49,10 @@ public class RefBeamMap {
 	private Long refBeamMapId;
 
 	private Long instrumentId;
+	
+	private Long filterTypeId;
+	
+	private Integer sufsGroupNumber;
 	
 	boolean refBeamDefMapFlg;
 		
@@ -96,7 +107,25 @@ public class RefBeamMap {
 		this.centroidMap = centroidMap;
 	}
 
+	public Long getFilterTypeId() {
+		return filterTypeId;
+	}
 
+	public void setFilterTypeId(Long filterTypeId) {
+		this.filterTypeId = filterTypeId;
+	}
+
+	public Integer getSufsGroupNumber() {
+		return sufsGroupNumber;
+	}
+
+	public void setSufsGroupNumber(Integer sufsGroupNumber) {
+		this.sufsGroupNumber = sufsGroupNumber;
+	}
+
+	public boolean isNewRecord() {
+		return refBeamMapId == null;
+	}
 
 
 

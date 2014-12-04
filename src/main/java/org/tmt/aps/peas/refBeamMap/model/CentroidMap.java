@@ -218,6 +218,9 @@ public class CentroidMap {
 
 	}
 
+	public boolean isNewRecord() {
+		return centroidMapId == null;
+	}
 
 
 }

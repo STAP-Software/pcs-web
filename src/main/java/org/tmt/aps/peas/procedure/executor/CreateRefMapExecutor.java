@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -247,7 +248,7 @@ public class CreateRefMapExecutor {
 			procedureOutput.setMapSaved(saveMap);
 			
 			// save the reference beam map
-			RefBeamMap refBeamMap = refBeamMapMgmt.saveRefBeamMap(centroids, procedure);
+			RefBeamMap refBeamMap = buildRefMap(centroidMap, procedure);
 			procedure.setRefBeamMap(refBeamMap);
                                                                        
 			// TODO: if SUFS, then Home the coarse mirror 
@@ -301,5 +302,18 @@ public class CreateRefMapExecutor {
 		return centroidMap;
 	}
 	
+	public RefBeamMap buildRefMap(CentroidMap centroidMap, Procedure procedure) {
+		RefBeamMap refBeamMap = new RefBeamMap();
+		refBeamMap.setCreateDate(new Date());
+		
+		refBeamMap.setInstrumentId(procedure.getInstrument().getInstrumentId());
+		refBeamMap.setFilterTypeId(procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		
+		//centroidMap.setCreateDate(new Date());
+		
+		refBeamMap.setCentroidMap(centroidMap);
+		refBeamMap.setRefBeamDefMapFlg(false);
 
+		return refBeamMap;
+	}
 }
