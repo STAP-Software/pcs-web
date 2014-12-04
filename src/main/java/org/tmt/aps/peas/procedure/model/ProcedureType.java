@@ -104,16 +104,7 @@ public class ProcedureType {
 		this.defaultIntTimes = defaultIntTimes;
 	}
 	
-	public List<Float> getIntegrationTimeList() {
-		if (defaultIntTimes != null) {
-			integrationTimeList =  FloatListEncoder.decodeList(defaultIntTimes);
-			Collections.sort(integrationTimeList);
-		} 
-		return integrationTimeList;
-	}
-	public void setIntegrationTimeList(List<Float> integrationTimeList) {
-		this.integrationTimeList = integrationTimeList;
-	}
+
 	public String toString() {
 		return procedureTypeName;
 	}

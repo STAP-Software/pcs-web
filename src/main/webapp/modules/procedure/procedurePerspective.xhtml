@@ -54,7 +54,7 @@
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
 										disabled="#{procedureController.procedure.procedureState gt 1}" >
-										<f:selectItems value="#{procedureController.procedureType.integrationTimeList}" />
+										<f:selectItems value="#{procedureController.integrationTimeList}" /> 
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>

@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -162,6 +163,7 @@ public class ProcedureController implements Serializable {
 	Instrument frameInstrument;
 	int selectedFrameNumber;
 	ProcedureCcdFrame selectedFrame;
+	List<Float> integrationTimeList;
 
 	
 	@PostConstruct
@@ -212,7 +214,12 @@ public class ProcedureController implements Serializable {
 		node0.setExpanded(true);
 	}
 	
-
+	public List<Float> getIntegrationTimeList() {
+		return integrationTimeList;
+	}
+	public void setIntegrationTimeList(List<Float> integrationTimeList) {
+		this.integrationTimeList = integrationTimeList;
+	}
 
 	public boolean isCentroidDisplayEnabled() {
 		return centroidDisplayEnabled;
@@ -529,6 +536,12 @@ public class ProcedureController implements Serializable {
 				setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), 
 						defaultMask.getPupilMaskType().getPupilMaskTypeId(), 
 						defaultFilter.getFilterType().getFilterTypeId());
+			} else {
+				// set up default int times for all procedure types except for reference beam
+				if (procedureType.getDefaultIntTimes() != null) {
+					integrationTimeList =  FloatListEncoder.decodeList(procedureType.getDefaultIntTimes());
+					Collections.sort(integrationTimeList);
+				} 
 			}
 			
 			// select defaults based on mask and light source
@@ -583,7 +596,8 @@ public class ProcedureController implements Serializable {
 		procedure.getProcedureConfig().setIntegrationTime(refMapDefaults.getIntegrationTime());
 		
 		// make the list of possible int times equal to the 'one' we have
-		procedureType.setDefaultIntTimes("" + refMapDefaults.getIntegrationTime());
+		integrationTimeList = new ArrayList<Float>();
+		integrationTimeList.add(refMapDefaults.getIntegrationTime());
 	}
 
 	public String doCancelProcedure() {
