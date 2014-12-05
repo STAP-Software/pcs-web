@@ -254,7 +254,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
 	// Need to Check this first
 		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
-			throw new AbortProcedureException();
+			throw new AbortProcedureException("Not all detections were single peaks for LED light source image");
 		}
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
 			throw new UserAssistRequiredException();
