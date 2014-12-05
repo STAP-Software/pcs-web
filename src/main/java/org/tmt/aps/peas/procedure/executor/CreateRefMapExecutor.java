@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -39,7 +40,6 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
-import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -205,31 +205,14 @@ public class CreateRefMapExecutor {
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
 			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
-			
+			List<FloatPoint> centroids = new ArrayList<FloatPoint>();
 			try {
-				
-				computationLibrary.evalFiResult(fiResult, procedure.getFiConfig());
-				
-			} catch (UserAssistRequiredException e) {
-				
-				// user interaction
-				statusLogger.log("procedure.exception", fiResult.getFourierQuality(), fiResult.getFracFilledBoxes(), 
-						procedure.getFiConfig().getFourierQualityThresh(), procedure.getFiConfig().getFracFilledThresh());
-
-				String text = MessageGenerator.generateMessage("fandi.end.question", fiResult.getFourierQuality(), fiResult.getFracFilledBoxes(), 
-						procedure.getFiConfig().getFourierQualityThresh(), procedure.getFiConfig().getFracFilledThresh());
-				int response = userPromptMgmt.displayFlowControlDialog(text);
-				
-				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-					throw new Exception("User Aborted Test");
-				}
-
-				// TODO: handle re-taking frame
-				
+				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
+			} catch (Exception e) {
+				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
+				procedureCcdFrame.setCentroidMap(centroidMap);
+				throw e;
 			}
-						
-			List<FloatPoint> centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
-			
 			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 			
@@ -240,6 +223,42 @@ public class CreateRefMapExecutor {
 			frameDisplayMgmt.displayMarkedFrame();
 			
 			graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
+			
+			try {
+				computationLibrary.evalFiResult(fiResult, procedure.getFiConfig());
+				
+			} catch (UserAssistRequiredException e) {
+				
+				
+				StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
+				if (e.isNdetectNotAllSingle()) {
+					buf.append(MessageGenerator.generateMessage("fandi.ndetect_not_single"));
+				}
+				
+				if (e.isFracThreshExceeded()) {
+					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), procedure.getFiConfig().getFracFilledThresh()));
+				}
+				
+				if (e.isFourierThreshExceeded()) {
+					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), procedure.getFiConfig().getFourierQualityThresh()));					
+				}
+				
+				String text = buf.toString();
+				
+				// user interaction
+				statusLogger.log("procedure.exception", text);
+
+				int response = userPromptMgmt.displayFlowControlDialog(text);
+				
+				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+					throw new Exception("User Aborted Test");
+				}
+
+				// TODO: handle re-taking frame
+				
+			}
+						
+
 
 			statusLogger.log("procedure.refmap.created");                
 

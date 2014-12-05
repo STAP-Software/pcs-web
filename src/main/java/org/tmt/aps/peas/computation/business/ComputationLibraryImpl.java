@@ -253,18 +253,21 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
 	// Need to Check this first
+		UserAssistRequiredException userAssistException = new UserAssistRequiredException();
 		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
-			throw new AbortProcedureException("Not all detections were single peaks for LED light source image");
+			userAssistException.setNdetectNotAllSingle(true);
 		}
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
-			throw new UserAssistRequiredException();
+			userAssistException.setFracThreshExceeded(true);
 		}
 		
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
-			throw new UserAssistRequiredException();
+			userAssistException.setFourierThreshExceeded(true);
 		}
 		
-
+		if (userAssistException.shouldThrow()) {
+			throw userAssistException;
+		}
 		
 	}
 
