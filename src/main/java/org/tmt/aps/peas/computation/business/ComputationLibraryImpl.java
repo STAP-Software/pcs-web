@@ -203,9 +203,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// Force scale and rotation values, potentially coming from current ref map
 		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
 			currentRefMap.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
-		float forceRotationValue = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
+		float forceRotationDeg = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
 			currentRefMap.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
 						
+		float forceRotationRad = forceRotationDeg * (float)Constants.DEG2RAD;
+			
 		// the result object
 		FIResult fiResult = new FIResult(numSpots, frame);
 		
@@ -214,7 +216,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 				fiConfig.getuEst(), fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), 
 				fiConfig.getnPeakMinThresh(), fiConfig.getnPeakMaxThresh(),
 				fiConfig.isForceScale() ? 1 : 0, forceScaleValue,
-				fiConfig.isForceRotation() ? 1 : 0, forceRotationValue,
+				fiConfig.isForceRotation() ? 1 : 0, forceRotationRad,
 				fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), 
 				fiConfig.getSpiralRingCount(), spot_flag,
 				fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), 
