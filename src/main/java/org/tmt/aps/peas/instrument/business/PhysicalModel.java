@@ -14,6 +14,8 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Singleton
 @Startup
@@ -25,9 +27,12 @@ public class PhysicalModel {
 	@EJB
 	CameraDefMgmt cameraDefMgmt;
 	@EJB
+	TelescopeMgmt telescopeMgmt;
+	@EJB
 	private PeasProperties peasProperties;
 	
-	private Instrument instrument;
+	private Instrument instrument;	
+	private Telescope telescope;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -37,7 +42,9 @@ public class PhysicalModel {
 
 	public void refresh() throws Exception {
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
-		instrument = cameraDefMgmt.findInstrument(instrumentId);		
+		instrument = cameraDefMgmt.findInstrument(instrumentId);	
+		Long telescopeId = new Long(peasProperties.getProp("org.tmt.aps.peas.telescopeId"));
+		telescope = telescopeMgmt.findTelescope(telescopeId);	
 	}
 
 	public Instrument getInstrument() {
@@ -46,6 +53,14 @@ public class PhysicalModel {
 
 	public void setInstrument(Instrument instrument) {
 		this.instrument = instrument;
+	}
+
+	public Telescope getTelescope() {
+		return telescope;
+	}
+
+	public void setTelescope(Telescope telescope) {
+		this.telescope = telescope;
 	}
 
 

@@ -103,13 +103,6 @@ public class SessionMgmt {
 		return session;
 	}
 
-	public Telescope findTelescope(long telescopeId) {
-		TypedQuery<Telescope> query = em.createNamedQuery("findTelescope", Telescope.class);
-		query.setParameter("telescopeId", telescopeId);
-
-		return query.getSingleResult();
-	}
-
 	public Instrument findInstrument(long instrumentId) {
 		TypedQuery<Instrument> query = em.createNamedQuery("findInstrument", Instrument.class);
 		query.setParameter("instrumentId", instrumentId);

@@ -20,7 +20,6 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
-import javax.persistence.NoResultException;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
@@ -32,6 +31,7 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
+import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Named
@@ -42,6 +42,8 @@ public class SessionController implements Serializable {
 
 	@EJB
 	SessionMgmt sessionMgmt;
+	@EJB
+	TelescopeMgmt telescopeMgmt;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
@@ -67,7 +69,7 @@ public class SessionController implements Serializable {
 		
 		try {
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		telescope = sessionMgmt.findTelescope(new Long(telescopeIdStr));
+		telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
 		
 		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 		instrument = sessionMgmt.findInstrument(new Long(instrumentIdStr));

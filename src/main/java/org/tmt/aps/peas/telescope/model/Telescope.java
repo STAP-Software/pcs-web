@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+
+import org.tmt.aps.peas.common.FloatPoint;
 
 @Entity
 @Table(name = "Telescope")
@@ -40,6 +43,36 @@ public class Telescope {
 		this.telescopeName = telescopeName;
 	}
 	
+	@Transient
+	FloatPoint telPosition;
+	
+	public FloatPoint getTelPosition() {
+		return telPosition;
+	}
+	public void setTelPosition(FloatPoint telPosition) {
+		this.telPosition = telPosition;
+	}
+
+	@Transient
+	double mirrorTemp;
+	
+	public double getMirrorTemp() {
+		return mirrorTemp;
+	}
+	public void setMirrorTemp(double mirrorTemp) {
+		this.mirrorTemp = mirrorTemp;
+	}
+
+	@Transient
+	double[] m2Position;
+
+
+	public double[] getM2Position() {
+		return m2Position;
+	}
+	public void setM2Position(double[] m2Position) {
+		this.m2Position = m2Position;
+	}
 	
 	
 	

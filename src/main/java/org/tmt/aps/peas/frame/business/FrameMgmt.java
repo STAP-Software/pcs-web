@@ -41,12 +41,15 @@ import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Stateless
 public class FrameMgmt {
@@ -62,6 +65,8 @@ public class FrameMgmt {
 	FrameSimulator frameSimulator;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	TelescopeMgmt telescopeMgmt;
 	@EJB
 	CameraStateMgmt cameraStateMgmt;
 	@EJB
@@ -174,6 +179,10 @@ public class FrameMgmt {
 			// get the frame from CCD or from file, depending on the called type
 			ccdMgmt.fastWipeCcd();
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			
+			// TODO: does this need to be done in parallel with getting the exposure?
+			// get the telescope status
+			telescopeMgmt.refreshStatus();
 			
 			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
 				ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
@@ -397,7 +406,27 @@ public class FrameMgmt {
 		}
 
 		myFits.addHDU(HDU.create(reversedFrame));
+		
+		Camera camera = physicalModel.getInstrument().getCamera();
+		Telescope telescope = physicalModel.getTelescope();
+		if (procedureExecutionState.getCurrentProcedure() != null) {
+			ProcedureConfig procedureConfig = procedureExecutionState.getCurrentProcedure().getProcedureConfig();
+			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", procedureConfig.getIntegrationTime(), "Integration Time (sec)");
+			if (procedureConfig.getSufsGroup() != null) {
+				myFits.getHDU(0).getHeader().addIntValue("SUFS_GRP", procedureConfig.getSufsGroup(), "SUFS Group Number");
+			}
+			myFits.getHDU(0).getHeader().addIntValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
+		}
+		
+		myFits.getHDU(0).getHeader().addStringValue("FILTER", camera.getFilterWheel().getSelectedFilter().getFilterName(), "Filter Name");
+		myFits.getHDU(0).getHeader().addStringValue("MASK", camera.getPupilWheel().getSelectedPupilMask().getMaskName(), "Mask Name");
+		myFits.getHDU(0).getHeader().addStringValue("INSTRUME", physicalModel.getInstrument().getInstrumentName(), "Instrument Name");
+		myFits.getHDU(0).getHeader().addStringValue("TELESCOP", telescope.getTelescopeName(), "Telescope Name");
+		myFits.getHDU(0).getHeader().addFloatValue("AZ", telescope.getTelPosition().x, "Telescope Az");
+		myFits.getHDU(0).getHeader().addFloatValue("EL", telescope.getTelPosition().y, "Telescope El");
+		
 
+		
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
 		myFits.write(o);
