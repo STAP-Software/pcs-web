@@ -11,9 +11,11 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigActual;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 
@@ -29,8 +31,8 @@ public interface ComputationLibrary {
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException;
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfigActual fiConfigActual, RefBeamMap currentRefMap) throws ComputationException;
 	
-	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException;
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException;
 
 }

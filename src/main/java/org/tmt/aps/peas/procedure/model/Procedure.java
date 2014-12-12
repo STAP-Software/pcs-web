@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -21,17 +22,19 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigActual;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -112,12 +115,16 @@ public class Procedure {
 	@JoinColumn(name = "sessionId")
 	Session session;
 
-
 	@OneToMany (mappedBy="procedure")
 	List<ProcedureCcdFrame> procedureCcdFrameList;
 
-	@Transient
-	private FIConfig fiConfig;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn (name="fiConfigId")
+	private FIConfigActual fiConfigActual;
+
+
+	
 	@Transient
 	private FindCentConfig findCentConfig;
 	@Transient
@@ -278,12 +285,13 @@ public class Procedure {
 		this.procedureCcdFrameList = procedureCcdFrameList;
 	}
 
-	public FIConfig getFiConfig() {
-		return fiConfig;
+
+	public FIConfigActual getFiConfigActual() {
+		return fiConfigActual;
 	}
 
-	public void setFiConfig(FIConfig fiConfig) {
-		this.fiConfig = fiConfig;
+	public void setFiConfigActual(FIConfigActual fiConfigActual) {
+		this.fiConfigActual = fiConfigActual;
 	}
 
 	public FindCentConfig getFindCentConfig() {

@@ -204,16 +204,16 @@ public class CreateRefMapExecutor {
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 			
-			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
+			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfigActual(), null);
 			List<FloatPoint> centroids = new ArrayList<FloatPoint>();
 			try {
 				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
 			} catch (Exception e) {
-				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
+				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfigActual(), fiResult);
 				procedureCcdFrame.setCentroidMap(centroidMap);
 				throw e;
 			}
-			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfig(), fiResult);
+			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfigActual(), fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 			
 			statusLogger.log("fandi.end.success");
@@ -225,7 +225,7 @@ public class CreateRefMapExecutor {
 			graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
 			
 			try {
-				computationLibrary.evalFiResult(fiResult, procedure.getFiConfig());
+				computationLibrary.evalFiResult(fiResult, procedure.getFiConfigActual(), procedureConfig);
 				
 			} catch (UserAssistRequiredException e) {
 				
@@ -236,11 +236,11 @@ public class CreateRefMapExecutor {
 				}
 				
 				if (e.isFracThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), procedure.getFiConfig().getFracFilledThresh()));
+					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), procedure.getFiConfigActual().getFracFilledThresh()));
 				}
 				
 				if (e.isFourierThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), procedure.getFiConfig().getFourierQualityThresh()));					
+					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), procedure.getFiConfigActual().getFourierQualityThresh()));					
 				}
 				
 				String text = buf.toString();
@@ -302,6 +302,7 @@ public class CreateRefMapExecutor {
 		String centroidMapData = FloatPointListEncoder.encodeList(centroids);
 		centroidMap.setCentroidMapData(centroidMapData);
 		
+		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
 		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());
 		centroidMap.setForcedRotationFlg(fiConfig.isForceRotation());
 		centroidMap.setForcedScale(fiConfig.getForceScaleValue());

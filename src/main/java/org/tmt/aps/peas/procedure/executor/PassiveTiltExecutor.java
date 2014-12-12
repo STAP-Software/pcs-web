@@ -182,7 +182,7 @@ public class PassiveTiltExecutor {
 				
 				int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 				FloatPoint[] centroids;
-				FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfig(), null);
+				FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfigActual(), null);
 				
 				// display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();

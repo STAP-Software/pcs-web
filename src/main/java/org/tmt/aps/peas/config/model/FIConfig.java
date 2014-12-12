@@ -5,25 +5,22 @@
  */
 package org.tmt.aps.peas.config.model;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
-import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
+import org.apache.commons.beanutils.BeanUtils;
 
 @Entity
 @Table(name = "FIConfig")
-@NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfig o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.instrument i "
-		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and o.lightSource = :lightSource") })
+@Inheritance(strategy=InheritanceType.JOINED)
 public class FIConfig {
 
 	
@@ -34,7 +31,6 @@ public class FIConfig {
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	private Long fiConfigId;
 
-	private int lightSource;
 
 	private float uEst;
 	private float uDelta0;
@@ -47,20 +43,30 @@ public class FIConfig {
 	private int lensletOrientation;
 	private int spiralRingCount;
 
-	private boolean forceScaleDefault;
-	private boolean forceRotationDefault;
+	private boolean forceScale;
+	private boolean forceRotation;
 	
-	private float fracFilledThreshDefault;
-	private float fourierQualityThreshDefault;
+	private float fracFilledThresh;
+	private float fourierQualityThresh;
+	
+	private float forceRotationValue;
+	private float forceScaleValue;
+	private int forceRotationSource;
+	private int forceScaleSource;
 
+	public FIConfig() {
+		
+	}
+	
+	public FIConfig(FIConfig source) throws Exception {
+		
+		BeanUtils.copyProperties(this, source);
 
-	@ManyToOne
-	@JoinColumn(name = "pupilMaskTypeId")
-	private PupilMaskType pupilMaskType;
-
-	@ManyToOne
-	@JoinColumn(name = "instrumentId")
-	private Instrument instrument;
+		this.fiConfigId = null;
+	}
+	
+	
+	
 
 	public Long getFiConfigId() {
 		return fiConfigId;
@@ -142,65 +148,6 @@ public class FIConfig {
 		this.spiralRingCount = spiralRingCount;
 	}
 
-	public PupilMaskType getPupilMaskType() {
-		return pupilMaskType;
-	}
-
-	public void setPupilMaskType(PupilMaskType pupilMaskType) {
-		this.pupilMaskType = pupilMaskType;
-	}
-
-	public Instrument getInstrument() {
-		return instrument;
-	}
-
-	public void setInstrument(Instrument instrument) {
-		this.instrument = instrument;
-	}
-
-	public int getLightSource() {
-		return lightSource;
-	}
-
-	public void setLightSource(int lightSource) {
-		this.lightSource = lightSource;
-	}
-
-	public boolean isForceScaleDefault() {
-		return forceScaleDefault;
-	}
-
-	public void setForceScaleDefault(boolean forceScaleDefault) {
-		this.forceScaleDefault = forceScaleDefault;
-	}
-
-	public boolean isForceRotationDefault() {
-		return forceRotationDefault;
-	}
-
-	public void setForceRotationDefault(boolean forceRotationDefault) {
-		this.forceRotationDefault = forceRotationDefault;
-	}
-
-	public float getFracFilledThreshDefault() {
-		return fracFilledThreshDefault;
-	}
-
-	public void setFracFilledThreshDefault(float fracFilledThreshDefault) {
-		this.fracFilledThreshDefault = fracFilledThreshDefault;
-	}
-
-	public float getFourierQualityThreshDefault() {
-		return fourierQualityThreshDefault;
-	}
-
-	public void setFourierQualityThreshDefault(float fourierQualityThreshDefault) {
-		this.fourierQualityThreshDefault = fourierQualityThreshDefault;
-	}
-
-	@Transient
-	private boolean forceScale;
-
 	public boolean isForceScale() {
 		return forceScale;
 	}
@@ -209,9 +156,6 @@ public class FIConfig {
 		this.forceScale = forceScale;
 	}
 
-	@Transient
-	private boolean forceRotation;
-
 	public boolean isForceRotation() {
 		return forceRotation;
 	}
@@ -219,42 +163,22 @@ public class FIConfig {
 	public void setForceRotation(boolean forceRotation) {
 		this.forceRotation = forceRotation;
 	}
-	
-	@Transient 
-	private int forceScaleSource;
-	
-	public int getForceScaleSource() {
-		return forceScaleSource;
+
+	public float getFracFilledThresh() {
+		return fracFilledThresh;
 	}
 
-	public void setForceScaleSource(int forceScaleSource) {
-		this.forceScaleSource = forceScaleSource;
+	public void setFracFilledThresh(float fracFilledThresh) {
+		this.fracFilledThresh = fracFilledThresh;
 	}
 
-	@Transient
-	private int forceRotationSource;
-	
-	public int getForceRotationSource() {
-		return forceRotationSource;
+	public float getFourierQualityThresh() {
+		return fourierQualityThresh;
 	}
 
-	public void setForceRotationSource(int forceRotationSource) {
-		this.forceRotationSource = forceRotationSource;
+	public void setFourierQualityThresh(float fourierQualityThresh) {
+		this.fourierQualityThresh = fourierQualityThresh;
 	}
-
-	@Transient
-	private float forceScaleValue;
-	
-	public float getForceScaleValue() {
-		return forceScaleValue;
-	}
-
-	public void setForceScaleValue(float forceScaleValue) {
-		this.forceScaleValue = forceScaleValue;
-	}
-
-	@Transient 
-	private float forceRotationValue;
 
 	public float getForceRotationValue() {
 		return forceRotationValue;
@@ -264,38 +188,30 @@ public class FIConfig {
 		this.forceRotationValue = forceRotationValue;
 	}
 
-	@Transient
-	private RefBeamMap refDefMap;
-
-	public RefBeamMap getRefDefMap() {
-		return refDefMap;
+	public float getForceScaleValue() {
+		return forceScaleValue;
 	}
 
-	public void setRefDefMap(RefBeamMap refDefMap) {
-		this.refDefMap = refDefMap;
-	}
-	
-	@Transient
-	private float fracFilledThresh;
-	
-	public float getFracFilledThresh() {
-		return fracFilledThresh;
+	public void setForceScaleValue(float forceScaleValue) {
+		this.forceScaleValue = forceScaleValue;
 	}
 
-	public void setFracFilledThresh(float fracFilledThresh) {
-		this.fracFilledThresh = fracFilledThresh;
+	public int getForceRotationSource() {
+		return forceRotationSource;
 	}
 
-	@Transient
-	private float fourierQualityThresh;
-
-	public float getFourierQualityThresh() {
-		return fourierQualityThresh;
+	public void setForceRotationSource(int forceRotationSource) {
+		this.forceRotationSource = forceRotationSource;
 	}
 
-	public void setFourierQualityThresh(float fourierQualityThresh) {
-		this.fourierQualityThresh = fourierQualityThresh;
+	public int getForceScaleSource() {
+		return forceScaleSource;
 	}
+
+	public void setForceScaleSource(int forceScaleSource) {
+		this.forceScaleSource = forceScaleSource;
+	}
+
 
 	
 }

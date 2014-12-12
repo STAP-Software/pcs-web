@@ -43,6 +43,8 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigActual;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
 import org.tmt.aps.peas.config.model.Subimage;
@@ -605,25 +607,24 @@ public class ProcedureController implements Serializable {
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
-	private void updateFIConfig() {
+	private void updateFIConfig() throws Exception {
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
-			FIConfig fiConfig = globalConfigMgmt.findFIConfig(sessionController.getInstrument().getInstrumentId(), 
+			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(sessionController.getInstrument().getInstrumentId(), 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
 				procedure.getProcedureConfig().getLightSource());
 			
 			// use defaults as actuals if user doesn't subsequently change them
-			fiConfig.setForceScale(fiConfig.isForceScaleDefault());
-			fiConfig.setForceRotation(fiConfig.isForceRotationDefault());
-			fiConfig.setForceScaleSource(1);
-			fiConfig.setForceRotationSource(1);
-			fiConfig.setForceScaleValue(0.0f);
-			fiConfig.setForceRotationValue(0.0f);
 			
-			fiConfig.setFourierQualityThresh(fiConfig.getFourierQualityThreshDefault());
-			fiConfig.setFracFilledThresh(fiConfig.getFracFilledThreshDefault());
+			// TODO: need to add these fields to the database
+			//fiConfig.setForceScaleSource(1);
+			//fiConfig.setForceRotationSource(1);
+			//fiConfig.setForceScaleValue(0.0f);
+			//fiConfig.setForceRotationValue(0.0f);
 			
-			procedure.setFiConfig(fiConfig);
+			FIConfigActual fiConfigActual = new FIConfigActual(fiConfigDefaults);
+			
+			procedure.setFiConfigActual(fiConfigActual);
 
 		}
 	}
@@ -645,7 +646,7 @@ public class ProcedureController implements Serializable {
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			procedure.getFiConfig().setRefDefMap(refDefMap);
+			procedure.getFiConfigActual().setRefDefMap(refDefMap);
 		}
 		
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
@@ -739,7 +740,7 @@ public class ProcedureController implements Serializable {
 
 		// FIXME: this is not loading the actual values used in the procedure that was run
 		// it is loading the defaults.  Actual values used are not currently being stored.
-		procedure.setFiConfig(new FIConfig());
+		procedure.setFiConfigActual(new FIConfigActual());
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");

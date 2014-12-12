@@ -16,11 +16,12 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigActual;
 import org.tmt.aps.peas.config.model.FindCentConfig;
-import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
+import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -54,7 +55,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfigActual fiConfigActual, RefBeamMap currentRefMap) throws ComputationException {
 		
 		RetVal retVal = new RetVal();
 		
@@ -66,7 +67,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		float frame_avg = 0.0f; // average background of frame (TODO) from backgroundStats
 		float frame_sigma = 20.0f; // frame background sigma (TODO) from backgroundStats
 		
-		List<FloatPoint> refDefCentroids = fiConfig.getRefDefMap().getCentroidMap().getValues();
+		List<FloatPoint> refDefCentroids = fiConfigActual.getRefDefMap().getCentroidMap().getValues();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 		
@@ -131,7 +132,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 	}
 	
-	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException {
 		
 		
 	}

@@ -19,6 +19,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigActual;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
@@ -179,7 +180,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap) throws ComputationException {
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfigActual fiConfigActual, RefBeamMap currentRefMap) throws ComputationException {
 		
 		JfindAndIdentify jfindAndIdentify = new JfindAndIdentify();
 		RetVal retVal = new RetVal();
@@ -189,7 +190,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
 		
-		List<FloatPoint> refDefCentroids = fiConfig.getRefDefMap().getCentroidMap().getValues();
+		List<FloatPoint> refDefCentroids = fiConfigActual.getRefDefMap().getCentroidMap().getValues();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 		
@@ -201,10 +202,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 		
 		// Force scale and rotation values, potentially coming from current ref map
-		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
-			currentRefMap.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
-		float forceRotationDeg = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
-			currentRefMap.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
+		float forceScaleValue = (fiConfigActual.isForceScale() && fiConfigActual.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
+			currentRefMap.getCentroidMap().getScale() : fiConfigActual.getForceScaleValue();
+		float forceRotationDeg = (fiConfigActual.isForceRotation() && fiConfigActual.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
+			currentRefMap.getCentroidMap().getRotation() : fiConfigActual.getForceRotationValue();
 						
 		float forceRotationRad = forceRotationDeg * (float)Constants.DEG2RAD;
 			
@@ -213,12 +214,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 
 		Object output[] = jfindAndIdentify.jfindAndIdentify(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, 
-				fiConfig.getuEst(), fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), 
-				fiConfig.getnPeakMinThresh(), fiConfig.getnPeakMaxThresh(),
-				fiConfig.isForceScale() ? 1 : 0, forceScaleValue,
-				fiConfig.isForceRotation() ? 1 : 0, forceRotationRad,
-				fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), 
-				fiConfig.getSpiralRingCount(), spot_flag,
+				fiConfigActual.getuEst(), fiConfigActual.getuDelta0(), fiConfigActual.getMatchbox(), fiConfigActual.getnThresh0(), 
+				fiConfigActual.getnPeakMinThresh(), fiConfigActual.getnPeakMaxThresh(),
+				fiConfigActual.isForceScale() ? 1 : 0, forceScaleValue,
+				fiConfigActual.isForceRotation() ? 1 : 0, forceRotationRad,
+				fiConfigActual.getMatchFineThresh(), fiConfigActual.getLensletOrientation(), 
+				fiConfigActual.getSpiralRingCount(), spot_flag,
 				fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), 
 				fiResult.getnDetect(), fiParams, fiResult.getN0123(),
 				fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
@@ -251,10 +252,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	
-	public void evalFiResult(FIResult fiResult, FIConfig fiConfig) throws UserAssistRequiredException, AbortProcedureException {
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException {
 	// Need to Check this first
 		UserAssistRequiredException userAssistException = new UserAssistRequiredException();
-		if (fiConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
+		if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
 			userAssistException.setNdetectNotAllSingle(true);
 		}
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {

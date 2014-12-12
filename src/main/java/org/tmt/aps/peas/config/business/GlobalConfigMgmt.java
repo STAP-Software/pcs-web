@@ -11,7 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
@@ -44,8 +44,8 @@ public class GlobalConfigMgmt {
 	
 	
 
-	public FIConfig findFIConfig(Long instrumentId, Long pupilMaskTypeId, int lightSource) {
-		TypedQuery<FIConfig> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfig.class);
+	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource) {
+		TypedQuery<FIConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("lightSource", lightSource);
