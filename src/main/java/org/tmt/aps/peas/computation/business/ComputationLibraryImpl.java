@@ -131,8 +131,62 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		List<FloatPoint> centroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+
 		
-	
+		//Code for findCent unit testing
+//		logger.info("fiCentroids:: ");
+//		
+//		logger.info("Irad::" + findCentConfig.getIrad() + "\n");
+//		logger.info("Imargin::" + findCentConfig.getImargin()+ "\n");
+//		logger.info("Itermax::" + findCentConfig.getItermax()+ "\n");
+//		logger.info("Ngauss set to 0::\n" );
+//
+//		Object[] tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
+//				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 0, x_cent, y_cent, intensity);
+//		
+//		if (retVal.getCode() > 0) {
+//			statusLogger.log(retVal);
+//			throw new ComputationException("No good centroid could be found");
+//		}
+//
+//		List<FloatPoint> tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+//		logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
+//		logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
+//		logger.info("Intensity::\n");
+//        StringBuffer buf = new StringBuffer();
+//		for (int i=0;i<arrayLen; i++) {
+//        	buf.append(intensity[i] + ",");
+//         }
+//		buf.deleteCharAt(buf.length()-1);
+//       	logger.info(buf.toString()); 
+//
+//       	
+//		logger.info("Ngauss set to 1::\n" );
+//
+//		tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
+//				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 1, x_cent, y_cent, intensity);
+//		
+//		if (retVal.getCode() > 0) {
+//			statusLogger.log(retVal);
+//			throw new ComputationException("No good centroid could be found");
+//		}
+//		
+//	
+//		tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+//		logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
+//		logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
+//		logger.info("Intensity::\n");
+//		
+//		buf.delete(0,buf.length());
+//		for (int i=0;i<arrayLen; i++) {
+//        	buf.append(intensity[i] + ",");
+//         }
+//		buf.deleteCharAt(buf.length()-1);
+//       	logger.info(buf.toString()); 	
+//       	     	
+       	
+       	//End of code for findCent unit testing
+		
 		return centroids;
 		
 	}
