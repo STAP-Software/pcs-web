@@ -22,19 +22,18 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.config.model.FIConfigActual;
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -120,8 +119,8 @@ public class Procedure {
 
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn (name="fiConfigId")
-	private FIConfigActual fiConfigActual;
+	@JoinColumn (name="procedureConfigSetId")
+	private ProcedureConfigSet procedureConfigSet;
 
 
 	
@@ -131,9 +130,12 @@ public class Procedure {
 	private ProcedureOutput procedureOutput;
 	@Transient 
 	private RefBeamMap refBeamMap;  // the refBeamMap taken and/or used in this procedure
+	@Transient 
+	private RefBeamMap refDefMap;  // the refDefMap used for this f&i in this procedure
 	
 	public Procedure() {
 		procedureConfig = new ProcedureConfig();
+		procedureConfigSet = new ProcedureConfigSet();
 	}
 
 	public Long getProcedureId() {
@@ -286,12 +288,13 @@ public class Procedure {
 	}
 
 
-	public FIConfigActual getFiConfigActual() {
-		return fiConfigActual;
+
+	public ProcedureConfigSet getProcedureConfigSet() {
+		return procedureConfigSet;
 	}
 
-	public void setFiConfigActual(FIConfigActual fiConfigActual) {
-		this.fiConfigActual = fiConfigActual;
+	public void setProcedureConfigSet(ProcedureConfigSet procedureConfigSet) {
+		this.procedureConfigSet = procedureConfigSet;
 	}
 
 	public FindCentConfig getFindCentConfig() {
@@ -300,6 +303,15 @@ public class Procedure {
 
 	public void setFindCentConfig(FindCentConfig findCentConfig) {
 		this.findCentConfig = findCentConfig;
+	}
+
+
+	public RefBeamMap getRefDefMap() {
+		return refDefMap;
+	}
+
+	public void setRefDefMap(RefBeamMap refDefMap) {
+		this.refDefMap = refDefMap;
 	}
 
 	public ProcedureOutput getProcedureOutput() {

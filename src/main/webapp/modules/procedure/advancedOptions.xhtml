@@ -51,48 +51,48 @@
 					rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					<h:outputLabel value="Force Scale" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfigActual.forceScale}">
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}">
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
  
          			
-        			<h:outputLabel value="Force Scale Source" rendered="#{procedureController.procedure.fiConfigActual.forceScale}" />
+        			<h:outputLabel value="Force Scale Source" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}" />
         			
-        			<p:panelGrid columns="3" id="forceScalePanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.fiConfigActual.forceScale}" >
+        			<p:panelGrid columns="3" id="forceScalePanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}" >
         			  
-        			<p:selectOneMenu value="#{procedureController.procedure.fiConfigActual.forceScaleSource}">
+        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource}">
             			<f:selectItem itemLabel="Ref Map" itemValue="1" />
             			<f:selectItem itemLabel="User Value" itemValue="2" />
 					<p:ajax update="forceScalePanelGroup" />
 					</p:selectOneMenu>
 					<p:spacer height="1" width="10" />
-					<p:inputText size="4" value="#{procedureController.procedure.fiConfigActual.forceScaleValue}" 
-						rendered="#{procedureController.procedure.fiConfigActual.forceScaleSource eq 2}"  />
+					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleValue}" 
+						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource eq 2}"  />
         			</p:panelGrid>
           			
 					<h:outputLabel value="Force Rotation" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.fiConfigActual.forceRotation}">
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}">
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
 
-       				<h:outputLabel value="Force Rotation Source" rendered="#{procedureController.procedure.fiConfigActual.forceRotation}" />
+       				<h:outputLabel value="Force Rotation Source" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" />
         			
-        			<p:panelGrid columns="3" id="forceRotationPanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.fiConfigActual.forceRotation}" >
-        			<p:selectOneMenu value="#{procedureController.procedure.fiConfigActual.forceRotationSource}">
+        			<p:panelGrid columns="3" id="forceRotationPanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" >
+        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource}">
             			<f:selectItem itemLabel="Ref Map" itemValue="1" />
             			<f:selectItem itemLabel="User Value (deg)" itemValue="2" />
 					<p:ajax update="forceRotationPanelGroup" />
 					</p:selectOneMenu>
 					<p:spacer height="1" width="10" />
-					<p:inputText size="4" value="#{procedureController.procedure.fiConfigActual.forceRotationValue}" 
-						rendered="#{procedureController.procedure.fiConfigActual.forceRotationSource eq 2}"  />
+					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationValue}" 
+						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource eq 2}"  />
         			</p:panelGrid>
  
  					<h:outputLabel value="Fraction of Boxes Filled Threshold" />
- 					<p:inputText size="4" value="#{procedureController.procedure.fiConfigActual.fracFilledThresh}" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fracFilledThresh}" />
  					
  					<h:outputLabel value="Fourier Quality Threshold" />
- 					<p:inputText size="4" value="#{procedureController.procedure.fiConfigActual.fourierQualityThresh}" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fourierQualityThresh}" />
   
  
 				</p:panelGrid>

@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -182,7 +183,9 @@ public class PassiveTiltExecutor {
 				
 				int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
 				FloatPoint[] centroids;
-				FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfigActual(), null);
+				
+				FIConfig fiConfig = procedure.getProcedureConfigSet().getFiConfig();
+				FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, null, procedure.getRefBeamMap());
 				
 				// display the marked frame
 				frameDisplayMgmt.displayMarkedFrame();

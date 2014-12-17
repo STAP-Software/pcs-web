@@ -43,9 +43,9 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
-import org.tmt.aps.peas.config.model.FIConfigActual;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
@@ -622,9 +622,9 @@ public class ProcedureController implements Serializable {
 			//fiConfig.setForceScaleValue(0.0f);
 			//fiConfig.setForceRotationValue(0.0f);
 			
-			FIConfigActual fiConfigActual = new FIConfigActual(fiConfigDefaults);
+			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
 			
-			procedure.setFiConfigActual(fiConfigActual);
+			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
 
 		}
 	}
@@ -646,7 +646,7 @@ public class ProcedureController implements Serializable {
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			procedure.getFiConfigActual().setRefDefMap(refDefMap);
+			procedure.setRefDefMap(refDefMap);
 		}
 		
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
@@ -740,7 +740,7 @@ public class ProcedureController implements Serializable {
 
 		// FIXME: this is not loading the actual values used in the procedure that was run
 		// it is loading the defaults.  Actual values used are not currently being stored.
-		procedure.setFiConfigActual(new FIConfigActual());
+		procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");

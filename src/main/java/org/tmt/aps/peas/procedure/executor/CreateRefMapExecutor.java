@@ -203,17 +203,19 @@ public class CreateRefMapExecutor {
 			
 			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
 			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+		
+			FIConfig fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 			
-			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, procedure.getFiConfigActual(), null);
+			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, null, procedure.getRefDefMap());
 			List<FloatPoint> centroids = new ArrayList<FloatPoint>();
 			try {
 				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
 			} catch (Exception e) {
-				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfigActual(), fiResult);
+				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
 				procedureCcdFrame.setCentroidMap(centroidMap);
 				throw e;
 			}
-			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, procedure.getFiConfigActual(), fiResult);
+			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 			
 			statusLogger.log("fandi.end.success");
@@ -225,7 +227,7 @@ public class CreateRefMapExecutor {
 			graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
 			
 			try {
-				computationLibrary.evalFiResult(fiResult, procedure.getFiConfigActual(), procedureConfig);
+				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
 				
 			} catch (UserAssistRequiredException e) {
 				
@@ -236,11 +238,11 @@ public class CreateRefMapExecutor {
 				}
 				
 				if (e.isFracThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), procedure.getFiConfigActual().getFracFilledThresh()));
+					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), fiConfig.getFracFilledThresh()));
 				}
 				
 				if (e.isFourierThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), procedure.getFiConfigActual().getFourierQualityThresh()));					
+					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), fiConfig.getFourierQualityThresh()));					
 				}
 				
 				String text = buf.toString();
