@@ -706,7 +706,7 @@ public class ProcedureController implements Serializable {
 	public String doViewProcedure() {
 
 		procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
-		
+				
 		procedureType = procedure.getProcedureType();
 
 		statusLogController.refreshProcedureStatusLog();
@@ -738,9 +738,10 @@ public class ProcedureController implements Serializable {
 		// set up visualization displays
 		initVisualizationDisplays(procedureType.getProcedureTypeId());
 
-		// FIXME: this is not loading the actual values used in the procedure that was run
-		// it is loading the defaults.  Actual values used are not currently being stored.
-		procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
+		// in case the values are not in the DB, just dummy some values
+		if (procedure.getProcedureConfigSet().getFiConfig() == null) {
+			procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
+		}
 
 		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
@@ -755,6 +756,10 @@ public class ProcedureController implements Serializable {
 	// Maybe in another controller, not sure yet
 
 	public void doSaveAdvancedOptions() {
+
+	}
+
+	public void doViewAdvancedOptions() {
 
 	}
 
