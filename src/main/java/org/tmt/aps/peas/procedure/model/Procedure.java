@@ -49,6 +49,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig "
 			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "
 			+ "LEFT OUTER JOIN FETCH cf.cameraState INNER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.fiConfig "
+			+ "LEFT OUTER JOIN FETCH pcs.findCentConfig "
 			+ "WHERE p.procedureId = :procedureId" )
 	
 })
@@ -123,9 +124,6 @@ public class Procedure {
 	private ProcedureConfigSet procedureConfigSet;
 
 
-	
-	@Transient
-	private FindCentConfig findCentConfig;
 	@Transient
 	private ProcedureOutput procedureOutput;
 	@Transient 
@@ -296,15 +294,6 @@ public class Procedure {
 	public void setProcedureConfigSet(ProcedureConfigSet procedureConfigSet) {
 		this.procedureConfigSet = procedureConfigSet;
 	}
-
-	public FindCentConfig getFindCentConfig() {
-		return findCentConfig;
-	}
-
-	public void setFindCentConfig(FindCentConfig findCentConfig) {
-		this.findCentConfig = findCentConfig;
-	}
-
 
 	public RefBeamMap getRefDefMap() {
 		return refDefMap;

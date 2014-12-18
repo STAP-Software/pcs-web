@@ -9,21 +9,18 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-import org.tmt.aps.peas.instrument.model.Instrument;
+import org.apache.commons.beanutils.BeanUtils;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "FindCentConfig")
-@NamedQueries({
-	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfig o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId" )
-})
+@Inheritance(strategy=InheritanceType.JOINED)
 public class FindCentConfig {
 
 	@Id
@@ -35,12 +32,24 @@ public class FindCentConfig {
 	private int ngauss;
 	private int itermax;
 
+	public FindCentConfig() {
+		
+	}
+
+
+	public FindCentConfig(FindCentConfig source) {
+		
+		try {
+		BeanUtils.copyProperties(this, source);
+
+		this.findCentConfigId = null;
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 	
-	@ManyToOne
-	@JoinColumn (name="pupilMaskTypeId")
-	private PupilMaskType pupilMaskType;
-
-
 	public Long getFindCentConfigId() {
 		return findCentConfigId;
 	}
@@ -80,15 +89,6 @@ public class FindCentConfig {
 	}
 
 
-	public PupilMaskType getPupilMaskType() {
-		return pupilMaskType;
-	}
-
-
-	public void setPupilMaskType(PupilMaskType pupilMaskType) {
-		this.pupilMaskType = pupilMaskType;
-	}
-
 
 	public int getItermax() {
 		return itermax;
@@ -103,7 +103,6 @@ public class FindCentConfig {
 		
 		StringBuffer buf = new StringBuffer();
 		buf.append("FindCentConfig:");
-		buf.append("\nPupilMaskType = " + pupilMaskType.getPupilMaskTypeName());
 		buf.append("\nirad = " + irad);
 		buf.append("\nimargin = " + imargin);
 		buf.append("\nngauss = " + ngauss);

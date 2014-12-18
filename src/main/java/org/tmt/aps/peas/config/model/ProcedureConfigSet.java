@@ -27,6 +27,10 @@ public class ProcedureConfigSet {
 	@JoinColumn(name = "fiConfigId")
 	private FIConfig fiConfig;
 	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "findCentConfigId")
+	private FindCentConfig findCentConfig;
+	
 	
 
 	public Long getProcedureConfigSetId() {
@@ -43,6 +47,14 @@ public class ProcedureConfigSet {
 
 	public void setFiConfig(FIConfig fiConfig) {
 		this.fiConfig = fiConfig;
+	}
+
+	public FindCentConfig getFindCentConfig() {
+		return findCentConfig;
+	}
+
+	public void setFindCentConfig(FindCentConfig findCentConfig) {
+		this.findCentConfig = findCentConfig;
 	}
 
 

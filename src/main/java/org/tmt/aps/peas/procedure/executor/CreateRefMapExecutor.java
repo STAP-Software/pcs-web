@@ -209,7 +209,7 @@ public class CreateRefMapExecutor {
 			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, null, procedure.getRefDefMap());
 			List<FloatPoint> centroids = new ArrayList<FloatPoint>();
 			try {
-				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getFindCentConfig());
+				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet().getFindCentConfig());
 			} catch (Exception e) {
 				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
 				procedureCcdFrame.setCentroidMap(centroidMap);

@@ -1,12 +1,9 @@
 /**
  * @author Scott Michaels
- * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * Copyright (C) 2014 Thirty Meter Telescope Corporation. 
  * All Rights Reserved.
  */
 package org.tmt.aps.peas.config.model;
-
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;

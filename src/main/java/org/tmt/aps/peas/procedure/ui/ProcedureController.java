@@ -45,7 +45,7 @@ import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
-import org.tmt.aps.peas.config.model.ProcedureConfigSet;
+import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
@@ -321,10 +321,10 @@ public class ProcedureController implements Serializable {
 
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
-		if (procedure.getFindCentConfig() == null) {
+		if (procedure.getProcedureConfigSet().getFindCentConfig() == null) {
 			return "6";
 		}
-		return "" + procedure.getFindCentConfig().getIrad();
+		return "" + procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
 	}
 	
 	public void setFrameSearchRadius(String searchRadius) {
@@ -649,9 +649,10 @@ public class ProcedureController implements Serializable {
 			procedure.setRefDefMap(refDefMap);
 		}
 		
-		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig( 
+		// get FindCentDefaults and create a procedure related copy
+		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig( 
 				procedure.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			procedure.setFindCentConfig(findCentConfig);
+			procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
 
 		// if this is frame from file, associate the frame now
