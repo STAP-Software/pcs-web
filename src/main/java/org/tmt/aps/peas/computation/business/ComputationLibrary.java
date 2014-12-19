@@ -12,9 +12,9 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 

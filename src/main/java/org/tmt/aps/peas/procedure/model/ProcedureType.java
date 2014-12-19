@@ -5,28 +5,18 @@
  */
 package org.tmt.aps.peas.procedure.model;
 
-import java.util.Collections;
-import java.util.List;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Transient;
-
-import org.tmt.aps.peas.common.FloatListEncoder;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "ProcedureType")
 @NamedQueries({
-	@NamedQuery(name = "findAllProcedureTypes", query = "SELECT p from ProcedureType p INNER JOIN FETCH p.defaultPupilMaskType " ),
-	@NamedQuery(name = "findProcedureType", query = "SELECT p from ProcedureType p INNER JOIN FETCH p.defaultPupilMaskType "
+	@NamedQuery(name = "findAllProcedureTypes", query = "SELECT p from ProcedureType p " ),
+	@NamedQuery(name = "findProcedureType", query = "SELECT p from ProcedureType p "
 			+ "WHERE p.procedureTypeId = :procedureTypeId" )
 })
 public class ProcedureType {
@@ -49,15 +39,8 @@ public class ProcedureType {
 	@Column(nullable=false, length=10)
 	private String procedureTypeCd;
 	
-	@ManyToOne (fetch = FetchType.LAZY)
-	@JoinColumn(name = "defaultMaskTypeId", referencedColumnName = "pupilMaskTypeId")
-	PupilMaskType defaultPupilMaskType;
 
-	@Column(nullable=false, length=255)
-	String defaultIntTimes;
-	
-	@Transient
-	List<Float> integrationTimeList;
+
 	
 	public Long getProcedureTypeId() {
 		return procedureTypeId;
@@ -78,13 +61,6 @@ public class ProcedureType {
 		this.procedureTypeCd = procedureTypeCd;
 	}
 	
-	public PupilMaskType getDefaultPupilMaskType() {
-		return defaultPupilMaskType;
-	}
-	
-	public void setDefaultPupilMaskType(PupilMaskType defaultPupilMaskType) {
-		this.defaultPupilMaskType = defaultPupilMaskType;
-	}
 	public boolean isCreateRefMap() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
 	}
@@ -96,12 +72,6 @@ public class ProcedureType {
 	}
 	public boolean isFineScreen() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_FINE_SCREEN);
-	}
-	public String getDefaultIntTimes() {
-		return defaultIntTimes;
-	}
-	public void setDefaultIntTimes(String defaultIntTimes) {
-		this.defaultIntTimes = defaultIntTimes;
 	}
 	
 

@@ -31,7 +31,19 @@ public class ProcedureConfigSet {
 	@JoinColumn(name = "findCentConfigId")
 	private FindCentConfig findCentConfig;
 	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "procedureConfigId")
+	private ProcedureConfig procedureConfig;
 	
+	
+
+	public ProcedureConfig getProcedureConfig() {
+		return procedureConfig;
+	}
+
+	public void setProcedureConfig(ProcedureConfig procedureConfig) {
+		this.procedureConfig = procedureConfig;
+	}
 
 	public Long getProcedureConfigSetId() {
 		return procedureConfigSetId;

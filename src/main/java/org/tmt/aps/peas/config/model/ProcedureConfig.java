@@ -3,9 +3,11 @@
  * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
  * All Rights Reserved.
  */
-package org.tmt.aps.peas.procedure.model;
+package org.tmt.aps.peas.config.model;
 
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -13,6 +15,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -22,24 +26,17 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
-import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
-import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "ProcedureConfig")
-@NamedQueries({
-		@NamedQuery(name = "findAllProcedureConfigs", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-				+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.filterType "),
-		@NamedQuery(name = "findDefaultProcedureConfig", query = "SELECT p from ProcedureConfig p INNER JOIN FETCH p.telescope tel INNER JOIN FETCH p.instrument inst "
-				+ "INNER JOIN FETCH p.procedureType pt  INNER JOIN FETCH p.filterType  "
-				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId AND p.defaultFlg = TRUE "
-				+ "ORDER BY p.updateDate desc ")
-
-})
+@Inheritance(strategy=InheritanceType.JOINED)
 public class ProcedureConfig {
 
 	public static final int FRAME_SOURCE_CCD = 1;
@@ -57,12 +54,6 @@ public class ProcedureConfig {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date updateDate;
 
-	@Transient
-	private PupilMask pupilMask;  // TODO: make this non-transient
-	@Transient
-	Filter filter;
-	@Transient
-	ReferenceBeam referenceBeam;
 		
 	private Float integrationTime;
 	@Column(name="numTrials")
@@ -87,24 +78,44 @@ public class ProcedureConfig {
 	private int autoSendActuatorCmds;
 	@Column(name="autoTakeRefBeamFlg")
 	private int autoTakeRefBeam;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "telescopeId")
-	Telescope telescope;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "instrumentId")
-	Instrument instrument;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "procedureTypeId")
-	ProcedureType procedureType;
 	
+	@Column(nullable=false, length=255)
+	String intTimeSelectOptions;
+	
+	@Transient
+	List<Float> integrationTimeList; 
+
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "filterTypeId")
 	FilterType filterType;
 
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "pupilMaskTypeId")
+	PupilMaskType pupilMaskType;
 	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "pupilMaskId")
+	PupilMask pupilMask;
+
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "filterId")
+	Filter filter;
+	
+	@ManyToOne (fetch = FetchType.LAZY)
+	@JoinColumn(name = "referenceBeamId")
+	ReferenceBeam referenceBeam;
+
+	public ProcedureConfig() {
+		
+	}
+	
+	public ProcedureConfig(ProcedureConfig source) throws Exception {
+		
+		BeanUtils.copyProperties(this, source);
+
+		this.procedureConfigId = null;
+	}
 
 	public FilterType getFilterType() {
 		return filterType;
@@ -226,29 +237,6 @@ public class ProcedureConfig {
 		this.autoTakeRefBeam = autoTakeRefBeam;
 	}
 
-	public Telescope getTelescope() {
-		return telescope;
-	}
-
-	public void setTelescope(Telescope telescope) {
-		this.telescope = telescope;
-	}
-
-	public Instrument getInstrument() {
-		return instrument;
-	}
-
-	public void setInstrument(Instrument instrument) {
-		this.instrument = instrument;
-	}
-
-	public ProcedureType getProcedureType() {
-		return procedureType;
-	}
-
-	public void setProcedureType(ProcedureType procedureType) {
-		this.procedureType = procedureType;
-	}
 
 	public Integer getUfsSegment() {
 		return ufsSegment;
@@ -290,10 +278,32 @@ public class ProcedureConfig {
 		this.referenceBeam = referenceBeam;
 	}
 
+	public String getIntTimeSelectOptions() {
+		return intTimeSelectOptions;
+	}
+
+	public void setIntTimeSelectOptions(String intTimeSelectOptions) {
+		this.intTimeSelectOptions = intTimeSelectOptions;
+		if (intTimeSelectOptions != null) {
+			integrationTimeList =  FloatListEncoder.decodeList(intTimeSelectOptions);
+			Collections.sort(integrationTimeList);
+		}
+	}
+
+	public PupilMaskType getPupilMaskType() {
+		return pupilMaskType;
+	}
+
+	public void setPupilMaskType(PupilMaskType pupilMaskType) {
+		this.pupilMaskType = pupilMaskType;
+	}
+
 	public boolean isFrameFromFile() {
 		return frameSource == FRAME_SOURCE_FILE;
 	}
 
-
+	public List<Float> getIntegrationTimeList() {
+		return integrationTimeList;
+	}
 
 }

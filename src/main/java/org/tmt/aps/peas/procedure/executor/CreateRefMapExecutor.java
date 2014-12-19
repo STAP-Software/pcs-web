@@ -28,6 +28,7 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -43,7 +44,6 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
@@ -115,7 +115,7 @@ public class CreateRefMapExecutor {
 
 		try {
 
-			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
@@ -329,7 +329,7 @@ public class CreateRefMapExecutor {
 		refBeamMap.setCreateDate(new Date());
 		
 		refBeamMap.setInstrumentId(procedure.getInstrument().getInstrumentId());
-		refBeamMap.setFilterTypeId(procedure.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		refBeamMap.setFilterTypeId(procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		
 		//centroidMap.setCreateDate(new Date());
 		

@@ -3,8 +3,8 @@ package org.tmt.aps.peas.procedure.executor;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.instrument.model.PupilMask;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 
 public class CenterTelescopeCalc {
 

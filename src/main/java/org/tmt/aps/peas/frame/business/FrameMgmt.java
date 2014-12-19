@@ -34,6 +34,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -46,7 +47,6 @@ import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -107,10 +107,14 @@ public class FrameMgmt {
 
 	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		// determine FITS file name
-		FitsFilename fitsFilename = new FitsFilename(procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), procedureCcdFrame
-				.getProcedure().getProcedureType().getProcedureTypeCd(), procedureCcdFrame.getProcedure().getProcedureNumber(),
-				procedureCcdFrame.getProcedureIterationNumber(), procedureCcdFrame.getProcedure().getProcedureConfig().getUfsSegment(),
-				procedureCcdFrame.getProcedure().getProcedureConfig().getSufsGroup(), procedureCcdFrame.getPhasingStepNumber());
+		FitsFilename fitsFilename = new FitsFilename(
+				procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), 
+				procedureCcdFrame.getProcedure().getProcedureType().getProcedureTypeCd(), 
+				procedureCcdFrame.getProcedure().getProcedureNumber(),
+				procedureCcdFrame.getProcedureIterationNumber(), 
+				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getUfsSegment(),
+				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup(), 
+				procedureCcdFrame.getPhasingStepNumber());
 
 		// save the frame to a FITS file
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
@@ -213,9 +217,10 @@ public class FrameMgmt {
 			CameraState cameraState = new CameraState(instrument);
 			ccdFrame.setCameraState(cameraState);
 			ccdFrame.setInstrumentId(instrument.getInstrumentId());
+			Telescope telescope = physicalModel.getTelescope();
 
 			// generate filename and store into the FITS file
-			saveCcdFrame(ccdFrame, procedureConfig.getTelescope().getTelescopeId(), procedureConfig.getInstrument().getInstrumentId(), 
+			saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
 					procedureType.getProcedureTypeCd(), procedureNumber);			
 			
 			return ccdFrame;
@@ -410,7 +415,7 @@ public class FrameMgmt {
 		Camera camera = physicalModel.getInstrument().getCamera();
 		Telescope telescope = physicalModel.getTelescope();
 		if (procedureExecutionState.getCurrentProcedure() != null) {
-			ProcedureConfig procedureConfig = procedureExecutionState.getCurrentProcedure().getProcedureConfig();
+			ProcedureConfig procedureConfig = procedureExecutionState.getCurrentProcedure().getProcedureConfigSet().getProcedureConfig();
 			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", procedureConfig.getIntegrationTime(), "Integration Time (sec)");
 			if (procedureConfig.getSufsGroup() != null) {
 				myFits.getHDU(0).getHeader().addIntValue("SUFS_GRP", procedureConfig.getSufsGroup(), "SUFS Group Number");

@@ -31,6 +31,7 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -42,14 +43,14 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "Procedure")
 @NamedQueries({
 	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig" ),
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig INNER JOIN FETCH p.globalConfig" ),
 	@NamedQuery(name = "findLatestSessionProcedure", query = "SELECT p from Procedure p INNER JOIN FETCH p.session "
 			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.procedureNumber desc" ),
 	@NamedQuery(name = "findProcedure", query = "SELECT DISTINCT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfig INNER JOIN FETCH p.globalConfig "
+			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig pc INNER JOIN FETCH p.globalConfig "
 			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "
 			+ "LEFT OUTER JOIN FETCH cf.cameraState INNER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.fiConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.findCentConfig "
+			+ "LEFT OUTER JOIN FETCH pcs.findCentConfig LEFT OUTER JOIN FETCH pc.pupilMask LEFT OUTER JOIN FETCH pc.filter LEFT OUTER JOIN FETCH pc.referenceBeam "
 			+ "WHERE p.procedureId = :procedureId" )
 	
 })
@@ -104,10 +105,6 @@ public class Procedure {
 	ProcedureType procedureType;
 
 	@ManyToOne (fetch = FetchType.LAZY)
-	@JoinColumn(name = "procedureConfigId")
-	ProcedureConfig procedureConfig;
-
-	@ManyToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "globalConfigId")
 	GlobalConfig globalConfig;
 
@@ -132,7 +129,6 @@ public class Procedure {
 	private RefBeamMap refDefMap;  // the refDefMap used for this f&i in this procedure
 	
 	public Procedure() {
-		procedureConfig = new ProcedureConfig();
 		procedureConfigSet = new ProcedureConfigSet();
 	}
 
@@ -170,20 +166,12 @@ public class Procedure {
 		this.executionEndTime = executionEndTime;
 	}
 
-	public ProcedureConfig getProcedureConfig() {
-		return procedureConfig;
-	}
-
 	public int getProcedureState() {
 		return procedureState;
 	}
 
 	public void setProcedureState(int procedureState) {
 		this.procedureState = procedureState;
-	}
-
-	public void setProcedureConfig(ProcedureConfig procedureConfig) {
-		this.procedureConfig = procedureConfig;
 	}
 
 	public Telescope getTelescope() {

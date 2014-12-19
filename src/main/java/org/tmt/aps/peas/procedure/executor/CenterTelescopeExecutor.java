@@ -24,6 +24,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -41,7 +42,6 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -110,7 +110,7 @@ public class CenterTelescopeExecutor {
 
 		try {
 
-			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			
 			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();
 			

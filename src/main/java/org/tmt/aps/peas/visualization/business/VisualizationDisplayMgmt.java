@@ -14,7 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.visualization.model.ProcTypeVisualizationDisplay;
@@ -41,16 +41,6 @@ public class VisualizationDisplayMgmt {
 		}
 		
 		return visualizationDisplayList;
-	}
-
-	public ProcedureType findProcedureType(Long procedureTypeId) {
-		TypedQuery<ProcedureType> query = em.createNamedQuery("findProcedureType", ProcedureType.class);
-		query.setParameter("procedureTypeId", procedureTypeId);
-		query.setMaxResults(1);
-		
-		ProcedureType procedureType = query.getSingleResult();
-			
-		return procedureType;
 	}
 	
 	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {

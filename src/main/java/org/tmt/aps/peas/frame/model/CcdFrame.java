@@ -22,8 +22,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 
 @Entity
 @Table(name = "CcdFrame")

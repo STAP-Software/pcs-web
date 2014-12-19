@@ -38,7 +38,7 @@
 									<h:outputLabel value="Mask" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue=""/> 
 										<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
 										<p:ajax update=":advancedForm intTime" listener="#{procedureController.doUpdatePupilMask}" />
@@ -52,7 +52,7 @@
 									<h:outputLabel value="Integration Time (sec)" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfig.integrationTime}" editable="true"
+									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}" editable="true"
 										disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.integrationTimeList}" /> 
 									</p:selectOneMenu>
@@ -64,7 +64,7 @@
 									<h:outputLabel value="Number of Trials" />
 								</p:column>   
 								<p:column styleClass="btmsFormInputColumn">
-									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfig.numberOfTrials}"
+									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
 										size="2" disabled="#{procedureController.procedure.procedureState gt 1}" />
 								</p:column>
 							</p:row>
@@ -74,7 +74,7 @@
 									<h:outputLabel value="Frame Source" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.frameSource}"
+									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource}"
 										disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="CCD" itemValue="1" />
@@ -83,7 +83,7 @@
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
-										rendered="#{procedureController.procedure.procedureConfig.frameSource eq 2}" styleClass="thinPadding"
+										rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource eq 2}" styleClass="thinPadding"
 										onclick="fitsFileLoadDialog.show();" style="top:-5px" disabled="#{procedureController.procedure.procedureState gt 1}" />
 								</p:column>
 							</p:row>

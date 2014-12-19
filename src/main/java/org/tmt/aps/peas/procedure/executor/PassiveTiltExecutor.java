@@ -24,6 +24,7 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -37,7 +38,6 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureConfig;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -103,7 +103,7 @@ public class PassiveTiltExecutor {
 
 		try {
 
-			ProcedureConfig procedureConfig = procedure.getProcedureConfig();
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			

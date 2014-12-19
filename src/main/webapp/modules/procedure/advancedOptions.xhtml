@@ -18,7 +18,7 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Filter" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.filter}"
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.filter}"
 						disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{filterConverter}">
 					<f:selectItem itemLabel="Select One" itemValue=""/> 
 					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
@@ -26,16 +26,16 @@
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Light Source" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.lightSource}"
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource}"
 						disabled="#{(procedureController.procedure.procedureState gt 1) or procedureController.procedure.procedureType.createRefMap}" >
 					<f:selectItem itemLabel="Star" itemValue="1"/> 
 					<f:selectItem itemLabel="Reference Beam" itemValue="2"/>
 					<p:ajax update=":advancedDlg" oncomplete="advancedDialog.show();" />
 					</p:selectOneMenu>
 					
-					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfig.lightSource eq 2}" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfig.referenceBeam}"
-						rendered="#{procedureController.procedure.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
+					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.referenceBeam}"
+						rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
 					<f:selectItems value="#{sessionController.instrument.camera.orderedReferenceBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
 					</p:selectOneMenu>
 
