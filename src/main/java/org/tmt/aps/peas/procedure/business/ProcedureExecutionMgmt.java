@@ -15,6 +15,7 @@ import javax.ejb.Stateless;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -106,9 +107,12 @@ public class ProcedureExecutionMgmt {
 
 			// save the current coarse mirror state in global config
 			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
-			procedure.getGlobalConfig().setCoarseMirrorX(coarsePosition.x);
-			procedure.getGlobalConfig().setCoarseMirrorY(coarsePosition.y);
-			globalConfigMgmt.saveDefaultConfig(procedure.getGlobalConfig());
+			
+			// create a config defaults object to save back
+			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
+			globalConfigDefaults.setCoarseMirrorX(coarsePosition.x);
+			globalConfigDefaults.setCoarseMirrorY(coarsePosition.y);
+			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 
 			// persist all the frames
 			if (procedure.getProcedureCcdFrameList() != null) {

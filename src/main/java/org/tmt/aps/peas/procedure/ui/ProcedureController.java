@@ -45,6 +45,8 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
@@ -638,8 +640,11 @@ public class ProcedureController implements Serializable {
 		// tell the world so the UI can disable things the user cannot touch
 		procedureExecutionState.setExecutionStatus(true);
 
-		// TODO: global config needs to be altered and saved if it has changed from nominal
-		procedure.setGlobalConfig(globalConfigController.getGlobalConfig());
+		// global config needs loaded in case it has changed from nominal
+		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(sessionController.getTelescope().getTelescopeId(), 
+				sessionController.getInstrument().getInstrumentId());
+		// store with procedure config set
+		procedure.getProcedureConfigSet().setGlobalConfig(new GlobalConfig(globalConfigDefaults));
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());

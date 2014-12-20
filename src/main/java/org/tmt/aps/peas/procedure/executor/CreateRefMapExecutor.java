@@ -163,8 +163,8 @@ public class CreateRefMapExecutor {
 				*/
 				
 				// always command the coarse mirror to setup values at the start of all procedures
-				statusLogger.log("camera.cmd.coarse_mirror", procedure.getGlobalConfig().getCoarseMirrorDefault());
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
+				statusLogger.log("camera.cmd.coarse_mirror", procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
 
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
@@ -193,7 +193,8 @@ public class CreateRefMapExecutor {
 			statusLogger.log("frame.get");
 			
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
-					0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(), procedure.getGlobalConfig().isRemoveBadPixels());
+					0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(), 
+					procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			
 			// tell the async controller to update the frame

@@ -129,8 +129,8 @@ public class CenterTelescopeExecutor {
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			
 				// always command the coarse mirror to setup values at the start of all procedures
-				statusLogger.log("camera.cmd.coarse_mirror", procedure.getGlobalConfig().getCoarseMirrorDefault());
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getGlobalConfig().getCoarseMirrorDefault());
+				statusLogger.log("camera.cmd.coarse_mirror", procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
 				
 				Future<Integer> twoPosCommandFuture = null;
 				Future<Integer> refBeamFuture = null;
@@ -176,8 +176,11 @@ public class CenterTelescopeExecutor {
 			
 			statusLogger.log("frame.get");
 
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
-					0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(), procedure.getGlobalConfig().isRemoveBadPixels());
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), 
+					procedure.getProcedureNumber(), 
+					0, 0, procedureConfig.getIntegrationTime(), 
+					physicalModel.getInstrument().getCcd().getAllHotPixelRects(), 
+					procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
 			
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			

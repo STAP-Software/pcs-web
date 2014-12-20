@@ -13,7 +13,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
-import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
@@ -26,8 +26,8 @@ public class GlobalConfigMgmt {
 	private EntityManager em;
 	
 	
-	public GlobalConfig findDefaultConfig(Long telescopeId, Long instrumentId) {
-		TypedQuery<GlobalConfig> query = em.createNamedQuery("findDefaultConfig", GlobalConfig.class);
+	public GlobalConfigDefaults findDefaultConfig(Long telescopeId, Long instrumentId) {
+		TypedQuery<GlobalConfigDefaults> query = em.createNamedQuery("findDefaultConfig", GlobalConfigDefaults.class);
 		query.setParameter("telescopeId", telescopeId);
 		query.setParameter("instrumentId", instrumentId);
 		
@@ -36,9 +36,9 @@ public class GlobalConfigMgmt {
 		return query.getSingleResult();
 	}
 	
-	public void saveDefaultConfig(GlobalConfig globalConfig) {
+	public void saveDefaultConfig(GlobalConfigDefaults globalConfigDefaults) {
 		
-		em.merge(globalConfig);
+		em.merge(globalConfigDefaults);
 	}
 	
 	

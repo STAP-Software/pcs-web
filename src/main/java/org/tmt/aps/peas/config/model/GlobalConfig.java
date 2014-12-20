@@ -12,6 +12,8 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -20,18 +22,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "GlobalConfig")
-@NamedQueries({
-		@NamedQuery(name = "findDefaultConfig", query = "SELECT g from GlobalConfig g INNER JOIN FETCH g.telescope tel INNER JOIN FETCH g.instrument inst "
-				+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND g.defaultFlg = TRUE "
-				+ "ORDER BY g.updateDate desc ")
-
-})
+@Inheritance(strategy=InheritanceType.JOINED)
 public class GlobalConfig {
 
 	@Id
@@ -40,21 +38,14 @@ public class GlobalConfig {
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	Date updateDate;
-	
-	boolean defaultFlg;
-	
+		
 	float coarseMirrorX;
 	float coarseMirrorY;
-	//int fandIAttempts;  // defunct
-	//float cameraRot;    // defunct
 
 	boolean removeBadPixels;
-	//boolean subtractDarkCurrent;  // defunct
-	//boolean flattenField; // defunct
 
 	// TODO: should be in advanced SUFS
 	int autoPointTelescope;
-	//String compPhasingPlogFilename;  //defunt
 	
 	private boolean autoDisplayCentroids;
 	private boolean autoDisplayCentroidOffsets;
@@ -62,15 +53,22 @@ public class GlobalConfig {
 	private boolean autoDisplayActuatorDeltas;
 	private boolean autoDisplayProcedureDataLog;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "telescopeId")
-	Telescope telescope;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "instrumentId")
-	Instrument instrument;
+	public GlobalConfig() {
+		
+	}
+	
+	public GlobalConfig(GlobalConfig source) {
+		
+		try {
+			BeanUtils.copyProperties(this, source);
 
-
+			this.globalConfigId = null;
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
 	public float getCoarseMirrorX() {
 		return coarseMirrorX;
@@ -159,30 +157,6 @@ public class GlobalConfig {
 
 	public void setAutoDisplayProcedureDataLog(boolean autoDisplayProcedureDataLog) {
 		this.autoDisplayProcedureDataLog = autoDisplayProcedureDataLog;
-	}
-
-	public boolean isDefaultFlg() {
-		return defaultFlg;
-	}
-
-	public void setDefaultFlg(boolean defaultFlg) {
-		this.defaultFlg = defaultFlg;
-	}
-
-	public Telescope getTelescope() {
-		return telescope;
-	}
-
-	public void setTelescope(Telescope telescope) {
-		this.telescope = telescope;
-	}
-
-	public Instrument getInstrument() {
-		return instrument;
-	}
-
-	public void setInstrument(Instrument instrument) {
-		this.instrument = instrument;
 	}
 
 	public Point getCoarseMirrorDefault() {

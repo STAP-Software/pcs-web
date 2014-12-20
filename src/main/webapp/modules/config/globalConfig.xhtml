@@ -20,10 +20,10 @@
 					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 						<h:outputLabel value="Coarse Mirror Offset x(microns)" for="coarseMirrorX" />
-						<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfig.coarseMirrorX}" size="5" />
+						<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfigDefaults.coarseMirrorX}" size="5" />
 
 						<h:outputLabel value="Coarse Mirror Offset y(microns)" for="coarseMirrorY" />
-						<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfig.coarseMirrorY}" size="5" />
+						<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfigDefaults.coarseMirrorY}" size="5" />
 
 					</p:panelGrid>
 
@@ -37,10 +37,10 @@
 
 
 						<h:outputLabel value="Remove Bad Pixels" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.removeBadPixels}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.removeBadPixels}" />
 
 						<h:outputLabel value="UFS/SUFS Auto Point Telescope to Segment/Group" />
-						<p:selectOneMenu id="options" value="#{globalConfigController.globalConfig.autoPointTelescope}">
+						<p:selectOneMenu id="options" value="#{globalConfigController.globalConfigDefaults.autoPointTelescope}">
 							<f:selectItem itemLabel="Auto Point Telescope" itemValue="1" />
 							<f:selectItem itemLabel="Never Auto Point Telescope" itemValue="2" />
 							<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
@@ -61,15 +61,15 @@
 						<p:spacer height="5px" />
 
 						<h:outputLabel value="Auto Display Centroids" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.autoDisplayCentroids}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayCentroids}" />
 						<h:outputLabel value="Auto Display Centroid Offsets" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.autoDisplayCentroidOffsets}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayCentroidOffsets}" />
 						<h:outputLabel value="Auto Display Avg. Centroid Offsets" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.autoDisplayAvgCentroidOffsets}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayAvgCentroidOffsets}" />
 						<h:outputLabel value="Auto Display Actuator Deltas" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.autoDisplayActuatorDeltas}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayActuatorDeltas}" />
 						<h:outputLabel value="Auto Display Procedure Data Log" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfig.autoDisplayProcedureDataLog}" />
+						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayProcedureDataLog}" />
 
 
 					</p:panelGrid>

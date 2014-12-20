@@ -20,6 +20,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 
 @Named
 @SessionScoped
@@ -35,16 +36,16 @@ public class GlobalConfigController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
-	GlobalConfig globalConfig;
+	GlobalConfigDefaults globalConfigDefaults;
 	Long telescopeId;
 	Long instrumentId;
 
-	public GlobalConfig getGlobalConfig() {
-		return globalConfig;
+	public GlobalConfig getGlobalConfigDefaults() {
+		return globalConfigDefaults;
 	}
 
-	public void setGlobalConfig(GlobalConfig globalConfig) {
-		this.globalConfig = globalConfig;
+	public void setGlobalConfigDefaults(GlobalConfigDefaults globalConfigDefaults) {
+		this.globalConfigDefaults = globalConfigDefaults;
 	}
 
 	@PostConstruct
@@ -57,7 +58,7 @@ public class GlobalConfigController implements Serializable {
 			telescopeId = new Long(telescopeIdStr);
 			instrumentId = new Long(instrumentIdStr);
 
-			globalConfig = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
+			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -71,7 +72,7 @@ public class GlobalConfigController implements Serializable {
 	public void doSaveSetup() {
 
 		try {
-			globalConfigMgmt.saveDefaultConfig(globalConfig);
+			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Record Saved Successfully"));
 			logger.info("doSave: success");
