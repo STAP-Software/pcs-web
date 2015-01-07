@@ -121,7 +121,15 @@ public class FrameController implements Serializable {
 	}
 
 	public List<FitsFilename> getProcedureFitsFiles(String procedureTypeCd) {
-		return type2Fits.get(procedureTypeCd);
+		
+		// partial keys apply here... 'FS' = FS-B, etc
+		List<FitsFilename> filenameList = new ArrayList<FitsFilename>();
+		for (String key : type2Fits.keySet()) {
+			if (key.startsWith(procedureTypeCd)) {
+				filenameList.addAll(type2Fits.get(key));
+			}
+		}
+		return filenameList;
 	}
 
 	public List<FitsFilename> getAllFitsFiles() {
