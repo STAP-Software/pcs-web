@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.config.model.RefMapDefaults;
+import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Stateless
@@ -67,27 +67,27 @@ public class GlobalConfigMgmt {
 	}
 	
 	
-	public RefMapDefaults findRefMapDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
-		TypedQuery<RefMapDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapDefaults.class);
+	public RefMapConfigDefaults findRefMapConfigDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
+		TypedQuery<RefMapConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapConfigDefaults.class);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
 		
 		query.setMaxResults(1);
 		
-		RefMapDefaults refMapDefaults = query.getSingleResult();
+		RefMapConfigDefaults refMapConfigDefaults = query.getSingleResult();
 		
 		// get the reference beam by ref beam number
 		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
-		query2.setParameter("refBeamNum", refMapDefaults.getReferenceBeamNum());
+		query2.setParameter("refBeamNum", refMapConfigDefaults.getReferenceBeamNum());
 		
 		query2.setMaxResults(1);
 		
 		ReferenceBeam referenceBeam = query2.getSingleResult();
 	
-		refMapDefaults.setReferenceBeam(referenceBeam);
+		refMapConfigDefaults.setReferenceBeam(referenceBeam);
 		
-		return refMapDefaults;
+		return refMapConfigDefaults;
 
 	}
 }

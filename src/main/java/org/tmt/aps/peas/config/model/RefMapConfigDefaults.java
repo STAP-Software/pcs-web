@@ -22,17 +22,17 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Entity
-@Table(name = "RefMapDefaults")
+@Table(name = "RefMapConfigDefaults")
 @NamedQueries({
-	@NamedQuery(name = "findByMaskTypeAndFilterType", query = "SELECT o from RefMapDefaults o INNER JOIN FETCH o.pupilMaskType p "
+	@NamedQuery(name = "findByMaskTypeAndFilterType", query = "SELECT o from RefMapConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
 			+ "INNER JOIN FETCH o.filterType ft INNER JOIN FETCH o.instrument i "
 			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and ft.filterTypeId = :filterTypeId and i.instrumentId = :instrumentId " )
 })
-public class RefMapDefaults {
+public class RefMapConfigDefaults {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
-	private Long refMapDefaultId;
+	private Long refMapConfigDefaultId;
 
 	float integrationTime; 
 	int referenceBeamNum;
@@ -52,12 +52,13 @@ public class RefMapDefaults {
 	@Transient
 	private ReferenceBeam referenceBeam;
 	
-	public Long getRefMapDefaultId() {
-		return refMapDefaultId;
+
+	public Long getRefMapConfigDefaultId() {
+		return refMapConfigDefaultId;
 	}
 
-	public void setRefMapDefaultId(Long refMapDefaultId) {
-		this.refMapDefaultId = refMapDefaultId;
+	public void setRefMapConfigDefaultId(Long refMapConfigDefaultId) {
+		this.refMapConfigDefaultId = refMapConfigDefaultId;
 	}
 
 	public float getIntegrationTime() {

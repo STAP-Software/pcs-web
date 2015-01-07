@@ -49,7 +49,7 @@ import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
-import org.tmt.aps.peas.config.model.RefMapDefaults;
+import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.Subimage;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -592,17 +592,17 @@ public class ProcedureController implements Serializable {
 	}
 	
 	private void setupCreateRefMapDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
-		RefMapDefaults refMapDefaults = globalConfigMgmt.findRefMapDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
+		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
 		
 		// Set up default ref beam and int time
 		
 		procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(ProcedureConfig.LIGHT_SOURCE_LED);
-		procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapDefaults.getReferenceBeam());
-		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapDefaults.getIntegrationTime());
+		procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
 		
 		// make the list of possible int times equal to the 'one' we have
 		integrationTimeList = new ArrayList<Float>();
-		integrationTimeList.add(refMapDefaults.getIntegrationTime());
+		integrationTimeList.add(refMapConfigDefaults.getIntegrationTime());
 	}
 
 	public String doCancelProcedure() {
