@@ -8,7 +8,8 @@ package org.tmt.aps.peas.visualization.model;
 public class UserPrompt {
 
 	public static final int PROMPT_TYPE_YES_NO = 1;
-	public static final int PROMPT_TYPE_FLOW_CONTROL = 2;  // continue, do over, abort
+	public static final int PROMPT_TYPE_FLOW_CONTROL_TRIFLOW = 2;  // continue, do over, abort
+	public static final int PROMPT_TYPE_FLOW_CONTROL_BIFLOW = 3;  // do over, abort
 	// TODO: add the others
 	
 	public static final int PROMPT_VALUE_YES_NO_YES = 1;
@@ -37,11 +38,17 @@ public class UserPrompt {
 			button2Text = "No";
 		}
 		
-		if (type == PROMPT_TYPE_FLOW_CONTROL) {
+		if (type == PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) {
 			buttonCount = 3;
 			button1Text = "Continue";
 			button2Text = "Try Again";
 			button3Text = "Abort";
+		}
+		
+		if (type == PROMPT_TYPE_FLOW_CONTROL_BIFLOW) {
+			buttonCount = 2;
+			button1Text = "Try Again";
+			button2Text = "Abort";
 		}
 		
 	}

@@ -86,6 +86,8 @@ public class CreateRefMapExecutor {
 	private PhysicalModel physicalModel;
 	@EJB
 	private CentroidMapMgmt refBeamMapMgmt;
+	@EJB
+	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
 	private List<String> logMessages;
 
@@ -189,79 +191,9 @@ public class CreateRefMapExecutor {
 	        	statusLogger.log("camera.cmd.complete");
 				
 			}
-	
-			statusLogger.log("frame.get");
-			
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(), 
-					0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(), 
-					procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
-			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
-			
-			// tell the async controller to update the frame
-			frameDisplayMgmt.displayFrame();
-						 
-			statusLogger.log("fandi.start");
-			
-			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints			
-			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
-		
-			FIConfig fiConfig = procedure.getProcedureConfigSet().getFiConfig();
-			
-			FIResult fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, null, procedure.getRefDefMap());
-			List<FloatPoint> centroids = new ArrayList<FloatPoint>();
-			try {
-				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet().getFindCentConfig());
-			} catch (Exception e) {
-				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
-				procedureCcdFrame.setCentroidMap(centroidMap);
-				throw e;
-			}
-			CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
-			procedureCcdFrame.setCentroidMap(centroidMap);
-			
-			statusLogger.log("fandi.end.success");
-			
-			// display the marked frame
-			frameDisplayMgmt.setMarking(centroids);
-			frameDisplayMgmt.displayMarkedFrame();
-			
-			graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
-			
-			try {
-				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
-				
-			} catch (UserAssistRequiredException e) {
-				
-				
-				StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
-				if (e.isNdetectNotAllSingle()) {
-					buf.append(MessageGenerator.generateMessage("fandi.ndetect_not_single"));
-				}
-				
-				if (e.isFracThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(), fiConfig.getFracFilledThresh()));
-				}
-				
-				if (e.isFourierThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(), fiConfig.getFourierQualityThresh()));					
-				}
-				
-				String text = buf.toString();
-				
-				// user interaction
-				statusLogger.log("procedure.exception", text);
 
-				int response = userPromptMgmt.displayFlowControlDialog(text);
-				
-				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-					throw new Exception("User Aborted Test");
-				}
-
-				// TODO: handle re-taking frame
-				
-			}
-						
-
+			ProcedureCcdFrame procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
+			
 
 			statusLogger.log("procedure.refmap.created");                
 
@@ -270,7 +202,7 @@ public class CreateRefMapExecutor {
 			procedureOutput.setMapSaved(saveMap);
 			
 			// save the reference beam map
-			RefBeamMap refBeamMap = buildRefMap(centroidMap, procedure);
+			RefBeamMap refBeamMap = buildRefMap(procedureCcdFrame.getCentroidMap(), procedure);
 			procedure.setRefBeamMap(refBeamMap);
                                                                        
 			// TODO: if SUFS, then Home the coarse mirror 
@@ -298,32 +230,6 @@ public class CreateRefMapExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
-	// TODO: generalize this, does not need to be explicit in an executor
-	public CentroidMap buildCentroidMap(List<FloatPoint> centroids, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) {
-		
-		CentroidMap centroidMap = new CentroidMap();
-		String centroidMapData = FloatPointListEncoder.encodeList(centroids);
-		centroidMap.setCentroidMapData(centroidMapData);
-		
-		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
-		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());
-		centroidMap.setForcedRotationFlg(fiConfig.isForceRotation());
-		centroidMap.setForcedScale(fiConfig.getForceScaleValue());
-		centroidMap.setForcedScaleFlg(fiConfig.isForceScale());
-		
-		centroidMap.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
-		
-		centroidMap.setFourierQuality(fiResult.getFourierQuality());
-		centroidMap.setScale(fiResult.getScale());
-		centroidMap.setRotation(fiResult.getRotation());
-		centroidMap.setTranslationX(fiResult.getTranslation().getX());
-		centroidMap.setTranslationY(fiResult.getTranslation().getY());
-		centroidMap.setNumFilledBoxes(fiResult.getNumFilledBoxes());
-		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
-		
-
-		return centroidMap;
-	}
 	
 	public RefBeamMap buildRefMap(CentroidMap centroidMap, Procedure procedure) {
 		RefBeamMap refBeamMap = new RefBeamMap();

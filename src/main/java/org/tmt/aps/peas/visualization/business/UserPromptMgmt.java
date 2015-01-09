@@ -54,10 +54,20 @@ public class UserPromptMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false;
 	}
 	
-	public int displayFlowControlDialog(String text) {
+	public int displayFlowControlTriFlowDialog(String text) {
 		
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW, text.replace("\n", "<br/>"));
+		
+		waitForReturnState();
+		
+		return returnState.intValue();
+	}
+	
+	public int displayFlowControlBiFlowDialog(String text) {
+		
+		// change \n to <br/>
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL_BIFLOW, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
 		
