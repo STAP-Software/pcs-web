@@ -48,5 +48,26 @@ public class AcsMgmt {
 	public void commandActuatorDelta(double[] actDeltas) throws Exception {
 		extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
 	}
+	
+	// Convenience routine 
+	public void commandActuatorDeltas(Double[][] actDeltas) throws Exception {
+		
+		// interface requires that we use indexes 1-108
+
+		double[] actDeltaCmds = new double[109];
+
+		for (int i = 0; i < 36; i++) {
+			for (int j = 0; j < 3; j++) {
+				actDeltaCmds[1 + i * 3 + j] = actDeltas[i][j];
+			}
+		}
+		logger.info("doSendActDeltaCommands: actDeltaCmds = ");
+		for (int i=0; i<109; i++) {
+			logger.info(actDeltaCmds[i]);
+		}
+
+		commandActuatorDelta(actDeltaCmds);
+
+	}
 
 }
