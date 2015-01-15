@@ -856,10 +856,13 @@ public class ProcedureController implements Serializable {
 
 		// TODO - this needs to know which node was selected - for now, centroids display
 		// TODO - for now, just the first iteration
-		CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
-		List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
-		encodeOrderedPointList(centroids);
 		
+		// if then is TEST ONLY
+		if (procedure.getProcedureCcdFrameList() != null) {
+			CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
+			List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
+			encodeOrderedPointList(centroids);
+		}
 	}
 	
 	private List<Subimage> getSubimageDefsForMask(Long maskTypeId) {

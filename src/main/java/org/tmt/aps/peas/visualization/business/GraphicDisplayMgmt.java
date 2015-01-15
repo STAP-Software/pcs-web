@@ -100,7 +100,12 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 	public void displayCentroidOffsets(List<Point> centroidOffsets) {
-		// TODO Auto-generated method stub
+		
+		// TODO: TBD
+		
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
+		
+		waitForReturnState();
 		
 	}
 	

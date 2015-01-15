@@ -182,7 +182,9 @@ public class GetFrameCentroidsExecutor {
 				// user interaction
 				statusLogger.log("procedure.exception", e.getMessage());
 
-				int response = userPromptMgmt.displayFlowControlBiFlowDialog(e.getMessage());
+				String unknownError = (e.getMessage() == null) ? "Unknown Error: " : "";
+					
+				int response = userPromptMgmt.displayFlowControlBiFlowDialog(unknownError + e.getMessage());
 
 				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 					throw new Exception("User Aborted Test");

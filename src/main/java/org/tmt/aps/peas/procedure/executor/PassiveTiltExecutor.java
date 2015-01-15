@@ -165,6 +165,8 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
+			graphicDisplayMgmt.displayCentroidOffsets(null);
+			
 			ProcedureCcdFrame procedureCcdFrame = null;
 			
 			while (true) {
@@ -183,9 +185,10 @@ public class PassiveTiltExecutor {
 					/*              calculateCentroidOffsets               */
 					/*****************************************************/
 					// List<Point> centroidOffsets = computationLibrary.calculateCentroidOffsets(subimageList, referenceSubimageList);
-
+					List<Point> centroidOffsets = null;
+					
 					// TODO: display the centroid offsets
-					// graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
+					graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
 
 					statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 
@@ -200,7 +203,7 @@ public class PassiveTiltExecutor {
 				} catch (Exception e) {
 
 					// ask user if they want to re-take the frame
-					int reply = userPromptMgmt.displayFlowControlTriFlowDialog(e.getMessage());
+					int reply = userPromptMgmt.displayFlowControlTriFlowDialog("" + e.getMessage());
 
 					if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 						
@@ -228,7 +231,7 @@ public class PassiveTiltExecutor {
 			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 
 			// TODO: display the average centroid offsets - this is probably not needed since we only do one trial
-			// graphicDisplayMgmt.displayCentroidOffsets(????);
+			// graphicDisplayMgmt.displayCentroidOffsets(null);
 
 			// TODO: implement ttOffsetsToActs
 			/*****************************************************/
