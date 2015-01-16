@@ -15,6 +15,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
@@ -40,6 +41,9 @@ public class VisualizationTools implements Serializable {
 
 	List<FloatPoint> refDefValueListPassiveTilt;
 
+	boolean showSegments = true;
+	boolean showSegNums = true;
+	
 	@PostConstruct
 	private void init() {
 
@@ -83,4 +87,24 @@ public class VisualizationTools implements Serializable {
 	public void setCentDefYs(String str) {
 	}
 
+	public boolean isShowSegments() {
+		return showSegments;
+	}
+
+	public void setShowSegments(boolean showSegments) {
+		this.showSegments = showSegments;
+	}
+
+	public boolean isShowSegNums() {
+		return showSegNums;
+	}
+
+	public void setShowSegNums(boolean showSegNums) {
+		this.showSegNums = showSegNums;
+	}
+
+	public void showSegmentListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
+	}
 }

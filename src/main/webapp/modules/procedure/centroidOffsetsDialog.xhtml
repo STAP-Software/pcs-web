@@ -4,17 +4,26 @@
 <script type="text/javascript">  
 //<![CDATA[
 
+
+           
 function runDrawOffsets() {
-	
-	window.setTimeout("drawCentroidOffsets()", 10);
+
+	var c = document.getElementById("offsetsCanvas");
+	var ctx = c.getContext("2d");
+
+	ctx.translate(-25,-10);
+	ctx.scale(0.61, 0.61);
+
+	window.setTimeout("drawCentroidOffsets(true,true)", 10);
 }
 
-function drawCentroidOffsets(svg) {
+function drawCentroidOffsets(drawSegments,drawSegNums) {
     
 	var c = document.getElementById("offsetsCanvas");
 	var ctx = c.getContext("2d");
-	ctx.clearRect(0,0,c.width, c.height);
-	
+	ctx.clearRect(0,0,1000,1000);
+
+
 	
 	var xField = document.getElementById('offsetsForm:centDefXs').value;
  	var xArray = xField.split(','); 
@@ -22,15 +31,14 @@ function drawCentroidOffsets(svg) {
 	var yField = document.getElementById('offsetsForm:centDefYs').value;
  	var yArray = yField.split(','); 
    
-	ctx.translate(-25,-10);
-	ctx.scale(0.61, 0.61);
 	
 	for (var i = 0; i < xArray.length; i++) {
 		
 		var x = parseInt(xArray[i])
 		var y = parseInt(yArray[i])
 		
-		drawHex(ctx, x, y, 77, i)
+		drawHex(ctx, x, y, 77, i+1, drawSegments, drawSegNums)
+		
 			
 		var dx = x + ((Math.random() * 2.0) - 1.0) * 30.0;
 		var dy = y + ((Math.random() * 2.0) - 1.0) * 30.0;
@@ -83,7 +91,7 @@ function drawCentroidOffsets(svg) {
 	
 }
 
-function drawHex(ctx, x, y, sideLen, number) {
+function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 	// draw a hexgon of side sideLen centered on position x, y
 	
 	var a = sideLen
@@ -104,24 +112,27 @@ function drawHex(ctx, x, y, sideLen, number) {
 	
 	// the box is centered at a, b so we subtract these to get the center
 	
-	ctx.beginPath();
-	ctx.strokeStyle = '#888888';
-    ctx.moveTo(x-a,y)	
-	ctx.lineTo(x-a/2,y-b)
-    ctx.lineTo(x+a/2,y-b)
-    ctx.lineTo(x+a,y)
-    ctx.lineTo(x+a/2,y+b)
-    ctx.lineTo(x-a/2,y+b)
-	ctx.closePath();
-	ctx.stroke();
+	if (drawSegment) {
+		ctx.beginPath();
+		ctx.strokeStyle = '#888888';
+    	ctx.moveTo(x-a,y)	
+		ctx.lineTo(x-a/2,y-b)
+    	ctx.lineTo(x+a/2,y-b)
+    	ctx.lineTo(x+a,y)
+    	ctx.lineTo(x+a/2,y+b)
+    	ctx.lineTo(x-a/2,y+b)
+		ctx.closePath();
+		ctx.stroke();
 	
-	ctx.fillStyle = "#e8f0f8";
-	ctx.fill();
+		ctx.fillStyle = "#e8f0f8";
+		ctx.fill();
+	}
 	
-	ctx.fillStyle = '#888888';
-	ctx.font="18px Arial";
-	ctx.fillText(number, x-a + b/2, y + b/2);
-	
+	if (drawSegNum) {
+		ctx.fillStyle = '#888888';
+		ctx.font="18px Arial";
+		ctx.fillText(number, x-a + b/2, y + b/2);
+	}
 }
 
 
@@ -175,15 +186,21 @@ function drawHex(ctx, x, y, sideLen, number) {
 				<h:outputLabel value="Segment with Max Error" />
 				<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 				
-				
+				<p:spacer height="40"/><p:spacer height="40"/>
+				<h:outputLabel value="Show Segments" />
+     			<p:selectBooleanButton value="#{visualizationTools.showSegments}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationTools.showSegmentListener}" />
+    			</p:selectBooleanButton>
+				<p:spacer height="1"/><p:spacer height="1"/>
+				<h:outputLabel value="Show Segment Numberings" />
+     			<p:selectBooleanButton value="#{visualizationTools.showSegNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationTools.showSegmentListener}" />
+    			</p:selectBooleanButton>
     			
     		</p:panelGrid>
     		</p:panelGrid>
     		<br/>
-    		
-    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
-			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 
