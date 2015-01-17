@@ -98,6 +98,7 @@ public class GetFrameCentroidsExecutor {
 
 		// CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
 
+		// FIXME: this is not the correct procedure name, also should say "sub-procedure start"
 		statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
 		ProcedureCcdFrame procedureCcdFrame = null;
@@ -123,9 +124,10 @@ public class GetFrameCentroidsExecutor {
 			FIResult fiResult = null;
 			try {
 
-				fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, null,
+				fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
 						procedure.getRefDefMap());
 				List<FloatPoint> centroids = new ArrayList<FloatPoint>();
+				logger.info("Find and Identify completed");
 				try {
 					centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
 							.getFindCentConfig());
@@ -203,6 +205,7 @@ public class GetFrameCentroidsExecutor {
 		CentroidMap centroidMap = new CentroidMap();
 		String centroidMapData = FloatPointListEncoder.encodeList(centroids);
 		centroidMap.setCentroidMapData(centroidMapData);
+		centroidMap.setValues(centroids);
 
 		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
 		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());

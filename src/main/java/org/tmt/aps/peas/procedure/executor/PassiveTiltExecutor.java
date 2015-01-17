@@ -13,11 +13,10 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -36,6 +35,8 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -76,6 +77,8 @@ public class PassiveTiltExecutor {
 	PhysicalModel physicalModel;
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
+	@EJB
+	private CentroidMapMgmt centroidMapMgmt;
 
 	private List<String> logMessages;
 
@@ -89,12 +92,12 @@ public class PassiveTiltExecutor {
 
 	@PostConstruct
 	void init() {
-		logger.debug("PassiveTiltMgmt::PostConstruct::");
+		logger.debug("PassiveTiltExecutor::PostConstruct::");
 	}
 
 	@Asynchronous
 	public Future<?> testMethod() {
-		logger.debug("PassiveTiltMgmt::testMethod::");
+		logger.debug("PassiveTiltExecutor::testMethod::");
 		return null;
 	}
 
@@ -114,13 +117,20 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			statusLogger.log("camera.not_init");
 
+			// TODO: implement PP-338, 339
+			// if frame source is file, use the centroid map associated with the frame (if old frame use current ref map) TBD
+			// autoRefmapCheck();
+			/*
+			 * OK = AUTO_REFMAP_CHECK(ZPASSIVE_AUTOREFMAP, NUMBER_TRIALS, MASK_MENU_PT, FILT_POS, 0)
+			 */
+			// FIXME: get latest for now
+			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
+					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+					procedureConfig.getFilter().getFilterType().getFilterTypeId(), -1);
+			procedure.setRefBeamMap(currentRefMap);
+			
+			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// TODO: implement
-				// autoRefmapCheck();
-				/*
-				 * OK = AUTO_REFMAP_CHECK(ZPASSIVE_AUTOREFMAP, NUMBER_TRIALS, MASK_MENU_PT, FILT_POS, 0)
-				 */
 
 				// always command the coarse mirror to setup values at the start of all procedures
 				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
@@ -164,10 +174,9 @@ public class PassiveTiltExecutor {
 
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
-
-			graphicDisplayMgmt.displayCentroidOffsets(null);
 			
 			ProcedureCcdFrame procedureCcdFrame = null;
+			List<FloatPoint> centroidOffsets = null;
 			
 			while (true) {
 
@@ -178,18 +187,13 @@ public class PassiveTiltExecutor {
 					statusLogger.log("calc.centroid_resid");
 
 					// TODO: centroid offsets throws an exception if telescope pointing out of tolerance
-					List<Point> referenceSubimageList = null;
-
 					// TODO: centroid offset calc
 					/*****************************************************/
-					/*              calculateCentroidOffsets               */
+					/*              calculateCentroidOffsets             */
 					/*****************************************************/
-					// List<Point> centroidOffsets = computationLibrary.calculateCentroidOffsets(subimageList, referenceSubimageList);
-					List<Point> centroidOffsets = null;
+					centroidOffsets = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(), 
+							procedure.getRefBeamMap().getCentroidMap().getValues());
 					
-					// TODO: display the centroid offsets
-					graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
-
 					statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 
 					statusLogger.log("telescope.desired_move", 0.04, 0.14);
@@ -206,7 +210,7 @@ public class PassiveTiltExecutor {
 					int reply = userPromptMgmt.displayFlowControlTriFlowDialog("" + e.getMessage());
 
 					if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-						
+						// TODO: put in logic here (throw user abort exception?
 					} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 						break;  // continue on
 					}
@@ -218,6 +222,7 @@ public class PassiveTiltExecutor {
 
 			// TODO: calc average offsets and calc avg translation, rotation and scale from average offsets
 
+			// FIXME: move up to before display
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
@@ -231,7 +236,7 @@ public class PassiveTiltExecutor {
 			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 
 			// TODO: display the average centroid offsets - this is probably not needed since we only do one trial
-			// graphicDisplayMgmt.displayCentroidOffsets(null);
+			graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
 
 			// TODO: implement ttOffsetsToActs
 			/*****************************************************/
@@ -239,8 +244,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			// computationLibrary.ttOffsetsToActs(a, b);
 
-			// TODO: somewhere here we need to command the mirrors
-
+			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - no need to wait for response				
 				cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);

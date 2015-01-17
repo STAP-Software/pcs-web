@@ -857,6 +857,9 @@ public class ProcedureController implements Serializable {
 		// TODO - this needs to know which node was selected - for now, centroids display
 		// TODO - for now, just the first iteration
 		
+		// FIXME - this is the source of the centroid offset display problem.  One way to mitigate is to use a separate 
+		//    	   set of variables for exposing offsets.  This should have been done anyway.
+		
 		// if then is TEST ONLY
 		if (procedure.getProcedureCcdFrameList() != null) {
 			CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();

@@ -331,5 +331,25 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
 	}
+
+	@Override
+	public List<FloatPoint> calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids)
+			throws ComputationException {
+		
+		
+		// TEST ONLY - do a simple subtraction here
+		
+		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
+		for (int i=0; i< centroids.size(); i++) {
+			FloatPoint centroid = centroids.get(i);
+			FloatPoint refMapCentroid = refMapCentroids.get(i);
+			
+			FloatPoint offset = centroid.subtract(refMapCentroid);
+			
+			offsets.add(offset);
+		}
+		return offsets;
+	}
+	
 	
 }

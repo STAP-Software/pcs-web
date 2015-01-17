@@ -14,6 +14,7 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -99,9 +100,19 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();
 	}
 
-	public void displayCentroidOffsets(List<Point> centroidOffsets) {
+	public void displayCentroidOffsets(List<FloatPoint> centroidOffsets) {
 		
-		// TODO: TBD
+		StringBuffer xBuf = new StringBuffer();
+		StringBuffer yBuf = new StringBuffer();
+		for (int i=0; i<centroidOffsets.size(); i++) {
+			xBuf.append(centroidOffsets.get(i).x + ",");
+			yBuf.append(centroidOffsets.get(i).y + ",");
+		}
+		centroidXs = xBuf.substring(0, xBuf.length()-1);
+		centroidYs = yBuf.substring(0, yBuf.length()-1);
+		
+		logger.debug("centroidNbrs = " + centroidNbrs);
+		logger.debug("centroidXs = " + centroidXs);
 		
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		

@@ -136,5 +136,14 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 		
 	}
+
+	@Override
+	public List<FloatPoint> calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids)
+			throws ComputationException {
+		// TODO Auto-generated method stub
+		return centroids;
+	}
+	
+	
 	
 }

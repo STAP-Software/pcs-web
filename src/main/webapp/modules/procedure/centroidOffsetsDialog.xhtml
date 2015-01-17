@@ -24,25 +24,31 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 	ctx.clearRect(0,0,1000,1000);
 
 
-	
-	var xField = document.getElementById('offsetsForm:centDefXs').value;
- 	var xArray = xField.split(','); 
+	// display coordinates
+	var xField1 = document.getElementById('offsetsForm:centDefXs').value;
+ 	var xHexCenterArray = xField1.split(','); 
  	
-	var yField = document.getElementById('offsetsForm:centDefYs').value;
- 	var yArray = yField.split(','); 
+	var yField1 = document.getElementById('offsetsForm:centDefYs').value;
+ 	var yHexCenterArray = yField1.split(','); 
    
+	var xField2 = document.getElementById('offsetsForm:centroidXs').value;
+ 	var xOffsetArray = xField2.split(','); 
+ 	
+	var yField2 = document.getElementById('offsetsForm:centroidYs').value;
+ 	var yOffsetArray = yField2.split(','); 
+   
+ 	
 	
-	for (var i = 0; i < xArray.length; i++) {
+	for (var i = 0; i < xHexCenterArray.length; i++) {
 		
-		var x = parseInt(xArray[i])
-		var y = parseInt(yArray[i])
+		var x = parseFloat(xHexCenterArray[i])
+		var y = parseFloat(yHexCenterArray[i])
 		
+		var dx = x + parseFloat(xOffsetArray[i])
+		var dy = y + parseFloat(yOffsetArray[i])
+						
 		drawHex(ctx, x, y, 77, i+1, drawSegments, drawSegNums)
 		
-			
-		var dx = x + ((Math.random() * 2.0) - 1.0) * 30.0;
-		var dy = y + ((Math.random() * 2.0) - 1.0) * 30.0;
-
 		ctx.beginPath();
 		ctx.strokeStyle = 'red';
 	    ctx.moveTo(x, y);

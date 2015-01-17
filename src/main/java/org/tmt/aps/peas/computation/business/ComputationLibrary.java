@@ -35,4 +35,6 @@ public interface ComputationLibrary {
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException;
 
+	public List<FloatPoint> calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids) throws ComputationException;
+	
 }

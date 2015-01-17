@@ -74,6 +74,10 @@ public class FloatPoint {
 		this.y = y;
 	}
 
+	public FloatPoint subtract(FloatPoint other) {
+		return new FloatPoint(this.x - other.x, this.y - other.y);
+	}
+	
 	/**
      * Returns a string representation of this point and its location
      * in the {@code (x,y)} coordinate space. This method is
