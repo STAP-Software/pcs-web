@@ -31,10 +31,10 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 	var yField1 = document.getElementById('offsetsForm:centDefYs').value;
  	var yHexCenterArray = yField1.split(','); 
    
-	var xField2 = document.getElementById('offsetsForm:centroidXs').value;
+	var xField2 = document.getElementById('offsetsForm:centroidOffsetXs').value;
  	var xOffsetArray = xField2.split(','); 
  	
-	var yField2 = document.getElementById('offsetsForm:centroidYs').value;
+	var yField2 = document.getElementById('offsetsForm:centroidOffsetYs').value;
  	var yOffsetArray = yField2.split(','); 
    
  	
@@ -150,11 +150,11 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
      		<h:form id="offsetsForm">
 
 			      		
-    		<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
-			<h:inputHidden id="centroidYs" value="#{procedureController.centroidYs}" />
+    		<h:inputHidden id="centroidOffsetXs" value="#{visualizationController.centroidOffsetXs}" />
+			<h:inputHidden id="centroidOffsetYs" value="#{visualizationController.centroidOffsetYs}" />
 
-     		<h:inputHidden id="centDefXs" value="#{visualizationTools.centDefXs}" />
-			<h:inputHidden id="centDefYs" value="#{visualizationTools.centDefYs}" />
+     		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
+			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
     			
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
     		<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
@@ -194,13 +194,13 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				
 				<p:spacer height="40"/><p:spacer height="40"/>
 				<h:outputLabel value="Show Segments" />
-     			<p:selectBooleanButton value="#{visualizationTools.showSegments}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationTools.showSegmentListener}" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.showSegmentListener}" />
     			</p:selectBooleanButton>
 				<p:spacer height="1"/><p:spacer height="1"/>
 				<h:outputLabel value="Show Segment Numberings" />
-     			<p:selectBooleanButton value="#{visualizationTools.showSegNums}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationTools.showSegmentListener}" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.showSegmentListener}" />
     			</p:selectBooleanButton>
     			
     		</p:panelGrid>

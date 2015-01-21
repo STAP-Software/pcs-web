@@ -29,6 +29,10 @@ public class GraphicDisplayMgmt implements Serializable {
 	
 	String centroidXs;
 	String centroidYs;
+	String centroidOffsetXs;
+	String centroidOffsetYs;
+
+	
 	String centroidNbrs;
 
 
@@ -47,6 +51,22 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setCentroidYs(String centroidYs) {
 		this.centroidYs = centroidYs;
+	}
+
+	public String getCentroidOffsetXs() {
+		return centroidOffsetXs;
+	}
+
+	public void setCentroidOffsetXs(String centroidOffsetXs) {
+		this.centroidOffsetXs = centroidOffsetXs;
+	}
+
+	public String getCentroidOffsetYs() {
+		return centroidOffsetYs;
+	}
+
+	public void setCentroidOffsetYs(String centroidOffsetYs) {
+		this.centroidOffsetYs = centroidOffsetYs;
 	}
 
 	public String getCentroidNbrs() {
@@ -108,11 +128,9 @@ public class GraphicDisplayMgmt implements Serializable {
 			xBuf.append(centroidOffsets.get(i).x + ",");
 			yBuf.append(centroidOffsets.get(i).y + ",");
 		}
-		centroidXs = xBuf.substring(0, xBuf.length()-1);
-		centroidYs = yBuf.substring(0, yBuf.length()-1);
+		centroidOffsetXs = xBuf.substring(0, xBuf.length()-1);
+		centroidOffsetYs = yBuf.substring(0, yBuf.length()-1);
 		
-		logger.debug("centroidNbrs = " + centroidNbrs);
-		logger.debug("centroidXs = " + centroidXs);
 		
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		

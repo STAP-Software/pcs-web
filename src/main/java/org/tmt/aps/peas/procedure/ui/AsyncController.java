@@ -112,7 +112,8 @@ public class AsyncController {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
 			
 			// get data into form
-			procedureController.doUpdateDisplays();
+			//visualizationController.doUpdateDisplays();
+			
 			// update form values 
 			// TODO: update other visualization displays once developed
 			RequestContext requestContext = RequestContext.getCurrentInstance();

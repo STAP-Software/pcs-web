@@ -11,9 +11,7 @@ import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -29,16 +27,12 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
-import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.FloatPointListEncoder;
-import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -50,8 +44,6 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
-import org.tmt.aps.peas.config.model.Subimage;
-import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -66,7 +58,6 @@ import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
@@ -79,18 +70,14 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
-import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
-import org.tmt.aps.peas.visualization.business.VisualizationDisplayMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
-import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
-import org.tmt.aps.peas.visualization.ui.VisualizationDisplayLink;
+import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 @Named
 @SessionScoped
@@ -127,8 +114,6 @@ public class ProcedureController implements Serializable {
 	@EJB
 	SessionMgmt sessionMgmt;
 	@EJB
-	VisualizationDisplayMgmt visualizationDisplayMgmt;
-	@EJB
 	CentroidMapMgmt centroidMapMgmt;
 
 	@Inject
@@ -136,13 +121,11 @@ public class ProcedureController implements Serializable {
 	@Inject
 	private SessionController sessionController;
 	@Inject
-	private GlobalConfigController globalConfigController;
+	private VisualizationController visualizationController;
 	@Inject
 	private StatusLogController statusLogController;
 	@Inject
 	private FrameController frameController;
-	@Inject
-	private GraphicDisplayMgmt graphicDisplayMgmt;
 
 	Procedure procedure;
 	ProcedureType procedureType;
@@ -159,10 +142,6 @@ public class ProcedureController implements Serializable {
 
 	UserPrompt currentPrompt;
 	
-	boolean centroidDisplayEnabled;
-	boolean centroidOffsetDisplayEnabled;
-	boolean avgCentroidOffsetDisplayEnabled;
-	boolean actuatorDeltaDisplayEnabled;	
 	
 	Instrument frameInstrument;
 	int selectedFrameNumber;
@@ -180,65 +159,12 @@ public class ProcedureController implements Serializable {
 		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);		
 	}
 	
-	private void initVisualizationDisplays(Long procedureTypeId) {
-		
-		centroidDisplayEnabled = false;
-		centroidOffsetDisplayEnabled = false;
-		avgCentroidOffsetDisplayEnabled = false;
-		actuatorDeltaDisplayEnabled = false;
 
-		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
-		
-		visualizationDisplayRoot = new DefaultTreeNode("Root", null);
-		
-		TreeNode node0 = new DefaultTreeNode("folder", "Iteration 1", visualizationDisplayRoot);
-		
-		for (VisualizationDisplay visualizationDisplay : visualizationDisplayList) {
-
-			switch (visualizationDisplay.getVisualizationDisplayId().intValue()) {
-			case VisualizationDisplay.DISPLAY_TYPE_CENTROIDS:
-				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroids", "runDrawSpots();centroidsDisplayDialog.show()"), node0);
-				centroidDisplayEnabled = true;
-				break;
-			case VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS:
-				new DefaultTreeNode("link", new VisualizationDisplayLink("Centroid Offsets", "runDrawOffsets(); centroidOffsetDisplayDialog.show()"), node0);
-				centroidOffsetDisplayEnabled = true;
-				break;
-			case VisualizationDisplay.DISPLAY_TYPE_AVG_CENTROID_OFFSETS:
-				new DefaultTreeNode("link", new VisualizationDisplayLink("Avg. Centroid Offsets", "centroidOffsetDisplayDialog.show()"), node0);
-				avgCentroidOffsetDisplayEnabled = true;
-				break;
-			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
-				new DefaultTreeNode("link", new VisualizationDisplayLink("Actuator Deltas", "centroidOffsetDisplayDialog.show()"), node0);
-				actuatorDeltaDisplayEnabled = true;
-				break;	
-			}
-		}
-
-		node0.setExpanded(true);
-	}
-	
 	public List<Float> getIntegrationTimeList() {
 		return integrationTimeList;
 	}
 	public void setIntegrationTimeList(List<Float> integrationTimeList) {
 		this.integrationTimeList = integrationTimeList;
-	}
-
-	public boolean isCentroidDisplayEnabled() {
-		return centroidDisplayEnabled;
-	}	
-
-	public boolean isCentroidOffsetDisplayEnabled() {
-		return centroidOffsetDisplayEnabled;
-	}
-
-	public boolean isAvgCentroidOffsetDisplayEnabled() {
-		return avgCentroidOffsetDisplayEnabled;
-	}
-
-	public boolean isActuatorDeltaDisplayEnabled() {
-		return actuatorDeltaDisplayEnabled;
 	}
 
 	public Procedure getProcedure() {
@@ -281,30 +207,6 @@ public class ProcedureController implements Serializable {
 		return uploadFitsFile;
 	}
 
-	public String getCentroidXs() {
-		return graphicDisplayMgmt.getCentroidXs();
-	}
-
-	public void setCentroidXs(String centroidXs) {
-		graphicDisplayMgmt.setCentroidXs(centroidXs);
-	}
-
-	public String getCentroidYs() {
-		return graphicDisplayMgmt.getCentroidYs();
-	}
-
-	public void setCentroidYs(String centroidYs) {
-		graphicDisplayMgmt.setCentroidYs(centroidYs);
-	}
-
-	public String getCentroidNbrs() {
-		return graphicDisplayMgmt.getCentroidNbrs();
-	}
-
-	public void setCentroidNbrs(String centroidNbrs) {
-		graphicDisplayMgmt.setCentroidNbrs(centroidNbrs);
-	}
-	
 	public String getFrameCentroidXs() {
 		return frameDisplayMgmt.getCentroidXs();
 	}
@@ -572,7 +474,7 @@ public class ProcedureController implements Serializable {
 			procedureExecutionState.init(procedure);
 
 			// set up visualization display list for later
-			initVisualizationDisplays(procedureTypeId);
+			visualizationController.initVisualizationDisplays(procedureTypeId);
 			
 			logger.info("default mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 			
@@ -743,7 +645,7 @@ public class ProcedureController implements Serializable {
 		loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
 		
 		// set up visualization displays
-		initVisualizationDisplays(procedureType.getProcedureTypeId());
+		visualizationController.initVisualizationDisplays(procedureType.getProcedureTypeId());
 
 		// in case the values are not in the DB, just dummy some values
 		if (procedure.getProcedureConfigSet().getFiConfig() == null) {
@@ -849,82 +751,10 @@ public class ProcedureController implements Serializable {
 	}
 	
 	// ====================================================================================== //
-	//   Visualization Displays                                                               //
+	//   Frame Displays                                                                       //
 	// ====================================================================================== //
+
 	
-	public void doUpdateDisplays() {
-
-		// TODO - this needs to know which node was selected - for now, centroids display
-		// TODO - for now, just the first iteration
-		
-		// FIXME - this is the source of the centroid offset display problem.  One way to mitigate is to use a separate 
-		//    	   set of variables for exposing offsets.  This should have been done anyway.
-		
-		// if then is TEST ONLY
-		if (procedure.getProcedureCcdFrameList() != null) {
-			CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
-			List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
-			encodeOrderedPointList(centroids);
-		}
-	}
-	
-	private List<Subimage> getSubimageDefsForMask(Long maskTypeId) {
-		
-		PupilMaskType pupilMaskType = cameraDefMgmt.findPupilMaskType(maskTypeId);
-
-		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
-
-		Map<String, Integer> spots = new LinkedHashMap<String, Integer>();
-		for (int i = 1; i <= pupilMaskType.getNumSpots(); i++) {
-			spots.put("spot  # " + i, i);
-		}
-
-		// TODO: read in subimageDefList based on pupilMaskType
-		List<Subimage> subimageDefList = new ArrayList<Subimage>();
-		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
-			for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
-				Subimage subimage = new Subimage(i + 1, Subimage.PT_DEF_X_ARRAY[i], Subimage.PT_DEF_Y_ARRAY[i]);
-				subimageDefList.add(subimage);
-			}
-		}
-		return subimageDefList;
-	}
-	
-	private void encodeSubimageHiddenVars(List<Subimage> subimageList) {
-				
-		List<Float> xList = new ArrayList<Float>();
-		List<Float> yList = new ArrayList<Float>();
-		List<Integer> numList = new ArrayList<Integer>();
-		for (Subimage subimage : subimageList) {
-			
-			numList.add(subimage.getSubimageNumber());
-			xList.add(subimage.getxCcd());
-			yList.add(subimage.getyCcd());			
-		}
-		
-		setCentroidXs(FloatListEncoder.encodeList(xList));
-		setCentroidYs(FloatListEncoder.encodeList(yList));
-		setCentroidNbrs(IntegerListEncoder.encodeList(numList));
-	}
-	
-	private void encodeOrderedPointList(List<FloatPoint> inputList) {
-		
-		List<Float> xList = new ArrayList<Float>();
-		List<Float> yList = new ArrayList<Float>();
-		List<Integer> numList = new ArrayList<Integer>();
-		int i=1;
-		for (FloatPoint coord : inputList) {
-			
-			numList.add(i++);
-			xList.add(coord.x);
-			yList.add(coord.y);			
-		}
-		
-		setCentroidXs(FloatListEncoder.encodeList(xList));
-		setCentroidYs(FloatListEncoder.encodeList(yList));
-		setCentroidNbrs(IntegerListEncoder.encodeList(numList));
-	}
-
 	public void doHandMark() {
 		
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");

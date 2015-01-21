@@ -16,8 +16,6 @@ function drawSpots() {
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,c.width, c.height);
 
-	var numbersField = document.getElementById('spotsForm:centroidNbrs').value;
- 	var numbersArray = numbersField.split(','); 
     
 	var xField = document.getElementById('spotsForm:centroidXs').value;
  	var xArray = xField.split(','); 
@@ -29,11 +27,11 @@ function drawSpots() {
  	ctx.scale(0.61, 0.61);
  	
  	var fontSize;
- 	if (numbersArray.length > 1000) {
+ 	if (xArray.length > 1000) {
  		fontSize = 16;
- 	} else if (numbersArray.length > 200) {
+ 	} else if (xArray.length > 200) {
  		fontSize = 20;
- 	} else if (numbersArray.length > 100) {
+ 	} else if (xArray.length > 100) {
  		fontSize = 24;
  	} else {
  		fontSize = 28;
@@ -42,8 +40,8 @@ function drawSpots() {
 	ctx.font = fontSize + "px Arial";
  	ctx.fillStyle = "blue";
 		
-	for (i = 0; i < numbersArray.length; i++) {
-		ctx.fillText(numbersArray[i], xArray[i], yArray[i]);	
+	for (i = 0; i < xArray.length; i++) {
+		ctx.fillText("" + (i+1), xArray[i], yArray[i]);	
 	}
 }
 //]]>  
@@ -51,22 +49,20 @@ function drawSpots() {
 
 
 
-		<p:dialog id="centroidsDialog" header="Centroids Visualization Display" widgetVar="centroidsDisplayDialog" closable="false" >  
-    		<h:form id="spotsForm">
+	<p:dialog id="centroidsDialog" header="Centroids Visualization Display" widgetVar="centroidsDisplayDialog" closable="false" >  
+   		<h:form id="spotsForm">
 
-			      		
-    		<h:inputHidden id="centroidXs" value="#{procedureController.centroidXs}" />
-			<h:inputHidden id="centroidYs" value="#{procedureController.centroidYs}" />
- 			<h:inputHidden id="centroidNbrs" value="#{procedureController.centroidNbrs}" />
-    			
-    		<canvas id="spotCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
-    		<br/>
-    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
-			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
-    		</h:form>
-		</p:dialog> 
+   		<h:inputHidden id="centroidXs" value="#{visualizationController.centroidXs}" />
+		<h:inputHidden id="centroidYs" value="#{visualizationController.centroidYs}" />
+   			
+   		<canvas id="spotCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+   		<br/>
+   		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
+				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
+		<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
+   		</h:form>
+	</p:dialog> 
 
 
 </ui:composition>
