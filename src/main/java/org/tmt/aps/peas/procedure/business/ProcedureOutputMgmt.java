@@ -79,19 +79,29 @@ public class ProcedureOutputMgmt {
 		return procedureOutput;
 	}
 
-	public ProcedureOutput findProcedureOutput(Long procedureId) {
+	public ProcedureOutput findProcedureOutput(Long procedureId) throws Exception {
 
 		// fill out a list of ProcedureOutputValues
 		
-		// FIXME: not sure if we have a case where we need the values populating a subclass of ProcedureOutput
-		ProcedureOutput procedureOutput = new ProcedureOutput();
 		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputValuesForProcedure", ProcedureOutputValue.class);
 		query.setParameter("procedureId", procedureId);
 
 		List<ProcedureOutputValue> procedureOutputList = query.getResultList();
-
-		procedureOutput.setProcedureOutputList(procedureOutputList);
 		
+		if (procedureOutputList.isEmpty()) {
+			return new ProcedureOutput();
+		}
+		
+		String fullClassName = "org.tmt.aps.peas.procedure.model." + procedureOutputList.get(0).getProcedureOutputField().getClassName();
+		
+		Object classInstance = Class.forName(fullClassName).newInstance();
+		ProcedureOutput procedureOutput = (ProcedureOutput)classInstance;
+		procedureOutput.setProcedureOutputList(procedureOutputList);
+
+		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
+			decodeAndSetObjectFieldValue(classInstance, procedureOutputValue);
+		}
+	
 		return procedureOutput;
 	}
 
@@ -117,7 +127,7 @@ public class ProcedureOutputMgmt {
 	private String deriveFieldNameFromGetter(String getterMethodName) {
 
 		String string = (getterMethodName.startsWith("is")) ? getterMethodName.substring(2) : getterMethodName.substring(3);
-		return Character.toLowerCase(string.charAt(0)) + (string.length() > 1 ? string.substring(1) : "");
+		return string;
 	}
 
 	private String encodeObjectFieldValue(Object object, Method method) throws Exception {
@@ -135,9 +145,25 @@ public class ProcedureOutputMgmt {
 
 				if (element.getClass().isArray()) {
 
-					for (Object subelement : returnArray) {
+					if (element instanceof float[]) {
+						for (float subelement : (float[])element) {
+	
+							buf.append("" + subelement + ", ");
+						}
+						
+					} else if (element instanceof int[]) {
+						
+						for (int subelement : (int[])element) {
 
-						buf.append("" + subelement + ", ");
+							buf.append("" + subelement + ", ");
+						}
+						
+					} else {
+						for (Object subelement : (Object[])element) {
+
+							buf.append("" + subelement + ", ");
+						}
+
 					}
 
 				} else {
@@ -145,6 +171,10 @@ public class ProcedureOutputMgmt {
 				}
 
 			}
+			
+			float[] t = {0.0f, 2.3f};
+			t.getClass().isArray();
+			
 
 			buf.delete(buf.length() - 2, buf.length());
 			return buf.toString();
@@ -155,39 +185,49 @@ public class ProcedureOutputMgmt {
 
 	}
 
-	private void decodeAndSetObjectFieldValue(Object constantsInstance, Constant constant) throws Exception {
+	private void decodeAndSetObjectFieldValue(Object classInstance, ProcedureOutputValue procedureOutputValue) throws Exception {
 
+		ProcedureOutputField procedureOutputField = procedureOutputValue.getProcedureOutputField();
+		
 		// get the named field's setter method
 		Method method = null;
 
 		// easy cases first
-		if (constant.isScalar()) {
+		if (procedureOutputField.isScalar()) {
 
-			switch (constant.getDataType()) {
+			switch (procedureOutputField.getDataType()) {
 
 			case Constant.DATA_TYPE_INT:
-				Integer intValue = new Integer(constant.getData());
-				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), int.class);
-				method.invoke(constantsInstance, intValue);
+				Integer intValue = new Integer(procedureOutputValue.getData());
+				method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), int.class);
+				method.invoke(classInstance, intValue);
 				break;
 
 			case Constant.DATA_TYPE_FLOAT:
-				Float floatValue = new Float(constant.getData());
-				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), float.class);
-				method.invoke(constantsInstance, floatValue);
+				Float floatValue = new Float(procedureOutputValue.getData());
+				method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), float.class);
+				method.invoke(classInstance, floatValue);
 				break;
 
 			case Constant.DATA_TYPE_DOUBLE:
-				Double doubleValue = new Double(constant.getData());
-				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), double.class);
-				method.invoke(constantsInstance, doubleValue);
+				Double doubleValue = new Double(procedureOutputValue.getData());
+				method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), double.class);
+				method.invoke(classInstance, doubleValue);
 				break;
 
 			case Constant.DATA_TYPE_BOOLEAN:
-				Boolean booleanValue = new Boolean(constant.getData());
-				method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), boolean.class);
-				method.invoke(constantsInstance, booleanValue);
+				Boolean booleanValue = new Boolean(procedureOutputValue.getData());
+				method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), boolean.class);
+				method.invoke(classInstance, booleanValue);
 				break;
+				
+			case Constant.DATA_TYPE_FLOAT_POINT:
+				FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(procedureOutputValue.getData()).toArray(new FloatPoint[] {});
+				FloatPoint floatPointValue = floatPointArray[0];
+				method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), FloatPoint.class);
+				method.invoke(classInstance, (Object) floatPointValue);
+				break;
+
 
 			}
 
@@ -195,43 +235,43 @@ public class ProcedureOutputMgmt {
 
 			// one and two dimensional array cases
 
-			if (constant.isOneDimensional()) {
+			if (procedureOutputField.isOneDimensional()) {
 
 				// one dimensional arrays and arrays of points
 
-				switch (constant.getDataType()) {
+				switch (procedureOutputField.getDataType()) {
 
 				case Constant.DATA_TYPE_INT:
-					Integer intArray[] = IntegerListEncoder.decodeList(constant.getData()).toArray(new Integer[] {});
+					Integer intArray[] = IntegerListEncoder.decodeList(procedureOutputValue.getData()).toArray(new Integer[] {});
 					int primitiveIntArray[] = new int[intArray.length];
 					for (int i = 0; i < intArray.length; i++) {
 						primitiveIntArray[i] = intArray[i];
 					}
 
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), int[].class);
-					method.invoke(constantsInstance, (Object) primitiveIntArray);
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), int[].class);
+					method.invoke(classInstance, (Object) primitiveIntArray);
 					break;
 
 				case Constant.DATA_TYPE_FLOAT:
-					Float floatArray[] = FloatListEncoder.decodeList(constant.getData()).toArray(new Float[] {});
+					Float floatArray[] = FloatListEncoder.decodeList(procedureOutputValue.getData()).toArray(new Float[] {});
 					float primitiveFloatArray[] = new float[floatArray.length];
 					for (int i = 0; i < floatArray.length; i++) {
 						primitiveFloatArray[i] = floatArray[i];
 					}
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), float[].class);
-					method.invoke(constantsInstance, (Object) primitiveFloatArray);
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), float[].class);
+					method.invoke(classInstance, (Object) primitiveFloatArray);
 					break;
 
 				case Constant.DATA_TYPE_INT_POINT:
-					Point pointArray[] = PointListEncoder.decodeList(constant.getData()).toArray(new Point[] {});
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), Point[].class);
-					method.invoke(constantsInstance, (Object) pointArray);
+					Point pointArray[] = PointListEncoder.decodeList(procedureOutputValue.getData()).toArray(new Point[] {});
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), Point[].class);
+					method.invoke(classInstance, (Object) pointArray);
 					break;
 
 				case Constant.DATA_TYPE_FLOAT_POINT:
-					FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(constant.getData()).toArray(new FloatPoint[] {});
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), FloatPoint[].class);
-					method.invoke(constantsInstance, (Object) floatPointArray);
+					FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(procedureOutputValue.getData()).toArray(new FloatPoint[] {});
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), FloatPoint[].class);
+					method.invoke(classInstance, (Object) floatPointArray);
 					break;
 
 				}
@@ -242,41 +282,41 @@ public class ProcedureOutputMgmt {
 
 				// assuming iteration over first index surrounds the second index iterator
 
-				switch (constant.getDataType()) {
+				switch (procedureOutputField.getDataType()) {
 				case Constant.DATA_TYPE_INT:
-					Integer intArray[] = IntegerListEncoder.decodeList(constant.getData()).toArray(new Integer[] {});
+					Integer intArray[] = IntegerListEncoder.decodeList(procedureOutputValue.getData()).toArray(new Integer[] {});
 
-					int int2dArray[][] = new int[constant.getDimension1()][constant.getDimension2()];
+					int int2dArray[][] = new int[procedureOutputField.getDimension1()][procedureOutputField.getDimension2()];
 
 					// flat array now needs to be read into 2-d array
 					int k = 0;
-					for (int i = 0; i < constant.getDimension1(); i++) {
-						for (int j = 0; j < constant.getDimension2(); j++) {
+					for (int i = 0; i < procedureOutputField.getDimension1(); i++) {
+						for (int j = 0; j < procedureOutputField.getDimension2(); j++) {
 
 							int2dArray[i][j] = intArray[k++].intValue();
 						}
 					}
 
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), int[][].class);
-					method.invoke(constantsInstance, (Object) int2dArray);
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), int[][].class);
+					method.invoke(classInstance, (Object) int2dArray);
 
 					break;
 
 				case Constant.DATA_TYPE_FLOAT:
-					Float floatArray[] = FloatListEncoder.decodeList(constant.getData()).toArray(new Float[] {});
+					Float floatArray[] = FloatListEncoder.decodeList(procedureOutputValue.getData()).toArray(new Float[] {});
 
-					float float2dArray[][] = new float[constant.getDimension1()][constant.getDimension2()];
+					float float2dArray[][] = new float[procedureOutputField.getDimension1()][procedureOutputField.getDimension2()];
 
 					// flat array now needs to be read into 2-d array
 					int fk = 0;
-					for (int fi = 0; fi < constant.getDimension1(); fi++) {
-						for (int fj = 0; fj < constant.getDimension2(); fj++) {
+					for (int fi = 0; fi < procedureOutputField.getDimension1(); fi++) {
+						for (int fj = 0; fj < procedureOutputField.getDimension2(); fj++) {
 							float2dArray[fi][fj] = floatArray[fk++].floatValue();
 						}
 					}
 
-					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), float[][].class);
-					method.invoke(constantsInstance, (Object) float2dArray);
+					method = classInstance.getClass().getDeclaredMethod("set" + procedureOutputField.getFieldName(), float[][].class);
+					method.invoke(classInstance, (Object) float2dArray);
 					break;
 
 				}

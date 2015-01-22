@@ -34,8 +34,12 @@ public class ProcedureMgmt {
 		
 		Procedure procedure = query.getSingleResult();
 		
-		ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedureId);
-		procedure.setProcedureOutput(procedureOutput);
+		try {
+			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedureId);
+			procedure.setProcedureOutput(procedureOutput);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 		
 		return procedure;
 	}

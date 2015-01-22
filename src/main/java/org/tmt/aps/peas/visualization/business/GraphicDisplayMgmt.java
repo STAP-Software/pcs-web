@@ -16,6 +16,7 @@ import javax.ejb.Singleton;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Singleton
@@ -32,6 +33,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	String centroidOffsetXs;
 	String centroidOffsetYs;
 
+	CentroidOffsetsDisplayValues centroidOffsetsDisplayValues;
 	
 	String centroidNbrs;
 
@@ -97,6 +99,15 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.returnState = returnState;
 	}
 
+	@Lock(LockType.READ)
+	public CentroidOffsetsDisplayValues getCentroidOffsetsDisplayValues() {
+		return centroidOffsetsDisplayValues;
+	}
+
+	public void setCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
+		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
+	}
+
 	public void displaySubimageCentroids(List<Point> subimageList) {
 		
 		StringBuffer xBuf = new StringBuffer();
@@ -120,17 +131,20 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();
 	}
 
-	public void displayCentroidOffsets(List<FloatPoint> centroidOffsets) {
+	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
+		
+		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
+		
+		FloatPoint[] centroidOffsets = centroidOffsetsDisplayValues.getCentroidOffsets();
 		
 		StringBuffer xBuf = new StringBuffer();
 		StringBuffer yBuf = new StringBuffer();
-		for (int i=0; i<centroidOffsets.size(); i++) {
-			xBuf.append(centroidOffsets.get(i).x + ",");
-			yBuf.append(centroidOffsets.get(i).y + ",");
+		for (int i=0; i<centroidOffsets.length; i++) {
+			xBuf.append(centroidOffsets[i].x + ",");
+			yBuf.append(centroidOffsets[i].y + ",");
 		}
 		centroidOffsetXs = xBuf.substring(0, xBuf.length()-1);
 		centroidOffsetYs = yBuf.substring(0, yBuf.length()-1);
-		
 		
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		

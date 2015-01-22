@@ -34,6 +34,7 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
@@ -112,6 +113,8 @@ public class PassiveTiltExecutor {
 
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
+			PassiveTiltProcedureOutput procedureOutput = (PassiveTiltProcedureOutput)procedure.getProcedureOutput();
+			
 			procedureExecutionMgmt.performProcedureStartup(procedure);
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
@@ -234,9 +237,24 @@ public class PassiveTiltExecutor {
 
 			// TODO: also whatever this does
 			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
+			
+			
+			procedureOutput.setCentroidOffsets(centroidOffsets.toArray(new FloatPoint[0]));
+			procedureOutput.setCentroidOffsetsRms(11.56f);
+			procedureOutput.setCentroidOffsetsFocus(77.77f);
+			procedureOutput.setM1CmdsSent(false);
+			float[][] m1ActuatorCmds = new float[36][3];
+			procedureOutput.setM1ActuatorCmds(m1ActuatorCmds);
+			procedureOutput.setM1ActuatorCmdsRms(33.4f);
+			procedureOutput.setM1PistonCmdsRms(22.4f);
+			procedureOutput.setM1PistonResidualRms(44.45f);
+			procedureOutput.setRotationFromRefBeam(55.23f);
+			procedureOutput.setScaleChangeFromRefBeam(1.004f);
+			procedureOutput.setTranslationFromRefBeam(new FloatPoint(2.3f, 4.5f));
+			
 
 			// TODO: display the average centroid offsets - this is probably not needed since we only do one trial
-			graphicDisplayMgmt.displayCentroidOffsets(centroidOffsets);
+			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
 
 			// TODO: implement ttOffsetsToActs
 			/*****************************************************/

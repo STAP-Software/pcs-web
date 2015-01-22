@@ -26,7 +26,7 @@ public class ProcedureOutputField {
 	
 	String className;
 	String fieldName;
-	String dataType;
+	int dataType;
 	int dimension1;
 	int dimension2;
 	String units;
@@ -59,11 +59,11 @@ public class ProcedureOutputField {
 		this.fieldName = fieldName;
 	}
 	
-	public String getDataType() {
+	public int getDataType() {
 		return dataType;
 	}
 
-	public void setDataType(String dataType) {
+	public void setDataType(int dataType) {
 		this.dataType = dataType;
 	}
 
@@ -107,4 +107,15 @@ public class ProcedureOutputField {
 		this.displayLabel = displayLabel;
 	}
 	
+	public boolean isArray() {
+		return dimension1 > 0;
+	}	
+	
+	public boolean isOneDimensional() {
+		return dimension1 > 0 && dimension2 == 0;
+	}	
+	
+	public boolean isScalar() {
+		return dimension1 == 0;
+	}
 }

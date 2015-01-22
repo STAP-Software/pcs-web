@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.visualization.ui;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,13 +21,16 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.VisualizationDisplayMgmt;
+import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Named
@@ -53,13 +57,13 @@ public class VisualizationController implements Serializable {
 	boolean showSegments = true;
 	boolean showSegNums = true;
 	float offsetScale = 100.0f;
-	
+
 	boolean centroidDisplayEnabled;
 	boolean centroidOffsetDisplayEnabled;
 	boolean avgCentroidOffsetDisplayEnabled;
-	boolean actuatorDeltaDisplayEnabled;	
+	boolean actuatorDeltaDisplayEnabled;
 
-	
+
 	@PostConstruct
 	private void init() {
 
@@ -121,7 +125,7 @@ public class VisualizationController implements Serializable {
 
 	public boolean isCentroidDisplayEnabled() {
 		return centroidDisplayEnabled;
-	}	
+	}
 
 	public boolean isCentroidOffsetDisplayEnabled() {
 		return centroidOffsetDisplayEnabled;
@@ -139,25 +143,29 @@ public class VisualizationController implements Serializable {
 		return graphicDisplayMgmt.getCentroidXs();
 	}
 
-	public void setCentroidXs(String centroidXs) {}
+	public void setCentroidXs(String centroidXs) {
+	}
 
 	public String getCentroidYs() {
 		return graphicDisplayMgmt.getCentroidYs();
 	}
 
-	public void setCentroidYs(String centroidYs) {}
+	public void setCentroidYs(String centroidYs) {
+	}
 
 	public String getCentroidOffsetXs() {
 		return graphicDisplayMgmt.getCentroidOffsetXs();
 	}
 
-	public void setCentroidOffsetXs(String centroidXs) {}
+	public void setCentroidOffsetXs(String centroidXs) {
+	}
 
 	public String getCentroidOffsetYs() {
 		return graphicDisplayMgmt.getCentroidOffsetYs();
 	}
 
-	public void setCentroidOffsetYs(String centroidYs) {}
+	public void setCentroidOffsetYs(String centroidYs) {
+	}
 
 	public String getCentroidNbrs() {
 		return graphicDisplayMgmt.getCentroidNbrs();
@@ -166,7 +174,7 @@ public class VisualizationController implements Serializable {
 	public void setCentroidNbrs(String centroidNbrs) {
 		graphicDisplayMgmt.setCentroidNbrs(centroidNbrs);
 	}
-	
+
 	public float getOffsetScale() {
 		return offsetScale;
 	}
@@ -175,15 +183,21 @@ public class VisualizationController implements Serializable {
 		this.offsetScale = offsetScale;
 	}
 
+	public CentroidOffsetsDisplayValues getCentroidOffsetsDisplayValues() {
+		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues();
+	}
+
+	public void setCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {}
+
 	public void initVisualizationDisplays(Long procedureTypeId) {
-		
+
 		centroidDisplayEnabled = false;
 		centroidOffsetDisplayEnabled = false;
 		avgCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
 
 		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
-				
+
 		for (VisualizationDisplay visualizationDisplay : visualizationDisplayList) {
 
 			switch (visualizationDisplay.getVisualizationDisplayId().intValue()) {
@@ -198,49 +212,60 @@ public class VisualizationController implements Serializable {
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
 				actuatorDeltaDisplayEnabled = true;
-				break;	
+				break;
 			}
 		}
 	}
-	
+
 	public void showSegmentListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
-	
+
 	public void offsetScaleChangeListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");		
+		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
-	
+
 	public void doPopulateCentroidDisplay() {
 
 		// FIXME - for now, just the first iteration
 		Procedure procedure = procedureController.getProcedure();
-		
+
 		if (procedure.getProcedureCcdFrameList() != null) {
-			
+
 			// centroids
 			CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
 			List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
 			graphicDisplayMgmt.setCentroidXs(FloatPointListEncoder.encodeXList(centroids));
 			graphicDisplayMgmt.setCentroidYs(FloatPointListEncoder.encodeYList(centroids));
-						
+
 		}
 	}
-	
+
 	public void doPopulateCentroidOffsetDisplay() {
-		offsetScale = 100.0f;  //initialize at 100%
-	}
-	
-	public void doPopulateAvgCentroidOffsetDisplay() {
-		// TODO: implement		
-	}
-	
-	public void doPopulateActuatorDeltaDisplay() {
-		// TODO: implement		
+		offsetScale = 100.0f; // initialize at 100%
+
+		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
+		
+		// TODO: add logic for other procedures as they arrive
+		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
+		
+			PassiveTiltProcedureOutput ptpo = (PassiveTiltProcedureOutput)procedureOutput;
+			graphicDisplayMgmt.setCentroidOffsetsDisplayValues((CentroidOffsetsDisplayValues)ptpo);
+		}
+		List<FloatPoint> centroidOffsets = Arrays.asList(graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidOffsets());
+		graphicDisplayMgmt.setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
+		graphicDisplayMgmt.setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
+		
 	}
 
-	
-	
+	public void doPopulateAvgCentroidOffsetDisplay() {
+		// TODO: implement
+	}
+
+	public void doPopulateActuatorDeltaDisplay() {
+		// TODO: implement
+	}
+
 }

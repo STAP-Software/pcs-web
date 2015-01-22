@@ -65,8 +65,9 @@ import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
-import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOuput;
+import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -380,7 +381,7 @@ public class ProcedureController implements Serializable {
 
 	// setup for each procedure type
 	public String doNewPassiveTilt() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT, new PassiveTiltProcedureOuput());
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT, new PassiveTiltProcedureOutput());
 	}
 	public String doNewPhasing() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING, null);
@@ -403,6 +404,7 @@ public class ProcedureController implements Serializable {
 	public String doNewCreateFirstRefBeam() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);
 	}
+	
 	
 	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
