@@ -4,7 +4,8 @@
 <script type="text/javascript">  
 //<![CDATA[
 
-
+var sideLen = 77
+var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
 function runDrawOffsets() {
 
@@ -37,17 +38,34 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 	var yField2 = document.getElementById('offsetsForm:centroidOffsetYs').value;
  	var yOffsetArray = yField2.split(','); 
    
- 	
+	var offsetScale = parseFloat(document.getElementById('offsetsForm:scaleSlider').value);
+ 	 
+	// calculate max length of all offsets
+	var maxLen = 0.0;
+	for (var i = 0; i < xOffsetArray.length; i++) {
+		
+		var x = parseFloat(xOffsetArray[i])
+		var y = parseFloat(yOffsetArray[i])
+
+		var len = Math.sqrt(x*x + y*y)
+				
+		if (maxLen < len) maxLen = len
+	}
+	
+	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
+	
+	
+	var scaleFactor = hexRadius / maxLen  // the max length will then be the length of the hexRadius
 	
 	for (var i = 0; i < xHexCenterArray.length; i++) {
 		
 		var x = parseFloat(xHexCenterArray[i])
 		var y = parseFloat(yHexCenterArray[i])
 		
-		var dx = x + parseFloat(xOffsetArray[i])
-		var dy = y + parseFloat(yOffsetArray[i])
+		var dx = x + (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
 						
-		drawHex(ctx, x, y, 77, i+1, drawSegments, drawSegNums)
+		drawHex(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
 		
 		ctx.beginPath();
 		ctx.strokeStyle = 'red';
@@ -66,12 +84,14 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 
 	}
 	
+	// max len is the value assigned to a side in the key
+
 	// add the key
 	
 	ctx.beginPath();
 	ctx.strokeStyle = 'red';
     ctx.moveTo(850, 950);
-    ctx.lineTo(900, 950);
+    ctx.lineTo(850 + sideLen, 950);
     ctx.stroke();
    
 
@@ -85,7 +105,7 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
     
 	ctx.beginPath();
 	ctx.strokeStyle = 'black';
-	ctx.arc(900, 950, 5, 0, 2*Math.PI);
+	ctx.arc(850 + sideLen, 950, 5, 0, 2*Math.PI);
 	ctx.closePath();
 	ctx.stroke();
 	ctx.fillStyle = 'white';
@@ -93,7 +113,10 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
     
 	ctx.fillStyle = 'black';
 	ctx.font="18px Arial";
-	ctx.fillText("3 pixels", 844, 940);
+	
+	
+	
+	ctx.fillText((maxLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " pixels", 844, 940);
 	
 }
 
@@ -157,8 +180,14 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
     			
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
-    		<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+     		
+     		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
     		
+    			<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		</p:panelGrid>
+    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 				<h:outputLabel value="Translation from Ref (x,y)" />
@@ -179,10 +208,6 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 
 				<p:spacer height="15"/><p:spacer height="15"/>
-				<h:outputLabel value="RMS Error [1-18]" />
-				<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
-				<h:outputLabel value="RMS Error [18-36]" />
-				<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 				<h:outputLabel value="Total RMS Error" />
 				<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 
@@ -203,7 +228,21 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     				<p:ajax update="@this" listener="#{visualizationController.showSegmentListener}" />
     			</p:selectBooleanButton>
     			
+    			<p:spacer height="10"/><p:spacer height="10"/>
+    			
+    			
     		</p:panelGrid>
+    		<p:panelGrid columns="1" style="margin-bottom: 10px; width:100%">
+  
+  				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
+        		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
+        		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
+            		<p:ajax event="slideEnd" listener="#{visualizationController.offsetScaleChangeListener}" />
+        		</p:slider>
+    		</p:panelGrid>
+    		</p:panelGrid>    		
+    		
+    		
     		</p:panelGrid>
     		<br/>
 			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"

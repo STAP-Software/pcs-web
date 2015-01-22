@@ -52,6 +52,7 @@ public class VisualizationController implements Serializable {
 
 	boolean showSegments = true;
 	boolean showSegNums = true;
+	float offsetScale = 100.0f;
 	
 	boolean centroidDisplayEnabled;
 	boolean centroidOffsetDisplayEnabled;
@@ -166,6 +167,14 @@ public class VisualizationController implements Serializable {
 		graphicDisplayMgmt.setCentroidNbrs(centroidNbrs);
 	}
 	
+	public float getOffsetScale() {
+		return offsetScale;
+	}
+
+	public void setOffsetScale(float offsetScale) {
+		this.offsetScale = offsetScale;
+	}
+
 	public void initVisualizationDisplays(Long procedureTypeId) {
 		
 		centroidDisplayEnabled = false;
@@ -199,6 +208,11 @@ public class VisualizationController implements Serializable {
 		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 	
+	public void offsetScaleChangeListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");		
+	}
+	
 	public void doPopulateCentroidDisplay() {
 
 		// FIXME - for now, just the first iteration
@@ -216,7 +230,7 @@ public class VisualizationController implements Serializable {
 	}
 	
 	public void doPopulateCentroidOffsetDisplay() {
-		// TODO: implement
+		offsetScale = 100.0f;  //initialize at 100%
 	}
 	
 	public void doPopulateAvgCentroidOffsetDisplay() {
