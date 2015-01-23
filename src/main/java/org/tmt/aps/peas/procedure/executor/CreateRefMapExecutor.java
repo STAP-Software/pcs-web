@@ -209,6 +209,11 @@ public class CreateRefMapExecutor {
 			// CALL UFS_SEGMENT_SELECT(0)
 			// CALL UFS_SEG_POS_WRITE
 			
+			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+				// turn off reference beams - no need to wait for response				
+				cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+			}
+
 								
 			int trialPct = (int) ((((1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
 				
