@@ -21,6 +21,8 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -179,7 +181,7 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 			
 			ProcedureCcdFrame procedureCcdFrame = null;
-			List<FloatPoint> centroidOffsets = null;
+			CentroidOffsetsResult centroidOffsetsResult = null;
 			
 			while (true) {
 
@@ -194,8 +196,18 @@ public class PassiveTiltExecutor {
 					/*****************************************************/
 					/*              calculateCentroidOffsets             */
 					/*****************************************************/
-					centroidOffsets = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(), 
-							procedure.getRefBeamMap().getCentroidMap().getValues());
+					
+					// TEST ONLY
+					CentroidOffsetsConfig coConfig = new CentroidOffsetsConfig();
+					coConfig.setRemoveRotation(false);
+					coConfig.setRemoveScale(false);
+					
+					centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(
+							procedureCcdFrame.getCentroidMap().getValues(), 
+							procedure.getRefBeamMap().getCentroidMap().getValues(), 
+							coConfig);
+					
+					
 					
 					statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 
@@ -239,7 +251,7 @@ public class PassiveTiltExecutor {
 			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 			
 			
-			procedureOutput.setCentroidOffsets(centroidOffsets.toArray(new FloatPoint[0]));
+			procedureOutput.setCentroidOffsets(centroidOffsetsResult.getCentroidOffsets().toArray(new FloatPoint[0]));
 			procedureOutput.setCentroidOffsetsRms(11.56f);
 			procedureOutput.setCentroidOffsetsFocus(77.77f);
 			procedureOutput.setM1CmdsSent(false);
@@ -248,9 +260,9 @@ public class PassiveTiltExecutor {
 			procedureOutput.setM1ActuatorCmdsRms(33.4f);
 			procedureOutput.setM1PistonCmdsRms(22.4f);
 			procedureOutput.setM1PistonResidualRms(44.45f);
-			procedureOutput.setRotationFromRefBeam(55.23f);
-			procedureOutput.setScaleChangeFromRefBeam(1.004f);
-			procedureOutput.setTranslationFromRefBeam(new FloatPoint(2.3f, 4.5f));
+			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 			
 
 			// TODO: display the average centroid offsets - this is probably not needed since we only do one trial

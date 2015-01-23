@@ -23,6 +23,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
@@ -31,102 +32,96 @@ import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
-
-
 
 public class ComputationLibraryImpl implements ComputationLibrary {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
 	StatusLogger statusLogger;
-	
+
 	// package protected constructor
 	ComputationLibraryImpl() throws Exception {
-		
-		statusLogger = (StatusLogger)InitialContext.doLookup("java:module/StatusLogger");
-		
+
+		statusLogger = (StatusLogger) InitialContext.doLookup("java:module/StatusLogger");
+
 	}
 
 	public float actuatorLengths(float a, float b) throws ComputationException {
-		
+
 		Jsum jsum = new Jsum();
 		RetVal retVal = new RetVal();
 		float[] c = new float[1];
 		jsum.sum(retVal, a, b, c);
-		
+
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 		}
-		
+
 		return c[0];
 	}
 
 	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
-		
+
 		JfindCent jfindCent = new JfindCent();
 		RetVal retVal = new RetVal();
-		
-		logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
-		
+
+		logger.debug("findCent::  " + guess + ", value = " + frame[(int) guess.x][(int) guess.y]);
+
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
-		
-		Object[] result = jfindCent.jfindCent(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
-				(int)guess.x + 1, (int)guess.y + 1, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
-		
+
+		Object[] result = jfindCent.jfindCent(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), (int) guess.x + 1,
+				(int) guess.y + 1, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss());
+
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("No good centroid could be found");
 		}
 
-		FloatPoint centroid = new FloatPoint((Float)result[0], (Float)result[1]);
+		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 
 		return centroid;
 	}
 
 	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
-		
+
 		JfindCentroids jfindCentroids = new JfindCentroids();
 		RetVal retVal = new RetVal();
-		
-		//logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
-		
+
+		// logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
-		
-		
 		int arrayLen = fiResult.getnDetect().length;
-		
+
 		// for our guesses, we use peak location if only one peak in the box, otherwise we use the estimated location
 		List<FloatPoint> guessList = new ArrayList<FloatPoint>();
-		for (int i=0; i<arrayLen; i++) {
+		for (int i = 0; i < arrayLen; i++) {
 			if (fiResult.getnDetect()[i] == 1) {
 				guessList.add(fiResult.getPeakLocationList().get(i));
 			} else {
 				guessList.add(fiResult.getRstLocationList().get(i));
 			}
 		}
-		
 
 		int[] x_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractXArray(guessList));
 		int[] y_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractYArray(guessList));
 
 		// TODO: This needs to be generalized
-		
+
 		int[] nspotType = new int[arrayLen];
-		for (int i=0; i<arrayLen; i++) {
-			nspotType[i] = Constants.SPOT_TYPE_INTERIOR;  
+		for (int i = 0; i < arrayLen; i++) {
+			nspotType[i] = Constants.SPOT_TYPE_INTERIOR;
 		}
-		
+
 		float[] x_cent = new float[arrayLen];
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
-		
-		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
-				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity);
-		
+
+		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), x_guesses,
+				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity);
+
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("No good centroid could be found");
@@ -134,75 +129,73 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		List<FloatPoint> centroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
 
-		
-		//Code for findCent unit testing
-//		logger.info("fiCentroids:: ");
-//		
-//		logger.info("Irad::" + findCentConfig.getIrad() + "\n");
-//		logger.info("Imargin::" + findCentConfig.getImargin()+ "\n");
-//		logger.info("Itermax::" + findCentConfig.getItermax()+ "\n");
-//		logger.info("Ngauss set to 0::\n" );
-//
-//		Object[] tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
-//				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 0, x_cent, y_cent, intensity);
-//		
-//		if (retVal.getCode() > 0) {
-//			statusLogger.log(retVal);
-//			throw new ComputationException("No good centroid could be found");
-//		}
-//
-//		List<FloatPoint> tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
-//		logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
-//		logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
-//		logger.info("Intensity::\n");
-//        StringBuffer buf = new StringBuffer();
-//		for (int i=0;i<arrayLen; i++) {
-//        	buf.append(intensity[i] + ",");
-//         }
-//		buf.deleteCharAt(buf.length()-1);
-//       	logger.info(buf.toString()); 
-//
-//       	
-//		logger.info("Ngauss set to 1::\n" );
-//
-//		tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), 
-//				x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 1, x_cent, y_cent, intensity);
-//		
-//		if (retVal.getCode() > 0) {
-//			statusLogger.log(retVal);
-//			throw new ComputationException("No good centroid could be found");
-//		}
-//		
-//	
-//		tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
-//		logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
-//		logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
-//		logger.info("Intensity::\n");
-//		
-//		buf.delete(0,buf.length());
-//		for (int i=0;i<arrayLen; i++) {
-//        	buf.append(intensity[i] + ",");
-//         }
-//		buf.deleteCharAt(buf.length()-1);
-//       	logger.info(buf.toString()); 	
-//       	     	
-       	
-       	//End of code for findCent unit testing
-		
+		// Code for findCent unit testing
+		// logger.info("fiCentroids:: ");
+		//
+		// logger.info("Irad::" + findCentConfig.getIrad() + "\n");
+		// logger.info("Imargin::" + findCentConfig.getImargin()+ "\n");
+		// logger.info("Itermax::" + findCentConfig.getItermax()+ "\n");
+		// logger.info("Ngauss set to 0::\n" );
+		//
+		// Object[] tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(),
+		// x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 0, x_cent, y_cent, intensity);
+		//
+		// if (retVal.getCode() > 0) {
+		// statusLogger.log(retVal);
+		// throw new ComputationException("No good centroid could be found");
+		// }
+		//
+		// List<FloatPoint> tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+		// logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
+		// logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
+		// logger.info("Intensity::\n");
+		// StringBuffer buf = new StringBuffer();
+		// for (int i=0;i<arrayLen; i++) {
+		// buf.append(intensity[i] + ",");
+		// }
+		// buf.deleteCharAt(buf.length()-1);
+		// logger.info(buf.toString());
+		//
+		//
+		// logger.info("Ngauss set to 1::\n" );
+		//
+		// tmpResult = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(),
+		// x_guesses, y_guesses, findCentConfig.getItermax(), nspotType, 1, x_cent, y_cent, intensity);
+		//
+		// if (retVal.getCode() > 0) {
+		// statusLogger.log(retVal);
+		// throw new ComputationException("No good centroid could be found");
+		// }
+		//
+		//
+		// tempCentroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+		// logger.info("Xcentroids::\n" + FloatPointListEncoder.encodeXList(tempCentroids));
+		// logger.info("Ycentroids::\n" + FloatPointListEncoder.encodeYList(tempCentroids));
+		// logger.info("Intensity::\n");
+		//
+		// buf.delete(0,buf.length());
+		// for (int i=0;i<arrayLen; i++) {
+		// buf.append(intensity[i] + ",");
+		// }
+		// buf.deleteCharAt(buf.length()-1);
+		// logger.info(buf.toString());
+		//
+
+		// End of code for findCent unit testing
+
 		return centroids;
-		
+
 	}
 
-	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
-		
+
 		int[] x1 = new int[badPixelList.size()];
 		int[] x2 = new int[badPixelList.size()];
 		int[] y1 = new int[badPixelList.size()];
 		int[] y2 = new int[badPixelList.size()];
-		
+
 		logger.debug("removeBadPixels:: ");
-		int i=0;
+		int i = 0;
 		for (Rect rect : badPixelList) {
 			logger.debug(rect);
 			x1[i] = rect.p1.x;
@@ -214,14 +207,13 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
 		RetVal retVal = new RetVal();
-		
-		
+
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
-		
+
 		int[][] arrayOut = new int[frame.length][frame[0].length];
-		
+
 		Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, arrayOut);
-		
+
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Bad Pixel remove error");
@@ -229,63 +221,53 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return arrayOut;
 
-		
-		
 	}
-	
-	
 
-	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap) throws ComputationException {
-		
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap)
+			throws ComputationException {
+
 		JfindAndIdentify jfindAndIdentify = new JfindAndIdentify();
 		RetVal retVal = new RetVal();
-		
+
 		float[] fiParams = new float[6];
-		
+
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
-		
+
 		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
-		
+
 		// initialize spot_flag
 		// TODO: this needs to be derived from missing spots
 		int[] spot_flag = new int[numSpots];
-		for (int i=0; i<numSpots; i++) {
+		for (int i = 0; i < numSpots; i++) {
 			spot_flag[i] = 2;
 		}
-		
+
 		// Force scale and rotation values, potentially coming from current ref map
-		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
-			currentRefMap.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
-		float forceRotationDeg = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? 
-			currentRefMap.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
-						
-		float forceRotationRad = forceRotationDeg * (float)Constants.DEG2RAD;
-			
+		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
+				.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
+		float forceRotationDeg = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
+				.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
+
+		float forceRotationRad = forceRotationDeg * (float) Constants.DEG2RAD;
+
 		// the result object
 		FIResult fiResult = new FIResult(numSpots, frame);
-		
 
-		Object output[] = jfindAndIdentify.jfindAndIdentify(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, 
-				fiConfig.getuEst(), fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), 
-				fiConfig.getnPeakMinThresh(), fiConfig.getnPeakMaxThresh(),
-				fiConfig.isForceScale() ? 1 : 0, forceScaleValue,
-				fiConfig.isForceRotation() ? 1 : 0, forceRotationRad,
-				fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), 
-				fiConfig.getSpiralRingCount(), spot_flag,
-				fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), 
-				fiResult.getnDetect(), fiParams, fiResult.getN0123(),
-				fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
-			
+		Object output[] = jfindAndIdentify.jfindAndIdentify(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, fiConfig.getuEst(),
+				fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), fiConfig.getnPeakMinThresh(),
+				fiConfig.getnPeakMaxThresh(), fiConfig.isForceScale() ? 1 : 0, forceScaleValue, fiConfig.isForceRotation() ? 1 : 0,
+				forceRotationRad, fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), fiConfig.getSpiralRingCount(),
+				spot_flag, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
+				fiParams, fiResult.getN0123(), fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Find and Identify Error");
 		}
-		
+
 		// store fi_param values
 		fiResult.setFourierQuality(fiParams[0]);
 		fiResult.setScale(fiParams[1]);
@@ -293,23 +275,23 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		fiResult.setTranslation(new FloatPoint(fiParams[4], fiParams[5]));
 
 		// store scalars
-		fiResult.setNumFilledBoxes((Integer)output[0]);
-		fiResult.setFracFilledBoxes((Float)output[1]);
-		fiResult.setnSolution((Integer)output[2]);
+		fiResult.setNumFilledBoxes((Integer) output[0]);
+		fiResult.setFracFilledBoxes((Float) output[1]);
+		fiResult.setnSolution((Integer) output[2]);
 
-		//debug
-		//logger.info("fiNew :: ");
-		//logger.info("Xpeaks::\n" + FloatPointListEncoder.encodeXList(fiResult.getPeakLocationList()));
-		//logger.info("Ypeaks::\n"+FloatPointListEncoder.encodeYList(fiResult.getPeakLocationList()));
-   	    //logger.info("Xrst::\n"+FloatPointListEncoder.encodeXList(fiResult.getRstLocationList()));
-		//logger.info("Yrst::\n"+FloatPointListEncoder.encodeYList(fiResult.getRstLocationList()));
+		// debug
+		// logger.info("fiNew :: ");
+		// logger.info("Xpeaks::\n" + FloatPointListEncoder.encodeXList(fiResult.getPeakLocationList()));
+		// logger.info("Ypeaks::\n"+FloatPointListEncoder.encodeYList(fiResult.getPeakLocationList()));
+		// logger.info("Xrst::\n"+FloatPointListEncoder.encodeXList(fiResult.getRstLocationList()));
+		// logger.info("Yrst::\n"+FloatPointListEncoder.encodeYList(fiResult.getRstLocationList()));
 
 		return fiResult;
 	}
-	
-	
-	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException {
-	// Need to Check this first
+
+	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException,
+			AbortProcedureException {
+		// Need to Check this first
 		UserAssistRequiredException userAssistException = new UserAssistRequiredException();
 		if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
 			userAssistException.setNdetectNotAllSingle(true);
@@ -317,15 +299,15 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
 			userAssistException.setFracThreshExceeded(true);
 		}
-		
+
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
 			userAssistException.setFourierThreshExceeded(true);
 		}
-		
+
 		if (userAssistException.shouldThrow()) {
 			throw userAssistException;
 		}
-		
+
 	}
 
 	// TODO: move to Fortran?
@@ -339,20 +321,41 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException {
 		
 		
-		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
-		for (int i=0; i< centroids.size(); i++) {
-			FloatPoint centroid = centroids.get(i);
-			FloatPoint refMapCentroid = refMapCentroids.get(i);
-			
-			FloatPoint offset = centroid.subtract(refMapCentroid);
-			
-			offsets.add(offset);
+		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
+		RetVal retVal = new RetVal();
+		
+		
+		float[] fiParams = new float[6];
+		
+		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(refMapCentroids);
+		float[][] centroid = FloatPointListEncoder.convertToNby2Array(centroids);
+
+		
+		// initialize spot_flag
+		// TODO: this needs to be derived from missing spots
+		int numSpots = centroids.size();
+		int[] good_spots = new int[numSpots];
+		for (int i=0; i<numSpots; i++) {
+			good_spots[i] = 1;
 		}
 		
+			
+		// output arrays
+		float[][] offsets = new float[numSpots][2];
+		float[] image_translation = new float[2];
+
+		Object output[] = jcalculateCentroidOffsets.jcalculateCentroidOffsets(retVal, centroid, ref_cent, centroidOffsetsConfig.isRemoveScale() ? 1 : 0, 
+				centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, offsets, image_translation);
+			
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Centroid Offsets Calculation Error");
+		}
 		
-		return new CentroidOffsetsResult(offsets, new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
+		// store fi_param values		
+		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (float)retVal.getArg0(), (float)retVal.getArg1());
 		
 	}
 
-		
 }

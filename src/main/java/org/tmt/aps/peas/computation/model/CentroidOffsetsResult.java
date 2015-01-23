@@ -3,6 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import java.util.List;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 
 public class CentroidOffsetsResult {
 
@@ -11,8 +12,9 @@ public class CentroidOffsetsResult {
 	float imageScale;
 	float imageRotation;
 
-	public CentroidOffsetsResult(List<FloatPoint> centroidOffsets, FloatPoint imageTranslation, float imageScale, float imageRotation) {
-		this.centroidOffsets = centroidOffsets;
+	public CentroidOffsetsResult(float[][] centroidOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation) {
+		
+		this.centroidOffsets = FloatPointListEncoder.convertFromNby2Array(centroidOffsetsArray);
 		this.imageTranslation = imageTranslation;
 		this.imageScale = imageScale;
 		this.imageRotation = imageRotation;

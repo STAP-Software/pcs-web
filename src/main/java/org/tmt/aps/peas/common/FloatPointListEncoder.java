@@ -116,6 +116,26 @@ public class FloatPointListEncoder {
 
 	}
 	
+	public static float[][] convertToNby2Array(List<FloatPoint> pointList) {
+		int size = pointList.size();
+		
+		float[][] result = new float[size][2];
+		for (int i=0; i<size; i++) {
+			result[i][0] = pointList.get(i).x;
+			result[i][1] = pointList.get(i).y;
+		}
+		return result;
+	}
+	public static List<FloatPoint> convertFromNby2Array(float[][] pointArray) {
+		int size = pointArray.length;
+		
+		List<FloatPoint> result = new ArrayList<FloatPoint>();
+		for (int i=0; i<size; i++) {
+			result.add(new FloatPoint(pointArray[i][0], pointArray[i][1]));
+		}
+		return result;
+	}
+	
 	public static List<FloatPoint> constructFromXandY(float[] xArray, float[] yArray) {
 		
 		List<FloatPoint> resultList = new ArrayList<FloatPoint>();

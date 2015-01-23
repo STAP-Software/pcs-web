@@ -154,8 +154,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 			offsets.add(offset);
 		}
 		
-		
-		return new CentroidOffsetsResult(offsets, new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
+		return new CentroidOffsetsResult(FloatPointListEncoder.convertToNby2Array(offsets), new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
 		
 	}
 
