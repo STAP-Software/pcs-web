@@ -709,6 +709,13 @@ public class ProcedureController implements Serializable {
 		}
 	}
 		
+	public void doSaveContext() {
+		if (!procedure.isNewRecord()) {
+			// only save if procedure has been saved.  Prior to that, values will be persisted when the procedure is.
+			procedureMgmt.updateProcedure(procedure);
+		}
+	}
+	
 	public void selectFrameLogListener(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		this.procedureCcdFrame = procedureCcdFrame;
 		

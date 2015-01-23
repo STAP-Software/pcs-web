@@ -44,6 +44,11 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 
+	public Procedure updateProcedure(Procedure procedure) {
+		em.merge(procedure);
+		return procedure;
+	}
+	
 	public ProcedureType findProcedureType(Long procedureTypeId) {
 		TypedQuery<ProcedureType> query = em.createNamedQuery("findProcedureType", ProcedureType.class);
 		query.setParameter("procedureTypeId", procedureTypeId);

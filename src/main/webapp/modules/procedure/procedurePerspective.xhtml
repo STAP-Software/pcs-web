@@ -294,9 +294,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 							<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
 
 							<f:facet name="footer">
-								<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{ccdManualController.doCancel}" />
-								<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-									action="#{globalConfigController.doCancelSaveSetup}" />
+								<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="false" action="#{procedureController.doSaveContext}" />
+								<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh"  update="configPanel" process="@this" >
+									<p:resetInput target="configPanel" />
+								</p:commandButton>
 							</f:facet>
 						</p:panelGrid>
 					</p:tab>
