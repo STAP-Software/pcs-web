@@ -32,6 +32,10 @@ public class ProcedureConfigSet {
 	private FindCentConfig findCentConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "centroidOffsetsConfigId")
+	private CentroidOffsetsConfig centroidOffsetsConfig;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "procedureConfigId")
 	private ProcedureConfig procedureConfig;
 	
@@ -79,6 +83,14 @@ public class ProcedureConfigSet {
 
 	public void setGlobalConfig(GlobalConfig globalConfig) {
 		this.globalConfig = globalConfig;
+	}
+
+	public CentroidOffsetsConfig getCentroidOffsetsConfig() {
+		return centroidOffsetsConfig;
+	}
+
+	public void setCentroidOffsetsConfig(CentroidOffsetsConfig centroidOffsetsConfig) {
+		this.centroidOffsetsConfig = centroidOffsetsConfig;
 	}
 
 }

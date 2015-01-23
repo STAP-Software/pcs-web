@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
@@ -60,6 +61,16 @@ public class GlobalConfigMgmt {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+	
+	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId) {
+		
+		TypedQuery<CentroidOffsetsConfigDefaults> query = em.createNamedQuery("findByProcedureType", CentroidOffsetsConfigDefaults.class);
+		query.setParameter("procedureTypeId", procedureTypeId);
 		
 		query.setMaxResults(1);
 		

@@ -97,6 +97,19 @@
  
 				</p:panelGrid>
 				</p:fieldset>
+
+				<p:fieldset legend="Centroid Offsets Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="Remove Scale" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeScale}" />
+ 					<h:outputLabel value="Remove Rotation" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeRotation}" />
+  
+				</p:panelGrid>
+				</p:fieldset>
+
 				 
 				</p:panelGrid>
 

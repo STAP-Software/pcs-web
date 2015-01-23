@@ -195,18 +195,11 @@ public class PassiveTiltExecutor {
 					/*****************************************************/
 					/*              calculateCentroidOffsets             */
 					/*****************************************************/
-					
-					// TEST ONLY
-					CentroidOffsetsConfig coConfig = new CentroidOffsetsConfig();
-					coConfig.setRemoveRotation(false);
-					coConfig.setRemoveScale(false);
-					
+										
 					centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(
 							procedureCcdFrame.getCentroidMap().getValues(), 
 							procedure.getRefBeamMap().getCentroidMap().getValues(), 
-							coConfig);
-					
-					
+							procedure.getProcedureConfigSet().getCentroidOffsetsConfig());
 					
 					statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 
