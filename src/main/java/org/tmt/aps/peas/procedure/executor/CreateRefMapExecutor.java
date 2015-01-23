@@ -178,7 +178,7 @@ public class CreateRefMapExecutor {
 				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
 		        	
 		        // turn on ref beam
-		        ReferenceBeam refBeam = physicalModel.getInstrument().getCamera().getReferenceBeamByWavelength(procedureConfig.getFilter().getWavelength());
+		        ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
 				statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
 		        refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
 
