@@ -1,0 +1,70 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2014 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
+package org.tmt.aps.peas.config.model;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
+import javax.persistence.Table;
+
+import org.apache.commons.beanutils.BeanUtils;
+
+@Entity
+@Table(name = "CentroidOffsetsConfig")
+@Inheritance(strategy=InheritanceType.JOINED)
+public class CentroidOffsetsConfig {
+
+	
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Long centroidOffsetsConfigId;
+
+	private boolean removeScale;
+	private boolean removeRotation;
+	
+	public CentroidOffsetsConfig() {
+		
+	}
+	
+	public CentroidOffsetsConfig(CentroidOffsetsConfig source) throws Exception {
+		
+		BeanUtils.copyProperties(this, source);
+
+		this.centroidOffsetsConfigId = null;
+	}
+
+	public Long getCentroidOffsetsConfigId() {
+		return centroidOffsetsConfigId;
+	}
+
+	public void setCentroidOffsetsConfigId(Long centroidOffsetsConfigId) {
+		this.centroidOffsetsConfigId = centroidOffsetsConfigId;
+	}
+
+	public boolean isRemoveScale() {
+		return removeScale;
+	}
+
+	public void setRemoveScale(boolean removeScale) {
+		this.removeScale = removeScale;
+	}
+
+	public boolean isRemoveRotation() {
+		return removeRotation;
+	}
+
+	public void setRemoveRotation(boolean removeRotation) {
+		this.removeRotation = removeRotation;
+	}
+	
+	
+}
+	
+	
+	

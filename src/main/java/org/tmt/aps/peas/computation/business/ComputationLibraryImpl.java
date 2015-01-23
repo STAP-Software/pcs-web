@@ -17,7 +17,9 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -333,11 +335,9 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	@Override
-	public List<FloatPoint> calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids)
-			throws ComputationException {
+	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
+			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException {
 		
-		
-		// TEST ONLY - do a simple subtraction here
 		
 		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
 		for (int i=0; i< centroids.size(); i++) {
@@ -348,8 +348,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			
 			offsets.add(offset);
 		}
-		return offsets;
+		
+		
+		return new CentroidOffsetsResult(offsets, new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
+		
 	}
-	
-	
+
+		
 }

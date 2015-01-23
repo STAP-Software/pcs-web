@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.computation.business;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -14,14 +15,15 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -138,11 +140,25 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public List<FloatPoint> calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids)
-			throws ComputationException {
-		// TODO Auto-generated method stub
-		return centroids;
+	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
+			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException {
+		
+		
+		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
+		for (int i=0; i< centroids.size(); i++) {
+			FloatPoint centroid = centroids.get(i);
+			FloatPoint refMapCentroid = refMapCentroids.get(i);
+			
+			FloatPoint offset = centroid.subtract(refMapCentroid);
+			
+			offsets.add(offset);
+		}
+		
+		
+		return new CentroidOffsetsResult(offsets, new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
+		
 	}
+
 	
 	
 	
