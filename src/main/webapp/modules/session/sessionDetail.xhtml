@@ -60,11 +60,11 @@
 							<h:outputText value="Session Summary: " />
 							<h:outputText value="&#160;&#160;&#160;&#160;" />
 							<h:outputText
-								value="#{sessionController.currentSession.telescope.telescopeName}" />
+								value="#{sessionController.session.telescope.telescopeName}" />
 							<h:outputText value="&#160;&#160;&#160;&#160;" />
 							<h:outputText
-								value="#{sessionController.currentSession.sessionDate}">
-								<f:convertDateTime pattern="MM/dd/yyyy " />
+								value="#{sessionController.session.sessionDate}">
+								<f:convertDateTime pattern="MM/dd/yyyy" timezone="UTC" />
 							</h:outputText>
 						</f:facet>
 
@@ -83,17 +83,21 @@
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
 						<p:column headerText="Test Number">
-							<h:outputText value="1" />
+							<h:outputText value="#{procedure.testNumber}" />
 						</p:column>
 						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
 							<h:outputText
 								value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>
 						<p:column headerText="Started">
-							<h:outputText value="#{procedure.executionStartTime}" />
+							<h:outputText value="#{procedure.executionStartTime}" >
+								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
+							</h:outputText>
+							<p:spacer width="6px"/>
+							<h:outputText value="UTC"/>
 						</p:column>
 						<p:column headerText="Comments">
-							<h:outputText value="Procedure specific comments" />
+							<h:outputText value="#{procedure.comments}" />
 						</p:column>
 
 						<p:rowExpansion>

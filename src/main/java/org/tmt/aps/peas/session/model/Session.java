@@ -8,6 +8,7 @@ package org.tmt.aps.peas.session.model;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
@@ -126,6 +127,7 @@ public class Session {
 
 	public String getSessionDateFormatted() {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 		return sdf.format(sessionDate);
 	}
 	
