@@ -22,6 +22,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
@@ -155,6 +156,9 @@ public class ProcedureExecutionMgmt {
 			
 			// persist the procedure output
 			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
+			for (ProcedureIterationOutput pio : procedure.getProcedureOutput().getProcedureIterationOutputList()) {
+				procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
+			}
 			// set up for immediate viewing
 			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 

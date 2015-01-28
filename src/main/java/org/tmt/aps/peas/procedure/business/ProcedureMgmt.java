@@ -37,7 +37,7 @@ public class ProcedureMgmt {
 		try {
 			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedureId);
 			procedure.setProcedureOutput(procedureOutput);
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			e.printStackTrace();
 		}
 		

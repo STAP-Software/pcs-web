@@ -23,10 +23,11 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
-import org.tmt.aps.peas.config.model.MissingSpotList;
+import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
+import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 
 @Stateless
 public class ProcedureOutputMgmt {
@@ -36,7 +37,7 @@ public class ProcedureOutputMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
-	public ProcedureOutput createProcedureOutput(ProcedureOutput procedureOutput, Long procedureId) throws Exception {
+	public ProcedureOutputable createProcedureOutput(ProcedureOutputable procedureOutput, Long procedureId) throws Exception {
 
 		// generate all the ProcedureOutputValues for this procedureOutput
 		// get all field methods from the class
@@ -62,7 +63,7 @@ public class ProcedureOutputMgmt {
 					ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
 					procedureOutputValue.setProcedureId(procedureId);
 					procedureOutputValue.setProcedureOutputField(procedureOutputField);
-					procedureOutputValue.setIteration(1);
+					procedureOutputValue.setIteration(procedureOutput.getIteration());
 
 					// encode the field data for store
 					String data = encodeObjectFieldValue(procedureOutput, method);
@@ -100,8 +101,39 @@ public class ProcedureOutputMgmt {
 
 		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
 			decodeAndSetObjectFieldValue(classInstance, procedureOutputValue);
+			System.out.println("procedureOutput = " + procedureOutputValue.getProcedureOutputField().getFieldName());
 		}
+		System.out.println("Done");
 	
+		// find procedure iteration outputs
+		Integer iteration = 0;
+		while (true) {
+			query = em.createNamedQuery("findOutputValuesForProcedureIteration", ProcedureOutputValue.class);
+			query.setParameter("procedureId", procedureId);
+			query.setParameter("iteration", iteration);
+	
+			List<ProcedureOutputValue> procedureIterationOutputList = query.getResultList();
+			
+			if (procedureIterationOutputList.isEmpty()) {
+				break;
+			}
+
+			
+			fullClassName = "org.tmt.aps.peas.procedure.model." + procedureIterationOutputList.get(0).getProcedureOutputField().getClassName();
+			
+			classInstance = Class.forName(fullClassName).newInstance();
+			ProcedureIterationOutput pio = (ProcedureIterationOutput)classInstance;
+			pio.setProcedureIterationOutputList(procedureIterationOutputList);
+			pio.setIteration(iteration++);
+
+			for (ProcedureOutputValue procedureOutputValue : procedureIterationOutputList) {
+				decodeAndSetObjectFieldValue(classInstance, procedureOutputValue);
+			}
+
+			procedureOutput.addIteration(pio);
+			
+		}
+		
 		return procedureOutput;
 	}
 

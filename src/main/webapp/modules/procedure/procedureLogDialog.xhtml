@@ -7,6 +7,9 @@
 
 		<h:form id="procedureLogForm">
 
+		<p:tabView>
+       	 	<p:tab title="Procedure Overview">
+		
 			<h:commandLink>
 				<p:graphicImage value="../../images/excel.png" />
 				<p:dataExporter type="xls" target="plogTable" fileName="plog" />
@@ -38,16 +41,66 @@
 
 			</p:dataTable>
 			
-			<p:dataList value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" type="definition">
-        		<f:facet name="header">
-            		Associated Frames/Centroid Reports
-        		</f:facet>
-        		<p:spacer width="10px"/>
+			</p:tab>
+			<p:tab title="Procedure Iteration Data">
+			
+			
+			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
+			
+				<p:tab title="Iteration #{pio.iteration + 1}">
 
-       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
-					<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
-				</p:commandLink>
-    		</p:dataList>
+					<h:commandLink>
+						<p:graphicImage value="../../images/excel.png" />
+						<p:dataExporter type="xls" target="iterTable" fileName="plog" />
+					</h:commandLink>
+					<h:commandLink>
+						<p:graphicImage value="../../images/csv.png" />
+						<p:dataExporter type="csv" target="iterTable" fileName="plog" />
+					</h:commandLink>
+				
+					<p:dataTable id="iterTable" var="plogIterValue" value="#{pio.procedureIterationOutputList}" style="margin:20px">
+						<f:facet name="header">
+		        				Procedure Iteration Execution Values
+		    				</f:facet>
+		
+						<p:column headerText="Name">
+							<h:outputText value="#{plogIterValue.procedureOutputField.displayLabel}" />
+						</p:column>
+						<p:column headerText="Value">
+							<h:outputText value="#{plogIterValue.data}" />
+						</p:column>
+						
+						<p:column headerText="Units">
+							<h:outputText value="#{plogIterValue.procedureOutputField.units}" />
+						</p:column>
+						<p:column headerText="Description">
+							<h:outputText value="#{plogIterValue.procedureOutputField.description}" />
+						</p:column>
+		
+					</p:dataTable>
+				
+					<p:dataList value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" type="definition">
+		        		<f:facet name="header">
+		            		Associated Frames/Centroid Reports
+		        		</f:facet>
+		        		<p:spacer width="10px"/>
+		
+		       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
+							<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
+						</p:commandLink>
+		    		</p:dataList>
+				
+				
+				</p:tab>
+			</p:tabView>
+			
+			
+			
+			
+			
+			</p:tab>
+			
+			</p:tabView>
 			
 
 		</h:form>

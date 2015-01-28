@@ -1,9 +1,10 @@
 package org.tmt.aps.peas.procedure.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 
-public class ProcedureOutput {
+public class ProcedureOutput implements ProcedureOutputable {
 
 	Long procedureId;
 
@@ -16,11 +17,22 @@ public class ProcedureOutput {
 		return procedureId;
 	}
 
+	public Integer getIteration() {
+		return null;
+	}
 
+	public void setIteration(Integer iteration) {};
+	
 	public void setProcedureId(Long procedureId) {
 		this.procedureId = procedureId;
 	}
 
+	public void addIteration(ProcedureIterationOutput pio) {
+		if (procedureIterationOutputList == null) {
+			procedureIterationOutputList = new ArrayList<ProcedureIterationOutput>();
+		}
+		procedureIterationOutputList.add(pio);
+	}
 
 	public List<ProcedureIterationOutput> getProcedureIterationOutputList() {
 		return procedureIterationOutputList;

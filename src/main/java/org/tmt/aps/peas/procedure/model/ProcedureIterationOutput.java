@@ -1,12 +1,15 @@
 package org.tmt.aps.peas.procedure.model;
 
-public abstract class ProcedureIterationOutput {
+import java.util.List;
+
+public abstract class ProcedureIterationOutput implements ProcedureOutputable {
 
 	Long procedureId;
 
-	int iteration;
+	Integer iteration;
 
-	
+	List<ProcedureOutputValue> procedureIterationOutputList;
+
 	public Long getProcedureId() {
 		return procedureId;
 	}
@@ -15,14 +18,20 @@ public abstract class ProcedureIterationOutput {
 		this.procedureId = procedureId;
 	}
 
-	public int getIteration() {
+	public Integer getIteration() {
 		return iteration;
 	}
 
-	public void setIteration(int iteration) {
+	public void setIteration(Integer iteration) {
 		this.iteration = iteration;
 	}
 
-	
-	
+	public List<ProcedureOutputValue> getProcedureIterationOutputList() {
+		return procedureIterationOutputList;
+	}
+
+	public void setProcedureIterationOutputList(List<ProcedureOutputValue> procedureIterationOutputList) {
+		this.procedureIterationOutputList = procedureIterationOutputList;
+	}
+
 }

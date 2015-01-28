@@ -22,7 +22,6 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
-import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -36,8 +35,10 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
@@ -242,16 +243,33 @@ public class PassiveTiltExecutor {
 			// TODO: also whatever this does
 			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 			
+			// fill the iteration output
+			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
+			procedureOutput.addIteration(pio);
+
+			pio.setIteration(0);
+			pio.setDeltaAzEl(new FloatPoint(1.1f, 2.3f));
 			
-			procedureOutput.setCentroidOffsets(centroidOffsetsResult.getCentroidOffsets().toArray(new FloatPoint[0]));
-			procedureOutput.setCentroidOffsetsRms(11.56f);
-			procedureOutput.setCentroidOffsetsFocus(77.77f);
-			procedureOutput.setM1CmdsSent(false);
+			pio.setCentroidOffsets(centroidOffsetsResult.getCentroidOffsets().toArray(new FloatPoint[0]));
+			pio.setCentroidOffsetsFocus(77.77f);
+			pio.setCentroidOffsetsRms(11.56f);
 			float[][] m1ActuatorCmds = new float[36][3];
-			procedureOutput.setM1ActuatorCmds(m1ActuatorCmds);
-			procedureOutput.setM1ActuatorCmdsRms(33.4f);
-			procedureOutput.setM1PistonCmdsRms(22.4f);
-			procedureOutput.setM1PistonResidualRms(44.45f);
+			pio.setM1ActuatorCmds(m1ActuatorCmds);
+			pio.setM1ActuatorCmdsRms(33.4f);
+			pio.setM1PistonCmdsRms(22.4f);
+			pio.setM1PistonResidualRms(44.45f);
+			pio.setTelescopeMoved(false);
+
+			
+			// fill the output - many of these are copied from the one iteration
+			procedureOutput.setCentroidOffsets(pio.getCentroidOffsets());
+			procedureOutput.setCentroidOffsetsRms(pio.getCentroidOffsetsRms());
+			procedureOutput.setCentroidOffsetsFocus(pio.getCentroidOffsetsFocus());
+			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
+			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
+			procedureOutput.setM1PistonCmdsRms(pio.getM1PistonCmdsRms());
+			procedureOutput.setM1PistonResidualRms(pio.getM1PistonCmdsRms());
+			
 			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
 			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
 			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
@@ -307,11 +325,9 @@ public class PassiveTiltExecutor {
 					statusLogger.log("Error sending actuator deltas");
 					e.printStackTrace();
 				}
-	           // TODO: Mark the command as sent
-	           // ZPROCLOG_DATA_ACS_CMD_SENT = 1
 	                                                                                
 			}                        
-			
+			procedureOutput.setM1CmdsSent(commandAcs);
 			
 			
 			statusLogger.log("procedure.end", procedure.getProcedureType().getProcedureTypeName());
