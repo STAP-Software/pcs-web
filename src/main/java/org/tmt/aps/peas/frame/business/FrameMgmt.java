@@ -219,6 +219,14 @@ public class FrameMgmt {
 			ccdFrame.setInstrumentId(instrument.getInstrumentId());
 			Telescope telescope = physicalModel.getTelescope();
 
+			// store telescope information with frame when it is taken
+			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
+			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
+			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
+			ccdFrame.setTelescopeAz(telescope.getTelPosition().y);
+			
 			// generate filename and store into the FITS file
 			saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
 					procedureType.getProcedureTypeCd(), procedureNumber);			

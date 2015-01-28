@@ -155,9 +155,11 @@ public class ProcedureExecutionMgmt {
 			}
 			
 			// persist the procedure output
-			procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
-			for (ProcedureIterationOutput pio : procedure.getProcedureOutput().getProcedureIterationOutputList()) {
-				procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
+			if (procedure.getProcedureOutput() != null) {
+				procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
+				for (ProcedureIterationOutput pio : procedure.getProcedureOutput().getProcedureIterationOutputList()) {
+					procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
+				}
 			}
 			// set up for immediate viewing
 			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));

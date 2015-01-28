@@ -42,7 +42,23 @@
 			</p:dataTable>
 			
 			</p:tab>
-			<p:tab title="Procedure Iteration Data">
+			
+			<p:tab title="Frame Data">
+			
+				<p:dataList value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" type="definition">
+	        		<f:facet name="header">
+	            		Associated Frames/Centroid Reports
+	        		</f:facet>
+	        		<p:spacer width="10px"/>
+	
+	       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
+						<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
+					</p:commandLink>
+	    		</p:dataList>
+			
+			</p:tab>
+			
+			<p:tab title="Procedure Iteration Data" rendered="#{not empty procedureController.procedure.procedureOutput.procedureIterationOutputList}">
 			
 			
 			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
@@ -79,16 +95,6 @@
 		
 					</p:dataTable>
 				
-					<p:dataList value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" type="definition">
-		        		<f:facet name="header">
-		            		Associated Frames/Centroid Reports
-		        		</f:facet>
-		        		<p:spacer width="10px"/>
-		
-		       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
-							<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
-						</p:commandLink>
-		    		</p:dataList>
 				
 				
 				</p:tab>

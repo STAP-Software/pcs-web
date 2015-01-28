@@ -736,19 +736,35 @@ public class ProcedureController implements Serializable {
 				object = procedureCcdFrame.getCcdFrame();
 			}
 			
-			Class clazz = object.getClass();
+			if (object != null) {
 			
-			String fieldName = fieldDisplay.getFieldName();
-			
-			String methodPrefix = fieldDisplay.getFieldMetaData().getDataType() == Constant.DATA_TYPE_BOOLEAN ? "is" : "get";
-			
-			String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-			Method method = clazz.getMethod(methodName , null);
-			
-			String value = "" + method.invoke(object, null);
-			
-			fieldDisplay.setValue(value);
-			
+				Class clazz = object.getClass();
+				
+				String fieldName = fieldDisplay.getFieldName();
+				
+				String methodPrefix = fieldDisplay.getFieldMetaData().getDataType() == Constant.DATA_TYPE_BOOLEAN ? "is" : "get";
+				
+				String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
+				Method method = clazz.getMethod(methodName , null);
+				
+				String value = null;
+				
+				if (fieldDisplay.getFieldMetaData().getDimension1() != 0) {
+					
+					// TODO: this entire area needs to be refactored to match procedure output encoding
+					
+					float[] floatArray =  (float[])method.invoke(object, null);
+					value = FloatListEncoder.encodeList(floatArray);
+					
+				} else {
+					value = "" + method.invoke(object, null);
+				}
+				
+				
+				
+				
+				fieldDisplay.setValue(value);
+			}
 		}
 				
 		procedureCcdFrame.setFrameFieldDisplayList(displayList);

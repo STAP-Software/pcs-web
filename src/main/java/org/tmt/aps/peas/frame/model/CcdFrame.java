@@ -49,6 +49,14 @@ public class CcdFrame {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
+	private float avgMirrorTemp;
+	private float secondaryAct1;
+	private float secondaryAct2;
+	private float secondaryAct3;
+	private float telescopeAz;
+	private float telescopeEl;
+
+	
 	@Transient
 	protected int noOfAxes;
 	@Transient
@@ -145,6 +153,74 @@ public class CcdFrame {
 		this.instrumentId = instrumentId;
 	}
 
+
+	public float getAvgMirrorTemp() {
+		return avgMirrorTemp;
+	}
+
+	public void setAvgMirrorTemp(float avgMirrorTemp) {
+		this.avgMirrorTemp = avgMirrorTemp;
+	}
+
+	public float getSecondaryAct1() {
+		return secondaryAct1;
+	}
+
+	public void setSecondaryAct1(float secondaryAct1) {
+		this.secondaryAct1 = secondaryAct1;
+	}
+
+	public float getSecondaryAct2() {
+		return secondaryAct2;
+	}
+
+	public void setSecondaryAct2(float secondaryAct2) {
+		this.secondaryAct2 = secondaryAct2;
+	}
+
+	public float getSecondaryAct3() {
+		return secondaryAct3;
+	}
+
+	public void setSecondaryAct3(float secondaryAct3) {
+		this.secondaryAct3 = secondaryAct3;
+	}
+
+	public float[] getSecondaryAct() {
+		float[] secondaryAct = new float[3];
+		secondaryAct[0] = secondaryAct1;
+		secondaryAct[1] = secondaryAct2;
+		secondaryAct[2] = secondaryAct3;
+		return secondaryAct;
+	}
+	
+	public float getTelescopeAz() {
+		return telescopeAz;
+	}
+
+	public void setTelescopeAz(float telescopeAz) {
+		this.telescopeAz = telescopeAz;
+	}
+
+	public float getTelescopeEl() {
+		return telescopeEl;
+	}
+
+	public void setTelescopeEl(float telescopeEl) {
+		this.telescopeEl = telescopeEl;
+	}
+	
+	public float[] getTelescopeAzEl() {
+		float[] telescopeAzEl = new float[2];
+		telescopeAzEl[0] = telescopeAz;
+		telescopeAzEl[1] = telescopeEl;
+
+		return telescopeAzEl;
+	}
+
+	public void setCorrectedFrame(float[][] correctedFrame) {
+		this.correctedFrame = correctedFrame;
+	}
 
 	public float[][] getCorrectedFrame() {
 		
