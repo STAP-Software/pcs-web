@@ -138,33 +138,30 @@ public class ProcedureController implements Serializable {
 	List<FitsFilename> selectedFitsFiles;
 	byte[] falseColorPng;
 	private TreeNode visualizationDisplayRoot;
-	
+
 	PupilMask defaultMask; // current default mask for procedure type
-	ProcedureCcdFrame procedureCcdFrame;
 
 	UserPrompt currentPrompt;
-	
-	
+
 	Instrument frameInstrument;
 	int selectedFrameNumber;
 	ProcedureCcdFrame selectedFrame;
 	List<Float> integrationTimeList;
 
-	
 	@PostConstruct
 	private void init() throws Exception {
-		
+
 		currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
-		
+
 		// set up the instrument to be associated with each frame to display archived state
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
-		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);		
+		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
 	}
-	
 
 	public List<Float> getIntegrationTimeList() {
 		return integrationTimeList;
 	}
+
 	public void setIntegrationTimeList(List<Float> integrationTimeList) {
 		this.integrationTimeList = integrationTimeList;
 	}
@@ -185,10 +182,6 @@ public class ProcedureController implements Serializable {
 		this.procedureType = procedureType;
 	}
 
-	public ProcedureCcdFrame getProcedureCcdFrame() {
-		return procedureCcdFrame;
-	}
-	
 	public float getIntegrationAddTime() {
 		return integrationAddTime;
 	}
@@ -232,11 +225,11 @@ public class ProcedureController implements Serializable {
 		}
 		return "" + procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
 	}
-	
+
 	public void setFrameSearchRadius(String searchRadius) {
-		
+
 	}
-	
+
 	public UserPrompt getCurrentPrompt() {
 		return currentPrompt;
 	}
@@ -282,18 +275,16 @@ public class ProcedureController implements Serializable {
 			return new DefaultStreamedContent();
 		} else {
 			// So, browser is requesting the image. Get ID value from actual request param.
-			//String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
+			// String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
 
 			// index is passed when the procedure has completed execution and we need to know which one
 			// if index == null, then get the current procedure frame
 
-
-//			if (indexStr == null) {
-//				pcf = procedure.getLatestProcedureCcdFrame();
-//			} else {
-				selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
-//			}
-			
+			// if (indexStr == null) {
+			// pcf = procedure.getLatestProcedureCcdFrame();
+			// } else {
+			selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
+			// }
 
 			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
@@ -340,7 +331,7 @@ public class ProcedureController implements Serializable {
 
 			// set the frame source stored with the file
 			procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(loadedFitsFile.getFrameLightSource());
-			
+
 			// if a png file for display exists, read it in. Otherwise create it.
 			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 
@@ -354,18 +345,20 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderPupilMaskSelect() {
-		
+
 		return procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
 
 	}
-	
+
 	public boolean getRenderNumTrials() {
 		System.out.println("type   =  " + procedureType + ", id = " + procedureType.getProcedureTypeId());
 		return procedureType.isFineScreen() || procedureType.isPassiveTilt();
 	}
+
 	public boolean getRenderFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions() != null;
 	}
+
 	// start button enable logic
 	public boolean isStartEnabled() {
 		if (procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource() == ProcedureConfig.FRAME_SOURCE_FILE) {
@@ -375,7 +368,7 @@ public class ProcedureController implements Serializable {
 		}
 		return true;
 	}
-	
+
 	public void frameSourceListener() {
 		logger.debug("Frame Source Listener");
 	}
@@ -384,29 +377,35 @@ public class ProcedureController implements Serializable {
 	public String doNewPassiveTilt() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT, new PassiveTiltProcedureOutput());
 	}
+
 	public String doNewPhasing() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING, null);
 	}
+
 	public String doNewFineScreen() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN, null);
 	}
+
 	public String doNewSufs() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS, null);
 	}
+
 	public String doNewPupilRegistration() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION, null);
 	}
+
 	public String doNewCenterTelescope() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE, new CenterTelescopeProcedureOutput());
 	}
+
 	public String doNewCreateRefBeam() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, new CreateRefBeamMapProcedureOutput());
 	}
+
 	public String doNewCreateFirstRefBeam() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);
 	}
-	
-	
+
 	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
 		try {
@@ -415,65 +414,62 @@ public class ProcedureController implements Serializable {
 			// get the procedure type object
 			procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 			procedure.setProcedureType(procedureType);
-			
+
 			procedure.setProcedureOutput(procedureOutput);
-			
+
 			sessionController.setCurrentProcedureTypeId(procedureTypeId);
 
-			ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(),
-					sessionController.getInstrument().getInstrumentId(), procedureTypeId);
-			
+			ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope()
+					.getTelescopeId(), sessionController.getInstrument().getInstrumentId(), procedureTypeId);
+
 			// copy the default config into the current procedure config for potential modification
 			ProcedureConfig procedureConfig = new ProcedureConfig(procedureConfigDefaults);
-			
+
 			// and associate it with the procedure
 			procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
-			
 
 			// get the default mask, if it is installed on the wheel
-			defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(), 
+			defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
 					sessionController.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
-			
+
 			procedureConfig.setPupilMask(defaultMask);
-			
+
 			// get the filter to default to if it exists
-			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(), 
+			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(),
 					sessionController.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
-			
+
 			procedureConfig.setFilter(defaultFilter);
-			
+
 			// if procedure type is create ref map, then populate ref beam and integration times from the table
 			if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-				
+
 				// these get set into procedure config
-				setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), 
-						defaultMask.getPupilMaskType().getPupilMaskTypeId(), 
-						defaultFilter.getFilterType().getFilterTypeId());
+				setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), defaultMask.getPupilMaskType()
+						.getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
 			} else {
 				// set up default int times for all procedure types except for reference beam
-				integrationTimeList =  procedureConfig.getIntegrationTimeList();
+				integrationTimeList = procedureConfig.getIntegrationTimeList();
 			}
-			
+
 			// select defaults based on mask and light source
 			updateFIConfig();
-			
+
 			// set centroid offsets calculation defaults based on procedure type
-			CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
+			CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt.findCentroidOffsetsConfig(procedureType
+					.getProcedureTypeId());
 			procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
-			
-			
+
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
-			
+
 			// add it to the session and give it a procedure number
 			sessionController.setupNewProcedure(procedure);
 
-			
 			// clear the status log
 			statusLogController.clearProcedureStatusLog();
-			
+
 			// clear any selected FITS files
 			selectedFitsFiles = null;
-			
+
 			// clear any marking
 			frameDisplayMgmt.clearMarking();
 
@@ -482,13 +478,14 @@ public class ProcedureController implements Serializable {
 
 			// set up visualization display list for later
 			visualizationController.initVisualizationDisplays(procedureTypeId);
-			
+
 			logger.info("default mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
-			
+
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date date = new Date();
-			breadcrumbMenuBean.addFirstItem(procedureType.getProcedureTypeName() + " - " + sdf.format(date), "/modules/procedure/procedurePerspective.xhtml");
+			breadcrumbMenuBean.addFirstItem(procedureType.getProcedureTypeName() + " - " + sdf.format(date),
+					"/modules/procedure/procedurePerspective.xhtml");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -499,16 +496,16 @@ public class ProcedureController implements Serializable {
 
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
-	
+
 	private void setupCreateRefMapDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
-		
+
 		// Set up default ref beam and int time
-		
+
 		procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(ProcedureConfig.LIGHT_SOURCE_LED);
 		procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
-		
+
 		// make the list of possible int times equal to the 'one' we have
 		integrationTimeList = new ArrayList<Float>();
 		integrationTimeList.add(refMapConfigDefaults.getIntegrationTime());
@@ -522,53 +519,53 @@ public class ProcedureController implements Serializable {
 	private void updateFIConfig() throws Exception {
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
-			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(sessionController.getInstrument().getInstrumentId(), 
-				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
-				procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
-			
+			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(sessionController.getInstrument().getInstrumentId(),
+					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+
 			// use defaults as actuals if user doesn't subsequently change them
-			
+
 			// TODO: need to add these fields to the database
-			//fiConfig.setForceScaleSource(1);
-			//fiConfig.setForceRotationSource(1);
-			//fiConfig.setForceScaleValue(0.0f);
-			//fiConfig.setForceRotationValue(0.0f);
-			
+			// fiConfig.setForceScaleSource(1);
+			// fiConfig.setForceRotationSource(1);
+			// fiConfig.setForceScaleValue(0.0f);
+			// fiConfig.setForceRotationValue(0.0f);
+
 			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
-			
+
 			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
 
 		}
 	}
-	
-	
+
 	public void doExecuteProcedure() {
 
-		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
+		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = "
+				+ procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 
 		// tell the world so the UI can disable things the user cannot touch
 		procedureExecutionState.setExecutionStatus(true);
 
 		// global config needs loaded in case it has changed from nominal
-		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(sessionController.getTelescope().getTelescopeId(), 
+		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(sessionController.getTelescope().getTelescopeId(),
 				sessionController.getInstrument().getInstrumentId());
 		// store with procedure config set
 		procedure.getProcedureConfigSet().setGlobalConfig(new GlobalConfig(globalConfigDefaults));
 
 		procedure.setInstrument(sessionController.getInstrument());
 		procedure.setTelescope(sessionController.getTelescope());
-				
+
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
-			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask()
+					.getPupilMaskType().getPupilMaskTypeId());
 			procedure.setRefDefMap(refDefMap);
 		}
-		
-		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig( 
-				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
+		// get FindCentDefaults and create a procedure related copy
+		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(procedure.getProcedureConfigSet()
+				.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
@@ -589,7 +586,7 @@ public class ProcedureController implements Serializable {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 		}
 
 		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
@@ -597,7 +594,7 @@ public class ProcedureController implements Serializable {
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
 		if (procedureType.isPassiveTilt() && procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getWavelength() == 611.0) {
-			
+
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));
 
@@ -605,7 +602,7 @@ public class ProcedureController implements Serializable {
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
-		
+
 		if (procedureType.isCreateRefMap()) {
 			createRefMapExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedureType.isPassiveTilt()) {
@@ -613,62 +610,70 @@ public class ProcedureController implements Serializable {
 		} else if (procedureType.isCenterTelescope()) {
 			centerTelescopeExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		}
-		
-		
+
 		logger.debug("doExecuteProcedure::after executor call");
 
 	}
 
 	public String doViewProcedure() {
 
-		procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
-				
-		procedureType = procedure.getProcedureType();
+		try {
 
-		statusLogController.refreshProcedureStatusLog();
+			procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
 
-		// load up frames that were used
-		for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-			String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
+			procedureType = procedure.getProcedureType();
 
-			CcdFrame loadedFitsFile = null;
+			statusLogController.refreshProcedureStatusLog();
 
-			logger.debug("filename = " + filename);
-			try {
+			// load up frames that were used
+			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 
-				loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+				String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
-			} catch (Exception e) {
-				e.printStackTrace();
+				CcdFrame loadedFitsFile = null;
+
+				logger.debug("filename = " + filename);
+				try {
+
+					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+
+				// if a png file for display exists, read it in. Otherwise create it.
+				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
+				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
+
 			}
 
-			// if a png file for display exists, read it in. Otherwise create it.
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
-			procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
-			
+			// set up display of camera state values for first frame
+			loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
+
+			// set up visualization displays
+			visualizationController.initVisualizationDisplays(procedureType.getProcedureTypeId());
+
+			// in case the values are not in the DB, just dummy some values
+			if (procedure.getProcedureConfigSet().getFiConfig() == null) {
+				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
+			}
+
+			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
+					+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
+
+			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error loading procedure data"));
+			return null;
 		}
-		
-		// set up display of camera state values for first frame
-		loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
-		
-		// set up visualization displays
-		visualizationController.initVisualizationDisplays(procedureType.getProcedureTypeId());
-
-		// in case the values are not in the DB, just dummy some values
-		if (procedure.getProcedureConfigSet().getFiConfig() == null) {
-			procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
-		}
-
-		breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
-				+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
-
-		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
 	public void doAbortProcedure() {
 		procedureExecutionState.setAbortRequested(true);
 	}
-	
+
 	// Maybe in another controller, not sure yet
 
 	public void doSaveAdvancedOptions() {
@@ -690,131 +695,81 @@ public class ProcedureController implements Serializable {
 	public void doCancelSaveExecutionPreferences() {
 
 	}
-	
-	public void doUpdatePupilMask() {
-		
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-			
-			// change int time and selected ref beam settings in procedure config
-			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
 
-	}
-	
-	public void doUpdateFilter() {
-		
+	public void doUpdatePupilMask() {
+
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-			
+
 			// change int time and selected ref beam settings in procedure config
-			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), procedure.getProcedureConfigSet()
+					.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure.getProcedureConfigSet()
+					.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 	}
-		
+
+	public void doUpdateFilter() {
+
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			setupCreateRefMapDefaults(sessionController.getInstrument().getInstrumentId(), procedure.getProcedureConfigSet()
+					.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure.getProcedureConfigSet()
+					.getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+	}
+
 	public void doSaveContext() {
 		if (!procedure.isNewRecord()) {
-			// only save if procedure has been saved.  Prior to that, values will be persisted when the procedure is.
+			// only save if procedure has been saved. Prior to that, values will be persisted when the procedure is.
 			procedureMgmt.updateProcedure(procedure);
 		}
 	}
-	
-	public void selectFrameLogListener(ProcedureCcdFrame procedureCcdFrame) throws Exception {
-		this.procedureCcdFrame = procedureCcdFrame;
-		
-		List<FrameFieldDisplay> displayList =  sessionMgmt.findAllFrameFieldsToDisplay();
-		
-		for (FrameFieldDisplay fieldDisplay : displayList) {
-			
-			Object object;
-			// TODO: make this code generic later
-			if (fieldDisplay.getClassName().equals("org.tmt.aps.peas.refBeamMap.model.centroidMap")) {
-				object = procedureCcdFrame.getCentroidMap();
-			} else {
-				object = procedureCcdFrame.getCcdFrame();
-			}
-			
-			if (object != null) {
-			
-				Class clazz = object.getClass();
-				
-				String fieldName = fieldDisplay.getFieldName();
-				
-				String methodPrefix = fieldDisplay.getFieldMetaData().getDataType() == Constant.DATA_TYPE_BOOLEAN ? "is" : "get";
-				
-				String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-				Method method = clazz.getMethod(methodName , null);
-				
-				String value = null;
-				
-				if (fieldDisplay.getFieldMetaData().getDimension1() != 0) {
-					
-					// TODO: this entire area needs to be refactored to match procedure output encoding
-					
-					float[] floatArray =  (float[])method.invoke(object, null);
-					value = FloatListEncoder.encodeList(floatArray);
-					
-				} else {
-					value = "" + method.invoke(object, null);
-				}
-				
-				
-				
-				
-				fieldDisplay.setValue(value);
-			}
-		}
-				
-		procedureCcdFrame.setFrameFieldDisplayList(displayList);
-	}
-	
+
+
 	public void loadCameraState(CameraState cameraState) {
 		frameInstrument.updateState(cameraState);
 	}
-		
+
 	public void frameSelectListener() {
-		
+
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
 	}
-	
+
 	// ====================================================================================== //
-	//   Frame Displays                                                                       //
+	// Frame Displays //
 	// ====================================================================================== //
 
-	
 	public void doHandMark() {
-		
+
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
-		
+
 		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
 		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
 		// add to the centroid hidden form vars
-		
+
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
 		setFrameCentroidXs(centroidXs);
 		setFrameCentroidYs(centroidYs);
-		
+
 		// make marking available to executor
 		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
-	
+
 	public void doApplyMarking() {
 		// TODO: put this in the action for the apply marking on the frame
 		frameDisplayMgmt.setPendingMarkAction(false);
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("instructionDialog.hide()");
 	}
-	
+
 	public void doResetMarking() {
 		setFrameCentroidXs(null);
 		setFrameCentroidYs(null);
 	}
-		
+
 }

@@ -8,7 +8,7 @@
 		<h:form id="procedureLogForm">
 
 		<p:tabView>
-       	 	<p:tab title="Procedure Overview">
+       	 	<p:tab title="Procedure Report">
 		
 			<h:commandLink>
 				<p:graphicImage value="../../images/excel.png" />
@@ -43,22 +43,52 @@
 			
 			</p:tab>
 			
-			<p:tab title="Frame Data">
+			<p:tab title="Frame/Centroids Reports">
 			
-				<p:dataList value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" type="definition">
-	        		<f:facet name="header">
-	            		Associated Frames/Centroid Reports
-	        		</f:facet>
-	        		<p:spacer width="10px"/>
+				<p:tabView value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" >
+				
+					<p:tab title="Frame #{procedureFrame.procedureFrameNumber + 1} Report">
+						
 	
-	       			<p:commandLink ajax="true" actionListener="#{procedureController.selectFrameLogListener(procedureFrame)}" update=":frameLogForm" oncomplete="frameLogDialog.show();" style="font-weight:normal;color:blue" >
-						<h:outputText value="Frame #{procedureFrame.procedureFrameNumber + 1} Report"/>
-					</p:commandLink>
-	    		</p:dataList>
+						<h:commandLink>
+							<p:graphicImage value="../../images/excel.png" />
+							<p:dataExporter type="xls" target="flogTable" fileName="plog" />
+						</h:commandLink>
+						<h:commandLink>
+							<p:graphicImage value="../../images/csv.png" />
+							<p:dataExporter type="csv" target="flogTable" fileName="plog" />
+						</h:commandLink>
+			
+			
+						<p:dataTable id="flogTable" var="flogValue" value="#{procedureFrame.frameFieldDisplayList}" style="margin:20px">
+							<f:facet name="header">
+			        				Frame/Centroids Related Values
+			    				</f:facet>
+			
+							<p:column headerText="Name">
+								<h:outputText value="#{flogValue.fieldMetaData.displayLabel}" />
+							</p:column>
+							<p:column headerText="Value">
+								<h:outputText value="#{flogValue.value}" />
+							</p:column>
+							
+							<p:column headerText="Units">
+								<h:outputText value="#{flogValue.fieldMetaData.units}" />
+							</p:column>
+							<p:column headerText="Description">
+								<h:outputText value="#{flogValue.fieldMetaData.description}" />
+							</p:column>
+			
+						</p:dataTable>
+							
+							
+					</p:tab>
+				
+				</p:tabView>
 			
 			</p:tab>
 			
-			<p:tab title="Procedure Iteration Data" rendered="#{not empty procedureController.procedure.procedureOutput.procedureIterationOutputList}">
+			<p:tab title="Procedure Iteration Reports" rendered="#{not empty procedureController.procedure.procedureOutput.procedureIterationOutputList}">
 			
 			
 			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
@@ -99,8 +129,6 @@
 				
 				</p:tab>
 			</p:tabView>
-			
-			
 			
 			
 			

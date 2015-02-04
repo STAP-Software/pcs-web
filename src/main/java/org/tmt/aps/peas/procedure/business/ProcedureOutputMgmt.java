@@ -53,11 +53,12 @@ public class ProcedureOutputMgmt {
 			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
 
 				String fieldName = deriveFieldNameFromGetter(method.getName());
-				System.out.println("fieldName = " + fieldName);
 
 				ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
 
 				if (procedureOutputField != null) {
+					
+					logger.debug("fieldName = " + fieldName);
 
 					// construct a new ProcedureOutputValue
 					ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
