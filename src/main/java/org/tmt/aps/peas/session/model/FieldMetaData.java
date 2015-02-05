@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.session.model;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -18,13 +19,16 @@ import javax.persistence.Table;
 @NamedQueries({
 	@NamedQuery(name = "findAll", query = "SELECT o from FieldMetaData o" )
 })
-public class FieldMetaData {
+public class FieldMetaData implements FieldDescriptor {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long fieldMetaDataId;
 	String tableName;
-	String columnName;
+	
+	@Column(name="columnname")
+	String fieldName;
+	
 	int dataType;
 	int dimension1;
 	int dimension2;
@@ -45,11 +49,11 @@ public class FieldMetaData {
 	public void setTableName(String tableName) {
 		this.tableName = tableName;
 	}
-	public String getColumnName() {
-		return columnName;
+	public String getFieldName() {
+		return fieldName;
 	}
-	public void setColumnName(String columnName) {
-		this.columnName = columnName;
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
 	}
 	public int getDataType() {
 		return dataType;
@@ -88,7 +92,17 @@ public class FieldMetaData {
 		this.displayLabel = displayLabel;
 	}
 	
-
+	public boolean isArray() {
+		return dimension1 > 0;
+	}	
+	
+	public boolean isOneDimensional() {
+		return dimension1 > 0 && dimension2 == 0;
+	}	
+	
+	public boolean isScalar() {
+		return dimension1 == 0;
+	}
 	
 
 	

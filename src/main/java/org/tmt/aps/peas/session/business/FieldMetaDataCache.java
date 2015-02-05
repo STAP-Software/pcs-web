@@ -38,7 +38,7 @@ public class FieldMetaDataCache {
 		
 		for (FieldMetaData fmd : fmdList) {
 			
-			String key = fmd.getTableName() + "::" + fmd.getColumnName();
+			String key = fmd.getTableName() + "::" + fmd.getFieldName();
 			
 			fieldMap.put(key.toLowerCase(), fmd);
 		}

@@ -61,15 +61,15 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 	
-	// TODO: generalize this to use procedureOutputMgmt methods
-	private void setupFrameLog(ProcedureCcdFrame procedureCcdFrame) throws Exception {
+	
+	public void setupFrameLog(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 	
 		List<FrameFieldDisplay> displayList = sessionMgmt.findAllFrameFieldsToDisplay();
 
 		for (FrameFieldDisplay fieldDisplay : displayList) {
 
 			Object object;
-			// TODO: make this code generic later
+			// TODO: make this code generic later - i.e. put full class names in the field meta data table
 			if (fieldDisplay.getClassName().equals("org.tmt.aps.peas.refBeamMap.model.centroidMap")) {
 				object = procedureCcdFrame.getCentroidMap();
 			} else {
@@ -79,6 +79,7 @@ public class ProcedureMgmt {
 			if (object != null) {
 
 				Class clazz = object.getClass();
+				
 
 				String fieldName = fieldDisplay.getFieldName();
 
@@ -86,20 +87,9 @@ public class ProcedureMgmt {
 
 				String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
 				Method method = clazz.getMethod(methodName, null);
-
-				String value = null;
-
-				if (fieldDisplay.getFieldMetaData().getDimension1() != 0) {
-
-					// TODO: this entire area needs to be refactored to match procedure output encoding
-
-					float[] floatArray = (float[]) method.invoke(object, null);
-					value = FloatListEncoder.encodeList(floatArray);
-
-				} else {
-					value = "" + method.invoke(object, null);
-				}
-
+								
+				String value = procedureOutputMgmt.encodeObjectFieldValue(object, method, fieldDisplay.getFieldMetaData());
+				
 				fieldDisplay.setValue(value);
 			}
 		}

@@ -51,6 +51,8 @@ public class ProcedureExecutionMgmt {
 	private GlobalConfigMgmt globalConfigMgmt;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
+	@EJB 
+	private ProcedureMgmt procedureMgmt;
 
 	public void performProcedureStartup(Procedure procedure) {
 
@@ -164,6 +166,13 @@ public class ProcedureExecutionMgmt {
 			// set up for immediate viewing
 			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
+			// procedure frame data for immediate viewing
+			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+
+				procedureMgmt.setupFrameLog(procedureCcdFrame);
+			}
+
+			
 			procedureExecutionState.setExecutionStatus(false);
 
 		} catch (Exception e) {

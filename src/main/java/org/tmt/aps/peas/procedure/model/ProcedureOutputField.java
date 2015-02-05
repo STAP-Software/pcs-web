@@ -13,12 +13,14 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.session.model.FieldDescriptor;
+
 @Entity
 @Table(name = "ProcedureOutputField")
 @NamedQueries({
 	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className" )
 })
-public class ProcedureOutputField {
+public class ProcedureOutputField implements FieldDescriptor {
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
