@@ -10,7 +10,9 @@ import java.util.List;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -38,6 +40,10 @@ public interface ComputationLibrary {
 
 	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
 			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException;
-
+	
+	
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException;
+	
+	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException;
 	
 }

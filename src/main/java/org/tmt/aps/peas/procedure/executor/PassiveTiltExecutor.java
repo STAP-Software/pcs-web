@@ -22,6 +22,8 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -38,7 +40,6 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
@@ -228,13 +229,18 @@ public class PassiveTiltExecutor {
 
 			}
 
-			// TODO: calc average offsets and calc avg translation, rotation and scale from average offsets
-
-			// FIXME: move up to before display
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
-			//computationLibrary.calculateCentroidStats();
+			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCentroidOffsets());
+
+			/*****************************************************/
+			/*              passiveTiltScaleError                */
+			/*****************************************************/
+			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCentroidOffsets(), procedure.getRefDefMap());
+
+			// TODO: calc average offsets and calc avg translation, rotation and scale from average offsets
+
 
 			// TODO: we should persist image rotation, scale, rrmsTotal, focusError, enclosedEnergy and enclosed50Energy
 			// TODO: and also: ZPROCLOG_DATA_ACS_FOCUS = ZPROCLOG_DATA_PRIMARY_ACT_FM_RMS/41.1
@@ -251,8 +257,19 @@ public class PassiveTiltExecutor {
 			pio.setDeltaAzEl(new FloatPoint(1.1f, 2.3f));
 			
 			pio.setCentroidOffsets(centroidOffsetsResult.getCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setCentroidOffsetsFocus(77.77f);
-			pio.setCentroidOffsetsRms(11.56f);
+			pio.setScaleError(scaleError.getScaleError());
+			
+			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
+			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
+			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
+			
+			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
+			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
+			
+			pio.setScaleError(scaleError.getScaleError());
+			pio.setSlopeError(scaleError.getSlopeError());
+			
+
 			float[][] m1ActuatorCmds = new float[36][3];
 			pio.setM1ActuatorCmds(m1ActuatorCmds);
 			pio.setM1ActuatorCmdsRms(33.4f);
@@ -263,8 +280,21 @@ public class PassiveTiltExecutor {
 			
 			// fill the output - many of these are copied from the one iteration
 			procedureOutput.setCentroidOffsets(pio.getCentroidOffsets());
-			procedureOutput.setCentroidOffsetsRms(pio.getCentroidOffsetsRms());
-			procedureOutput.setCentroidOffsetsFocus(pio.getCentroidOffsetsFocus());
+			
+			procedureOutput.setScaleError(pio.getScaleError());
+			
+			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
+			procedureOutput.setMaxOffset(pio.getMaxOffset());
+			procedureOutput.setRmsOffset(pio.getRmsOffset());
+			
+			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
+			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
+			
+			procedureOutput.setScaleError(pio.getScaleError());
+			procedureOutput.setSlopeError(pio.getSlopeError());
+
+			
+			
 			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
 			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
 			procedureOutput.setM1PistonCmdsRms(pio.getM1PistonCmdsRms());

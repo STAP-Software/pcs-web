@@ -7,8 +7,8 @@ public interface CentroidOffsetsDisplayValues {
 	public FloatPoint getTranslationFromRefBeam();
 	public float getRotationFromRefBeam();
 	public float getScaleChangeFromRefBeam();
-	public float getCentroidOffsetsFocus();
-	public float getCentroidOffsetsRms();
+	public float getScaleError();
+	public float getRmsOffset();
 	
 	// arcsec per pixel
 	

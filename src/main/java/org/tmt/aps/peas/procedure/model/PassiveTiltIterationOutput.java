@@ -9,12 +9,18 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
 	private float[][] m1ActuatorCmds;
 	private float m1ActuatorCmdsRms;
 	private FloatPoint[] centroidOffsets;
-	private float centroidOffsetsFocus;
-	private float centroidOffsetsRms;
 	private float m1PistonCmdsRms;
 	private float m1PistonResidualRms;
 	
-	
+	private int maxSpotNum;
+	private float maxOffset;
+	private float rmsOffset;
+	private float enclosedEnergy80;
+	private float enclosedEnergy50;
+
+	private float scaleError;
+	private float slopeError;
+
 	public boolean isTelescopeMoved() {
 		return telescopeMoved;
 	}
@@ -45,18 +51,6 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
 	public void setCentroidOffsets(FloatPoint[] centroidOffsets) {
 		this.centroidOffsets = centroidOffsets;
 	}
-	public float getCentroidOffsetsFocus() {
-		return centroidOffsetsFocus;
-	}
-	public void setCentroidOffsetsFocus(float centroidOffsetsFocus) {
-		this.centroidOffsetsFocus = centroidOffsetsFocus;
-	}
-	public float getCentroidOffsetsRms() {
-		return centroidOffsetsRms;
-	}
-	public void setCentroidOffsetsRms(float centroidOffsetsRms) {
-		this.centroidOffsetsRms = centroidOffsetsRms;
-	}
 	public float getM1PistonCmdsRms() {
 		return m1PistonCmdsRms;
 	}
@@ -68,6 +62,48 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
 	}
 	public void setM1PistonResidualRms(float m1PistonResidualRms) {
 		this.m1PistonResidualRms = m1PistonResidualRms;
+	}
+	public int getMaxSpotNum() {
+		return maxSpotNum;
+	}
+	public void setMaxSpotNum(int maxSpotNum) {
+		this.maxSpotNum = maxSpotNum;
+	}
+	public float getMaxOffset() {
+		return maxOffset;
+	}
+	public void setMaxOffset(float maxOffset) {
+		this.maxOffset = maxOffset;
+	}
+	public float getRmsOffset() {
+		return rmsOffset;
+	}
+	public void setRmsOffset(float rmsOffset) {
+		this.rmsOffset = rmsOffset;
+	}
+	public float getEnclosedEnergy80() {
+		return enclosedEnergy80;
+	}
+	public void setEnclosedEnergy80(float enclosedEnergy80) {
+		this.enclosedEnergy80 = enclosedEnergy80;
+	}
+	public float getEnclosedEnergy50() {
+		return enclosedEnergy50;
+	}
+	public void setEnclosedEnergy50(float enclosedEnergy50) {
+		this.enclosedEnergy50 = enclosedEnergy50;
+	}
+	public float getScaleError() {
+		return scaleError;
+	}
+	public void setScaleError(float scaleError) {
+		this.scaleError = scaleError;
+	}
+	public float getSlopeError() {
+		return slopeError;
+	}
+	public void setSlopeError(float slopeError) {
+		this.slopeError = slopeError;
 	}
 	
 	

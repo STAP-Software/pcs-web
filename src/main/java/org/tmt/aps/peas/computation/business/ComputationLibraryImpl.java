@@ -18,15 +18,19 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
+import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
+import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -354,8 +358,64 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 		
 		// store fi_param values		
-		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (float)retVal.getArg0(), (float)retVal.getArg1());
+		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (Float)output[0], (Float)output[1]);
 		
 	}
+
+	
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
+
+		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
+		RetVal retVal = new RetVal();
+		
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+
+		// initialize spot_flag
+		// TODO: this needs to be derived from missing spots
+		int numSpots = centroidOffsets.size();
+		int[] good_spots = new int[numSpots];
+		for (int i=0; i<numSpots; i++) {
+			good_spots[i] = 1;
+		}
+		
+		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots);
+			
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Centroid Offset Stats Calculation Error");
+		}
+		
+		// store fi_param values		
+		return new CentroidStatsResult((Integer)output[0], (Float)output[1], (Float)output[2], (Float)output[3], (Float)output[4]);
+
+	}
+
+	@Override
+	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException {
+		
+		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
+		RetVal retVal = new RetVal();
+		
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+		
+		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
+		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
+		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
+
+		
+		Object output[] = jpassiveTiltScaleError.jpassiveTiltScaleError(retVal, offsets, x_ref_def, y_ref_def);
+			
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Passive Tilt Scale Error Calculation Error");
+		}
+		
+		// store fi_param values		
+		return new ScaleError((Float)output[0], (Float)output[1]);
+	}
+	
+	
 
 }

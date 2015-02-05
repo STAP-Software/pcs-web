@@ -16,7 +16,9 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -156,6 +158,18 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		
 		return new CentroidOffsetsResult(FloatPointListEncoder.convertToNby2Array(offsets), new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
 		
+	}
+
+	@Override
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
+		// TODO Auto-generated method stub
+		return new CentroidStatsResult(23, 1.2f, 0.42f, 0.8f, 0.5f);
+	}
+
+	@Override
+	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) {
+		// TODO Auto-generated method stub
+		return new ScaleError(1.1f, 2.2f);
 	}
 
 	
