@@ -55,6 +55,7 @@ public class ConstantsMgmt {
 			}
 
 			// call
+			encodeObjectFieldValue(constantsInstance, constant);
 			
 		}
 	}

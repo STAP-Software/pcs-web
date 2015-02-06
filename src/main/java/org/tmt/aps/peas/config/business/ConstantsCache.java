@@ -23,7 +23,7 @@ import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Singleton
 @Startup
-public class Constants {
+public class ConstantsCache {
 
 	Logger logger = Logger.getLogger(this.getClass());
 

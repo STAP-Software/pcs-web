@@ -9,8 +9,6 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
 	private float[][] m1ActuatorCmds;
 	private float m1ActuatorCmdsRms;
 	private FloatPoint[] centroidOffsets;
-	private float m1PistonCmdsRms;
-	private float m1PistonResidualRms;
 	
 	private int maxSpotNum;
 	private float maxOffset;
@@ -51,18 +49,7 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
 	public void setCentroidOffsets(FloatPoint[] centroidOffsets) {
 		this.centroidOffsets = centroidOffsets;
 	}
-	public float getM1PistonCmdsRms() {
-		return m1PistonCmdsRms;
-	}
-	public void setM1PistonCmdsRms(float m1PistonCmdsRms) {
-		this.m1PistonCmdsRms = m1PistonCmdsRms;
-	}
-	public float getM1PistonResidualRms() {
-		return m1PistonResidualRms;
-	}
-	public void setM1PistonResidualRms(float m1PistonResidualRms) {
-		this.m1PistonResidualRms = m1PistonResidualRms;
-	}
+
 	public int getMaxSpotNum() {
 		return maxSpotNum;
 	}

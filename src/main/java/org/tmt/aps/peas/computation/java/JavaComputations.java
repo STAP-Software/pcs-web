@@ -23,4 +23,14 @@ public class JavaComputations {
 		return deltaAzEl;
 	}
 	
+	public static float calcRms(float[][] data) {
+		double sum2 = 0.0;
+		for (int i=0; i<data.length; i++) {
+			for (int j=0; j<data[0].length; j++) {
+				sum2 += data[i][j] * data[i][j];
+			}
+		}
+		return (float)Math.sqrt(sum2/(data.length*data[0].length));
+	}
+	
 }

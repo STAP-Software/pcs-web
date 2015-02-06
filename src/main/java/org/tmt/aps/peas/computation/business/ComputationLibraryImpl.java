@@ -33,6 +33,7 @@ import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
+import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
@@ -319,103 +320,134 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
 	}
+	
+	public float calcRms(float[][] data) {
+		return JavaComputations.calcRms(data);
+	}
 
 	@Override
-	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
-			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException {
-		
-		
+	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
+			CentroidOffsetsConfig centroidOffsetsConfig) throws ComputationException {
+
 		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
 		RetVal retVal = new RetVal();
-		
-		
+
 		float[] fiParams = new float[6];
-		
+
 		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(refMapCentroids);
 		float[][] centroid = FloatPointListEncoder.convertToNby2Array(centroids);
 
-		
 		// initialize spot_flag
 		// TODO: this needs to be derived from missing spots
 		int numSpots = centroids.size();
 		int[] good_spots = new int[numSpots];
-		for (int i=0; i<numSpots; i++) {
+		for (int i = 0; i < numSpots; i++) {
 			good_spots[i] = 1;
 		}
-		
-			
+
 		// output arrays
 		float[][] offsets = new float[numSpots][2];
 		float[] image_translation = new float[2];
 
-		Object output[] = jcalculateCentroidOffsets.jcalculateCentroidOffsets(retVal, centroid, ref_cent, centroidOffsetsConfig.isRemoveScale() ? 1 : 0, 
-				centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, offsets, image_translation);
-			
+		Object output[] = jcalculateCentroidOffsets.jcalculateCentroidOffsets(retVal, centroid, ref_cent,
+				centroidOffsetsConfig.isRemoveScale() ? 1 : 0, centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, offsets,
+				image_translation);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Centroid Offsets Calculation Error");
 		}
-		
-		// store fi_param values		
-		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (Float)output[0], (Float)output[1]);
-		
+
+		// store fi_param values
+		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (Float) output[0],
+				(Float) output[1]);
+
 	}
 
-	
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
 
 		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
 		RetVal retVal = new RetVal();
-		
+
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
 
 		// initialize spot_flag
 		// TODO: this needs to be derived from missing spots
 		int numSpots = centroidOffsets.size();
 		int[] good_spots = new int[numSpots];
-		for (int i=0; i<numSpots; i++) {
+		for (int i = 0; i < numSpots; i++) {
 			good_spots[i] = 1;
 		}
-		
+
 		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots);
-			
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Centroid Offset Stats Calculation Error");
 		}
-		
-		// store fi_param values		
-		return new CentroidStatsResult((Integer)output[0], (Float)output[1], (Float)output[2], (Float)output[3], (Float)output[4]);
+
+		// store fi_param values
+		return new CentroidStatsResult((Integer) output[0], (Float) output[1], (Float) output[2], (Float) output[3], (Float) output[4]);
 
 	}
 
 	@Override
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException {
-		
+
 		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
 		RetVal retVal = new RetVal();
-		
+
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
-		
+
 		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 
-		
 		Object output[] = jpassiveTiltScaleError.jpassiveTiltScaleError(retVal, offsets, x_ref_def, y_ref_def);
-			
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Passive Tilt Scale Error Calculation Error");
 		}
-		
-		// store fi_param values		
-		return new ScaleError((Float)output[0], (Float)output[1]);
+
+		// store fi_param values
+		return new ScaleError((Float) output[0], (Float) output[1]);
 	}
-	
-	
+
+	@Override
+	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
+			throws ComputationException {
+
+		JttOffsetsToActs jttOffsetsToActs = new JttOffsetsToActs();
+		RetVal retVal = new RetVal();
+
+		float[] x_act_pos = FloatPointListEncoder.extractXArray(actuatorPositions);
+		float[] y_act_pos = FloatPointListEncoder.extractYArray(actuatorPositions);
+
+		float[] x_offsets = FloatPointListEncoder.extractXArray(centroidOffsets);
+		float[] y_offsets = FloatPointListEncoder.extractYArray(centroidOffsets);
+
+		// output arrays
+		float[] desired_act_deltas = new float[actuatorPositions.size()];
+		float[] x_offsets_out = new float[centroidOffsets.size()];
+		float[] y_offsets_out = new float[centroidOffsets.size()];
+
+		Object output[] = jttOffsetsToActs.jttOffsetsToActs(retVal, x_act_pos, y_act_pos, imageScale, x_offsets, y_offsets, x_offsets_out,
+				y_offsets_out, desired_act_deltas);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Tip/Tilt Offsets to Actuator Calculation Error");
+		}
+
+		// store fi_param values
+		float[][] desiredActDeltas = new float[actuatorPositions.size()/3][3];
+		for (int i = 0; i<actuatorPositions.size()/3; i++) {
+			desiredActDeltas[i][0] = desired_act_deltas[i*3 + 0]; 
+			desiredActDeltas[i][1] = desired_act_deltas[i*3 + 1]; 
+			desiredActDeltas[i][2] = desired_act_deltas[i*3 + 2]; 
+		}
+		return desiredActDeltas;
+	}
 
 }

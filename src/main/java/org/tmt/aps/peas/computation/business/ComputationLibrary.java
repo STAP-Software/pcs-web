@@ -28,6 +28,8 @@ public interface ComputationLibrary {
 	
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel);  // local java routine
 	
+	public float calcRms(float[][] data);
+	
 	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
 
 	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException;
@@ -45,5 +47,7 @@ public interface ComputationLibrary {
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException;
 	
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException;
+	
+	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets) throws ComputationException;
 	
 }

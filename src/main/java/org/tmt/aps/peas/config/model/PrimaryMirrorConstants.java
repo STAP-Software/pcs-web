@@ -7,26 +7,28 @@ import org.tmt.aps.peas.common.Point;
 
 public class PrimaryMirrorConstants {
 
-	int nColor[];
-	int edgeColor[];
-	int savePlusPiston[];
-	int saveMinusPiston[];
+	int[] nColor;
+	int[] edgeColor;
+	int[] savePlusPiston;
+	int[] saveMinusPiston;
 	
-	int segmentRow[];
-	int segmentCol[];
+	int[] segmentRow;
+	int[] segmentCol;
 	
-	int edgeAngle[];
+	int[] edgeAngle;
 	
-	Point nEdge[];
+	Point[] nEdge;
 
-	int normAngle[];
-	int neighbors[][];
+	int[] normAngle;
+	int[][] neighbors;
 	
-	FloatPoint centerSpot[];
+	FloatPoint[] centerSpot;
 	
-	float act1Pos[];
+	float[] act1Pos;
 	float aHex;
 	float primaryActuatorTriangle;
+	
+	FloatPoint[] primaryActPos;
 	
 	
 	
@@ -116,6 +118,12 @@ public class PrimaryMirrorConstants {
 	}
 	
 	
+	public FloatPoint[] getPrimaryActPos() {
+		return primaryActPos;
+	}
+	public void setPrimaryActPos(FloatPoint[] primaryActPos) {
+		this.primaryActPos = primaryActPos;
+	}
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();

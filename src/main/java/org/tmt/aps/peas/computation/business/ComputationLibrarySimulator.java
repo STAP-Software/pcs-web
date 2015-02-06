@@ -115,6 +115,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
 	}
+	
+	public float calcRms(float[][] data) {
+		return JavaComputations.calcRms(data);
+	}
+
 
 	@Override
 	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
@@ -170,6 +175,13 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) {
 		// TODO Auto-generated method stub
 		return new ScaleError(1.1f, 2.2f);
+	}
+
+	@Override
+	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
+			throws ComputationException {
+		// TODO Auto-generated method stub
+		return new float[36][3];
 	}
 
 	

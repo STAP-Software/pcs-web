@@ -5,8 +5,6 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
-import java.rmi.RemoteException;
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -50,10 +48,23 @@ public class AcsMgmt {
 	}
 	
 	// Convenience routine 
-	public void commandActuatorDeltas(Double[][] actDeltas) throws Exception {
+	public void commandActuatorDeltas(Float[][] actDeltas) throws Exception {
+		float[][] myFloat = new float[actDeltas.length][actDeltas[0].length];
+		for (int i=0; i<actDeltas.length; i++) {
+
+			for (int j=0; j< actDeltas[0].length; j++) {
+				myFloat[i][j] = actDeltas[i][j];
+			}
+		}
+		commandActuatorDeltas(myFloat);
+	}
+	
+	
+	public void commandActuatorDeltas(float[][] actDeltas) throws Exception {
 		
 		// interface requires that we use indexes 1-108
 
+		
 		double[] actDeltaCmds = new double[109];
 
 		for (int i = 0; i < 36; i++) {

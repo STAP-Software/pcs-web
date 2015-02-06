@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -24,6 +25,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -84,6 +86,8 @@ public class PassiveTiltExecutor {
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
+	@EJB 
+	private ConstantsCache constantsCache;
 
 	private List<String> logMessages;
 
@@ -239,15 +243,6 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCentroidOffsets(), procedure.getRefDefMap());
 
-			// TODO: calc average offsets and calc avg translation, rotation and scale from average offsets
-
-
-			// TODO: we should persist image rotation, scale, rrmsTotal, focusError, enclosedEnergy and enclosed50Energy
-			// TODO: and also: ZPROCLOG_DATA_ACS_FOCUS = ZPROCLOG_DATA_PRIMARY_ACT_FM_RMS/41.1
-			// TODO: and these: procedure number and all frame heading records
-
-			// TODO: also whatever this does
-			// CALL GET_PROC_STATS(ZPASSIVE_FRAME_SOURCE)
 			
 			// fill the iteration output
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
@@ -269,12 +264,6 @@ public class PassiveTiltExecutor {
 			pio.setScaleError(scaleError.getScaleError());
 			pio.setSlopeError(scaleError.getSlopeError());
 			
-
-			float[][] m1ActuatorCmds = new float[36][3];
-			pio.setM1ActuatorCmds(m1ActuatorCmds);
-			pio.setM1ActuatorCmdsRms(33.4f);
-			pio.setM1PistonCmdsRms(22.4f);
-			pio.setM1PistonResidualRms(44.45f);
 			pio.setTelescopeMoved(false);
 
 			
@@ -294,58 +283,44 @@ public class PassiveTiltExecutor {
 			procedureOutput.setSlopeError(pio.getSlopeError());
 
 			
-			
-			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
-			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
-			procedureOutput.setM1PistonCmdsRms(pio.getM1PistonCmdsRms());
-			procedureOutput.setM1PistonResidualRms(pio.getM1PistonCmdsRms());
-			
 			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
 			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
 			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 			
 
-			// TODO: display the average centroid offsets - this is probably not needed since we only do one trial
+			// Display the average centroid offsets - this is probably not needed since we only do one trial
 			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
 
-			// TODO: implement ttOffsetsToActs
+			// TODO: implement ttOffsetsToActs (and persist all outputs)
 			/*****************************************************/
 			/*                  ttOffsetsToActs                  */
 			/*****************************************************/
-			// computationLibrary.ttOffsetsToActs(a, b);
+			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
+			float[][] desiredActDeltas = computationLibrary.ttOffsetsToActs(actPosList, centroidOffsetsResult.getImageScale(), centroidOffsetsResult.getCentroidOffsets());
 
+			// calculate RMS of the actuator cmds 
+			float desiredActDeltasRms = computationLibrary.calcRms(desiredActDeltas);
 			
-			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-				// turn off reference beams - no need to wait for response				
-				cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
-			}
+			// set iteration and procedure outputs
+			pio.setM1ActuatorCmds(desiredActDeltas);
+			pio.setM1ActuatorCmdsRms(desiredActDeltasRms);
 
+			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
+			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
 
 			// TODO: display the pistonDeltas
 			// graphicDisplayMgmt.displayPistonDeltas(????);
-			
-
-			// TODO: Calculate standard deviation
-			// CALL CALC_PRIMARY_STATS_ONE_TRIAL(PRIMARY_ACT_RMS,PRIMARY_ACT_NO_FM_RMS,PRIMARY_ACT_FM_RMS,FINE_SCREEN_TEST)
-			// CALL CALC_PRIMARY_STATS_N_TRIAL(PRIMARY_ACT_RMS_STDEV,PRIMARY_ACT_NO_FM_RMS_STDEV,PRIMARY_ACT_FM_RMS_STDEV,FINE_SCREEN_TEST)
-			// CALL CREATE_PRIMACT_STATS(PRIMARY_ACT_RMS,PRIMARY_ACT_NO_FM_RMS,PRIMARY_ACT_FM_RMS,PRIMARY_ACT_RMS_STDEV,
-			//             PRIMARY_ACT_NO_FM_RMS_STDEV,PRIMARY_ACT_FM_RMS_STDEV,FINE_SCREEN_TEST,STRING) 
-			// ZPROCLOG_DATA_FS_PIST_RMS = PISTON_RMS
-			// ZPROCLOG_DATA_FS_PIST_RESID_RMS = RESID_RMS
-			           
-
+						           
 			// TODO: use resource bundles
+			// TODO: display RMS piston deltas to user in dialog
 			boolean commandAcs = userPromptMgmt.displayYesNoDialog("Command Primary Mirror?");
-
-			// FIXME: temp var to keep compilation
-			Double[][] actDeltas = new Double[36][3];
 	        
 			// command ACS
 			if (commandAcs) {
 				
 				try {
 					// send out the commands
-					acsMgmt.commandActuatorDeltas(actDeltas);
+					acsMgmt.commandActuatorDeltas(desiredActDeltas);
 					
 					// TODO: use resource bundles
 					statusLogger.log("Actuator Delta Send Successful");
@@ -359,6 +334,10 @@ public class PassiveTiltExecutor {
 			}                        
 			procedureOutput.setM1CmdsSent(commandAcs);
 			
+			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+				// turn off reference beams - no need to wait for response				
+				cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+			}
 			
 			statusLogger.log("procedure.end", procedure.getProcedureType().getProcedureTypeName());
 
@@ -373,23 +352,6 @@ public class PassiveTiltExecutor {
 		 */
 
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
-	}
-
-	/*
-	 * 
-	 * // Let's be nice and turn off the lights
-	 * 
-	 * IF (GET_SYMBOL('STUB_DEMO')) OK = CAMERA_COMMAND( 'RBF') C C Put centroid offsets into its own array again C
-	 */
-
-	private void wait(int ms) {
-		// here we wait until the pending display is cleared
-		try {
-			Thread.sleep(ms);
-		} catch (InterruptedException e) {
-
-		}
-
 	}
 
 }
