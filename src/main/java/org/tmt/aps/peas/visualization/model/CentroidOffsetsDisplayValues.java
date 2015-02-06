@@ -15,6 +15,9 @@ public interface CentroidOffsetsDisplayValues {
 	public FloatPoint[] getCentroidOffsets();
 
 
+	public int getMaxSpotNum();
+	public float getMaxOffset();
+	public float getEnclosedEnergy80();
 
 	
 	
