@@ -308,8 +308,8 @@ public class PassiveTiltExecutor {
 			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
 			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
 
-			// TODO: display the pistonDeltas
-			// graphicDisplayMgmt.displayPistonDeltas(????);
+			// display the pistonDeltas
+			//graphicDisplayMgmt.displayActuatorDeltas(????);
 						           
 			// TODO: use resource bundles
 			// TODO: display RMS piston deltas to user in dialog

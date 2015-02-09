@@ -220,12 +220,12 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<p:spacer height="120"/><p:spacer height="120"/>
 				<h:outputLabel value="Show Segments" />
      			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.showSegmentListener}" />
+    				<p:ajax update="@this" listener="#{visualizationController.updateCentroidOffsetDisplayListener}" />
     			</p:selectBooleanButton>
 				<p:spacer height="1"/><p:spacer height="1"/>
 				<h:outputLabel value="Show Segment Numberings" />
      			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.showSegmentListener}" />
+    				<p:ajax update="@this" listener="#{visualizationController.updateCentroidOffsetDisplayListener}" />
     			</p:selectBooleanButton>
     			
     			<p:spacer height="10"/><p:spacer height="10"/>
@@ -237,7 +237,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
   				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
         		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
         		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
-            		<p:ajax event="slideEnd" listener="#{visualizationController.offsetScaleChangeListener}" />
+            		<p:ajax event="slideEnd" listener="#{visualizationController.updateCentroidOffsetDisplayListener}" />
         		</p:slider>
     		</p:panelGrid>
     		</p:panelGrid>    		

@@ -32,10 +32,12 @@ public class GraphicDisplayMgmt implements Serializable {
 	String centroidYs;
 	String centroidOffsetXs;
 	String centroidOffsetYs;
+	
 
 	CentroidOffsetsDisplayValues centroidOffsetsDisplayValues;
 	
 	String centroidNbrs;
+	String actuatorDeltas;
 
 
 	public String getCentroidXs() {
@@ -164,5 +166,22 @@ public class GraphicDisplayMgmt implements Serializable {
 		}
 
 	}
+
+	public Logger getLogger() {
+		return logger;
+	}
+
+	public void setLogger(Logger logger) {
+		this.logger = logger;
+	}
+
+	public String getActuatorDeltas() {
+		return actuatorDeltas;
+	}
+
+	public void setActuatorDeltas(String actuatorDeltas) {
+		this.actuatorDeltas = actuatorDeltas;
+	}
+
 
 }

@@ -59,7 +59,7 @@
 							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not visualizationController.centroidDisplayEnabled}"/>
 							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
 							<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
-							<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
+							<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
 						</p:submenu>
 					</p:submenu>
 					

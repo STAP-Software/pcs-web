@@ -47,6 +47,20 @@ public class FloatListEncoder {
 		return buf.toString();
 	}
 	
+	public static String encodeList(float[][] numberList) {
+		
+		StringBuffer buf = new StringBuffer();
+		for (float[] numberArray : numberList) {
+			for (float number : numberArray) {
+				buf.append(number + ",");
+			}
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+	}
+	
 	public static String encodeList(List<Float> numberList) {
 		
 		StringBuffer buf = new StringBuffer();

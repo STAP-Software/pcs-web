@@ -1,0 +1,265 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+
+var sideLen = 77
+var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
+           
+function runDrawActDeltas() {
+
+	var c = document.getElementById("actDeltasCanvas");
+	var ctx = c.getContext("2d");
+
+	ctx.translate(-25,-10);
+	ctx.scale(0.61, 0.61);
+
+	window.setTimeout("drawActDeltas(true,true,true,true)", 10);
+}
+
+function drawActDeltas(drawSegments,drawSegNums,drawActNums,drawActVals) {
+    
+	var c = document.getElementById("actDeltasCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,1000,1000);
+
+
+	// display coordinates
+	var xField1 = document.getElementById('actDeltasForm:centDefXs').value;
+ 	var xHexCenterArray = xField1.split(','); 
+ 	
+	var yField1 = document.getElementById('actDeltasForm:centDefYs').value;
+ 	var yHexCenterArray = yField1.split(','); 
+ 	
+	var act1PosField = document.getElementById('actDeltasForm:act1Pos').value;
+ 	var act1PosArray = act1PosField.split(','); 
+   
+	var actDeltasField = document.getElementById('actDeltasForm:actuatorDeltas').value;
+ 	var actDeltasArray = actDeltasField.split(','); 
+   
+	var heatField = document.getElementById('actDeltasForm:actDeltaHeats').value;
+ 	var heatArray = heatField.split(','); 
+
+ 	
+    	 	
+	for (var i = 0; i < xHexCenterArray.length; i++) {
+		
+		var x = parseFloat(xHexCenterArray[i]);
+		var y = parseFloat(yHexCenterArray[i]);
+		
+		var act1Position = parseFloat(act1PosArray[i]);
+		
+		// parse to float, convert to um, and keep 2 decimal places
+		var actDelta1 = (parseFloat(actDeltasArray[(i*3)+0])/1000.0).toFixed(2);
+		var actDelta2 = (parseFloat(actDeltasArray[(i*3)+1])/1000.0).toFixed(2);
+		var actDelta3 = (parseFloat(actDeltasArray[(i*3)+2])/1000.0).toFixed(2);
+								
+		var heat1 = heatArray[(i*3)+0]);
+		var heat2 = heatArray[(i*3)+1]);
+		var heat3 = heatArray[(i*3)+2]);
+		
+		
+		drawHex2(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums, act1Position, drawActNums, actDelta1, actDelta2, actDelta3, drawActVals,
+				heat1, heat2, heat3)
+		
+	}
+	
+
+	
+}
+
+function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Position, drawActNum, actDelta1, actDelta2, actDelta3, drawActDelta
+		heat1, heat2, heat3) {
+	
+	// draw a hexgon of side sideLen centered on position x, y
+	
+	var a = sideLen
+	var b = a * Math.sqrt(3) / 2;
+
+	// 0 is the left side of hex, b + a/2 is the x center
+	// 0 is the top of the hex, 
+	
+	
+	//       (a/2, 0)
+	//          ______________
+	//         /
+	//        /
+	//       /
+	//      /
+	//     /
+	//    (0,b)
+	
+	// the box is centered at a, b so we subtract these to get the center
+	
+	if (drawSegment) {
+		ctx.beginPath();
+		ctx.strokeStyle = '#888888';
+    	ctx.moveTo(x-a,y)	
+		ctx.lineTo(x-a/2,y-b)
+    	ctx.lineTo(x+a/2,y-b)
+    	ctx.lineTo(x+a,y)
+    	ctx.lineTo(x+a/2,y+b)
+    	ctx.lineTo(x-a/2,y+b)
+		ctx.closePath();
+		ctx.stroke();
+	
+		ctx.fillStyle = "#e8f0f8";
+		ctx.fill();
+	}
+	
+	var txtOffset = 5;   // text offset
+	
+	if (drawSegNum) {
+		ctx.fillStyle = '#8888ff';
+		ctx.font="18px Arial";
+		ctx.fillText(number, x-txtOffset, y+txtOffset);
+	}
+	
+	if (drawActNum) {
+		ctx.fillStyle = '#000000';
+		ctx.font="14px Arial";
+		
+		if (act1Position < 5.0) {
+			
+			ctx.fillText("1", x-txtOffset, y+txtOffset - b/2);  	  // top
+			ctx.fillText("2", x-txtOffset - a/2, y+txtOffset + b/2);  // bottom-left
+			ctx.fillText("3", x-txtOffset + a/2, y+txtOffset + b/2);  // bottom-right
+			
+		} else {
+			
+			ctx.fillText("1", x-txtOffset - a/2, y+txtOffset - b/2);  // top-left
+			ctx.fillText("2", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
+			ctx.fillText("3", x-txtOffset, y+txtOffset + b/2);        // bottom
+			
+		}
+	}
+	
+	if (drawActDelta) {
+		ctx.fillStyle = '#000000';
+		ctx.font="14px Arial";
+		
+		var radius = 30;
+		if (act1Position < 5.0) {
+			
+			
+			ctx.fillText(actDelta1, x-txtOffset, y+txtOffset+newLineOffset - b/2);  	  // top
+			ctx.fillText(actDelta2, x-txtOffset - a/2, y+txtOffset+newLineOffset + b/2);  // bottom-left
+			ctx.fillText(actDelta3, x-txtOffset + a/2, y+txtOffset+newLineOffset + b/2);  // bottom-right
+			
+		} else {
+			
+			ctx.fillText(actDelta1, x-txtOffset - a/2, y+txtOffset+newLineOffset - b/2);  // top-left
+			ctx.fillText(actDelta2, x-txtOffset + a/2, y+txtOffset+newLineOffset - b/2);  // top-right
+			ctx.fillText(actDelta3, x-txtOffset, y+txtOffset+newLineOffset + b/2);        // bottom
+			
+		}
+	}
+	
+	// draw circles
+		
+		var radius = 30;
+		if (act1Position < 5.0) {
+						
+			ctx.beginPath();
+			ctx.arc(x, y - b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat1;
+			ctx.fill();
+			
+			ctx.beginPath();
+			ctx.arc(x - a/2, y + b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat2;
+			ctx.fill();
+			
+			ctx.beginPath();
+			ctx.arc(x + a/2, y + b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat3;
+			ctx.fill();
+						
+		} else {
+			
+			ctx.beginPath();
+			ctx.arc(x - a/2, y - b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat1;
+			ctx.fill();
+			
+			ctx.beginPath();
+			ctx.arc(x + a/2, y - b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat2;
+			ctx.fill();
+			
+			ctx.beginPath();
+			ctx.arc(x, y + b/2, radius, 0, 2 * Math.PI, false);
+			ctx.fillStyle = heat3;
+			ctx.fill();
+			
+			
+		}
+}
+
+
+//]]>  
+</script>   
+
+
+		<p:dialog id="actDeltasDialog" header="Primary Mirror Actuator Deltas" widgetVar="actuatorDeltasDisplayDialog" closable="false" >  
+     		<h:form id="actDeltasForm">
+
+			      		
+     		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
+			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
+			<h:inputHidden id="act1Pos" value="#{visualizationController.act1Pos}" />
+			<h:inputHidden id="actuatorDeltas" value="#{visualizationController.actuatorDeltas}" />
+			<h:inputHidden id="actDeltaHeats" value="#{visualizationController.actDeltaHeats}" />
+    			
+    			
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
+     		
+     		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
+    		
+    			<canvas id="actDeltasCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		</p:panelGrid>
+    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
+			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
+				<p:spacer height="120"/><p:spacer height="120"/>
+				<h:outputLabel value="Show Segments" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+    			</p:selectBooleanButton>
+				<p:spacer height="1"/><p:spacer height="1"/>
+				<h:outputLabel value="Show Segment Numberings" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+    			</p:selectBooleanButton>
+    			
+				<p:spacer height="1"/><p:spacer height="1"/>
+				<h:outputLabel value="Show Actuator Numberings" />
+     			<p:selectBooleanButton value="#{visualizationController.showActNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+    			</p:selectBooleanButton>
+    			
+				<p:spacer height="1"/><p:spacer height="1"/>
+				<h:outputLabel value="Show Actuator Values" />
+     			<p:selectBooleanButton value="#{visualizationController.showActVals}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+    			</p:selectBooleanButton>
+    			
+    			<p:spacer height="10"/><p:spacer height="10"/>
+    			
+    			
+    		</p:panelGrid>
+     		</p:panelGrid>    		
+    		
+    		
+    		</p:panelGrid>
+    		<br/>
+			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>
