@@ -6,7 +6,10 @@
 
 var sideLen = 77
 var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
-           
+   
+var a = sideLen
+var b = a * Math.sqrt(3) / 2;
+
 function runDrawActDeltas() {
 
 	var c = document.getElementById("actDeltasCanvas");
@@ -15,10 +18,16 @@ function runDrawActDeltas() {
 	ctx.translate(-25,-10);
 	ctx.scale(0.61, 0.61);
 
-	window.setTimeout("drawActDeltas(true,true,true,true)", 10);
+	var cl = document.getElementById("legendCanvas");
+	var ctxl = cl.getContext("2d");
+
+	ctxl.scale(0.61, 0.61);
+
+	
+	window.setTimeout("drawActDeltas(true,true,true,true,false)", 10);
 }
 
-function drawActDeltas(drawSegments,drawSegNums,drawActNums,drawActVals) {
+function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCircles) {
     
 	var c = document.getElementById("actDeltasCanvas");
 	var ctx = c.getContext("2d");
@@ -55,27 +64,82 @@ function drawActDeltas(drawSegments,drawSegNums,drawActNums,drawActVals) {
 		var actDelta2 = (parseFloat(actDeltasArray[(i*3)+1])/1000.0).toFixed(2);
 		var actDelta3 = (parseFloat(actDeltasArray[(i*3)+2])/1000.0).toFixed(2);
 								
-		var heat1 = heatArray[(i*3)+0]);
-		var heat2 = heatArray[(i*3)+1]);
-		var heat3 = heatArray[(i*3)+2]);
+		var heat1 = heatArray[(i*3)+0];
+		var heat2 = heatArray[(i*3)+1];
+		var heat3 = heatArray[(i*3)+2];
 		
 		
-		drawHex2(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums, act1Position, drawActNums, actDelta1, actDelta2, actDelta3, drawActVals,
-				heat1, heat2, heat3)
+		drawHex2(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums, act1Position, actDelta1, actDelta2, actDelta3, drawActVals,
+				heat1, heat2, heat3, drawHeat, drawHeatCircles)
 		
 	}
 	
+	// draw key
+
+	var cl = document.getElementById("legendCanvas");
+	var ctxl = cl.getContext("2d");
+
+
+	// 1. 'up' triangle (use circles and numbers)
+	
+	ctxl.fillStyle = "#e8f0f8";
+	ctxl.font="18px Arial";
+
+	var x = 200;
+	var y = 100;
+	var radius = 30;
+	var txtOffset = 5;   // text offset
+
+	ctxl.fillStyle = "#e8f0f8";
+	ctxl.beginPath();
+	ctxl.arc(x, y - b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.beginPath();
+	ctxl.arc(x - a/2, y + b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.beginPath();
+	ctxl.arc(x + a/2, y + b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.fillStyle = '#000000';
+	ctxl.fillText("1", x-txtOffset, y+txtOffset - b/2);  	  // top
+	ctxl.fillText("2", x-txtOffset - a/2, y+txtOffset + b/2);  // bottom-left
+	ctxl.fillText("3", x-txtOffset + a/2, y+txtOffset + b/2);  // bottom-right
 
 	
+	// 2. 'down' triangle
+	x = 400;
+	
+	ctxl.fillStyle = "#e8f0f8";
+	ctxl.beginPath();
+	ctxl.arc(x - a/2, y - b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.beginPath();
+	ctxl.arc(x + a/2, y - b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.beginPath();
+	ctxl.arc(x, y + b/2, radius, 0, 2 * Math.PI, false);
+	ctxl.fill();
+	
+	ctxl.fillStyle = '#000000';
+	ctxl.fillText("1", x-txtOffset - a/2, y+txtOffset - b/2);  // top-left
+	ctxl.fillText("2", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
+	ctxl.fillText("3", x-txtOffset, y+txtOffset + b/2);        // bottom	
+
+	ctxl.fillStyle = '#888888';
+	ctxl.font="20px Arial";
+	ctxl.fillText("Actuator Numbering Schemes", 150, 200);  
+
 }
 
-function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Position, drawActNum, actDelta1, actDelta2, actDelta3, drawActDelta
-		heat1, heat2, heat3) {
+function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Position, actDelta1, actDelta2, actDelta3, drawActDelta,
+		heat1, heat2, heat3, drawHeat, drawHeatCircles) {
 	
 	// draw a hexgon of side sideLen centered on position x, y
-	
-	var a = sideLen
-	var b = a * Math.sqrt(3) / 2;
 
 	// 0 is the left side of hex, b + a/2 is the x center
 	// 0 is the top of the hex, 
@@ -104,11 +168,164 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		ctx.closePath();
 		ctx.stroke();
 	
-		ctx.fillStyle = "#e8f0f8";
+		ctx.fillStyle = "#ffffff";
 		ctx.fill();
 	}
 	
+
+	
+	
+	if (drawHeat) {
+	
+		if (drawHeatCircles) {
+			// draw circles
+	
+			var radius = 26;
+			var dx = 10;
+			var dy = 14;
+			
+			if (act1Position < 5.0) {
+				// top
+				ctx.beginPath();
+				ctx.arc(x, y - b/2, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat1;
+				ctx.fill();
+				
+				// bottom left
+				ctx.beginPath();
+				ctx.arc(x - a/2 + dx, y + b/2 - dy, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat2;
+				ctx.fill();
+				
+				// bottom right
+				ctx.beginPath();
+				ctx.arc(x + a/2 - dx, y + b/2 - dy, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat3;
+				ctx.fill();
+			
+			} else {
+				ctx.beginPath();
+				ctx.arc(x - a/2 + dx, y - b/2 + dy, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat1;
+				ctx.fill();
+				
+				ctx.beginPath();
+				ctx.arc(x + a/2 - dx, y - b/2 + dy, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat2;
+				ctx.fill();
+				
+				ctx.beginPath();
+				ctx.arc(x, y + b/2, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat3;
+				ctx.fill();
+			}
+
+		} else {
+			
+		
+			var p1x = x+ 0.0;
+			var p1y = y-b;
+			var p2x = x + (a*3)/4;
+			var p2y = y - b/2;
+			var p3x = x + (a*3)/4;
+			var p3y = y + b/2;
+			var p4x = x + 0.0;
+			var p4y = y + b;
+			var p5x = x -(a*3)/4;
+			var p5y = y + b/2;
+			var p6x = x -(a*3)/4;
+			var p6y = y - b/2;
+		
+			
+			if (act1Position < 5.0) {
+				ctx.strokeStyle = '#888888';
+							
+				// top
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p6x, p6y);
+				ctx.lineTo(x-a/2, y-b);
+				ctx.lineTo(x+a/2,y-b);
+				ctx.lineTo(p2x, p2y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat1;
+				ctx.fill();
+				
+				// bottom left
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p4x, p4y);
+				ctx.lineTo(x-a/2,y+b) // left bottom
+		    	ctx.lineTo(x-a,y) // left
+				ctx.lineTo(p6x, p6y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat2;
+				ctx.fill();
+
+				// bottom right
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p2x, p2y);
+				ctx.lineTo(x+a, y);
+		    	ctx.lineTo(x+a/2,y+b) // right bottom
+				ctx.lineTo(p4x, p4y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat3;
+				ctx.fill();
+	
+
+				
+				
+			} else {
+				
+				ctx.strokeStyle = '#888888';
+				
+				// top left
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p5x, p5y);
+				ctx.lineTo(x-a,y) // left	
+				ctx.lineTo(x-a/2,y-b) // left top
+				ctx.lineTo(p1x, p1y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat1;
+				ctx.fill();
+	
+				// top right
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p1x, p1y);
+		    	ctx.lineTo(x+a/2,y-b) // right top
+		    	ctx.lineTo(x+a,y)	// right
+				ctx.lineTo(p3x, p3y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat2;
+				ctx.fill();
+				
+				// bottom
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p3x, p3y);
+		    	ctx.lineTo(x+a/2,y+b) // right bottom
+		    	ctx.lineTo(x-a/2,y+b) // left bottom
+				ctx.lineTo(p5x, p5y);
+				ctx.closePath();
+				ctx.stroke();		
+				ctx.fillStyle = heat3;
+				ctx.fill();
+				
+				
+			}
+		}
+	}
+	
 	var txtOffset = 5;   // text offset
+	var newLineOffset = 10;
 	
 	if (drawSegNum) {
 		ctx.fillStyle = '#8888ff';
@@ -116,85 +333,30 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		ctx.fillText(number, x-txtOffset, y+txtOffset);
 	}
 	
-	if (drawActNum) {
-		ctx.fillStyle = '#000000';
-		ctx.font="14px Arial";
-		
-		if (act1Position < 5.0) {
-			
-			ctx.fillText("1", x-txtOffset, y+txtOffset - b/2);  	  // top
-			ctx.fillText("2", x-txtOffset - a/2, y+txtOffset + b/2);  // bottom-left
-			ctx.fillText("3", x-txtOffset + a/2, y+txtOffset + b/2);  // bottom-right
-			
-		} else {
-			
-			ctx.fillText("1", x-txtOffset - a/2, y+txtOffset - b/2);  // top-left
-			ctx.fillText("2", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
-			ctx.fillText("3", x-txtOffset, y+txtOffset + b/2);        // bottom
-			
-		}
-	}
-	
 	if (drawActDelta) {
 		ctx.fillStyle = '#000000';
 		ctx.font="14px Arial";
 		
-		var radius = 30;
-		if (act1Position < 5.0) {
-			
-			
-			ctx.fillText(actDelta1, x-txtOffset, y+txtOffset+newLineOffset - b/2);  	  // top
-			ctx.fillText(actDelta2, x-txtOffset - a/2, y+txtOffset+newLineOffset + b/2);  // bottom-left
-			ctx.fillText(actDelta3, x-txtOffset + a/2, y+txtOffset+newLineOffset + b/2);  // bottom-right
-			
-		} else {
-			
-			ctx.fillText(actDelta1, x-txtOffset - a/2, y+txtOffset+newLineOffset - b/2);  // top-left
-			ctx.fillText(actDelta2, x-txtOffset + a/2, y+txtOffset+newLineOffset - b/2);  // top-right
-			ctx.fillText(actDelta3, x-txtOffset, y+txtOffset+newLineOffset + b/2);        // bottom
-			
-		}
-	}
-	
-	// draw circles
+		var dx = 12;
+		var dy = 14;
 		
 		var radius = 30;
 		if (act1Position < 5.0) {
 						
-			ctx.beginPath();
-			ctx.arc(x, y - b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat1;
-			ctx.fill();
+			// TODO: change the x offset depending on length of string
+			ctx.fillText(actDelta1, x-txtOffset - 16, y+txtOffset - b/2);  	  // top
+			ctx.fillText(actDelta2, x-txtOffset - a/2 - 4 , y+txtOffset + b/2 - 14);  // bottom-left
+			ctx.fillText(actDelta3, x-txtOffset + a/2 - 22, y+txtOffset + b/2 - 14);  // bottom-right
 			
-			ctx.beginPath();
-			ctx.arc(x - a/2, y + b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat2;
-			ctx.fill();
-			
-			ctx.beginPath();
-			ctx.arc(x + a/2, y + b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat3;
-			ctx.fill();
-						
 		} else {
 			
-			ctx.beginPath();
-			ctx.arc(x - a/2, y - b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat1;
-			ctx.fill();
-			
-			ctx.beginPath();
-			ctx.arc(x + a/2, y - b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat2;
-			ctx.fill();
-			
-			ctx.beginPath();
-			ctx.arc(x, y + b/2, radius, 0, 2 * Math.PI, false);
-			ctx.fillStyle = heat3;
-			ctx.fill();
-			
+			ctx.fillText(actDelta1, x-txtOffset - a/2 - 4, y+txtOffset - b/2 + 14);  // top-left
+			ctx.fillText(actDelta2, x-txtOffset + a/2 - 24, y+txtOffset - b/2 + 14);  // top-right
+			ctx.fillText(actDelta3, x-txtOffset - 10, y+txtOffset + b/2);        // bottom
 			
 		}
+	}
+	
 }
 
 
@@ -224,7 +386,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
-				<p:spacer height="120"/><p:spacer height="120"/>
+				<p:spacer height="60"/><p:spacer height="60"/>
 				<h:outputLabel value="Show Segments" />
      			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
     				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
@@ -236,21 +398,30 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     			</p:selectBooleanButton>
     			
 				<p:spacer height="1"/><p:spacer height="1"/>
-				<h:outputLabel value="Show Actuator Numberings" />
-     			<p:selectBooleanButton value="#{visualizationController.showActNums}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
-    			</p:selectBooleanButton>
+				<h:outputLabel value="Show Heat Display" />
+				<h:panelGroup>
+     				<p:selectBooleanButton value="#{visualizationController.showHeat}" onLabel="On" offLabel="Off" >
+    					<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+    				</p:selectBooleanButton>
+	    			<p:selectOneRadio id="console" value="#{visualizationController.showHeatCircles}">
+	            		<f:selectItem itemLabel="Areas" itemValue="false" />
+	            		<f:selectItem itemLabel="Circles" itemValue="true" />
+	            		<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
+	        		</p:selectOneRadio>		
+    			</h:panelGroup>
     			
 				<p:spacer height="1"/><p:spacer height="1"/>
 				<h:outputLabel value="Show Actuator Values" />
      			<p:selectBooleanButton value="#{visualizationController.showActVals}" onLabel="On" offLabel="Off" >
     				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />
     			</p:selectBooleanButton>
-    			
     			<p:spacer height="10"/><p:spacer height="10"/>
     			
     			
     		</p:panelGrid>
+    		<p:spacer height="100"/>
+    		<canvas id="legendCanvas" width="400px" height="130px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
      		</p:panelGrid>    		
     		
     		

@@ -59,7 +59,8 @@ public class VisualizationController implements Serializable {
 
 	boolean showSegments = true;
 	boolean showSegNums = true;
-	boolean showActNums = true;
+	boolean showHeat = true;
+	boolean showHeatCircles = false;
 	boolean showActVals = true;
 	float offsetScale = 100.0f;
 
@@ -132,12 +133,20 @@ public class VisualizationController implements Serializable {
 		this.showSegNums = showSegNums;
 	}
 
-	public boolean isShowActNums() {
-		return showActNums;
+	public boolean isShowHeat() {
+		return showHeat;
 	}
 
-	public void setShowActNums(boolean showActNums) {
-		this.showActNums = showActNums;
+	public void setShowHeat(boolean showHeat) {
+		this.showHeat = showHeat;
+	}
+
+	public boolean isShowHeatCircles() {
+		return showHeatCircles;
+	}
+
+	public void setShowHeatCircles(boolean showHeatCircles) {
+		this.showHeatCircles = showHeatCircles;
 	}
 
 	public boolean isShowActVals() {
@@ -266,12 +275,12 @@ public class VisualizationController implements Serializable {
 
 	public void updateCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ", " + showActNums + ", " + showActVals + ")");
+		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	public void updateActDeltaDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActNums + ", " + showActVals + ")");
+		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
 	}
 
 	public void doPopulateCentroidDisplay() {
