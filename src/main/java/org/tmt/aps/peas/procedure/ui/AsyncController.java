@@ -87,6 +87,7 @@ public class AsyncController {
 		
 		checkMessages();
 		
+		// will execute if on the last time through
 		if (!procedureExecutionState.getExecutionStatus()) {
 			onComplete();
 		}
