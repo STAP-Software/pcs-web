@@ -171,7 +171,6 @@ public class ProcedureExecutionMgmt {
 
 				procedureMgmt.setupFrameLog(procedureCcdFrame);
 			}
-
 			
 			procedureExecutionState.setExecutionStatus(false);
 

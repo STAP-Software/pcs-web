@@ -17,6 +17,7 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
+import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
@@ -85,6 +86,10 @@ public class AsyncController {
 		checkCameraDisplay();
 		
 		checkMessages();
+		
+		if (!procedureExecutionState.getExecutionStatus()) {
+			onComplete();
+		}
 		
 	}
 	
@@ -191,6 +196,10 @@ public class AsyncController {
 	}
 	
 	public void onComplete() {
+		
+		// update camera state to be the one associated with the first frame.  We do it here because it is the 'last' asynchronous thing we do
+		CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
+		procedureController.loadCameraState(cameraState);
 		
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
 		RequestContext.getCurrentInstance().update("procedureDetailForm");
