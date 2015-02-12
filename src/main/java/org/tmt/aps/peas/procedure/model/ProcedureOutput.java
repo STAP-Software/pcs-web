@@ -9,7 +9,7 @@ public class ProcedureOutput implements ProcedureOutputable {
 	Long procedureId;
 
 
-	List<ProcedureIterationOutput> procedureIterationOutputList;
+	List<ProcedureIterationOutput> procedureIterationOutputList = new ArrayList<ProcedureIterationOutput>();
 
 	List<ProcedureOutputValue> procedureOutputList;
 
