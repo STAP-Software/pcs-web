@@ -1,10 +1,11 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
 
-public class PassiveTiltProcedureOutput extends ProcedureOutput implements CentroidOffsetsDisplayValues {
+public class PassiveTiltProcedureOutput extends ProcedureOutput implements CentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 	
 	private FloatPoint translationFromRefBeam = new FloatPoint(0.0f,0.0f);
 	private float rotationFromRefBeam;

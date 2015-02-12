@@ -1,8 +1,9 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 
-public class PassiveTiltIterationOutput extends ProcedureIterationOutput {
+public class PassiveTiltIterationOutput extends ProcedureIterationOutput implements ActuatorDeltasDisplayValues {
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;

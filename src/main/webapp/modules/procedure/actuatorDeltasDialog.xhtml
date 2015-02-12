@@ -127,8 +127,8 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
 	
 	ctxl.fillStyle = '#000000';
 	ctxl.fillText("1", x-txtOffset - a/2, y+txtOffset - b/2);  // top-left
-	ctxl.fillText("2", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
-	ctxl.fillText("3", x-txtOffset, y+txtOffset + b/2);        // bottom	
+	ctxl.fillText("2", x-txtOffset, y+txtOffset + b/2);        // bottom	
+	ctxl.fillText("3", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
 
 	ctxl.fillStyle = '#333333';
 	ctxl.font="18px Arial";
@@ -204,20 +204,24 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 				ctx.fill();
 			
 			} else {
+				// top left
 				ctx.beginPath();
 				ctx.arc(x - a/2 + dx, y - b/2 + dy, radius, 0, 2 * Math.PI, false);
 				ctx.fillStyle = heat1;
 				ctx.fill();
 				
-				ctx.beginPath();
-				ctx.arc(x + a/2 - dx, y - b/2 + dy, radius, 0, 2 * Math.PI, false);
-				ctx.fillStyle = heat2;
-				ctx.fill();
-				
+				// bottom
 				ctx.beginPath();
 				ctx.arc(x, y + b/2, radius, 0, 2 * Math.PI, false);
+				ctx.fillStyle = heat2;
+				ctx.fill();
+
+				// top right
+				ctx.beginPath();
+				ctx.arc(x + a/2 - dx, y - b/2 + dy, radius, 0, 2 * Math.PI, false);
 				ctx.fillStyle = heat3;
 				ctx.fill();
+				
 			}
 
 		} else {
@@ -295,18 +299,6 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 				ctx.fillStyle = heat1;
 				ctx.fill();
 	
-				// top right
-				ctx.beginPath();
-				ctx.moveTo(x,y);
-				ctx.lineTo(p1x, p1y);
-		    	ctx.lineTo(x+a/2,y-b) // right top
-		    	ctx.lineTo(x+a,y)	// right
-				ctx.lineTo(p3x, p3y);
-				ctx.closePath();
-				//ctx.stroke();		
-				ctx.fillStyle = heat2;
-				ctx.fill();
-				
 				// bottom
 				ctx.beginPath();
 				ctx.moveTo(x,y);
@@ -314,6 +306,18 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		    	ctx.lineTo(x+a/2,y+b) // right bottom
 		    	ctx.lineTo(x-a/2,y+b) // left bottom
 				ctx.lineTo(p5x, p5y);
+				ctx.closePath();
+				//ctx.stroke();		
+				ctx.fillStyle = heat2;
+				ctx.fill();
+				
+				// top right
+				ctx.beginPath();
+				ctx.moveTo(x,y);
+				ctx.lineTo(p1x, p1y);
+		    	ctx.lineTo(x+a/2,y-b) // right top
+		    	ctx.lineTo(x+a,y)	// right
+				ctx.lineTo(p3x, p3y);
 				ctx.closePath();
 				//ctx.stroke();		
 				ctx.fillStyle = heat3;
@@ -351,8 +355,8 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		} else {
 			
 			ctx.fillText(actDelta1, x-txtOffset - a/2 - 4, y+txtOffset - b/2 + 14);  // top-left
-			ctx.fillText(actDelta2, x-txtOffset + a/2 - 24, y+txtOffset - b/2 + 14);  // top-right
-			ctx.fillText(actDelta3, x-txtOffset - 10, y+txtOffset + b/2);        // bottom
+			ctx.fillText(actDelta2, x-txtOffset - 10, y+txtOffset + b/2);        // bottom
+			ctx.fillText(actDelta3, x-txtOffset + a/2 - 24, y+txtOffset - b/2 + 14);  // top-right
 			
 		}
 	}
@@ -386,7 +390,12 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
-				<p:spacer height="60"/><p:spacer height="60"/>
+				<p:spacer height="30"/><p:spacer height="30"/>
+				<h:outputLabel value="RMS of Actuator Deltas (nm)" />
+				<h:outputText value="#{visualizationController.actuatorDeltasDisplayValues.m1ActuatorCmdsRms}" style="position:relative; top:2px" />
+				
+				<p:spacer height="30"/><p:spacer height="30"/>
+				
 				<h:outputLabel value="Show Segments" />
      			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
     				<p:ajax update="@this" listener="#{visualizationController.updateActDeltaDisplayListener}" />

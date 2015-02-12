@@ -7,6 +7,7 @@ package org.tmt.aps.peas.visualization.business;
 
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Lock;
@@ -14,8 +15,12 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
+import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -35,7 +40,9 @@ public class GraphicDisplayMgmt implements Serializable {
 	
 
 	CentroidOffsetsDisplayValues centroidOffsetsDisplayValues;
-	
+	ActuatorDeltasDisplayValues actuatorDeltasDisplayValues;
+	String actDeltaHeats;
+
 	String centroidNbrs;
 	String actuatorDeltas;
 
@@ -81,6 +88,14 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.centroidNbrs = centroidNbrs;
 	}
 
+	public String getActDeltaHeats() {
+		return actDeltaHeats;
+	}
+
+	public void setActDeltaHeats(String actDeltaHeats) {
+		this.actDeltaHeats = actDeltaHeats;
+	}
+
 	@Lock(LockType.READ)
 	public VisualizationDisplay getPendingDisplay() {
 		return pendingDisplay;
@@ -110,6 +125,15 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
 	}
 
+	@Lock(LockType.READ)
+	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
+		return actuatorDeltasDisplayValues;
+	}
+
+	public void setActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
+		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
+	}
+
 	public void displaySubimageCentroids(List<Point> subimageList) {
 		
 		StringBuffer xBuf = new StringBuffer();
@@ -136,17 +160,10 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
-		
-		FloatPoint[] centroidOffsets = centroidOffsetsDisplayValues.getCentroidOffsets();
-		
-		StringBuffer xBuf = new StringBuffer();
-		StringBuffer yBuf = new StringBuffer();
-		for (int i=0; i<centroidOffsets.length; i++) {
-			xBuf.append(centroidOffsets[i].x + ",");
-			yBuf.append(centroidOffsets[i].y + ",");
-		}
-		centroidOffsetXs = xBuf.substring(0, xBuf.length()-1);
-		centroidOffsetYs = yBuf.substring(0, yBuf.length()-1);
+			
+		List<FloatPoint> centroidOffsets = Arrays.asList(centroidOffsetsDisplayValues.getCentroidOffsets());
+		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
+		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
 		
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		
@@ -154,6 +171,20 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 	
+	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
+		
+		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
+		
+		actuatorDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+
+		actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+		
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);
+		
+		waitForReturnState();
+		
+	}
+
 	private void waitForReturnState() {
 		returnState = null;
 		// here we wait until the return state changes
@@ -184,4 +215,85 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 
+	public String heatMap(float[][] actDeltas) {
+
+		// zero: #ffffff
+
+		// red: light to dark
+		// #fee0d2 - 10%
+		// #fc9272 - 50%
+		// #de2d26 - 100%
+
+		// blue: light to dark
+		// #deebf7 - 10%
+		// #9ecae1 - 50%
+		// #3182bd - 100%
+
+		// create a map of % to red, % to blue, % to green for each of the positive and negative values
+
+
+		float max = 0.0f;
+		for (float[] fArray : actDeltas) {
+			for (float act : fArray) {
+				max = Math.abs(act) > max ? Math.abs(act) : max;
+			}
+		}
+
+		StringBuffer buf = new StringBuffer();
+		// each value is compared to max to get the relative heat
+		for (float[] fArray : actDeltas) {
+			for (float act : fArray) {
+
+				float percent = act / max;
+				boolean isNeg = percent < 0;
+				percent = Math.abs(percent);
+				String heat = "#000000";
+				// positive heat map
+				if (percent <= 0.1f) {
+					heat = interpolate(percent, isNeg, 0, 1, 0.0f, 0.1f);
+				} else if (percent <= 0.5f) {
+					heat = interpolate(percent, isNeg, 1, 2, 0.1f, 0.5f);
+				} else {
+					heat = interpolate(percent, isNeg, 2, 3, 0.5f, 1.0f);
+				}
+
+				buf.append(heat + ",");
+			}
+		}
+
+		buf.deleteCharAt(buf.length()-1);
+		return buf.toString();
+	}
+
+	public String interpolate(float value, boolean isNeg, int startIndex, int endIndex, float startValue, float endValue) {
+		
+		int rValPos[] = { 0xff, 0xfe, 0xfc, 0xde };
+		int gValPos[] = { 0xff, 0xe0, 0x92, 0x2d };
+		int bValPos[] = { 0xff, 0xd2, 0x72, 0x26 };
+
+		int rValNeg[] = { 0xff, 0xde, 0x9e, 0x31 };
+		int gValNeg[] = { 0xff, 0xeb, 0xca, 0x82 };
+		int bValNeg[] = { 0xff, 0xf7, 0xe1, 0xbd };
+
+		
+		// value is what percent of its range?
+		float percent = (value - startValue)/(endValue - startValue);
+		
+		int rVal = 0;
+		int gVal = 0;
+		int bVal = 0;
+		
+		if (isNeg) {
+			rVal = (int)(rValNeg[startIndex] + (rValNeg[endIndex] - rValNeg[startIndex]) * percent); 
+			gVal = (int)(gValNeg[startIndex] + (gValNeg[endIndex] - gValNeg[startIndex]) * percent); 
+			bVal = (int)(bValNeg[startIndex] + (bValNeg[endIndex] - bValNeg[startIndex]) * percent); 
+		} else {
+			rVal = (int)(rValPos[startIndex] + (rValPos[endIndex] - rValPos[startIndex]) * percent); 
+			gVal = (int)(gValPos[startIndex] + (gValPos[endIndex] - gValPos[startIndex]) * percent); 
+			bVal = (int)(bValPos[startIndex] + (bValPos[endIndex] - bValPos[startIndex]) * percent); 			
+		}
+		
+		return "#" + String.format("%02X", rVal) + String.format("%02X", gVal) + String.format("%02X", bVal);
+		
+	}
 }

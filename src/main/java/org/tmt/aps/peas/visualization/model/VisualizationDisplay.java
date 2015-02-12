@@ -69,4 +69,8 @@ public class VisualizationDisplay {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_CENTROID_OFFSETS;
 	}
 	
+	public boolean isDisplayTypeActuatorDeltas() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_ACTUATOR_DELTAS;
+	}
+	
 }

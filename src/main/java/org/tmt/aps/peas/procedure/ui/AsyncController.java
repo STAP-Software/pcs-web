@@ -120,12 +120,17 @@ public class AsyncController {
 			
 			requestContext.update("offsetsForm");
 			requestContext.update("spotsForm");
+			requestContext.update("actDeltasForm");
+			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
 				requestContext.execute("drawSpots(); centroidsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
 				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+			}
+			if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
+				requestContext.execute("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
 			}
 			
 			graphicDisplayMgmt.setPendingDisplay(null);
