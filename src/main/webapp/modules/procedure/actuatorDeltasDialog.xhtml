@@ -33,7 +33,6 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
 
-
 	// display coordinates
 	var xField1 = document.getElementById('actDeltasForm:centDefXs').value;
  	var xHexCenterArray = xField1.split(','); 
@@ -78,6 +77,7 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
 
 	var cl = document.getElementById("legendCanvas");
 	var ctxl = cl.getContext("2d");
+	ctxl.clearRect(0,0,500,500)
 
 
 	// 1. 'up' triangle (use circles and numbers)
@@ -130,9 +130,9 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
 	ctxl.fillText("2", x-txtOffset + a/2, y+txtOffset - b/2);  // top-right
 	ctxl.fillText("3", x-txtOffset, y+txtOffset + b/2);        // bottom	
 
-	ctxl.fillStyle = '#888888';
-	ctxl.font="20px Arial";
-	ctxl.fillText("Actuator Numbering Schemes", 150, 200);  
+	ctxl.fillStyle = '#333333';
+	ctxl.font="18px Arial";
+	ctxl.fillText("Actuator Numbering Schemes", 170, 200);  
 
 }
 
@@ -248,7 +248,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 				ctx.lineTo(x+a/2,y-b);
 				ctx.lineTo(p2x, p2y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat1;
 				ctx.fill();
 				
@@ -260,7 +260,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		    	ctx.lineTo(x-a,y) // left
 				ctx.lineTo(p6x, p6y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat2;
 				ctx.fill();
 
@@ -272,7 +272,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		    	ctx.lineTo(x+a/2,y+b) // right bottom
 				ctx.lineTo(p4x, p4y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat3;
 				ctx.fill();
 	
@@ -291,7 +291,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 				ctx.lineTo(x-a/2,y-b) // left top
 				ctx.lineTo(p1x, p1y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat1;
 				ctx.fill();
 	
@@ -303,7 +303,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		    	ctx.lineTo(x+a,y)	// right
 				ctx.lineTo(p3x, p3y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat2;
 				ctx.fill();
 				
@@ -315,7 +315,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 		    	ctx.lineTo(x-a/2,y+b) // left bottom
 				ctx.lineTo(p5x, p5y);
 				ctx.closePath();
-				ctx.stroke();		
+				//ctx.stroke();		
 				ctx.fillStyle = heat3;
 				ctx.fill();
 				
