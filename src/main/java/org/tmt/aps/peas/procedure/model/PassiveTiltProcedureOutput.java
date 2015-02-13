@@ -10,6 +10,10 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	private FloatPoint translationFromRefBeam = new FloatPoint(0.0f,0.0f);
 	private float rotationFromRefBeam;
 	private float scaleChangeFromRefBeam;
+	
+	private float[][] tipTiltActuatorDeltas = new float[36][3];
+	private float[][] pistonActuatorDeltas = new float[36][3];
+	
 	private float[][] m1ActuatorCmds = new float[36][3];
 	private float m1ActuatorCmdsRms;
 	private boolean m1CmdsSent;
@@ -109,6 +113,18 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	}
 	public void setSlopeError(float slopeError) {
 		this.slopeError = slopeError;
+	}
+	public float[][] getTipTiltActuatorDeltas() {
+		return tipTiltActuatorDeltas;
+	}
+	public void setTipTiltActuatorDeltas(float[][] tipTiltActuatorDeltas) {
+		this.tipTiltActuatorDeltas = tipTiltActuatorDeltas;
+	}
+	public float[][] getPistonActuatorDeltas() {
+		return pistonActuatorDeltas;
+	}
+	public void setPistonActuatorDeltas(float[][] pistonActuatorDeltas) {
+		this.pistonActuatorDeltas = pistonActuatorDeltas;
 	}
 	
 	

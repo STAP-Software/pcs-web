@@ -7,6 +7,10 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;
+	
+	private float[][] tipTiltActuatorDeltas = new float[36][3];
+	private float[][] pistonActuatorDeltas = new float[36][3];
+
 	private float[][] m1ActuatorCmds;
 	private float m1ActuatorCmdsRms;
 	private FloatPoint[] centroidOffsets;
@@ -92,6 +96,18 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	}
 	public void setSlopeError(float slopeError) {
 		this.slopeError = slopeError;
+	}
+	public float[][] getTipTiltActuatorDeltas() {
+		return tipTiltActuatorDeltas;
+	}
+	public void setTipTiltActuatorDeltas(float[][] tipTiltActuatorDeltas) {
+		this.tipTiltActuatorDeltas = tipTiltActuatorDeltas;
+	}
+	public float[][] getPistonActuatorDeltas() {
+		return pistonActuatorDeltas;
+	}
+	public void setPistonActuatorDeltas(float[][] pistonActuatorDeltas) {
+		this.pistonActuatorDeltas = pistonActuatorDeltas;
 	}
 	
 	

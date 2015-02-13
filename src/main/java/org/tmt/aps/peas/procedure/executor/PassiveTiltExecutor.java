@@ -18,6 +18,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -328,19 +329,26 @@ public class PassiveTiltExecutor {
 			float desiredActDeltasRms = computationLibrary.calcRms(desiredActDeltas);
 			
 			// set iteration and procedure outputs
+			pio.setTipTiltActuatorDeltas(decomposeActResult.getTipTiltActs());
+			pio.setPistonActuatorDeltas(decomposeActResult.getPistonActs());
+
+			
 			pio.setM1ActuatorCmds(desiredActDeltas);
 			pio.setM1ActuatorCmdsRms(desiredActDeltasRms);
 
 			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
 			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
+			procedureOutput.setTipTiltActuatorDeltas(pio.getTipTiltActuatorDeltas());
+			procedureOutput.setPistonActuatorDeltas(pio.getPistonActuatorDeltas());
 			
 			// display the pistonDeltas
 			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 						           
 			// TODO: use resource bundles
 			// TODO: display RMS piston deltas to user in dialog
-			boolean commandAcs = userPromptMgmt.displayYesNoDialog("Command Primary Mirror?");
-	        
+			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", desiredActDeltasRms);
+			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
+
 			// command ACS
 			if (commandAcs) {
 				
