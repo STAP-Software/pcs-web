@@ -19,6 +19,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -27,9 +28,11 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
+import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
+import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
@@ -449,5 +452,86 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 		return desiredActDeltas;
 	}
+
+	@Override
+	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
+		
+		JdecomposeActs jdecomposeActs = new JdecomposeActs();
+		RetVal retVal = new RetVal();
+
+		float[] actPos = flatten2dArray(actuatorPositions);
+
+		// output arrays
+		float[] act_tt = new float[actPos.length];
+		float[] act_p = new float[actPos.length];
+
+
+		Object output[] = jdecomposeActs.jdecomposeActs(retVal, actPos, act_tt, act_p);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Decompose Actuators Calculation Error");
+		}
+
+		// store _param values
+		float[][] tipTiltActs = expandTo2dArray(act_tt, 3);
+		float[][] pistonActs = expandTo2dArray(act_p, 3);
+
+
+		return new DecomposeActsResult(tipTiltActs, pistonActs);	
+		
+	}
+
+	@Override
+	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
+		JoptimalPistons joptimalPistons = new JoptimalPistons();
+		RetVal retVal = new RetVal();
+
+		float[] ttActs = flatten2dArray(tipTiltActs);
+		float[] testArray = new float[controlMatrix.length];
+
+		// output arrays
+		float[] act_p = new float[ttActs.length];
+
+
+		Object output[] = joptimalPistons.joptimalPistons(retVal, controlMatrix, ttActs, testArray, 0, act_p);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Optimal Pistons Calculation Error");
+		}
+
+		// store _param values
+		float[][] pistonActs = expandTo2dArray(act_p, 3);
+
+
+		return pistonActs;	
+
+	}
+	
+	private float[] flatten2dArray(float[][] input) {
+		float[] result = new float[input.length * input[0].length];
+		for (int i=0; i<input.length; i++) {
+			for (int j=0; j<input[i].length; j++) {
+				result[i * input[i].length + j] = input[i][j];
+			}
+		}
+		return result;
+	}
+	
+	private float[][] expandTo2dArray(float[] input, int minorIndexSize) {
+		float[][] result = new float[input.length/minorIndexSize][minorIndexSize];
+		for (int i = 0; i<input.length/minorIndexSize; i++) {
+			for (int j=0; j < minorIndexSize; j++) {
+				result[i][j] = input[i*minorIndexSize + j]; 
+			}
+		}
+		return result;
+	}
+	
+	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
+		return JavaComputations.addMatricies(matrix1, matrix2);
+	}
+
 
 }

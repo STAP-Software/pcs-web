@@ -17,6 +17,7 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -184,7 +185,23 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return new float[36][3];
 	}
 
-	
+	@Override
+	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
+		// TODO Auto-generated method stub
+		return new DecomposeActsResult(actuatorPositions, actuatorPositions);
+	}
+
+	@Override
+	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
+		// TODO Auto-generated method stub
+		return tipTiltActs;
+	}
+
+	@Override
+	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
+		return JavaComputations.addMatricies(matrix1, matrix2);
+	}
+
 	
 	
 }

@@ -24,6 +24,7 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -291,13 +292,38 @@ public class PassiveTiltExecutor {
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
 			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
 
-			// TODO: implement ttOffsetsToActs (and persist all outputs)
+			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
 			/*****************************************************/
 			/*                  ttOffsetsToActs                  */
 			/*****************************************************/
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
-			float[][] desiredActDeltas = computationLibrary.ttOffsetsToActs(actPosList, centroidOffsetsResult.getImageScale(), centroidOffsetsResult.getCentroidOffsets());
+			// lpz = local piston zeroed on a segment
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, centroidOffsetsResult.getImageScale(), centroidOffsetsResult.getCentroidOffsets());
 
+			// Decompose the calculated actuators into pure tip/tilt and pure piston.  
+			// This code is to ensure that the pistons are indeed zero prior to proceding.
+			/*****************************************************/
+			/*                  decomposeActs                    */
+			/*****************************************************/
+			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
+	        
+		    // Calculate the optimal pistons associated with the calculated
+		    // actuators (minimizes the changes to the edges).  Note that this
+		    // routine just determines the optimal pistons; if you want to add
+		    // these on to the tip/tilt pistons, you need to do it yourself.
+
+			/*****************************************************/
+			/*                  optimalPistons                   */
+			/*****************************************************/
+			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
+		    float[][] pistonActs = computationLibrary.optimalPistons(controlMatrix, decomposeActResult.getTipTiltActs());
+			
+			// combine tip/tilt and piston commands
+			/*****************************************************/
+			/*              calcDesiredActCommands               */
+			/*****************************************************/
+		    float[][] desiredActDeltas = computationLibrary.addMatricies(decomposeActResult.getTipTiltActs(), pistonActs);
+		    
 			// calculate RMS of the actuator cmds 
 			float desiredActDeltasRms = computationLibrary.calcRms(desiredActDeltas);
 			
@@ -307,7 +333,7 @@ public class PassiveTiltExecutor {
 
 			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
 			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
-
+			
 			// display the pistonDeltas
 			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 						           

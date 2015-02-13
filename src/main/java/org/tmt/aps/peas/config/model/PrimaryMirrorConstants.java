@@ -30,7 +30,7 @@ public class PrimaryMirrorConstants {
 	
 	FloatPoint[] primaryActPos;
 	
-	
+	float[][] aMatrix;
 	
 	public int[] getnColor() {
 		return nColor;
@@ -123,6 +123,13 @@ public class PrimaryMirrorConstants {
 	}
 	public void setPrimaryActPos(FloatPoint[] primaryActPos) {
 		this.primaryActPos = primaryActPos;
+	}
+	
+	public float[][] getaMatrix() {
+		return aMatrix;
+	}
+	public void setaMatrix(float[][] aMatrix) {
+		this.aMatrix = aMatrix;
 	}
 	public String toString() {
 		

@@ -11,6 +11,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -49,5 +50,12 @@ public interface ComputationLibrary {
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException;
 	
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets) throws ComputationException;
+	
+	
+	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException;
+	
+	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException;
+	
+	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException;
 	
 }

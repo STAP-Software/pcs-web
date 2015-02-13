@@ -3,6 +3,7 @@ package org.tmt.aps.peas.computation.java;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.business.ComputationException;
 
 public class JavaComputations {
 
@@ -32,5 +33,21 @@ public class JavaComputations {
 		}
 		return (float)Math.sqrt(sum2/(data.length*data[0].length));
 	}
+
+	public static float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
+		try {
+		float[][] result = new float[matrix1.length][matrix1[0].length];
+		for (int i=0; i<matrix1.length; i++) {
+			for (int j=0; j<matrix1[0].length; j++) {
+				result[i][j] = matrix1[i][j] + matrix2[i][j];
+			}
+		}
+		return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ComputationException(e + "");
+		}
+	}
+
 	
 }
