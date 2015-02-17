@@ -35,6 +35,7 @@ public class FieldMetaData implements FieldDescriptor {
 	String units;
 	String description;
 	String displayLabel;
+	String displayFormat;
 	
 	
 	public Long getFieldMetaDataId() {
@@ -92,6 +93,12 @@ public class FieldMetaData implements FieldDescriptor {
 		this.displayLabel = displayLabel;
 	}
 	
+	public String getDisplayFormat() {
+		return displayFormat;
+	}
+	public void setDisplayFormat(String displayFormat) {
+		this.displayFormat = displayFormat;
+	}
 	public boolean isArray() {
 		return dimension1 > 0;
 	}	

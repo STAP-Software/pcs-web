@@ -27,17 +27,17 @@
         			Procedure Execution Values
     			</f:facet>
 
-				<p:column headerText="Name" style="width:150px">
+				<p:column headerText="Name" style="width:150px;vertical-align:top">
 					<h:outputText value="#{plogValue.procedureOutputField.displayLabel}" />
 				</p:column>
-				<p:column headerText="Value" style="width:500px">
-					<h:outputText value="#{plogValue.data}" />
+				<p:column headerText="Value" style="width:400px;vertical-align:top">
+					<h:outputText style="white-space:pre-line" escape="false" value="#{plogValue.dataFormatted}" />
 				</p:column>
 				
-				<p:column headerText="Units" style="width:100px">
+				<p:column headerText="Units" style="width:100px;vertical-align:top">
 					<h:outputText value="#{plogValue.procedureOutputField.units}" />
 				</p:column>
-				<p:column headerText="Description" style="width:300px">
+				<p:column headerText="Description" style="width:400px;vertical-align:top">
 					<h:outputText value="#{plogValue.procedureOutputField.description}" />
 				</p:column>
 
@@ -110,17 +110,17 @@
 		        				Procedure Iteration Execution Values
 		    				</f:facet>
 		
-						<p:column headerText="Name" style="width:150px">
+						<p:column headerText="Name" style="width:150px;vertical-align:top">
 							<h:outputText value="#{plogIterValue.procedureOutputField.displayLabel}" />
 						</p:column>
-						<p:column headerText="Value" style="width:500px">
-							<h:outputText value="#{plogIterValue.data}" />
+						<p:column headerText="Value" style="width:400px;vertical-align:top">
+							<h:outputText style="white-space:pre-line" escape="false" value="#{plogIterValue.dataFormatted}" />
 						</p:column>
 						
-						<p:column headerText="Units" style="width:100px">
+						<p:column headerText="Units" style="width:100px;vertical-align:top">
 							<h:outputText value="#{plogIterValue.procedureOutputField.units}" />
 						</p:column>
-						<p:column headerText="Description" style="width:300px">
+						<p:column headerText="Description" style="width:400px;vertical-align:top">
 							<h:outputText value="#{plogIterValue.procedureOutputField.description}" />
 						</p:column>
 		

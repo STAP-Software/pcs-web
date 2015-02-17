@@ -16,6 +16,8 @@ public interface FieldDescriptor {
 	
 	public String getDisplayLabel();
 	
+	public String getDisplayFormat();
+	
 	public boolean isArray();
 	
 	public boolean isOneDimensional();

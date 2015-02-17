@@ -18,7 +18,7 @@ import org.tmt.aps.peas.session.model.FieldDescriptor;
 @Entity
 @Table(name = "ProcedureOutputField")
 @NamedQueries({
-	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className" )
+	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className ORDER BY p.displayOrder")
 })
 public class ProcedureOutputField implements FieldDescriptor {
 	
@@ -34,6 +34,8 @@ public class ProcedureOutputField implements FieldDescriptor {
 	String units;
 	String description;
 	String displayLabel;
+	String displayOrder;
+	String displayFormat;
 	
 	
 	
@@ -109,6 +111,22 @@ public class ProcedureOutputField implements FieldDescriptor {
 		this.displayLabel = displayLabel;
 	}
 	
+	public String getDisplayOrder() {
+		return displayOrder;
+	}
+
+	public void setDisplayOrder(String displayOrder) {
+		this.displayOrder = displayOrder;
+	}
+
+	public String getDisplayFormat() {
+		return displayFormat;
+	}
+
+	public void setDisplayFormat(String displayFormat) {
+		this.displayFormat = displayFormat;
+	}
+
 	public boolean isArray() {
 		return dimension1 > 0;
 	}	
@@ -120,4 +138,5 @@ public class ProcedureOutputField implements FieldDescriptor {
 	public boolean isScalar() {
 		return dimension1 == 0;
 	}
+	
 }

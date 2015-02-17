@@ -344,29 +344,29 @@ public class PassiveTiltExecutor {
 			// display the pistonDeltas
 			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 						           
-			// TODO: use resource bundles
-			// TODO: display RMS piston deltas to user in dialog
+
+			// display RMS piston deltas to user in dialog
 			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", desiredActDeltasRms);
 			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
 
 			// command ACS
+			boolean commandsSent = false;
 			if (commandAcs) {
 				
 				try {
 					// send out the commands
 					acsMgmt.commandActuatorDeltas(desiredActDeltas);
 					
-					// TODO: use resource bundles
-					statusLogger.log("Actuator Delta Send Successful");
+					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
+					commandsSent = true;
 				} catch (Exception e) {
-					// TODO: use resource bundles
-					statusLogger.log("Error sending actuator deltas");
+					statusLogger.log("pt.m1_act_cmd_failed");
 					e.printStackTrace();
 				}
 	                                                                                
 			}                        
-			procedureOutput.setM1CmdsSent(commandAcs);
+			procedureOutput.setM1CmdsSent(commandsSent);
 			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - no need to wait for response				
