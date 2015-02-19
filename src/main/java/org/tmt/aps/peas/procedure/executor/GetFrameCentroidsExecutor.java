@@ -6,46 +6,30 @@
 package org.tmt.aps.peas.procedure.executor;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
-import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.extInterface.business.CameraMgmt;
-import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
-import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
-import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
-import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
-import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -145,7 +129,7 @@ public class GetFrameCentroidsExecutor {
 				frameDisplayMgmt.setMarking(centroids);
 				frameDisplayMgmt.displayMarkedFrame();
 
-				graphicDisplayMgmt.displaySubimageCentroids(FloatPointListEncoder.roundToPoint(centroids));
+				graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
 
 				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
 				break; // success, break of out while loop

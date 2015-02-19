@@ -19,7 +19,7 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
@@ -124,6 +124,17 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
 	}
+	
+	public void setAndEncodeCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
+		
+		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
+		
+		// encode centroid offsets
+		List<FloatPoint> centroidOffsets = Arrays.asList(getCentroidOffsetsDisplayValues().getCentroidOffsets());
+		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
+		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
+	}
+
 
 	@Lock(LockType.READ)
 	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
@@ -134,8 +145,28 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 	}
 
-	public void displaySubimageCentroids(List<Point> subimageList) {
+	public void setAndEncodeActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
+		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 		
+		String actDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+		setActuatorDeltas(actDeltas);
+		String actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+		setActDeltaHeats(actDeltaHeats);
+		
+	}
+	
+	public void setAndEncodeCentroidMap(CentroidMap centroidMap) {
+		
+		List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
+		setCentroidXs(FloatPointListEncoder.encodeXList(centroids));
+		setCentroidYs(FloatPointListEncoder.encodeYList(centroids));
+	}
+	
+	public void displaySubimageCentroids(CentroidMap centroidMap) {
+		
+		setAndEncodeCentroidMap(centroidMap);
+		
+		/*
 		StringBuffer xBuf = new StringBuffer();
 		StringBuffer yBuf = new StringBuffer();
 		StringBuffer nBuf = new StringBuffer();
@@ -151,7 +182,8 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.debug("centroidNbrs = " + centroidNbrs);
 		logger.debug("centroidXs = " + centroidXs);
 		logger.debug("centroidYs = " + centroidYs);
-
+		*/
+		
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 		
 		waitForReturnState();
@@ -159,26 +191,19 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
-		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
-			
-		List<FloatPoint> centroidOffsets = Arrays.asList(centroidOffsetsDisplayValues.getCentroidOffsets());
-		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
-		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
-		
+		// set the offset display values, this also encodes
+		setAndEncodeCentroidOffsetsDisplayValues(centroidOffsetsDisplayValues);
+					
+		// set the pending display and wait for return
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		
-		waitForReturnState();
-		
+		waitForReturnState();	
 	}
 	
 	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		
-		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
-		
-		actuatorDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getM1ActuatorCmds());
-
-		actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getM1ActuatorCmds());
-		
+		setAndEncodeActuatorDeltasDisplayValues(actuatorDeltasDisplayValues);
+				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);
 		
 		waitForReturnState();

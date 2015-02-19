@@ -57,9 +57,7 @@ function drawSpots() {
    			
    		<canvas id="spotCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
    		<br/>
-   		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
-				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
-		<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+ 		<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
 				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
    		</h:form>
 	</p:dialog> 

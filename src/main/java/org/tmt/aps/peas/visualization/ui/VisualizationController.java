@@ -297,13 +297,14 @@ public class VisualizationController implements Serializable {
 
 			// centroids
 			CentroidMap centroidMap = procedure.getProcedureCcdFrameList().get(0).getCentroidMap();
-			List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
-			graphicDisplayMgmt.setCentroidXs(FloatPointListEncoder.encodeXList(centroids));
-			graphicDisplayMgmt.setCentroidYs(FloatPointListEncoder.encodeYList(centroids));
+			
+			graphicDisplayMgmt.setAndEncodeCentroidMap(centroidMap);
+			
 
 		}
 	}
 
+	
 	public void doPopulateCentroidOffsetDisplay() {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -313,12 +314,9 @@ public class VisualizationController implements Serializable {
 		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
 
 			PassiveTiltProcedureOutput ptpo = (PassiveTiltProcedureOutput) procedureOutput;
-			graphicDisplayMgmt.setCentroidOffsetsDisplayValues((CentroidOffsetsDisplayValues) ptpo);
+			graphicDisplayMgmt.setAndEncodeCentroidOffsetsDisplayValues((CentroidOffsetsDisplayValues) ptpo);
 		}
-		List<FloatPoint> centroidOffsets = Arrays.asList(graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidOffsets());
-		graphicDisplayMgmt.setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
-		graphicDisplayMgmt.setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
-
+		
 	}
 
 	public void doPopulateAvgCentroidOffsetDisplay() {
@@ -326,18 +324,15 @@ public class VisualizationController implements Serializable {
 	}
 
 	public void doPopulateActuatorDeltaDisplay() {
+		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
 
 		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
 
 			PassiveTiltProcedureOutput ptpo = (PassiveTiltProcedureOutput) procedureOutput;
-			String actDeltas = FloatListEncoder.encodeList(ptpo.getM1ActuatorCmds());
-			graphicDisplayMgmt.setActuatorDeltas(actDeltas);
-			String actDeltaHeats = graphicDisplayMgmt.heatMap(ptpo.getM1ActuatorCmds());
-			graphicDisplayMgmt.setActDeltaHeats(actDeltaHeats);
 			
-			graphicDisplayMgmt.setActuatorDeltasDisplayValues((ActuatorDeltasDisplayValues)ptpo);
-
+			graphicDisplayMgmt.setAndEncodeActuatorDeltasDisplayValues(ptpo);
+			
 		}
 
 	}
