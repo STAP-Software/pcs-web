@@ -165,25 +165,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void displaySubimageCentroids(CentroidMap centroidMap) {
 		
 		setAndEncodeCentroidMap(centroidMap);
-		
-		/*
-		StringBuffer xBuf = new StringBuffer();
-		StringBuffer yBuf = new StringBuffer();
-		StringBuffer nBuf = new StringBuffer();
-		for (int i=0; i<subimageList.size(); i++) {
-			xBuf.append(subimageList.get(i).x + ",");
-			yBuf.append(subimageList.get(i).y + ",");
-			nBuf.append((i+1) + ",");
-		}
-		centroidXs = xBuf.substring(0, xBuf.length()-1);
-		centroidYs = yBuf.substring(0, yBuf.length()-1);
-		centroidNbrs = nBuf.substring(0, nBuf.length()-1);
-		
-		logger.debug("centroidNbrs = " + centroidNbrs);
-		logger.debug("centroidXs = " + centroidXs);
-		logger.debug("centroidYs = " + centroidYs);
-		*/
-		
+				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 		
 		waitForReturnState();
