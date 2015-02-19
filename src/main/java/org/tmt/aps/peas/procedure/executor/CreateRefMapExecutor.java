@@ -192,8 +192,11 @@ public class CreateRefMapExecutor {
 				
 			}
 
+			procedureExecutionState.setPercentComplete(25);
+			
 			ProcedureCcdFrame procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
 			
+			procedureExecutionState.setPercentComplete(60);
 
 			statusLogger.log("procedure.refmap.created");                
 
@@ -204,7 +207,9 @@ public class CreateRefMapExecutor {
 			// save the reference beam map
 			RefBeamMap refBeamMap = buildRefMap(procedureCcdFrame.getCentroidMap(), procedure);
 			procedure.setRefBeamMap(refBeamMap);
-                                                                       
+
+			procedureExecutionState.setPercentComplete(80);
+
 			// TODO: if SUFS, then Home the coarse mirror 
 			// CALL UFS_SEGMENT_SELECT(0)
 			// CALL UFS_SEG_POS_WRITE
@@ -215,9 +220,7 @@ public class CreateRefMapExecutor {
 			}
 
 								
-			int trialPct = (int) ((((1)*100)/procedureConfig.getNumberOfTrials()) * 0.95);
-				
-			procedureExecutionState.setPercentComplete(trialPct);
+			procedureExecutionState.setPercentComplete(95);
 						
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
