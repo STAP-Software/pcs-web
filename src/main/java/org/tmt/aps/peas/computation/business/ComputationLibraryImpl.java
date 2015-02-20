@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.computation.business;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import javax.naming.InitialContext;
@@ -17,6 +18,7 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -535,10 +537,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return JavaComputations.addMatricies(matrix1, matrix2);
 	}
 
-	public boolean autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
-			int numIterations, RefBeamMap currentRefMap) throws ComputationException {
-		return JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
-				numIterations, currentRefMap);
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
+			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
+		
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
+				numIterations, currentDate, currentRefMap);
 	}
 
 }

@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -23,6 +24,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
@@ -131,29 +133,42 @@ public class PassiveTiltExecutor {
 			statusLogger.log("camera.not_init");
 
 			// TODO: implement PP-338, 339
-			// if frame source is file, use the centroid map associated with the frame (if old frame use current ref map) TBD
-			// autoRefmapCheck();
-			/*
-			 * OK = AUTO_REFMAP_CHECK(ZPASSIVE_AUTOREFMAP, NUMBER_TRIALS, MASK_MENU_PT, FILT_POS, 0)
-			 */
 			// FIXME: get latest for now
 			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 					procedureConfig.getFilter().getFilterType().getFilterTypeId(), -1);
 			
 			// TODO: Move this logic to frame source CCD only once testing is complete
-			boolean takeNewRefMap = false;
+			boolean autoTakeRefMap = false;
 			if (currentRefMap == null) {
-				takeNewRefMap = true;
+				autoTakeRefMap = true;
+			} else if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_NO) {
+				autoTakeRefMap = false;
 			} else {
-				takeNewRefMap = computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), 
-					physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition(), 
-					physicalModel.getInstrument().getCcd().getTemperature(), 1, currentRefMap);				
+				
+				try {
+				
+					computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), 
+						physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition(), 
+						physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);		
+				
+				} catch (AutoRefMapCheckException e) {
+					
+					if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
+						// prompt user						
+						autoTakeRefMap = userPromptMgmt.displayYesNoDialog(e.getMessage() + "\nTake new Ref Map?");
+
+					} else {
+						autoTakeRefMap = true;
+					}
+				}
 			}
 			
-			if (takeNewRefMap) {
-				// TODO: check global auto settings to take map, not take or prompt user
+			if (autoTakeRefMap) {
+				
+				
 				// TODO: take a new ref map and store in currentRefMap - subprocedure implementation
+				// TODO: generalize 'new procedure' logic so that it can be called with defaults outside of the procedure controller
 			}
 			
 			procedure.setRefBeamMap(currentRefMap);

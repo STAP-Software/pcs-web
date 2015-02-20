@@ -1,8 +1,12 @@
 package org.tmt.aps.peas.computation.java;
 
 
+import java.util.Date;
+
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -53,32 +57,39 @@ public class JavaComputations {
 		}
 	}
 
-	public static boolean autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float ccdTemperature, int numIterations,
-			RefBeamMap currentRefMap) {
+	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float ccdTemperature, int numIterations,
+			Date currentDate, RefBeamMap currentRefMap) throws AutoRefMapCheckException {
 		
 		CameraState cameraState = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame().getCameraState();
 		
 		
 		if (Math.abs(ccdTemperature - cameraState.getCcdTemp()) > autoRefMapConfig.getCcdTempChangeThresh()) {
-			return true;
+			String text = MessageGenerator.generateMessage("autorefmap.temp_change_limit_exceeded", ccdTemperature, cameraState.getCcdTemp());
+			throw new AutoRefMapCheckException(text);
 		}
-		
+			
 		if (numIterations >= autoRefMapConfig.getNumTrialsLimit()) {
-			return true;
+			String text = MessageGenerator.generateMessage("autorefmap.num_trials_limit_exceeded", numIterations, autoRefMapConfig.getNumTrialsLimit());
+			throw new AutoRefMapCheckException(text);
 		}
 		
 		if (Math.abs(currentPosition.x - cameraState.getSteeringMirrorX()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			return true;
+			String text = MessageGenerator.generateMessage("autorefmap.coarse_x_change_limit_exceeded", currentPosition.x, cameraState.getSteeringMirrorX());
+			throw new AutoRefMapCheckException(text);
 		}
+		
 		if (Math.abs(currentPosition.y - cameraState.getSteeringMirrorY()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			return true;
+			String text = MessageGenerator.generateMessage("autorefmap.coarse_y_change_limit_exceeded", currentPosition.y, cameraState.getSteeringMirrorY());
+			throw new AutoRefMapCheckException(text);
 		}
 		
-		// TODO: add time threshold calculation
+		// time threshold comparison, expire age thresh in hours
+		long delta = currentDate.getTime() - currentRefMap.getCreateDate().getTime(); 
+		if (delta > (autoRefMapConfig.getRefMapExpirationAge() * Constants.MS_PER_HOUR)) {
+			String text = MessageGenerator.generateMessage("autorefmap.refmap_age_limit_exceeded", delta/Constants.MS_PER_HOUR);
+			throw new AutoRefMapCheckException(text);
+		}
 		
-		
-		
-		return false;
 	}
 
 	

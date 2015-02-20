@@ -55,4 +55,5 @@ public class Constants {
 	
 	public static final double DEG2RAD = 2 * PI / 360.0;
 	
+	public static final long MS_PER_HOUR = 1000 * 60 * 60;
 }
