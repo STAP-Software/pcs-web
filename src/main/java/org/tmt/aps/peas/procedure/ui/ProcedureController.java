@@ -7,7 +7,6 @@ package org.tmt.aps.peas.procedure.ui;
 
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
-import java.lang.reflect.Method;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,9 +33,10 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
-import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -75,7 +75,6 @@ import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
-import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
@@ -453,11 +452,15 @@ public class ProcedureController implements Serializable {
 
 			// select defaults based on mask and light source
 			updateFIConfig();
-
+			
 			// set centroid offsets calculation defaults based on procedure type
 			CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt.findCentroidOffsetsConfig(procedureType
 					.getProcedureTypeId());
 			procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
+
+			// get AutoRefMapDefaults based on procedure type
+			AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
+			procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
 
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
@@ -567,6 +570,8 @@ public class ProcedureController implements Serializable {
 				.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
+		
+		
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
 

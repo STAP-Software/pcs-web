@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
@@ -100,5 +101,14 @@ public class GlobalConfigMgmt {
 		
 		return refMapConfigDefaults;
 
+	}
+
+	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId) {
+		TypedQuery<AutoRefMapConfigDefaults> query = em.createNamedQuery("findAutoByProcedureType", AutoRefMapConfigDefaults.class);
+		query.setParameter("procedureTypeId", procedureTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
 	}
 }

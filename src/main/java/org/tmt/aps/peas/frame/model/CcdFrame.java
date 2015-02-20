@@ -16,6 +16,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -28,7 +29,9 @@ import org.tmt.aps.peas.instrument.model.CameraState;
 @Entity
 @Table(name = "CcdFrame")
 @NamedQueries({
-
+	@NamedQuery(name = "findCcdFrameByFilename", query = "SELECT cf from CcdFrame cf "
+			+ "inner join fetch cf.cameraState "
+			+ "where cf.fitsFilename = :fitsFilename ")
 })
 public class CcdFrame {
 

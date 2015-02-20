@@ -140,6 +140,22 @@ public class PassiveTiltExecutor {
 			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 					procedureConfig.getFilter().getFilterType().getFilterTypeId(), -1);
+			
+			// TODO: Move this logic to frame source CCD only once testing is complete
+			boolean takeNewRefMap = false;
+			if (currentRefMap == null) {
+				takeNewRefMap = true;
+			} else {
+				takeNewRefMap = computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), 
+					physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition(), 
+					physicalModel.getInstrument().getCcd().getTemperature(), 1, currentRefMap);				
+			}
+			
+			if (takeNewRefMap) {
+				// TODO: check global auto settings to take map, not take or prompt user
+				// TODO: take a new ref map and store in currentRefMap - subprocedure implementation
+			}
+			
 			procedure.setRefBeamMap(currentRefMap);
 			
 			

@@ -37,7 +37,6 @@ public class ProcedureRefBeamMap {
 	@OneToOne (fetch = FetchType.LAZY)
 	@JoinColumn(name = "procedureId")
 	private Procedure procedure;
-
 	
 	public Long getProcedureRefBeamMapId() {
 		return procedureRefBeamMapId;

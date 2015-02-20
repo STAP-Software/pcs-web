@@ -13,6 +13,7 @@ import javax.naming.InitialContext;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
@@ -20,6 +21,7 @@ import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -202,6 +204,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return JavaComputations.addMatricies(matrix1, matrix2);
 	}
 
-	
+	public boolean autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
+			int numIterations, RefBeamMap currentRefMap) throws ComputationException {
+		return JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
+				numIterations, currentRefMap);
+	}
+
 	
 }

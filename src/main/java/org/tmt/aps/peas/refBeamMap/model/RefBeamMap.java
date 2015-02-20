@@ -17,6 +17,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -26,6 +27,11 @@ import javax.persistence.TemporalType;
 @NamedQueries({
 	@NamedQuery(name = "findCurrentRefBeamMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
+			+ "inner join fetch rb.procedureRefBeamMap prbm "
+			+ "inner join fetch prbm.procedure p "
+			+ "inner join fetch p.procedureCcdFrameList pcfl "
+			+ "inner join fetch pcfl.ccdFrame cf "
+			+ "inner join fetch cf.cameraState "
 			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
 			+ "AND rb.filterTypeId = :filterTypeId "
 			+ "and rb.refBeamDefMapFlg = false "
@@ -63,7 +69,9 @@ public class RefBeamMap {
 	@JoinColumn (name="centroidMapId")
 	private CentroidMap centroidMap;
 
-	
+	@OneToOne (fetch = FetchType.LAZY, mappedBy="refBeamMap")
+	private ProcedureRefBeamMap procedureRefBeamMap;
+
 	
 	public Long getRefBeamMapId() {
 		return refBeamMapId;
@@ -127,7 +135,13 @@ public class RefBeamMap {
 		return refBeamMapId == null;
 	}
 
+	public ProcedureRefBeamMap getProcedureRefBeamMap() {
+		return procedureRefBeamMap;
+	}
 
+	public void setProcedureRefBeamMap(ProcedureRefBeamMap procedureRefBeamMap) {
+		this.procedureRefBeamMap = procedureRefBeamMap;
+	}
 
 
 

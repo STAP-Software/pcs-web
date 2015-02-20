@@ -8,12 +8,14 @@ package org.tmt.aps.peas.computation.business;
 import java.util.List;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -57,5 +59,8 @@ public interface ComputationLibrary {
 	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException;
 	
 	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException;
+
+	public boolean autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, int numIterations,
+			RefBeamMap currentRefMap) throws ComputationException;
 	
 }

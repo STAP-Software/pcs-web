@@ -14,7 +14,8 @@ import javax.ejb.Singleton;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
-import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CameraState;
 
 @Singleton
 public class FrameSimulator {
@@ -23,6 +24,8 @@ public class FrameSimulator {
 
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	PhysicalModel physicalModel;
 	
 	private List<CcdFrame> frameList;
 	
@@ -39,7 +42,15 @@ public class FrameSimulator {
 	}
 	
 	public CcdFrame getFrame(int index) {
-		return frameList.get(index);
+		
+		CcdFrame ccdFrame = frameList.get(index);
+		
+		// simulate the camera state too
+		CameraState cameraState = new CameraState();
+		cameraState.setCcdTemp(44.4f);
+		ccdFrame.setCameraState(cameraState);
+		
+		return ccdFrame;
 	}
 
 

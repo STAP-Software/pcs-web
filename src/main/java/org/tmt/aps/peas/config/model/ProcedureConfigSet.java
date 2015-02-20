@@ -36,6 +36,10 @@ public class ProcedureConfigSet {
 	private CentroidOffsetsConfig centroidOffsetsConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "autoRefMapConfigId")
+	private AutoRefMapConfig autoRefMapConfig;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "procedureConfigId")
 	private ProcedureConfig procedureConfig;
 	
@@ -91,6 +95,14 @@ public class ProcedureConfigSet {
 
 	public void setCentroidOffsetsConfig(CentroidOffsetsConfig centroidOffsetsConfig) {
 		this.centroidOffsetsConfig = centroidOffsetsConfig;
+	}
+
+	public AutoRefMapConfig getAutoRefMapConfig() {
+		return autoRefMapConfig;
+	}
+
+	public void setAutoRefMapConfig(AutoRefMapConfig autoRefMapConfig) {
+		this.autoRefMapConfig = autoRefMapConfig;
 	}
 
 }

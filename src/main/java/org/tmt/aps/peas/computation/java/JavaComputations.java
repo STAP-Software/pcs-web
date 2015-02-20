@@ -3,7 +3,11 @@ package org.tmt.aps.peas.computation.java;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationException;
+import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 public class JavaComputations {
 
@@ -47,6 +51,34 @@ public class JavaComputations {
 			e.printStackTrace();
 			throw new ComputationException(e + "");
 		}
+	}
+
+	public static boolean autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float ccdTemperature, int numIterations,
+			RefBeamMap currentRefMap) {
+		
+		CameraState cameraState = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame().getCameraState();
+		
+		
+		if (Math.abs(ccdTemperature - cameraState.getCcdTemp()) > autoRefMapConfig.getCcdTempChangeThresh()) {
+			return true;
+		}
+		
+		if (numIterations >= autoRefMapConfig.getNumTrialsLimit()) {
+			return true;
+		}
+		
+		if (Math.abs(currentPosition.x - cameraState.getSteeringMirrorX()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
+			return true;
+		}
+		if (Math.abs(currentPosition.y - cameraState.getSteeringMirrorY()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
+			return true;
+		}
+		
+		// TODO: add time threshold calculation
+		
+		
+		
+		return false;
 	}
 
 	
