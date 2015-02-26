@@ -130,7 +130,7 @@ public class FrameMgmt {
 
 	// manual Ccd frame save
 	// FITS file name TBD
-	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, Long instrumentId, String procedureTypeCd, int procedureNumber) throws Exception {
+	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, Long instrumentId, String procedureTypeCd, String procedureNumber) throws Exception {
 		
 		String newName = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, 0).generateFileName();
 
@@ -177,7 +177,7 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
-	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 		try {
 		
 			// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
@@ -257,7 +257,7 @@ public class FrameMgmt {
 
 	}
 	
-	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, 
+	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
 		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
@@ -445,7 +445,7 @@ public class FrameMgmt {
 			if (procedureConfig.getSufsGroup() != null) {
 				myFits.getHDU(0).getHeader().addIntValue("SUFS_GRP", procedureConfig.getSufsGroup(), "SUFS Group Number");
 			}
-			myFits.getHDU(0).getHeader().addIntValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
+			myFits.getHDU(0).getHeader().addStringValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
 		}
 		
 		myFits.getHDU(0).getHeader().addStringValue("FILTER", camera.getFilterWheel().getSelectedFilter().getFilterName(), "Filter Name");

@@ -110,19 +110,39 @@ public class SessionMgmt {
 		return query.getSingleResult();
 	}
 
-	public int getNextProcedureNumber(Long sessionId) {
+	public String getNextProcedureNumber(Long sessionId, String superProcedureNum) {
 		// query the session for all the procedures, order by procedureNumber
-		TypedQuery<Procedure> query = em.createNamedQuery("findLatestSessionProcedure", Procedure.class);
-		query.setParameter("sessionId", sessionId);
-		//query.setMaxResults(1);
 		
-		List<Procedure> procedureList = query.getResultList();
-		
-		if (procedureList.isEmpty()) {
-			return 1;
-		} else {
-			return procedureList.size() + 1;
+		try {
+			TypedQuery<Procedure> query = em.createNamedQuery("findLatestSessionProcedure", Procedure.class);
+			query.setParameter("sessionId", sessionId);
+			query.setMaxResults(1);
+			
+			Procedure latestProcedure = query.getSingleResult();
+			
+			String latestProcedureNum = latestProcedure.getProcedureNumber();
+			boolean isLatestProcedureSubProcedure = latestProcedureNum.indexOf(".") > -1;
+			
+			if (superProcedureNum == null) {
+				// increment major number
+				String latestMajorNum = isLatestProcedureSubProcedure ? latestProcedureNum.substring(0, latestProcedureNum.indexOf(".")) : latestProcedureNum;
+				int newMajorNum = new Integer(latestMajorNum) + 1;
+				return "" + newMajorNum;
+			} else {
+				if (isLatestProcedureSubProcedure) {
+					// extract minor number
+					String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
+					return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
+				} else {
+					return superProcedureNum + ".1";
+				}
+					
+			}
+			
+		} catch (NoResultException e) {
+			return "1";
 		}
+
 		
 	}
 

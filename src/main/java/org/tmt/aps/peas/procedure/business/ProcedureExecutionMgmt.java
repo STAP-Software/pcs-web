@@ -265,7 +265,11 @@ public class ProcedureExecutionMgmt {
 
 		procedure.setProcedureOutput(procedureOutput);
 
-		int procNum = sessionMgmt.getNextProcedureNumber(sessionId);
+		// if the executionStatus is 'running', then we must be starting a sub-procedure
+		boolean isSubProcedure = procedureExecutionState.getExecutionStatus();
+		String superProcedureNum = isSubProcedure ? procedureExecutionState.getCurrentProcedure().getProcedureNumber() : null;
+
+		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNum);
 		procedure.setProcedureNumber(procNum);
 
 

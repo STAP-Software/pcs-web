@@ -19,14 +19,14 @@ public class FitsFilename {
 	int telescope;
 	Date date;
 	String procedureTypeCd;
-	int procedureNumber;
+	String procedureNumber;
 	int ufsSegment;
 	int sufsGroup;
 	int iteration;
 	int phasingStep;  // A-K = 1-11 for phasing
 	String fileName;
 
-	public FitsFilename(Long telescopeId, String procedureTypeCd, int procedureNumber, int iteration,
+	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration,
 			int ufsSegment, int sufsGroup, int phasingStep) {
 		
 		this.telescope = (int)telescopeId.longValue();
@@ -42,7 +42,7 @@ public class FitsFilename {
 	}
 	
 	// non-phasing, non-SUFS constructor
-	public FitsFilename(Long telescopeId, String procedureTypeCd, int procedureNumber, int iteration) {
+	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -62,7 +62,7 @@ public class FitsFilename {
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
 		this.procedureTypeCd = pupilMaskType.getPupilMaskTypeName();
-		this.procedureNumber = 0;
+		this.procedureNumber = "0";
 		this.iteration = iteration;
 		this.ufsSegment = 0;
 		this.sufsGroup = 0;
@@ -98,7 +98,7 @@ public class FitsFilename {
 				procedureTypeCd = procedureTypeCd.substring(0, 4);
 			}
 			
-			procedureNumber = new Integer(st.nextToken());
+			procedureNumber = st.nextToken();
 			
 			String sequenceCd = st.nextToken();
 			
@@ -133,11 +133,11 @@ public class FitsFilename {
 		this.date = date;
 	}
 
-	public int getProcedureNumber() {
+	public String getProcedureNumber() {
 		return procedureNumber;
 	}
 
-	public void setProcedureNumber(int procedureNumber) {
+	public void setProcedureNumber(String procedureNumber) {
 		this.procedureNumber = procedureNumber;
 	}
 
