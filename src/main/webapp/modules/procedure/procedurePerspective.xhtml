@@ -54,7 +54,7 @@
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}" editable="true"
 										disabled="#{procedureController.procedure.procedureState gt 1}" >
-										<f:selectItems value="#{procedureController.integrationTimeList}" /> 
+										<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTimeList}" /> 
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
@@ -96,7 +96,7 @@
 
 						<p:panelGrid id="statusAndControlPanel" columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 							<h:outputLabel value="Procedure Type" />
-							<h:outputText value="#{procedureController.procedureType.procedureTypeName}" />
+							<h:outputText value="#{procedureController.procedure.procedureType.procedureTypeName}" />
 							<h:outputLabel value="Procedure #" />
 							<h:panelGroup>
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />

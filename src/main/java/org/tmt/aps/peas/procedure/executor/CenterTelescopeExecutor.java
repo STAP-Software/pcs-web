@@ -115,8 +115,6 @@ public class CenterTelescopeExecutor {
 			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();
 			
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-
-			procedureExecutionMgmt.performProcedureStartup(procedure);
 			
 			procedureExecutionState.setPercentComplete(5);
 			
@@ -244,7 +242,6 @@ public class CenterTelescopeExecutor {
 			
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
-			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Throwable e) {

@@ -93,8 +93,8 @@ public class VisualizationController implements Serializable {
 
 	public String getCentDefXs() {
 		// determine which procedure type we are in
-		if (procedureController.getProcedureType() != null) {
-			if (procedureController.getProcedureType().isPassiveTilt()) {
+		if (procedureController.getProcedure() != null) {
+			if (procedureController.getProcedure().getProcedureType().isPassiveTilt()) {
 				return centDefPassiveTiltXs;
 			}
 		}
@@ -106,8 +106,8 @@ public class VisualizationController implements Serializable {
 
 	public String getCentDefYs() {
 		// determine which procedure type we are in
-		if (procedureController.getProcedureType() != null) {
-			if (procedureController.getProcedureType().isPassiveTilt()) {
+		if (procedureController.getProcedure() != null) {
+			if (procedureController.getProcedure().getProcedureType().isPassiveTilt()) {
 				return centDefPassiveTiltYs;
 			}
 		}

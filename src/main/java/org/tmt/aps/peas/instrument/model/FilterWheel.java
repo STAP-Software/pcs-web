@@ -33,10 +33,6 @@ public class FilterWheel implements DeviceStates {
 	@OneToMany (mappedBy="filterWheel", fetch=FetchType.LAZY)
 	Set<Filter> filterSet;
 	
-	@Transient
-	private Filter selectedFilter;
-	@Transient
-	private int state;
 	
 	@Transient
 	private Filter filter1;
@@ -51,6 +47,10 @@ public class FilterWheel implements DeviceStates {
 	@Transient
 	private Filter filter6;
 
+	@Transient
+	private Filter selectedFilter;
+	@Transient
+	private int state;
 	
 	
 	public Long getFilterWheelId() {
@@ -87,6 +87,9 @@ public class FilterWheel implements DeviceStates {
 	}
 	
 	public String getStateDisplayString() {
+		if (selectedFilter == null && state != STATE_IN_TRANSIT) {
+			return "Unknown";
+		}
 		return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedFilter.getWheelPosition() + " (" + selectedFilter.getFilterName() + ")";
 	}
 

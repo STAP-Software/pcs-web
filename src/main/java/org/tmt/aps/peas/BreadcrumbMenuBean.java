@@ -83,5 +83,17 @@ public class BreadcrumbMenuBean implements Serializable {
 	public boolean getInProcedure() {
 		return immediateUrl != null && immediateUrl.contains("procedurePerspective");
 	}
+
+	public void removeLast() {
+		MenuModel newModel = new DefaultMenuModel();
+		
+		List<UIComponent> components = model.getContents();
+		for (int i=0; i<components.size()-1; i++) {
+			UIComponent component = components.get(i);
+			MenuItem item = (MenuItem)component;
+			newModel.addMenuItem(item);
+		}		
+		model = newModel;
+	}
 	
 }

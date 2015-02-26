@@ -112,6 +112,10 @@ public class CreateRefMapExecutor {
 	
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
+		executeSynchronousProcedure(procedure, currentSession);
+	}
+		
+	public void executeSynchronousProcedure(Procedure procedure, Session currentSession) {
 
 		logger.info("CreateRefMapExecutor::executeProcedure::");
 
@@ -122,9 +126,7 @@ public class CreateRefMapExecutor {
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
 			CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
-			
-			procedureExecutionMgmt.performProcedureStartup(procedure);
-			
+						
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
 						
@@ -224,7 +226,6 @@ public class CreateRefMapExecutor {
 						
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
 
-			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Throwable e) {

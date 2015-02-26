@@ -305,5 +305,8 @@ public class ProcedureConfig {
 	public List<Float> getIntegrationTimeList() {
 		return integrationTimeList;
 	}
+	public void setIntegrationTimeList(List<Float> integrationTimeList) {
+		this.integrationTimeList = integrationTimeList;
+	}
 
 }

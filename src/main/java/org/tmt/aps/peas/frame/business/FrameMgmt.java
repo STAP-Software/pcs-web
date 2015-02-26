@@ -178,65 +178,78 @@ public class FrameMgmt {
 	}
 
 	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, int procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
-		//try {
-
+		try {
+		
+			// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
+			boolean ccdSimulator = !(new Boolean(peasProperties.getProp("org.tmt.aps.peas.ccd_enabled")));
+			
 			// get the frame from CCD or from file, depending on the called type
 			ccdMgmt.fastWipeCcd();
 			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
 			
-			// TODO: does this need to be done in parallel with getting the exposure?
-			// get the telescope status
-			telescopeMgmt.refreshStatus();
+			CcdFrame ccdFrame = null;
 			
-			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
-				ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-				frame = computationLibrary.removeBadPixels(frame, badPixelList);
-			}
+			if (ccdSimulator) {
+				// here we make a better frame than the external package simulator can
+				// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
+				// TODO: for now, just use the current frame from file.  This needs to be improved to get a frame from file given the procedure type
+				ccdFrame = frameSimulator.getFrame(0);
+			} else {
 			
-			short[][] rawFrame = new short[frame.length][frame[0].length];
-			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[i].length; j++) {
-					rawFrame[i][j] = (short) frame[j][i];
+				// TODO: does this need to be done in parallel with getting the exposure?
+				// get the telescope status
+				telescopeMgmt.refreshStatus();
+				
+				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
+					ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+					frame = computationLibrary.removeBadPixels(frame, badPixelList);
 				}
+				
+				short[][] rawFrame = new short[frame.length][frame[0].length];
+				for (int i = 0; i < frame.length; i++) {
+					for (int j = 0; j < frame[i].length; j++) {
+						rawFrame[i][j] = (short) frame[j][i];
+					}
+				}
+	
+				ccdFrame = new CcdFrame();
+				ccdFrame.setAxes1(1024);
+				ccdFrame.setAxes2(1024);
+				ccdFrame.setRawFrame(rawFrame);
+				ccdFrame.setCreateDate(new Date());
+				ccdFrame.setNoOfAxes(2);
+	
+				// create the png
+				FalseColorProcessor falseColorer = new FalseColorProcessor();
+				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
+				ccdFrame.setFalseColorPng(falseColorPng);
+	
+				// save the camera state when the ccd frame was taken
+				Instrument instrument = physicalModel.getInstrument();
+				CameraState cameraState = new CameraState(instrument);
+				ccdFrame.setCameraState(cameraState);
+				ccdFrame.setInstrumentId(instrument.getInstrumentId());
+				Telescope telescope = physicalModel.getTelescope();
+	
+				// store telescope information with frame when it is taken
+				ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+				ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
+				ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
+				ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+				ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
+				ccdFrame.setTelescopeAz(telescope.getTelPosition().y);
+				
+				// generate filename and store into the FITS file
+				saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
+						procedureType.getProcedureTypeCd(), procedureNumber);			
 			}
-
-			CcdFrame ccdFrame = new CcdFrame();
-			ccdFrame.setAxes1(1024);
-			ccdFrame.setAxes2(1024);
-			ccdFrame.setRawFrame(rawFrame);
-			ccdFrame.setCreateDate(new Date());
-			ccdFrame.setNoOfAxes(2);
-
-			// create the png
-			FalseColorProcessor falseColorer = new FalseColorProcessor();
-			byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
-			ccdFrame.setFalseColorPng(falseColorPng);
-
-			// save the camera state when the ccd frame was taken
-			Instrument instrument = physicalModel.getInstrument();
-			CameraState cameraState = new CameraState(instrument);
-			ccdFrame.setCameraState(cameraState);
-			ccdFrame.setInstrumentId(instrument.getInstrumentId());
-			Telescope telescope = physicalModel.getTelescope();
-
-			// store telescope information with frame when it is taken
-			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
-			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
-			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
-			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
-			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
-			ccdFrame.setTelescopeAz(telescope.getTelPosition().y);
-			
-			// generate filename and store into the FITS file
-			saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
-					procedureType.getProcedureTypeCd(), procedureNumber);			
 			
 			return ccdFrame;
 			
-		//} catch (Exception e) {
-		//	e.printStackTrace();
-		//	return null;
-		//}
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
 
 	}
 	

@@ -14,11 +14,13 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
+import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -48,6 +50,8 @@ public class AsyncController {
 	StatusLogController statusLogController;
 	@Inject
 	ProcedureController procedureController;
+	@Inject
+	BreadcrumbMenuBean breadcrumbMenuBean;
 	
 
 	
@@ -86,6 +90,10 @@ public class AsyncController {
 		checkCameraDisplay();
 		
 		checkMessages();
+		
+		checkSubProcedureStart();
+		
+		checkSubProcedureEnd();
 		
 		// will execute if on the last time through
 		if (!procedureExecutionState.getExecutionStatus()) {
@@ -183,6 +191,55 @@ public class AsyncController {
 		}
 	}
 
+	private void checkSubProcedureStart() {
+
+		if (procedureExecutionState.isSubProcedureStartRequested()) {
+			
+			// get subprocedure into the controller, move super procedure to the stack
+			Procedure procedure = procedureExecutionState.transferControlToSubProcedure();
+			procedureController.setProcedure(procedure);
+			sessionController.addNewProcedure(procedure);
+
+			// refresh the controller from the logger to get it to the display
+			statusLogController.refreshCurrentProcedureStatusLog();
+			
+			breadcrumbMenuBean.addItem(procedure.getProcedureType().getProcedureTypeName() + " - EMBEDDED SUBPROCEDURE RUNNING",
+					"/modules/procedure/procedurePerspective.xhtml");
+
+			
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("procedureDetailForm:miscPanel");
+			requestContext.update("procedureDetailForm:controlPanel");
+			requestContext.update("breadcrumbForm");
+		}
+	}
+	
+	private void checkSubProcedureEnd() {
+
+		if (procedureExecutionState.isSubProcedureEndRequested()) {
+			
+			// we captured it, so reset it for next time, if any
+			procedureExecutionState.resetSubProcedureEndRequested();
+			
+			// get procedure into the controller
+			Procedure procedure = procedureExecutionState.getCurrentProcedure();
+			
+			procedureController.setProcedure(procedure);
+
+			// refresh the controller from the logger to get it to the display
+			statusLogController.refreshCurrentProcedureStatusLog();
+			
+			breadcrumbMenuBean.removeLast();
+
+			
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("procedureDetailForm:miscPanel");
+			requestContext.update("procedureDetailForm:controlPanel");
+			requestContext.update("breadcrumbForm");
+		}
+	}
+
+	
 	private void checkCameraDisplay() {
 
 		RequestContext requestContext = RequestContext.getCurrentInstance();

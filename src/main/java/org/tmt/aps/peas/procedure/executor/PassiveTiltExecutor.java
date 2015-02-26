@@ -15,6 +15,7 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
@@ -43,9 +44,12 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
@@ -92,6 +96,8 @@ public class PassiveTiltExecutor {
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB 
 	private ConstantsCache constantsCache;
+	@EJB
+	private CreateRefMapExecutor createRefMapExecutor;
 
 	private List<String> logMessages;
 
@@ -127,7 +133,6 @@ public class PassiveTiltExecutor {
 
 			PassiveTiltProcedureOutput procedureOutput = (PassiveTiltProcedureOutput)procedure.getProcedureOutput();
 			
-			procedureExecutionMgmt.performProcedureStartup(procedure);
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			statusLogger.log("camera.not_init");
@@ -166,9 +171,21 @@ public class PassiveTiltExecutor {
 			
 			if (autoTakeRefMap) {
 				
+				CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
+				Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP,
+						currentSession.getSessionId(), po);
 				
-				// TODO: take a new ref map and store in currentRefMap - subprocedure implementation
-				// TODO: generalize 'new procedure' logic so that it can be called with defaults outside of the procedure controller
+				procedureExecutionMgmt.performProcedureStartup(subProcedure, null);
+				
+				procedureExecutionState.setPendingSubProcedure(subProcedure);
+				
+				// execute the subprocedure
+				createRefMapExecutor.executeSynchronousProcedure(subProcedure, currentSession);
+
+				currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
+						procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+						procedureConfig.getFilter().getFilterType().getFilterTypeId(), -1);
+
 			}
 			
 			procedure.setRefBeamMap(currentRefMap);
@@ -406,7 +423,6 @@ public class PassiveTiltExecutor {
 			
 			statusLogger.log("procedure.end", procedure.getProcedureType().getProcedureTypeName());
 
-			procedureExecutionState.setExecutionStatus(false);
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Throwable e) {
