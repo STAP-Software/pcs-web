@@ -385,11 +385,6 @@ public class ProcedureController implements Serializable {
 
 			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession().getSessionId(), procedureOutput);
 			
-			// 3. statusLogController.clearProcedureStatusLog() - this entire area needs to be reworked for subprocedures
-
-			// 4. the frame simulator needs to be upgraded to provide a decent frame for testing.
-			
-			
 			// add the procedure to the session
 			sessionController.addNewProcedure(procedure);
 

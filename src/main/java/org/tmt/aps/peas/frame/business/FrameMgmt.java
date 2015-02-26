@@ -195,6 +195,8 @@ public class FrameMgmt {
 				// TODO: This needs to be improved to get a frame from file given the procedure type
 				// TODO: the filename should be part of the peas.properties
 				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+				byte[] falseColorPng = loadPng(ccdFrame, true);
+				ccdFrame.setFalseColorPng(falseColorPng);
 
 			} else {
 			
