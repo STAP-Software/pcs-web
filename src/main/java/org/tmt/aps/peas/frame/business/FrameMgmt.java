@@ -192,8 +192,10 @@ public class FrameMgmt {
 			if (ccdSimulator) {
 				// here we make a better frame than the external package simulator can
 				// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
-				// TODO: for now, just use the current frame from file.  This needs to be improved to get a frame from file given the procedure type
-				ccdFrame = frameSimulator.getFrame(0);
+				// TODO: This needs to be improved to get a frame from file given the procedure type
+				// TODO: the filename should be part of the peas.properties
+				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+
 			} else {
 			
 				// TODO: does this need to be done in parallel with getting the exposure?
