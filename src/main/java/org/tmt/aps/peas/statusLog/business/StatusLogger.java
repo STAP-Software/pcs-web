@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.statusLog.business;
 
+import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
@@ -27,11 +28,25 @@ public class StatusLogger {
 	@EJB 
 	StatusLogMgmt statusLogMgmt;
 	
+	ProcedureStatusLog stack;  // 1-depth stack for now
+	
 	// cache
 	ProcedureStatusLog procedureStatusLog;
+	
+	@PostConstruct
+	public void startup() {
+		stack = null;
+		procedureStatusLog = null;
+	}
 
 	public void initLog() {
-		procedureStatusLog = new ProcedureStatusLog();
+		if (procedureStatusLog == null) {
+			procedureStatusLog = new ProcedureStatusLog();
+		} else {
+			// must be a subprocedure request for a logger
+			stack = procedureStatusLog;
+			procedureStatusLog = new ProcedureStatusLog();
+		}
 	}
 	
 	public ProcedureStatusLog getProcedureStatusLog() {
@@ -76,7 +91,15 @@ public class StatusLogger {
 	}
 	
 	public void saveLog(Long procedureId) {
+		// save and pop off stack
 		statusLogMgmt.saveStatusLog(procedureStatusLog, procedureId);
+		if (stack != null) {
+			// saving a subprocedure log, pop off the stack
+			procedureStatusLog = stack;
+			stack = null;
+		} else {
+			procedureStatusLog = null;			
+		}
 	}
 	
 	
