@@ -24,7 +24,6 @@ public class ProcedureExecutionState {
 	
 	private boolean executionStatus;
 	private boolean abortRequested;
-	private int percentComplete;
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
@@ -32,7 +31,7 @@ public class ProcedureExecutionState {
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
 		executionStatus = false;
-		percentComplete = 0;
+		currentProcedure.setPercentComplete(0);
 		procedureException = null;
 		abortRequested = false;
 	}
@@ -46,12 +45,12 @@ public class ProcedureExecutionState {
 	}
 
 	public int getPercentComplete() {
-		return percentComplete;
+		return currentProcedure.getPercentComplete();
 	}
 
 	@Abortable
 	public void setPercentComplete(int percentComplete) {
-		this.percentComplete = percentComplete;
+		currentProcedure.setPercentComplete(percentComplete);
 	}
 
 	public CcdFrame getCurrentFrame() {

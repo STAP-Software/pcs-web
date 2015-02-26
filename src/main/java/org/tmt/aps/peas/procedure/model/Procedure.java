@@ -125,6 +125,7 @@ public class Procedure {
 	@Transient 
 	private RefBeamMap refDefMap;  // the refDefMap used for this f&i in this procedure
 	
+	
 	public Procedure() {
 		procedureConfigSet = new ProcedureConfigSet();
 	}
@@ -334,6 +335,16 @@ public class Procedure {
 	public void setRefBeamMap(RefBeamMap refBeamMap) {
 		this.refBeamMap = refBeamMap;
 	}
+
+	@Transient
+	private int percentComplete;
+	public int getPercentComplete() {
+		return percentComplete;
+	}
+	public void setPercentComplete(int percentComplete) {
+		this.percentComplete = percentComplete;
+	}
+	
 
 
 }
