@@ -140,7 +140,7 @@ public class SessionMgmt {
 			}
 			
 		} catch (NoResultException e) {
-			return "1";
+			return (superProcedureNum == null) ? "1" : "1.1";
 		}
 
 		
