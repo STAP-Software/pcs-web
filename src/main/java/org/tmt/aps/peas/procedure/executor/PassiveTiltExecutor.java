@@ -157,9 +157,11 @@ public class PassiveTiltExecutor {
 
 					} catch (AutoRefMapCheckException e) {
 
+						statusLogger.log(e.getKey(), e.getArg1(), e.getArg2());
+
 						if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
 							// prompt user
-							autoTakeRefMap = userPromptMgmt.displayYesNoDialog(e.getMessage() + "\nTake new Ref Map?");
+							autoTakeRefMap = userPromptMgmt.displayYesNoDialog(e.getText() + "\nTake new Ref Map?");
 
 						} else {
 							autoTakeRefMap = true;
@@ -169,6 +171,7 @@ public class PassiveTiltExecutor {
 
 				if (autoTakeRefMap) {
 
+					
 					CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
 					Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
 							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), po);

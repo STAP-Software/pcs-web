@@ -64,30 +64,30 @@ public class JavaComputations {
 		
 		
 		if (Math.abs(ccdTemperature - cameraState.getCcdTemp()) > autoRefMapConfig.getCcdTempChangeThresh()) {
-			String text = MessageGenerator.generateMessage("autorefmap.temp_change_limit_exceeded", ccdTemperature, cameraState.getCcdTemp());
-			throw new AutoRefMapCheckException(text);
+			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdTemperature, cameraState.getCcdTemp());
+			
 		}
 			
 		if (numIterations >= autoRefMapConfig.getNumTrialsLimit()) {
-			String text = MessageGenerator.generateMessage("autorefmap.num_trials_limit_exceeded", numIterations, autoRefMapConfig.getNumTrialsLimit());
-			throw new AutoRefMapCheckException(text);
+			throw new AutoRefMapCheckException("autorefmap.num_trials_limit_exceeded", numIterations, autoRefMapConfig.getNumTrialsLimit());
+
 		}
 		
 		if (Math.abs(currentPosition.x - cameraState.getSteeringMirrorX()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			String text = MessageGenerator.generateMessage("autorefmap.coarse_x_change_limit_exceeded", currentPosition.x, cameraState.getSteeringMirrorX());
-			throw new AutoRefMapCheckException(text);
+			throw new AutoRefMapCheckException("autorefmap.coarse_x_change_limit_exceeded", currentPosition.x, cameraState.getSteeringMirrorX());
+
 		}
 		
 		if (Math.abs(currentPosition.y - cameraState.getSteeringMirrorY()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			String text = MessageGenerator.generateMessage("autorefmap.coarse_y_change_limit_exceeded", currentPosition.y, cameraState.getSteeringMirrorY());
-			throw new AutoRefMapCheckException(text);
+			throw new AutoRefMapCheckException("autorefmap.coarse_y_change_limit_exceeded", currentPosition.y, cameraState.getSteeringMirrorY());
+
 		}
 		
 		// time threshold comparison, expire age thresh in hours
 		long delta = currentDate.getTime() - currentRefMap.getCreateDate().getTime(); 
 		if (delta > (autoRefMapConfig.getRefMapExpirationAge() * Constants.MS_PER_HOUR)) {
-			String text = MessageGenerator.generateMessage("autorefmap.refmap_age_limit_exceeded", delta/Constants.MS_PER_HOUR);
-			throw new AutoRefMapCheckException(text);
+			throw new AutoRefMapCheckException("autorefmap.refmap_age_limit_exceeded", delta/Constants.MS_PER_HOUR, "");
+
 		}
 		
 	}

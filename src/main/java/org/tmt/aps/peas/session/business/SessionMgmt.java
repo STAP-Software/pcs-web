@@ -136,7 +136,6 @@ public class SessionMgmt {
 				} else {
 					return superProcedureNum + ".1";
 				}
-					
 			}
 			
 		} catch (NoResultException e) {

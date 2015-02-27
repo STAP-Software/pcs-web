@@ -1,8 +1,49 @@
 package org.tmt.aps.peas.computation.java;
 
+import org.tmt.aps.peas.common.MessageGenerator;
+
 public class AutoRefMapCheckException extends Exception {
 
-	public AutoRefMapCheckException(String message) {
-		super(message);
+	public AutoRefMapCheckException(String key, Object arg1, Object arg2) {
+		this.key = key;
+		this.arg1 = arg1;
+		this.arg2 = arg2;
 	}
+	public AutoRefMapCheckException(String key, Object arg1) {
+		this.key = key;
+		this.arg1 = arg1;
+		this.arg2 = null;
+	}
+	private String key;
+	private Object arg1;
+	private Object arg2;
+	
+	public String getKey() {
+		return key;
+	}
+	public void setKey(String key) {
+		this.key = key;
+	}
+	
+	public Object getArg1() {
+		return arg1;
+	}
+	public void setArg1(Object arg1) {
+		this.arg1 = arg1;
+	}
+	public Object getArg2() {
+		return arg2;
+	}
+	public void setArg2(Object arg2) {
+		this.arg2 = arg2;
+	}
+	public String getText() {
+		if (arg2 == null) {
+			return MessageGenerator.generateMessage(key, arg1);
+			
+		} else {
+			return MessageGenerator.generateMessage(key, arg1, arg2);
+		}
+	}
+	
 }
