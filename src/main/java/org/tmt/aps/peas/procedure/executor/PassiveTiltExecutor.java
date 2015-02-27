@@ -140,8 +140,8 @@ public class PassiveTiltExecutor {
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
 							.getFilterTypeId(), -1);
 
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-				
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
+
 				boolean autoTakeRefMap = false;
 				if (currentRefMap == null) {
 					autoTakeRefMap = true;
@@ -185,6 +185,11 @@ public class PassiveTiltExecutor {
 							.getFilterTypeId(), -1);
 
 				}
+			}
+			
+			procedure.setRefBeamMap(currentRefMap);
+
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
 				// always command the coarse mirror to setup values at the start of all procedures
 				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
@@ -225,7 +230,7 @@ public class PassiveTiltExecutor {
 
 			}
 
-			procedure.setRefBeamMap(currentRefMap);
+			
 
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());

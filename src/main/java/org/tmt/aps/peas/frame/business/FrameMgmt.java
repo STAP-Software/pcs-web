@@ -197,6 +197,11 @@ public class FrameMgmt {
 				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
 				byte[] falseColorPng = loadPng(ccdFrame, true);
 				ccdFrame.setFalseColorPng(falseColorPng);
+				// simulate camera state too
+				CameraState cameraState = new CameraState();
+				cameraState.setCcdTemp(44.4f);
+				ccdFrame.setCameraState(cameraState);
+
 
 			} else {
 			

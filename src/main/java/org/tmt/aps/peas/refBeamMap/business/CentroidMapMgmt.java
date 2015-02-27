@@ -65,13 +65,18 @@ public class CentroidMapMgmt {
 		query.setParameter("filterTypeId", filterTypeId);
 
 		query.setMaxResults(1);
-		RefBeamMap refBeamMap = query.getSingleResult();
+		try {
+			RefBeamMap refBeamMap = query.getSingleResult();
+			// decode String into transient FloatPoint values
+			List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+			refBeamMap.getCentroidMap().setValues(values);
+	
+			return refBeamMap;
+			
+		} catch (Exception e) {
+			return null;
+		}
 
-		// decode String into transient FloatPoint values
-		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
-		refBeamMap.getCentroidMap().setValues(values);
-
-		return refBeamMap;
 	}
 
 
