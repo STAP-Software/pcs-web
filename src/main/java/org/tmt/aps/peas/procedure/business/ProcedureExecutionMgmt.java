@@ -17,6 +17,8 @@ import javax.ejb.Stateless;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -324,6 +326,10 @@ public class ProcedureExecutionMgmt {
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
+
+		// get AutoCenterTelDefaults
+		AutoCenterTelConfigDefaults autoCenterTelConfigDefaults = globalConfigMgmt.findAutoCenterTelConfig();
+		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
 		// clear any marking
 		frameDisplayMgmt.clearMarking();

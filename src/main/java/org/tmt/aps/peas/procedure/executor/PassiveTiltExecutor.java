@@ -15,7 +15,6 @@ import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
-import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
@@ -26,14 +25,17 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
+import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -49,7 +51,6 @@ import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
-import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
@@ -68,6 +69,8 @@ public class PassiveTiltExecutor {
 	private CameraMgmt cameraMgmt;
 	@EJB
 	private AcsMgmt acsMgmt;
+	@EJB
+	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
 	@EJB
@@ -171,7 +174,6 @@ public class PassiveTiltExecutor {
 
 				if (autoTakeRefMap) {
 
-					
 					CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
 					Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
 							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), po);
@@ -189,7 +191,7 @@ public class PassiveTiltExecutor {
 
 				}
 			}
-			
+
 			procedure.setRefBeamMap(currentRefMap);
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
@@ -233,65 +235,93 @@ public class PassiveTiltExecutor {
 
 			}
 
-			
-
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
 			ProcedureCcdFrame procedureCcdFrame = null;
 			CentroidOffsetsResult centroidOffsetsResult = null;
 
+			FloatPoint lastMove = null;
+
 			while (true) {
 
 				procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
 
-				try {
+				statusLogger.log("calc.centroid_resid");
 
-					statusLogger.log("calc.centroid_resid");
+				/*****************************************************/
+				/*             calculateCentroidOffsets              */
+				/*****************************************************/
 
-					// TODO: centroid offsets throws an exception if telescope pointing out of tolerance
-					// TODO: centroid offset calc
-					/*****************************************************/
-					/* calculateCentroidOffsets */
-					/*****************************************************/
+				centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(),
+						procedure.getRefBeamMap().getCentroidMap().getValues(), procedure.getProcedureConfigSet()
+								.getCentroidOffsetsConfig());
 
-					centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(),
-							procedure.getRefBeamMap().getCentroidMap().getValues(), procedure.getProcedureConfigSet()
-									.getCentroidOffsetsConfig());
+				// go from centroidOffsetsResult.imageTranslation to deltaAz,El
+				FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
+						new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
 
-					statusLogger.log("calc.rigid_body_rot", 0.284E-03);
 
-					statusLogger.log("telescope.desired_move", 0.04, 0.14);
+				// test deltaAzEl against thresholds for telescope move
+				AutoCenterTelConfig autoCenterTelConfig = procedure.getProcedureConfigSet().getAutoCenterTelConfig();
+				AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+				// log what result was found
+				statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
 
-					int trialPct = (int) (((100) / procedureConfig.getNumberOfTrials()) * 0.95);
+				if (aResult.getRecenterTelescope().isNo()) {
+					break; // leave the loop if nothing to do
+				}
 
-					procedureExecutionState.setPercentComplete(trialPct);
+				// prompt user if required by settings or required due to abnormal result
+				boolean userReply = false;
+				if (aResult.getRecenterTelescope().isPrompt()
+						|| procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
 
-					break; // leave the loop if no exception
+					// ask user if they want to center the telescope
+					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+							aResult.getReasonArgs()));
+				}
 
-				} catch (Exception e) {
+				if (aResult.getRecenterTelescope().isYes() || userReply) {
+
+					// perform telescope move
+					statusLogger.log("telescope.cmd.start");
+					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+					statusLogger.log("telescope.cmd.end");
+				}
+
+				if (aResult.getRetakeFrame().isNo()) {
+					break;
+				}
+
+				boolean userReply2 = false;
+				if (aResult.getRetakeFrame().isPrompt()) {
 
 					// ask user if they want to re-take the frame
-					int reply = userPromptMgmt.displayFlowControlTriFlowDialog("" + e.getMessage());
-
+					int reply = userPromptMgmt.displayFlowControlTriFlowDialog("Frame needs to be retaken.  Press: 'Retry' to re-take frame, 'Continue' to continue procedure with this frame, 'Abort' to abort test now.");
+				
 					if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+						
 						// TODO: put in logic here (throw user abort exception?
+						
 					} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 						break; // continue on
 					}
-
-					// go back and re-take frame
 				}
+	
+				// go back and re-take frame
 
 			}
 
+			procedureExecutionState.setPercentComplete(80);
+
 			/*****************************************************/
-			/* calculateCentroidStats */
+			/*              calculateCentroidStats               */
 			/*****************************************************/
 			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCentroidOffsets());
 
 			/*****************************************************/
-			/* passiveTiltScaleError */
+			/*              passiveTiltScaleError                */
 			/*****************************************************/
 			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCentroidOffsets(),
 					procedure.getRefDefMap());
@@ -342,7 +372,7 @@ public class PassiveTiltExecutor {
 
 			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
 			/*****************************************************/
-			/* ttOffsetsToActs */
+			/*                  ttOffsetsToActs                  */
 			/*****************************************************/
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
@@ -352,7 +382,7 @@ public class PassiveTiltExecutor {
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
 			/*****************************************************/
-			/* decomposeActs */
+			/*                  decomposeActs                    */
 			/*****************************************************/
 			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
 
@@ -362,14 +392,14 @@ public class PassiveTiltExecutor {
 			// these on to the tip/tilt pistons, you need to do it yourself.
 
 			/*****************************************************/
-			/* optimalPistons */
+			/*                  optimalPistons                   */
 			/*****************************************************/
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
 			float[][] pistonActs = computationLibrary.optimalPistons(controlMatrix, decomposeActResult.getTipTiltActs());
 
 			// combine tip/tilt and piston commands
 			/*****************************************************/
-			/* calcDesiredActCommands */
+			/*               calcDesiredActCommands              */
 			/*****************************************************/
 			float[][] desiredActDeltas = computationLibrary.addMatricies(decomposeActResult.getTipTiltActs(), pistonActs);
 

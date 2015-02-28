@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
@@ -106,6 +107,14 @@ public class GlobalConfigMgmt {
 	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId) {
 		TypedQuery<AutoRefMapConfigDefaults> query = em.createNamedQuery("findAutoByProcedureType", AutoRefMapConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+	
+	public AutoCenterTelConfigDefaults findAutoCenterTelConfig() {
+		TypedQuery<AutoCenterTelConfigDefaults> query = em.createNamedQuery("findAutoCenterTelConfigDefaults", AutoCenterTelConfigDefaults.class);
 		
 		query.setMaxResults(1);
 		

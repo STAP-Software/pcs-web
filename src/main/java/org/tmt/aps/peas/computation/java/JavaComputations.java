@@ -6,9 +6,11 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.TriState;
 import org.tmt.aps.peas.computation.business.ComputationException;
+import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
@@ -91,6 +93,53 @@ public class JavaComputations {
 		}
 		
 	}
-
 	
+	public static AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
+		/*
+		Computation that does the following:
+			Rules: logic for if centering is necessary:
+			if move is < thresh1, do nothing
+			if move > thresh1 and < thresh2 send cmds
+			if move > thresh2 and < thresh3 send cmds and retake frame
+			If move > thresh3 prompt user
+		*/
+		
+		Object[] args = new Object[6];
+		
+		args[0] = deltaAzEl.x;
+		args[1] = deltaAzEl.y;
+		args[2] = autoCenterTelConfig.getMoveTelFrameOkThreshold();
+		args[3] = autoCenterTelConfig.getTelMoveTooLargeThreshold();
+		
+		// if both axes are less than tolerance
+		if (deltaAzEl.x < autoCenterTelConfig.getMoveTelFrameOkThreshold() && deltaAzEl.y < autoCenterTelConfig.getMoveTelFrameOkThreshold()) {
+			// no need to move
+			return new AutoCenterTelCheckResult(TriState.NO, TriState.NO, "autocentertel.move_too_small", args);
+			
+		// if either axis is gt tolerance
+		} else if ( deltaAzEl.x > autoCenterTelConfig.getTelMoveTooLargeThreshold() || deltaAzEl.x > autoCenterTelConfig.getTelMoveTooLargeThreshold()) {
+			// the calculated move is too much, prompt the user
+			return new AutoCenterTelCheckResult(TriState.PROMPT, TriState.YES, "autocentertel.move_too_large", args);
+		
+		} else {			
+			// telescope needs to be moved
+			if (deltaAzEl.mag() > autoCenterTelConfig.getRetakeFrameThreshold()) {
+				// retake frame 
+				if (lastMove != null && lastMove.mag() > autoCenterTelConfig.getRetakeFrameThreshold()) {
+					args[4] = lastMove.x;
+					args[5] = lastMove.y;
+					// too many consecutive large moves (large enough to need to re-take frames), ask user first
+					return new AutoCenterTelCheckResult(TriState.PROMPT, TriState.YES, "autocentertel.consecutive_large_moves", args);
+				} else {
+					// auto-center and retake frame
+					return new AutoCenterTelCheckResult(TriState.YES, TriState.YES, "autocentertel.move_tel", args);
+				}
+				
+			} else {
+				// move telescope, but do not retake frame
+				return new AutoCenterTelCheckResult(TriState.YES, TriState.NO, "autocentertel.move_tel", args);
+			}
+		}
+	}
+
 }

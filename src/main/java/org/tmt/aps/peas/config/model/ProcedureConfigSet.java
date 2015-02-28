@@ -40,6 +40,10 @@ public class ProcedureConfigSet {
 	private AutoRefMapConfig autoRefMapConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "autoCenterTelConfigId")
+	private AutoCenterTelConfig autoCenterTelConfig;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "procedureConfigId")
 	private ProcedureConfig procedureConfig;
 	
@@ -104,5 +108,14 @@ public class ProcedureConfigSet {
 	public void setAutoRefMapConfig(AutoRefMapConfig autoRefMapConfig) {
 		this.autoRefMapConfig = autoRefMapConfig;
 	}
+
+	public AutoCenterTelConfig getAutoCenterTelConfig() {
+		return autoCenterTelConfig;
+	}
+
+	public void setAutoCenterTelConfig(AutoCenterTelConfig autoCenterTelConfig) {
+		this.autoCenterTelConfig = autoCenterTelConfig;
+	}
+
 
 }

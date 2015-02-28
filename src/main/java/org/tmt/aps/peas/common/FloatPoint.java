@@ -73,10 +73,15 @@ public class FloatPoint {
 	public void setY(float y) {
 		this.y = y;
 	}
+	
+	public float mag() {
+		return (float)Math.sqrt(x * x + y * y);
+	}
 
 	public FloatPoint subtract(FloatPoint other) {
 		return new FloatPoint(this.x - other.x, this.y - other.y);
 	}
+	
 	
 	/**
      * Returns a string representation of this point and its location
