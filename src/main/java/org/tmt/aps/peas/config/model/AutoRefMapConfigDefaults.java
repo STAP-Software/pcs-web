@@ -36,7 +36,5 @@ public class AutoRefMapConfigDefaults extends AutoRefMapConfig {
 	public void setProcedureType(ProcedureType procedureType) {
 		this.procedureType = procedureType;
 	}
-
-
 	
 }

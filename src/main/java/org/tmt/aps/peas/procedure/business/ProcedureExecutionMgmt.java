@@ -328,7 +328,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
 
 		// get AutoCenterTelDefaults
-		AutoCenterTelConfigDefaults autoCenterTelConfigDefaults = globalConfigMgmt.findAutoCenterTelConfig();
+		AutoCenterTelConfigDefaults autoCenterTelConfigDefaults = globalConfigMgmt.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
 		// clear any marking

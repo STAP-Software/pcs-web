@@ -113,8 +113,9 @@ public class GlobalConfigMgmt {
 		return query.getSingleResult();	
 	}
 	
-	public AutoCenterTelConfigDefaults findAutoCenterTelConfig() {
+	public AutoCenterTelConfigDefaults findAutoCenterTelConfig(Long procedureTypeId) {
 		TypedQuery<AutoCenterTelConfigDefaults> query = em.createNamedQuery("findAutoCenterTelConfigDefaults", AutoCenterTelConfigDefaults.class);
+		query.setParameter("procedureTypeId", procedureTypeId);
 		
 		query.setMaxResults(1);
 		
