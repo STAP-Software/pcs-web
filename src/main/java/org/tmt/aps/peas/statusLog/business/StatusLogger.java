@@ -58,6 +58,11 @@ public class StatusLogger {
 		procedureStatusLog.addEntry(message);
 	}
 	
+	public void log(String key, Object[] arg1) {
+		String message = MessageGenerator.generateMessage(key, arg1);
+		procedureStatusLog.addEntry(message);
+	}
+	
 	public void log(String key, Object arg1) {
 		String message = MessageGenerator.generateMessage(key, arg1);
 		procedureStatusLog.addEntry(message);

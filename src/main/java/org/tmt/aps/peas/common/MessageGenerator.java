@@ -14,6 +14,12 @@ public class MessageGenerator {
 		return MessageFormat.format(pattern, args);
 	}
 	
+	public static String generateMessage(String key, Object[] args) {
+		
+		String pattern = ResourceBundle.getBundle("messages").getString(key);
+		return MessageFormat.format(pattern, args);	
+	}
+	
 	public static String generateMessage(String key, Object val1) {
 		
 		String pattern = ResourceBundle.getBundle("messages").getString(key);
