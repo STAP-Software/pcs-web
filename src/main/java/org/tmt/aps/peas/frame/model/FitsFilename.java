@@ -220,7 +220,7 @@ public class FitsFilename {
 		} else {
 			buf.append(procedureTypeCd + "_");
 		}
-		buf.append(String.format("%03d", procedureNumber) + "_");
+		buf.append(String.format("%s", procedureNumber) + "_");
 		if (procedureTypeCd.startsWith("CPH")) {
 			buf.append(iteration);			
 			buf.append((char)(phasingStep + 'A' - 1));
