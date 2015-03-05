@@ -112,12 +112,12 @@ public class JavaComputations {
 		args[3] = autoCenterTelConfig.getTelMoveTooLargeThreshold();
 		
 		// if both axes are less than tolerance
-		if (deltaAzEl.x < autoCenterTelConfig.getMoveTelFrameOkThreshold() && deltaAzEl.y < autoCenterTelConfig.getMoveTelFrameOkThreshold()) {
+		if (Math.abs(deltaAzEl.x) < autoCenterTelConfig.getMoveTelFrameOkThreshold() && Math.abs(deltaAzEl.y) < autoCenterTelConfig.getMoveTelFrameOkThreshold()) {
 			// no need to move
 			return new AutoCenterTelCheckResult(TriState.NO, TriState.NO, "autocentertel.move_too_small", args);
 			
 		// if either axis is gt tolerance
-		} else if ( deltaAzEl.x > autoCenterTelConfig.getTelMoveTooLargeThreshold() || deltaAzEl.x > autoCenterTelConfig.getTelMoveTooLargeThreshold()) {
+		} else if (Math.abs(deltaAzEl.x) > autoCenterTelConfig.getTelMoveTooLargeThreshold() || Math.abs(deltaAzEl.y) > autoCenterTelConfig.getTelMoveTooLargeThreshold()) {
 			// the calculated move is too much, prompt the user
 			return new AutoCenterTelCheckResult(TriState.PROMPT, TriState.YES, "autocentertel.move_too_large", args);
 		

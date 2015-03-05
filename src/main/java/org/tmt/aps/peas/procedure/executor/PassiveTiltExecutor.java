@@ -268,33 +268,61 @@ public class PassiveTiltExecutor {
 				// log what result was found
 				statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
 
-				if (aResult.getRecenterTelescope().isNo()) {
+				if (aResult.getRecenterTelescope().isNo() || procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_NO) {
 					break; // leave the loop if nothing to do
 				}
 
-				// prompt user if required by settings or required due to abnormal result
-				boolean userReply = false;
-				if (aResult.getRecenterTelescope().isPrompt()
-						|| procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
-
-					// ask user if they want to center the telescope
-					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
-							aResult.getReasonArgs()));
-				}
-
-				if (aResult.getRecenterTelescope().isYes() || userReply) {
+				if (aResult.getRecenterTelescope().isYes() && procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) {
 
 					// perform telescope move
+					lastMove = deltaAzEl;
 					statusLogger.log("telescope.cmd.start");
 					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
 					statusLogger.log("telescope.cmd.end");
 				}
 
+				
+				
+				// prompt user if required by settings or required due to abnormal result
+				boolean userReply = false;
+				if (aResult.getRecenterTelescope().isPrompt()) {
+					
+					// ask user if they want to center the telescope
+					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+							aResult.getReasonArgs()) + "\nMove Telescope?");
+					
+					if (userReply) {
+						// perform telescope move
+						lastMove = deltaAzEl;
+						statusLogger.log("telescope.cmd.start");
+						dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+						statusLogger.log("telescope.cmd.end");						
+					} else {
+						break;
+					}
+					
+				} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
+					// ask user if they want to center the telescope
+					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+							aResult.getReasonArgs()) + "\nMove Telescope?");
+					
+					if (userReply) {
+						// perform telescope move
+						lastMove = deltaAzEl;
+						statusLogger.log("telescope.cmd.start");
+						dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+						statusLogger.log("telescope.cmd.end");						
+					} else {
+						break; // if user doesn't want to move telescope, no point in re-taking frame
+					}
+					
+				}
+
+
 				if (aResult.getRetakeFrame().isNo()) {
 					break;
 				}
 
-				boolean userReply2 = false;
 				if (aResult.getRetakeFrame().isPrompt()) {
 
 					// ask user if they want to re-take the frame
