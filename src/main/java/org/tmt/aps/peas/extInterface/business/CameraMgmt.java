@@ -164,6 +164,7 @@ public class CameraMgmt {
 		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int) coarseTiltCmd.y);
 
 		while (!xFuture.isDone() || !yFuture.isDone()) {
+			logger.info("waiting on coarse Tilt Mirror xDone = " + xFuture.isDone() + ", yDone = " + yFuture.isDone());
 			Thread.sleep(300);
 		}
 		Point result = new Point(xFuture.get(), yFuture.get());
