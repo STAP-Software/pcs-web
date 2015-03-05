@@ -132,7 +132,10 @@ public class GetFrameCentroidsExecutor {
 				graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
 
 				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
+			
+				
 				break; // success, break of out while loop
+				
 			} catch (UserAssistRequiredException e) {
 
 				StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
@@ -163,6 +166,22 @@ public class GetFrameCentroidsExecutor {
 					break;
 				}
 				
+				// TEST ONLY
+				// this is where we display the frame; tell the async controller to update the frame
+				// put up some display that tells user to click on the star
+				if (procedure.getProcedureType().isPassiveTilt()) {
+					frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.pt_hand_mark"));
+					frameDisplayMgmt.clearMarking();
+					frameDisplayMgmt.setPendingMarkAction(true);
+					// wait for user to mark frame
+					statusLogger.log("frame.mark_waiting");
+					while (frameDisplayMgmt.getPendingMarkAction()) {
+						Thread.sleep(500);
+					}
+					
+					// get marking data from the frame display
+					List<FloatPoint> handMarked = frameDisplayMgmt.getMarkList();
+				}
 
 			} catch (Exception e) {
 				// user interaction
