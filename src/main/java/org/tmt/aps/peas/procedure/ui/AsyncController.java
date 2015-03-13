@@ -27,6 +27,7 @@ import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
+import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 @Named
 @SessionScoped
@@ -50,6 +51,8 @@ public class AsyncController {
 	StatusLogController statusLogController;
 	@Inject
 	ProcedureController procedureController;
+	@Inject
+	VisualizationController visualizationController;
 	@Inject
 	BreadcrumbMenuBean breadcrumbMenuBean;
 	
@@ -124,6 +127,8 @@ public class AsyncController {
 		VisualizationDisplay visualizationDisplay = graphicDisplayMgmt.getPendingDisplay();
 		if (visualizationDisplay != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			
+			visualizationController.setCurrentDisplay(visualizationDisplay);
 			
 			// get data into form
 			//visualizationController.doUpdateDisplays();
@@ -272,7 +277,25 @@ public class AsyncController {
 		graphicDisplayMgmt.setReturnState(1);
 	}
 	
+	public void doCloseGraphicsDisplay1() {
+		if (visualizationController.getCurrentDisplay().getPromptType() == UserPrompt.PROMPT_TYPE_INFO) {
+			graphicDisplayMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
+		}
+		if (visualizationController.getCurrentDisplay().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
+			graphicDisplayMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
+		}
+	}
+	
+	public void doCloseGraphicsDisplay2() {
+		if (visualizationController.getCurrentDisplay().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
+			graphicDisplayMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_NO);
+		}
+	}
+	
 	public void doCloseUserPrompt1() {
+		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_INFO) {
+			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
+		}
 		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
 			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
 		}

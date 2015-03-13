@@ -243,6 +243,12 @@ public class ProcedureController implements Serializable {
 		return frameDisplayMgmt.getFrameInstructions();
 	}
 
+	public String getFrameInstructionImageName() {
+		return frameDisplayMgmt.getFrameInstructionImageName();
+	}
+
+
+
 	public StreamedContent getGraphicImage() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -274,6 +280,8 @@ public class ProcedureController implements Serializable {
 		}
 	}
 
+	
+	
 	public List<FitsFilename> getAvailableFitsFiles() {
 		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles(procedure.getProcedureType().getProcedureTypeCd());
 		logger.debug("FitsFileList size = " + fitsFileList.size());

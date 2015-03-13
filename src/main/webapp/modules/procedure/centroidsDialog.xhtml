@@ -24,7 +24,7 @@ function drawSpots() {
  	var yArray = yField.split(','); 
     
  	ctx.translate(-25,-10);
- 	ctx.scale(0.61, 0.61);
+ 	ctx.scale(0.5, 0.5);
  	
  	var fontSize;
  	if (xArray.length > 1000) {
@@ -55,10 +55,34 @@ function drawSpots() {
    		<h:inputHidden id="centroidXs" value="#{visualizationController.centroidXs}" />
 		<h:inputHidden id="centroidYs" value="#{visualizationController.centroidYs}" />
    			
-   		<canvas id="spotCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+   		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
+   		
+   			
+   		<canvas id="spotCanvas" width="450px" height="450px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
    		<br/>
- 		<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+ 		<br/>   		
+   		
+   		<f:facet name="footer">
+   		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}">
+
+		
+    	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" style="float:right" update=":growl"
+				action="#{asyncController.doCloseGraphicsDisplay2}" oncomplete="centroidsDisplayDialog.hide()" rendered="#{visualizationController.currentDisplay.buttonCount gt 1}" />
+    	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" style="float:right" update=":growl"
+				action="#{asyncController.doCloseGraphicsDisplay1}" oncomplete="centroidsDisplayDialog.hide()" />
+
+    	<h:outputText escape="false" value="#{visualizationController.currentDisplay.message}" style="white-space:pre-wrap; text-align: right; position:relative; margin-right:30px; top:8px; color: #444444" />
+    	
+    	</h:panelGroup>
+    	</f:facet>
+    	
+ 	   	<h:panelGroup rendered="#{empty visualizationController.currentDisplay.message}">
+    	<p:commandButton id="button3" value="Close" style="float:right" update=":growl"
 				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
+    	
+    	</h:panelGroup>
+ 				
+		</p:panelGrid>
    		</h:form>
 	</p:dialog> 
 

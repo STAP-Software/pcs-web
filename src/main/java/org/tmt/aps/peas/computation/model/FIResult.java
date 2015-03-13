@@ -40,6 +40,26 @@ public class FIResult {
 		ccdBoxesSha = new float[frame.length][frame[0].length];
 		ccdBoxesNum = new float[frame.length][frame[0].length];
 	}
+	
+	public FIResult(List<FloatPoint> handMarks, float[][] frame) {
+		int numSpots = handMarks.size();
+		xiRst = new float[numSpots]; 
+		yiRst = new float[numSpots];
+		xPeak = new float[numSpots];
+		yPeak = new float[numSpots];
+		nDetect = new int[numSpots]; 
+		n0123 = new int[4];
+		ccdBoxesAll = new float[frame.length][frame[0].length];
+		ccdBoxesSha = new float[frame.length][frame[0].length];
+		ccdBoxesNum = new float[frame.length][frame[0].length];
+		
+		// set all nDetect to one and fill x and y peak with the handmarking
+		xPeak = FloatPointListEncoder.extractXArray(handMarks);
+		yPeak = FloatPointListEncoder.extractYArray(handMarks);
+		for (int i=0; i<nDetect.length; i++) nDetect[i] = 1;
+		
+		translation = new FloatPoint(0.0f, 0.0f);
+	}
 
 	public float[] getXiRst() {
 		return xiRst;

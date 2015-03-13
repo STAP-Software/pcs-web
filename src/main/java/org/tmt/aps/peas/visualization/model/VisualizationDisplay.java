@@ -21,7 +21,7 @@ import javax.persistence.Table;
 @NamedQueries({
 	@NamedQuery(name = "findAllVisualizationDisplays", query = "SELECT p from VisualizationDisplay p " )
 })
-public class VisualizationDisplay {
+public class VisualizationDisplay extends UserPrompt {
 
 	public static final int DISPLAY_TYPE_CENTROIDS = 1;
 	public static final int DISPLAY_TYPE_CENTROID_OFFSETS = 2;
@@ -41,6 +41,11 @@ public class VisualizationDisplay {
 	}
 	
 	public VisualizationDisplay(int visualizationDisplayType) {
+		this.visualizationDisplayId = new Long(visualizationDisplayType);
+	}
+	
+	public VisualizationDisplay(int visualizationDisplayType, int buttonType, String message) {
+		super(buttonType, message);
 		this.visualizationDisplayId = new Long(visualizationDisplayType);
 	}
 

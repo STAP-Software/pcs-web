@@ -7,6 +7,7 @@ package org.tmt.aps.peas.visualization.model;
 
 public class UserPrompt {
 
+	public static final int PROMPT_TYPE_INFO = 0;
 	public static final int PROMPT_TYPE_YES_NO = 1;
 	public static final int PROMPT_TYPE_FLOW_CONTROL_TRIFLOW = 2;  // continue, do over, abort
 	public static final int PROMPT_TYPE_FLOW_CONTROL_BIFLOW = 3;  // do over, abort
@@ -27,10 +28,19 @@ public class UserPrompt {
 	
 	int buttonCount;
 	
+	public UserPrompt() {
+		this.promptType = PROMPT_TYPE_INFO;
+		this.message = "";
+	}
 	
 	public UserPrompt(int type, String message) {
 		this.promptType = type;	
 		this.message = message;
+		
+		if (type == PROMPT_TYPE_INFO) {
+			buttonCount = 1;
+			button1Text = "Ok";
+		}
 		
 		if (type == PROMPT_TYPE_YES_NO) {
 			buttonCount = 2;

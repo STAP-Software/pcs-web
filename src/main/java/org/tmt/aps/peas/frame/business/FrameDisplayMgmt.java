@@ -30,6 +30,7 @@ public class FrameDisplayMgmt implements Serializable {
 	
 	private List<FloatPoint> markList;
 	private String frameInstructions;
+	private String frameInstructionImageName;
 
 	// marked centroids x and y
 	String centroidXs;
@@ -61,16 +62,25 @@ public class FrameDisplayMgmt implements Serializable {
 	public void displayFrame() {
 		pendingDisplay = true;
 		this.frameInstructions = null;
+		this.frameInstructionImageName = "";		
 	}
 	public void displayFrame(String frameInstructions) {
 		pendingDisplay = true;
 		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
+		this.frameInstructionImageName = "";
+	}
+	
+	public void displayFrame(String frameInstructions, String imageName) {
+		pendingDisplay = true;
+		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
+		this.frameInstructionImageName = imageName;
 	}
 	
 	public void displayMarkedFrame() {
 		pendingMarkedDisplay = true;
 		pendingDisplay = false;
 		this.frameInstructions = null;
+		this.frameInstructionImageName = "";
 	}
 
 	public void setPendingDisplay(boolean b) {
@@ -132,5 +142,10 @@ public class FrameDisplayMgmt implements Serializable {
 	public void setCentroidYs(String centroidYs) {
 		this.centroidYs = centroidYs;
 	}
+
+	public String getFrameInstructionImageName() {
+		return frameInstructionImageName;
+	}
+
 
 }

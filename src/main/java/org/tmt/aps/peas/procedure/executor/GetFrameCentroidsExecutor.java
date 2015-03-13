@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -27,6 +26,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
@@ -86,6 +86,7 @@ public class GetFrameCentroidsExecutor {
 		statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
 		ProcedureCcdFrame procedureCcdFrame = null;
+		CentroidMap centroidMap = null;
 
 		while (true) {
 
@@ -110,32 +111,35 @@ public class GetFrameCentroidsExecutor {
 
 				fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
 						procedure.getRefDefMap());
-				List<FloatPoint> centroids = new ArrayList<FloatPoint>();
+
 				logger.info("Find and Identify completed");
-				try {
-					centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-							.getFindCentConfig());
-				} catch (Exception e) {
-					CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
-					procedureCcdFrame.setCentroidMap(centroidMap);
-					throw e;
-				}
-				CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
-				procedureCcdFrame.setCentroidMap(centroidMap);
-
-				statusLogger.log("fandi.end.success");
-
-				// display the marked frame
-				frameDisplayMgmt.setMarking(centroids);
-				frameDisplayMgmt.displayMarkedFrame();
-
-				graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
 
 				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
-			
-				
+
+				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+				procedureCcdFrame.setCentroidMap(centroidMap);
+
 				break; // success, break of out while loop
-				
+
+			} catch (HandMarkRequiredException e) {
+
+				if (procedure.getProcedureType().isPassiveTilt()) {
+
+					fiResult = handMark(procedure, fiConfig);
+
+					try {
+						centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+						procedureCcdFrame.setCentroidMap(centroidMap);
+						break; // everything ok, move forward
+					} catch (Exception e1) {
+						statusLogger.log("procedure.exception", e1.getMessage());
+						throw new Exception("Aborted Test: " + e1.getMessage());
+					}
+
+				} else {
+					break;
+				}
+
 			} catch (UserAssistRequiredException e) {
 
 				StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
@@ -163,24 +167,32 @@ public class GetFrameCentroidsExecutor {
 				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 					throw new Exception("User Aborted Test");
 				} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
-					break;
-				}
-				
-				// TEST ONLY
-				// this is where we display the frame; tell the async controller to update the frame
-				// put up some display that tells user to click on the star
-				if (procedure.getProcedureType().isPassiveTilt()) {
-					frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.pt_hand_mark"));
-					frameDisplayMgmt.clearMarking();
-					frameDisplayMgmt.setPendingMarkAction(true);
-					// wait for user to mark frame
-					statusLogger.log("frame.mark_waiting");
-					while (frameDisplayMgmt.getPendingMarkAction()) {
-						Thread.sleep(500);
+
+					try {
+
+						centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+						procedureCcdFrame.setCentroidMap(centroidMap);
+
+					} catch (HandMarkRequiredException hme) {
+
+						if (procedure.getProcedureType().isPassiveTilt()) {
+
+							fiResult = handMark(procedure, fiConfig);
+
+							try {
+								centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+								procedureCcdFrame.setCentroidMap(centroidMap);
+								break; // everything ok, move forward
+							} catch (Exception e1) {
+								statusLogger.log("procedure.exception", e1.getMessage());
+								throw new Exception("Aborted Test: " + e1.getMessage());
+							}
+
+						} else {
+							break;
+						}
 					}
-					
-					// get marking data from the frame display
-					List<FloatPoint> handMarked = frameDisplayMgmt.getMarkList();
+					break;
 				}
 
 			} catch (Exception e) {
@@ -188,7 +200,7 @@ public class GetFrameCentroidsExecutor {
 				statusLogger.log("procedure.exception", e.getMessage());
 
 				String unknownError = (e.getMessage() == null) ? "Unknown Error: " : "";
-					
+
 				int response = userPromptMgmt.displayFlowControlBiFlowDialog(unknownError + e.getMessage());
 
 				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
@@ -229,4 +241,65 @@ public class GetFrameCentroidsExecutor {
 		return centroidMap;
 	}
 
+	private CentroidMap findAndDisplayCentroids(Procedure procedure, FIConfig fiConfig, FIResult fiResult) throws Exception {
+		List<FloatPoint> centroids = null;
+
+		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
+		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+
+		centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
+				.getFindCentConfig());
+		CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
+
+
+		// display the marked frame
+		frameDisplayMgmt.setMarking(centroids);
+		frameDisplayMgmt.displayMarkedFrame();
+
+		boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
+				"Have the correct centroids been found?");
+
+		// as part of the display, ask the user if it is OK (only passive tilt)
+		// throw a UserAssistException if they don't like it.
+		if (!userResponse) {
+			throw new HandMarkRequiredException();
+		}
+
+		return centroidMap;
+	}
+
+	private FIResult handMark(Procedure procedure, FIConfig fiConfig) throws Exception {
+
+		List<FloatPoint> handMarked = null;
+		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
+		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+
+		while (true) {
+			frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.pt_hand_mark"), "PTNumbering.jpg");
+			frameDisplayMgmt.clearMarking();
+			frameDisplayMgmt.setPendingMarkAction(true);
+			// wait for user to mark frame
+			statusLogger.log("frame.mark_waiting");
+			while (frameDisplayMgmt.getPendingMarkAction()) {
+				Thread.sleep(500);
+			}
+
+			// get marking data from the frame display
+			handMarked = frameDisplayMgmt.getMarkList();
+
+			if (handMarked.size() == 36) {
+				break;
+			} else {
+				// TODO: put in resource bundle
+				userPromptMgmt.displayInfoDialog("You did not mark the correct number of spots");
+
+			}
+		}
+
+		return new FIResult(handMarked, ccdFrame.getCorrectedFrame());
+
+	}
 }

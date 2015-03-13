@@ -71,6 +71,8 @@ public class VisualizationController implements Serializable {
 	boolean actuatorDeltaDisplayEnabled;
 
 	String act1Pos;
+	
+	VisualizationDisplay currentDisplay;
 
 	@PostConstruct
 	private void init() {
@@ -336,6 +338,15 @@ public class VisualizationController implements Serializable {
 		}
 
 	}
+
+	public VisualizationDisplay getCurrentDisplay() {
+		return currentDisplay;
+	}
+
+	public void setCurrentDisplay(VisualizationDisplay currentDisplay) {
+		this.currentDisplay = currentDisplay;
+	}
+
 
 
 

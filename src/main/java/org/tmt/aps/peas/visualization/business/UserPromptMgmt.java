@@ -44,6 +44,15 @@ public class UserPromptMgmt implements Serializable {
 		this.returnState = returnState;
 	}
 
+	public void displayInfoDialog(String text) {
+		
+		// change \n to <br/>
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_INFO, text.replace("\n", "<br/>"));
+		
+		waitForReturnState();
+		
+	}
+	
 	public boolean displayYesNoDialog(String text) {
 		
 		// change \n to <br/>

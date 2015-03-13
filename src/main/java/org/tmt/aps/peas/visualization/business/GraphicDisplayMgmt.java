@@ -169,6 +169,18 @@ public class GraphicDisplayMgmt implements Serializable {
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 		
 		waitForReturnState();
+		
+	}
+
+	public boolean displaySubimageCentroids(CentroidMap centroidMap, int type, String message) {
+		
+		setAndEncodeCentroidMap(centroidMap);
+				
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS, type, message);
+		
+		waitForReturnState();
+		
+		return (returnState.intValue() == 1) ? true : false; 
 	}
 
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {

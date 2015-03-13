@@ -245,7 +245,7 @@ public class CcdManualController implements Serializable {
 				short[][] rawFrame = new short[frame.length][frame[0].length];
 				for (int i=0; i< frame.length; i++) {
 					for (int j=0; j<frame[i].length; j++) {
-						rawFrame[i][j] = (short)frame[i][j];
+						rawFrame[j][i] = (short)frame[i][j];
 					}
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);
