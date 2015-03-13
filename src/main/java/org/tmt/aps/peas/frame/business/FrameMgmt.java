@@ -134,6 +134,7 @@ public class FrameMgmt {
 		
 		String newName = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, 0).generateFileName();
 
+		
 		// determine 'iteration' number if multiple frames of this mask taken today
 		int iterationNumber = findMatchingFitsFiles(newName.substring(0, newName.length()-8) + "*").size();
 		
@@ -441,6 +442,16 @@ public class FrameMgmt {
 		}
 
 		myFits.addHDU(HDU.create(reversedFrame));
+		
+		// enter standard headers
+		myFits.getHDU(0).getHeader().addIntValue("BITPIX", 16, "");
+		myFits.getHDU(0).getHeader().addIntValue("NAXIS", 2, "");
+		myFits.getHDU(0).getHeader().addIntValue("NAXIS1", ccdFrame.getRawFrame().length, "");
+		myFits.getHDU(0).getHeader().addIntValue("NAXIS2", ccdFrame.getRawFrame()[0].length, "");
+		myFits.getHDU(0).getHeader().addIntValue("PCOUNT", 0, "");
+		myFits.getHDU(0).getHeader().addIntValue("GCOUNT", 1, "");
+		myFits.getHDU(0).getHeader().addBooleanValue("EXTEND", true, "");
+
 		
 		Camera camera = physicalModel.getInstrument().getCamera();
 		Telescope telescope = physicalModel.getTelescope();

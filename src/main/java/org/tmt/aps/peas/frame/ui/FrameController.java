@@ -37,6 +37,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 
 @Named
 @SessionScoped
@@ -53,6 +54,8 @@ public class FrameController implements Serializable {
 	FrameMgmt frameMgmt;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	TelescopeMgmt telescopeMgmt;
 
 	private TreeNode sessionRoot;
 	private TreeNode typeRoot;
@@ -319,6 +322,10 @@ public class FrameController implements Serializable {
 			FitsFilename fitsFilename = new FitsFilename(physicalModel.getInstrument().getInstrumentId(), 
 					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), 
 					iterationNumber);
+			
+			// refresh status for fits header
+			telescopeMgmt.refreshStatus();
+
 			
 			ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 			frameMgmt.saveFitsFrame(ccdFrame);
