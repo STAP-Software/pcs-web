@@ -404,7 +404,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
-			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, centroidOffsetsResult.getImageScale(),
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
 					centroidOffsetsResult.getCentroidOffsets());
 
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
