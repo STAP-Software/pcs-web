@@ -351,8 +351,12 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			/*              passiveTiltScaleError                */
 			/*****************************************************/
+			
+			//need to get centerSpots 
+			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+			
 			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCentroidOffsets(),
-					procedure.getRefDefMap());
+					centerSpots);
 
 			// fill the iteration output
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();

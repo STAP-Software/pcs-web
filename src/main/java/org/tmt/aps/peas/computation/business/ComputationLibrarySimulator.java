@@ -179,7 +179,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) {
+	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) {
 		// TODO Auto-generated method stub
 		return new ScaleError(1.1f, 2.2f);
 	}

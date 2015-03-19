@@ -401,16 +401,15 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	@Override
-	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, RefBeamMap refDefMap) throws ComputationException {
+	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
 
 		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
 		RetVal retVal = new RetVal();
 
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
 
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
-		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
-		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
+		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpot);
+		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpot);
 
 		Object output[] = jpassiveTiltScaleError.jpassiveTiltScaleError(retVal, offsets, x_ref_def, y_ref_def);
 
