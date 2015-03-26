@@ -33,6 +33,9 @@ public class PupilMaskType {
 
 	private int subImageIntensityRadius;
 	
+	private int ccdToCartesianPixelX;
+	private int ccdToCartesianPixelY;
+	
 	public Long getPupilMaskTypeId() {
 		return pupilMaskTypeId;
 	}
@@ -67,6 +70,22 @@ public class PupilMaskType {
 
 	
 	
+	public int getCcdToCartesianPixelX() {
+		return ccdToCartesianPixelX;
+	}
+
+	public void setCcdToCartesianPixelX(int ccdToCartesianPixelX) {
+		this.ccdToCartesianPixelX = ccdToCartesianPixelX;
+	}
+
+	public int getCcdToCartesianPixelY() {
+		return ccdToCartesianPixelY;
+	}
+
+	public void setCcdToCartesianPixelY(int ccdToCartesianPixelY) {
+		this.ccdToCartesianPixelY = ccdToCartesianPixelY;
+	}
+
 	public boolean isNewRecord() {
 		return pupilMaskTypeId == null;
 	}

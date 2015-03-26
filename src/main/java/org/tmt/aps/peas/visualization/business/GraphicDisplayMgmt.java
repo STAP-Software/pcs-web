@@ -130,7 +130,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
 		
 		// encode centroid offsets
-		List<FloatPoint> centroidOffsets = Arrays.asList(getCentroidOffsetsDisplayValues().getCentroidOffsets());
+		List<FloatPoint> centroidOffsets = Arrays.asList(getCentroidOffsetsDisplayValues().getCartesianCentroidOffsets());
 		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
 		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
 	}

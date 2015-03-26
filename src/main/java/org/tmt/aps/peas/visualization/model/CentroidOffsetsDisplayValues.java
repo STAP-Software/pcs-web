@@ -12,7 +12,8 @@ public interface CentroidOffsetsDisplayValues {
 	
 	// arcsec per pixel
 	
-	public FloatPoint[] getCentroidOffsets();
+	public FloatPoint[] getCcdCentroidOffsets();
+	public FloatPoint[] getCartesianCentroidOffsets();
 
 
 	public int getMaxSpotNum();

@@ -7,26 +7,38 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 
 public class CentroidOffsetsResult {
 
-	List<FloatPoint> centroidOffsets;
 	FloatPoint imageTranslation;
 	float imageScale;
 	float imageRotation;
+	private List<FloatPoint> ccdCentroidOffsets;
+	private List<FloatPoint> cartesianCentroidOffsets;
 
-	public CentroidOffsetsResult(float[][] centroidOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation) {
+	public CentroidOffsetsResult(float[][] ccdOffsetsArray, float[][] cartesianOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation) {
 		
-		this.centroidOffsets = FloatPointListEncoder.convertFromNby2Array(centroidOffsetsArray);
+		this.ccdCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(ccdOffsetsArray);
+		this.cartesianCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(cartesianOffsetsArray);
 		this.imageTranslation = imageTranslation;
 		this.imageScale = imageScale;
 		this.imageRotation = imageRotation;
 	}
 
-	public List<FloatPoint> getCentroidOffsets() {
-		return centroidOffsets;
+
+	public List<FloatPoint> getCcdCentroidOffsets() {
+		return ccdCentroidOffsets;
 	}
 
-	public void setCentroidOffsets(List<FloatPoint> centroidOffsets) {
-		this.centroidOffsets = centroidOffsets;
+	public void setCcdCentroidOffsets(List<FloatPoint> ccdCentroidOffsets) {
+		this.ccdCentroidOffsets = ccdCentroidOffsets;
 	}
+
+	public List<FloatPoint> getCartesianCentroidOffsets() {
+		return cartesianCentroidOffsets;
+	}
+
+	public void setCartesianCentroidOffsets(List<FloatPoint> cartesianCentroidOffsets) {
+		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
+	}
+
 
 	public FloatPoint getImageTranslation() {
 		return imageTranslation;

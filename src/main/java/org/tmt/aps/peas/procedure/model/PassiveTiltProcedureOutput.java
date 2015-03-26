@@ -17,7 +17,8 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	private float[][] m1ActuatorCmds = new float[36][3];
 	private float m1ActuatorCmdsRms;
 	private boolean m1CmdsSent;
-	private FloatPoint[] centroidOffsets = new FloatPoint[1];
+	private FloatPoint[] ccdCentroidOffsets = new FloatPoint[1];
+	private FloatPoint[] cartesianCentroidOffsets = new FloatPoint[1];
 
 	
 	private int maxSpotNum;
@@ -66,11 +67,17 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 		this.m1CmdsSent = m1CmdsSent;
 	}
 
-	public FloatPoint[] getCentroidOffsets() {
-		return centroidOffsets;
+	public FloatPoint[] getCcdCentroidOffsets() {
+		return ccdCentroidOffsets;
 	}
-	public void setCentroidOffsets(FloatPoint[] centroidOffsets) {
-		this.centroidOffsets = centroidOffsets;
+	public void setCcdCentroidOffsets(FloatPoint[] ccdCentroidOffsets) {
+		this.ccdCentroidOffsets = ccdCentroidOffsets;
+	}
+	public FloatPoint[] getCartesianCentroidOffsets() {
+		return cartesianCentroidOffsets;
+	}
+	public void setCartesianCentroidOffsets(FloatPoint[] cartesianCentroidOffsets) {
+		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
 	}
 	public int getMaxSpotNum() {
 		return maxSpotNum;

@@ -30,6 +30,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
@@ -155,7 +156,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 	@Override
 	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
-			CentroidOffsetsConfig centroidOffsetsConfig ) throws ComputationException {
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType ) throws ComputationException {
 		
 		
 		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
@@ -168,7 +169,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 			offsets.add(offset);
 		}
 		
-		return new CentroidOffsetsResult(FloatPointListEncoder.convertToNby2Array(offsets), new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
+		return new CentroidOffsetsResult(FloatPointListEncoder.convertToNby2Array(offsets), FloatPointListEncoder.convertToNby2Array(offsets), new FloatPoint(1.0f, 2.0f), 1.1f, 0.1f  );
 		
 	}
 

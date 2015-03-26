@@ -32,6 +32,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
@@ -336,7 +337,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	@Override
 	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
-			CentroidOffsetsConfig centroidOffsetsConfig) throws ComputationException {
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType) throws ComputationException {
 
 		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
 		RetVal retVal = new RetVal();
@@ -355,20 +356,27 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		// output arrays
-		float[][] offsets = new float[numSpots][2];
+		float[][] ccdOffsets = new float[numSpots][2];
+		float[][] cartesianOffsets = new float[numSpots][2];
 		float[] image_translation = new float[2];
 
 		Object output[] = jcalculateCentroidOffsets.jcalculateCentroidOffsets(retVal, centroid, ref_cent,
-				centroidOffsetsConfig.isRemoveScale() ? 1 : 0, centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, offsets,
+				centroidOffsetsConfig.isRemoveScale() ? 1 : 0, centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, ccdOffsets,
 				image_translation);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Centroid Offsets Calculation Error");
 		}
+		
+		// convert to cartesian offsets
+		for (int i=0; i<numSpots; i++) {
+			cartesianOffsets[i][0] = ccdOffsets[i][0] * pupilMaskType.getCcdToCartesianPixelX();
+			cartesianOffsets[i][1] = ccdOffsets[i][1] * pupilMaskType.getCcdToCartesianPixelY();
+		}
 
 		// store fi_param values
-		return new CentroidOffsetsResult(offsets, new FloatPoint(image_translation[0], image_translation[1]), (Float) output[0],
+		return new CentroidOffsetsResult(ccdOffsets, cartesianOffsets, new FloatPoint(image_translation[0], image_translation[1]), (Float) output[0],
 				(Float) output[1]);
 
 	}

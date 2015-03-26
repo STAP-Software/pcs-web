@@ -255,7 +255,7 @@ public class PassiveTiltExecutor {
 
 				centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(),
 						procedure.getRefBeamMap().getCentroidMap().getValues(), procedure.getProcedureConfigSet()
-								.getCentroidOffsetsConfig());
+								.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
 
 				// go from centroidOffsetsResult.imageTranslation to deltaAz,El
 				FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
@@ -346,7 +346,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
-			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCentroidOffsets());
+			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCartesianCentroidOffsets());
 
 			/*****************************************************/
 			/*              passiveTiltScaleError                */
@@ -355,7 +355,7 @@ public class PassiveTiltExecutor {
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCentroidOffsets(),
+			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCartesianCentroidOffsets(),
 					centerSpots);
 
 			// fill the iteration output
@@ -365,7 +365,8 @@ public class PassiveTiltExecutor {
 			pio.setIteration(0);
 			pio.setDeltaAzEl(new FloatPoint(1.1f, 2.3f));
 
-			pio.setCentroidOffsets(centroidOffsetsResult.getCentroidOffsets().toArray(new FloatPoint[0]));
+			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
+			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
 			pio.setScaleError(scaleError.getScaleError());
 
 			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
@@ -381,7 +382,8 @@ public class PassiveTiltExecutor {
 			pio.setTelescopeMoved(false);
 
 			// fill the output - many of these are copied from the one iteration
-			procedureOutput.setCentroidOffsets(pio.getCentroidOffsets());
+			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
+			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
 
 			procedureOutput.setScaleError(pio.getScaleError());
 
@@ -409,7 +411,7 @@ public class PassiveTiltExecutor {
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					centroidOffsetsResult.getCentroidOffsets());
+					centroidOffsetsResult.getCartesianCentroidOffsets());
 
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
