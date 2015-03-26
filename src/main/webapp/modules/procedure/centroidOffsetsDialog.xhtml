@@ -62,7 +62,7 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 		var x = parseFloat(xHexCenterArray[i])
 		var y = parseFloat(yHexCenterArray[i])
 		
-		var dx = x + (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+		var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
 		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
 						
 		drawHex(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
