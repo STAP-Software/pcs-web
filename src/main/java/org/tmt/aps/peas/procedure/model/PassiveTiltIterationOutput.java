@@ -24,6 +24,8 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 
 	private float scaleError;
 	private float slopeError;
+	
+	private float pistonActuatorDeltasRms;
 
 	public boolean isTelescopeMoved() {
 		return telescopeMoved;
@@ -116,7 +118,12 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	public void setPistonActuatorDeltas(float[][] pistonActuatorDeltas) {
 		this.pistonActuatorDeltas = pistonActuatorDeltas;
 	}
-	
+	public float getPistonActuatorDeltasRms() {
+		return pistonActuatorDeltasRms;
+	}
+	public void setPistonActuatorDeltasRms(float pistonActuatorDeltasRms) {
+		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
+	}
 	
 	
 }

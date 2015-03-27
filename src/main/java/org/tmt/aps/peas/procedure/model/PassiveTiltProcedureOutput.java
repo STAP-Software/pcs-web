@@ -30,6 +30,9 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	private float scaleError;
 	private float slopeError;	
 	
+	private float pistonActuatorDeltasRms;
+
+	
 	public FloatPoint getTranslationFromRefBeam() {
 		return translationFromRefBeam;
 	}
@@ -132,6 +135,12 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	}
 	public void setPistonActuatorDeltas(float[][] pistonActuatorDeltas) {
 		this.pistonActuatorDeltas = pistonActuatorDeltas;
+	}
+	public float getPistonActuatorDeltasRms() {
+		return pistonActuatorDeltasRms;
+	}
+	public void setPistonActuatorDeltasRms(float pistonActuatorDeltasRms) {
+		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
 	}
 	
 	

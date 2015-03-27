@@ -432,6 +432,10 @@ public class PassiveTiltExecutor {
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
 			float[][] pistonActs = computationLibrary.optimalPistons(controlMatrix, decomposeActResult.getTipTiltActs());
 
+			// calculate RMS of the actuator cmds
+			float pistonActsRms = computationLibrary.calcRms(pistonActs);
+
+			
 			// combine tip/tilt and piston commands
 			/*****************************************************/
 			/*               calcDesiredActCommands              */
@@ -444,6 +448,7 @@ public class PassiveTiltExecutor {
 			// set iteration and procedure outputs
 			pio.setTipTiltActuatorDeltas(decomposeActResult.getTipTiltActs());
 			pio.setPistonActuatorDeltas(pistonActs);
+			pio.setPistonActuatorDeltasRms(pistonActsRms);
 
 			pio.setM1ActuatorCmds(desiredActDeltas);
 			pio.setM1ActuatorCmdsRms(desiredActDeltasRms);
@@ -452,6 +457,7 @@ public class PassiveTiltExecutor {
 			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
 			procedureOutput.setTipTiltActuatorDeltas(pio.getTipTiltActuatorDeltas());
 			procedureOutput.setPistonActuatorDeltas(pio.getPistonActuatorDeltas());
+			procedureOutput.setPistonActuatorDeltasRms(pio.getPistonActuatorDeltasRms());
 
 			// display the pistonDeltas
 			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
