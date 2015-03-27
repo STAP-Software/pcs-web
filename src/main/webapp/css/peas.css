@@ -257,14 +257,16 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	word-wrap: break-word;
 }
 
-/* fix the combo boxes 
-.ui-selectonemenu-label {
-	font-size: 10px !important;
-}
-*/
+
+
 .ui-selectonemenu-trigger {
 	width: 14px !important;
 }
+.intTime {
+     width: 100px !important;
+}
+  
+
 
 .ui-wizard-step-title {
     font-size: 14px;

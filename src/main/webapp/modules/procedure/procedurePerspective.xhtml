@@ -53,7 +53,7 @@
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}" editable="true"
-										disabled="#{procedureController.procedure.procedureState gt 1}" >
+										disabled="#{procedureController.procedure.procedureState gt 1}" styleClass="intTime">
 										<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTimeList}" /> 
 									</p:selectOneMenu>
 								</p:column>
