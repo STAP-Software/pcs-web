@@ -88,6 +88,8 @@ public class ProcedureExecutionMgmt {
 
 	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) {
 
+		logger.info("performProcedureStartup 1");
+
 		// global config needs loaded in case it has changed from nominal
 		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(),
 				physicalModel.getInstrument().getInstrumentId());
@@ -103,6 +105,7 @@ public class ProcedureExecutionMgmt {
 					.getPupilMaskType().getPupilMaskTypeId());
 			procedure.setRefDefMap(refDefMap);
 		}
+		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
 		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(procedure.getProcedureConfigSet()
@@ -110,6 +113,8 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
 		
+		logger.info("performProcedureStartup 3");
+
 		
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
