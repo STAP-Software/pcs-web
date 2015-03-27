@@ -332,7 +332,6 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderNumTrials() {
-		System.out.println("type   =  " + procedure.getProcedureType() + ", id = " + procedure.getProcedureType().getProcedureTypeId());
 		return procedure.getProcedureType().isFineScreen() || procedure.getProcedureType().isPassiveTilt();
 	}
 
