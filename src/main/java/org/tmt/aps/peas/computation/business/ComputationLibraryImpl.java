@@ -46,6 +46,7 @@ import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -305,7 +306,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException,
-			AbortProcedureException {
+			AbortProcedureException, HandMarkRequiredException {
 		// Need to Check this first
 		UserAssistRequiredException userAssistException = new UserAssistRequiredException();
 		if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
@@ -321,6 +322,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		if (fiResult.getnSolution() != 1) {
 			userAssistException.setBadNSolution(true);
+			throw new HandMarkRequiredException();
 		}
 
 		if (userAssistException.shouldThrow()) {
