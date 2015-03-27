@@ -144,6 +144,9 @@ public class FrameMgmt {
 		ccdFrame.setInstrumentId(instrumentId);
 		saveFitsFrame(ccdFrame);
 
+		// create the png
+		byte[] falseColorPng = loadPng(ccdFrame, true);
+		ccdFrame.setFalseColorPng(falseColorPng);
 		
 	}
 
@@ -229,10 +232,6 @@ public class FrameMgmt {
 				ccdFrame.setCreateDate(new Date());
 				ccdFrame.setNoOfAxes(2);
 	
-				// create the png
-				FalseColorProcessor falseColorer = new FalseColorProcessor();
-				byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
-				ccdFrame.setFalseColorPng(falseColorPng);
 	
 				// save the camera state when the ccd frame was taken
 				Instrument instrument = physicalModel.getInstrument();
@@ -476,6 +475,8 @@ public class FrameMgmt {
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
 		myFits.write(o);
+		
+
 	}
 
 	public byte[] loadPng(CcdFrame ccdFrame, boolean writeToFile) {
