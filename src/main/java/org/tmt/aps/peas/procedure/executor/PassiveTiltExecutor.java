@@ -242,7 +242,8 @@ public class PassiveTiltExecutor {
 			CentroidOffsetsResult centroidOffsetsResult = null;
 
 			FloatPoint lastMove = null;
-
+			FloatPoint deltaAzEl;
+			
 			while (true) {
 
 				procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
@@ -258,7 +259,7 @@ public class PassiveTiltExecutor {
 								.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
 
 				// go from centroidOffsetsResult.imageTranslation to deltaAz,El
-				FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
+				deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
 						new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
 
 
@@ -363,7 +364,7 @@ public class PassiveTiltExecutor {
 			procedureOutput.addIteration(pio);
 
 			pio.setIteration(0);
-			pio.setDeltaAzEl(new FloatPoint(1.1f, 2.3f));
+			pio.setDeltaAzEl(deltaAzEl);
 
 			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
 			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
@@ -442,7 +443,7 @@ public class PassiveTiltExecutor {
 
 			// set iteration and procedure outputs
 			pio.setTipTiltActuatorDeltas(decomposeActResult.getTipTiltActs());
-			pio.setPistonActuatorDeltas(decomposeActResult.getPistonActs());
+			pio.setPistonActuatorDeltas(pistonActs);
 
 			pio.setM1ActuatorCmds(desiredActDeltas);
 			pio.setM1ActuatorCmdsRms(desiredActDeltasRms);
