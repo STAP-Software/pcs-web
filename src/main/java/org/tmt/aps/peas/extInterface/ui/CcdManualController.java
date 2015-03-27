@@ -177,7 +177,7 @@ public class CcdManualController implements Serializable {
 				for (int i=0; i< frame.length; i++) {
 					StringBuffer buf = new StringBuffer();
 					for (int j=0; j<frame[i].length; j++) {
-						rawFrame[i][j] = (short)frame[i][j];
+						rawFrame[i][j] = (short)frame[j][i];
 						if (rawFrame[i][j] > 400) {
 							buf.append("[" + rawFrame[i][j] + "]");
 						}
