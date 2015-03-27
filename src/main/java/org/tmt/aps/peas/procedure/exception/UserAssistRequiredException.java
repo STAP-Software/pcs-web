@@ -7,6 +7,7 @@ public class UserAssistRequiredException extends Exception {
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
 	private boolean fourierThreshExceeded;
+	private boolean badNSolution;
 	
 	
 	public boolean isNdetectNotAllSingle() {
@@ -28,6 +29,12 @@ public class UserAssistRequiredException extends Exception {
 		this.fourierThreshExceeded = fourierThreshExceeded;
 	}
 			
+	public boolean isBadNSolution() {
+		return badNSolution;
+	}
+	public void setBadNSolution(boolean badNSolution) {
+		this.badNSolution = badNSolution;
+	}
 	public boolean shouldThrow() {
 		return ndetectNotAllSingle || fracThreshExceeded || fourierThreshExceeded;
 	}

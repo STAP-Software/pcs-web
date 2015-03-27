@@ -157,6 +157,10 @@ public class GetFrameCentroidsExecutor {
 							fiConfig.getFourierQualityThresh()));
 				}
 
+				if (e.isBadNSolution()) {
+					buf.append(MessageGenerator.generateMessage("fandi.bad_nsolution", fiResult.getnSolution()));
+				}
+
 				String text = buf.toString();
 
 				// user interaction

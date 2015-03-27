@@ -280,7 +280,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Find and Identify Error");
+			throw new ComputationException("Unknown Find and Identify Error");
 		}
 
 		// store fi_param values
@@ -317,6 +317,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
 			userAssistException.setFourierThreshExceeded(true);
+		}
+		
+		if (fiResult.getnSolution() != 1) {
+			userAssistException.setBadNSolution(true);
 		}
 
 		if (userAssistException.shouldThrow()) {
