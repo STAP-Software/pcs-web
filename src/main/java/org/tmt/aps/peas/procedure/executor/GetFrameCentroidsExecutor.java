@@ -195,6 +195,8 @@ public class GetFrameCentroidsExecutor {
 						} else {
 							break;
 						}
+					} catch (Exception e1) {
+						e1.printStackTrace();
 					}
 					break;
 				}
