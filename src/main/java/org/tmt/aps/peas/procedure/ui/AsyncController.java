@@ -260,13 +260,17 @@ public class AsyncController {
 	
 	public void onComplete() {
 		
-		// update camera state to be the one associated with the first frame.  We do it here because it is the 'last' asynchronous thing we do
-		CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
-		procedureController.loadCameraState(cameraState);
-		statusLogController.refreshProcedureStatusLog();
-		
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
-		RequestContext.getCurrentInstance().update("procedureDetailForm");
+		try {
+			// update camera state to be the one associated with the first frame.  We do it here because it is the 'last' asynchronous thing we do
+			CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
+			procedureController.loadCameraState(cameraState);
+			statusLogController.refreshProcedureStatusLog();
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
+			RequestContext.getCurrentInstance().update("procedureDetailForm");
+		} catch (Exception e) {
+			logger.error(e.getMessage());
+		}
 	}
 
 	public String doAbortProcedure() {

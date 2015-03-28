@@ -284,10 +284,6 @@ public class ProcedureConfig {
 
 	public void setIntTimeSelectOptions(String intTimeSelectOptions) {
 		this.intTimeSelectOptions = intTimeSelectOptions;
-		if (intTimeSelectOptions != null) {
-			integrationTimeList =  FloatListEncoder.decodeList(intTimeSelectOptions);
-			Collections.sort(integrationTimeList);
-		}
 	}
 
 	public PupilMaskType getPupilMaskType() {
@@ -303,6 +299,10 @@ public class ProcedureConfig {
 	}
 
 	public List<Float> getIntegrationTimeList() {
+		if (intTimeSelectOptions != null) {
+			integrationTimeList =  FloatListEncoder.decodeList(intTimeSelectOptions);
+			Collections.sort(integrationTimeList);
+		}
 		return integrationTimeList;
 	}
 	public void setIntegrationTimeList(List<Float> integrationTimeList) {

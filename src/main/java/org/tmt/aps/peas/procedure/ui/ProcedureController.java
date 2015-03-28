@@ -8,7 +8,6 @@ package org.tmt.aps.peas.procedure.ui;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -18,6 +17,7 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -33,15 +33,8 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
-import org.tmt.aps.peas.config.model.FIConfigDefaults;
-import org.tmt.aps.peas.config.model.FindCentConfig;
-import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
-import org.tmt.aps.peas.config.model.GlobalConfig;
-import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
-import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
@@ -65,7 +58,6 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.ui.SessionController;
@@ -246,8 +238,6 @@ public class ProcedureController implements Serializable {
 	public String getFrameInstructionImageName() {
 		return frameDisplayMgmt.getFrameInstructionImageName();
 	}
-
-
 
 	public StreamedContent getGraphicImage() {
 
@@ -582,6 +572,11 @@ public class ProcedureController implements Serializable {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
+	}
+	
+	public void intTimeChangeListener(AjaxBehaviorEvent event) {
+		Float intTime = procedure.getProcedureConfigSet().getProcedureConfig().getIntegrationTime();
+		System.out.println("int time = " + intTime);
 	}
 
 	// ====================================================================================== //
