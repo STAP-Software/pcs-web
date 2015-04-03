@@ -194,6 +194,8 @@ public class PassiveTiltExecutor {
 
 			procedure.setRefBeamMap(currentRefMap);
 
+			System.out.println("light source 1 = " + procedureConfig.getLightSource());
+			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
 				// always command the coarse mirror to setup values at the start of all procedures
@@ -238,6 +240,9 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
+			System.out.println("light source 2 = " + procedureConfig.getLightSource());
+
+			
 			ProcedureCcdFrame procedureCcdFrame = null;
 			CentroidOffsetsResult centroidOffsetsResult = null;
 
@@ -245,6 +250,8 @@ public class PassiveTiltExecutor {
 			FloatPoint deltaAzEl;
 			
 			while (true) {
+
+				System.out.println("light source 3 = " + procedureConfig.getLightSource());
 
 				procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
 
@@ -494,6 +501,8 @@ public class PassiveTiltExecutor {
 
 			procedureExecutionState.setPercentComplete(100);
 
+
+			
 		} catch (Throwable e) {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
@@ -501,6 +510,7 @@ public class PassiveTiltExecutor {
 		 * getProcStats();
 		 */
 
+		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 

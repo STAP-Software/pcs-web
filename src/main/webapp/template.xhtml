@@ -34,14 +34,31 @@
 
 		<p:growl id="growl" showDetail="true" sticky="false" life="10000"/>
 		
+		
+ 
+
+		
+		
 		<p:layout fullPage="true">
 
 			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
 
 				<h:outputText value="Phasing Camera System" style="margin:40px;color:#d4f8ff;font-size:30pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="#{sessionController.telescope.telescopeName}" style="margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
 				<div style="float:right;margin-right:30px;margin-top:20px;">
 				<h:outputText value="" style="color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" />
 				</div>
+				<p:ajaxStatus style="display:block;margin-top:1.2em;float:right">
+  
+    				<f:facet name="start">
+        				<p:graphicImage name="images/ajax-loader.gif" />
+    				</f:facet>
+   					<f:facet name="complete">
+        				<h:outputText value="" />
+    				</f:facet>
+ 
+ 				</p:ajaxStatus>
+				
 			</p:layoutUnit>
 
 

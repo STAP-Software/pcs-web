@@ -35,6 +35,7 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -73,6 +74,8 @@ public class FrameMgmt {
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	CcdMgmt ccdMgmt;
+	@EJB
+	CameraMgmt cameraMgmt;
 	@EJB
 	private ComputationContext computationContext;
 
@@ -189,7 +192,16 @@ public class FrameMgmt {
 			
 			// get the frame from CCD or from file, depending on the called type
 			ccdMgmt.fastWipeCcd();
-			int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			
+			// FIXME: do not use instrument interface and wait for a sec between shutter close and read.
+			//int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
+			// TODO: write a JIRA bug that this was a workaround for
+			
+			cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
+			
+			Thread.sleep(1000);
+			
+			int[][] frame = ccdMgmt.getImage();
 			
 			CcdFrame ccdFrame = null;
 			

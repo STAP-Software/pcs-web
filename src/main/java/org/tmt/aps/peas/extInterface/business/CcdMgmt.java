@@ -72,7 +72,10 @@ public class CcdMgmt {
 	public int[][] getImage(double exposureTime, boolean useShutter) throws Exception,
 			TimeoutException {
 		// TODO Auto-generated method stub
+		
 		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
+		
+		
 	}
 
 }
