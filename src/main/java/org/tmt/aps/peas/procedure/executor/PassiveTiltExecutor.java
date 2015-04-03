@@ -32,6 +32,7 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
+import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -131,6 +132,7 @@ public class PassiveTiltExecutor {
 		try {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
@@ -153,10 +155,9 @@ public class PassiveTiltExecutor {
 				} else {
 
 					try {
-
-						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), physicalModel
-								.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition(), physicalModel.getInstrument()
-								.getCcd().getTemperature(), 1, new Date(), currentRefMap);
+						
+						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
+								physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {
 
