@@ -493,8 +493,11 @@ public class PassiveTiltExecutor {
 			procedureOutput.setM1CmdsSent(commandsSent);
 
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-				// turn off reference beams - no need to wait for response
-				cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+				// turn off reference beams - need to wait for response				
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+				procedureExecutionState.setPercentComplete(90);
+		        Utils.waitForComplete(refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete");
 			}
 
 			statusLogger.log("procedure.end", procedure.getProcedureType().getProcedureTypeName());

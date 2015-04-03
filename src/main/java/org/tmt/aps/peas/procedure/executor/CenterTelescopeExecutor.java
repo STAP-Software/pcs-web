@@ -238,6 +238,15 @@ public class CenterTelescopeExecutor {
 				statusLogger.log("telescope.cmd.end");
 			}
 			
+			
+			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+				// turn off reference beams - need to wait for response				
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+				procedureExecutionState.setPercentComplete(90);
+		        Utils.waitForComplete(refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete");
+			}
+
 			procedureExecutionState.setPercentComplete(95);
 			
 			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());

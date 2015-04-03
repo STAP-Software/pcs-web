@@ -217,7 +217,7 @@ public class CreateRefMapExecutor {
 			// CALL UFS_SEG_POS_WRITE
 			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-				// turn off reference beams - no need to wait for response				
+				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
 				procedureExecutionState.setPercentComplete(90);
 		        Utils.waitForComplete(refBeamFuture);
