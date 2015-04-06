@@ -45,7 +45,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig INNER JOIN FETCH pcs.globalConfig" ),
 	@NamedQuery(name = "findLatestSessionProcedure", query = "SELECT p from Procedure p INNER JOIN FETCH p.session "
-			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.executionEndTime desc" ),
+			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.executionStartTime desc" ),
 	@NamedQuery(name = "findProcedure", query = "SELECT DISTINCT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig pc INNER JOIN FETCH pcs.globalConfig "
 			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "

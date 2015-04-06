@@ -29,7 +29,6 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
@@ -184,7 +183,7 @@ public class SessionController implements Serializable {
 		}
 		
 		// order procedures by procedure number
-		Collections.sort(session.getProcedureList(), new BeanComparator("procedureNumber"));
+		Collections.sort(session.getProcedureList(), new ProcedureNumberComparator());
 
 		breadcrumbMenuBean.addFirstItem("Current Session", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
