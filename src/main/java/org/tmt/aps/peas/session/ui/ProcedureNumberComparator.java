@@ -23,10 +23,10 @@ public class ProcedureNumberComparator implements Comparator<Procedure> {
 	int compareVersions(StringTokenizer st1, StringTokenizer st2) {
 		
 		if (!st1.hasMoreTokens()) {
-			return 1;
+			return -1;
 		}
 		if (!st2.hasMoreTokens()) {
-			return -1;
+			return 1;
 		}
 		
 		String t1 = st1.nextToken();
@@ -35,7 +35,11 @@ public class ProcedureNumberComparator implements Comparator<Procedure> {
 		if (t1.equals(t2)) {
 			return compareVersions(st1, st2);
 		} else {
-			return t1.compareTo(t2);
+			
+			Integer i1 = new Integer(t1);
+			Integer i2 = new Integer(t2);
+			
+			return i1.compareTo(i2);
 		}
 	}
 	
