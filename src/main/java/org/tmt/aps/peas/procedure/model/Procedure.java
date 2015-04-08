@@ -68,10 +68,7 @@ public class Procedure {
 	
 	@Column(length=50)
 	String testNumber;
-	
-	@Column(length=50)
-	String acsSnapNumberAfter;
-	
+		
 	@Column(length=50)
 	String starName;
 	
@@ -210,14 +207,6 @@ public class Procedure {
 
 	public void setTestNumber(String testNumber) {
 		this.testNumber = testNumber;
-	}
-
-	public String getAcsSnapNumberAfter() {
-		return acsSnapNumberAfter;
-	}
-
-	public void setAcsSnapNumberAfter(String acsSnapNumberAfter) {
-		this.acsSnapNumberAfter = acsSnapNumberAfter;
 	}
 
 	public String getStarName() {

@@ -17,6 +17,7 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	private float[][] m1ActuatorCmds = new float[36][3];
 	private float m1ActuatorCmdsRms;
 	private boolean m1CmdsSent;
+	private int m1SnapNumberAfter;
 	private FloatPoint[] ccdCentroidOffsets = new FloatPoint[1];
 	private FloatPoint[] cartesianCentroidOffsets = new FloatPoint[1];
 
@@ -69,7 +70,12 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	public void setM1CmdsSent(boolean m1CmdsSent) {
 		this.m1CmdsSent = m1CmdsSent;
 	}
-
+	public int getM1SnapNumberAfter() {
+		return m1SnapNumberAfter;
+	}
+	public void setM1SnapNumberAfter(int m1SnapNumberAfter) {
+		this.m1SnapNumberAfter = m1SnapNumberAfter;
+	}
 	public FloatPoint[] getCcdCentroidOffsets() {
 		return ccdCentroidOffsets;
 	}
