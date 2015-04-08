@@ -87,13 +87,16 @@ public class GetFrameCentroidsExecutor {
 
 		ProcedureCcdFrame procedureCcdFrame = null;
 		CentroidMap centroidMap = null;
+		
+		// initialize frame number
+		int frameNumber = procedure.getProcedureCcdFrameCount();
 
 		while (true) {
 
 			statusLogger.log("frame.get");
 
 			procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(),
-					procedure.getProcedureNumber(), 0, 0, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd()
+					procedure.getProcedureNumber(), 0, frameNumber++, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd()
 							.getAllHotPixelRects(), procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 

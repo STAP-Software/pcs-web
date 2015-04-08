@@ -251,7 +251,10 @@ public class Procedure {
 	public void setProcedureCcdFrameList(List<ProcedureCcdFrame> procedureCcdFrameList) {
 		this.procedureCcdFrameList = procedureCcdFrameList;
 	}
-
+	
+	public int getProcedureCcdFrameCount() {
+		return procedureCcdFrameList == null ? 0 : procedureCcdFrameList.size();
+	}
 
 
 	public ProcedureConfigSet getProcedureConfigSet() {

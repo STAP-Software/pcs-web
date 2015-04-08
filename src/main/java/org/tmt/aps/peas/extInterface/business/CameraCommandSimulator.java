@@ -131,7 +131,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public void commandCcdShutterExposure(int ccdExposureTime) throws CommunicationException, TimeoutException, CommandFailureException {
 		// TODO Auto-generated method stub
 		try {
-			Thread.sleep(ccdExposureTime * 1000);
+			Thread.sleep(ccdExposureTime);
 		} catch (Exception e) {
 			
 		}
