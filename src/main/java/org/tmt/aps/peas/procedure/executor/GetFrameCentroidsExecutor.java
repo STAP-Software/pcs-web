@@ -102,10 +102,11 @@ public class GetFrameCentroidsExecutor {
 							.getAllHotPixelRects(), procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
+			// tell the async controller to update the frame
+			frameDisplayMgmt.displayFrame(frameNumber);
+			
 			frameNumber++;
 			
-			// tell the async controller to update the frame
-			frameDisplayMgmt.displayFrame();
 
 			statusLogger.log("fandi.start");
 

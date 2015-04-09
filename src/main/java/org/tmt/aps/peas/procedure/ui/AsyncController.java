@@ -170,6 +170,8 @@ public class AsyncController {
 		
 		if (getDisplayNewFrame() || getMarkNewFrame()) {
 			
+			procedureController.setSelectedFrameNumber(frameDisplayMgmt.getFrameNumber());
+			
 			// get the marking to the procedure
 			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
 			String yList = FloatPointListEncoder.encodeYList(frameDisplayMgmt.getMarkList());

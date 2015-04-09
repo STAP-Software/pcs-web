@@ -32,6 +32,8 @@ public class FrameDisplayMgmt implements Serializable {
 	private String frameInstructions;
 	private String frameInstructionImageName;
 
+	private int frameNumber;
+	
 	// marked centroids x and y
 	String centroidXs;
 	String centroidYs;
@@ -59,11 +61,13 @@ public class FrameDisplayMgmt implements Serializable {
 		return pendingMarkAction;
 	}
 	
-	public void displayFrame() {
+	public void displayFrame(int frameNumber) {
 		pendingDisplay = true;
 		this.frameInstructions = null;
-		this.frameInstructionImageName = "";		
+		this.frameInstructionImageName = "";	
+		this.frameNumber = frameNumber;
 	}
+	
 	public void displayFrame(String frameInstructions) {
 		pendingDisplay = true;
 		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
@@ -146,6 +150,15 @@ public class FrameDisplayMgmt implements Serializable {
 	public String getFrameInstructionImageName() {
 		return frameInstructionImageName;
 	}
+	
+	public int getFrameNumber() {
+		return frameNumber;
+	}
+
+	public void setFrameNumber(int frameNumber) {
+		this.frameNumber = frameNumber;
+	}
+
 
 
 }
