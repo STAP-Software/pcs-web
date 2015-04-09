@@ -48,6 +48,7 @@ import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
@@ -561,6 +562,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
 		return JavaComputations.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+	}
+
+	@Override
+	public void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
+		JavaComputations.checkSubimageIntensities(correctedFrame, centroidMap, threshold);
 	}
 
 }

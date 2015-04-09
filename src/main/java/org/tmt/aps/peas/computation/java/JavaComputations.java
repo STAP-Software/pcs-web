@@ -13,6 +13,8 @@ import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 public class JavaComputations {
@@ -140,6 +142,20 @@ public class JavaComputations {
 				return new AutoCenterTelCheckResult(TriState.YES, TriState.NO, "autocentertel.move_tel", args);
 			}
 		}
+	}
+
+	public static void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
+		
+		for (FloatPoint centroid : centroidMap.getValues()) {
+			
+			int x = Math.round(centroid.x);
+			int y = Math.round(centroid.y);
+			if (correctedFrame[x][y] > threshold) {
+				throw new NonLinearIntensitiesException();
+			}
+			
+		}
+		
 	}
 
 }

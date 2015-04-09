@@ -126,13 +126,16 @@ public class GetFrameCentroidsExecutor {
 
 				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 				procedureCcdFrame.setCentroidMap(centroidMap);
-
+				
+				// test for non-linear subimage maximums
+				computationLibrary.checkSubimageIntensities(ccdFrame.getCorrectedFrame(), centroidMap, physicalModel.getInstrument().getCcd().getNonLinearThreshold());
+				
 				break; // success, break of out while loop
 
 			} catch (NonLinearIntensitiesException e) {
 				
-				String text = "Non Linear Test";
-
+				String text = MessageGenerator.generateMessage("fandi.intensities.nonlinear");
+				
 				// user interaction
 				statusLogger.log("procedure.exception", text);
 
@@ -297,7 +300,7 @@ public class GetFrameCentroidsExecutor {
 		if (!userResponse) {
 			throw new HandMarkRequiredException();
 		}
-
+		
 		return centroidMap;
 	}
 

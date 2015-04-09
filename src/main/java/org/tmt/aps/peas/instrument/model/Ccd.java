@@ -44,6 +44,7 @@ public class Ccd {
 	private int rowCount;
 	private int colCount;
 	private int colOffset;
+	private float nonLinearThreshold;
 	
 	
 	@ManyToOne
@@ -164,6 +165,16 @@ public class Ccd {
 		this.temperature = temperature;
 	}
 	
+	public float getNonLinearThreshold() {
+		return nonLinearThreshold;
+	}
+
+
+	public void setNonLinearThreshold(float nonLinearThreshold) {
+		this.nonLinearThreshold = nonLinearThreshold;
+	}
+
+
 	public String getDisplayString() {
 		switch (state) {
 		case POWER_STATE_ON:
