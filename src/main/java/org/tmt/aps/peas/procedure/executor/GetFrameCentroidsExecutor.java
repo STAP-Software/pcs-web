@@ -89,17 +89,20 @@ public class GetFrameCentroidsExecutor {
 		CentroidMap centroidMap = null;
 		
 		// initialize frame number
-		int frameNumber = procedure.getProcedureCcdFrameCount();
+		
+		int frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
 
 		while (true) {
 
 			statusLogger.log("frame.get");
 
 			procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(),
-					procedure.getProcedureNumber(), 0, frameNumber++, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd()
+					procedure.getProcedureNumber(), 0, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd()
 							.getAllHotPixelRects(), procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
+			frameNumber++;
+			
 			// tell the async controller to update the frame
 			frameDisplayMgmt.displayFrame();
 
