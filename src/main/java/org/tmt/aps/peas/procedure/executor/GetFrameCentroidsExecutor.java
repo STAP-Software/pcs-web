@@ -105,7 +105,8 @@ public class GetFrameCentroidsExecutor {
 			// tell the async controller to update the frame
 			frameDisplayMgmt.displayFrame(frameNumber);
 			
-			frameNumber++;
+			// for now we don't increment frame number if frame from file
+			if (!procedureConfig.isFrameFromFile()) frameNumber++;
 			
 
 			statusLogger.log("fandi.start");
