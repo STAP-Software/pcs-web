@@ -150,10 +150,14 @@ public class JavaComputations {
 			
 			int x = Math.round(centroid.x);
 			int y = Math.round(centroid.y);
-			if (correctedFrame[x][y] > threshold) {
+			
+			for (int i=x-1; i<=x+1; i++) {
+			for (int j=y-1; j<=y+1; j++) {
+			if (correctedFrame[i][j] > threshold) {
 				throw new NonLinearIntensitiesException();
 			}
-			
+			}
+		}
 		}
 		
 	}
