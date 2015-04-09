@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.EJB;
@@ -14,8 +15,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -65,7 +66,9 @@ public class ProcedureMgmt {
 	public void setupFrameLog(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 	
 		List<FrameFieldDisplay> displayList = sessionMgmt.findAllFrameFieldsToDisplay();
-
+		
+		List<FrameFieldDisplay> myList = new ArrayList<FrameFieldDisplay>();
+		
 		for (FrameFieldDisplay fieldDisplay : displayList) {
 
 			Object object;
@@ -76,6 +79,9 @@ public class ProcedureMgmt {
 				object = procedureCcdFrame.getCcdFrame();
 			}
 
+			// we clone the bean because hibernate caching gives us the same objects each time this is called.
+			FrameFieldDisplay myDisplay = (FrameFieldDisplay)BeanUtils.cloneBean(fieldDisplay);
+			
 			if (object != null) {
 
 				Class clazz = object.getClass();
@@ -90,10 +96,11 @@ public class ProcedureMgmt {
 								
 				String value = procedureOutputMgmt.encodeObjectFieldValue(object, method, fieldDisplay.getFieldMetaData());
 				
-				fieldDisplay.setValue(value);
+				myDisplay.setValue(value);
 			}
+			myList.add(myDisplay);
 		}
-		procedureCcdFrame.setFrameFieldDisplayList(displayList);
+		procedureCcdFrame.setFrameFieldDisplayList(myList);
 	}
 
 	public Procedure updateProcedure(Procedure procedure) {

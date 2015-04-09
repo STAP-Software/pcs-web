@@ -27,6 +27,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
+import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
@@ -127,6 +128,22 @@ public class GetFrameCentroidsExecutor {
 
 				break; // success, break of out while loop
 
+			} catch (NonLinearIntensitiesException e) {
+				
+				String text = "Non Linear Test";
+
+				// user interaction
+				statusLogger.log("procedure.exception", text);
+
+				int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
+
+				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+					throw new Exception("User Aborted Test");
+				} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
+					break;
+				}
+				// we get here if we are going to re-take frame (Retry)
+				
 			} catch (HandMarkRequiredException e) {
 
 				if (procedure.getProcedureType().isPassiveTilt()) {
