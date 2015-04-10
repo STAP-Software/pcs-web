@@ -284,11 +284,21 @@ public class GetFrameCentroidsExecutor {
 		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
+		CentroidMap centroidMap = null;
+		try {
+		
 		centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
 				.getFindCentConfig());
-		CentroidMap centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
+		centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
 
-
+		} catch (Exception e) {
+			if (procedure.getProcedureType().isPassiveTilt()) {
+				throw new HandMarkRequiredException();
+			} else {
+				throw e;
+			}
+		}
+		
 		// display the marked frame
 		frameDisplayMgmt.setMarking(centroids);
 		frameDisplayMgmt.displayMarkedFrame();

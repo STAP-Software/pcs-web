@@ -8,6 +8,7 @@ package org.tmt.aps.peas.procedure.ui;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -22,6 +23,7 @@ import javax.faces.event.PhaseId;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -123,6 +125,7 @@ public class ProcedureController implements Serializable {
 	float integrationAddTime;
 	UploadedFile uploadFitsFile;
 	List<FitsFilename> selectedFitsFiles;
+	List<FitsFilename> availableFitsFiles;
 	int selectedFrameNumber;
 	ProcedureCcdFrame selectedFrame;
 	byte[] falseColorPng;
@@ -273,9 +276,7 @@ public class ProcedureController implements Serializable {
 	
 	
 	public List<FitsFilename> getAvailableFitsFiles() {
-		List<FitsFilename> fitsFileList = frameController.getProcedureFitsFiles(procedure.getProcedureType().getProcedureTypeCd());
-		logger.debug("FitsFileList size = " + fitsFileList.size());
-		return fitsFileList;
+		return availableFitsFiles;
 	}
 
 	public void handleFileUpload(FileUploadEvent event) {
@@ -382,12 +383,16 @@ public class ProcedureController implements Serializable {
 			
 			// add the procedure to the session
 			sessionController.addNewProcedure(procedure);
-
+			
 			// clear the status log
 			statusLogController.clearProcedureStatusLog();
 
 			// clear any selected FITS files
 			selectedFitsFiles = null;
+			
+			// create available FITS file list
+			availableFitsFiles = frameController.getProcedureFitsFiles(procedure.getProcedureType().getProcedureTypeCd());
+			Collections.sort(availableFitsFiles, new BeanComparator("fileName"));
 
 			// clean up from previous procedure state
 			procedureExecutionState.init(procedure);
