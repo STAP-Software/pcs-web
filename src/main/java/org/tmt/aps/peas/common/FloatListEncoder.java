@@ -26,7 +26,7 @@ public class FloatListEncoder {
 		}
 
 		// list is encoded as num1, num2, etc
-		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
+		List<String> items = Arrays.asList(encodedList.trim().split("\\s*,\\s*"));
 		List<Float> numberList = new ArrayList<Float>();
 		for (String item : items) {
 			Float number = new Float(item.trim());
@@ -62,6 +62,10 @@ public class FloatListEncoder {
 	}
 	
 	public static String encodeList(List<Float> numberList) {
+		
+		if (numberList.isEmpty()) {
+			return "";
+		}
 		
 		StringBuffer buf = new StringBuffer();
 		for (Float number : numberList) {

@@ -210,6 +210,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						</p:panelGrid>
 
 						<f:facet name="footer">
+							<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
+								action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 							<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
 								action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 							<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"

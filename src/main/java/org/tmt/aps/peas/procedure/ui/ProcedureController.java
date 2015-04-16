@@ -599,11 +599,12 @@ public class ProcedureController implements Serializable {
 
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
-		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
-		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
+		centroidXs = (centroidXs == null || centroidXs.trim().length() == 0) ? "" + x : centroidXs + "," + x;
+		centroidYs = (centroidYs == null || centroidYs.trim().length() == 0) ? "" + y : centroidYs + "," + y;
 		setFrameCentroidXs(centroidXs);
 		setFrameCentroidYs(centroidYs);
 
+		
 		// make marking available to executor
 		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
@@ -618,6 +619,24 @@ public class ProcedureController implements Serializable {
 	public void doResetMarking() {
 		setFrameCentroidXs(null);
 		setFrameCentroidYs(null);
+	}
+	
+	public void doUndoMarking() {
+		// remove the last one marked
+		String centroidXs = getFrameCentroidXs();
+		String centroidYs = getFrameCentroidYs();
+
+		List<Float> xList = FloatListEncoder.decodeList(centroidXs);
+		List<Float> yList = FloatListEncoder.decodeList(centroidYs);
+		
+		if (!xList.isEmpty()) xList.remove(xList.size()-1);
+		if (!yList.isEmpty()) yList.remove(yList.size()-1);
+		
+		centroidXs = FloatListEncoder.encodeList(xList);
+		centroidYs = FloatListEncoder.encodeList(yList);
+		
+		setFrameCentroidXs(centroidXs);
+		setFrameCentroidYs(centroidYs);
 	}
 
 }
