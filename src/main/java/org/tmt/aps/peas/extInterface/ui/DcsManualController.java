@@ -21,6 +21,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.StarInfo;
+import org.tmt.aps.peas.extinf.TimeoutException;
 
 @Named
 @SessionScoped
@@ -208,6 +209,9 @@ public class DcsManualController implements Serializable {
 			dcsMgmt.commandSecondaryDeltas(deltaCmds);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Secondary Delta Send Successful"));
 			logger.info("doCommandSecondaryDelta: success");
+		} catch (TimeoutException e) {
+			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Secondard delta timeout exception"));
 		} catch (Exception e) {
 			e.printStackTrace();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending secondary deltas"));
