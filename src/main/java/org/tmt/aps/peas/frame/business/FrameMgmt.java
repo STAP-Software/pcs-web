@@ -258,7 +258,7 @@ public class FrameMgmt {
 				ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
 				ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
 				ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
-				ccdFrame.setTelescopeAz(telescope.getTelPosition().y);
+				ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 				
 				// generate filename and store into the FITS file
 				saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
