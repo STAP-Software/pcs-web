@@ -18,6 +18,7 @@
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{procedureController.frameCentroidYs}" />
 			<h:inputHidden id="spotRadius" value="#{procedureController.frameSearchRadius}" />
+			<h:inputHidden id="handMark" value="#{procedureController.frameMarkingMode}" />
 		</h:form>
 
 		<h:form id="procedureDetailForm">
@@ -288,6 +289,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 						<p:panelGrid id="configPanel" columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+							<h:outputLabel value="ACS Snap # After" />
+							<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" />
 							<h:outputLabel value="Test #" />
 							<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
 
@@ -375,6 +378,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		var yField = document.getElementById('frameHiddenForm:centroidYs').value;
 	 	var yArray = yField.split(','); 
 		var spotRad = document.getElementById('frameHiddenForm:spotRadius').value;
+		var handMark = document.getElementById('frameHiddenForm:handMark').value;
+		
+		ctx.font = "10px Arial";
+	 	ctx.fillStyle = "white";
+
 		
 	 	if (xField != null && xField.length > 0) {
 	 	
@@ -385,6 +393,9 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 				ctx.strokeStyle = '#ffffaa';
 				ctx.lineWidth = 2;
 				ctx.stroke();
+				if (handMark == "true") {
+					ctx.fillText("" + (i+1), xArray[i]/2 - 5, yArray[i]/2 - 6);
+				}
 			}
 		}
 		initCanvasEvents();

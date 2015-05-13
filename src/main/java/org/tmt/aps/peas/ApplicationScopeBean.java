@@ -71,6 +71,7 @@ public class ApplicationScopeBean {
 	@Inject
 	private FilterController filterController;
 
+	HttpSession persistentSession = null;
 	
 	public void preRenderView(ComponentSystemEvent e) {
 
@@ -160,7 +161,15 @@ public class ApplicationScopeBean {
 			filterController.doViewFilterWheel();
 		}
 		
-		
-		
 	}
+
+	public HttpSession getPersistentSession() {
+		return persistentSession;
+	}
+
+	public void setPersistentSession(HttpSession persistentSession) {
+		this.persistentSession = persistentSession;
+	}
+	
+	
 }

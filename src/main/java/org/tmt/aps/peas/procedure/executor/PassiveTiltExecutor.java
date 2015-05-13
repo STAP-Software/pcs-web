@@ -78,8 +78,8 @@ public class PassiveTiltExecutor {
 	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
-	@EJB
-	private FrameDisplayMgmt frameDisplayMgmt;
+	//@EJB
+	//private FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -90,8 +90,8 @@ public class PassiveTiltExecutor {
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private ComputationContext computationContext;
-	@EJB
-	private PupilRegistrator pupilRegistrator;
+	//@EJB
+	//private PupilRegistrator pupilRegistrator;
 	@EJB
 	PhysicalModel physicalModel;
 	@EJB

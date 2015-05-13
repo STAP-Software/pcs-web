@@ -53,5 +53,12 @@ public class ProcedureOutput implements ProcedureOutputable {
 		this.procedureOutputList = procedureOutputList;
 	}
 	
-	
+	// subclasses will override this
+	public int getM1SnapNumberAfter() {
+		return -1;
+	}
+
+	public String getM1SnapNumberAfterDisplayText() {
+		return getM1SnapNumberAfter() == -1 ? "None" : "" + getM1SnapNumberAfter();
+	}
 }

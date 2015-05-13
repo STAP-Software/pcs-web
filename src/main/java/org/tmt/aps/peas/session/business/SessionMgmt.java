@@ -20,11 +20,12 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.session.model.FieldMetaData;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
-import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Stateless
 public class SessionMgmt {
@@ -36,12 +37,25 @@ public class SessionMgmt {
 	
 	@EJB
 	PeasProperties peasProperties;
+	@EJB
+	ProcedureOutputMgmt procedureOutputMgmt;
 
 	public Session findSession(Long sessionId) {
 		TypedQuery<Session> query = em.createNamedQuery("findSession", Session.class);
 		query.setParameter("sessionId", sessionId);
 
-		return query.getSingleResult();
+		Session session = query.getSingleResult();
+		
+		for (Procedure procedure : session.getProcedureList()) {
+			try {
+				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId());
+				procedure.setProcedureOutput(procedureOutput);
+			} catch (Exception e) {
+				
+			}
+		}
+		
+		return session;
 	}
 
 	public List<Session> findAllSessions(Long telescopeId) {

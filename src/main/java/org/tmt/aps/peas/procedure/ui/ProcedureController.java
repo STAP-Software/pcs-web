@@ -31,10 +31,15 @@ import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.business.ComputationContext;
+import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -105,6 +110,9 @@ public class ProcedureController implements Serializable {
 	CentroidMapMgmt centroidMapMgmt;
 	@EJB
 	ProcedureExecutionMgmt procedureExecutionMgmt;
+	@EJB
+	private ComputationContext computationContext;
+
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -132,6 +140,7 @@ public class ProcedureController implements Serializable {
 	UserPrompt currentPrompt;
 	Instrument frameInstrument;
 		
+	boolean frameMarkingMode = false;
 	List<Procedure> procedureList;
 
 	
@@ -192,11 +201,23 @@ public class ProcedureController implements Serializable {
 
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
-		if (procedure.getProcedureConfigSet().getFindCentConfig() == null) {
+		try {
+			int irad = procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
+			if (frameMarkingMode) return "" + (irad * 2);
+			return "" + irad;
+		} catch (Throwable th) {
 			return "6";
 		}
-		return "" + procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
 	}
+
+	public boolean isFrameMarkingMode() {
+		return frameMarkingMode;
+	}
+
+	public void setFrameMarkingMode(boolean frameMarkingMode) {
+		this.frameMarkingMode = frameMarkingMode;
+	}
+
 
 	public void setFrameSearchRadius(String searchRadius) {
 
@@ -427,6 +448,7 @@ public class ProcedureController implements Serializable {
 
 	public void doExecuteProcedure() {
 
+		
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = "
 				+ procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 
@@ -590,17 +612,31 @@ public class ProcedureController implements Serializable {
 
 	public void doHandMark() {
 
+		frameMarkingMode = true;
+		
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 
 		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
 		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
 		// add to the centroid hidden form vars
-
+		
+		
+		// call findCent on each centroid
+		// FIXME this means that frame marking needs to be a sub-procedure
+		FindCentConfig findCentConfig = procedure.getProcedureConfigSet().getFindCentConfig();
+		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+		FloatPoint guess = new FloatPoint(x, y);
+		float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
+		FloatPoint centroid = guess;
+		try {
+			centroid = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+		} catch (Exception e) {}
+		
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
-		centroidXs = (centroidXs == null || centroidXs.trim().length() == 0) ? "" + x : centroidXs + "," + x;
-		centroidYs = (centroidYs == null || centroidYs.trim().length() == 0) ? "" + y : centroidYs + "," + y;
+		centroidXs = (centroidXs == null || centroidXs.trim().length() == 0) ? "" + centroid.x : centroidXs + "," + centroid.x;
+		centroidYs = (centroidYs == null || centroidYs.trim().length() == 0) ? "" + centroid.y : centroidYs + "," + centroid.y;
 		setFrameCentroidXs(centroidXs);
 		setFrameCentroidYs(centroidYs);
 
@@ -612,6 +648,8 @@ public class ProcedureController implements Serializable {
 	public void doApplyMarking() {
 		// TODO: put this in the action for the apply marking on the frame
 		frameDisplayMgmt.setPendingMarkAction(false);
+		
+		frameMarkingMode = false;
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("instructionDialog.hide()");
 	}

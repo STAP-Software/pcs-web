@@ -79,24 +79,36 @@
 									target="#{procedureController.procedure}" value="#{procedure}" />
 							</p:commandLink>
 						</p:column>
-						<p:column headerText="Procedure Number" sortBy="#{procedure.procedureNumber}">
+						<p:column headerText="Procedure Number" sortBy="#{procedure.procedureNumber}" style="width:5%">
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
-						<p:column headerText="Test Number">
+						<p:column headerText="Test Number" style="width:10%">
 							<h:outputText value="#{procedure.testNumber}" />
 						</p:column>
 						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
 							<h:outputText
 								value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>
-						<p:column headerText="Started">
+						<p:column headerText="Started" style="width:10%">
 							<h:outputText value="#{procedure.executionStartTime}" >
 								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
 							</h:outputText>
 							<p:spacer width="6px"/>
 							<h:outputText value="UTC"/>
 						</p:column>
-						<p:column headerText="Comments">
+						<p:column headerText="Completed" style="width:10%">
+							<h:outputText value="#{procedure.executionEndTime}" >
+								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
+							</h:outputText>
+							<p:spacer width="6px"/>
+							<h:outputText value="UTC"/>
+						</p:column>
+						<p:column headerText="M1 Snap Number After">
+							<h:outputText
+								value="#{procedure.procedureOutput.m1SnapNumberAfterDisplayText}" />
+						</p:column>
+						
+						<p:column headerText="Comments" style="width:30%">
 							<h:outputText value="#{procedure.comments}" />
 						</p:column>
 
