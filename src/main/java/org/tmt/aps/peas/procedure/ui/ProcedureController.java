@@ -24,6 +24,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.primefaces.event.FileUploadEvent;
@@ -482,8 +483,42 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	public void doOnLoad() {
+		
+		// if we are running, we need to restore some things
+		
+		if (procedureExecutionState.getExecutionStatus() == true) {
+			
+			// restart the poller
+			RequestContext.getCurrentInstance().execute("procedureExecutionPoller.start();");
+			
+			// update the frame display
+			//frameDisplayMgmt.setPendingDisplay(true);
+			frameDisplayMgmt.setPendingMarkedDisplay(true);
+			
+			// popup any popups that are currently active
+			RequestContext.getCurrentInstance().execute("drawSpots(); centroidsDisplayDialog.show()");
+			
+		}
+			
+	}
+	
+	
 	public String doViewProcedure() {
+		
+		// we might be running....
+		if (procedureExecutionState.getExecutionStatus() != true) {
+        
+			return doViewArchivedProcedure();
 
+		}
+		
+		return null;
+	}
+			
+	public String doViewArchivedProcedure() {
+		
+	
 		try {
 
 			procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
@@ -624,12 +659,19 @@ public class ProcedureController implements Serializable {
 		
 		// call findCent on each centroid
 		// FIXME this means that frame marking needs to be a sub-procedure
-		FindCentConfig findCentConfig = procedure.getProcedureConfigSet().getFindCentConfig();
-		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 		FloatPoint guess = new FloatPoint(x, y);
-		float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
+		// if findCent fails then we just use the user-marked guess as the centroid
 		FloatPoint centroid = guess;
+
 		try {
+			FindCentConfig findCentConfig = (FindCentConfig)BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
+			// double the search radius for hand marking
+			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
+		
+			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+		
+			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
+		
 			centroid = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 		} catch (Exception e) {}
 		

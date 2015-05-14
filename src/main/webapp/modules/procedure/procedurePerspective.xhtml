@@ -317,12 +317,16 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 
 			</p:panelGrid>
 			<p:remoteCommand name="handMark" action="#{procedureController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
+			
+			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
 		</h:form>
 
 		<ui:include src="advancedOptions.xhtml" />
 		<ui:include src="procedureLogDialog.xhtml" />
 		<ui:include src="executionPreferences.xhtml" />
 		<ui:include src="fitsFileLoadDialog.xhtml" />
+
+		
 
 <script>
 
