@@ -79,7 +79,7 @@
 									target="#{procedureController.procedure}" value="#{procedure}" />
 							</p:commandLink>
 						</p:column>
-						<p:column headerText="Procedure Number" sortBy="#{procedure.procedureNumber}" style="width:5%">
+						<p:column headerText="Procedure Number" sortBy="#{procedure}" sortFunction="#{sessionController.procedureSortFunction}" style="width:5%">
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
 						<p:column headerText="Test Number" style="width:10%">

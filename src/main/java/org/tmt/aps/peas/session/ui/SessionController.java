@@ -173,6 +173,12 @@ public class SessionController implements Serializable {
 		}
 	}
 	
+	public int procedureSortFunction(Object o1, Object o2) {
+		Procedure p1 = (Procedure)o1;
+		Procedure p2 = (Procedure)o2;
+		return new ProcedureNumberComparator().compare(p1, p2);
+	}
+	
 	
 	public String doViewCurrentSession() {
 		
@@ -194,7 +200,7 @@ public class SessionController implements Serializable {
 		session = sessionMgmt.findSession(session.getSessionId());
 		
 		// order procedures by procedure number
-		Collections.sort(session.getProcedureList(), new BeanComparator("procedureNumber"));
+		Collections.sort(session.getProcedureList(), new ProcedureNumberComparator());
 		
 		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";

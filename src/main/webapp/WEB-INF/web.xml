@@ -50,6 +50,15 @@
 		<session-timeout>300</session-timeout>
 	</session-config>
 		
+		
+	<error-page>
+    	<exception-type>
+          javax.faces.application.ViewExpiredException
+    	</exception-type >
+    	<location>/timeout.xhtml</location>
+	</error-page>	
+		
+		
 	<!-- 
 	<security-constraint>
    		<web-resource-collection>

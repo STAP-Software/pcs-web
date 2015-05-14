@@ -83,13 +83,17 @@ public class ApplicationScopeBean {
 		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		HttpSession session = null;
 
-		if (getPersistentSession() == null) {
+		System.out.println("persistent session = " + getPersistentSession());
+		
+		
+		if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
+			
 			session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
 			setPersistentSession(session);
 		} else {
 			// set the JSESSIONID cookie to that of the persistent session
 			session = getPersistentSession();
-			addCookie(response, "JSESSIONID", session.getId(), 1800);
+			addCookie(response, "JSESSIONID", session.getId(), 1800);			
 		}
 		
 		
