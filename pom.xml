@@ -151,7 +151,7 @@
  -->
 		<dependency>
                 <groupId>org.primefaces</groupId>
-                <artifactId>primefaces</artifactId>
+                <artifactId>primefaces</artifactId>               
                 <version>3.5</version>
                 <exclusions>
                     <exclusion>
@@ -196,6 +196,7 @@
 		<artifactId>commons-fileupload</artifactId>
 		<version>1.2.2</version>
 	  </dependency>
+	 
 
 	<dependency>
 		<groupId>edu.ucar</groupId>
@@ -221,8 +222,48 @@
 		<artifactId>pcs-extinf-impl</artifactId>
 		<version>0.0.1-SNAPSHOT</version>
 	</dependency>
-
-
+		
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>pcs-cam-async-rpc</artifactId>
+		<version>1.0</version>
+	</dependency>
+  
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>pcs-ccd-rpc</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>acs-extint-common</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>acs-extint-gwy-rpc</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>pcs-rsk-rpc</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>magiq-libs</artifactId>
+		<version>1.0</version>
+	</dependency>
+	
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>oncrpc</artifactId>
+		<version>1.0</version>
+	</dependency>
 
    </dependencies>
 
