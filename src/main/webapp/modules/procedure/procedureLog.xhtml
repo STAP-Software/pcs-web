@@ -1,0 +1,147 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="procedureLogForm">
+
+		<p:tabView>
+       	 	<p:tab title="Procedure Report">
+		
+			<h:commandLink>
+				<p:graphicImage value="../../images/excel.png" />
+				<p:dataExporter type="xls" target="plogTable" fileName="plog" />
+			</h:commandLink>
+			<h:commandLink>
+				<p:graphicImage value="../../images/csv.png" />
+				<p:dataExporter type="csv" target="plogTable" fileName="plog" />
+			</h:commandLink>
+
+			
+			<p:dataTable id="plogTable" var="plogValue" value="#{procedureController.procedure.procedureOutput.procedureOutputList}" 
+			scrollable="true" scrollHeight="500" resizableColumns="true">
+			
+				<f:facet name="header">
+        			Procedure Execution Values
+    			</f:facet>
+
+				<p:column headerText="Name" style="width:150px;vertical-align:top">
+					<h:outputText value="#{plogValue.procedureOutputField.displayLabel}" />
+				</p:column>
+				<p:column headerText="Value" style="width:400px;vertical-align:top">
+					<h:outputText style="white-space:pre-line" escape="false" value="#{plogValue.dataFormatted}" />
+				</p:column>
+				
+				<p:column headerText="Units" style="width:100px;vertical-align:top">
+					<h:outputText value="#{plogValue.procedureOutputField.units}" />
+				</p:column>
+				<p:column headerText="Description" style="width:400px;vertical-align:top">
+					<h:outputText value="#{plogValue.procedureOutputField.description}" />
+				</p:column>
+
+			</p:dataTable>
+			</p:tab>
+			
+			<p:tab title="Frame/Centroids Reports">
+			
+				<p:tabView value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" >
+				
+					<p:tab title="Frame #{procedureFrame.procedureFrameNumber + 1} Report">
+						
+	
+						<h:commandLink>
+							<p:graphicImage value="../../images/excel.png" />
+							<p:dataExporter type="xls" target="flogTable" fileName="plog" />
+						</h:commandLink>
+						<h:commandLink>
+							<p:graphicImage value="../../images/csv.png" />
+							<p:dataExporter type="csv" target="flogTable" fileName="plog" />
+						</h:commandLink>
+			
+			
+						<p:dataTable id="flogTable" var="flogValue" value="#{procedureFrame.frameFieldDisplayList}" scrollable="true" scrollHeight="500" resizableColumns="true">
+							<f:facet name="header">
+			        				Frame/Centroids Related Values
+			    				</f:facet>
+			
+							<p:column headerText="Name" style="width:150px">
+								<h:outputText value="#{flogValue.fieldMetaData.displayLabel}" />
+							</p:column>
+							<p:column headerText="Value" style="width:500px" >
+								<h:outputText value="#{flogValue.value}" />
+							</p:column>
+							
+							<p:column headerText="Units" style="width:100px">
+								<h:outputText value="#{flogValue.fieldMetaData.units}" />
+							</p:column>
+							<p:column headerText="Description" style="width:300px">
+								<h:outputText value="#{flogValue.fieldMetaData.description}" />
+							</p:column>
+			
+						</p:dataTable>
+							
+							
+					</p:tab>
+				
+				</p:tabView>
+			
+			</p:tab>
+			
+			<p:tab title="Procedure Iteration Reports" rendered="#{not empty procedureController.procedure.procedureOutput.procedureIterationOutputList}">
+			
+			
+			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
+			
+				<p:tab title="Iteration #{pio.iteration + 1}">
+
+					<h:commandLink>
+						<p:graphicImage value="../../images/excel.png" />
+						<p:dataExporter type="xls" target="iterTable" fileName="plog" />
+					</h:commandLink>
+					<h:commandLink>
+						<p:graphicImage value="../../images/csv.png" />
+						<p:dataExporter type="csv" target="iterTable" fileName="plog" />
+					</h:commandLink>
+				
+					<p:dataTable id="iterTable" var="plogIterValue" value="#{pio.procedureIterationOutputList}" scrollable="true" scrollHeight="500" resizableColumns="true">
+						<f:facet name="header">
+		        				Procedure Iteration Execution Values
+		    				</f:facet>
+		
+						<p:column headerText="Name" style="width:150px;vertical-align:top">
+							<h:outputText value="#{plogIterValue.procedureOutputField.displayLabel}" />
+						</p:column>
+						<p:column headerText="Value" style="width:400px;vertical-align:top">
+							<h:outputText style="white-space:pre-line" escape="false" value="#{plogIterValue.dataFormatted}" />
+						</p:column>
+						
+						<p:column headerText="Units" style="width:100px;vertical-align:top">
+							<h:outputText value="#{plogIterValue.procedureOutputField.units}" />
+						</p:column>
+						<p:column headerText="Description" style="width:400px;vertical-align:top">
+							<h:outputText value="#{plogIterValue.procedureOutputField.description}" />
+						</p:column>
+		
+					</p:dataTable>
+				
+				
+				
+				</p:tab>
+			</p:tabView>
+			
+			
+			
+			</p:tab>
+			
+			</p:tabView>
+			
+
+		</h:form>
+	</ui:define>
+</ui:composition>
+</html>

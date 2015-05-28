@@ -104,9 +104,15 @@
 							<h:panelGroup>
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
 							<p:spacer height="1px" width="15px"/>
+							<!-- 
 							<p:commandLink ajax="true" update=":procedureLogForm" oncomplete="procedureLogDialog.show();" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
 								<h:outputText value="Procedure Log" />
 							</p:commandLink>
+							 -->
+							<p:commandLink ajax="true" update=":procedureLogForm" action="#{procedureController.doShowProcedureLog}" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
+								<h:outputText value="Procedure Log" />
+							</p:commandLink>
+							
 							</h:panelGroup>
 							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
 							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}"

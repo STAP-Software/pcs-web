@@ -15,10 +15,14 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.extinf.ACS;
 import org.tmt.aps.peas.extinf.AcsCommand;
+import org.tmt.aps.peas.extinf.CCD;
+import org.tmt.aps.peas.extinf.CamAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
+import org.tmt.aps.peas.extinf.DcsRsk;
 import org.tmt.aps.peas.extinf.InstrumentInterface;
 
 @Singleton
@@ -42,10 +46,12 @@ public class ExtInfFactory {
 
 		try {
 			String acsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.acs_enabled");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 			boolean acsEnabled = new Boolean(acsEnabledStr);
+			int telescopeId = new Integer(telescopeIdStr);
 
 			if (acsEnabled) {
-				return getAcsCommandRemote();
+				return getAcsCommandRemote(telescopeId);
 			} else {
 				return new AcsCommandSimulator();
 			}
@@ -61,10 +67,12 @@ public class ExtInfFactory {
 
 		try {
 			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 			boolean cameraEnabled = new Boolean(cameraEnabledStr);
+			int telescopeId = new Integer(telescopeIdStr);
 
 			if (cameraEnabled) {
-				return getCameraCommandRemote();
+				return getCameraCommandRemote(telescopeId);
 			} else {
 				return new CameraCommandSimulator();
 			}
@@ -80,10 +88,12 @@ public class ExtInfFactory {
 
 		try {
 			String ccdEnabledStr = peasProperties.getProp("org.tmt.aps.peas.ccd_enabled");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 			boolean ccdEnabled = new Boolean(ccdEnabledStr);
-
+			int telescopeId = new Integer(telescopeIdStr);
+			
 			if (ccdEnabled) {
-				return getCcdCommandRemote();
+				return getCcdCommandRemote(telescopeId);
 			} else {
 				return new CcdCommandSimulator();
 			}
@@ -99,10 +109,12 @@ public class ExtInfFactory {
 
 		try {
 			String dcsEnabledStr = peasProperties.getProp("org.tmt.aps.peas.dcs_enabled");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+			int telescopeId = new Integer(telescopeIdStr);
 			boolean dcsEnabled = new Boolean(dcsEnabledStr);
 
 			if (dcsEnabled) {
-				return getDcsCommandRemote();
+				return getDcsCommandRemote(telescopeId);
 			} else {
 				return dcsCommandSimulator;
 			}
@@ -119,6 +131,8 @@ public class ExtInfFactory {
 		try {
 			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
 			boolean instrumentEnabled = new Boolean(instrumentEnabledStr);
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+			int telescopeId = new Integer(telescopeIdStr);
 
 			if (instrumentEnabled) {
 				return getInstrumentCommandRemote();
@@ -135,14 +149,10 @@ public class ExtInfFactory {
 
 
 
-	private AcsCommand getAcsCommandRemote() {
+	private AcsCommand getAcsCommandRemote(int telescopeId) {
 		try {
-			String acsExtInfServer = peasProperties.getProp("org.tmt.aps.peas.acs_ext_inf_server");
-			String acsServiceName = peasProperties.getProp("org.tmt.aps.peas.acs_service_name");
 			
-			Registry registry = LocateRegistry.getRegistry(acsExtInfServer);
-			AcsCommand acsCommand = (AcsCommand) registry.lookup(acsServiceName);
-			return acsCommand;
+			return new ACS(telescopeId);
 		} catch (Exception e) {
 			System.err.println("Acs Command exception:");
 			e.printStackTrace();
@@ -150,29 +160,26 @@ public class ExtInfFactory {
 		}
 	}
 
-	private CameraCommand getCameraCommandRemote() {
+	private CameraCommand getCameraCommandRemote(int telescopeId) {
 		try {
-			String cameraExtInfServer = peasProperties.getProp("org.tmt.aps.peas.camera_ext_inf_server");
-			String cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
 
-			Registry registry = LocateRegistry.getRegistry(cameraExtInfServer);
-			CameraCommand cameraCommand = (CameraCommand) registry.lookup(cameraServiceName);
-			return cameraCommand;
+			return new CamAsync(telescopeId);
+			//return null;
+			
 		} catch (Exception e) {
 			System.err.println("Camera Command exception:");
 			e.printStackTrace();
 			return null;
 		}
 	}
+	
 
-	private CcdCommand getCcdCommandRemote() {
+
+	private CcdCommand getCcdCommandRemote(int telescopeId) {
 		try {
-			String ccdExtInfServer = peasProperties.getProp("org.tmt.aps.peas.ccd_ext_inf_server");
-			String ccdServiceName = peasProperties.getProp("org.tmt.aps.peas.ccd_service_name");
+			
+			return new CCD(telescopeId);
 
-			Registry registry = LocateRegistry.getRegistry(ccdExtInfServer);
-			CcdCommand ccdCommand = (CcdCommand) registry.lookup(ccdServiceName);
-			return ccdCommand;
 		} catch (Exception e) {
 			System.err.println("Ccd Command exception:");
 			e.printStackTrace();
@@ -180,14 +187,10 @@ public class ExtInfFactory {
 		}
 	}
 	
-	private DcsCommand getDcsCommandRemote() {
+	private DcsCommand getDcsCommandRemote(int telescopeId) {
 		try {
-			String dcsExtInfServer = peasProperties.getProp("org.tmt.aps.peas.dcs_ext_inf_server");
-			String dcsServiceName = peasProperties.getProp("org.tmt.aps.peas.dcs_service_name");
-
-			Registry registry = LocateRegistry.getRegistry(dcsExtInfServer);
-			DcsCommand dcsCommand = (DcsCommand) registry.lookup(dcsServiceName);
-			return dcsCommand;
+			
+			return new DcsRsk(telescopeId);
 		} catch (Exception e) {
 			System.err.println("Dcs Command exception:");
 			e.printStackTrace();

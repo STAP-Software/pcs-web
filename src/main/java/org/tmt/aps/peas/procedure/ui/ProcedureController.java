@@ -557,6 +557,8 @@ public class ProcedureController implements Serializable {
 			if (procedure.getProcedureConfigSet().getFiConfig() == null) {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
+			
+			breadcrumbMenuBean.removeTo("Session:");
 
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 					+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
@@ -572,6 +574,16 @@ public class ProcedureController implements Serializable {
 
 	public void doAbortProcedure() {
 		procedureExecutionState.setAbortRequested(true);
+	}
+	
+	public String doShowProcedureLog() {
+		
+		breadcrumbMenuBean.removeTo("Procedure #");
+		
+		breadcrumbMenuBean.addItem("Procedure Log", "/modules/procedure/procedureLog.xhtml");
+
+		return "/modules/procedure/procedureLog.xhtml?faces-redirect=true";
+
 	}
 
 	// Maybe in another controller, not sure yet

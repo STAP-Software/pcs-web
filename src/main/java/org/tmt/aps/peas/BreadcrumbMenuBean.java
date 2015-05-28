@@ -64,7 +64,7 @@ public class BreadcrumbMenuBean implements Serializable {
 			MenuItem item = (MenuItem)component;
 			String candidate = (String)item.getValue();
 			newModel.addMenuItem(item);
-			if (candidate.equals(name)) {
+			if (candidate.contains(name)) {
 				model = newModel;
 				return;
 			}

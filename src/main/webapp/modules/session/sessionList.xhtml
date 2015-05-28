@@ -29,7 +29,7 @@
 				</p:column>
 				<p:column headerText="Session Date">
 					<h:outputText value="#{nightSession.sessionDate}" >
-						<f:convertDateTime pattern="MM/dd/yyyy " />
+						<f:convertDateTime pattern="MM/dd/yyyy " timezone="UTC" />
 					</h:outputText>
 				</p:column>
 				<p:column headerText="Description">

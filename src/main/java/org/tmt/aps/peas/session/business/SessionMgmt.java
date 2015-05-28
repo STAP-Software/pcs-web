@@ -69,7 +69,7 @@ public class SessionMgmt {
 		// get the session for this date
 		try {
 			try {
-				// we use UTC as the timezone, hawaii time a session is within a UTC day
+				// we use UTC as the timezone, hawaii time a session is within a UTC day 
 				SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 				sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 				Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
@@ -90,6 +90,7 @@ public class SessionMgmt {
 		}
 
 	}
+	
 
 	public Session createSession(Session session) throws Exception {
 		// store both session and procedure list
@@ -100,6 +101,10 @@ public class SessionMgmt {
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
 
+			// prior to noon Hawaii Time we assume the session is associated with the previous night
+			// after noon Hawaii Time we assume this is associated with the upcoming night
+			
+			
 			session.setSessionDate(dateWithoutTime);
 			em.persist(session);
 
