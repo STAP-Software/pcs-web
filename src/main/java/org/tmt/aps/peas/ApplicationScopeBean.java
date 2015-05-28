@@ -144,7 +144,7 @@ public class ApplicationScopeBean {
 			refBeamController.doViewReferenceBeam();
 		} else if (path.equals("/modules/config/missingSpots.xhtml")) {
 			missingSpotsController.doViewMissingSpots();
-		} else if (path.contains("/modules/procedure/procedurePerspective.")) {
+		} else if (path.equals("/modules/procedure/procedurePerspective.")) {
 			//breadcrumbMenuBean.removeTo("Procedure #");
 			
 			procedureController.doViewProcedure();
