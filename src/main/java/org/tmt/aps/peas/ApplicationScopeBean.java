@@ -119,6 +119,8 @@ public class ApplicationScopeBean {
 			return;
 		}
 
+		String facesRedirect = request.getParameter("faces-redirect");
+		
 		System.out.println("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
 		System.out.println("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
 
@@ -144,10 +146,9 @@ public class ApplicationScopeBean {
 			refBeamController.doViewReferenceBeam();
 		} else if (path.equals("/modules/config/missingSpots.xhtml")) {
 			missingSpotsController.doViewMissingSpots();
-		} else if (path.equals("/modules/procedure/procedurePerspective.")) {
-			//breadcrumbMenuBean.removeTo("Procedure #");
-			
-			procedureController.doViewProcedure();
+		} else if (path.contains("/modules/procedure/procedurePerspective.") && facesRedirect != null) {
+			breadcrumbMenuBean.removeTo("Procedure #");
+			//procedureController.doViewProcedure();
 		} else if (path.equals("/modules/diagnostic/acsManualInterface.xhtml")) {
 			acsManualController.doViewAcsManualInterface();
 		} else if (path.equals("/modules/diagnostic/ccdDiagnostic.xhtml")) {

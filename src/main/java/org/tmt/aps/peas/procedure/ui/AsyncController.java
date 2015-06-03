@@ -21,6 +21,7 @@ import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -270,6 +271,15 @@ public class AsyncController {
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
 			RequestContext.getCurrentInstance().update("procedureDetailForm");
+			
+			// update the breadcrumb to associate the current session as the first link
+			Session session = sessionController.getCurrentSession();
+			breadcrumbMenuBean.insertFirst("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
+			RequestContext.getCurrentInstance().update("breadcrumbForm");
+			
+			// update the currentSessionPersisted for use in the UI
+			sessionController.updateCurrentSessionPersisted();
+			
 		} catch (Exception e) {
 			logger.error(e.getMessage());
 		}

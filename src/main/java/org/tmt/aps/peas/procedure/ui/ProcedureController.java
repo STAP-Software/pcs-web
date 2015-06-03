@@ -397,6 +397,28 @@ public class ProcedureController implements Serializable {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);
 	}
 
+	public String doNewLastProc() {
+		ProcedureType lastProcedureType = sessionController.getCurrentSessionLastProcedure().getProcedureType();
+		if (lastProcedureType.isCenterTelescope()) {
+			return doNewCenterTelescope();
+		} else if (lastProcedureType.isCreateRefMap()) {
+			return doNewCreateRefBeam();
+		} else if (lastProcedureType.isPassiveTilt()) {
+			return doNewPassiveTilt();
+		} else if (lastProcedureType.isPupilRegistration()) {
+			return doNewPassiveTilt();
+		} else if (lastProcedureType.isFineScreen()) {
+			return doNewPassiveTilt();
+		} else if (lastProcedureType.isPhasing()) {
+			return doNewPassiveTilt();
+		} else if (lastProcedureType.isSufs()) {
+			return doNewPassiveTilt();
+		} else {
+			return null;
+		}
+		
+	}
+	
 	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
 		try {
@@ -427,8 +449,8 @@ public class ProcedureController implements Serializable {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date date = new Date();
-			breadcrumbMenuBean.addFirstItem(procedure.getProcedureType().getProcedureTypeName() + " - " + sdf.format(date),
-					"/modules/procedure/procedurePerspective.xhtml");
+			breadcrumbMenuBean.addFirstItem("Procedure #" + procedure.getProcedureNumber() + ": " + procedure.getProcedureType().getProcedureTypeName(),
+					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -561,7 +583,7 @@ public class ProcedureController implements Serializable {
 			breadcrumbMenuBean.removeTo("Session:");
 
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
-					+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml");
+					+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
 
 			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 

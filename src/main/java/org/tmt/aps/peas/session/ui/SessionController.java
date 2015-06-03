@@ -22,6 +22,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
@@ -53,6 +54,7 @@ public class SessionController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	
 	Session currentSession;
+	Session currentSessionPersisted; // the session that is completed and stored
 	Session session;
 	List<Session> sessionList;
 	List<String> frameList;
@@ -77,11 +79,18 @@ public class SessionController implements Serializable {
 		sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
 		
 		currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
+		// do we get our own copy??
+		currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 		
 		if (currentSession == null) {
 			currentSession = createNewSession();
+			currentSessionPersisted = (Session)BeanUtils.cloneBean(currentSession);
+			// the cloneBean will copy the procedure list, we want our own copy
+			currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
 		} 
 		
+		session = currentSession;
+
 		
 		advancedViewMode = false;
 		
@@ -180,12 +189,21 @@ public class SessionController implements Serializable {
 	}
 	
 	
+	public void updateCurrentSessionPersisted() {
+		try {
+			currentSessionPersisted = sessionMgmt.findSession(currentSession.getSessionId());
+		} catch (Exception e) {
+			// do nothing
+		}
+
+	}
+	
 	public String doViewCurrentSession() {
 		
 		try {
 			session = sessionMgmt.findSession(currentSession.getSessionId());
 		} catch (Exception e) {
-			session = currentSession;
+			session = currentSessionPersisted;
 		}
 		
 		// order procedures by procedure number
@@ -212,7 +230,9 @@ public class SessionController implements Serializable {
 		sessionMgmt.updateSession(session);
 		
         FacesContext context = FacesContext.getCurrentInstance();          
-        context.addMessage(null, new FacesMessage("Record Save Successful", "More text"));  
+        context.addMessage(null, new FacesMessage("Record Save Successful", "More text")); 
+        
+        currentSessionPersisted = sessionMgmt.findSession(session.getSessionId());
 	
 		breadcrumbMenuBean.addFirstItem("Session: " + session, "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml";
@@ -237,6 +257,17 @@ public class SessionController implements Serializable {
 
 	public void addNewProcedure(Procedure procedure) {
 		currentSession.getProcedureList().add(procedure);		
+	}
+	
+	public Procedure getCurrentSessionLastProcedure() {
+		List<Procedure> pList = currentSessionPersisted.getProcedureList();
+		
+		if (pList == null || pList.size() == 0) {
+			return null;
+		}
+		
+		return pList.get(pList.size()-1);
+		
 	}
 	
 	public void modeChangeListener() {

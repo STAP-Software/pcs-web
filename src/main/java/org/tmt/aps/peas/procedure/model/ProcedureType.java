@@ -73,6 +73,15 @@ public class ProcedureType {
 	public boolean isFineScreen() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_FINE_SCREEN);
 	}
+	public boolean isPupilRegistration() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);	
+	}
+	public boolean isPhasing() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_PHASING);	
+	}
+	public boolean isSufs() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_SUFS);	
+	}
 	
 
 	public String toString() {

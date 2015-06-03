@@ -10,7 +10,8 @@
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="View Current Session" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
-				
+					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null}" />
 					<p:submenu label="Run" icon="ui-icon-gear" >
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>

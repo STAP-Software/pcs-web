@@ -55,6 +55,15 @@ public class BreadcrumbMenuBean implements Serializable {
 		model.addMenuItem(item);
 	}
 	
+	public void insertFirst(String name, String url) {
+		MenuItem item = new MenuItem();
+		item.setValue(name);
+		item.setUrl(url);
+		immediateUrl = url;
+		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
+		model.getContents().add(0, item);
+	}
+	
 	public void removeTo(String name) {
 
 		MenuModel newModel = new DefaultMenuModel();
