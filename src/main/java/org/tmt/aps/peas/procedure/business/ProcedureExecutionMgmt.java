@@ -280,12 +280,13 @@ public class ProcedureExecutionMgmt {
 		}
 	}
 
-	public Procedure performProcedureSetup(Long procedureTypeId, Long sessionId, ProcedureOutput procedureOutput) throws Exception {
+	public Procedure performProcedureSetup(Long procedureTypeId, Long sessionId, String testNumber, ProcedureOutput procedureOutput) throws Exception {
 		Procedure procedure = new Procedure();
 
 		// get the procedure type object
 		ProcedureType procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 		procedure.setProcedureType(procedureType);
+		procedure.setTestNumber(testNumber);
 
 		procedure.setProcedureOutput(procedureOutput);
 

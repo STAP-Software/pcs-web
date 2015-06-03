@@ -177,7 +177,8 @@ public class PassiveTiltExecutor {
 
 					CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
 					Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
-							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), po);
+							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), 
+							procedure.getTestNumber(), po);
 
 					procedureExecutionMgmt.performProcedureStartup(subProcedure, null);
 
