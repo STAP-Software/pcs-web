@@ -225,15 +225,24 @@ public class FrameMgmt {
 				// get the telescope status
 				telescopeMgmt.refreshStatus();
 				
+				int[][] swapFrame = new int[frame.length][frame[0].length];
+				for (int i = 0; i < frame.length; i++) {
+					for (int j = 0; j < frame[i].length; j++) {
+						swapFrame[i][j] = frame[j][i];
+					}
+				}
+				
+				
 				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
 					ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-					frame = computationLibrary.removeBadPixels(frame, badPixelList);
+					//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+					swapFrame = computationLibrary.removeBadPixels(swapFrame, badPixelList);
 				}
 				
 				short[][] rawFrame = new short[frame.length][frame[0].length];
 				for (int i = 0; i < frame.length; i++) {
 					for (int j = 0; j < frame[i].length; j++) {
-						rawFrame[i][j] = (short) frame[j][i];
+						rawFrame[i][j] = (short) swapFrame[i][j];
 					}
 				}
 	
