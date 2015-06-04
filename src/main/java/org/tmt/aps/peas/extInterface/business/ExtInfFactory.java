@@ -37,6 +37,8 @@ public class ExtInfFactory {
 
 	DcsCommandSimulator dcsCommandSimulator;
 
+	CamAsync camAsync = null;
+	
 	@PostConstruct
 	void init() {
 		dcsCommandSimulator = new DcsCommandSimulator();
@@ -118,7 +120,7 @@ public class ExtInfFactory {
 			} else {
 				return dcsCommandSimulator;
 			}
-			
+
 		} catch (Exception e) {
 			e.printStackTrace();
 			logger.error("", e);
@@ -172,9 +174,11 @@ public class ExtInfFactory {
 			return camCommand;
 			*/
 			
+			if (camAsync == null) {
+				camAsync = new CamAsync(telescopeId);
+			}
+			return camAsync;
 			
-			return new CamAsync(telescopeId);
-			//return null;
 			
 		} catch (Exception e) {
 			System.err.println("Camera Command exception:");
