@@ -163,17 +163,17 @@ public class ExtInfFactory {
 	private CameraCommand getCameraCommandRemote(int telescopeId) {
 		try {
 
-			
+			/*
 			String cameraExtInfServer = peasProperties.getProp("org.tmt.aps.peas.camera_ext_inf_server");
 			String cameraServiceName = peasProperties.getProp("org.tmt.aps.peas.camera_service_name");
 
 			Registry registry = LocateRegistry.getRegistry(cameraExtInfServer);
 			CameraCommand camCommand = (CameraCommand) registry.lookup(cameraServiceName);
 			return camCommand;
-
+			*/
 			
 			
-			//return new CamAsync(telescopeId);
+			return new CamAsync(telescopeId);
 			//return null;
 			
 		} catch (Exception e) {
