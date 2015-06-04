@@ -659,6 +659,9 @@ public class ProcedureController implements Serializable {
 		if (!procedure.isNewRecord()) {
 			// only save if procedure has been saved. Prior to that, values will be persisted when the procedure is.
 			procedureMgmt.updateProcedure(procedure);
+			
+			// for propagating value to the next procedure
+			sessionController.updateCurrentSessionPersisted();
 		}
 	}
 
