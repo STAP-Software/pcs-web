@@ -390,8 +390,8 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		var spotRad = document.getElementById('frameHiddenForm:spotRadius').value;
 		var handMark = document.getElementById('frameHiddenForm:handMark').value;
 		
-		ctx.font = "10px Arial";
-	 	ctx.fillStyle = "white";
+		ctx.font = "12	px Arial";
+	 	ctx.fillStyle = "red";
 
 		
 	 	if (xField != null && xField.length > 0) {
@@ -400,11 +400,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 				ctx.beginPath();
 				// divide by 2 when frame is displayed 512x512
 				ctx.arc(xArray[i]/2,yArray[i]/2,spotRad/2,0,2*Math.PI);
-				ctx.strokeStyle = '#ffffaa';
+				ctx.strokeStyle = '#ff0000';
 				ctx.lineWidth = 2;
 				ctx.stroke();
 				if (handMark == "true") {
-					ctx.fillText("" + (i+1), xArray[i]/2 - 5, yArray[i]/2 - 6);
+					ctx.fillText("" + (i+1), xArray[i]/2 - 14, yArray[i]/2 - 15);
 				}
 			}
 		}
