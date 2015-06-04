@@ -38,6 +38,9 @@ public class ExtInfFactory {
 	DcsCommandSimulator dcsCommandSimulator;
 
 	CamAsync camAsync = null;
+	DcsRsk dcsRsk = null;
+	CCD ccd = null;
+	ACS acs = null;
 	
 	@PostConstruct
 	void init() {
@@ -154,7 +157,11 @@ public class ExtInfFactory {
 	private AcsCommand getAcsCommandRemote(int telescopeId) {
 		try {
 			
-			return new ACS(telescopeId);
+			if (acs == null) {
+				acs = new ACS(telescopeId);
+			}
+			
+			return acs;
 		} catch (Exception e) {
 			System.err.println("Acs Command exception:");
 			e.printStackTrace();
@@ -191,8 +198,10 @@ public class ExtInfFactory {
 
 	private CcdCommand getCcdCommandRemote(int telescopeId) {
 		try {
-			
-			return new CCD(telescopeId);
+			if (ccd == null) {
+				ccd = new CCD(telescopeId);
+			}
+			return ccd;
 
 		} catch (Exception e) {
 			System.err.println("Ccd Command exception:");
@@ -203,8 +212,11 @@ public class ExtInfFactory {
 	
 	private DcsCommand getDcsCommandRemote(int telescopeId) {
 		try {
+			if (dcsRsk == null) {
+				dcsRsk = new DcsRsk(telescopeId);
+			}
+			return dcsRsk;
 			
-			return new DcsRsk(telescopeId);
 		} catch (Exception e) {
 			System.err.println("Dcs Command exception:");
 			e.printStackTrace();
