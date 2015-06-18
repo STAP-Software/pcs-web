@@ -22,7 +22,12 @@ public class UserPromptMgmt implements Serializable {
 
 	private UserPrompt pendingPrompt;
 	private Integer returnState;
-
+	private int waitingForSecs;
+	
+	
+	public int getWaitingForSecs() {
+		return waitingForSecs;
+	}
 
 	@Lock(LockType.READ)
 	public UserPrompt getPendingPrompt() {
@@ -87,12 +92,17 @@ public class UserPromptMgmt implements Serializable {
 		returnState = null;
 		// here we wait until the return state changes
 		while(returnState == null) {
+			
+			waitingForSecs++;
+			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				
 			}
 		}
+		
+		waitingForSecs = 0;
 
 	}
 

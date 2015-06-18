@@ -95,6 +95,8 @@ public class AsyncController {
 		
 		checkMessages();
 		
+		checkIsWaiting();
+		
 		checkSubProcedureStart();
 		
 		checkSubProcedureEnd();
@@ -258,6 +260,21 @@ public class AsyncController {
 		if (procedureExecutionState.getProcedureException() != null) {
 			String message = procedureExecutionState.getProcedureException().getMessage();
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Procedure Error: ", message));
+		}
+	}
+	
+	private void checkIsWaiting() {
+		// check to see if we are waiting on user input, and for how long
+		
+		int waitForUserThreshold = 30;
+		
+		int secs = graphicDisplayMgmt.getWaitingForSecs() + userPromptMgmt.getWaitingForSecs();
+		
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		if (secs > waitForUserThreshold) {
+			requestContext.execute("play_wake_up_sound();");
+		} else {
+			requestContext.execute("stop_wake_up_sound();");
 		}
 	}
 	

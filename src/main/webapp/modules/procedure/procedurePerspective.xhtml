@@ -21,7 +21,16 @@
 			<h:inputHidden id="handMark" value="#{procedureController.frameMarkingMode}" />
 		</h:form>
 
+		<h:form id="audioForm">
+		
+			<audio id="audiocontrol">
+	  			<source src="../../resources/sounds/wake_up.ogg" type="audio/ogg" />
+			</audio>
+		
+		</h:form>
+
 		<h:form id="procedureDetailForm">
+		
 			
 			<p:spacer height="10px" />
 
@@ -415,6 +424,15 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		var objDiv = document.getElementById('procedureDetailForm:controlPanel:procedureEventLogPanel');
 		objDiv.scrollTop = objDiv.scrollHeight;
 	}
+	
+	function play_wake_up_sound() {
+		document.getElementById('audiocontrol').play();
+	}
+	function stop_wake_up_sound() {
+		document.getElementById('audiocontrol').pause();
+		document.getElementById('audiocontrol').load();
+	}
+
 	//]]>
 	
 </script>

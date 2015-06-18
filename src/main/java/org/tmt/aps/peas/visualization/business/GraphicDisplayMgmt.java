@@ -32,6 +32,7 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	private VisualizationDisplay pendingDisplay;
 	private Integer returnState;
+	private int waitingForSecs;
 	
 	String centroidXs;
 	String centroidYs;
@@ -46,6 +47,10 @@ public class GraphicDisplayMgmt implements Serializable {
 	String centroidNbrs;
 	String actuatorDeltas;
 
+
+	public int getWaitingForSecs() {
+		return waitingForSecs;
+	}
 
 	public String getCentroidXs() {
 		return centroidXs;
@@ -208,12 +213,17 @@ public class GraphicDisplayMgmt implements Serializable {
 		returnState = null;
 		// here we wait until the return state changes
 		while(returnState == null) {
+			
+			waitingForSecs++;
+			
 			try {
 				Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				
 			}
 		}
+		
+		waitingForSecs = 0;
 
 	}
 
