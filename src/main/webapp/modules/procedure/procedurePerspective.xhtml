@@ -11,7 +11,7 @@
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":growl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
+				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
 				stop="#{!asyncController.executionStatus}" oncomplete="scrollStatusLog()"/>
 		</h:form>
 		<h:form id="frameHiddenForm">
@@ -204,7 +204,7 @@
 
 						<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 					
-					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;" >
+					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" >
 Your browser does not support the HTML5 canvas tag.</canvas>
 
 						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
@@ -231,7 +231,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 							<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
 								action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 							<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-								action="#{procedureController.doApplyMarking}" update=":growl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+								action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 						</f:facet>
 					</p:panelGrid>
 

@@ -245,7 +245,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 

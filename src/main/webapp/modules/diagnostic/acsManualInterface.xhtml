@@ -46,7 +46,7 @@
 									<h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
 								</p:column>
 								<p:column>
-									<p:fileUpload fileUploadListener="#{acsManualController.handleFileUpload}" mode="advanced" update=":growl @form"
+									<p:fileUpload fileUploadListener="#{acsManualController.handleFileUpload}" mode="advanced" update=":growl :errorGrowl @form"
 										sizeLimit="40000" auto="true" styleClass="no-expand"/>
 								</p:column>
 							</p:row>
@@ -61,7 +61,7 @@
 							ajax="false" action="#{acsManualController.doClear}" update="@form"/>
 						<p:commandButton value="Send Commands" icon="ui-icon-check"
 							ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
-							update=":growl" />
+							update=":growl :errorGrowl" />
 					</f:facet>
 
 				</p:panelGrid>
@@ -80,19 +80,19 @@
 					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:8px"/>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
-							update=":growl" />		
+							update=":growl :errorGrowl" />		
 										
 					<h:outputLabel value="Is Running" style="position:relative; top:5px" />
 					<h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:8px"/>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryRunning}"
-							update=":growl" />		
+							update=":growl :errorGrowl" />		
 						
 					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:5px" />
 					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:8px"/>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryRmsActMove}"
-							update=":growl" />		
+							update=":growl :errorGrowl" />		
 						
 					<h:outputLabel style="height: 10px" />
 					<h:outputLabel style="height: 10px" />
@@ -101,7 +101,7 @@
 					<f:facet name="footer">
 						<p:commandButton value="Query All" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryAll}"
-							update=":growl" />
+							update=":growl :errorGrowl" />
 					
 					</f:facet>
 				</p:panelGrid>
@@ -123,11 +123,11 @@
 					<f:facet name="footer">
 						<p:commandButton value="Load Snapshot" icon="ui-icon-transferthick-e-w"
 							ajax="false" action="#{acsManualController.doLoadSnapshot}"
-							update=":growl" />
+							update=":growl :errorGrowl" />
 					
 						<p:commandButton value="Take Snapshot" icon="ui-icon-check"
 							ajax="false" action="#{acsManualController.doTakeSnapshot}"
-							update=":growl" />
+							update=":growl :errorGrowl" />
 					</f:facet>
 				</p:panelGrid>
 

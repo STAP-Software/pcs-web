@@ -33,9 +33,9 @@
 						<p:inputText id="colOffset" value="#{ccdDefController.ccd.colOffset}" size="3" required="true" />
 
 						<f:facet name="footer">
-							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
 								action="#{ccdDefController.doSaveCcd}" />
-							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
 								action="#{ccdDefController.doCancelSaveCcd}" />
 						</f:facet>
 					</p:panelGrid>
@@ -57,7 +57,7 @@
 						</p:column>
 						<p:column headerText="Delete">
 							<p:commandLink action="#{ccdDefController.doDeleteHotPixel}" title="delete" styleClass="ui-icon ui-icon-closethick"
-								update="@form :growl">
+								update="@form :growl :errorGrowl">
 								<f:setPropertyActionListener target="#{ccdDefController.hotPixelBoundingRect}" value="#{hotPixel}" />
 							</p:commandLink>
 						</p:column>
@@ -75,7 +75,7 @@
 						<h:outputText value="&#160;&#160;P2 (y): &#160;"/>
 						<p:inputText id="p2yHot" value="#{ccdDefController.hotPixelBoundingRect.p2.y}" size="2"/>
 						<p:spacer width="10px"/>
-						<p:commandButton value="Add Hot Pixel" update="@form :growl"  
+						<p:commandButton value="Add Hot Pixel" update="@form :growl :errorGrowl"  
              				ajax="true" action="#{ccdDefController.doAddHotPixel}" /> 
 					</h:panelGroup>
 				</p:tab>
@@ -95,7 +95,7 @@
 						</p:column>
 						<p:column headerText="Delete">
 							<p:commandLink action="#{ccdDefController.doDeleteHotColumn}" title="delete" styleClass="ui-icon ui-icon-closethick"
-								update="@form :growl">
+								update="@form :growl :errorGrowl">
 								<f:setPropertyActionListener target="#{ccdDefController.hotColumnBoundingRect}" value="#{hotColumn}" />
 							</p:commandLink>
 						</p:column>
@@ -113,7 +113,7 @@
 						<h:outputText value="&#160;&#160;P2 (y): &#160;"/>
 						<p:inputText value="#{ccdDefController.hotColumnBoundingRect.p2.y}" size="2"/>
 						<p:spacer width="10px"/>
-						<p:commandButton value="Add Hot Column" update="@form :growl"  
+						<p:commandButton value="Add Hot Column" update="@form :growl :errorGrowl"  
              				ajax="true" action="#{ccdDefController.doAddHotColumn}" /> 
 					</h:panelGroup>
 				</p:tab>

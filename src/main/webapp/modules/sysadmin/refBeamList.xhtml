@@ -12,9 +12,9 @@
 
 			<p:spacer width="100" height="10" />
 			<div>
-				<p:commandLink value="" action="#{refBeamController.doNewReferenceBeam}" ajax="true" update="@form :growl" styleClass="ui-icon ui-icon-plus"
+				<p:commandLink value="" action="#{refBeamController.doNewReferenceBeam}" ajax="true" update="@form :growl :errorGrowl" styleClass="ui-icon ui-icon-plus"
 					style="float: left" />
-				<p:commandLink value="Add a New Reference Beam" action="#{refBeamController.doNewReferenceBeam}" ajax="true" update="@form :growl"
+				<p:commandLink value="Add a New Reference Beam" action="#{refBeamController.doNewReferenceBeam}" ajax="true" update="@form :growl :errorGrowl"
 					style="float: left" />
 			</div>
 			<br />

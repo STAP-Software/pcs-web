@@ -436,7 +436,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl"
+			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 

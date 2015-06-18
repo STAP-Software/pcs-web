@@ -65,6 +65,7 @@ public class FrameController implements Serializable {
 	private int searchRadius;
 	private String centroidXs;
 	private String centroidYs;
+	private String pixelValue;
 	
 	private CcdFrame ccdFrame;
 	private boolean allowFrameSave = false;
@@ -101,6 +102,14 @@ public class FrameController implements Serializable {
 
 	public void setCentroidYs(String centroidYs) {
 		this.centroidYs = centroidYs;
+	}
+
+	public String getPixelValue() {
+		return pixelValue;
+	}
+
+	public void setPixelValue(String pixelValue) {
+		this.pixelValue = pixelValue;
 	}
 
 	public int getSearchRadius() {
@@ -306,6 +315,19 @@ public class FrameController implements Serializable {
 		// add to the centroid hidden form vars
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
+	}
+	
+	public void doGetFrameValue() {
+		// TODO: get the x,y from the form and use it to populate the value field
+		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
+		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
+		
+		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
+		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+
+		int value = ccdFrame.getRawFrame()[x][y];
+		
+		pixelValue = "" + value;
 	}
 	
 	public void doSaveFrame() {

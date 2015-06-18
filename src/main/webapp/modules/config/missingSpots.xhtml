@@ -56,7 +56,7 @@
 					
 				
 					<f:facet name="footer">
-						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{missingSpotsController.doSave}" update=":growl" />
+						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{missingSpotsController.doSave}" update=":growl :errorGrowl" />
 						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{missingSpotsController.doViewMissingSpots}" />
 					</f:facet>
 				</p:panelGrid>

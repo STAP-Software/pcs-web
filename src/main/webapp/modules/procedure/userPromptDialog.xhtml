@@ -9,11 +9,11 @@
     		<br/>
     		<br/>
     		</div>   
-    		<p:commandButton id="button3" value="#{procedureController.currentPrompt.button3Text}" style="float:right" update=":growl"
+    		<p:commandButton id="button3" value="#{procedureController.currentPrompt.button3Text}" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPrompt3}" oncomplete="userPromptDialog.hide();" rendered="#{procedureController.currentPrompt.buttonCount gt 2}" />   	   		  
-			<p:commandButton id="button2" value="#{procedureController.currentPrompt.button2Text}" style="float:right" update=":growl"
+			<p:commandButton id="button2" value="#{procedureController.currentPrompt.button2Text}" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPrompt2}" oncomplete="userPromptDialog.hide();" rendered="#{procedureController.currentPrompt.buttonCount gt 1}" />
-    		<p:commandButton id="button1" value="#{procedureController.currentPrompt.button1Text}" style="float:right" update=":growl"
+    		<p:commandButton id="button1" value="#{procedureController.currentPrompt.button1Text}" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPrompt1}" oncomplete="userPromptDialog.hide();" />
 			</h:form>
 		</p:dialog> 

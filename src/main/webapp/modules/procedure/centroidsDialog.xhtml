@@ -66,9 +66,9 @@ function drawSpots() {
    		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}">
 
 		
-    	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" style="float:right" update=":growl"
+    	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" style="float:right" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay2}" oncomplete="centroidsDisplayDialog.hide()" rendered="#{visualizationController.currentDisplay.buttonCount gt 1}" />
-    	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" style="float:right" update=":growl"
+    	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" style="float:right" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay1}" oncomplete="centroidsDisplayDialog.hide()" />
 
     	<h:outputText escape="false" value="#{visualizationController.currentDisplay.message}" style="white-space:pre-wrap; text-align: right; position:relative; margin-right:30px; top:8px; color: #444444" />
@@ -77,7 +77,7 @@ function drawSpots() {
     	</f:facet>
     	
  	   	<h:panelGroup rendered="#{empty visualizationController.currentDisplay.message}">
-    	<p:commandButton id="button3" value="Close" style="float:right" update=":growl"
+    	<p:commandButton id="button3" value="Close" style="float:right" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
     	
     	</h:panelGroup>

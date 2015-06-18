@@ -83,7 +83,7 @@ public class ApplicationScopeBean {
 		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		HttpSession session = null;
 
-		System.out.println("persistent session = " + getPersistentSession());
+		//System.out.println("persistent session = " + getPersistentSession());
 		
 		
 		if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {

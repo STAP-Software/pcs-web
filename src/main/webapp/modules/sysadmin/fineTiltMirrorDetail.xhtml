@@ -32,9 +32,9 @@
 				<p:inputText value="#{fineTiltMirrorController.fineTiltMirror.pupilMagnification}" />
 
 				<f:facet name="footer">
-					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl"
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
 						action="#{fineTiltMirrorController.doSaveFineTiltMirror}" />
-					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl"
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
 						action="#{fineTiltMirrorController.doCancelSaveFineTiltMirror}" />
 				</f:facet>
 			</p:panelGrid>

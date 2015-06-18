@@ -43,7 +43,7 @@
 							<p:menuitem value="Select CCD" action="#{ccdDefController.doViewCcdSelectList}" />
 							<p:menuitem value="Manage Coarse Tilt Mirror" action="#{coarseTiltMirrorController.doViewCoarseTiltMirror}" />
 							<p:menuitem value="Manage Fine Tilt Mirror" action="#{fineTiltMirrorController.doViewFineTiltMirror}" />
-							<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.procedureExecuting}" update=":growl"/>
+							<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>
 						</p:submenu>
 					</p:submenu>
 

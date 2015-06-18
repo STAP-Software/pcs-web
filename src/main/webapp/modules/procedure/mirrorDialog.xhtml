@@ -245,9 +245,9 @@ function drawInitial(svg) {
 		<p:dialog id="basicDialog" header="Visualization Display" widgetVar="displayDialog" closable="false">  
     		<div id="svgbasics" ></div>  
     		<h:form id="graphicDialogForm">
-    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl"
+    		<p:commandButton id="saveButton" value="OK" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="displayDialog.hide();" />
-			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl"
+			<p:commandButton id="closeButton" value="Cancel" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="displayDialog.hide();" />
     		</h:form>
 		</p:dialog> 

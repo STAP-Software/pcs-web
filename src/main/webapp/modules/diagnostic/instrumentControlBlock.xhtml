@@ -40,7 +40,7 @@
 
 		<f:facet name="footer">
 			<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendAdvCommand}"
-				update=":growl" />
+				update=":growl :errorGrowl" />
 		</f:facet>
 
 	</p:panelGrid>

@@ -79,9 +79,9 @@
 			<p:spacer height="10px" />
 			<br/>
 
-			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl" action="#{procedureController.doSaveAdvancedOptions}"
+			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
 				oncomplete="executionPrefsDialog.hide();" />
-			<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
+			<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
 				action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="executionPrefsDialog.hide();" />
 
 		</h:form>

@@ -113,9 +113,9 @@
 				 
 				</p:panelGrid>
 
-				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl advancedForm"
+				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm"
 					action="#{procedureController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
-				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl"
+				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
 					type="button" onclick="advancedDialog.hide();" />
 
 			</h:form>

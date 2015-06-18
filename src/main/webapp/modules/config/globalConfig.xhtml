@@ -78,7 +78,7 @@
 
 
 				<f:facet name="footer">
-					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{globalConfigController.doSaveSetup}" update=":growl" />
+					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{globalConfigController.doSaveSetup}" update=":growl :errorGrowl" />
 					<p:commandButton style="float:right" value="Cancel" icon="ui-icon-cancel" ajax="true" immediate="true"
 						action="#{globalConfigController.doCancelSaveSetup}" />
 				</f:facet>

@@ -16,7 +16,7 @@
   						<p:spacer height="10px"/>
 
                         <f:facet name="footer"> 
-                            <p:commandButton id="loginButton" value="Login" update=":growl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
+                            <p:commandButton id="loginButton" value="Login" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
                         </f:facet> 
                     </p:panelGrid> 
 

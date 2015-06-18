@@ -32,12 +32,9 @@
 		<f:event type="javax.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
-		<p:growl id="growl" showDetail="true" sticky="false" life="10000"/>
 		
 		
- 
-
-		
+				
 		
 		<p:layout fullPage="true">
 
@@ -63,8 +60,10 @@
 
 
 			<p:layoutUnit id="center" position="center">
-
 				<ui:include src="modules/util/navigation.xhtml"/>
+
+				<p:messages id="errorGrowl" severity="error,fatal" showDetail="true" closable="true"/>
+				<p:growl id="growl" severity="info,warn" showDetail="false" sticky="false" life="10000"/>
 
 				<ui:insert name="content" />
 

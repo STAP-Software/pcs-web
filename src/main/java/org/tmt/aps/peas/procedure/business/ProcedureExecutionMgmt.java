@@ -169,6 +169,8 @@ public class ProcedureExecutionMgmt {
 				UndeclaredThrowableException e1 = (UndeclaredThrowableException) e.getCausedByException();
 				Throwable e2 = e1.getCause();
 				procedureException = e2;
+			} else if (e.getCause() instanceof UnsatisfiedLinkError) {
+				procedureException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
 			}
 
 		} catch (Throwable e) {

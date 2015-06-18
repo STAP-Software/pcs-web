@@ -47,7 +47,7 @@
        			<h:outputLabel style="height: 10px" />
        			
        			<f:facet name="footer">
-					<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl"/>
+					<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}" update=":growl :errorGrowl"/>
 					<p:commandButton value="Cancel" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
 				</f:facet>
 

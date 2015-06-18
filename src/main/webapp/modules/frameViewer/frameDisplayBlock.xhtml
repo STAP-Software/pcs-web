@@ -10,7 +10,7 @@
 
 			<p:submenu label="File" icon="ui-icon-disk"> 
 				<!-- TODO update loadPanel -->
-				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl"/>
+				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl :errorGrowl"/>
 			</p:submenu>
 			<p:submenu label="Display" icon="ui-icon-image">
 				<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
@@ -42,10 +42,10 @@
 
 		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 
-		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas
+		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
 		tag.</canvas>
 		<p:spacer height="1px"/>
-		<canvas id="infoCanvas" width="512px" height="15px"></canvas>
+		<canvas id="infoCanvas" width="512px" height="15px" ></canvas>
 		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 			<p:row>
@@ -74,14 +74,17 @@
 			<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
 			<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{globalConfigController.doCancelSaveSetup}" />
 			<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-				update=":growl" oncomplete="markFrame()" />
+				update=":growl :errorGrowl" oncomplete="markFrame()" />
 		</f:facet>
 	</p:panelGrid>
 	<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
+	<p:remoteCommand name="frameValue" action="#{frameController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />
 
 
 	<script>
 		//<![CDATA[
+		    
+		    var mousePos
 		           
 	   		function initCanvasEvents() {
 	  			var canvas = document.getElementById("frameCanvas");
@@ -91,10 +94,10 @@
 	  		
 	   		function doMouseMove(event) {
 	   			var canvas = document.getElementById("frameCanvas");
-	   			var mousePos = getMousePos(canvas, event);
-	  			var message = '    Mouse position: ' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y);
-		        var infoCanvas = document.getElementById("infoCanvas");
-		        writeMessage(infoCanvas, message);
+	   			mousePos = getMousePos(canvas, event);
+	   					        
+	  			// call javascript function that is defined in <p:remote>
+	  			frameValue([{name: 'mouse_x', value: mousePos.x}, {name: 'mouse_y', value: mousePos.y}]);
 	   		}
 	   		
 	  		function doMouseDown(event) {  			
@@ -106,9 +109,16 @@
 	  			// call javascript function that is defined in <p:remote>
 	  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
 	  			
-
 	  		}
 		           
+	  		function displayFrameValue() {
+	  			
+	  			var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
+	  			
+	  			var message = '    Mouse position: ' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + ',     value = ' + pixelValue;
+		        var infoCanvas = document.getElementById("infoCanvas");
+		        writeMessage(infoCanvas, message);
+	  		}
 	
 		function markFrame() {
 			window.setTimeout("drawFrame2(true)", 100);
