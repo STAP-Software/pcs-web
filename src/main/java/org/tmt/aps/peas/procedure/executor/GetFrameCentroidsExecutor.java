@@ -26,6 +26,8 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.FandIException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
@@ -68,6 +70,15 @@ public class GetFrameCentroidsExecutor {
 		this.logMessages = logMessages;
 	}
 
+	ComputationLibrary computationLibrary;
+	ProcedureCcdFrame procedureCcdFrame = null;
+	CentroidMap centroidMap = null;
+	FIConfig fiConfig = null;
+	FIResult fiResult = null;
+	Procedure procedure = null;
+	ProcedureConfig procedureConfig = null;
+	int frameNumber = 0;
+
 	@PostConstruct
 	void init() {
 		logger.debug("GetFrameCentroidsExecutor::PostConstruct::");
@@ -77,175 +88,193 @@ public class GetFrameCentroidsExecutor {
 
 		logger.info("GetFrameCentroidsExecutor::executeProcedure::");
 
-		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+		// store a local copy for functions to access
+		this.procedure = procedure;
 
-		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+		procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+
+		computationLibrary = computationContext.getComputationLibrary();
 
 		// CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
 
 		// FIXME: this is not the correct procedure name, also should say "sub-procedure start"
 		statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
-		ProcedureCcdFrame procedureCcdFrame = null;
-		CentroidMap centroidMap = null;
-		
+		procedureCcdFrame = null;
+		centroidMap = null;
+		fiResult = null;
+
 		// initialize frame number
-		
-		int frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
+		frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
 
-		while (true) {
+		try {
 
-			statusLogger.log("frame.get");
+			takeFrameAndFindCentroids();
 
-			procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(),
-					procedure.getProcedureNumber(), 0, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd()
-							.getAllHotPixelRects(), procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
-			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
-
-			// tell the async controller to update the frame
-			frameDisplayMgmt.displayFrame(frameNumber);
+		} catch (Exception e) {
 			
-			// for now we don't increment frame number if frame from file
-			if (!procedureConfig.isFrameFromFile()) frameNumber++;
-			
+			statusLogger.log("procedure.exception", e.getMessage());
 
-			statusLogger.log("fandi.start");
+			String unknownError = (e.getMessage() == null) ? "Unknown Error: " : "";
 
-			// use NumSpots and maybe findAndIdentify should take an array of FloatPoints
-			int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+			throw new Exception(unknownError + e.getMessage());
 
-			FIConfig fiConfig = procedure.getProcedureConfigSet().getFiConfig();
-			FIResult fiResult = null;
+		}
+
+		return procedureCcdFrame;
+	}
+
+	
+	private void takeFrameAndFindCentroids() throws Exception {
+
+		statusLogger.log("frame.get");
+
+		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(),
+				0, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(),
+				procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
+		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+
+		// tell the async controller to update the frame
+		frameDisplayMgmt.displayFrame(frameNumber);
+
+		// for now we don't increment frame number if frame from file
+		if (!procedureConfig.isFrameFromFile())
+			frameNumber++;
+
+		statusLogger.log("fandi.start");
+
+		// use NumSpots and maybe findAndIdentify should take an array of FloatPoints
+		int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+
+		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
+
+		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
+				procedure.getRefDefMap());
+
+		logger.info("Find and Identify completed");
+
+		try {
+
+			computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
+
+			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+
+			procedureCcdFrame.setCentroidMap(centroidMap);
+
+			// test for non-linear subimage maximums
+			computationLibrary.checkSubimageIntensities(ccdFrame.getCorrectedFrame(), centroidMap, physicalModel.getInstrument().getCcd()
+					.getNonLinearThreshold());
+
+		} catch (FandIException e) {
+			handleExceptionCases(e);
+		}
+
+	}
+	
+	private void handleExceptionCases(FandIException e) throws AbortProcedureException, Exception {
+
+		try {
+			throw e;
+		} catch (UserAssistRequiredException e1) {
+			handleUserAssistRequiredException(e1);
+		} catch (NonLinearIntensitiesException e1) {
+			handleNonLinearIntensitiesException(e1);
+		} catch (HandMarkRequiredException e1) {
+			handleHandMarkRequiredException(e1);
+		} catch (FandIException e1) {
+			// impossible, we never throw this
+		}
+	}
+	
+	private void handleUserAssistRequiredException(UserAssistRequiredException e) throws AbortProcedureException, Exception {
+
+		StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
+		if (e.isNdetectNotAllSingle()) {
+			buf.append(MessageGenerator.generateMessage("fandi.ndetect_not_single"));
+		}
+
+		if (e.isFracThreshExceeded()) {
+			buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(),
+					fiConfig.getFracFilledThresh()));
+		}
+
+		if (e.isFourierThreshExceeded()) {
+			buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(),
+					fiConfig.getFourierQualityThresh()));
+		}
+
+		if (e.isBadNSolution()) {
+			buf.append(MessageGenerator.generateMessage("fandi.bad_nsolution", fiResult.getnSolution()));
+		}
+
+		String text = buf.toString();
+
+		// user interaction
+		statusLogger.log("procedure.exception", text);
+
+		int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
+
+		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+			throw new AbortProcedureException("User Aborted Test");
+		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
+
 			try {
-
-				fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
-						procedure.getRefDefMap());
-
-				logger.info("Find and Identify completed");
-
-				computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
 
 				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 				procedureCcdFrame.setCentroidMap(centroidMap);
+
+			} catch (FandIException e1) {
+
+				handleExceptionCases(e1);
 				
-				// test for non-linear subimage maximums
-				computationLibrary.checkSubimageIntensities(ccdFrame.getCorrectedFrame(), centroidMap, physicalModel.getInstrument().getCcd().getNonLinearThreshold());
-				
-				break; // success, break of out while loop
+			} catch (Exception e1) {
+				e1.printStackTrace();
+			}
+		} else {
+			takeFrameAndFindCentroids();
+		}
+	}
 
-			} catch (NonLinearIntensitiesException e) {
-				
-				String text = MessageGenerator.generateMessage("fandi.intensities.nonlinear");
-				
-				// user interaction
-				statusLogger.log("procedure.exception", text);
+	private void handleNonLinearIntensitiesException(NonLinearIntensitiesException e) throws AbortProcedureException, Exception {
 
-				int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
+		String text = MessageGenerator.generateMessage("fandi.intensities.nonlinear");
 
-				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-					throw new Exception("User Aborted Test");
-				} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
-					break;
-				}
-				// we get here if we are going to re-take frame (Retry)
-				
-			} catch (HandMarkRequiredException e) {
+		// user interaction
+		statusLogger.log("procedure.exception", text);
 
-				if (procedure.getProcedureType().isPassiveTilt()) {
+		int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
 
-					fiResult = handMark(procedure, fiConfig);
+		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+			throw new AbortProcedureException("User Aborted Test");
+		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+			// we get here if we are going to re-take frame (Retry)
+			takeFrameAndFindCentroids();
+		}
 
-					try {
-						centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
-						procedureCcdFrame.setCentroidMap(centroidMap);
-						break; // everything ok, move forward
-					} catch (Exception e1) {
-						statusLogger.log("procedure.exception", e1.getMessage());
-						throw new Exception("Aborted Test: " + e1.getMessage());
-					}
+	}
 
-				} else {
-					break;
-				}
+	private void handleHandMarkRequiredException(HandMarkRequiredException e) throws AbortProcedureException {
 
-			} catch (UserAssistRequiredException e) {
+		if (procedure.getProcedureType().isPassiveTilt()) {
 
-				StringBuffer buf = new StringBuffer(MessageGenerator.generateMessage("fandi.end.question"));
-				if (e.isNdetectNotAllSingle()) {
-					buf.append(MessageGenerator.generateMessage("fandi.ndetect_not_single"));
-				}
+			fiResult = handMark(procedure, fiConfig);
 
-				if (e.isFracThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.frac_vs_threshold", fiResult.getFracFilledBoxes(),
-							fiConfig.getFracFilledThresh()));
-				}
+			try {
+				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+				procedureCcdFrame.setCentroidMap(centroidMap);
 
-				if (e.isFourierThreshExceeded()) {
-					buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(),
-							fiConfig.getFourierQualityThresh()));
-				}
-
-				if (e.isBadNSolution()) {
-					buf.append(MessageGenerator.generateMessage("fandi.bad_nsolution", fiResult.getnSolution()));
-				}
-
-				String text = buf.toString();
-
-				// user interaction
-				statusLogger.log("procedure.exception", text);
-
-				int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
-
-				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-					throw new Exception("User Aborted Test");
-				} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
-
-					try {
-
-						centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
-						procedureCcdFrame.setCentroidMap(centroidMap);
-
-					} catch (HandMarkRequiredException hme) {
-
-						if (procedure.getProcedureType().isPassiveTilt()) {
-
-							fiResult = handMark(procedure, fiConfig);
-
-							try {
-								centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
-								procedureCcdFrame.setCentroidMap(centroidMap);
-								break; // everything ok, move forward
-							} catch (Exception e1) {
-								statusLogger.log("procedure.exception", e1.getMessage());
-								throw new Exception("Aborted Test: " + e1.getMessage());
-							}
-
-						} else {
-							break;
-						}
-					} catch (Exception e1) {
-						e1.printStackTrace();
-					}
-					break;
-				}
-
-			} catch (Exception e) {
-				// user interaction
-				statusLogger.log("procedure.exception", e.getMessage());
-
-				String unknownError = (e.getMessage() == null) ? "Unknown Error: " : "";
-
-				int response = userPromptMgmt.displayFlowControlBiFlowDialog(unknownError + e.getMessage());
-
-				if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-					throw new Exception("User Aborted Test");
-				}
-
+			} catch (Exception e1) {
+				statusLogger.log("procedure.exception", e1.getMessage());
+				throw new AbortProcedureException("Aborted Test: " + e1.getMessage());
 			}
 
 		}
-		return procedureCcdFrame;
+
 	}
+
+
+
+
 
 	// TODO: generalize this, does not need to be explicit in an executor
 
@@ -286,10 +315,10 @@ public class GetFrameCentroidsExecutor {
 
 		CentroidMap centroidMap = null;
 		try {
-		
-		centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-				.getFindCentConfig());
-		centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
+
+			centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
+					.getFindCentConfig());
+			centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
 
 		} catch (Exception e) {
 			if (procedure.getProcedureType().isPassiveTilt()) {
@@ -298,7 +327,7 @@ public class GetFrameCentroidsExecutor {
 				throw e;
 			}
 		}
-		
+
 		// display the marked frame
 		frameDisplayMgmt.setMarking(centroids);
 		frameDisplayMgmt.displayMarkedFrame();
@@ -311,11 +340,11 @@ public class GetFrameCentroidsExecutor {
 		if (!userResponse) {
 			throw new HandMarkRequiredException();
 		}
-		
+
 		return centroidMap;
 	}
 
-	private FIResult handMark(Procedure procedure, FIConfig fiConfig) throws Exception {
+	private FIResult handMark(Procedure procedure, FIConfig fiConfig) {
 
 		List<FloatPoint> handMarked = null;
 		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
@@ -327,8 +356,12 @@ public class GetFrameCentroidsExecutor {
 			frameDisplayMgmt.setPendingMarkAction(true);
 			// wait for user to mark frame
 			statusLogger.log("frame.mark_waiting");
-			while (frameDisplayMgmt.getPendingMarkAction()) {
-				Thread.sleep(500);
+
+			try {
+				while (frameDisplayMgmt.getPendingMarkAction()) {
+					Thread.sleep(500);
+				}
+			} catch (InterruptedException e) {
 			}
 
 			// get marking data from the frame display

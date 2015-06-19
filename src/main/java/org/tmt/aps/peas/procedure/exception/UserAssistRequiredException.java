@@ -2,7 +2,7 @@ package org.tmt.aps.peas.procedure.exception;
 
 import java.util.List;
 
-public class UserAssistRequiredException extends Exception {
+public class UserAssistRequiredException extends FandIException {
 	
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
