@@ -105,4 +105,12 @@ public class Utils {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()) + "\n" + message, Utils.createExceptionMessage(e));
 	}
 
+	public static FacesMessage procedureSuccessfulMessage() {
+		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("procedure.success"), "");
+	}
+
+	public static FacesMessage procedureFailedMessage(Throwable e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"), Utils.createExceptionMessage(e) + "\nCheck logs for details");
+	}
+
 }

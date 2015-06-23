@@ -218,18 +218,9 @@ public class GetFrameCentroidsExecutor {
 			throw new AbortProcedureException("User Aborted Test");
 		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 
-			try {
-
-				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
-				procedureCcdFrame.setCentroidMap(centroidMap);
-
-			} catch (FandIException e1) {
-
-				handleExceptionCases(e1);
-				
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
+			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);			
+			procedureCcdFrame.setCentroidMap(centroidMap);
+			
 		} else {
 			takeFrameAndFindCentroids();
 		}
@@ -253,25 +244,16 @@ public class GetFrameCentroidsExecutor {
 
 	}
 
-	private void handleHandMarkRequiredException(HandMarkRequiredException e) throws AbortProcedureException {
+	private void handleHandMarkRequiredException(HandMarkRequiredException e) throws AbortProcedureException, Exception {
 
 		if (procedure.getProcedureType().isPassiveTilt()) {
 
 			fiResult = handMark(procedure, fiConfig);
-
-			try {
-				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
-				procedureCcdFrame.setCentroidMap(centroidMap);
-
-			} catch (Exception e1) {
-				statusLogger.log("procedure.exception", e1.getMessage());
-				throw new AbortProcedureException("Aborted Test: " + e1.getMessage());
-			}
+			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+			procedureCcdFrame.setCentroidMap(centroidMap);
 
 		}
-
 	}
-
 
 
 
@@ -305,40 +287,48 @@ public class GetFrameCentroidsExecutor {
 	}
 
 	private CentroidMap findAndDisplayCentroids(Procedure procedure, FIConfig fiConfig, FIResult fiResult) throws Exception {
+
 		List<FloatPoint> centroids = null;
 
-		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-
-		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
-		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
-		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
-
-		CentroidMap centroidMap = null;
 		try {
 
-			centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-					.getFindCentConfig());
-			centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
-
-		} catch (Exception e) {
-			if (procedure.getProcedureType().isPassiveTilt()) {
-				throw new HandMarkRequiredException();
-			} else {
-				throw e;
+			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+	
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
+			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+	
+			CentroidMap centroidMap = null;
+			try {
+	
+				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
+						.getFindCentConfig());
+				centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
+	
+			} catch (Exception e) {
+				if (procedure.getProcedureType().isPassiveTilt()) {
+					throw new HandMarkRequiredException();
+				} else {
+					throw e;
+				}
 			}
-		}
+	
+			// display the marked frame
+			frameDisplayMgmt.setMarking(centroids);
+			frameDisplayMgmt.displayMarkedFrame();
+	
+			boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
+					"Have the correct centroids been found?");
+	
+			// as part of the display, ask the user if it is OK (only passive tilt)
+			// throw a UserAssistException if they don't like it.
+			if (!userResponse) {
+				throw new HandMarkRequiredException();
+			}
 
-		// display the marked frame
-		frameDisplayMgmt.setMarking(centroids);
-		frameDisplayMgmt.displayMarkedFrame();
+		} catch (FandIException e1) {
 
-		boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
-				"Have the correct centroids been found?");
-
-		// as part of the display, ask the user if it is OK (only passive tilt)
-		// throw a UserAssistException if they don't like it.
-		if (!userResponse) {
-			throw new HandMarkRequiredException();
+			handleExceptionCases(e1);
 		}
 
 		return centroidMap;

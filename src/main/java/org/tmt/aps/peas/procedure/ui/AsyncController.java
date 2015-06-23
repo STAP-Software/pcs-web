@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.instrument.model.CameraState;
@@ -249,7 +250,6 @@ public class AsyncController {
 		}
 	}
 
-	
 	private void checkCameraDisplay() {
 
 		RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -258,8 +258,7 @@ public class AsyncController {
 	
 	private void checkMessages() {
 		if (procedureExecutionState.getProcedureException() != null) {
-			String message = procedureExecutionState.getProcedureException().getMessage();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Procedure Error: ", message));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureFailedMessage(procedureExecutionState.getProcedureException()));
 		}
 	}
 	
@@ -286,7 +285,7 @@ public class AsyncController {
 			procedureController.loadCameraState(cameraState);
 			statusLogController.refreshProcedureStatusLog();
 			
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Procedure Completed", "Progress Completed"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage());
 			RequestContext.getCurrentInstance().update("procedureDetailForm");
 			
 			// update the breadcrumb to associate the current session as the first link

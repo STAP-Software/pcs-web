@@ -15,6 +15,7 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
@@ -177,7 +178,8 @@ public class ProcedureExecutionMgmt {
 			procedureException = e;
 		}
 
-		exception.printStackTrace();
+		logger.error(MessageGenerator.generateMessage("generic.error"), procedureException);
+		
 		statusLogger.log("procedure.exception", procedureException.getMessage());
 
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
