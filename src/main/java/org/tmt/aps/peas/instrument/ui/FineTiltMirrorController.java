@@ -18,6 +18,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
@@ -56,25 +58,35 @@ public class FineTiltMirrorController implements Serializable {
 	}
 
 	public String doViewFineTiltMirror() {
+		
+		try {
+			if (fineTiltMirror == null) {
+				throw new Exception("Fine Tilt Mirror not found in physical model");
+			}
+			breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "/modules/sysadmin/fineTiltMirrorDetail.xhtml");
 
-		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "/modules/sysadmin/fineTiltMirrorDetail.xhtml");
+			return "/modules/sysadmin/fineTiltMirrorDetail.xhtml?faces-redirect=true";
 
-		return "/modules/sysadmin/fineTiltMirrorDetail.xhtml?faces-redirect=true";
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+
 	}
 
-	public String doSaveFineTiltMirror() {
+	public void doSaveFineTiltMirror() {
 
 		try {
 			cameraDefMgmt.updateFineTiltMirror(fineTiltMirror);
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating Fine Tilt Mirror Configuration", ""));
-			return null;
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully updated Fine Tilt Mirror Configuration", ""));
 
-		return null;
 	}
 
 	public String doCancelSaveFineTiltMirror() {

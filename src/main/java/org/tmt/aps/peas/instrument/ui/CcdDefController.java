@@ -18,7 +18,9 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Ccd;
@@ -45,7 +47,6 @@ public class CcdDefController implements Serializable {
 
 	@PostConstruct
 	private void init() {
-		refreshCcdList();
 		hotPixelBoundingRect = new Rect();
 		hotPixelBoundingRect.reset();
 		hotColumnBoundingRect = new Rect();
@@ -84,10 +85,6 @@ public class CcdDefController implements Serializable {
 		this.hotColumnBoundingRect = hotColumnBoundingRect;
 	}
 
-	private void refreshCcdList() {
-		ccdList = ccdDefMgmt.findAllCcds();
-	}
-
 	public Ccd getSelectedCcd() {
 		return selectedCcd;
 	}
@@ -97,10 +94,20 @@ public class CcdDefController implements Serializable {
 	}
 
 	public String doViewCcdList() {
-
-		breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
-
-		return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
+		
+		try {
+		
+			ccdList = ccdDefMgmt.findAllCcds();
+	
+			breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
+	
+			return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
+		
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
 	}
 
 	public String doViewCcd() {
@@ -129,13 +136,13 @@ public class CcdDefController implements Serializable {
 
 			physicalModel.refresh();
 
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
+
 	}
 	
 	public void doDeleteHotColumn() {
@@ -147,13 +154,13 @@ public class CcdDefController implements Serializable {
 
 			physicalModel.refresh();
 
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
+
 	}
 
 	public String doSaveCcd() {
@@ -162,20 +169,20 @@ public class CcdDefController implements Serializable {
 
 			ccdDefMgmt.createCcd(ccd);
 
-			refreshCcdList();
+			ccdList = ccdDefMgmt.findAllCcds();
 
 			physicalModel.refresh();
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 			breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
 
 			return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
-
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+			
 			return null;
 		}
 
@@ -201,12 +208,11 @@ public class CcdDefController implements Serializable {
 
 			physicalModel.refresh();
 			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 	}
 
@@ -222,46 +228,50 @@ public class CcdDefController implements Serializable {
 
 			physicalModel.refresh();
 			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
+
 	}
 
 	public String doViewCcdSelectList() {
+		
+		try {
+			ccdList = ccdDefMgmt.findAllCcds();
+	
+			breadcrumbMenuBean.addFirstItem("Select a CCD", "/modules/sysadmin/ccdSelectList.xhtml");
+	
+			return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
+		
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
 
-		breadcrumbMenuBean.addFirstItem("Select a CCD", "/modules/sysadmin/ccdSelectList.xhtml");
-
-		return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
+		
 	}
 
-	public String doSaveCcdSelection() {
+	public void doSaveCcdSelection() {
 
 		try {
 			ccdDefMgmt.assignCcdToInstrument(selectedCcd);
 
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "CCD Assigned"));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
-		return null;
 
 	}
 
-	public String doCancelSaveCcdSelection() {
+	public void doCancelSaveCcdSelection() {
 
-		return null;
 
 	}
 

@@ -18,6 +18,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
@@ -199,22 +201,16 @@ public class CcdManualController implements Serializable {
 
 			}
 
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
-
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			
 		} catch (CommandFailureException e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}
@@ -260,24 +256,16 @@ public class CcdManualController implements Serializable {
 
 			}
 
-			//cameraPoller.setDoPoll(true);
-
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
-
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			
 		} catch (CommandFailureException e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}
@@ -289,21 +277,16 @@ public class CcdManualController implements Serializable {
 			imageSize[1] = ccdMgmt.getImageHeight();
 			//plateScale = ccdMgmt.getPlateScale();
 			
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			
 		} catch (CommandFailureException e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error:", e.getMessage()));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}

@@ -19,6 +19,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
@@ -110,10 +112,20 @@ public class FilterController implements Serializable {
 	}
 
 	public String doViewFilter() {
+		
+		try {
+			refreshFilterList();
 
-		breadcrumbMenuBean.addItem(filter.getFilterName(), "/modules/sysadmin/filterDetail.xhtml");
-
-		return "/modules/sysadmin/filterDetail.xhtml?faces-redirect=true";
+			breadcrumbMenuBean.addItem(filter.getFilterName(), "/modules/sysadmin/filterDetail.xhtml");
+			
+			return "/modules/sysadmin/filterDetail.xhtml?faces-redirect=true";
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+		
 	}
 
 	public String doViewFilterWheel() {
@@ -127,7 +139,8 @@ public class FilterController implements Serializable {
 			return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
-			logger.error("", e);
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 
@@ -145,14 +158,24 @@ public class FilterController implements Serializable {
 
 	public String doSaveFilter() {
 
-		if (filter.isNewRecord()) {
-			cameraDefMgmt.createFilter(filter);
-
-		} else {
-			cameraDefMgmt.updateFilter(filter);
-
+		try {
+		
+			if (filter.isNewRecord()) {
+				cameraDefMgmt.createFilter(filter);
+	
+			} else {
+				cameraDefMgmt.updateFilter(filter);
+	
+			}
+			refreshFilterList();
+					
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
-		refreshFilterList();
+		
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 	}
 
@@ -189,13 +212,11 @@ public class FilterController implements Serializable {
 
 			refreshFilterWheel();
 			
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Record update successful", ""));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating Database.  Check logs for details", ""));
-			logger.error("", e);
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
 		return null;

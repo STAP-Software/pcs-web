@@ -302,7 +302,6 @@ public class VisualizationController implements Serializable {
 			
 			graphicDisplayMgmt.setAndEncodeCentroidMap(centroidMap);
 			
-
 		}
 	}
 

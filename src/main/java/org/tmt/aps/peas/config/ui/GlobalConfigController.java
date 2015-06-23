@@ -18,6 +18,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
@@ -51,18 +53,6 @@ public class GlobalConfigController implements Serializable {
 	@PostConstruct
 	public void init() {
 
-		try {
-			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-
-			telescopeId = new Long(telescopeIdStr);
-			instrumentId = new Long(instrumentIdStr);
-
-			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
-
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
 	}
 
 	public void doCancelSaveSetup() {
@@ -74,18 +64,38 @@ public class GlobalConfigController implements Serializable {
 		try {
 			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Record Saved Successfully"));
-			logger.info("doSave: success");
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error saving record"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 	}
 
 	public String doViewGlobalConfig() {
-		breadcrumbMenuBean.addFirstItem("Global Configuration", "/modules/config/globalConfig.xhtml");
+		
+		
+		try {
+			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 
-		return "/modules/config/globalConfig.xhtml?faces-redirect=true";
+			telescopeId = new Long(telescopeIdStr);
+			instrumentId = new Long(instrumentIdStr);
+
+			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
+			
+			breadcrumbMenuBean.addFirstItem("Global Configuration", "/modules/config/globalConfig.xhtml");
+
+			return "/modules/config/globalConfig.xhtml?faces-redirect=true";
+
+
+		} catch (Exception e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+		
 
 	}
 

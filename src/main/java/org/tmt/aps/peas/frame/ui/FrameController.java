@@ -32,6 +32,8 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -267,11 +269,9 @@ public class FrameController implements Serializable {
 			allowFrameSave = false;
 
 		} catch (Exception e) {
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
-		// FacesMessage message = new FacesMessage(FacesMessage.SEVERITY_INFO, "Selected", event.getTreeNode().toString());
-
-		// FacesContext.getCurrentInstance().addMessage(null, message);
 	}
 
 	public String doSetupFrameViewer() {
@@ -285,10 +285,8 @@ public class FrameController implements Serializable {
 			return "/modules/frameViewer/frameViewer.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error querying camera database", e.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 
@@ -351,16 +349,17 @@ public class FrameController implements Serializable {
 			
 			ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 			frameMgmt.saveFitsFrame(ccdFrame);
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Successfully saved frame", ""));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 			// update tree list
 			init();
 			
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error saving frame", e.getMessage()));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
+
 	}
 }

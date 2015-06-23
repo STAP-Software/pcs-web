@@ -25,6 +25,8 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -75,52 +77,60 @@ public class RefBeamController implements Serializable {
 
 		try {
 			referenceBeamList = new ArrayList<ReferenceBeam>(physicalModel.getInstrument().getCamera().getReferenceBeamSet());
-			
+
 			Collections.sort(referenceBeamList, new BeanComparator("refBeamNum"));
-			
+
 		} catch (Exception e) {
 			logger.error("", e);
 		}
 	}
 
-	
 	public void validate(ComponentSystemEvent event) {
-		 
-		  FacesContext fc = FacesContext.getCurrentInstance();
-	 
-		  UIComponent components = event.getComponent();
-	 
-		  UIInput referenceBeamIdInput = (UIInput) components.findComponent("referenceBeamId");
-		  if (referenceBeamIdInput.getLocalValue() == null) {
-		  
-		  // get password
-		  UIInput refBeamNumInput = (UIInput) components.findComponent("refBeamNum");
-		  String refBeamNumStr = refBeamNumInput.getLocalValue() == null ? "" : refBeamNumInput.getLocalValue().toString();
-		  String refBeamNumId = refBeamNumInput.getClientId();
-		  
-		  int refBeamNum = new Integer(refBeamNumStr);
-		  
-		  for (ReferenceBeam referenceBeam : referenceBeamList) {
-			  
-			  if (referenceBeam.getRefBeamNum() == refBeamNum) {
-				  
+
+		FacesContext fc = FacesContext.getCurrentInstance();
+
+		UIComponent components = event.getComponent();
+
+		UIInput referenceBeamIdInput = (UIInput) components.findComponent("referenceBeamId");
+		if (referenceBeamIdInput.getLocalValue() == null) {
+
+			// get password
+			UIInput refBeamNumInput = (UIInput) components.findComponent("refBeamNum");
+			String refBeamNumStr = refBeamNumInput.getLocalValue() == null ? "" : refBeamNumInput.getLocalValue().toString();
+			String refBeamNumId = refBeamNumInput.getClientId();
+
+			int refBeamNum = new Integer(refBeamNumStr);
+
+			for (ReferenceBeam referenceBeam : referenceBeamList) {
+
+				if (referenceBeam.getRefBeamNum() == refBeamNum) {
+
 					FacesMessage msg = new FacesMessage("Reference Beam Number " + refBeamNum + " is already defined.");
 					msg.setSeverity(FacesMessage.SEVERITY_ERROR);
 					fc.addMessage(refBeamNumId, msg);
 					fc.renderResponse();
 
-			  }
-			  
-		  }
-		  }
-		  
+				}
+
+			}
+		}
+
 	}
-	
+
 	public String doViewReferenceBeamList() {
 
-		breadcrumbMenuBean.addFirstItem("Reference Beams", "/modules/sysadmin/refBeamList.xhtml");
+		try {
+			refreshReferenceBeamList();
 
-		return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
+			breadcrumbMenuBean.addFirstItem("Reference Beams", "/modules/sysadmin/refBeamList.xhtml");
+
+			return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
 	}
 
 	public String doViewReferenceBeam() {
@@ -133,7 +143,7 @@ public class RefBeamController implements Serializable {
 	public String doNewReferenceBeam() {
 
 		referenceBeam = new ReferenceBeam();
-		
+
 		referenceBeam.setCamera(physicalModel.getInstrument().getCamera());
 
 		breadcrumbMenuBean.addItem("New Reference Beam", "/modules/sysadmin/refBeamDetail.xhtml");
@@ -144,15 +154,28 @@ public class RefBeamController implements Serializable {
 
 	public String doSaveReferenceBeam() {
 
-		if (referenceBeam.isNewRecord()) {
-			cameraDefMgmt.createReferenceBeam(referenceBeam);
+		try {
 
-		} else {
-			cameraDefMgmt.updateReferenceBeam(referenceBeam);
+			if (referenceBeam.isNewRecord()) {
+				cameraDefMgmt.createReferenceBeam(referenceBeam);
 
+			} else {
+				cameraDefMgmt.updateReferenceBeam(referenceBeam);
+
+			}
+			refreshReferenceBeamList();
+
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+
+			return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+
+			return null;
 		}
-		refreshReferenceBeamList();
-		return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
+
 	}
 
 	public String doCancelSaveReferenceBeam() {

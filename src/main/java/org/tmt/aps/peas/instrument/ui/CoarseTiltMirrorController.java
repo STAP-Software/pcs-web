@@ -18,6 +18,8 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
@@ -34,7 +36,7 @@ public class CoarseTiltMirrorController implements Serializable {
 	private PeasProperties peasProperties;
 	@EJB
 	private PhysicalModel physicalModel;
-	
+
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
@@ -42,42 +44,50 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	@PostConstruct
 	private void init() {
-			
+
 		coarseTiltMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
 	}
-
 
 	public CoarseTiltMirror getCoarseTiltMirror() {
 		return coarseTiltMirror;
 	}
 
-
 	public void setCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
 		this.coarseTiltMirror = coarseTiltMirror;
 	}
 
-
 	public String doViewCoarseTiltMirror() {
 
-		breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "/modules/sysadmin/coarseTiltMirrorDetail.xhtml");
-
-		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
-	}
-
-
-	public String doSaveCoarseTiltMirror() {
-
 		try {
-		
-		cameraDefMgmt.updateCoarseTiltMirror(coarseTiltMirror);
-		
+			if (coarseTiltMirror == null) {
+				throw new Exception("Coarse Tilt mirror not found in physical model");
+			}
+
+			breadcrumbMenuBean.addFirstItem("Coarse Tilt Mirror", "/modules/sysadmin/coarseTiltMirrorDetail.xhtml");
+
+			return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
+
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,  new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating Coarse Tilt Mirror Configuration", ""));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
-		FacesContext.getCurrentInstance().addMessage(null,  new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully updated Coarse Tilt Mirror Configuration", ""));
-		
-		return null;
+
+	}
+
+	public void doSaveCoarseTiltMirror() {
+
+		try {
+
+			cameraDefMgmt.updateCoarseTiltMirror(coarseTiltMirror);
+
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+		}
+
 	}
 
 	public String doCancelSaveCoarseTiltMirror() {
@@ -87,6 +97,5 @@ public class CoarseTiltMirrorController implements Serializable {
 		return "/modules/sysadmin/coarseTiltMirrorDetail.xhtml?faces-redirect=true";
 
 	}
-
 
 }

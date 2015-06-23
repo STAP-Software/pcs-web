@@ -22,7 +22,10 @@ import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 
 @Named
 @SessionScoped
@@ -116,12 +119,14 @@ public class AcsManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
 			try {
 				br.close();
 			} catch (Exception e2) {
-				e2.printStackTrace();
+				FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e2));
+				logger.error(MessageGenerator.generateMessage("generic.error"), e2);
 			}
 		}
 	}
@@ -152,12 +157,20 @@ public class AcsManualController implements Serializable {
 		try {
 			// send out the commands
 			acsMgmt.commandActuatorDeltas(actDeltas);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Actuator Delta Send Successful"));
-			logger.info("doSendActDeltaCommands: success");
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Actuator Delta Send Successful"));
+			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error sending actuator deltas"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending actuator deltas"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error sending actuator deltas"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+	
+	
 		// remember to clear the list when done
 		init();
 	}
@@ -168,13 +181,19 @@ public class AcsManualController implements Serializable {
 			logger.info("doLoadSnapshot: snapshotNumber = " + snapshotNumber);
 
 			acsMgmt.commandLoadSnap(snapshotNumber);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Load Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Snapshot Load Successful"));
 			logger.info("doLoadSnapshot: success");
-
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error loading snapshot"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error loading snapshot"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error loading snapshot"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+
 
 	}
 
@@ -184,42 +203,68 @@ public class AcsManualController implements Serializable {
 			logger.info("doTakeSnapshot: ");
 			snapshotNumber = acsMgmt.commandTakeSnap();
 			logger.info("doTakeSnapshot successful, snapshot number = " + snapshotNumber);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Snapshot Successful"));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Snapshot Successful"));
+			logger.info("doLoadSnapshot: success");
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error taking snapshot"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error taking snapshot"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error taking snapshot"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
-
 	}
 
 	public void doQueryMirrorTemp() {
 		try {
 			mirrorTemp = acsMgmt.queryMirrorTemp();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Successful"));
 			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying mirror temp"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying mirror temp"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying mirror temp"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+
 	}
 
 	public void doQueryRunning() {
 		try {
 			acsRunning = acsMgmt.queryRunning();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Successful"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying is running"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying is running"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying is running"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+
 	}
 
 	public void doQueryRmsActMove() {
 		try {
 			rmsActuatorMove = acsMgmt.queryRmsActuMove();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Successful"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying RMS act move"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying RMS act move"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying RMS act move"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
@@ -228,10 +273,16 @@ public class AcsManualController implements Serializable {
 			mirrorTemp = acsMgmt.queryMirrorTemp();
 			rmsActuatorMove = acsMgmt.queryRmsActuMove();
 			acsRunning = acsMgmt.queryRunning();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Query Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Successful"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying ACS"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying acs"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying ACS"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

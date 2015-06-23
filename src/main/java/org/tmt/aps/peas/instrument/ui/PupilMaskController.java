@@ -18,6 +18,8 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.PupilMask;
@@ -97,10 +99,20 @@ public class PupilMaskController implements Serializable {
 	}
 
 	public String doViewPupilMaskList() {
+		
+		try {
+			refreshPupilMaskList();
+			
+			breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "/modules/sysadmin/pupilMaskList.xhtml");
 
-		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "/modules/sysadmin/pupilMaskList.xhtml");
+			return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
 
-		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 	}
 
 	public String doViewPupilMask() {
@@ -120,7 +132,8 @@ public class PupilMaskController implements Serializable {
 
 			return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";
 		} catch (Exception e) {
-			logger.error("", e);
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 		
@@ -137,15 +150,29 @@ public class PupilMaskController implements Serializable {
 	}
 
 	public String doSavePupilMask() {
-		if (pupilMask.isNewRecord()) {
-			cameraDefMgmt.createPupilMask(pupilMask);
-
-		} else {
-			cameraDefMgmt.updatePupilMask(pupilMask);
+		
+		try {
+		
+			if (pupilMask.isNewRecord()) {
+				cameraDefMgmt.createPupilMask(pupilMask);
+	
+			} else {
+				cameraDefMgmt.updatePupilMask(pupilMask);
+			}
+	
+			refreshPupilMaskList();
+		
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+		
+			return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+			
+			return null;
 		}
 
-		refreshPupilMaskList();
-		return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 	}
 
 	public String doCancelSavePupilMask() {
@@ -156,7 +183,7 @@ public class PupilMaskController implements Serializable {
 
 	}
 
-	public String doSavePupilWheel() {
+	public void doSavePupilWheel() {
 
 		pupilWheel.updatePupilMaskStates();
 		try {
@@ -178,16 +205,13 @@ public class PupilMaskController implements Serializable {
 
 			refreshPupilWheel();
 			
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_INFO, "Record update successful", ""));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Updating Database.  Check logs for details", ""));
-			logger.error("", e);
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
-		return null;
 	}
 
 	public String doCancelSavePupilWheel() {

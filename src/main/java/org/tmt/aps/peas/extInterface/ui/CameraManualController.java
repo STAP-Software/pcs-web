@@ -18,7 +18,9 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extinf.CommandFailureException;
@@ -306,23 +308,16 @@ public class CameraManualController implements Serializable {
 
 			//cameraPoller.setDoPoll(true);
 			
-			System.out.println("Returning");
-			FacesContext context = FacesContext.getCurrentInstance();
-
-			context.addMessage(null, new FacesMessage("Successful", "Command response = 0x0"));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			
 		} catch (CommandFailureException e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Command Failure Exception: failure code = " + e.getFailureCode() , e.getMessage()));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			// TODO: generic way to output errors that give all info to user on screen
-			context.addMessage(null, new FacesMessage("Error: " + e.getMessage() + e.getClass().getName() + " " + e.getStackTrace()[0]));
-
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 		
 	}

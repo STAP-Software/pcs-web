@@ -18,7 +18,10 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.extinf.TimeoutException;
@@ -130,41 +133,65 @@ public class DcsManualController implements Serializable {
 	public void doQueryTelescopePosition() {
 		try {
 			telescopePosition = dcsMgmt.queryTelescopePosition();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
 			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying telescope position"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying telescope position"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying telescope position"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}			
 	}
 
 	public void doQueryStar() {
 		try {
 			starInfo = dcsMgmt.queryStar();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
 			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying star info"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying star info"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying star info"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
 	}
 
 	public void doQueryDcsStatus() {
 		try {
 			dcsStatus = dcsMgmt.queryDcsStatus();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
 			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying telescope position"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying telescope position"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying telescope position"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
 	}
 	
 	public void doQuerySecondary() {
 		try {
 			m2Pos = dcsMgmt.querySecondary();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
 			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying secondary position"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying secondary position"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying secondary position"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
 	}
 	
 	public void doQueryAll() {
@@ -187,12 +214,20 @@ public class DcsManualController implements Serializable {
 			}
 			// send out the commands
 			dcsMgmt.commandTelescopeDeltas(deltaCmds);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Telescope Delta Send Successful"));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Telescope Delta Send Successful"));
 			logger.info("doCommandTelescopeDelta: success");
+			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error sending telescope deltas"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending telescope deltas"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error sending telescope deltas"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
+
 		// remember to clear the list when done
 		doQueryAll();
 	}
@@ -207,15 +242,26 @@ public class DcsManualController implements Serializable {
 			}
 			// send out the commands
 			dcsMgmt.commandSecondaryDeltas(deltaCmds);
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Secondary Delta Send Successful"));
-			logger.info("doCommandSecondaryDelta: success");
+			
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Secondary Delta Send Successful"));
+			logger.info("doCommandTelescopeDelta: success");
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error sending secondary deltas"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (TimeoutException e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Secondard delta timeout exception"));
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Secondard delta timeout exception"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error sending secondary deltas"));
-		}
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error sending secondary deltas"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
+
 		// remember to clear the list when done
 		doQueryAll();
 	}

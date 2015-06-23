@@ -24,6 +24,8 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.IntegerListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.config.model.Subimage;
@@ -309,16 +311,18 @@ public class MissingSpotsController implements Serializable {
 				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
 			}
 			updateCentroidDisplay();
-		
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-		
-		breadcrumbMenuBean.addFirstItem("Missing Spots Configuration", "/modules/config/missingSpots.xhtml");
+			
+			breadcrumbMenuBean.addFirstItem("Missing Spots Configuration", "/modules/config/missingSpots.xhtml");
 
-		//RequestContext.getCurrentInstance().execute("runDrawMissingSpots()");
-		
-		return "/modules/config/missingSpots.xhtml?faces-redirect=true";
+			//RequestContext.getCurrentInstance().execute("runDrawMissingSpots()");
+			
+			return "/modules/config/missingSpots.xhtml?faces-redirect=true";
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
 
 	}
 
@@ -332,11 +336,12 @@ public class MissingSpotsController implements Serializable {
 			} else {
 				missingSpotsMgmt.updateMissingSpotList(missingSpotList);
 			}
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Record Saved Successfully"));
-			logger.info("doSave: success");
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			e.printStackTrace();
-			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error saving record"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
 	}

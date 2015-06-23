@@ -25,6 +25,8 @@ import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -115,7 +117,7 @@ public class SufsGroupController implements Serializable {
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No SUFS Mask Defined.  A SUFS mask must be defined in the pupil wheel first.", ""));
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
@@ -160,23 +162,19 @@ public class SufsGroupController implements Serializable {
 			}
 			
 			if (sufsGroup.isNewRecord()) {
-				
-				
-				
-				
 				cameraDefMgmt.createSufsGroup(sufsGroup);
 			} else {
 				cameraDefMgmt.updateSufsGroup(sufsGroup);
 			}
 			refreshSufsGroupList();
 
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error updating Sufs Group Configuration", ""));
-			return null;
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
-		FacesContext.getCurrentInstance().addMessage(null,
-				new FacesMessage(FacesMessage.SEVERITY_INFO, "Successfully updated Sufs Group Configuration", ""));
+
 
 		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
 
