@@ -42,7 +42,6 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
 			return new CameraQueryResult(0,tState);
 		case DEVICE_CODE_PUPIL_WHEEL:
-			System.out.println("pupil wheel = " + state);
 			return new CameraQueryResult(1,state);
 		case DEVICE_CODE_REFERENCE_BEAMS:
 			return new CameraQueryResult(0,0);

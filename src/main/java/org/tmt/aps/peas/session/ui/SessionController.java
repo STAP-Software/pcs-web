@@ -286,7 +286,6 @@ public class SessionController implements Serializable {
 		// here we check the password and change the mode accordingly
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 
-		System.out.println("got to here");
 
 		if (!password.equals("ekinrez")) {
 			advancedViewMode = false;

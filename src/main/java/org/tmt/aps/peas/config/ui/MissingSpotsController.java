@@ -281,12 +281,12 @@ public class MissingSpotsController implements Serializable {
 		// values have changed, refresh display values
 		try {
 			if (pupilMaskType.isPupilMaskTypeSufs()) {
-				System.out.println(sufsGroup);
+				logger.debug("SUFS Group = " + sufsGroup);
 				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
 			} else {
 				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
 			}
-			System.out.println(missingSpotList.getMissingSpotListEncoded());
+			logger.debug("missing spot list encoded = " + missingSpotList.getMissingSpotListEncoded());
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			missingSpotList = new MissingSpotList();	

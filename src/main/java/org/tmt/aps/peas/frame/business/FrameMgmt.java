@@ -447,7 +447,7 @@ public class FrameMgmt {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 
-		System.out.println("ccdFrame = " + ccdFrame);
+		logger.debug("ccdFrame = " + ccdFrame);
 		String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
 
 		// First create a null FITS object.

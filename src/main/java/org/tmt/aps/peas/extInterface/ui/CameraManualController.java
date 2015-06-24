@@ -210,10 +210,10 @@ public class CameraManualController implements Serializable {
 			case 1: // Pupil Mask
 				Future<Integer> pupilCmdFuture = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
 				while (!pupilCmdFuture.isDone()) {
-					System.out.println("Thread waiting");
+					logger.debug("Thread waiting");
 					Thread.sleep(500);
 				}
-				System.out.println("PupilCmdFuture is Done");
+				logger.debug("PupilCmdFuture is Done");
 				int maskNumber = pupilCmdFuture.get();
 				
 				// update position

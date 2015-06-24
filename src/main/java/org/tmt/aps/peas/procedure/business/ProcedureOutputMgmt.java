@@ -103,9 +103,9 @@ public class ProcedureOutputMgmt {
 
 		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
 			decodeAndSetObjectFieldValue(classInstance, procedureOutputValue.getProcedureOutputField(), procedureOutputValue.getData());
-			System.out.println("procedureOutput = " + procedureOutputValue.getProcedureOutputField().getFieldName());
+			logger.debug("procedureOutput = " + procedureOutputValue.getProcedureOutputField().getFieldName());
 		}
-		System.out.println("Done");
+		logger.debug("Done");
 
 		// find procedure iteration outputs
 		Integer iteration = 0;

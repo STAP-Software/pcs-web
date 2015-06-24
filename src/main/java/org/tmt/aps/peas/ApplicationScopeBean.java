@@ -83,7 +83,7 @@ public class ApplicationScopeBean {
 		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		HttpSession session = null;
 
-		//System.out.println("persistent session = " + getPersistentSession());
+		logger.debug("persistent session = " + getPersistentSession());
 		
 		
 		if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
@@ -121,8 +121,8 @@ public class ApplicationScopeBean {
 
 		String facesRedirect = request.getParameter("faces-redirect");
 		
-		System.out.println("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
-		System.out.println("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
+		logger.debug("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
+		logger.debug("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
 
 		if (path.equals(breadcrumbMenuBean.getImmediateUrl()) && path.equals("/modules/session/sessionList.xhtml")) {
 			// the same URL as the last action performed, we assume this is a result of a JSF action

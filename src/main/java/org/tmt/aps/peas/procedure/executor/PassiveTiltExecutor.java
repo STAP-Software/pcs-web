@@ -196,7 +196,7 @@ public class PassiveTiltExecutor {
 
 			procedure.setRefBeamMap(currentRefMap);
 
-			System.out.println("light source 1 = " + procedureConfig.getLightSource());
+			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
@@ -242,7 +242,7 @@ public class PassiveTiltExecutor {
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
-			System.out.println("light source 2 = " + procedureConfig.getLightSource());
+			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			
 			ProcedureCcdFrame procedureCcdFrame = null;
@@ -253,7 +253,7 @@ public class PassiveTiltExecutor {
 			
 			while (true) {
 
-				System.out.println("light source 3 = " + procedureConfig.getLightSource());
+				logger.debug("light source 3 = " + procedureConfig.getLightSource());
 
 				procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
 

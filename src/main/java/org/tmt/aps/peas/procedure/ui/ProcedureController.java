@@ -679,7 +679,7 @@ public class ProcedureController implements Serializable {
 	
 	public void intTimeChangeListener(AjaxBehaviorEvent event) {
 		Float intTime = procedure.getProcedureConfigSet().getProcedureConfig().getIntegrationTime();
-		System.out.println("int time = " + intTime);
+		logger.debug("int time = " + intTime);
 	}
 
 	// ====================================================================================== //
