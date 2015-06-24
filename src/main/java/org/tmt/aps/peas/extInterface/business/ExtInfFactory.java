@@ -15,6 +15,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.extinf.ACS;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CCD;
@@ -62,8 +63,7 @@ public class ExtInfFactory {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}
@@ -83,8 +83,7 @@ public class ExtInfFactory {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}
@@ -104,8 +103,7 @@ public class ExtInfFactory {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}
@@ -125,8 +123,7 @@ public class ExtInfFactory {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}
@@ -146,8 +143,7 @@ public class ExtInfFactory {
 			}
 			
 		} catch (Exception e) {
-			e.printStackTrace();
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}
@@ -163,8 +159,7 @@ public class ExtInfFactory {
 			
 			return acs;
 		} catch (Exception e) {
-			System.err.println("Acs Command exception:");
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Acs Command Exception: ", e);
 			return null;
 		}
 	}
@@ -188,8 +183,7 @@ public class ExtInfFactory {
 			
 			
 		} catch (Exception e) {
-			System.err.println("Camera Command exception:");
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Camera Command Exception:: ", e);
 			return null;
 		}
 	}
@@ -204,8 +198,7 @@ public class ExtInfFactory {
 			return ccd;
 
 		} catch (Exception e) {
-			System.err.println("Ccd Command exception:");
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Ccd Command Exception:: ", e);
 			return null;
 		}
 	}
@@ -218,8 +211,7 @@ public class ExtInfFactory {
 			return dcsRsk;
 			
 		} catch (Exception e) {
-			System.err.println("Dcs Command exception:");
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Dcs Command Exception:: ", e);
 			return null;
 		}
 	}
@@ -233,8 +225,7 @@ public class ExtInfFactory {
 			InstrumentInterface instCommand = (InstrumentInterface) registry.lookup(instrumentServiceName);
 			return instCommand;
 		} catch (Exception e) {
-			System.err.println("Instrument Command exception:");
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
 			return null;
 		}
 	}

@@ -3,8 +3,8 @@ package org.tmt.aps.peas.procedure.executor;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.instrument.model.PupilMask;
 
 public class CenterTelescopeCalc {
 
@@ -169,6 +169,8 @@ public class CenterTelescopeCalc {
 			// ZPROCLOG_FRAMELOG_TEL_MOVED(ZPROCLOG_DATA_FRAME_LOG_COUNT) = 1
 		
 		} catch (Exception e) {
+			
+			logger.error(MessageGenerator.generateMessage("command.error"), e);
 			
 			String text = "Move Telescope command failure";
 			// CALL DISP_WRITE(TEXT, LEN(TEXT))

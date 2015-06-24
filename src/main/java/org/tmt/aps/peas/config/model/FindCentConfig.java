@@ -16,12 +16,16 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "FindCentConfig")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FindCentConfig {
+
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -45,7 +49,7 @@ public class FindCentConfig {
 		this.findCentConfigId = null;
 		
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

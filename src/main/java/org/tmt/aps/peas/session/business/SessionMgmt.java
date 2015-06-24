@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.session.business;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -19,6 +20,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -26,6 +28,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.session.model.FieldMetaData;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Stateless
 public class SessionMgmt {
@@ -51,7 +54,7 @@ public class SessionMgmt {
 				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId());
 				procedure.setProcedureOutput(procedureOutput);
 			} catch (Exception e) {
-				
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 		}
 		
@@ -85,37 +88,32 @@ public class SessionMgmt {
 				return null;
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 
 	}
 	
+	public Session createNewSession(Instrument instrument, Telescope telescope) throws Exception {
+		// create a new session object
+		Session session = new Session();
+		List<Procedure> procedureList = new ArrayList<Procedure>();
+		session.setProcedureList(procedureList);
 
-	public Session createSession(Session session) throws Exception {
-		// store both session and procedure list
-		// generate ids
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+		Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+		session.setSessionDate(dateWithoutTime);
 
-		try {
-			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
+		// get telescope and instrument
+		session.setInstrument(instrument);
+		session.setTelescope(telescope);
 
-			// prior to noon Hawaii Time we assume the session is associated with the previous night
-			// after noon Hawaii Time we assume this is associated with the upcoming night
-			
-			
-			session.setSessionDate(dateWithoutTime);
-			em.persist(session);
-
-			return session;
-
-		} catch (Exception e) {
-			e.printStackTrace();
-			throw e;
-		}
+		return session;
 
 	}
+
+	
 	
 	public Session updateSession(Session session) {
 		em.merge(session);

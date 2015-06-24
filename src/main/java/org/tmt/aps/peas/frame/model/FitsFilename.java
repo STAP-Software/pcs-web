@@ -10,10 +10,14 @@ import java.util.Date;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
+import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 public class FitsFilename {
 
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	private static SimpleDateFormat sdf = new SimpleDateFormat("ddMMMyy");
 
 	int telescope;
@@ -112,7 +116,7 @@ public class FitsFilename {
 			
 
 		} catch (Exception e) {
-
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}

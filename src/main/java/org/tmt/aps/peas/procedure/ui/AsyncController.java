@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.procedure.ui;
 
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
@@ -16,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -297,7 +297,7 @@ public class AsyncController {
 			sessionController.updateCurrentSessionPersisted();
 			
 		} catch (Exception e) {
-			logger.error(e.getMessage());
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

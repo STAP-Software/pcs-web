@@ -123,7 +123,7 @@ public class ProcedureExecutionMgmt {
 			try {
 				frameSimulator.init(selectedFitsFiles);
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 
 		} else {
@@ -134,7 +134,7 @@ public class ProcedureExecutionMgmt {
 				procedure.setStarSpType(starInfo.getStarColor());
 				procedure.setStarVmag(String.format("%.2f", starInfo.getStarMag()));
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 
 		}
@@ -229,7 +229,7 @@ public class ProcedureExecutionMgmt {
 						loadedFitsFile = frameMgmt.loadFitsFrame(filename);
 
 					} catch (Exception e) {
-						e.printStackTrace();
+						logger.error(MessageGenerator.generateMessage("generic.error"), e);
 					}
 					logger.info("performProcedureCompletion 4b");
 
@@ -280,7 +280,7 @@ public class ProcedureExecutionMgmt {
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

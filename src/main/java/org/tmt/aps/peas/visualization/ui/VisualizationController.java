@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.visualization.ui;
 
 import java.io.Serializable;
-import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -20,6 +19,7 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
@@ -89,7 +89,7 @@ public class VisualizationController implements Serializable {
 			act1Pos = FloatListEncoder.encodeList(constantsCache.getPrimaryMirrorConstants().getAct1Pos());
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

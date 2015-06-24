@@ -493,7 +493,7 @@ public class PassiveTiltExecutor {
 					
 				} catch (Exception e) {
 					statusLogger.log("pt.m1_act_cmd_failed");
-					e.printStackTrace();
+					logger.error(MessageGenerator.generateMessage("command.error"), e);
 				}
 
 			}

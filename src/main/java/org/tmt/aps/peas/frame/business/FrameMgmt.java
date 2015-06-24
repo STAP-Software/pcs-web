@@ -31,6 +31,7 @@ import org.apache.commons.io.filefilter.WildcardFileFilter;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
@@ -277,7 +278,7 @@ public class FrameMgmt {
 			return ccdFrame;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 
@@ -524,7 +525,7 @@ public class FrameMgmt {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 		return null;
 

@@ -53,7 +53,7 @@ public class PupilMaskController implements Serializable {
 			refreshPupilWheel();
 			pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

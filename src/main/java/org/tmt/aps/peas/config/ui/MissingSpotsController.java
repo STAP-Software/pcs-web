@@ -78,11 +78,8 @@ public class MissingSpotsController implements Serializable {
 			spotListType = 1;
 			sufsGroupList = cameraDefMgmt.findSufsGroups();
 
-			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
@@ -291,7 +288,7 @@ public class MissingSpotsController implements Serializable {
 			}
 			System.out.println(missingSpotList.getMissingSpotListEncoded());
 		} catch (Exception e) {
-			//e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			missingSpotList = new MissingSpotList();	
 		}
 		updateCentroidDisplay();

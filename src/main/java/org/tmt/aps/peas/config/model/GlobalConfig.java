@@ -23,6 +23,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -32,6 +34,8 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class GlobalConfig {
 
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	Long globalConfigId;
@@ -66,7 +70,7 @@ public class GlobalConfig {
 			this.globalConfigId = null;
 			
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

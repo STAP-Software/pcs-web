@@ -12,6 +12,7 @@ import javax.ejb.LockType;
 import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
@@ -95,11 +96,8 @@ public class UserPromptMgmt implements Serializable {
 			
 			waitingForSecs++;
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				
-			}
+			Utils.waitFor(1000);
+
 		}
 		
 		waitingForSecs = 0;

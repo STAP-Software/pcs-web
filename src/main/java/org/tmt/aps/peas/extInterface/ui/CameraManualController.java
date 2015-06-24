@@ -183,10 +183,9 @@ public class CameraManualController implements Serializable {
 			return "/modules/diagnostic/cameraDiagnostic.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
-			e.printStackTrace();
-
-			FacesContext context = FacesContext.getCurrentInstance();
-			context.addMessage(null, new FacesMessage("Error querying camera database", e.getMessage()));
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error querying camera database", e.getMessage()));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 		

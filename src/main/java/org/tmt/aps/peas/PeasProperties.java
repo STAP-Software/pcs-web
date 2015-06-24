@@ -17,6 +17,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 
 @Singleton
 @Startup
@@ -35,7 +36,7 @@ public class PeasProperties {
 	public void init() {
 
 		try {
-			System.out.println(">>>>>>>>>>>>>>>>>>> updating PeasProperties");
+			logger.debug("Updating PeasProperties");
 			String propertiesPath = System.getProperty("org.tmt.aps.peas.peasPropertiesPath");
 
 			properties = new Properties();
@@ -45,7 +46,7 @@ public class PeasProperties {
 			properties.load(fis);
 			fis.close();
 		} catch (Throwable th) {
-			th.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), th);
 		}
 	}
 

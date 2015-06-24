@@ -267,15 +267,6 @@ public class CenterTelescopeExecutor {
 
 	}
 
-	private void wait(int ms) {
-		// here we wait until the pending display is cleared
-		try {
-			Thread.sleep(ms);
-		} catch (InterruptedException e) {
-
-		}
-
-	}
 
 	
 }

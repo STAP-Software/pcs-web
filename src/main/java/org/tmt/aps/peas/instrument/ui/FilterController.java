@@ -56,7 +56,7 @@ public class FilterController implements Serializable {
 			refreshFilterWheel();
 			filterTypeList = cameraDefMgmt.findAllFilterTypes();
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}

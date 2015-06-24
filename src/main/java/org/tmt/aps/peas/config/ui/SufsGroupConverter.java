@@ -18,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
@@ -47,7 +48,7 @@ public class SufsGroupConverter implements Converter, Serializable {
 				}
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 				throw new ConverterException(new FacesMessage(FacesMessage.SEVERITY_ERROR, "Conversion Error", "Not a valid sufsGroup"));
 			}
 		}

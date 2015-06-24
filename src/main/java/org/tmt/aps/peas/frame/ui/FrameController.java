@@ -205,7 +205,7 @@ public class FrameController implements Serializable {
 					typeFitsList.add(fitsFile);
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(MessageGenerator.generateMessage("generic.error"), e);
 				}
 			}
 
@@ -246,7 +246,7 @@ public class FrameController implements Serializable {
 			}
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 		
 		long end = System.currentTimeMillis();

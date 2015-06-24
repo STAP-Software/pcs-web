@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.extInterface.business;
 
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.DcsCommand;
@@ -16,11 +17,8 @@ public class DcsCommandSimulator implements DcsCommand {
 		// TODO Auto-generated method stub
 		telPos[0] += (deltaAz / 1000000.0);
 		telPos[1] += (deltaEl / 1000000.0);
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-			
-		}
+		
+		Utils.waitFor(2000);
 	}
 
 	@Override

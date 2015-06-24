@@ -10,6 +10,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 
 @Singleton
 @Startup
@@ -38,7 +39,7 @@ public class CameraPoller {
 				cameraMgmt.refreshStatus();
 
 			} catch (Exception e) {
-				logger.error("error refreshing camera status: " + e.getMessage());
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 
 		}

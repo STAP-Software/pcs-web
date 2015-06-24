@@ -55,7 +55,7 @@ public class Utils {
 		}
 		return output;
 	}
-
+	
 	public static String createExceptionMessage(Throwable e) {
 		StringBuffer buf = new StringBuffer();
 
@@ -64,6 +64,16 @@ public class Utils {
 		return buf.toString();
 	}
 
+	public static void waitFor(long msec) {
+		
+		try {
+			Thread.sleep(msec);
+		} catch (InterruptedException e) {
+			// do nothing
+		}
+	}
+
+	
 	// recursively get all exception messages from exception and nested causes
 	private static void addExceptionMessage(Throwable e, StringBuffer buf) {
 		buf.append(e.getMessage());

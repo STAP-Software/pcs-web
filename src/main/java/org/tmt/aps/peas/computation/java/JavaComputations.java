@@ -5,6 +5,7 @@ import java.util.Date;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.TriState;
 import org.tmt.aps.peas.computation.business.ComputationException;
@@ -55,7 +56,7 @@ public class JavaComputations {
 			}
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			throw new ComputationException(e + "");
 		}
 	}

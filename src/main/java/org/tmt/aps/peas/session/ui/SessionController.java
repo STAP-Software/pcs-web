@@ -85,7 +85,7 @@ public class SessionController implements Serializable {
 			currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 
 			if (currentSession == null) {
-				currentSession = createNewSession();
+				currentSession = sessionMgmt.createNewSession(instrument, telescope);
 				currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
 				// the cloneBean will copy the procedure list, we want our own copy
 				currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
@@ -96,7 +96,7 @@ public class SessionController implements Serializable {
 			advancedViewMode = false;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
@@ -160,24 +160,6 @@ public class SessionController implements Serializable {
 		this.password = password;
 	}
 
-	private Session createNewSession() throws Exception {
-		// create a new session object
-		Session session = new Session();
-		List<Procedure> procedureList = new ArrayList<Procedure>();
-		session.setProcedureList(procedureList);
-
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-		Date dateWithoutTime = sdf.parse(sdf.format(new Date()));
-		session.setSessionDate(dateWithoutTime);
-
-		// get telescope and instrument
-		session.setInstrument(instrument);
-		session.setTelescope(telescope);
-
-		return session;
-
-	}
 
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;

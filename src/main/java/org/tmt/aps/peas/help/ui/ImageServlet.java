@@ -12,8 +12,13 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
+
 @WebServlet("/help/images/*")
 public class ImageServlet extends HttpServlet {
+	
+	Logger logger = Logger.getLogger(this.getClass());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String filename = request.getPathInfo().substring(1);
@@ -37,7 +42,7 @@ public class ImageServlet extends HttpServlet {
             os.close();
             is.close();
         } catch (IOException e) {
-            e.printStackTrace();
+        	logger.error(MessageGenerator.generateMessage("generic.error"), e);
         }
         
     }

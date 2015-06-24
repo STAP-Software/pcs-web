@@ -124,7 +124,7 @@ public class FalseColorProcessor {
  			*/
  
 		} catch (IOException ioe) { 
-			logger.error("Error: IO Exception."); 
+			logger.error("Error: IO Exception.", ioe); 
 			return null;
 		} 
  

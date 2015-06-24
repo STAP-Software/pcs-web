@@ -115,7 +115,7 @@ public class GetFrameCentroidsExecutor {
 			
 			statusLogger.log("procedure.exception", e.getMessage());
 
-			String unknownError = (e.getMessage() == null) ? "Unknown Error: " : "";
+			String unknownError = (e.getMessage() == null) ? "Unknown Error" : "";
 
 			throw new Exception(unknownError + e.getMessage());
 

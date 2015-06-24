@@ -19,6 +19,7 @@ import javax.inject.Inject;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
 
 @Singleton
 @Startup
@@ -41,7 +42,7 @@ public class ComputationContext {
 			fortranInstalled  = new Boolean(fortranInstalledStr);
 		
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 	
@@ -55,7 +56,7 @@ public class ComputationContext {
 			return new ComputationLibrarySimulator();
 		}
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
 	}

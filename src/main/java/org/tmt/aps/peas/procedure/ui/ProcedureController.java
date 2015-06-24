@@ -36,6 +36,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
@@ -314,7 +315,7 @@ public class ProcedureController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
@@ -333,7 +334,7 @@ public class ProcedureController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
 	}
@@ -456,7 +457,7 @@ public class ProcedureController implements Serializable {
 					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Error Initializing Procedure, check log files for details"));
 			return null;
@@ -563,7 +564,7 @@ public class ProcedureController implements Serializable {
 					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					logger.error(MessageGenerator.generateMessage("generic.error"), e);
 				}
 
 				// if a png file for display exists, read it in. Otherwise create it.
@@ -591,7 +592,7 @@ public class ProcedureController implements Serializable {
 			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage("Error loading procedure data"));
 			return null;
 		}
@@ -713,7 +714,9 @@ public class ProcedureController implements Serializable {
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
 		
 			centroid = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
-		} catch (Exception e) {}
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
 		
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();

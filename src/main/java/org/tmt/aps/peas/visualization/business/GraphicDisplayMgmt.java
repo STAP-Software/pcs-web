@@ -19,6 +19,7 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
@@ -216,11 +217,7 @@ public class GraphicDisplayMgmt implements Serializable {
 			
 			waitingForSecs++;
 			
-			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				
-			}
+			Utils.waitFor(1000);
 		}
 		
 		waitingForSecs = 0;

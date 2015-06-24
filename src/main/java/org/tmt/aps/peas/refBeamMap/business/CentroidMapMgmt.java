@@ -74,6 +74,7 @@ public class CentroidMapMgmt {
 			return refBeamMap;
 			
 		} catch (Exception e) {
+			logger.info("No reference beam map found.");
 			return null;
 		}
 

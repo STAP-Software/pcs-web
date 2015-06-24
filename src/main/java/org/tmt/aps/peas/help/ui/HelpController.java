@@ -6,10 +6,7 @@
 package org.tmt.aps.peas.help.ui;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.IOException;
 import java.io.Serializable;
-import java.nio.charset.Charset;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -23,6 +20,7 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.MessageGenerator;
 
 @Named
 @SessionScoped
@@ -110,7 +108,7 @@ public class HelpController implements Serializable {
 			return contents;
 
 		} catch (Exception e) {
-			e.printStackTrace();
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return "Content Load Error";
 		}
 

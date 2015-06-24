@@ -15,6 +15,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
@@ -38,7 +39,7 @@ public class CameraDefController implements Serializable {
 		instrument = physicalModel.getInstrument();
 
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 

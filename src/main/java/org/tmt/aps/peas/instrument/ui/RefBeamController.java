@@ -81,7 +81,7 @@ public class RefBeamController implements Serializable {
 			Collections.sort(referenceBeamList, new BeanComparator("refBeamNum"));
 
 		} catch (Exception e) {
-			logger.error("", e);
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
