@@ -185,7 +185,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public CameraStatus getCameraStatus() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
 		// TODO Auto-generated method stub
 
-		logger.debug(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
+		logger.trace(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
 
 		CameraStatus cameraStatus = new CameraStatus();
 		cameraStatus.benchTemp = 12.3;
@@ -214,7 +214,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		cameraStatus.steeringMirrorXIsInTransit = false;
 		
-		logger.debug(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
+		logger.trace(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
 		return cameraStatus;
 	}
 
