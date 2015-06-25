@@ -15,7 +15,7 @@
 		</h:panelGroup>
 
 		<f:facet name="footer">
-			<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" update="advTab :growl :errorGrowl" />
+			<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" update="advTab :growl :errorGrowl" action="#{ccdManualController.doRefresh}"/>
 		</f:facet>
 
 	</p:panelGrid>

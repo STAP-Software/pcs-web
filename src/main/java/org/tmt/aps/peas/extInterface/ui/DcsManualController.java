@@ -195,12 +195,28 @@ public class DcsManualController implements Serializable {
 	}
 	
 	public void doQueryAll() {
-		doQueryTelescopePosition();
-		doQueryStar();
-		doQueryDcsStatus();
-		doQuerySecondary();
+		
+		try {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query All"));
+			queryAll();
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying secondary position"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying secondary position"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}						
 	}
 	
+	private void queryAll() throws Exception {
+		telescopePosition = dcsMgmt.queryTelescopePosition();
+		starInfo = dcsMgmt.queryStar();
+		dcsStatus = dcsMgmt.queryDcsStatus();
+		m2Pos = dcsMgmt.querySecondary();
+
+	}
 
 	
 	public void doCommandTelescopeDelta() {
@@ -217,6 +233,8 @@ public class DcsManualController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Telescope Deltas"));
 			logger.info("doCommandTelescopeDelta: success");
+			// remember to clear the list when done
+			queryAll();
 			
 		} catch (CommandFailureException e) {
 				
@@ -228,8 +246,6 @@ public class DcsManualController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}						
 
-		// remember to clear the list when done
-		doQueryAll();
 	}
 	
 	public void doCommandSecondary() {
@@ -246,6 +262,8 @@ public class DcsManualController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Secondary Deltas"));
 			logger.info("doCommandTelescopeDelta: success");
+			// remember to clear the list when done
+			queryAll();
 			
 		} catch (CommandFailureException e) {
 			
@@ -262,8 +280,6 @@ public class DcsManualController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}						
 
-		// remember to clear the list when done
-		doQueryAll();
 	}
 }
 

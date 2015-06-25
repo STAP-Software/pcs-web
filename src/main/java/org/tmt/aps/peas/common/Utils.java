@@ -76,7 +76,9 @@ public class Utils {
 	
 	// recursively get all exception messages from exception and nested causes
 	private static void addExceptionMessage(Throwable e, StringBuffer buf) {
-		buf.append(e.getMessage());
+
+		buf.append(e.getClass().getName() + ": " + e.getMessage());
+		
 		if (e.getCause() != null) {
 			buf.append(", caused by: ");
 			addExceptionMessage(e.getCause(), buf);

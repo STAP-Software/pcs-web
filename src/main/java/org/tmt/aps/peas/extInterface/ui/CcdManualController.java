@@ -206,7 +206,7 @@ public class CcdManualController implements Serializable {
 
 			}
 
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(""));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
 			
 		} catch (CommandFailureException e) {
 			
@@ -232,17 +232,17 @@ public class CcdManualController implements Serializable {
 
 			case 1: // Set Gain
 				ccdMgmt.setGain(channel, gain);
-				commandType = "setGain";
+				commandType = "Set Gain";
 				break;
 
 			case 2: // Set Offset
 				ccdMgmt.setOffset(channel, offset);
-				commandType = "setOffset";
+				commandType = "Set Offset";
 				break;
 
 			case 3: // Set Binning
 				ccdMgmt.setBinning(binning[0], binning[1]);
-				commandType = "setBinning";
+				commandType = "Set Binning";
 				break;
 
 			case 4: // Get Image
@@ -258,7 +258,7 @@ public class CcdManualController implements Serializable {
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
-				commandType = "getImage";
+				commandType = "Get Image";
 				break;
 
 			default:
@@ -285,8 +285,10 @@ public class CcdManualController implements Serializable {
 			imageSize[0] = ccdMgmt.getImageWidth();
 			imageSize[1] = ccdMgmt.getImageHeight();
 			//plateScale = ccdMgmt.getPlateScale();
+			imageSize[0] = 1024;
+			imageSize[1] = 1024;
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("refresh"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Refresh"));
 			
 		} catch (CommandFailureException e) {
 			

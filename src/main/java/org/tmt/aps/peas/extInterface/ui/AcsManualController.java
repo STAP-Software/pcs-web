@@ -273,6 +273,7 @@ public class AcsManualController implements Serializable {
 			mirrorTemp = acsMgmt.queryMirrorTemp();
 			rmsActuatorMove = acsMgmt.queryRmsActuMove();
 			acsRunning = acsMgmt.queryRunning();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query All"));
 			
 		} catch (CommandFailureException e) {
 			
