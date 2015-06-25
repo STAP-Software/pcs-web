@@ -103,8 +103,8 @@ public class Utils {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success"), "");
 	}
 
-	public static FacesMessage commandSuccessfulMessage(String message) {
-		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success") + "\n" + message, "");
+	public static FacesMessage commandSuccessfulMessage(String commandedName) {
+		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success", commandedName), "");
 	}
 
 	public static FacesMessage commandFailedMessage(CommandFailureException e) {	

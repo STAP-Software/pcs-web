@@ -204,6 +204,8 @@ public class CameraManualController implements Serializable {
 			//Thread.sleep(5000);
 			//cameraMgmt.resetCamera();
 			
+			String commandType = null;
+			
 			logger.info("command selection = " + commandSelection);
 			switch (commandSelection) {
 
@@ -219,6 +221,7 @@ public class CameraManualController implements Serializable {
 				// update position
 				getCamera().getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
 				getCamera().getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
+				commandType = "Pupil Mask";
 				break;
 
 			case 2: // Filter
@@ -230,11 +233,13 @@ public class CameraManualController implements Serializable {
 				// update position
 				getCamera().getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
 				getCamera().getFilterWheel().setSelectedFilterNumber(filterNumber);
+				commandType = "Filter";
 				break;
 
 			case 3: // Ref Beam
 				cameraMgmt.commandReferenceBeamState(selectedRefBeam);
 				getCamera().setCurrentRefBeam(selectedRefBeam);
+				commandType = "Ref Beam";
 				break;
 
 			case 4: // Shutter
@@ -250,6 +255,7 @@ public class CameraManualController implements Serializable {
 					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime * 1000));
 					getCamera().getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
 				}
+				commandType = "Shutter";
 				break;
 
 			case 5: // Fine Tilt
@@ -264,6 +270,7 @@ public class CameraManualController implements Serializable {
 
 				getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
 				getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				commandType = "Fine Tilt";
 				break;
 
 			case 6: // Coarse Tilt
@@ -277,6 +284,7 @@ public class CameraManualController implements Serializable {
 
 				getCamera().getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
 				getCamera().getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+				commandType = "Coarse Tilt";
 				break;
 
 			case 7: // Two Position Mech
@@ -289,6 +297,7 @@ public class CameraManualController implements Serializable {
 				getCamera().getTwoPosMechanism().setState(
 						twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
 
+				commandType = "Two Pos Mech";
 				break;
 
 			case 8: // CCD Power
@@ -299,6 +308,7 @@ public class CameraManualController implements Serializable {
 				}
 				int ccdState = ccdPowerFuture.get();
 				getCcd().setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+				commandType = "Ccd Power";
 				break;
 
 			default:
@@ -307,7 +317,7 @@ public class CameraManualController implements Serializable {
 
 			//cameraPoller.setDoPoll(true);
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
 			
 		} catch (CommandFailureException e) {
 			

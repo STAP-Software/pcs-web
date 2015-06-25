@@ -133,7 +133,7 @@ public class DcsManualController implements Serializable {
 	public void doQueryTelescopePosition() {
 		try {
 			telescopePosition = dcsMgmt.queryTelescopePosition();
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Telescope Position"));
 			
 		} catch (CommandFailureException e) {
 				
@@ -149,7 +149,7 @@ public class DcsManualController implements Serializable {
 	public void doQueryStar() {
 		try {
 			starInfo = dcsMgmt.queryStar();
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Star"));
 			
 		} catch (CommandFailureException e) {
 				
@@ -165,7 +165,7 @@ public class DcsManualController implements Serializable {
 	public void doQueryDcsStatus() {
 		try {
 			dcsStatus = dcsMgmt.queryDcsStatus();
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Dcs Status"));
 			
 		} catch (CommandFailureException e) {
 				
@@ -181,7 +181,7 @@ public class DcsManualController implements Serializable {
 	public void doQuerySecondary() {
 		try {
 			m2Pos = dcsMgmt.querySecondary();
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Secondary"));
 			
 		} catch (CommandFailureException e) {
 				
@@ -215,7 +215,7 @@ public class DcsManualController implements Serializable {
 			// send out the commands
 			dcsMgmt.commandTelescopeDeltas(deltaCmds);
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Telescope Delta Send Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Telescope Deltas"));
 			logger.info("doCommandTelescopeDelta: success");
 			
 		} catch (CommandFailureException e) {
@@ -244,7 +244,7 @@ public class DcsManualController implements Serializable {
 			dcsMgmt.commandSecondaryDeltas(deltaCmds);
 			
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Secondary Delta Send Successful"));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Secondary Deltas"));
 			logger.info("doCommandTelescopeDelta: success");
 			
 		} catch (CommandFailureException e) {

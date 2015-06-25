@@ -163,14 +163,18 @@ public class CcdManualController implements Serializable {
 	public void doSendCommand() {
 		try {
 
+			String commandType = null;
+			
 			switch (commandSelection) {
 
 			case 1: // FastWipe
 				ccdMgmt.fastWipeCcd();
+				commandType = "Fast Wipe CCD";
 				break;
 
 			case 2: // Continuous Wipe on
 				ccdMgmt.wipeOn();
+				commandType = "Continuous Wipe On";
 				break;
 
 			case 3: // Read CCD Raw
@@ -194,6 +198,7 @@ public class CcdManualController implements Serializable {
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
+				commandType = "Read CCD Raw";
 				break;
 
 
@@ -201,7 +206,7 @@ public class CcdManualController implements Serializable {
 
 			}
 
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(""));
 			
 		} catch (CommandFailureException e) {
 			
@@ -221,19 +226,23 @@ public class CcdManualController implements Serializable {
 			//Thread.sleep(5000);
 			//cameraMgmt.resetCamera();
 
-
+			String commandType = null;
+			
 			switch (advCommandSelection) {
 
 			case 1: // Set Gain
 				ccdMgmt.setGain(channel, gain);
+				commandType = "setGain";
 				break;
 
 			case 2: // Set Offset
 				ccdMgmt.setOffset(channel, offset);
+				commandType = "setOffset";
 				break;
 
 			case 3: // Set Binning
 				ccdMgmt.setBinning(binning[0], binning[1]);
+				commandType = "setBinning";
 				break;
 
 			case 4: // Get Image
@@ -249,14 +258,14 @@ public class CcdManualController implements Serializable {
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
-				
+				commandType = "getImage";
 				break;
 
 			default:
 
 			}
 
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
 			
 		} catch (CommandFailureException e) {
 			
@@ -277,7 +286,7 @@ public class CcdManualController implements Serializable {
 			imageSize[1] = ccdMgmt.getImageHeight();
 			//plateScale = ccdMgmt.getPlateScale();
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("refresh"));
 			
 		} catch (CommandFailureException e) {
 			
