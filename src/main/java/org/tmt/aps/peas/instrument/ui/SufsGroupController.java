@@ -6,9 +6,10 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -29,7 +30,6 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
 @Named
@@ -74,49 +74,65 @@ public class SufsGroupController implements Serializable {
 	}
 
 	public void refreshSufsGroupList() throws Exception {
-		sufsGroupList = new ArrayList<SufsGroup>(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().getSufsGroupSet());
+		
+		sufsGroupList = cameraDefMgmt.findSufsGroups();
+		Set<SufsGroup> sufsGroupSet = new HashSet<SufsGroup>(sufsGroupList);
+
+		// update physical model on the fly
+		physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().setSufsGroupSet(sufsGroupSet);
 		Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}
 
 	public void validate(ComponentSystemEvent event) {
-		 
-		  FacesContext fc = FacesContext.getCurrentInstance();
-	 
-		  UIComponent components = event.getComponent();
-	 
-		  UIInput sufsGroupIdInput = (UIInput) components.findComponent("sufsGroupId");
-		  if (sufsGroupIdInput.getLocalValue() == null) {
-		  
-		  // get group number
-		  UIInput groupNumberInput = (UIInput) components.findComponent("groupNumber");
-		  String groupNumberStr = groupNumberInput.getLocalValue() == null ? "" : groupNumberInput.getLocalValue().toString();
-		  String groupNumberId = groupNumberInput.getClientId();
-		  
-		  int groupNumber = new Integer(groupNumberStr);
-		  
-		  for (SufsGroup sufsGroup : sufsGroupList) {
-			  
-			  if (sufsGroup.getGroupNumber() == groupNumber) {
-				  
-					FacesMessage msg = new FacesMessage("SUFS Group Number " + groupNumber + " is already defined.");
-					msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-					fc.addMessage(groupNumberId, msg);
-					fc.renderResponse();
 
-			  }
-			  
-		  }
-		  }
-		  
+		FacesContext fc = FacesContext.getCurrentInstance();
+
+		UIComponent components = event.getComponent();
+
+		UIInput sufsGroupIdInput = (UIInput) components.findComponent("sufsGroupId");
+		if (sufsGroupIdInput.getLocalValue() == null) {
+
+			// get group number
+			UIInput groupNumberInput = (UIInput) components.findComponent("groupNumber");
+			String groupNumberStr = groupNumberInput.getLocalValue() == null ? "" : groupNumberInput.getLocalValue().toString();
+			String groupNumberId = groupNumberInput.getClientId();
+
+			try {
+
+				int groupNumber = new Integer(groupNumberStr);
+
+				for (SufsGroup sufsGroup : sufsGroupList) {
+
+					if (sufsGroup.getGroupNumber() == groupNumber) {
+
+						FacesMessage msg = new FacesMessage("SUFS Group Number " + groupNumber + " is already defined.");
+						msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+						fc.addMessage(groupNumberId, msg);
+						fc.renderResponse();
+
+					}
+
+				}
+			} catch (Exception e) {
+				FacesMessage msg = new FacesMessage("SUFS Group Number " + groupNumberStr + " is not valid.");
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				fc.addMessage(groupNumberId, msg);
+				fc.renderResponse();
+
+			}
+		}
+
 	}
-	
+
 	public String doViewSufsGroupList() {
 
 		try {
 			refreshSufsGroupList();
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage(FacesMessage.SEVERITY_ERROR, "No SUFS Mask Defined.  A SUFS mask must be defined in the pupil wheel first.", ""));
+			FacesContext.getCurrentInstance().addMessage(
+					null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR,
+							"No SUFS Mask Defined.  A SUFS mask must be defined in the pupil wheel first.", ""));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
@@ -136,7 +152,7 @@ public class SufsGroupController implements Serializable {
 
 		sufsGroup = new SufsGroup();
 		sufsGroup.setPupilMask(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask());
-		
+
 		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
@@ -158,9 +174,9 @@ public class SufsGroupController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null,
 						new FacesMessage(FacesMessage.SEVERITY_ERROR, "SUFS Group Number must be between 1 and 7", ""));
 				throw new Exception("SUFS Group Number must be between 1 and 7");
-				
+
 			}
-			
+
 			if (sufsGroup.isNewRecord()) {
 				cameraDefMgmt.createSufsGroup(sufsGroup);
 			} else {
@@ -169,12 +185,11 @@ public class SufsGroupController implements Serializable {
 			refreshSufsGroupList();
 
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
-			
+
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
-
 
 		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
 

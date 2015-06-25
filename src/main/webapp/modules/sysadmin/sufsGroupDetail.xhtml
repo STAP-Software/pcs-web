@@ -44,7 +44,7 @@
 					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
 						action="#{sufsGroupController.doSaveSufsGroup}" />
 					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
-						action="#{sufsGroupController.doCancelSaveSufsGroup}" />
+						immediate="true" action="#{sufsGroupController.doCancelSaveSufsGroup}" />
 				</f:facet>
 			</p:panelGrid>
 
