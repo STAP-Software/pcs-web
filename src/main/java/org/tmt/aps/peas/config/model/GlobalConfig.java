@@ -8,32 +8,27 @@ package org.tmt.aps.peas.config.model;
 import java.util.Date;
 
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "GlobalConfig")
 @Inheritance(strategy=InheritanceType.JOINED)
 public class GlobalConfig {
 
+	@Transient
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	@Id

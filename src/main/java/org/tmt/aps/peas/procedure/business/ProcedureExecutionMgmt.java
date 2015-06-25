@@ -193,13 +193,13 @@ public class ProcedureExecutionMgmt {
 		try {
 			procedure.setExecutionEndTime(new Date());
 
-			logger.info("performProcedureCompletion 1");
+			logger.debug("performProcedureCompletion 1");
 			// this persists the procedure
 			sessionMgmt.updateCurrentSession(currentSession);
 
 			// save the current coarse mirror state in global config
 			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
-			logger.info("performProcedureCompletion 2");
+			logger.debug("performProcedureCompletion 2");
 			
 			// create a config defaults object to save back
 			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
@@ -207,7 +207,7 @@ public class ProcedureExecutionMgmt {
 			globalConfigDefaults.setCoarseMirrorY(coarsePosition.y);
 			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 
-			logger.info("performProcedureCompletion 3");
+			logger.debug("performProcedureCompletion 3");
 
 			// persist all the frames
 			if (procedure.getProcedureCcdFrameList() != null) {
@@ -215,7 +215,7 @@ public class ProcedureExecutionMgmt {
 					procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
 					frameMgmt.associateCcdFrame(procedureCcdFrame);
 
-					logger.info("performProcedureCompletion 4a");
+					logger.debug("performProcedureCompletion 4a");
 
 					// load up png file again because associateCcdFrame reloads ccd frame fresh
 					// FIXME: we should not have to do this.
@@ -231,13 +231,13 @@ public class ProcedureExecutionMgmt {
 					} catch (Exception e) {
 						logger.error(MessageGenerator.generateMessage("generic.error"), e);
 					}
-					logger.info("performProcedureCompletion 4b");
+					logger.debug("performProcedureCompletion 4b");
 
 					// if a png file for display exists, read it in. Otherwise create it.
 					byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
-					logger.info("performProcedureCompletion 4c");
+					logger.debug("performProcedureCompletion 4c");
 
 					
 					// save the associated centroid map
@@ -247,7 +247,7 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 
-			logger.info("performProcedureCompletion 5");
+			logger.debug("performProcedureCompletion 5");
 			statusLogger.saveLog(procedure.getProcedureId());
 
 			// associate ref beam map
@@ -255,7 +255,7 @@ public class ProcedureExecutionMgmt {
 				centroidMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
 			}
 			
-			logger.info("performProcedureCompletion 6");
+			logger.debug("performProcedureCompletion 6");
 
 			
 			// persist the procedure output
@@ -268,7 +268,7 @@ public class ProcedureExecutionMgmt {
 			// set up for immediate viewing
 			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
-			logger.info("performProcedureCompletion 7");
+			logger.debug("performProcedureCompletion 7");
 
 			// procedure frame data for immediate viewing
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {

@@ -115,8 +115,8 @@ public class Utils {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()) + "\n" + message, Utils.createExceptionMessage(e));
 	}
 
-	public static FacesMessage procedureSuccessfulMessage() {
-		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("procedure.success"), "");
+	public static FacesMessage procedureSuccessfulMessage(String procedureType) {
+		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("procedure.success", procedureType), "");
 	}
 
 	public static FacesMessage procedureFailedMessage(Throwable e) {

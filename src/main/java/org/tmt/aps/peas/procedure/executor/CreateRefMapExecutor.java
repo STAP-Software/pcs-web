@@ -227,7 +227,7 @@ public class CreateRefMapExecutor {
 								
 			
 						
-			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
+			statusLogger.log("procedure.success",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setPercentComplete(100);
 

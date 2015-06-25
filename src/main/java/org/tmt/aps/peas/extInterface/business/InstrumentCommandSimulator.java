@@ -3,12 +3,12 @@ package org.tmt.aps.peas.extInterface.business;
 import java.rmi.RemoteException;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.InstrumentInterface;
-import org.tmt.aps.peas.extinf.MessageGenerator;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class InstrumentCommandSimulator implements InstrumentInterface {

@@ -4,13 +4,13 @@ import java.rmi.RemoteException;
 import java.util.Random;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
-import org.tmt.aps.peas.extinf.MessageGenerator;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class CameraCommandSimulator implements CameraCommand {
@@ -87,7 +87,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public void resetCamera() throws CommunicationException, CommandFailureException, RemoteException {
 		logger.info(MessageGenerator.generateMessage("command.start", "resetCamera::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucess", "resetCamera::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "resetCamera::SIMULATOR"));
 		
 	}
 
@@ -97,7 +97,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		logger.info(MessageGenerator.generateMessage("command.start", "commandPupilMask::SIMULATOR"));
 		Utils.waitFor(10000);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandPupilMask::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandPupilMask::SIMULATOR"));
 		return pupilMaskPosition;
 	}
 
@@ -105,7 +105,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandFilterWheel::SIMULATOR"));
 		Utils.waitFor(750);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandFilterWheel::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandFilterWheel::SIMULATOR"));
 		return filterWheelPosition;
 	}
 
@@ -113,7 +113,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandXTiltPlate(int xTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandXTiltPlate::SIMULATOR"));
 		Utils.waitFor(10000);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandXTiltPlate::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandXTiltPlate::SIMULATOR"));
 		return xTiltPlatePosition;
 	}
 
@@ -121,7 +121,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandYTiltPlate(int yTiltPlatePosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandYTiltPlate::SIMULATOR"));
 		Utils.waitFor(10000);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandYTiltPlate::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandYTiltPlate::SIMULATOR"));
 		return yTiltPlatePosition;
 	}
 
@@ -130,7 +130,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandTwoPositionDevice::SIMULATOR"));
 		Utils.waitFor(750);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandTwoPositionDevice::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandTwoPositionDevice::SIMULATOR"));
 		return twoPositionDevicePosition;
 	}
 
@@ -138,13 +138,13 @@ public class CameraCommandSimulator implements CameraCommand {
 	public void commandCcdShutterExposure(int ccdExposureTime) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandCcdShutterExposure::SIMULATOR"));
 		Utils.waitFor(ccdExposureTime);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandCcdShutterExposure::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandCcdShutterExposure::SIMULATOR"));
 	}
 
 	@Override
 	public int commandCcdShutterState(int ccdShutterState) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandCcdShutterState::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandCcdShutterState::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandCcdShutterState::SIMULATOR"));
 		return ccdShutterState;
 	}
 
@@ -153,14 +153,14 @@ public class CameraCommandSimulator implements CameraCommand {
 			CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandReferenceBeamState::SIMULATOR"));
 		Utils.waitFor(750);		
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandReferenceBeamState::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandReferenceBeamState::SIMULATOR"));
 	}
 
 	@Override
 	public int commandCcdPowerState(int ccdPowerState) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandCcdPowerState::SIMULATOR"));
 		Utils.waitFor(750);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandCcdPowerState::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandCcdPowerState::SIMULATOR"));
 		return ccdPowerState;
 	}
 
@@ -168,7 +168,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandXSteeringMirror(int xSteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandXSteeringMirror::SIMULATOR"));
 		Utils.waitFor(750);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandXSteeringMirror::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandXSteeringMirror::SIMULATOR"));
 		return xSteeringMirrorPosition;
 	}
 
@@ -176,7 +176,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public int commandYSteeringMirror(int ySteeringMirrorPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandYSteeringMirror::SIMULATOR"));
 		Utils.waitFor(750);
-		logger.info(MessageGenerator.generateMessage("command.sucess", "commandYSteeringMirror::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandYSteeringMirror::SIMULATOR"));
 		return ySteeringMirrorPosition;
 	}
 
@@ -185,7 +185,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	public CameraStatus getCameraStatus() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
 		// TODO Auto-generated method stub
 
-		logger.info(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
+		logger.debug(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
 
 		CameraStatus cameraStatus = new CameraStatus();
 		cameraStatus.benchTemp = 12.3;
@@ -214,7 +214,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		cameraStatus.steeringMirrorXIsInTransit = false;
 		
-		logger.info(MessageGenerator.generateMessage("command.sucess", "getCameraStatus::SIMULATOR"));
+		logger.debug(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
 		return cameraStatus;
 	}
 

@@ -285,7 +285,7 @@ public class AsyncController {
 			procedureController.loadCameraState(cameraState);
 			statusLogController.refreshProcedureStatusLog();
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage());
+			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
 			RequestContext.getCurrentInstance().update("procedureDetailForm");
 			
 			// update the breadcrumb to associate the current session as the first link

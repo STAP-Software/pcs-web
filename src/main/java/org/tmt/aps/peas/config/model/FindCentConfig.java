@@ -14,6 +14,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
@@ -25,6 +26,7 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class FindCentConfig {
 
+	@Transient
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@Id

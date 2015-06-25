@@ -115,10 +115,7 @@ public class GetFrameCentroidsExecutor {
 			
 			statusLogger.log("procedure.exception", e.getMessage());
 
-			String unknownError = (e.getMessage() == null) ? "Unknown Error" : "";
-
-			throw new Exception(unknownError + e.getMessage());
-
+			throw e;
 		}
 
 		return procedureCcdFrame;
@@ -298,7 +295,7 @@ public class GetFrameCentroidsExecutor {
 			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
-			CentroidMap centroidMap = null;
+			centroidMap = null;
 			try {
 	
 				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()

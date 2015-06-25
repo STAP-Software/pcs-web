@@ -249,7 +249,7 @@ public class CenterTelescopeExecutor {
 
 			procedureExecutionState.setPercentComplete(95);
 			
-			statusLogger.log("procedure.end",  procedure.getProcedureType().getProcedureTypeName());
+			statusLogger.log("procedure.success",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setPercentComplete(100);
 
