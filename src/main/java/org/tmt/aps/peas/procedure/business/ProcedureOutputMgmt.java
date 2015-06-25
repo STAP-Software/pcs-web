@@ -20,6 +20,7 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
@@ -72,6 +73,7 @@ public class ProcedureOutputMgmt {
 
 					procedureOutputValue.setData(data);
 
+					logger.info(MessageGenerator.generateMessage("record.create", "procedureOutputValue"));
 					em.persist(procedureOutputValue);
 				}
 			}

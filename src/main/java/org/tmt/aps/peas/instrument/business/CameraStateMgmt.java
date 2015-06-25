@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.CameraState;
 
 @Stateless
@@ -31,6 +32,8 @@ public class CameraStateMgmt {
 	}
 	
 	public void createCameraState(CameraState cameraState) {
+
+		logger.info(MessageGenerator.generateMessage("record.create", "cameraState"));
 		em.persist(cameraState);
 
 	}

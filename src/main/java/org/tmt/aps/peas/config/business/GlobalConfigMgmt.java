@@ -11,6 +11,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
@@ -41,6 +42,7 @@ public class GlobalConfigMgmt {
 	
 	public void saveDefaultConfig(GlobalConfigDefaults globalConfigDefaults) {
 		
+		logger.info(MessageGenerator.generateMessage("record.update", "globalConfigDefaults"));
 		em.merge(globalConfigDefaults);
 	}
 	

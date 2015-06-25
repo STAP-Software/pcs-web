@@ -11,8 +11,8 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.MissingSpotList;
-import org.tmt.aps.peas.instrument.model.Ccd;
 
 @Stateless
 public class MissingSpotsMgmt {
@@ -47,12 +47,14 @@ public class MissingSpotsMgmt {
 	}
 	
 	public void createMissingSpotList(MissingSpotList missingSpotList) {
+		logger.info(MessageGenerator.generateMessage("record.create", "missingSpotList"));
 		em.persist(missingSpotList);
 		
 	}
 
 	public void updateMissingSpotList(MissingSpotList missingSpotList) {
 		
+		logger.info(MessageGenerator.generateMessage("record.update", "missingSpotList"));
 		em.merge(missingSpotList);
 		
 	}

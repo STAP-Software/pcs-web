@@ -14,6 +14,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.Ccd;
 
 @Stateless
@@ -35,12 +36,15 @@ public class CcdDefMgmt {
 	}
 
 	public void createCcd(Ccd ccd) {
+		
+		logger.info(MessageGenerator.generateMessage("record.create", "ccd"));
 		em.persist(ccd);
 		
 	}
 
 	public void updateCcd(Ccd ccd) {
 		
+		logger.info(MessageGenerator.generateMessage("record.update", "ccd"));
 		em.merge(ccd);
 		
 	}
@@ -50,11 +54,13 @@ public class CcdDefMgmt {
 		Ccd oldCcd = physicalModel.getInstrument().getCcd();
 		if (oldCcd != null) {
 			oldCcd.setInstrument(null);
+			logger.info(MessageGenerator.generateMessage("record.update", "oldCcd"));
 			em.merge(oldCcd);
 		}
 		
 		// assign this Ccd to the instrument
 		ccd.setInstrument(physicalModel.getInstrument());
+		logger.info(MessageGenerator.generateMessage("record.create", "ccd"));
 		em.merge(ccd);
 	}
 

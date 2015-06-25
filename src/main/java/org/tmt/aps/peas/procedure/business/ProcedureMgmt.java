@@ -105,6 +105,7 @@ public class ProcedureMgmt {
 	}
 
 	public Procedure updateProcedure(Procedure procedure) {
+		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
 		em.merge(procedure);
 		return procedure;
 	}

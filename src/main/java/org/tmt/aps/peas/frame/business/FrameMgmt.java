@@ -127,6 +127,7 @@ public class FrameMgmt {
 		saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
+		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
 		em.persist(ccdFrame);
 
 		associateCcdFrame(procedureCcdFrame);
@@ -174,14 +175,16 @@ public class FrameMgmt {
 			CameraState cameraState = ccdFrame.getCameraState();
 			
 			if (cameraState != null) {
+				logger.info(MessageGenerator.generateMessage("record.create", "cameraState"));
 				em.persist(cameraState);
 			}
-			
+			logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
 			em.persist(ccdFrame);
 		}
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 
 		// perform the association
+		logger.info(MessageGenerator.generateMessage("record.create", "procedureCcdFrame"));
 		em.persist(procedureCcdFrame);
 	}
 

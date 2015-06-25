@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
@@ -101,6 +102,7 @@ public class CentroidMapMgmt {
 
 		refBeamMap.setCreateDate(new Date());
 				
+		logger.info(MessageGenerator.generateMessage("record.create", "refBeamMap"));
 		em.persist(refBeamMap);
 
 		return refBeamMap;
@@ -110,6 +112,7 @@ public class CentroidMapMgmt {
 
 		centroidMap.setCreateDate(new Date());
 		
+		logger.info(MessageGenerator.generateMessage("record.create", "centroidMap"));
 		em.persist(centroidMap);
 
 		return centroidMap;
@@ -127,6 +130,7 @@ public class CentroidMapMgmt {
 		procedureRefBeamMap.setRefBeamMap(refBeamMap);
 
 		// perform the association
+		logger.info(MessageGenerator.generateMessage("record.create", "procedureRefBeamMap"));
 		em.persist(procedureRefBeamMap);
 	}
 

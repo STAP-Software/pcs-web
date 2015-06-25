@@ -1,56 +1,66 @@
 package org.tmt.aps.peas.extInterface.business;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.DcsCommand;
+import org.tmt.aps.peas.extinf.MessageGenerator;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
 public class DcsCommandSimulator implements DcsCommand {
 
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	double[] dcsM2Pos = {0.1f, 0.2f, 0.3f};
 	double[] telPos = {1.1f, 2.2f};
 	
 	@Override
 	public void commandDcsOffset(double deltaAz, double deltaEl) throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "commandDcsOffset::SIMULATOR"));
 		telPos[0] += (deltaAz / 1000000.0);
 		telPos[1] += (deltaEl / 1000000.0);
 		
 		Utils.waitFor(2000);
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "commandDcsOffset::SIMULATOR"));
 	}
 
 	@Override
 	public double[] queryDcsM2Pos() throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "queryDcsM2Pos::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryDcsM2Pos::SIMULATOR"));
 		return dcsM2Pos;
 	}
 
 	@Override
 	public void commandDcsM2PosDelta(double[] m2PosDelta) throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "commandDcsM2PosDelta::SIMULATOR"));
 		for (int i=0; i<3; i++) {
 			dcsM2Pos[i] += m2PosDelta[i];
 		}
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "commandDcsM2PosDelta::SIMULATOR"));
 	}
 
 	@Override
 	public int queryDcsStatus() throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "queryDcsStatus::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryDcsStatus::SIMULATOR"));
 		return 4;
 	}
 
 	@Override
 	public double[] queryTelPos() throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "queryTelPos::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryTelPos::SIMULATOR"));
 		return telPos;
 	}
 
 	@Override
 	public StarInfo queryStar() throws CommunicationException, TimeoutException, CommandFailureException {
-		// TODO Auto-generated method stub
+		logger.info(MessageGenerator.generateMessage("command.start", "queryStar::SIMULATOR"));
 		StarInfo starInfo = new StarInfo("Sirius", 1.42f, "A1V(A)/DA2(B)");
+		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryStar::SIMULATOR"));
 		return starInfo;
 	}
 

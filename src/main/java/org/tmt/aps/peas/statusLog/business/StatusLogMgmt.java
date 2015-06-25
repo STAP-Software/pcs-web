@@ -13,6 +13,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
 import org.tmt.aps.peas.statusLog.model.StatusLogEntry;
 
@@ -40,6 +41,7 @@ public class StatusLogMgmt {
 	public void saveStatusLog(ProcedureStatusLog statusLog, Long procedureId) {
 		for (StatusLogEntry logEntry : statusLog.getLogEntryList()) {
 			logEntry.setProcedureId(procedureId);
+			logger.info(MessageGenerator.generateMessage("record.create", "logEntry"));
 			em.persist(logEntry);
 		}
 		

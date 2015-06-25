@@ -41,18 +41,21 @@ public class CameraDefMgmt {
 	}
 
 	public void createFilter(Filter filter) {
+		logger.info(MessageGenerator.generateMessage("record.create", "filter"));
 		em.persist(filter);
 
 	}
 
 	public void updateFilter(Filter filter) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "filter"));
 		em.merge(filter);
 
 	}
 
 	public void updateFilterWheel(FilterWheel filterWheel) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "filterWheel"));
 		em.merge(filterWheel);
 
 	}
@@ -65,17 +68,20 @@ public class CameraDefMgmt {
 
 	public void createPupilMask(PupilMask pupilMask) {
 
+		logger.info(MessageGenerator.generateMessage("record.create", "pupilMask"));
 		em.persist(pupilMask);
 
 	}
 
 	public void updatePupilMask(PupilMask pupilMask) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "pupilMask"));
 		em.merge(pupilMask);
 	}
 
 	public void updatePupilWheel(PupilWheel pupilWheel) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "pupilWheel"));
 		em.merge(pupilWheel);
 
 	}
@@ -93,12 +99,14 @@ public class CameraDefMgmt {
 
 	public void updateCoarseTiltMirror(CoarseTiltMirror coarseTiltMirror) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "coarseTiltMirror"));
 		em.merge(coarseTiltMirror);
 
 	}
 
 	public void updateFineTiltMirror(FineTiltMirror fineTiltMirror) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "fineTiltMirror"));
 		em.merge(fineTiltMirror);
 
 	}
@@ -113,12 +121,14 @@ public class CameraDefMgmt {
 
 	public void createSufsGroup(SufsGroup sufsGroup) {
 
+		logger.info(MessageGenerator.generateMessage("record.create", "sufsGroup"));
 		em.persist(sufsGroup);
 
 	}
 
 	public void updateSufsGroup(SufsGroup sufsGroup) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "sufsGroup"));
 		em.merge(sufsGroup);
 
 	}
@@ -131,12 +141,14 @@ public class CameraDefMgmt {
 
 	public void createReferenceBeam(ReferenceBeam referenceBeam) {
 
+		logger.info(MessageGenerator.generateMessage("record.create", "referenceBeam"));
 		em.persist(referenceBeam);
 
 	}
 
 	public void updateReferenceBeam(ReferenceBeam referenceBeam) {
 
+		logger.info(MessageGenerator.generateMessage("record.update", "referenceBeam"));
 		em.merge(referenceBeam);
 
 	}

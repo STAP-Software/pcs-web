@@ -116,6 +116,7 @@ public class SessionMgmt {
 	
 	
 	public Session updateSession(Session session) {
+		logger.info(MessageGenerator.generateMessage("record.update", "session"));
 		em.merge(session);
 		return session;
 	}
@@ -167,6 +168,7 @@ public class SessionMgmt {
 		
 		// if sessionId is null, we create instead
 		if (currentSession.getSessionId() == null) {
+			logger.info(MessageGenerator.generateMessage("record.create", "currentSession"));
 			em.persist(currentSession);
 		} 
 		
@@ -175,11 +177,13 @@ public class SessionMgmt {
 				if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_NEW && procedure.isNewRecord()) {
 					// if it executed and is not in the DB, then save it
 					procedure.setSession(currentSession);
+					logger.info(MessageGenerator.generateMessage("record.create", "currentSession"));
 					em.persist(procedure);
 				}
 			}
 		}
 		
+		logger.info(MessageGenerator.generateMessage("record.update", "currentSession"));
 		em.merge(currentSession);
 
 	}
