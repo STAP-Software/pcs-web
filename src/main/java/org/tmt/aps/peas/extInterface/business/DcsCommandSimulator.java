@@ -23,13 +23,13 @@ public class DcsCommandSimulator implements DcsCommand {
 		telPos[1] += (deltaEl / 1000000.0);
 		
 		Utils.waitFor(2000);
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "commandDcsOffset::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandDcsOffset::SIMULATOR"));
 	}
 
 	@Override
 	public double[] queryDcsM2Pos() throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "queryDcsM2Pos::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryDcsM2Pos::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "queryDcsM2Pos::SIMULATOR"));
 		return dcsM2Pos;
 	}
 
@@ -39,20 +39,20 @@ public class DcsCommandSimulator implements DcsCommand {
 		for (int i=0; i<3; i++) {
 			dcsM2Pos[i] += m2PosDelta[i];
 		}
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "commandDcsM2PosDelta::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "commandDcsM2PosDelta::SIMULATOR"));
 	}
 
 	@Override
 	public int queryDcsStatus() throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "queryDcsStatus::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryDcsStatus::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "queryDcsStatus::SIMULATOR"));
 		return 4;
 	}
 
 	@Override
 	public double[] queryTelPos() throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "queryTelPos::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryTelPos::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "queryTelPos::SIMULATOR"));
 		return telPos;
 	}
 
@@ -60,7 +60,7 @@ public class DcsCommandSimulator implements DcsCommand {
 	public StarInfo queryStar() throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "queryStar::SIMULATOR"));
 		StarInfo starInfo = new StarInfo("Sirius", 1.42f, "A1V(A)/DA2(B)");
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "queryStar::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "queryStar::SIMULATOR"));
 		return starInfo;
 	}
 

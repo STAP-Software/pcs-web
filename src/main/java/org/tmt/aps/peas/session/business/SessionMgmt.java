@@ -177,7 +177,7 @@ public class SessionMgmt {
 				if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_NEW && procedure.isNewRecord()) {
 					// if it executed and is not in the DB, then save it
 					procedure.setSession(currentSession);
-					logger.info(MessageGenerator.generateMessage("record.create", "currentSession"));
+					logger.info(MessageGenerator.generateMessage("record.create", "procedure"));
 					em.persist(procedure);
 				}
 			}

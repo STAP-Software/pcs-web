@@ -52,7 +52,7 @@ public class InstrumentCommandSimulator implements InstrumentInterface {
 	@Override
 	public void resetCamera() throws CommunicationException, CommandFailureException, RemoteException {
 		logger.info(MessageGenerator.generateMessage("command.start", "resetCamera::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "resetCamera::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "resetCamera::SIMULATOR"));
 		
 	}
 
@@ -125,42 +125,42 @@ public class InstrumentCommandSimulator implements InstrumentInterface {
 	@Override
 	public void setGain(int channel, double gain) throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "setGain::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "setGain::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "setGain::SIMULATOR"));
 		
 	}
 
 	@Override
 	public void setOffset(int channel, double offset) throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "setOffset::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "setOffset::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "setOffset::SIMULATOR"));
 		
 	}
 
 	@Override
 	public int getImageWidth() throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getImageWidth::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "getImageWidth::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "getImageWidth::SIMULATOR"));
 		return 1025;
 	}
 
 	@Override
 	public int getImageHeight() throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getImageHeight::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "getImageHeight::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "getImageHeight::SIMULATOR"));
 		return 1025;
 	}
 
 	@Override
 	public double getPlateScale() throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getPlateScale::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "getPlateScale::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "getPlateScale::SIMULATOR"));
 		return 1.234;
 	}
 
 	@Override
 	public void setBinning(int x, int y) throws CommandFailureException, CommunicationException {
 		logger.info(MessageGenerator.generateMessage("command.start", "setBinning::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "setBinning::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "setBinning::SIMULATOR"));
 		
 	}
 
@@ -173,7 +173,7 @@ public class InstrumentCommandSimulator implements InstrumentInterface {
 	@Override
 	public CameraStatus getCameraStatus() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
-		logger.info(MessageGenerator.generateMessage("command.sucesss", "getCameraStatus::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
 		return null;
 	}
 
