@@ -285,9 +285,11 @@ public class AsyncController {
 			procedureController.loadCameraState(cameraState);
 			statusLogController.refreshProcedureStatusLog();
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
-			RequestContext.getCurrentInstance().update("procedureDetailForm");
-			
+			if (procedureExecutionState.getProcedureException() == null) {
+				// put up completion notice if there was no exception
+				FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
+				RequestContext.getCurrentInstance().update("procedureDetailForm");
+			}
 			// update the breadcrumb to associate the current session as the first link
 			Session session = sessionController.getCurrentSession();
 			breadcrumbMenuBean.insertFirst("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
