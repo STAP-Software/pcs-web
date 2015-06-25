@@ -98,7 +98,7 @@ public class Utils {
 	}
 
 	public static FacesMessage genericErrorMessage(Throwable e, String message) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error") + "/n" + message, Utils.createExceptionMessage(e) + "\nCheck logs for details");
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error") + "\n" + message, Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
 	public static FacesMessage commandSuccessfulMessage() {
