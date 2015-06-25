@@ -94,24 +94,31 @@ public class RefBeamController implements Serializable {
 		UIInput referenceBeamIdInput = (UIInput) components.findComponent("referenceBeamId");
 		if (referenceBeamIdInput.getLocalValue() == null) {
 
-			// get password
 			UIInput refBeamNumInput = (UIInput) components.findComponent("refBeamNum");
 			String refBeamNumStr = refBeamNumInput.getLocalValue() == null ? "" : refBeamNumInput.getLocalValue().toString();
 			String refBeamNumId = refBeamNumInput.getClientId();
 
-			int refBeamNum = new Integer(refBeamNumStr);
-
-			for (ReferenceBeam referenceBeam : referenceBeamList) {
-
-				if (referenceBeam.getRefBeamNum() == refBeamNum) {
-
-					FacesMessage msg = new FacesMessage("Reference Beam Number " + refBeamNum + " is already defined.");
-					msg.setSeverity(FacesMessage.SEVERITY_ERROR);
-					fc.addMessage(refBeamNumId, msg);
-					fc.renderResponse();
-
+			try {
+				int refBeamNum = new Integer(refBeamNumStr);
+	
+				for (ReferenceBeam referenceBeam : referenceBeamList) {
+	
+					if (referenceBeam.getRefBeamNum() == refBeamNum) {
+	
+						FacesMessage msg = new FacesMessage("Reference Beam Number " + refBeamNum + " is already defined.");
+						msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+						fc.addMessage(refBeamNumId, msg);
+						fc.renderResponse();
+	
+					}
+	
 				}
-
+			} catch (Exception e) {
+				FacesMessage msg = new FacesMessage("Reference Beam Number " + refBeamNumStr + " is not valid.");
+				msg.setSeverity(FacesMessage.SEVERITY_ERROR);
+				fc.addMessage(refBeamNumId, msg);
+				fc.renderResponse();
+				
 			}
 		}
 

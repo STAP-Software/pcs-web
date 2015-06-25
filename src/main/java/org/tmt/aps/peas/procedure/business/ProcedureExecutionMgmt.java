@@ -265,15 +265,24 @@ public class ProcedureExecutionMgmt {
 					procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
 				}
 			}
-			// set up for immediate viewing
-			procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
+			
+			// everything is now stored.  Reload somethings for immediate viewing.
+			
+			try {
+				// set up for immediate viewing
+				procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
-			logger.debug("performProcedureCompletion 7");
+				logger.debug("performProcedureCompletion 7");
 
-			// procedure frame data for immediate viewing
-			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-
-				procedureMgmt.setupFrameLog(procedureCcdFrame);
+				// procedure frame data for immediate viewing
+				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+	
+					procedureMgmt.setupFrameLog(procedureCcdFrame);
+				}
+			
+			} catch (Exception e) {
+				// don't stop just because we can't read it all back
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 			
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure

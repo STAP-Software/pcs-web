@@ -247,6 +247,8 @@ public class ProcedureOutputMgmt {
 
 	public void decodeAndSetObjectFieldValue(Object classInstance, FieldDescriptor fieldDescriptor, String value) throws Exception {
 
+		if (value == null || value.trim().length() == 0 || value.equals("null")) return;
+		
 		// get the named field's setter method
 		Method method = null;
 

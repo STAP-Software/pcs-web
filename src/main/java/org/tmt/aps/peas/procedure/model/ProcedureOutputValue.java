@@ -98,6 +98,10 @@ public class ProcedureOutputValue {
 
 	private String reformatData(String value, FieldDescriptor fieldDescriptor) {
 
+		if (value == null || value.trim().length() == 0 || value.equals("null")) {
+			return "null";
+		}
+		
 		String format = "{0,number," + fieldDescriptor.getDisplayFormat() + "}";
 
 		
