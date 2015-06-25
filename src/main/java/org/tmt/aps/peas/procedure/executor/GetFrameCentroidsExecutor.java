@@ -107,16 +107,9 @@ public class GetFrameCentroidsExecutor {
 		// initialize frame number
 		frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
 
-		try {
 
-			takeFrameAndFindCentroids();
+		takeFrameAndFindCentroids();
 
-		} catch (Exception e) {
-			
-			statusLogger.log("procedure.exception", e.getMessage());
-
-			throw e;
-		}
 
 		return procedureCcdFrame;
 	}
