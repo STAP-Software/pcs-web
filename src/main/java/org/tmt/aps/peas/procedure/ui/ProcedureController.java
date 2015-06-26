@@ -37,6 +37,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
@@ -115,7 +116,6 @@ public class ProcedureController implements Serializable {
 	@EJB
 	private ComputationContext computationContext;
 
-
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
@@ -128,9 +128,9 @@ public class ProcedureController implements Serializable {
 	private FrameController frameController;
 
 	// need to exchange when changing from subprocedure and back
-	Procedure procedure;  
+	Procedure procedure;
 	Procedure superProcedure;
-	
+
 	// do not need to exchange
 	float integrationAddTime;
 	UploadedFile uploadFitsFile;
@@ -141,11 +141,10 @@ public class ProcedureController implements Serializable {
 	byte[] falseColorPng;
 	UserPrompt currentPrompt;
 	Instrument frameInstrument;
-		
+
 	boolean frameMarkingMode = false;
 	List<Procedure> procedureList;
 
-	
 	@PostConstruct
 	private void init() throws Exception {
 
@@ -155,7 +154,6 @@ public class ProcedureController implements Serializable {
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
 	}
-
 
 	public Procedure getProcedure() {
 		return procedure;
@@ -205,7 +203,8 @@ public class ProcedureController implements Serializable {
 	public String getFrameSearchRadius() {
 		try {
 			int irad = procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
-			if (frameMarkingMode) return "" + (irad * 2);
+			if (frameMarkingMode)
+				return "" + (irad * 2);
 			return "" + irad;
 		} catch (Throwable th) {
 			return "6";
@@ -219,7 +218,6 @@ public class ProcedureController implements Serializable {
 	public void setFrameMarkingMode(boolean frameMarkingMode) {
 		this.frameMarkingMode = frameMarkingMode;
 	}
-
 
 	public void setFrameSearchRadius(String searchRadius) {
 
@@ -296,8 +294,6 @@ public class ProcedureController implements Serializable {
 		}
 	}
 
-	
-	
 	public List<FitsFilename> getAvailableFitsFiles() {
 		return availableFitsFiles;
 	}
@@ -417,27 +413,28 @@ public class ProcedureController implements Serializable {
 		} else {
 			return null;
 		}
-		
+
 	}
-	
+
 	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
 		try {
 
 			Procedure lastProcedure = sessionController.getCurrentSessionLastProcedure();
 			String testNumber = (lastProcedure != null) ? lastProcedure.getTestNumber() : "";
-			
-			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession().getSessionId(), testNumber, procedureOutput);
-			
+
+			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession().getSessionId(),
+					testNumber, procedureOutput);
+
 			// add the procedure to the session
 			sessionController.addNewProcedure(procedure);
-			
+
 			// clear the status log
 			statusLogController.clearProcedureStatusLog();
 
 			// clear any selected FITS files
 			selectedFitsFiles = null;
-			
+
 			// create available FITS file list
 			availableFitsFiles = frameController.getProcedureFitsFiles(procedure.getProcedureType().getProcedureTypeCd());
 			Collections.sort(availableFitsFiles, new BeanComparator("fileName"));
@@ -453,7 +450,8 @@ public class ProcedureController implements Serializable {
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
 			Date date = new Date();
-			breadcrumbMenuBean.addFirstItem("Procedure #" + procedure.getProcedureNumber() + ": " + procedure.getProcedureType().getProcedureTypeName(),
+			breadcrumbMenuBean.addFirstItem("Procedure #" + procedure.getProcedureNumber() + ": "
+					+ procedure.getProcedureType().getProcedureTypeName(),
 					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
 
 		} catch (Exception e) {
@@ -466,25 +464,22 @@ public class ProcedureController implements Serializable {
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
-
 	public String doCancelProcedure() {
 
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
-
 	public void doExecuteProcedure() {
 
-		
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = "
 				+ procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
-
 
 		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
 		// TODO: check if this is passive tilt before performing this validation
-		if (procedure.getProcedureType().isPassiveTilt() && procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getWavelength() == 611.0) {
+		if (procedure.getProcedureType().isPassiveTilt()
+				&& procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getWavelength() == 611.0) {
 
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));
@@ -493,7 +488,6 @@ public class ProcedureController implements Serializable {
 
 		procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);
 
-		
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
 
@@ -510,41 +504,39 @@ public class ProcedureController implements Serializable {
 	}
 
 	public void doOnLoad() {
-		
+
 		// if we are running, we need to restore some things
-		
+
 		if (procedureExecutionState.getExecutionStatus() == true) {
-			
+
 			// restart the poller
 			RequestContext.getCurrentInstance().execute("procedureExecutionPoller.start();");
-			
+
 			// update the frame display
-			//frameDisplayMgmt.setPendingDisplay(true);
+			// frameDisplayMgmt.setPendingDisplay(true);
 			frameDisplayMgmt.setPendingMarkedDisplay(true);
-			
+
 			// popup any popups that are currently active
 			RequestContext.getCurrentInstance().execute("drawSpots(); centroidsDisplayDialog.show()");
-			
+
 		}
-			
+
 	}
-	
-	
+
 	public String doViewProcedure() {
-		
+
 		// we might be running....
 		if (procedureExecutionState.getExecutionStatus() != true) {
-        
+
 			return doViewArchivedProcedure();
 
 		}
-		
+
 		return null;
 	}
-			
+
 	public String doViewArchivedProcedure() {
-		
-	
+
 		try {
 
 			procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
@@ -583,11 +575,12 @@ public class ProcedureController implements Serializable {
 			if (procedure.getProcedureConfigSet().getFiConfig() == null) {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
-			
+
 			breadcrumbMenuBean.removeTo("Session:");
 
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
-					+ procedure.getProcedureType().getProcedureTypeName(), "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
+					+ procedure.getProcedureType().getProcedureTypeName(),
+					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
 
 			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 
@@ -601,11 +594,11 @@ public class ProcedureController implements Serializable {
 	public void doAbortProcedure() {
 		procedureExecutionState.setAbortRequested(true);
 	}
-	
+
 	public String doShowProcedureLog() {
-		
+
 		breadcrumbMenuBean.removeTo("Procedure #");
-		
+
 		breadcrumbMenuBean.addItem("Procedure Log", "/modules/procedure/procedureLog.xhtml");
 
 		return "/modules/procedure/procedureLog.xhtml?faces-redirect=true";
@@ -639,9 +632,9 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 	}
 
@@ -650,22 +643,32 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 	}
 
 	public void doSaveContext() {
-		if (!procedure.isNewRecord()) {
-			// only save if procedure has been saved. Prior to that, values will be persisted when the procedure is.
-			procedureMgmt.updateProcedure(procedure);
-			
-			// for propagating value to the next procedure
-			sessionController.updateCurrentSessionPersisted();
-		}
-	}
 
+		try {
+
+			if (!procedure.isNewRecord()) {
+				// only save if procedure has been saved. Prior to that, values will be persisted when the procedure is.
+				procedureMgmt.updateProcedure(procedure);
+
+				// for propagating value to the next procedure
+				sessionController.updateCurrentSessionPersisted();
+			}
+
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+		}
+
+	}
 
 	public void loadCameraState(CameraState cameraState) {
 		frameInstrument.updateState(cameraState);
@@ -676,7 +679,7 @@ public class ProcedureController implements Serializable {
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
 	}
-	
+
 	public void intTimeChangeListener(AjaxBehaviorEvent event) {
 		Float intTime = procedure.getProcedureConfigSet().getProcedureConfig().getIntegrationTime();
 		logger.debug("int time = " + intTime);
@@ -689,15 +692,14 @@ public class ProcedureController implements Serializable {
 	public void doHandMark() {
 
 		frameMarkingMode = true;
-		
+
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 
 		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
 		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
 		// add to the centroid hidden form vars
-		
-		
+
 		// call findCent on each centroid
 		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
@@ -705,19 +707,19 @@ public class ProcedureController implements Serializable {
 		FloatPoint centroid = guess;
 
 		try {
-			FindCentConfig findCentConfig = (FindCentConfig)BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
+			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
-		
+
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-		
+
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
-		
+
 			centroid = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
-		
+
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
 		centroidXs = (centroidXs == null || centroidXs.trim().length() == 0) ? "" + centroid.x : centroidXs + "," + centroid.x;
@@ -725,7 +727,6 @@ public class ProcedureController implements Serializable {
 		setFrameCentroidXs(centroidXs);
 		setFrameCentroidYs(centroidYs);
 
-		
 		// make marking available to executor
 		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
@@ -733,7 +734,7 @@ public class ProcedureController implements Serializable {
 	public void doApplyMarking() {
 		// TODO: put this in the action for the apply marking on the frame
 		frameDisplayMgmt.setPendingMarkAction(false);
-		
+
 		frameMarkingMode = false;
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("instructionDialog.hide()");
@@ -743,7 +744,7 @@ public class ProcedureController implements Serializable {
 		setFrameCentroidXs(null);
 		setFrameCentroidYs(null);
 	}
-	
+
 	public void doUndoMarking() {
 		// remove the last one marked
 		String centroidXs = getFrameCentroidXs();
@@ -751,13 +752,15 @@ public class ProcedureController implements Serializable {
 
 		List<Float> xList = FloatListEncoder.decodeList(centroidXs);
 		List<Float> yList = FloatListEncoder.decodeList(centroidYs);
-		
-		if (!xList.isEmpty()) xList.remove(xList.size()-1);
-		if (!yList.isEmpty()) yList.remove(yList.size()-1);
-		
+
+		if (!xList.isEmpty())
+			xList.remove(xList.size() - 1);
+		if (!yList.isEmpty())
+			yList.remove(yList.size() - 1);
+
 		centroidXs = FloatListEncoder.encodeList(xList);
 		centroidYs = FloatListEncoder.encodeList(yList);
-		
+
 		setFrameCentroidXs(centroidXs);
 		setFrameCentroidYs(centroidYs);
 	}
