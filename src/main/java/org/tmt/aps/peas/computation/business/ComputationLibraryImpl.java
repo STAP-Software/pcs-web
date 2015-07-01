@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.Utils;
@@ -67,6 +68,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException {
 
+		logger.info(MessageGenerator.generateMessage("computation.start", "actuatorLengths"));
+
 		Jsum jsum = new Jsum();
 		RetVal retVal = new RetVal();
 		float[] c = new float[1];
@@ -76,10 +79,14 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			statusLogger.log(retVal);
 		}
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "actuatorLengths"));
+
 		return c[0];
 	}
 
 	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "findCent"));
 
 		JfindCent jfindCent = new JfindCent();
 		RetVal retVal = new RetVal();
@@ -98,10 +105,14 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
+
 		return centroid;
 	}
 
 	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
 		JfindCentroids jfindCentroids = new JfindCentroids();
 		RetVal retVal = new RetVal();
@@ -199,12 +210,15 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		//
 
 		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "findCentroids"));
 
 		return centroids;
 
 	}
 
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "removeBadPixels"));
 
 		int[] x1 = new int[badPixelList.size()];
 		int[] x2 = new int[badPixelList.size()];
@@ -236,12 +250,16 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			throw new ComputationException("Bad Pixel remove error");
 		}
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
+
 		return arrayOut;
 
 	}
 
 	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap)
 			throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "findAndIdentify"));
 
 		JfindAndIdentify jfindAndIdentify = new JfindAndIdentify();
 		RetVal retVal = new RetVal();
@@ -303,18 +321,28 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// logger.info("Xrst::\n"+FloatPointListEncoder.encodeXList(fiResult.getRstLocationList()));
 		// logger.info("Yrst::\n"+FloatPointListEncoder.encodeYList(fiResult.getRstLocationList()));
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "findAndIdentify"));
+
 		return fiResult;
 	}
 
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException,
 			AbortProcedureException, HandMarkRequiredException {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "evalFiResult"));
+
 		// Need to Check this first
 		UserAssistRequiredException userAssistException = new UserAssistRequiredException();
-		if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
-			userAssistException.setNdetectNotAllSingle(true);
-		}
+		//if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED && !fiResult.allDetectionsSinglePeaks()) {
+		//	userAssistException.setNdetectNotAllSingle(true);
+		//}
 		if (fiResult.getFracFilledBoxes() < fiConfig.getFracFilledThresh()) {
 			userAssistException.setFracThreshExceeded(true);
+		
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
+				userAssistException.setFracThreshExceededPT(true);
+			}
+		
 		}
 
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
@@ -329,22 +357,39 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		if (userAssistException.shouldThrow()) {
 			throw userAssistException;
 		}
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "evalFiResult"));
 
 	}
 
 	// TODO: move to Fortran?
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 
-		return JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
+		logger.info(MessageGenerator.generateMessage("computation.start", "pixLocationToDeltaArcSeconds"));
+
+		FloatPoint result = JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "pixLocationToDeltaArcSeconds"));
+		
+		return result;
 	}
 	
 	public float calcRms(float[][] data) {
-		return JavaComputations.calcRms(data);
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcRms"));
+
+		float result =  JavaComputations.calcRms(data);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcRms"));
+		
+		return result;
 	}
 
 	@Override
 	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidOffsets"));
 
 		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
 		RetVal retVal = new RetVal();
@@ -382,6 +427,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			cartesianOffsets[i][1] = ccdOffsets[i][1] * pupilMaskType.getCcdToCartesianPixelY();
 		}
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateCentroidOffsets"));
+
 		// store fi_param values
 		return new CentroidOffsetsResult(ccdOffsets, cartesianOffsets, new FloatPoint(image_translation[0], image_translation[1]), (Float) output[0],
 				(Float) output[1]);
@@ -389,6 +436,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
 
 		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
 		RetVal retVal = new RetVal();
@@ -410,6 +459,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			throw new ComputationException("Centroid Offset Stats Calculation Error");
 		}
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateCentroidStats"));
+
 		// store fi_param values
 		return new CentroidStatsResult((Integer) output[0], (Float) output[1], (Float) output[2], (Float) output[3], (Float) output[4]);
 
@@ -417,6 +468,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	@Override
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "passiveTiltScaleError"));
 
 		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
 		RetVal retVal = new RetVal();
@@ -433,6 +486,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			throw new ComputationException("Passive Tilt Scale Error Calculation Error");
 		}
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
+
 		// store fi_param values
 		return new ScaleError((Float) output[0], (Float) output[1]);
 	}
@@ -440,6 +495,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	@Override
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
 			throws ComputationException {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "ttOffsetsToActs"));
 
 		JttOffsetsToActs jttOffsetsToActs = new JttOffsetsToActs();
 		RetVal retVal = new RetVal();
@@ -470,12 +527,17 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			desiredActDeltas[i][1] = desired_act_deltas[i*3 + 1]; 
 			desiredActDeltas[i][2] = desired_act_deltas[i*3 + 2]; 
 		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "ttOffsetsToActs"));
+
 		return desiredActDeltas;
 	}
 
 	@Override
 	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
 		
+		logger.info(MessageGenerator.generateMessage("computation.start", "decomposeActs"));
+
 		JdecomposeActs jdecomposeActs = new JdecomposeActs();
 		RetVal retVal = new RetVal();
 
@@ -497,6 +559,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[][] tipTiltActs = expandTo2dArray(act_tt, 3);
 		float[][] pistonActs = expandTo2dArray(act_p, 3);
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "decomposeActs"));
 
 		return new DecomposeActsResult(tipTiltActs, pistonActs);	
 		
@@ -504,6 +567,9 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	@Override
 	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "optimalPistons"));
+		
 		JoptimalPistons joptimalPistons = new JoptimalPistons();
 		RetVal retVal = new RetVal();
 
@@ -524,11 +590,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// store _param values
 		float[][] pistonActs = expandTo2dArray(act_p, 3);
 
+		logger.info(MessageGenerator.generateMessage("computation.success", "optimalPistons"));
 
 		return pistonActs;	
 
 	}
-	
+	// private convenience methods
 	private float[] flatten2dArray(float[][] input) {
 		float[] result = new float[input.length * input[0].length];
 		for (int i=0; i<input.length; i++) {
@@ -550,23 +617,47 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 	
 	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
-		return JavaComputations.addMatricies(matrix1, matrix2);
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "addMatricies"));
+
+		float[][] result = JavaComputations.addMatricies(matrix1, matrix2);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "addMatricies"));
+
+		return result;
 	}
 
 	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
+		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
+
 		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
 				numIterations, currentDate, currentRefMap);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
 
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
-		return JavaComputations.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "autoCenterTelescopeCheck"));
+		
+		AutoCenterTelCheckResult result = JavaComputations.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "autoCenterTelescopeCheck"));
+		
+		return result;
 	}
 
 	@Override
 	public void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
+
 		JavaComputations.checkSubimageIntensities(correctedFrame, centroidMap, threshold);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "checkSubimageIntensities"));
+		
 	}
 
 }

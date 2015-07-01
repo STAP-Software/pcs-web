@@ -169,8 +169,6 @@ public class GetFrameCentroidsExecutor {
 			handleUserAssistRequiredException(e1);
 		} catch (NonLinearIntensitiesException e1) {
 			handleNonLinearIntensitiesException(e1);
-		} catch (HandMarkRequiredException e1) {
-			handleHandMarkRequiredException(e1);
 		} catch (FandIException e1) {
 			// impossible, we never throw this
 		}
@@ -208,8 +206,13 @@ public class GetFrameCentroidsExecutor {
 			throw new AbortProcedureException("User Aborted Test");
 		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 
-			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);			
-			procedureCcdFrame.setCentroidMap(centroidMap);
+			if (e.isBadNSolution() || e.isFracThreshExceededPT()) {
+				handleHandMarking();
+			} else {
+			
+				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);			
+				procedureCcdFrame.setCentroidMap(centroidMap);
+			}
 			
 		} else {
 			takeFrameAndFindCentroids();
@@ -234,7 +237,7 @@ public class GetFrameCentroidsExecutor {
 
 	}
 
-	private void handleHandMarkRequiredException(HandMarkRequiredException e) throws AbortProcedureException, Exception {
+	private void handleHandMarking() throws AbortProcedureException, Exception {
 
 		if (procedure.getProcedureType().isPassiveTilt()) {
 

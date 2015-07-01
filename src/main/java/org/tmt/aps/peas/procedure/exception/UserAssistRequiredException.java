@@ -6,6 +6,7 @@ public class UserAssistRequiredException extends FandIException {
 	
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
+	private boolean fracThreshExceededPT;
 	private boolean fourierThreshExceeded;
 	private boolean badNSolution;
 	
@@ -36,7 +37,13 @@ public class UserAssistRequiredException extends FandIException {
 		this.badNSolution = badNSolution;
 	}
 	public boolean shouldThrow() {
-		return ndetectNotAllSingle || fracThreshExceeded || fourierThreshExceeded;
+		return ndetectNotAllSingle || fracThreshExceeded ||fracThreshExceededPT || fourierThreshExceeded || badNSolution;
+	}
+	public boolean isFracThreshExceededPT() {
+		return fracThreshExceededPT;
+	}
+	public void setFracThreshExceededPT(boolean fracThreshExceededPT) {
+		this.fracThreshExceededPT = fracThreshExceededPT;
 	}
 
 }
