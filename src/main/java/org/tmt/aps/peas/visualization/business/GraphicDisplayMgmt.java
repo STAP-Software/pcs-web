@@ -18,7 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
-import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
@@ -170,27 +170,37 @@ public class GraphicDisplayMgmt implements Serializable {
 	
 	public void displaySubimageCentroids(CentroidMap centroidMap) {
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySubimageCentroids"));
+		
 		setAndEncodeCentroidMap(centroidMap);
 				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 		
 		waitForReturnState();
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySubimageCentroids"));
+
+		
 	}
 
 	public boolean displaySubimageCentroids(CentroidMap centroidMap, int type, String message) {
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySubimageCentroids"));
+
 		setAndEncodeCentroidMap(centroidMap);
 				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS, type, message);
 		
 		waitForReturnState();
-		
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySubimageCentroids"));
+
 		return (returnState.intValue() == 1) ? true : false; 
 	}
 
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayCentroidOffsets"));
 		// set the offset display values, this also encodes
 		setAndEncodeCentroidOffsetsDisplayValues(centroidOffsetsDisplayValues);
 					
@@ -198,19 +208,26 @@ public class GraphicDisplayMgmt implements Serializable {
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);
 		
 		waitForReturnState();	
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayCentroidOffsets"));
 	}
 	
 	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayActuatorDeltas"));
+
 		setAndEncodeActuatorDeltasDisplayValues(actuatorDeltasDisplayValues);
 				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);
 		
 		waitForReturnState();
 		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayActuatorDeltas"));
+		
 	}
 
 	private void waitForReturnState() {
+		
 		returnState = null;
 		// here we wait until the return state changes
 		while(returnState == null) {
