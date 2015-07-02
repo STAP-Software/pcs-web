@@ -15,6 +15,7 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
@@ -61,6 +62,8 @@ public class ProcedureExecutionMgmt {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
+	PeasProperties peasProperties;
+	@EJB
 	private SessionMgmt sessionMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
@@ -78,13 +81,13 @@ public class ProcedureExecutionMgmt {
 	private GlobalConfigMgmt globalConfigMgmt;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
-	@EJB 
+	@EJB
 	private ProcedureMgmt procedureMgmt;
-	@EJB 
+	@EJB
 	private CameraDefMgmt cameraDefMgmt;
-	@EJB 
+	@EJB
 	private DcsMgmt dcsMgmt;
-	@EJB 
+	@EJB
 	private FrameSimulator frameSimulator;
 
 	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) {
@@ -102,21 +105,19 @@ public class ProcedureExecutionMgmt {
 
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
-			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask()
-					.getPupilMaskType().getPupilMaskTypeId());
+			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(
+					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 			procedure.setRefDefMap(refDefMap);
 		}
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(procedure.getProcedureConfigSet()
-				.getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(
+				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 
-		
 		logger.info("performProcedureStartup 3");
 
-		
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
 
@@ -139,7 +140,6 @@ public class ProcedureExecutionMgmt {
 
 		}
 
-		
 		procedure.setExecutionStartTime(new Date());
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_EXECUTING);
 
@@ -179,7 +179,7 @@ public class ProcedureExecutionMgmt {
 		}
 
 		logger.error(MessageGenerator.generateMessage("generic.error"), procedureException);
-		
+
 		statusLogger.log("procedure.exception", procedureException.getMessage());
 
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
@@ -199,15 +199,21 @@ public class ProcedureExecutionMgmt {
 
 			// save the current coarse mirror state in global config
 			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
-			logger.debug("performProcedureCompletion 2");
-			
-			// create a config defaults object to save back
-			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
-			globalConfigDefaults.setCoarseMirrorX(coarsePosition.x);
-			globalConfigDefaults.setCoarseMirrorY(coarsePosition.y);
-			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
+			logger.debug("performProcedureCompletion::persist procedure");
 
-			logger.debug("performProcedureCompletion 3");
+			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
+			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
+			boolean cameraEnabled = new Boolean(cameraEnabledStr);
+
+			if (cameraEnabled) {
+				// create a config defaults object to save back
+				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
+						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
+				globalConfigDefaults.setCoarseMirrorX(coarsePosition.x);
+				globalConfigDefaults.setCoarseMirrorY(coarsePosition.y);
+				globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
+			}
+			logger.debug("performProcedureCompletion::globalConfig updated");
 
 			// persist all the frames
 			if (procedure.getProcedureCcdFrameList() != null) {
@@ -215,7 +221,7 @@ public class ProcedureExecutionMgmt {
 					procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
 					frameMgmt.associateCcdFrame(procedureCcdFrame);
 
-					logger.debug("performProcedureCompletion 4a");
+					logger.debug("performProcedureCompletion::persisting frame");
 
 					// load up png file again because associateCcdFrame reloads ccd frame fresh
 					// FIXME: we should not have to do this.
@@ -231,15 +237,14 @@ public class ProcedureExecutionMgmt {
 					} catch (Exception e) {
 						logger.error(MessageGenerator.generateMessage("generic.error"), e);
 					}
-					logger.debug("performProcedureCompletion 4b");
+					logger.debug("performProcedureCompletion::frame persisted");
 
 					// if a png file for display exists, read it in. Otherwise create it.
 					byte[] falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
-					logger.debug("performProcedureCompletion 4c");
+					logger.debug("performProcedureCompletion::loadedOrCreatedPng");
 
-					
 					// save the associated centroid map
 					if (procedureCcdFrame.getCentroidMap() != null) {
 						centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
@@ -247,17 +252,16 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 
-			logger.debug("performProcedureCompletion 5");
+			logger.debug("performProcedureCompletion::all frames and centroid maps completed");
 			statusLogger.saveLog(procedure.getProcedureId());
 
 			// associate ref beam map
 			if (procedure.getRefBeamMap() != null) {
 				centroidMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
 			}
-			
-			logger.debug("performProcedureCompletion 6");
 
-			
+			logger.debug("performProcedureCompletion::ref map associated");
+
 			// persist the procedure output
 			if (procedure.getProcedureOutput() != null) {
 				procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
@@ -265,26 +269,26 @@ public class ProcedureExecutionMgmt {
 					procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
 				}
 			}
-			
-			// everything is now stored.  Reload somethings for immediate viewing.
-			
+
+			// everything is now stored. Reload somethings for immediate viewing.
+
 			try {
 				// set up for immediate viewing
 				procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
 
-				logger.debug("performProcedureCompletion 7");
+				logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
 
 				// procedure frame data for immediate viewing
 				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-	
+
 					procedureMgmt.setupFrameLog(procedureCcdFrame);
 				}
-			
+
 			} catch (Exception e) {
 				// don't stop just because we can't read it all back
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
-			
+
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
 
@@ -293,7 +297,8 @@ public class ProcedureExecutionMgmt {
 		}
 	}
 
-	public Procedure performProcedureSetup(Long procedureTypeId, Long sessionId, String testNumber, ProcedureOutput procedureOutput) throws Exception {
+	public Procedure performProcedureSetup(Long procedureTypeId, Long sessionId, String testNumber, ProcedureOutput procedureOutput)
+			throws Exception {
 		Procedure procedure = new Procedure();
 
 		// get the procedure type object
@@ -310,9 +315,8 @@ public class ProcedureExecutionMgmt {
 		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNum);
 		procedure.setProcedureNumber(procNum);
 
-
-		ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(physicalModel.getTelescope()
-				.getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), procedureTypeId);
+		ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(
+				physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), procedureTypeId);
 
 		// copy the default config into the current procedure config for potential modification
 		ProcedureConfig procedureConfig = new ProcedureConfig(procedureConfigDefaults);
@@ -336,8 +340,8 @@ public class ProcedureExecutionMgmt {
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// these get set into procedure config
-			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(), defaultMask.getPupilMaskType()
-					.getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
+			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(),
+					defaultMask.getPupilMaskType().getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
 		}
 
 		// select defaults based on mask and light source
@@ -353,28 +357,30 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
 
 		}
-		
+
 		// set centroid offsets calculation defaults based on procedure type
-		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt.findCentroidOffsetsConfig(procedureType
-				.getProcedureTypeId());
+		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt
+				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
 
 		// get AutoRefMapDefaults based on procedure type
-		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
+		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
+				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
 
 		// get AutoCenterTelDefaults
-		AutoCenterTelConfigDefaults autoCenterTelConfigDefaults = globalConfigMgmt.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
+		AutoCenterTelConfigDefaults autoCenterTelConfigDefaults = globalConfigMgmt
+				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
 		// clear any marking
 		frameDisplayMgmt.clearMarking();
-		
+
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 		return procedure;
 	}
-	
+
 	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
 
@@ -385,10 +391,9 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
 
 		// make the list of possible int times equal to the 'one' we have
-		 List<Float> integrationTimeList = new ArrayList<Float>();
+		List<Float> integrationTimeList = new ArrayList<Float>();
 		integrationTimeList.add(refMapConfigDefaults.getIntegrationTime());
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTimeList(integrationTimeList);
 	}
 
-	
 }
