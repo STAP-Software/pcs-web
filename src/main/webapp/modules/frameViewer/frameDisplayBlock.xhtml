@@ -83,42 +83,196 @@
 
 	<script>
 		//<![CDATA[
-		    
-		    var mousePos
-		           
-	   		function initCanvasEvents() {
-	  			var canvas = document.getElementById("frameCanvas");
-	  			canvas.addEventListener("mousedown", doMouseDown, false);
-	  	      	canvas.addEventListener('mousemove', doMouseMove, false);
-	  		}
-	  		
-	   		function doMouseMove(event) {
-	   			var canvas = document.getElementById("frameCanvas");
-	   			mousePos = getMousePos(canvas, event);
-	   					        
-	  			// call javascript function that is defined in <p:remote>
-	  			frameValue([{name: 'mouse_x', value: mousePos.x}, {name: 'mouse_y', value: mousePos.y}]);
-	   		}
-	   		
-	  		function doMouseDown(event) {  			
-	  			var canvas = document.getElementById("frameCanvas");
-	  			
-		        var rect = canvas.getBoundingClientRect();
-		        canvas_x = event.clientX - rect.left;
-		        canvas_y = event.clientY - rect.top;
-	  			// call javascript function that is defined in <p:remote>
-	  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
-	  			
-	  		}
-		           
-	  		function displayFrameValue() {
-	  			
-	  			var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
-	  			
-	  			var message = '    Mouse position: ' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + ',     value = ' + pixelValue;
-		        var infoCanvas = document.getElementById("infoCanvas");
-		        writeMessage(infoCanvas, message);
-	  		}
+		    	
+	var gkhead = new Image;
+	var canvas = document.getElementById("frameCanvas");
+	
+	var canvasOffsetLeft = 463;
+	var canvasOffsetTop = 242;
+	
+	var txPoint;
+
+	window.onload = reload();
+	
+	function reload() {		
+		var canvas = document.getElementById("frameCanvas");
+		var ctx = canvas.getContext('2d');
+		trackTransforms(ctx);
+		
+		function redraw(){
+			
+			// Clear the entire canvas
+			var p1 = ctx.transformedPoint(0,0);
+			var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+			ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+
+			var img = document.getElementById("frameDisplayForm:frameImage");
+			
+			ctx.drawImage(img, 0, 0, 512, 512);
+					
+			var xField = document
+					.getElementById('frameHiddenForm:centroidXs').value;
+			var xArray = xField.split(',');
+			var yField = document
+					.getElementById('frameHiddenForm:centroidYs').value;
+			var yArray = yField.split(',');
+			//var radius = document.getElementById('frameHiddenForm.spotRadius').value;
+			var radius = 10;	
+			
+			for (var i = 0; i < xArray.length; i++) {
+				ctx.beginPath();
+				// divide by 2 when frame is displayed 512x512
+				ctx.arc(xArray[i] / 2, yArray[i] / 2, radius, 0, 2 * Math.PI);
+				ctx.strokeStyle = '#ffffaa';
+				ctx.lineWidth = 2;
+				ctx.stroke();
+			}
+			
+			ctx.beginPath();
+			// divide by 2 when frame is displayed 512x512
+			ctx.arc(100, 100, 20, 0, 2 * Math.PI);
+			ctx.strokeStyle = '#000000';
+			ctx.lineWidth = 4;
+			ctx.stroke();			
+		}
+		
+		redraw();
+		
+		var lastX=canvas.width/2, lastY=canvas.height/2;
+		var dragStart,dragged;
+		canvas.addEventListener('mousedown',function(evt){
+			document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+			dragStart = ctx.transformedPoint(lastX,lastY);
+			dragged = false;
+		},false);
+		canvas.addEventListener('mousemove',function(evt){
+			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+			dragged = true;
+			if (dragStart){
+				var pt = ctx.transformedPoint(lastX,lastY);
+				ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+				redraw();
+			}
+		},false);
+		canvas.addEventListener('mouseup',function(evt){
+			dragStart = null;
+		},false);
+
+		var scaleFactor = 1.1;
+		var zoom = function(clicks){
+			var pt = ctx.transformedPoint(lastX,lastY);
+			ctx.translate(pt.x,pt.y);
+					
+			var factor = Math.pow(scaleFactor,clicks);
+			ctx.scale(factor,factor);
+			ctx.translate(-pt.x,-pt.y);
+			redraw();
+		}
+
+		var handleScroll = function(evt){
+			var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+			if (delta) zoom(delta);
+			return evt.preventDefault() && false;
+		};
+		canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+		canvas.addEventListener('mousewheel',handleScroll,false);
+		
+		
+		// marking and value listeners
+		function doMouseMove(event) {
+   			var canvas = document.getElementById("frameCanvas");
+   			mousePos = getMousePos(canvas, event);
+   			txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
+  			// call javascript function that is defined in <p:remote>
+  			frameValue([{name: 'mouse_x', value: txPoint.x}, {name: 'mouse_y', value: txPoint.y}]);
+   		}
+   		
+  		function doMouseDown(event) {  			
+  			var canvas = document.getElementById("frameCanvas");
+  			
+	        var rect = canvas.getBoundingClientRect();
+	        canvas_x = event.clientX - rect.left;
+	        canvas_y = event.clientY - rect.top;
+  			// call javascript function that is defined in <p:remote>
+  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
+  			
+  		}
+  		        
+
+
+		canvas.addEventListener("mousedown", doMouseDown, false);
+  	    canvas.addEventListener('mousemove', doMouseMove, false);
+
+
+	};
+
+	//gkhead.src = "file:///opt/apps/peasData/frames/K1_11AUG06_CPH_030_1K.png"
+	
+	// Adds ctx.getTransform() - returns an SVGMatrix
+	// Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+	function trackTransforms(ctx){
+	
+		var canvas = document.getElementById("frameCanvas");
+		var ctx = canvas.getContext('2d');
+
+		var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+		var xform = svg.createSVGMatrix();
+		ctx.getTransform = function(){ return xform; };
+		
+		var savedTransforms = [];
+		var save = ctx.save;
+		ctx.save = function(){
+			savedTransforms.push(xform.translate(0,0));
+			return save.call(ctx);
+		};
+		var restore = ctx.restore;
+		ctx.restore = function(){
+			xform = savedTransforms.pop();
+			return restore.call(ctx);
+		};
+
+		var scale = ctx.scale;
+		ctx.scale = function(sx,sy){
+			xform = xform.scaleNonUniform(sx,sy);
+			return scale.call(ctx,sx,sy);
+		};
+		var rotate = ctx.rotate;
+		ctx.rotate = function(radians){
+			xform = xform.rotate(radians*180/Math.PI);
+			return rotate.call(ctx,radians);
+		};
+		var translate = ctx.translate;
+		ctx.translate = function(dx,dy){
+			xform = xform.translate(dx,dy);
+			return translate.call(ctx,dx,dy);
+		};
+		var transform = ctx.transform;
+		ctx.transform = function(a,b,c,d,e,f){
+			var m2 = svg.createSVGMatrix();
+			m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+			xform = xform.multiply(m2);
+			return transform.call(ctx,a,b,c,d,e,f);
+		};
+		var setTransform = ctx.setTransform;
+		ctx.setTransform = function(a,b,c,d,e,f){
+			xform.a = a;
+			xform.b = b;
+			xform.c = c;
+			xform.d = d;
+			xform.e = e;
+			xform.f = f;
+			return setTransform.call(ctx,a,b,c,d,e,f);
+		};
+		var pt  = svg.createSVGPoint();
+		ctx.transformedPoint = function(x,y){
+			pt.x=x; pt.y=y;
+			return pt.matrixTransform(xform.inverse());
+		}
+	}
+		           		           
 	
 		function markFrame() {
 			window.setTimeout("drawFrame2(true)", 100);
@@ -129,41 +283,17 @@
 		}
 	
 		function drawFrame2(mark) {
-			var c = document.getElementById("frameCanvas");
-			var ctx = c.getContext("2d");
-			//ctx.clearRect(0,0,c.width, c.height);
-			var img = document.getElementById("frameDisplayForm:frameImage");
-	
-			ctx.drawImage(img, 0, 0, c.width, c.height);
-	
-			initCanvasEvents();
-			
-			if (mark)
-				markFrame2(ctx, img, c)
+			reload()		
 		}
 	
-		function markFrame2(ctx, img, c) {
-	
-			var xField = document
-					.getElementById('frameHiddenForm:centroidXs').value;
-			var xArray = xField.split(',');
-			var yField = document
-					.getElementById('frameHiddenForm:centroidYs').value;
-			var yArray = yField.split(',');
-			var radius = document.getElementById('frameHiddenForm.spotRadius').value;
-				
-			for (var i = 0; i < xArray.length; i++) {
-				ctx.beginPath();
-				// divide by 2 when frame is displayed 512x512
-				ctx.arc(xArray[i] / 2, yArray[i] / 2, radius, 0, 2 * Math.PI);
-				ctx.strokeStyle = '#ffffaa';
-				ctx.lineWidth = 2;
-				ctx.stroke();
-			}
-			initCanvasEvents();
-	
-		}
-		
+  		function displayFrameValue() {
+  			
+  			var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
+  			var message = '    Mouse position: ' + Math.floor(txPoint.x) + ', ' + Math.floor(txPoint.y) + ',     value = ' + pixelValue;
+	        var infoCanvas = document.getElementById("infoCanvas");
+	        writeMessage(infoCanvas, message);
+  		}
+
 		
 		function writeMessage(infoCanvas, message) {
 	        var context = infoCanvas.getContext('2d');
@@ -172,6 +302,7 @@
 	        context.fillStyle = '#444444';
 	        context.fillText(message, 1, 12);
 	      }
+		
 	      function getMousePos(canvas, evt) {
 	    	var canvas = document.getElementById("frameCanvas");
 	        var rect = canvas.getBoundingClientRect();
@@ -180,7 +311,8 @@
 	          y: evt.clientY - rect.top
 	        };
 	      }
-	//  centroid was at 255, 261 == 510, 522
+		
+	
 		
 		//]]>
 	</script>

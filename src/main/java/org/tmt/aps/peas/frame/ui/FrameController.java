@@ -229,7 +229,7 @@ public class FrameController implements Serializable {
 				}
 
 			}
-
+			
 			for (String type : type2Fits.keySet()) {
 
 				List<FitsFilename> typeFitsList = type2Fits.get(type);
@@ -241,9 +241,13 @@ public class FrameController implements Serializable {
 				for (FitsFilename fitsFile : typeFitsList) {
 					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getFileName(),
 							fitsFile.getFileName()), typeNode);
+					
 				}
 
 			}
+			
+			// TODO: load up first frame 
+			searchRadius = 10;  // TODO: whatever that should be - this needs to be loaded with the frame too.
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
