@@ -34,7 +34,7 @@
         <h:body>  
         <h:form id="frameDisplayForm">  
 
-<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" />
         
 <canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;cursor:crosshair"></canvas>          
    </h:form>        
@@ -45,56 +45,12 @@
 	var canvas = document.getElementsByTagName('canvas')[0];
 	canvas.width = 590; canvas.height = 590;
 	var gkhead = new Image;
-	window.onload = function(){		
-		var ctx = canvas.getContext('2d');
+	var ctx = canvas.getContext('2d');
+	function reload() {		
+		
+		//ctx = canvas.getContext('2d');
 		trackTransforms(ctx);
-		function redraw(){
-			// Clear the entire canvas
-			var p1 = ctx.transformedPoint(0,0);
-			var p2 = ctx.transformedPoint(canvas.width,canvas.height);
-			ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-
-			// Alternatively:
-			// ctx.save();
-			// ctx.setTransform(1,0,0,1,0,0);
-			// ctx.clearRect(0,0,canvas.width,canvas.height);
-			// ctx.restore();
-
-			var img = document.getElementById("frameDisplayForm:frameImage");
-			ctx.drawImage(img, 0, 0, 512, 512);
-
-			ctx.drawImage(gkhead,200,50);
-
-			
-			ctx.beginPath();
-			ctx.lineWidth = 6;
-			ctx.moveTo(399,250);
-			ctx.lineTo(474,256);
-			ctx.stroke();
-
-			ctx.save();
-			ctx.translate(4,2);
-			ctx.beginPath();
-			ctx.lineWidth = 1;
-			ctx.moveTo(436,253);
-			ctx.lineTo(437.5,233);
-			ctx.stroke();
-
-			ctx.save();
-			ctx.translate(438.5,223);
-			ctx.strokeStyle = '#06c';
-			ctx.beginPath();
-			ctx.lineWidth = 0.05;
-			ctx.stroke();
-			ctx.restore();
-
-			ctx.beginPath();
-			ctx.lineWidth = 0.2;
-			ctx.arc(438.5,223,10,0,Math.PI*2);
-			ctx.stroke();
-			ctx.restore();
-			
-		}
+		
 		redraw();
 		
 		var lastX=canvas.width/2, lastY=canvas.height/2;
@@ -140,6 +96,56 @@
 		canvas.addEventListener('mousewheel',handleScroll,false);
 	};
 
+	function redraw() {
+		
+		// Clear the entire canvas
+		var p1 = ctx.transformedPoint(0,0);
+		var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+		ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+
+		// Alternatively:
+		// ctx.save();
+		// ctx.setTransform(1,0,0,1,0,0);
+		// ctx.clearRect(0,0,canvas.width,canvas.height);
+		// ctx.restore();
+
+		//var img = document.getElementById("frameDisplayForm:frameImage");
+		//ctx.drawImage(img, 0, 0, 512, 512);
+
+		ctx.drawImage(gkhead,200,50);
+
+		
+		ctx.beginPath();
+		ctx.lineWidth = 6;
+		ctx.moveTo(399,250);
+		ctx.lineTo(474,256);
+		ctx.stroke();
+
+		ctx.save();
+		ctx.translate(4,2);
+		ctx.beginPath();
+		ctx.lineWidth = 1;
+		ctx.moveTo(436,253);
+		ctx.lineTo(437.5,233);
+		ctx.stroke();
+
+		ctx.save();
+		ctx.translate(438.5,223);
+		ctx.strokeStyle = '#06c';
+		ctx.beginPath();
+		ctx.lineWidth = 0.05;
+		ctx.stroke();
+		ctx.restore();
+
+		ctx.beginPath();
+		ctx.lineWidth = 0.2;
+		ctx.arc(438.5,223,10,0,Math.PI*2);
+		ctx.stroke();
+		ctx.restore();
+		
+	}
+	
+	
 	gkhead.src = "/pcs-web/javax.faces.resource/images/csv.png.xhtml"
 	
 	// Adds ctx.getTransform() - returns an SVGMatrix
@@ -199,6 +205,9 @@
 			return pt.matrixTransform(xform.inverse());
 		}
 	}
+	
+	window.setTimeout("reload()", 100);
+
 	
 	//]]>
 </script>

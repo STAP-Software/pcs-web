@@ -6,14 +6,17 @@
 			<h:outputText value="#{frameController.selectedFitsFilename}" />
 		</f:facet>
 
-		<p:menubar>
+		<p:menubar id="frameMenu">
 
 			<p:submenu label="File" icon="ui-icon-disk"> 
 				<!-- TODO update loadPanel -->
 				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl :errorGrowl"/>
 			</p:submenu>
-			<p:submenu label="Display" icon="ui-icon-image">
-				<p:menuitem value="Zoom" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}" />
+			<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">
+				<p:menuitem value="Pan/Zoom" update="frameMenu :frameHiddenForm" action="#{frameController.doSetPanZoomDisplayMode(false)}" icon="ui-icon-check" rendered="#{frameController.panZoomDisplayMode}" oncomplete="setupListeners()" />
+				<p:menuitem value="Pan/Zoom" update="frameMenu :frameHiddenForm" action="#{frameController.doSetPanZoomDisplayMode(true)}" rendered="#{not frameController.panZoomDisplayMode}"  oncomplete="setupListeners()" />
+				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(false)}" icon="ui-icon-check" rendered="#{frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
+				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(true)}" rendered="#{not frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 			</p:submenu>
 			<p:submenu label="Modify" icon="ui-icon-copy">
 				<p:menuitem value="Flatten Frame" ajax="false" action="#{sessionController.doViewSessionList}"
@@ -38,7 +41,10 @@
 
 
 		</p:menubar>
-
+		
+		<!--   -->
+		
+		
 
 		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 
@@ -85,130 +91,173 @@
 		//<![CDATA[
 		    	
 	var gkhead = new Image;
-	var canvas = document.getElementById("frameCanvas");
 	
 	var canvasOffsetLeft = 463;
 	var canvasOffsetTop = 242;
 	
 	var txPoint;
 
-	window.onload = reload();
+	//window.onload = reload();
+	
+	var canvas = document.getElementById("frameCanvas");
+	var ctx = canvas.getContext('2d');
 	
 	function reload() {		
-		var canvas = document.getElementById("frameCanvas");
-		var ctx = canvas.getContext('2d');
+				
+		canvas = document.getElementById("frameCanvas");
+		ctx = canvas.getContext('2d');
 		trackTransforms(ctx);
-		
-		function redraw(){
-			
-			// Clear the entire canvas
-			var p1 = ctx.transformedPoint(0,0);
-			var p2 = ctx.transformedPoint(canvas.width,canvas.height);
-			ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-
-			var img = document.getElementById("frameDisplayForm:frameImage");
-			
-			ctx.drawImage(img, 0, 0, 512, 512);
-					
-			var xField = document
-					.getElementById('frameHiddenForm:centroidXs').value;
-			var xArray = xField.split(',');
-			var yField = document
-					.getElementById('frameHiddenForm:centroidYs').value;
-			var yArray = yField.split(',');
-			//var radius = document.getElementById('frameHiddenForm.spotRadius').value;
-			var radius = 10;	
-			
-			for (var i = 0; i < xArray.length; i++) {
-				ctx.beginPath();
-				// divide by 2 when frame is displayed 512x512
-				ctx.arc(xArray[i] / 2, yArray[i] / 2, radius, 0, 2 * Math.PI);
-				ctx.strokeStyle = '#ffffaa';
-				ctx.lineWidth = 2;
-				ctx.stroke();
-			}
-			
-			ctx.beginPath();
-			// divide by 2 when frame is displayed 512x512
-			ctx.arc(100, 100, 20, 0, 2 * Math.PI);
-			ctx.strokeStyle = '#000000';
-			ctx.lineWidth = 4;
-			ctx.stroke();			
-		}
 		
 		redraw();
 		
-		var lastX=canvas.width/2, lastY=canvas.height/2;
-		var dragStart,dragged;
-		canvas.addEventListener('mousedown',function(evt){
-			document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
-			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
-			dragStart = ctx.transformedPoint(lastX,lastY);
-			dragged = false;
-		},false);
-		canvas.addEventListener('mousemove',function(evt){
-			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
-			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
-			dragged = true;
-			if (dragStart){
-				var pt = ctx.transformedPoint(lastX,lastY);
-				ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
-				redraw();
-			}
-		},false);
-		canvas.addEventListener('mouseup',function(evt){
-			dragStart = null;
-		},false);
+		setupListeners();
+	}
+	
+	function setupListeners() {
+		// set event listeners per mode
+		var frameEditMode = document.getElementById("frameHiddenForm:frameEditMode").value;
+		
+		if (frameEditMode == 'true') {
+			
+	  	    canvas.removeEventListener('mousemove', doMouseMove);
+			canvas.removeEventListener("mousedown", doMouseDown);       
+			
+			canvas.addEventListener('mousedown', doDragStart, false);
+			canvas.addEventListener('mousemove', doDrag, false);
+			canvas.addEventListener('mouseup', doDragEnd, false);
+			canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+			canvas.addEventListener('mousewheel',handleScroll,false);
+			canvas.addEventListener('mousemove', doMouseMove, false);
+		} 
+		
+  	    
+		if (frameEditMode == 'false') {
+			canvas.removeEventListener('mousedown', doDragStart);
+			canvas.removeEventListener('mousemove', doDrag);
+			canvas.removeEventListener('mouseup', doDragEnd);
+			canvas.removeEventListener('DOMMouseScroll',handleScroll);
+			canvas.removeEventListener('mousewheel',handleScroll);
+	  	    canvas.removeEventListener('mousemove', doMouseMove);
 
-		var scaleFactor = 1.1;
-		var zoom = function(clicks){
-			var pt = ctx.transformedPoint(lastX,lastY);
-			ctx.translate(pt.x,pt.y);
-					
-			var factor = Math.pow(scaleFactor,clicks);
-			ctx.scale(factor,factor);
-			ctx.translate(-pt.x,-pt.y);
-			redraw();
+			canvas.addEventListener("mousedown", doMouseDown, false); 
+			canvas.addEventListener('mousemove', doMouseMove, false);
 		}
+	}
 
-		var handleScroll = function(evt){
-			var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
-			if (delta) zoom(delta);
-			return evt.preventDefault() && false;
-		};
-		canvas.addEventListener('DOMMouseScroll',handleScroll,false);
-		canvas.addEventListener('mousewheel',handleScroll,false);
+	
+	function redraw() {
 		
+		// Clear the entire canvas
+		var p1 = ctx.transformedPoint(0,0);
+		var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+		ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+
+		var img = document.getElementById("frameDisplayForm:frameImage");
 		
-		// marking and value listeners
-		function doMouseMove(event) {
-   			var canvas = document.getElementById("frameCanvas");
-   			mousePos = getMousePos(canvas, event);
-   			txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
-  			// call javascript function that is defined in <p:remote>
-  			frameValue([{name: 'mouse_x', value: txPoint.x}, {name: 'mouse_y', value: txPoint.y}]);
-   		}
-   		
-  		function doMouseDown(event) {  			
-  			var canvas = document.getElementById("frameCanvas");
-  			
-	        var rect = canvas.getBoundingClientRect();
-	        canvas_x = event.clientX - rect.left;
-	        canvas_y = event.clientY - rect.top;
-  			// call javascript function that is defined in <p:remote>
-  			handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
-  			
-  		}
-  		        
+		ctx.drawImage(img, 0, 0, 512, 512);
+				
+		var xField = document
+				.getElementById('frameHiddenForm:centroidXs').value;
+		var xArray = xField.split(',');
+		var yField = document
+				.getElementById('frameHiddenForm:centroidYs').value;
+		var yArray = yField.split(',');
+		//var radius = document.getElementById('frameHiddenForm.spotRadius').value;
+		var radius = 10;	
+		
+		for (var i = 0; i < xArray.length; i++) {
+			ctx.beginPath();
+			// divide by 2 when frame is displayed 512x512
+			ctx.arc(xArray[i] / 2, yArray[i] / 2, radius, 0, 2 * Math.PI);
+			ctx.strokeStyle = '#ff0000';
+			ctx.lineWidth = 2;
+			ctx.stroke();
+		}
+		
+		ctx.beginPath();
+		// divide by 2 when frame is displayed 512x512
+		ctx.arc(100, 100, 20, 0, 2 * Math.PI);
+		ctx.strokeStyle = '#000000';
+		ctx.lineWidth = 4;
+		ctx.stroke();			
+	}
+	
+	// handlers
+	var lastX=canvas.width/2, lastY=canvas.height/2;
+	var dragStart,dragged;
+	
+	
+	function doDragStart(evt) {
+		document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+		lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+		lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+		dragStart = ctx.transformedPoint(lastX,lastY);
+		dragged = false;
+	}
+	
+	function doDrag(evt) {
+		lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+		lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+		dragged = true;
+		if (dragStart) {
+			var pt = ctx.transformedPoint(lastX,lastY);
+			
+			ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+			redraw();
+		}			
+	}
+	
+	function doDragEnd(evt) {
+		dragStart = null;
+	}
+	
 
+	var scaleFactor = 1.1;
+	var zoom = function(clicks) {
+		
+		var factor = Math.pow(scaleFactor,clicks);
+		
+		// limit scale factor to 1.0 or more
+		if (factor * ctx.currentScale() < 1.0) {
+			factor = 1.0 / ctx.currentScale();
+		}
+		var pt = ctx.transformedPoint(lastX,lastY);
+		
+		ctx.translate(pt.x,pt.y);
+		ctx.scale(factor,factor);
+		ctx.translate(-pt.x,-pt.y);
+		
+		redraw();
+	}
 
-		canvas.addEventListener("mousedown", doMouseDown, false);
-  	    canvas.addEventListener('mousemove', doMouseMove, false);
-
-
+	var handleScroll = function(evt) {
+		var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+		if (delta) zoom(delta);
+		return evt.preventDefault() && false;
 	};
-
+	
+	// marking and value listeners
+	function doMouseMove(event) {
+  		var canvas = document.getElementById("frameCanvas");
+  		mousePos = getMousePos(canvas, event);
+  		txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
+ 		// call javascript function that is defined in <p:remote>
+ 		frameValue([{name: 'mouse_x', value: txPoint.x}, {name: 'mouse_y', value: txPoint.y}]);
+  	}
+	
+	function doMouseDown(event) {  		
+ 			
+ 		var canvas = document.getElementById("frameCanvas");
+ 			
+        var rect = canvas.getBoundingClientRect();
+        canvas_x = event.clientX - rect.left;
+        canvas_y = event.clientY - rect.top;
+ 		// call javascript function that is defined in <p:remote>
+ 		handMark([{name: 'canvas_x', value: canvas_x}, {name: 'canvas_y', value: canvas_y}]);
+ 			
+ 	}
+	
+	
 	//gkhead.src = "file:///opt/apps/peasData/frames/K1_11AUG06_CPH_030_1K.png"
 	
 	// Adds ctx.getTransform() - returns an SVGMatrix
@@ -271,19 +320,23 @@
 			pt.x=x; pt.y=y;
 			return pt.matrixTransform(xform.inverse());
 		}
+		
+		ctx.currentScale = function() {
+			return Math.sqrt(xform.a * xform.a + xform.b * xform.b)
+		}
 	}
 		           		           
 	
 		function markFrame() {
-			window.setTimeout("drawFrame2(true)", 100);
+			window.setTimeout("drawFrame2(true)", 200);
 		}
 	
 		function drawFrame() {
-			window.setTimeout("drawFrame2(false)", 100);
+			window.setTimeout("reload()", 200);
 		}
 	
 		function drawFrame2(mark) {
-			reload()		
+			redraw()		
 		}
 	
   		function displayFrameValue() {
@@ -312,7 +365,7 @@
 	        };
 	      }
 		
-	
+		window.setTimeout("reload()", 200);
 		
 		//]]>
 	</script>

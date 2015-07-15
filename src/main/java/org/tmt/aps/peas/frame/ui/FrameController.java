@@ -68,6 +68,7 @@ public class FrameController implements Serializable {
 	private String centroidXs;
 	private String centroidYs;
 	private String pixelValue;
+	private boolean frameEditMode;  // true = Pan/Zoom, false = mark
 	
 	private CcdFrame ccdFrame;
 	private boolean allowFrameSave = false;
@@ -120,6 +121,20 @@ public class FrameController implements Serializable {
 
 	public void setSearchRadius(int searchRadius) {
 		this.searchRadius = searchRadius;
+	}
+
+
+	public boolean getPanZoomDisplayMode() {
+		return frameEditMode;
+	}
+	public boolean getMarkingDisplayMode() {
+		return !frameEditMode;
+	}
+	public boolean isFrameEditMode() {
+		return frameEditMode;
+	}
+	public void setFrameEditMode(boolean frameEditMode) {
+		this.frameEditMode = frameEditMode;
 	}
 
 	public String getSelectedFitsFilename() {
@@ -230,6 +245,8 @@ public class FrameController implements Serializable {
 
 			}
 			
+			String firstFilename = null;
+			
 			for (String type : type2Fits.keySet()) {
 
 				List<FitsFilename> typeFitsList = type2Fits.get(type);
@@ -242,11 +259,23 @@ public class FrameController implements Serializable {
 					TreeNode sessionNode00 = new DefaultTreeNode("picture", new FrameTreeElement(fitsFile.getFileName(),
 							fitsFile.getFileName()), typeNode);
 					
+					
+					if (firstFilename == null) {
+						firstFilename = fitsFile.getFileName();
+					}
 				}
 
 			}
 			
+			
+			
+			
 			// TODO: load up first frame 
+			ccdFrame = frameMgmt.loadFitsFrame(firstFilename);
+			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
+			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+
+			
 			searchRadius = 10;  // TODO: whatever that should be - this needs to be loaded with the frame too.
 
 		} catch (Exception e) {
@@ -365,5 +394,12 @@ public class FrameController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
+	}
+	
+	public void doSetPanZoomDisplayMode(boolean setting) {
+		frameEditMode = setting;
+	}
+	public void doSetMarkingDisplayMode(boolean setting) {
+		frameEditMode = !setting;
 	}
 }
