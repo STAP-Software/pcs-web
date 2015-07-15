@@ -29,7 +29,7 @@
 				<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" selectionMode="single" style="width:340px"
 					selection="#{frameController.selectedNode}" id="typeTree" animate="true">
 
-					<p:ajax event="select" update=":frameDisplayForm:framePanel" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
+					<p:ajax event="select" update=":frameDisplayForm:framePanel :frameHiddenForm" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
 
 					<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						<h:outputText value="#{frameTreeElement.displayName}" />

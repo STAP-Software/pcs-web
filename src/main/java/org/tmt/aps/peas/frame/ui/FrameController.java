@@ -267,16 +267,12 @@ public class FrameController implements Serializable {
 
 			}
 			
-			
-			
-			
 			// TODO: load up first frame 
 			ccdFrame = frameMgmt.loadFitsFrame(firstFilename);
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
-			
-			searchRadius = 10;  // TODO: whatever that should be - this needs to be loaded with the frame too.
+			searchRadius = 20;  // TODO: whatever that should be - this needs to be loaded with the frame too.
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -300,6 +296,10 @@ public class FrameController implements Serializable {
 			
 			// do not save files from selected nodes
 			allowFrameSave = false;
+			
+			// clear any marking
+			centroidXs = null;
+			centroidYs = null;
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
@@ -341,8 +341,8 @@ public class FrameController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 		
-		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
-		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+		int x = (new Double(xStr)).intValue(); 
+		int y = (new Double(yStr)).intValue(); 
 		// add to the centroid hidden form vars
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
@@ -353,8 +353,8 @@ public class FrameController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
 		
-		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
-		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+		int x = (new Double(xStr)).intValue(); 
+		int y = (new Double(yStr)).intValue(); 
 
 		int value = ccdFrame.getRawFrame()[x][y];
 		
