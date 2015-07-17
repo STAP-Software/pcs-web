@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<ui:composition>
+		<p:dialog id="markingDlg" header="Marking Information" widgetVar="markingDialog" >
+
+			<h:form id="markingForm">
+			
+				<br/>
+				<p:panelGrid id="configPanel" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
+					<p:row>
+						<p:column styleClass="btmsFormLabelColumn">
+							<h:outputLabel value="Pupil Mask Used for FindCent Config" />
+						</p:column>
+						<p:column styleClass="btmsFormInputColumn">
+							<p:selectOneMenu value="#{frameController.pupilMask}" converter="#{pupilMaskConverter}">
+								<f:selectItem itemLabel="Select One" itemValue=""/> 
+								<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
+								<p:ajax update=":markingForm markingInfoTable" listener="#{frameController.doSetupMarkingInfoDialog}" />
+							</p:selectOneMenu>
+						</p:column>
+					</p:row>
+				</p:panelGrid>
+				
+				<br/>
+			
+				<p:dataTable id="markingInfoTable" var="subimage" value="#{frameController.markedSubimageList}">
+				
+				
+				
+					<p:columnGroup type="header">
+			            <p:row>
+			                <p:column rowspan="3" headerText="Number" />
+			                <p:column rowspan="2" colspan="2" headerText="Position" />
+			                <p:column rowspan="3" headerText="Total Intensity" />
+			                <p:column rowspan="3" headerText="Peak Intensity" />
+			                <p:column rowspan="1" colspan="4" headerText="Measurements from First Subimage" />
+			            </p:row>
+			            <p:row>
+			                <p:column rowspan="1" colspan="2" headerText="Delta Postion" />
+			                <p:column rowspan="2" headerText="Distance" />
+			                <p:column rowspan="2" headerText="Angle" />
+			            </p:row>
+			            <p:row>
+			            	<p:column headerText="X (pix)" />
+			            	<p:column headerText="Y (pix)" />
+			            	<p:column headerText="X (pix)" />
+			            	<p:column headerText="Y (pix)" />
+			            </p:row>
+			            
+			        </p:columnGroup>
+				
+			
+				    <p:column>
+				        <h:outputText value="#{subimage.markNumber}" />
+				    </p:column>
+				    <p:column >
+				        <h:outputText value="#{subimage.centroid.x}" >
+				        	<f:convertNumber pattern="####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column >
+				        <h:outputText value="#{subimage.centroid.y}" >
+				        	<f:convertNumber pattern="####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column>
+				        <h:outputText value="#{subimage.totalIntensity}" >
+				        	<f:convertNumber pattern="#####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column >
+				        <h:outputText value="#{subimage.peakIntensity}" >
+				        	<f:convertNumber pattern="#####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column>
+				        <h:outputText value="#{subimage.firstSubimageDelta.x}" >
+				        	<f:convertNumber pattern="####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column>
+				        <h:outputText value="#{subimage.firstSubimageDelta.y}" >
+				        	<f:convertNumber pattern="####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column>
+				        <h:outputText value="#{subimage.firstSubimageDistance}" >
+				        	<f:convertNumber pattern="####.#" />
+				        </h:outputText>
+				    </p:column>
+				    <p:column>
+				        <h:outputText value="#{subimage.firstSubimageAngle}" >
+				        	<f:convertNumber pattern="###.#" />
+				        </h:outputText>
+				    </p:column>				 
+				 
+				</p:dataTable>
+				
+				<br/>
+
+				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
+					type="button" onclick="markingDialog.hide();" />
+
+			</h:form>
+		</p:dialog>
+
+</ui:composition>
+
+
+</html>

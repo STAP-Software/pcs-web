@@ -19,7 +19,6 @@ import java.util.TreeMap;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -32,13 +31,25 @@ import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.StreamedContent;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.computation.business.ComputationContext;
+import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
+import org.tmt.aps.peas.frame.model.MarkedSubimage;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 
 @Named
@@ -55,9 +66,16 @@ public class FrameController implements Serializable {
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
+	ProcedureMgmt procedureMgmt;
+	@EJB
 	PhysicalModel physicalModel;
 	@EJB
 	TelescopeMgmt telescopeMgmt;
+	@EJB
+	GlobalConfigMgmt globalConfigMgmt;
+	@EJB
+	private ComputationContext computationContext;
+
 
 	private TreeNode sessionRoot;
 	private TreeNode typeRoot;
@@ -69,8 +87,10 @@ public class FrameController implements Serializable {
 	private String centroidYs;
 	private String pixelValue;
 	private boolean frameEditMode;  // true = Pan/Zoom, false = mark
+	private List<MarkedSubimage> markedSubimageList;
 	
 	private CcdFrame ccdFrame;
+	private PupilMask pupilMask;
 	private boolean allowFrameSave = false;
 
 	Map<String, List<FitsFilename>> type2Fits;
@@ -123,6 +143,21 @@ public class FrameController implements Serializable {
 		this.searchRadius = searchRadius;
 	}
 
+	public PupilMask getPupilMask() {
+		return pupilMask;
+	}
+
+	public void setPupilMask(PupilMask pupilMask) {
+		this.pupilMask = pupilMask;
+	}
+
+	public List<MarkedSubimage> getMarkedSubimageList() {
+		return markedSubimageList;
+	}
+
+	public void setMarkedSubimageList(List<MarkedSubimage> markedSubimageList) {
+		this.markedSubimageList = markedSubimageList;
+	}
 
 	public boolean getPanZoomDisplayMode() {
 		return frameEditMode;
@@ -300,6 +335,12 @@ public class FrameController implements Serializable {
 			// clear any marking
 			centroidXs = null;
 			centroidYs = null;
+				
+			// we should be setting the default search area and know the pupil mask type
+			FitsFilename fitsFilename = new FitsFilename(ccdFrame.getFitsFilename());
+			fitsFilename.getProcedureTypeCd();
+			
+			searchRadius = 20;
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
@@ -401,5 +442,82 @@ public class FrameController implements Serializable {
 	}
 	public void doSetMarkingDisplayMode(boolean setting) {
 		frameEditMode = !setting;
+	}
+	
+	public void doSetupMarkingInfoDialog() {
+		markedSubimageList = new ArrayList<MarkedSubimage>();
+		
+		// 1. get all the 'guesses' and call findCent for each one
+		
+		List<Float> xList = FloatListEncoder.decodeList(centroidXs);
+		List<Float> yList = FloatListEncoder.decodeList(centroidYs);
+		
+		List<FloatPoint> guessList = FloatPointListEncoder.constructFromXandY(xList, yList);
+		
+		// if findCent fails then we just use the user-marked guesses as the centroids
+		
+
+		try {
+			
+			int count = 0;
+			FloatPoint firstCentroid = guessList.get(0); // just in case findCent fails
+			
+			for (FloatPoint guess: guessList) {
+			
+				FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f);
+				
+				// load up defaults for mask type 
+				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId());
+						
+				// then set the search radius for hand marking
+				findCentConfig.setIrad(searchRadius);
+	
+				ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+	
+				float[][] frame = ccdFrame.getCorrectedFrame();
+	
+				findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			
+				// 2. determine metrics against the first subimage				
+				
+				FloatPoint deltaPos = new FloatPoint(0.0f, 0.0f);
+				float deltaDistance = 0.0f;
+				float deltaAngle = 0.0f;
+				
+				if (count == 0) {
+					
+					firstCentroid = findCentResult.getCentroid();
+					
+				} else {
+					
+					// calculate delta centroid
+					FloatPoint centroid = findCentResult.getCentroid();
+					float deltaX = centroid.x - firstCentroid.x;
+					float deltaY = centroid.y - firstCentroid.y;
+					deltaPos = new FloatPoint(deltaX, deltaY);
+					
+					// calculate the distance
+					deltaDistance = (float)Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+					
+					// calculate the angle
+					deltaAngle = (float)Math.toDegrees(Math.atan2(deltaY, deltaX));
+				
+				}
+				
+				MarkedSubimage markedSubimage = new MarkedSubimage(++count,findCentResult.getCentroid(), findCentResult.getSubimageIntensity(), 
+						findCentResult.getPeakIntensity(), deltaPos, deltaDistance, deltaAngle);
+				
+				// 3. create the table data 
+				markedSubimageList.add(markedSubimage);
+				
+				
+				
+			}
+			
+			
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+
 	}
 }

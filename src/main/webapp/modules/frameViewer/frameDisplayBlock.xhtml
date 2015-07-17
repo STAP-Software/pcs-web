@@ -11,6 +11,7 @@
 			<p:submenu label="File" icon="ui-icon-disk"> 
 				<!-- TODO update loadPanel -->
 				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl :errorGrowl"/>
+				<p:menuitem value="Save As..." ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl :errorGrowl"/>
 			</p:submenu>
 			<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">
 				<p:menuitem value="Pan/Zoom" update="frameMenu :frameHiddenForm" action="#{frameController.doSetPanZoomDisplayMode(false)}" icon="ui-icon-check" rendered="#{frameController.panZoomDisplayMode}" oncomplete="setupListeners()" />
@@ -18,25 +19,8 @@
 				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(false)}" icon="ui-icon-check" rendered="#{frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(true)}" rendered="#{not frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 			</p:submenu>
-			<p:submenu label="Modify" icon="ui-icon-copy">
-				<p:menuitem value="Flatten Frame" ajax="false" action="#{sessionController.doViewSessionList}"
-					disabled="#{sessionController.procedureExecuting}" />
-			</p:submenu>
 			<p:submenu label="Marking" icon="ui-icon-pencil">
-				<p:menuitem value="Display Marking Info" ajax="false" action="#{sessionController.doViewSessionList}"
-					disabled="#{sessionController.procedureExecuting}" />
-				<p:menuitem value="Analyze Single Subimages" ajax="false" action="#{sessionController.doViewCurrentSession}"
-					disabled="#{sessionController.procedureExecuting}" />
-			</p:submenu>
-			<p:submenu label="Operations" icon="ui-icon-gear">
-				<p:menuitem value="Find and Identify Subimages" ajax="false" action="#{sessionController.doViewSessionList}"
-					disabled="#{sessionController.procedureExecuting}" />
-				<p:menuitem value="Centroid Offsets" ajax="false" action="#{sessionController.doViewCurrentSession}"
-					disabled="#{sessionController.procedureExecuting}" />
-				<p:menuitem value="Generate Cross Correlation Tables" ajax="false" action="#{sessionController.doViewCurrentSession}"
-					disabled="#{sessionController.procedureExecuting}" />
-				<p:menuitem value="Frame Statistics" ajax="false" action="#{sessionController.doViewCurrentSession}"
-					disabled="#{sessionController.procedureExecuting}" />
+				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doSetupMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
 			</p:submenu>
 
 

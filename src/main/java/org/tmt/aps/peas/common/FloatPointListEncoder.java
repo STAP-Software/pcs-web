@@ -147,6 +147,17 @@ public class FloatPointListEncoder {
 		return resultList;
 	}
 	
+	public static List<FloatPoint> constructFromXandY(List<Float> xArray, List<Float> yArray) {
+		
+		List<FloatPoint> resultList = new ArrayList<FloatPoint>();
+		
+		for (int i=0; i<xArray.size(); i++) {
+			resultList.add(new FloatPoint(xArray.get(i), yArray.get(i)));
+		}
+		
+		return resultList;
+	}
+	
     public static List<Point> roundToPoint(List<FloatPoint> fpList) {
     	
     	List<Point> pList = new ArrayList<Point>();
