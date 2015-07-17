@@ -216,11 +216,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 								<p:column styleClass="peasFormOutputColumn" style="width:15%">
 									<h:outputText value="8" />
 								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:15%">
-									<h:outputLabel value="SNR:" />
+								<p:column styleClass="peasFormLabelColumn" style="width:35%">
+									<h:outputLabel value="Median Peak Intensity:" />
 								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:35%">
-									<h:outputText value="10.8" />
+								<p:column styleClass="peasFormOutputColumn" style="width:15%">
+									<h:outputText value="#{procedureController.procedure.latestProcedureCcdFrame.centroidMap.medianPeakIntensity}" />
 								</p:column>
 							</p:row>
 						</p:panelGrid>
@@ -285,11 +285,11 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 								<p:column styleClass="peasFormOutputColumn" style="width:15%">
 									<h:outputText value="8" />
 								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:15%">
-									<h:outputLabel value="SNR:" />
+								<p:column styleClass="peasFormLabelColumn" style="width:35%">
+									<h:outputLabel value="Median Peak Intensity:" />
 								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:35%">
-									<h:outputText value="10.8" />
+								<p:column styleClass="peasFormOutputColumn" style="width:15%">
+									<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" />
 								</p:column>
 							</p:row>
 						</p:panelGrid>

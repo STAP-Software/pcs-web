@@ -263,8 +263,8 @@ public class PassiveTiltExecutor {
 				/*             calculateCentroidOffsets              */
 				/*****************************************************/
 
-				centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getValues(),
-						procedure.getRefBeamMap().getCentroidMap().getValues(), procedure.getProcedureConfigSet()
+				centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
+						procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), procedure.getProcedureConfigSet()
 								.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
 
 				// go from centroidOffsetsResult.imageTranslation to deltaAz,El

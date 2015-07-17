@@ -80,7 +80,7 @@ public class VisualizationController implements Serializable {
 		try {
 			// TODO: do other queries as each new procedure type is added
 			RefBeamMap refDefMapPassiveTilt = centroidMapMgmt.getRefBeamDefMap(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-			List<FloatPoint> refDefValueListPassiveTilt = refDefMapPassiveTilt.getCentroidMap().getValues();
+			List<FloatPoint> refDefValueListPassiveTilt = refDefMapPassiveTilt.getCentroidMap().getFindCentroidsResult().getCentroidList();
 			float[] xArray = FloatPointListEncoder.extractXArray(refDefValueListPassiveTilt);
 			centDefPassiveTiltXs = FloatListEncoder.encodeList(xArray);
 			float[] yArray = FloatPointListEncoder.extractYArray(refDefValueListPassiveTilt);

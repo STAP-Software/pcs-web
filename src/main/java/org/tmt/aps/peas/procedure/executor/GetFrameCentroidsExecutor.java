@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -13,12 +14,14 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -149,10 +152,8 @@ public class GetFrameCentroidsExecutor {
 
 			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 
-			procedureCcdFrame.setCentroidMap(centroidMap);
-
 			// test for non-linear subimage maximums
-			computationLibrary.checkSubimageIntensities(ccdFrame.getCorrectedFrame(), centroidMap, physicalModel.getInstrument().getCcd()
+			computationLibrary.checkSubimageIntensities(centroidMap, physicalModel.getInstrument().getCcd()
 					.getNonLinearThreshold());
 
 		} catch (FandIException e) {
@@ -169,6 +170,8 @@ public class GetFrameCentroidsExecutor {
 			handleUserAssistRequiredException(e1);
 		} catch (NonLinearIntensitiesException e1) {
 			handleNonLinearIntensitiesException(e1);
+		} catch (HandMarkRequiredException e1) {
+			handleHandMarking();
 		} catch (FandIException e1) {
 			// impossible, we never throw this
 		}
@@ -253,12 +256,22 @@ public class GetFrameCentroidsExecutor {
 
 	// TODO: generalize this, does not need to be explicit in an executor
 
-	public CentroidMap buildCentroidMap(List<FloatPoint> centroids, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) {
+	public CentroidMap buildCentroidMap(FindCentroidsResult findCentroidsResult, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
 		CentroidMap centroidMap = new CentroidMap();
-		String centroidMapData = FloatPointListEncoder.encodeList(centroids);
+		String centroidMapData = FloatPointListEncoder.encodeList(findCentroidsResult.getCentroidList());
 		centroidMap.setCentroidMapData(centroidMapData);
-		centroidMap.setValues(centroids);
+		
+		centroidMap.setFindCentroidsResult(findCentroidsResult);
+		
+		String intensityMapData = FloatListEncoder.encodeList(findCentroidsResult.getIntensityList());
+		centroidMap.setIntensityMapData(intensityMapData);
+		
+		String peakMapData = FloatListEncoder.encodeList(findCentroidsResult.getPeakList());
+		centroidMap.setPeakMapData(peakMapData);
+		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.getPeakList());
+		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
+		
 
 		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
 		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());
@@ -281,7 +294,7 @@ public class GetFrameCentroidsExecutor {
 
 	private CentroidMap findAndDisplayCentroids(Procedure procedure, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
-		List<FloatPoint> centroids = null;
+		FindCentroidsResult findCentroidsResult = null;
 
 		try {
 
@@ -294,10 +307,13 @@ public class GetFrameCentroidsExecutor {
 			centroidMap = null;
 			try {
 	
-				centroids = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
+				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
 						.getFindCentConfig());
-				centroidMap = buildCentroidMap(centroids, procedureConfig, fiConfig, fiResult);
+				
+				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	
+				procedureCcdFrame.setCentroidMap(centroidMap);
+				
 			} catch (Exception e) {
 				if (procedure.getProcedureType().isPassiveTilt()) {
 					throw new HandMarkRequiredException();
@@ -307,7 +323,8 @@ public class GetFrameCentroidsExecutor {
 			}
 	
 			// display the marked frame
-			frameDisplayMgmt.setMarking(centroids);
+			frameDisplayMgmt.setMarking(findCentroidsResult.getCentroidList());
+						
 			frameDisplayMgmt.displayMarkedFrame();
 	
 			boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,

@@ -5,14 +5,12 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
-import java.lang.reflect.UndeclaredThrowableException;
 import java.util.List;
 import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
-import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
@@ -24,6 +22,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -205,7 +204,8 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("frame.mark_guess", guess);
 			
 			// call find cent with the guess
-			FloatPoint centroid = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
+			FindCentResult findCentResult = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
+			FloatPoint centroid = findCentResult.getCentroid();
 			procedureOutput.setCentroid(centroid);
 			
 			procedureExecutionState.setPercentComplete(80);

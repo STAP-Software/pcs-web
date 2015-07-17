@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.computation.java;
 
+import java.util.Arrays;
 import java.util.Date;
 
 import org.apache.log4j.Logger;
@@ -145,22 +146,31 @@ public class JavaComputations {
 		}
 	}
 
-	public static void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
+	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
+		
+		for (int i=0; i< centroidMap.getFindCentroidsResult().getPeakList().length; i++) {
 
-		for (FloatPoint centroid : centroidMap.getValues()) {
-
-			int x = Math.round(centroid.x);
-			int y = Math.round(centroid.y);
-
-			for (int i = x - 1; i <= x + 1; i++) {
-				for (int j = y - 1; j <= y + 1; j++) {
-					if (correctedFrame[i][j] > threshold) {
-						throw new NonLinearIntensitiesException();
-					}
-				}
+			if (centroidMap.getFindCentroidsResult().getPeakList()[i] > threshold) {
+				throw new NonLinearIntensitiesException();
 			}
+
 		}
 
 	}
 
+	public static float getMedianValue(float[] inputs) {
+		
+		// clone the array 
+		float[] values = inputs.clone();
+		
+		Arrays.sort(values);
+		float median;
+		if (values.length % 2 == 0)
+		    median = ((float)values[values.length/2] + (float)values[values.length/2 - 1])/2;
+		else
+		    median = (float) values[values.length/2];
+		
+		return median;
+	}
+	
 }

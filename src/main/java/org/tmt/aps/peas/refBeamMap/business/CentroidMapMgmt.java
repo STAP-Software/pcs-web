@@ -14,9 +14,11 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
@@ -69,8 +71,13 @@ public class CentroidMapMgmt {
 		try {
 			RefBeamMap refBeamMap = query.getSingleResult();
 			// decode String into transient FloatPoint values
-			List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
-			refBeamMap.getCentroidMap().setValues(values);
+			List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+			List<Float> intensityList = FloatListEncoder.decodeList(refBeamMap.getCentroidMap().getIntensityMapData());
+			List<Float> peakList = FloatListEncoder.decodeList(refBeamMap.getCentroidMap().getPeakMapData());
+			
+			FindCentroidsResult findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList);
+			
+			refBeamMap.getCentroidMap().setFindCentroidsResult(findCentroidsResult);
 	
 			return refBeamMap;
 			
@@ -92,8 +99,10 @@ public class CentroidMapMgmt {
 		RefBeamMap refBeamMap = query.getSingleResult();
 
 		// decode String into transient FloatPoint values
-		List<FloatPoint> values = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
-		refBeamMap.getCentroidMap().setValues(values);
+		List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+		
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(centroidList);
+		refBeamMap.getCentroidMap().setFindCentroidsResult(findCentroidsResult);
 
 		return refBeamMap;
 	}

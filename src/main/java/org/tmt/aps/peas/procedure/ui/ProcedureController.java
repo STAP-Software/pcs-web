@@ -40,6 +40,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -74,6 +75,8 @@ import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
+
+import magiqLibs.centroid.Centroid;
 
 @Named
 @SessionScoped
@@ -198,7 +201,7 @@ public class ProcedureController implements Serializable {
 	public void setFrameCentroidYs(String centroidYs) {
 		frameDisplayMgmt.setCentroidYs(centroidYs);
 	}
-
+	
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
 		try {
@@ -545,7 +548,7 @@ public class ProcedureController implements Serializable {
 
 			// load up frames that were used
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-
+				
 				String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
 				CcdFrame loadedFitsFile = null;
@@ -564,6 +567,9 @@ public class ProcedureController implements Serializable {
 				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 			}
+			
+			// TODO: this needs to account for multiple frames someday.
+			selectedFrame = procedure.getProcedureCcdFrameList().get(0);
 
 			// set up display of camera state values for first frame
 			loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
@@ -704,7 +710,7 @@ public class ProcedureController implements Serializable {
 		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		FloatPoint centroid = guess;
+		FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
@@ -715,11 +721,13 @@ public class ProcedureController implements Serializable {
 
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
 
-			centroid = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
+		FloatPoint centroid = findCentResult.getCentroid();
+		
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
 		centroidXs = (centroidXs == null || centroidXs.trim().length() == 0) ? "" + centroid.x : centroidXs + "," + centroid.x;

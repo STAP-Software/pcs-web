@@ -23,6 +23,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
@@ -50,9 +51,14 @@ public class CentroidMap {
 	float fourierQuality;
 	int numFilledBoxes;
 	float fracFilledBoxes;
+	Float medianPeakIntensity;
 	
 	@Column
 	String centroidMapData;
+	@Column
+	String intensityMapData;
+	@Column
+	String peakMapData;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
@@ -192,29 +198,45 @@ public class CentroidMap {
 		this.fracFilledBoxes = fracFilledBoxes;
 	}
 
+	public String getIntensityMapData() {
+		return intensityMapData;
+	}
+
+	public void setIntensityMapData(String intensityMapData) {
+		this.intensityMapData = intensityMapData;
+	}
+
+	public String getPeakMapData() {
+		return peakMapData;
+	}
+
+	public void setPeakMapData(String peakMapData) {
+		this.peakMapData = peakMapData;
+	}
+
+	public Float getMedianPeakIntensity() {
+		return medianPeakIntensity;
+	}
+
+	public void setMedianPeakIntensity(Float medianPeakIntensity) {
+		this.medianPeakIntensity = medianPeakIntensity;
+	}
+
 
 	@Transient
-	protected List<FloatPoint> values;
+	protected FindCentroidsResult findCentroidsResult;
 
-	public List<FloatPoint> getValues() {
-		return values;
+	public FindCentroidsResult getFindCentroidsResult() {
+		return findCentroidsResult;
 	}
 
-	public void setValues(List<FloatPoint> values) {
-		this.values = values;
+	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
+		this.findCentroidsResult = findCentroidsResult;
 	}
-
 
 	public String toString() {
 		
-		StringBuffer buf = new StringBuffer();
-		
-		buf.append("\nvalues = ");
-		for (int i=0; i<values.size(); i++) {
-			buf.append(values.get(i) + ", ");
-		}
-		buf.append("\n");
-		return buf.toString();
+		return findCentroidsResult.toString();
 
 	}
 

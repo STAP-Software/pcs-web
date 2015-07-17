@@ -26,6 +26,8 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -84,7 +86,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return c[0];
 	}
 
-	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCent"));
 
@@ -104,13 +106,15 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
+		
+		FindCentResult findCentResult = new FindCentResult(centroid, (Float)result[2], (Float)result[3]);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
 
-		return centroid;
+		return findCentResult;
 	}
 
-	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -146,16 +150,19 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[] x_cent = new float[arrayLen];
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
+		float[] peak = new float[arrayLen];
 
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), x_guesses,
-				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity);
+				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity, peak);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("No good centroid could be found");
 		}
 
-		List<FloatPoint> centroids = FloatPointListEncoder.constructFromXandY(x_cent, y_cent);
+		
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak);
+		
 
 		// Code for findCent unit testing
 		// logger.info("fiCentroids:: ");
@@ -212,7 +219,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCentroids"));
 
-		return centroids;
+		return findCentroidsResult;
 
 	}
 
@@ -269,7 +276,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
 
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
+		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getFindCentroidsResult().getCentroidList();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 
@@ -650,14 +657,25 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	@Override
-	public void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
+	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
 
-		JavaComputations.checkSubimageIntensities(correctedFrame, centroidMap, threshold);
+		JavaComputations.checkSubimageIntensities(centroidMap, threshold);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "checkSubimageIntensities"));
 		
 	}
-
+	
+	public float getMedianValue(float[] inputs) throws Exception {
+		logger.info(MessageGenerator.generateMessage("computation.start", "getMedianValue"));
+	
+		float result = JavaComputations.getMedianValue(inputs);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "getMedianValue"));
+		
+		return result;
+	}
 }
+
+

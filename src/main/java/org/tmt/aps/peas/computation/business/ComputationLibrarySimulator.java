@@ -14,6 +14,7 @@ import javax.naming.InitialContext;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
@@ -23,6 +24,8 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -80,7 +83,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		float frame_avg = 0.0f; // average background of frame (TODO) from backgroundStats
 		float frame_sigma = 20.0f; // frame background sigma (TODO) from backgroundStats
 		
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getValues();
+		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getFindCentroidsResult().getCentroidList();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 		
@@ -131,16 +134,16 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 
 	@Override
-	public FloatPoint findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
+	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
 			throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);
-		return new FloatPoint(guess.x - 10.0f, guess.y - 10.0f);
+		return new FindCentResult(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f);
 	}
 	
-	public List<FloatPoint> findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
 		
-		return fiResult.getPeakLocationList();
+		return null;
 		
 	}
 
@@ -221,8 +224,14 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return JavaComputations.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
 	}
 
-	public void checkSubimageIntensities(float[][] correctedFrame, CentroidMap centroidMap, double threshold) throws Exception {
-		JavaComputations.checkSubimageIntensities(correctedFrame, centroidMap, threshold);
+	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
+		JavaComputations.checkSubimageIntensities(centroidMap, threshold);
+	}
+
+	public float getMedianValue(float[] inputs) throws Exception {
+	
+		return JavaComputations.getMedianValue(inputs);
+		
 	}
 
 }
