@@ -22,7 +22,9 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -227,6 +229,17 @@ public class CentroidMap {
 	protected FindCentroidsResult findCentroidsResult;
 
 	public FindCentroidsResult getFindCentroidsResult() {
+		
+		if (findCentroidsResult == null) {
+			// populate for first time
+			// decode String into transient FloatPoint values
+			List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(getCentroidMapData());
+			List<Float> intensityList = FloatListEncoder.decodeList(getIntensityMapData());
+			List<Float> peakList = FloatListEncoder.decodeList(getPeakMapData());
+			
+			findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList);
+		}
+		
 		return findCentroidsResult;
 	}
 

@@ -19,6 +19,7 @@
 			<h:inputHidden id="centroidYs" value="#{procedureController.frameCentroidYs}" />
 			<h:inputHidden id="spotRadius" value="#{procedureController.frameSearchRadius}" />
 			<h:inputHidden id="handMark" value="#{procedureController.frameMarkingMode}" />
+			<h:inputHidden id="markedDisplayMode" value="#{procedureController.markedDisplayMode}" />
 		</h:form>
 
 		<h:form id="audioForm">
@@ -197,17 +198,46 @@
 					</p:panelGrid>
 
 					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
-						rendered="#{procedureController.procedure.procedureState eq 2}">
+						rendered="#{procedureController.procedure.procedureState ge 2}">
 						<f:facet name="header">
-							<h:outputText id="fitsFilename" value="#{procedureController.procedure.latestProcedureCcdFrame.ccdFrame.fitsFilename}" />
+							
+							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
+							<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px"/>
+							<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
+								<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
+                      					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />
+           						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel"/>
+       						</p:selectOneButton>
+       						</h:panelGroup>
+							
 						</f:facet>
+						
+						
+						<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
+							<f:facet name="header">
+								<h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
+								<p:menubar id="frameMenu">
+	
+								<p:submenu label="File" icon="ui-icon-disk"> 
+									<!-- TODO update loadPanel -->
+									<p:menuitem value="Save Current Displayed Image As ..." disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl" onclick="saveCanvasPng();" />
+								</p:submenu>
+								<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">
+									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" icon="ui-icon-check" rendered="#{procedureController.markedDisplayMode}" />
+									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" rendered="#{not procedureController.markedDisplayMode}"  />
+									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" icon="ui-icon-check" rendered="#{not procedureController.markedDisplayMode}"  />				  
+									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" rendered="#{procedureController.markedDisplayMode}"   />				  
+								</p:submenu>				
+			
+							</p:menubar>
+								
+							</f:facet>
+						
+							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+						
+							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 
-						<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
-					
-					<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" >
-Your browser does not support the HTML5 canvas tag.</canvas>
-
-						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+							<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 							<p:row>
 								<p:column styleClass="peasFormLabelColumn" style="width:35%">
@@ -223,37 +253,27 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 									<h:outputText value="#{procedureController.procedure.latestProcedureCcdFrame.centroidMap.medianPeakIntensity}" />
 								</p:column>
 							</p:row>
-						</p:panelGrid>
+							</p:panelGrid>
 
-						<f:facet name="footer">
-							<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
-								action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-							<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-								action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-							<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-								action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-						</f:facet>
+							<f:facet name="footer">
+								<a id="saveAsPngId" href="#" download="frame.png" />
+								<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
+									action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+								<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+									action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+								<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
+									action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+							</f:facet>
+							
+						</p:panelGrid>
 					</p:panelGrid>
+
+
+					<!-- 
 
 					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
 						rendered="#{procedureController.procedure.procedureState ge 3}">
 
-						<!--  show this when procedure is done -->
-						<!-- 
-						<p:carousel id="frameCarousel" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame" rows="1" >
-
-							<p:panelGrid columns="1" style="padding:0;margin:0">
-								<f:facet name="header">
-									<h:outputText value="#{procedureCcdFrame.ccdFrame.fitsFilename}" />
-								</f:facet>
-
-								<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px">
-									<f:param name="frameIndex" value="#{procedureCcdFrame.procedureFrameNumber}" />
-								</p:graphicImage>
-							</p:panelGrid>
-														
-						</p:carousel>
-						 -->
 						<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
 							<f:facet name="header">
 								<h:panelGroup>
@@ -264,14 +284,33 @@ Your browser does not support the HTML5 canvas tag.</canvas>
             						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel"/>
         						</p:selectOneButton>
         						</h:panelGroup>
+        						
+        						
 							</f:facet>
 							
 							<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
 								<f:facet name="header">
 									<h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
+								<p:menubar id="frameMenu">
+
+								<p:submenu label="File" icon="ui-icon-disk"> 
+									
+								<p:menuitem value="Save Current Displayed Image As ..." disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl" onclick="saveCanvasPng();" />
+								</p:submenu>
+								<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">
+									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" icon="ui-icon-check" rendered="#{procedureController.markedDisplayMode}" />
+									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" rendered="#{not procedureController.markedDisplayMode}"  />
+									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" icon="ui-icon-check" rendered="#{not procedureController.markedDisplayMode}"  />				  
+									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" rendered="#{procedureController.markedDisplayMode}"   />				  
+								</p:submenu>				
+				
+								</p:menubar>
+									
 								</f:facet>
-								<p:graphicImage value="#{procedureController.graphicImage}" height="512px" width="512px" />
+								<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" />
+								<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" >Your browser does not support the HTML5 canvas tag.</canvas>
 							</p:panelGrid>
+							
 						</p:panelGrid>
 						
 						
@@ -279,6 +318,7 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 							<p:row>
+								
 								<p:column styleClass="peasFormLabelColumn" style="width:35%">
 									<h:outputLabel value="Search Radius (pixels):" />
 								</p:column>
@@ -293,8 +333,10 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 								</p:column>
 							</p:row>
 						</p:panelGrid>
-
+						
 					</p:panelGrid>
+
+ 				-->
 				</h:panelGroup>
 
 
@@ -432,6 +474,17 @@ Your browser does not support the HTML5 canvas tag.</canvas>
 		document.getElementById('audiocontrol').pause();
 		document.getElementById('audiocontrol').load();
 	}
+	
+    function saveCanvasPng() {
+		var canvas = document.getElementById("frameCanvas");
+		var button = document.getElementById("saveAsPngId");
+	    var img = canvas.toDataURL("image/png");
+	    button.href = img;
+	    button.click();
+      }
+
+    
+    drawFrame();
 
 	//]]>
 	

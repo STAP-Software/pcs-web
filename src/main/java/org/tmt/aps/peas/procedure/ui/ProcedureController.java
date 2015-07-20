@@ -36,6 +36,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -75,8 +76,6 @@ import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
-
-import magiqLibs.centroid.Centroid;
 
 @Named
 @SessionScoped
@@ -144,6 +143,7 @@ public class ProcedureController implements Serializable {
 	byte[] falseColorPng;
 	UserPrompt currentPrompt;
 	Instrument frameInstrument;
+	boolean markedDisplayMode = false;
 
 	boolean frameMarkingMode = false;
 	List<Procedure> procedureList;
@@ -220,6 +220,14 @@ public class ProcedureController implements Serializable {
 
 	public void setFrameMarkingMode(boolean frameMarkingMode) {
 		this.frameMarkingMode = frameMarkingMode;
+	}
+	
+	public boolean isMarkedDisplayMode() {
+		return markedDisplayMode;
+	}
+
+	public void setMarkedDisplayMode(boolean markedDisplayMode) {
+		this.markedDisplayMode = markedDisplayMode;
 	}
 
 	public void setFrameSearchRadius(String searchRadius) {
@@ -553,7 +561,7 @@ public class ProcedureController implements Serializable {
 
 				CcdFrame loadedFitsFile = null;
 
-				logger.debug("filename = " + filename);
+				logger.info("filename = " + filename);
 				try {
 
 					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
@@ -582,6 +590,7 @@ public class ProcedureController implements Serializable {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
 
+			
 			breadcrumbMenuBean.removeTo("Session:");
 
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
@@ -773,4 +782,43 @@ public class ProcedureController implements Serializable {
 		setFrameCentroidYs(centroidYs);
 	}
 
+	public void doSetMarkedDisplayMode(boolean setting) {
+		
+		markedDisplayMode = setting;
+		
+		if (setting) {
+			// get the marking and set it
+			
+			procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+			
+			List<FloatPoint> centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+			
+			float[] xArray = FloatPointListEncoder.extractXArray(centroids);
+			float[] yArray = FloatPointListEncoder.extractYArray(centroids);
+			
+			String centroidXs = FloatListEncoder.encodeList(xArray);
+			String centroidYs = FloatListEncoder.encodeList(yArray);
+
+			setFrameCentroidXs(centroidXs);
+			setFrameCentroidYs(centroidYs);
+			
+			// display the frame unmarked
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.execute("markFrame()");
+
+			
+		} else {
+			// clear the marking 
+			setFrameCentroidXs(null);
+			setFrameCentroidYs(null);
+			
+			// display the frame unmarked
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.execute("drawFrame()");
+
+
+		}
+	}
+
+	
 }

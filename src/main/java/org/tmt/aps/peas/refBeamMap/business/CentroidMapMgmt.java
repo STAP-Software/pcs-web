@@ -70,14 +70,6 @@ public class CentroidMapMgmt {
 		query.setMaxResults(1);
 		try {
 			RefBeamMap refBeamMap = query.getSingleResult();
-			// decode String into transient FloatPoint values
-			List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
-			List<Float> intensityList = FloatListEncoder.decodeList(refBeamMap.getCentroidMap().getIntensityMapData());
-			List<Float> peakList = FloatListEncoder.decodeList(refBeamMap.getCentroidMap().getPeakMapData());
-			
-			FindCentroidsResult findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList);
-			
-			refBeamMap.getCentroidMap().setFindCentroidsResult(findCentroidsResult);
 	
 			return refBeamMap;
 			

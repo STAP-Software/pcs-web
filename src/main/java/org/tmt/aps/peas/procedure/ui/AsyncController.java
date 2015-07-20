@@ -19,6 +19,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -174,7 +175,11 @@ public class AsyncController {
 		
 		if (getDisplayNewFrame() || getMarkNewFrame()) {
 			
-			procedureController.setSelectedFrameNumber(frameDisplayMgmt.getFrameNumber());
+			// setup the selected frame
+			int selectedFrameNumber = frameDisplayMgmt.getFrameNumber();
+			procedureController.setSelectedFrameNumber(selectedFrameNumber);
+			ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
+			procedureController.setSelectedFrame(selectedFrame);
 			
 			// get the marking to the procedure
 			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
@@ -290,6 +295,10 @@ public class AsyncController {
 				FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
 				RequestContext.getCurrentInstance().update("procedureDetailForm");
 			}
+			// display frame
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.execute("drawFrame()");
+
 			// update the breadcrumb to associate the current session as the first link
 			Session session = sessionController.getCurrentSession();
 			breadcrumbMenuBean.insertFirst("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
