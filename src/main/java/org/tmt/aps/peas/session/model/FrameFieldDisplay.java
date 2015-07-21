@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.session.model;
 
+import java.text.MessageFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,6 +18,15 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+
+import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
+import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.PointListEncoder;
+import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.model.Constant;
 
 @Entity
 @Table(name = "FrameFieldDisplay")
@@ -92,7 +103,9 @@ public class FrameFieldDisplay {
 	}
 	
 	
-	
+	public String getDataFormatted() {
+		return Utils.reformatData(value, fieldMetaData);
+	}
 
 	
 }

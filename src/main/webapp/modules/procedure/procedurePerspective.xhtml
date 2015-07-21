@@ -206,7 +206,7 @@
 							<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
 								<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
                       					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />
-           						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel" oncomplete="drawFrame();"/>
+           						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel" oncomplete="drawFrame();" />
        						</p:selectOneButton>
        						</h:panelGroup>
 							
