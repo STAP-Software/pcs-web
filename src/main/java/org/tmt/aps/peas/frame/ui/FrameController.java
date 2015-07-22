@@ -389,6 +389,28 @@ public class FrameController implements Serializable {
 		centroidYs = (centroidYs == null) ? "" + y : centroidYs + "," + y;
 	}
 	
+	public void doResetMarking() {
+		centroidXs = null;
+		centroidYs = null;
+	}
+
+	public void doUndoMarking() {
+		// remove the last one marked
+
+		List<Float> xList = FloatListEncoder.decodeList(centroidXs);
+		List<Float> yList = FloatListEncoder.decodeList(centroidYs);
+
+		if (!xList.isEmpty())
+			xList.remove(xList.size() - 1);
+		if (!yList.isEmpty())
+			yList.remove(yList.size() - 1);
+
+		centroidXs = FloatListEncoder.encodeList(xList);
+		centroidYs = FloatListEncoder.encodeList(yList);
+
+	}
+
+	
 	public void doGetFrameValue() {
 		// TODO: get the x,y from the form and use it to populate the value field
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
