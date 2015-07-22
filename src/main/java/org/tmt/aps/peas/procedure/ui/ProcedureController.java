@@ -146,6 +146,7 @@ public class ProcedureController implements Serializable {
 	boolean markedDisplayMode = false;
 
 	boolean frameMarkingMode = false;
+	String pixelValue;
 	List<Procedure> procedureList;
 
 	@PostConstruct
@@ -202,6 +203,14 @@ public class ProcedureController implements Serializable {
 		frameDisplayMgmt.setCentroidYs(centroidYs);
 	}
 	
+	public void setPixelValue(String pixelValue) {
+		this.pixelValue = pixelValue;
+	}
+
+	public String getPixelValue() {
+		return pixelValue;
+	}
+
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
 		try {
@@ -565,6 +574,7 @@ public class ProcedureController implements Serializable {
 				try {
 
 					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+					procedureCcdFrame.getCcdFrame().setRawFrame(loadedFitsFile.getRawFrame());
 
 				} catch (Exception e) {
 					logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -819,6 +829,20 @@ public class ProcedureController implements Serializable {
 
 		}
 	}
+	
+	public void doGetFrameValue() {
+		// TODO: get the x,y from the form and use it to populate the value field
+		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
+		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
+		
+		int x = (new Double(xStr)).intValue(); 
+		int y = (new Double(yStr)).intValue(); 
+
+		int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
+		
+		pixelValue = "" + value;
+	}
+
 
 	
 }

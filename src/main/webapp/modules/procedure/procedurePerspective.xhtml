@@ -20,6 +20,7 @@
 			<h:inputHidden id="spotRadius" value="#{procedureController.frameSearchRadius}" />
 			<h:inputHidden id="handMark" value="#{procedureController.frameMarkingMode}" />
 			<h:inputHidden id="markedDisplayMode" value="#{procedureController.markedDisplayMode}" />
+			<h:inputHidden id="pixelValue" value="#{procedureController.pixelValue}" />
 		</h:form>
 
 		<h:form id="audioForm">
@@ -236,6 +237,8 @@
 							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 						
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
+							<p:spacer height="1px"/>
+							<canvas id="infoCanvas" width="512px" height="15px" ></canvas>
 
 							<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
@@ -269,74 +272,6 @@
 					</p:panelGrid>
 
 
-					<!-- 
-
-					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
-						rendered="#{procedureController.procedure.procedureState ge 3}">
-
-						<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
-							<f:facet name="header">
-								<h:panelGroup>
-								<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px"/>
-								<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
-									<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
-                       					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />
-            						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel"/>
-        						</p:selectOneButton>
-        						</h:panelGroup>
-        						
-        						
-							</f:facet>
-							
-							<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
-								<f:facet name="header">
-									<h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
-								<p:menubar id="frameMenu">
-
-								<p:submenu label="File" icon="ui-icon-disk"> 
-									
-								<p:menuitem value="Save Current Displayed Image As ..." disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl" onclick="saveCanvasPng();" />
-								</p:submenu>
-								<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">
-									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" icon="ui-icon-check" rendered="#{procedureController.markedDisplayMode}" />
-									<p:menuitem value="Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(true)}" rendered="#{not procedureController.markedDisplayMode}"  />
-									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" icon="ui-icon-check" rendered="#{not procedureController.markedDisplayMode}"  />				  
-									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" rendered="#{procedureController.markedDisplayMode}"   />				  
-								</p:submenu>				
-				
-								</p:menubar>
-									
-								</f:facet>
-								<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" />
-								<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" >Your browser does not support the HTML5 canvas tag.</canvas>
-							</p:panelGrid>
-							
-						</p:panelGrid>
-						
-						
-
-						<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
-
-							<p:row>
-								
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<h:outputLabel value="Search Radius (pixels):" />
-								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-									<h:outputText value="8" />
-								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<h:outputLabel value="Median Peak Intensity:" />
-								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-									<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" />
-								</p:column>
-							</p:row>
-						</p:panelGrid>
-						
-					</p:panelGrid>
-
- 				-->
 				</h:panelGroup>
 
 
@@ -374,7 +309,7 @@
 
 			</p:panelGrid>
 			<p:remoteCommand name="handMark" action="#{procedureController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
-			
+			<p:remoteCommand name="frameValue" action="#{procedureController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />	
 			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
 		</h:form>
 
@@ -394,9 +329,13 @@
 	  $('input,select').keypress(function(event) { return event.keyCode != 13; }); 
 });	
 
+    var mousePos;
+    
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
 		canvas.addEventListener("mousedown", doMouseDown, false);
+		canvas.addEventListener('mousemove', doMouseMove, false);
+
 	}
 	
 	function doMouseDown(event) {  		
@@ -474,6 +413,43 @@
 		document.getElementById('audiocontrol').pause();
 		document.getElementById('audiocontrol').load();
 	}
+	
+ 	function displayFrameValue() {
+ 			
+ 		var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
+ 		var message = '    Mouse position: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  value = ' + pixelValue;
+        var infoCanvas = document.getElementById("infoCanvas");
+        writeMessage(infoCanvas, message);
+ 	}
+
+	function doMouseMove(event) {
+  		var canvas = document.getElementById("frameCanvas");
+  		mousePos = getMousePos(canvas, event);
+  		
+  		// convert 512 to 1024
+  		mousePos.x = mousePos.x * 2;
+  		mousePos.y = mousePos.y * 2;
+  		
+ 		// call javascript function that is defined in <p:remote>
+ 		frameValue([{name: 'mouse_x', value: mousePos.x}, {name: 'mouse_y', value: mousePos.y}]);
+  	}
+	
+	function writeMessage(infoCanvas, message) {
+        var context = infoCanvas.getContext('2d');
+        context.clearRect(0, 0, 300, 15);
+        context.font = '10pt Arial';
+        context.fillStyle = '#444444';
+        context.fillText(message, 1, 12);
+      }
+	
+      function getMousePos(canvas, evt) {
+    	var canvas = document.getElementById("frameCanvas");
+        var rect = canvas.getBoundingClientRect();
+        return {
+          x: evt.clientX - rect.left,
+          y: evt.clientY - rect.top
+        };
+      }
 	
     function saveCanvasPng() {
 		var canvas = document.getElementById("frameCanvas");
