@@ -1,183 +1,160 @@
 package org.tmt.aps.peas.procedure.executor;
 
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.computation.business.ComputationContext;
+import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.session.model.Session;
+import org.tmt.aps.peas.statusLog.business.StatusLogger;
+import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+@Singleton
+@Startup
 public class CenterTelescopeCalc {
 
 	static Logger logger = Logger.getLogger(CenterTelescopeCalc.class);
 	
-	// This should return a return code and other values
-	// lastTelescopeMoveOk
-	// lastDeltaAz, El
-	// frameOk
-	// move/don't move/two consecutive bad moves/move too large/automode ask user/image off too much/move too small
-	// then caller presents options to user
-	
-	public enum CenterTelescopeOptions {
-		CENTER_TELESCOPE_OPTION_MOVE_TELESCOPE, 
-		CENTER_TELESCOPE_OPTION_ABORT, 
-		CENTER_TELESCOPE_OPTION_TWO_CONSECUTIVE_BAD_MOVES, 
-		CENTER_TELESCOPE_OPTION_MOVE_TOO_LARGE, 
-		CENTER_TELESCOPE_OPTION_MOVE_TOO_SMALL, 
-		CENTER_TELESCOPE_OPTION_IMAGE_OFF_TOO_MUCH, 
-		CENTER_TELESCOPE_OPTION_AUTOMODE_ASK_USER
-		};
-	
-	
+	@EJB
+	private UserPromptMgmt userPromptMgmt;
+	@EJB
+	private StatusLogger statusLogger;
+	@EJB
+	private DcsMgmt dcsMgmt;
+	@EJB
+	private ComputationContext computationContext;
+	@EJB
+	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
-	
-	public void centerTelescopeToleranceTests(FloatPoint deltaAzEl, ProcedureConfig procedureConfig) {
+
+	public CenterTelescopeCalcResult centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		
-		double deltaAz = deltaAzEl.x;
-		double deltaEl = deltaAzEl.y;
+		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
-		// TODO: az, el should be formatted as F6.2
-		String text = "The telescope needs to be moved \n" + deltaAz + " arc sec. in AZ \n" + deltaEl + " arc sec. in EL \n";
+		ProcedureCcdFrame procedureCcdFrame = null;
+		CentroidOffsetsResult centroidOffsetsResult = null;
 
-		boolean automodeAbort = false;
+		FloatPoint lastMove = null;
+		FloatPoint deltaAzEl;
+		
+		while (true) {
 
-		// temp stuff for now
-		double moveDis = 0.0;
-		boolean OK = false;
-		double TOL = 0.0;
-		double MAX_TOL = 0.0; // TODO calc commented out
-		boolean LAST_TEL_MOVE_OK = false;
-		double FRAME_OK_NO_MOVE_TEL = 0.0;
-		double FRAME_NOT_OK_MOVE_TEL = 0.0;
-		double FRAME_OK_MOVE_TEL = 0.0;
-		double lastDeltaAz = 0.0;
-		double lastDeltaEl = 0.0;
+			logger.debug("light source 3 = " + procedureConfig.getLightSource());
 
-		boolean lastTelescopeMoveOk = false; // TODO this will be global in some way
+			procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
 
-		if ((procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) && !procedureConfig.isFrameFromFile()) {
+			statusLogger.log("calc.centroid_resid");
 
-			moveDis = Math.sqrt(deltaAz * deltaAz + deltaEl * deltaEl);
-			if (moveDis < FRAME_OK_NO_MOVE_TEL) {
-				lastTelescopeMoveOk = true;
-				return;
-			} else if (moveDis < FRAME_OK_MOVE_TEL) {
-				lastTelescopeMoveOk = true;
-			} else if (moveDis < FRAME_NOT_OK_MOVE_TEL) {
-				if (LAST_TEL_MOVE_OK) {
+			/*****************************************************/
+			/*             calculateCentroidOffsets              */
+			/*****************************************************/
 
-					// FRAME_OK = .FALSE.
-					// LAST_TEL_MOVE_OK = .FALSE.
-					// LAST_DELTA_AZ = DELTA_AZ
-					// LAST_DELTA_EL = DELTA_EL
-				} else {
-					text = "WARNING!!!\n" + "Automode has detected two consecutive large telescope moves!\n" + "The last move was:\n"
-							+ lastDeltaAz + " Arc Sec in AZ " + lastDeltaEl + "Arc Sec in EL\n"
-							+ "Automode seeks permission to move the telescope: " + deltaAz + " Arc Sec in AZ, " + deltaEl
-							+ "Arc Sec in EL";
+			centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
+					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), procedure.getProcedureConfigSet()
+							.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
 
-					// OK = FYNWARN_DIALOG(TEXT, LEN(TEXT),
-					// 'Move Telescope', LEN('Move Telescope'),
-					// 'Abort Test', LEN('Abort Test'), NO,
-					// ZGLOBAL_CURRENT_PARENT)
+			// go from centroidOffsetsResult.imageTranslation to deltaAz,El
+			deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
+					new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
 
-					if (OK) {
-						// FRAME_OK = .FALSE.
-						// LAST_TEL_MOVE_OK = .FALSE.
-						// LAST_DELTA_AZ = DELTA_AZ
-						// LAST_DELTA_EL = DELTA_EL
-					} else {
 
-						// AUTOMODE_ABORT = .TRUE.
-					}
-				}
-			} else {
-				text = "Telescope move too large for Automode!";
+			// test deltaAzEl against thresholds for telescope move
+			AutoCenterTelConfig autoCenterTelConfig = procedure.getProcedureConfigSet().getAutoCenterTelConfig();
+			AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+			// log what result was found
+			statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
 
-				// OK = FYNWARN_DIALOG(TEXT, LEN(TEXT),
-				// 'Command Telescope Anyway', LEN('Command Telescope Anyway'),
-				// 'Cancel', LEN('Cancel'), NO,
-				// ZGLOBAL_CURRENT_PARENT)
-
-				// FRAME_OK = .FALSE.
+			if (aResult.getRecenterTelescope().isNo() || procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_NO) {
+				break; // leave the loop if nothing to do
 			}
-		} else if ((procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) && procedureConfig.isFrameFromFile()) {
 
-			return;
+			if (aResult.getRecenterTelescope().isYes() && procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) {
 
-		} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_NO) {
-			return;
+				// perform telescope move
+				lastMove = deltaAzEl;
+				statusLogger.log("telescope.cmd.start");
+				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+				statusLogger.log("telescope.cmd.end");
+			}
 
-		} else {
+			
+			
+			// prompt user if required by settings or required due to abnormal result
+			boolean userReply = false;
+			if (aResult.getRecenterTelescope().isPrompt()) {
+				
+				// ask user if they want to center the telescope
+				userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+						aResult.getReasonArgs()) + "\nMove Telescope?");
+				
+				if (userReply) {
+					// perform telescope move
+					lastMove = deltaAzEl;
+					statusLogger.log("telescope.cmd.start");
+					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+					statusLogger.log("telescope.cmd.end");						
+				} else {
+					break;
+				}
+				
+			} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
+				// ask user if they want to center the telescope
+				userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+						aResult.getReasonArgs()) + "\nMove Telescope?");
+				
+				if (userReply) {
+					// perform telescope move
+					lastMove = deltaAzEl;
+					statusLogger.log("telescope.cmd.start");
+					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+					statusLogger.log("telescope.cmd.end");						
+				} else {
+					break; // if user doesn't want to move telescope, no point in re-taking frame
+				}
+				
+			}
 
-			// TODO: put up dialog: if user says don't move, then return;
-			// OK = FYN_DIALOG(TEXT, LEN(TEXT), 'Move Telescope',
-			// LEN('Move Telescope'), 'Don''t Move Telescope',
-			// LEN('Don''t Move Telescope'), YES,
-			// ZGLOBAL_CURRENT_PARENT)
+
+			if (aResult.getRetakeFrame().isNo()) {
+				break;
+			}
+
+			if (aResult.getRetakeFrame().isPrompt()) {
+
+				// ask user if they want to re-take the frame
+				int reply = userPromptMgmt.displayFlowControlTriFlowDialog("Frame needs to be retaken.  Press: 'Retry' to re-take frame, 'Continue' to continue procedure with this frame, 'Abort' to abort test now.");
+			
+				if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+					
+					// TODO: put in logic here (throw user abort exception?
+					
+				} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
+					break; // continue on
+				}
+			}
+
+			// go back and re-take frame
 
 		}
 
-		testMoveSize(deltaEl, deltaAz, TOL, MAX_TOL);
+		return new CenterTelescopeCalcResult(centroidOffsetsResult, deltaAzEl);
 		
-		//centerTelescopeCommand(deltaEl, deltaAz, TOL);
-	}
-	
-	public void testMoveSize(double deltaEl, double deltaAz, double TOL, double MAX_TOL) {
-		
-		// If both are smaller then TOL then quit.
-		// Uncommented code 12/5/94 we know don't send commands less then tol.
-
-		if ((Math.abs(deltaEl) < TOL) && (Math.abs(deltaAz) < TOL)) {
-
-			String text = "Telescope move to small. Command not sent";
-			// CALL FERROR_DIALOG(TEXT, LEN(TEXT), ZGLOBAL_CURRENT_PARENT)
-
-			// RETURN
-		}
-
-		// If either one is bigger then 1/2 the field of view then quit.
-
-		// MAX_TOL = NUM_FRAME_COLS / 2.0 * SECPERPIX_36
-
-		if ((Math.abs(deltaAz) > MAX_TOL) || (Math.abs(deltaEl) > MAX_TOL)) {
-
-			String text = "Image is off by more than " + (int) (MAX_TOL) + " arc sec.  Telescope command not sent";
-			// CALL FERROR_DIALOG(TEXT, LEN(TEXT), ZGLOBAL_CURRENT_PARENT)
-
-			// RETURN
-		}
-
-	}
-	
-
-	public void centerTelescopeCommand(double deltaEl, double deltaAz, double TOL) {
-
-
-		// Convert Arc Seconds to radians
-
-		// DELTA_AZIMUTH = DELTA_AZ * PI / ( 60.0 * 60.0 * 180.0)
-		// DELTA_ELEVATION = DELTA_EL * PI / ( 60.0 * 60.0 * 180.0)
-
-		// Send DCS command
-
-		try {
-			
-			//dcsMgmt.commandTelescopeDeltas(); // was OK = DCS_COMMAND(DCS_PRESET_COLLIM)
-			String text = "Telescope move successful";
-			// CALL DISP_WRITE(TEXT, LEN(TEXT))
-
-			// ZPROCLOG_FRAMELOG_TEL_MOVED(ZPROCLOG_DATA_FRAME_LOG_COUNT) = 1
-		
-		} catch (Exception e) {
-			
-			logger.error(MessageGenerator.generateMessage("command.error"), e);
-			
-			String text = "Move Telescope command failure";
-			// CALL DISP_WRITE(TEXT, LEN(TEXT))
-			// CALL FWARN_DIALOG(TEXT, LEN(TEXT), ZGLOBAL_CURRENT_PARENT)
-			
-		}
-
 	}
 
 }

@@ -33,6 +33,8 @@ import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
@@ -46,6 +48,7 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -103,19 +106,25 @@ public class ProcedureExecutionMgmt {
 		procedure.setInstrument(physicalModel.getInstrument());
 		procedure.setTelescope(physicalModel.getTelescope());
 
+		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType();
+		
 		// add the associated ref def map to the fi config for this procedure
 		if (!procedure.getProcedureType().isCenterTelescope()) {
-			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(pupilMaskType.getPupilMaskTypeId());
 			procedure.setRefDefMap(refDefMap);
 		}
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(
-				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
-
+		
+		
+		// load up pupilRegError config
+		if (pupilMaskType.isPupilMaskTypePh() || pupilMaskType.isPupilMaskTypeFs()) {
+			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = globalConfigMgmt.findPupilRegErrorConfig(pupilMaskType.getPupilMaskTypeId());
+			procedure.getProcedureConfigSet().setPupilRegErrorConfig(new PupilRegErrorConfig(pupilRegErrorConfigDefaults));
+		}
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now
