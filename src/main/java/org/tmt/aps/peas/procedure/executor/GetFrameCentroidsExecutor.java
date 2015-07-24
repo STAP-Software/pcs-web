@@ -249,6 +249,9 @@ public class GetFrameCentroidsExecutor {
 			procedureCcdFrame.setCentroidMap(centroidMap);
 
 		}
+			
+
+		
 	}
 
 

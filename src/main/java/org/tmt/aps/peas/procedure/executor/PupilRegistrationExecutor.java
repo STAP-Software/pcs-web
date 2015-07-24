@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
 import java.util.Arrays;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -21,6 +22,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -248,7 +250,7 @@ public class PupilRegistrationExecutor {
 			/*****************************************************/
 					
 			/*
-			PupilRegErrorResult result = computationLibrary.calculatePupilRegError(
+			PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 				procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
 				procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
 				procedureConfig.getPupilMaskType().getNumSpots(), 
@@ -273,20 +275,41 @@ public class PupilRegistrationExecutor {
 			/*           determine fine/coarse PR Commands       */
 			/*****************************************************/
 			
-			// TODO: logic that given automode preferences and (potentially) user input to determine if commands are to be sent, what the commands are and which mechanisms to move.
+			// logic that given automode preferences and (potentially) user input to determine if commands are to be sent, 
+			// what the commands are and which mechanisms to move.
+			
+			// prompt user with registration error values
+			
+			boolean centerPupil = false;
+			if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_COMMAND_TILT_PLATE_PROMPT) {
+				// ask the user
+				
+				// TODO: include the PR error result in the dialog
+				centerPupil = userPromptMgmt.displayYesNoDialog("\nCommand Tilt Plates to correct pupil registration errors?");
+				
+			} else {
+				centerPupil = procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_COMMAND_TILT_PLATE_YES;
+			}
+			
+			int desiredCenterPupilMech = 0;
+			if (procedureConfig.getAutoCenterPupilMechanism() == Constants.AUTO_CENTER_PUPIL_MECH_PROMPT) {
+				
+				String[] choices = {"Fine", "Coarse", "AutoDetermine"};
+				int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
+				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog("\nChoose mechanism to center pupil:", choices, values);
+				
+			} else {
+				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
+			}
+			
+			// DeterminePrCommandsResult prCommandResult = determinePrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
+			//	initialFinePosition, initialCoarsePosition, largeMoveThreshold, fineTiltPositionOffloadLimit);
+			
+			
 			// this will use calcuations:
 			// calcFineTiltPRCommands()
 			// calcCoarseTiltPRCommands()
-			// and may require 'threshold' values: 
-			// 1. general meters on sky = which mechanism to move
-			// 2. fine tilt absolute position limit/threshold to determine if offload is required.
-			
-			
-			// prompt user with registration error values (if automode allows)
-			
-			
-			// DeterminePrCommandsResult prCommandResult = determinePrCommands();
-			
+
 			
 			/*****************************************************/
 			/*         move fine, coarse, both, or none          */

@@ -106,6 +106,20 @@ public class UserPromptMgmt implements Serializable {
 		return returnState.intValue();
 	}
 	
+	public int displayGenericMultiChoiceDialog(String text, String[] choicesText, int[] choicesValues) {
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayGenericThreeChoiceDialog"));
+		
+		// change \n to <br/>
+		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_GENERIC_MULTI_CHOICE, text.replace("\n", "<br/>"), choicesText, choicesValues); 
+		
+		waitForReturnState();
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayGenericThreeChoiceDialog"));
+		
+		return returnState.intValue();
+	}
+	
 	private void waitForReturnState() {
 		returnState = null;
 		// here we wait until the return state changes

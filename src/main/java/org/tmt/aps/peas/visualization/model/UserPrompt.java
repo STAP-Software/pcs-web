@@ -11,6 +11,7 @@ public class UserPrompt {
 	public static final int PROMPT_TYPE_YES_NO = 1;
 	public static final int PROMPT_TYPE_FLOW_CONTROL_TRIFLOW = 2;  // continue, do over, abort
 	public static final int PROMPT_TYPE_FLOW_CONTROL_BIFLOW = 3;  // do over, abort
+	public static final int PROMPT_TYPE_GENERIC_MULTI_CHOICE = 4;
 	// TODO: add the others
 	
 	public static final int PROMPT_VALUE_YES_NO_YES = 1;
@@ -26,7 +27,14 @@ public class UserPrompt {
 	String button2Text;
 	String button3Text;
 	
+	int button1Value;
+	int button2Value;
+	int button3Value;
+	
 	int buttonCount;
+	
+
+	
 	
 	public UserPrompt() {
 		this.promptType = PROMPT_TYPE_INFO;
@@ -40,28 +48,58 @@ public class UserPrompt {
 		if (type == PROMPT_TYPE_INFO) {
 			buttonCount = 1;
 			button1Text = "Ok";
+			button1Value = 0;
 		}
 		
 		if (type == PROMPT_TYPE_YES_NO) {
 			buttonCount = 2;
 			button1Text = "Yes";
+			button1Value = PROMPT_VALUE_YES_NO_YES;
 			button2Text = "No";
+			button2Value = PROMPT_VALUE_YES_NO_NO;
 		}
 		
 		if (type == PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) {
 			buttonCount = 3;
 			button1Text = "Continue";
+			button1Value = PROMPT_VALUE_FLOW_CONTROL_CONTINUE;
 			button2Text = "Try Again";
+			button2Value = PROMPT_VALUE_FLOW_CONTROL_RETRY;
 			button3Text = "Abort";
+			button3Value = PROMPT_VALUE_FLOW_CONTROL_ABORT;
 		}
 		
 		if (type == PROMPT_TYPE_FLOW_CONTROL_BIFLOW) {
 			buttonCount = 2;
 			button1Text = "Try Again";
+			button1Value = PROMPT_VALUE_FLOW_CONTROL_RETRY;
 			button2Text = "Abort";
+			button2Value = PROMPT_VALUE_FLOW_CONTROL_ABORT;
 		}
 		
 	}
+	
+	public UserPrompt(int type, String message, String[] buttonTexts, int[] buttonValues) {
+		this.promptType = type;	
+		this.message = message;
+	
+		buttonCount = buttonTexts.length;
+
+		button1Text = buttonTexts[0];
+		button1Value = buttonValues[0];
+		
+		if (buttonCount > 1) {
+			button2Text = buttonTexts[1];
+			button2Value = buttonValues[1];			
+		}
+		
+		if (buttonCount > 2) {
+			button3Text = buttonTexts[2];
+			button3Value = buttonValues[2];			
+		}
+		
+	}
+
 
 	public int getPromptType() {
 		return promptType;
@@ -109,6 +147,30 @@ public class UserPrompt {
 
 	public void setButtonCount(int buttonCount) {
 		this.buttonCount = buttonCount;
+	}
+
+	public int getButton1Value() {
+		return button1Value;
+	}
+
+	public void setButton1Value(int button1Value) {
+		this.button1Value = button1Value;
+	}
+
+	public int getButton2Value() {
+		return button2Value;
+	}
+
+	public void setButton2Value(int button2Value) {
+		this.button2Value = button2Value;
+	}
+
+	public int getButton3Value() {
+		return button3Value;
+	}
+
+	public void setButton3Value(int button3Value) {
+		this.button3Value = button3Value;
 	}
 	
 	

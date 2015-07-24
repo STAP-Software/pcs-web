@@ -66,8 +66,8 @@ public class CenterTelescopeCalc {
 			/*****************************************************/
 
 			centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
-					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), procedure.getProcedureConfigSet()
-							.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
+					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), 
+					procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
 
 			// go from centroidOffsetsResult.imageTranslation to deltaAz,El
 			deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
@@ -93,8 +93,6 @@ public class CenterTelescopeCalc {
 				statusLogger.log("telescope.cmd.end");
 			}
 
-			
-			
 			// prompt user if required by settings or required due to abnormal result
 			boolean userReply = false;
 			if (aResult.getRecenterTelescope().isPrompt()) {
