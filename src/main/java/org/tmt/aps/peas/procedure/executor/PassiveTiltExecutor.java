@@ -73,8 +73,8 @@ public class PassiveTiltExecutor {
 	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
-	//@EJB
-	//private FrameDisplayMgmt frameDisplayMgmt;
+	@EJB
+	private ReadyCamera readyCamera;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -195,47 +195,11 @@ public class PassiveTiltExecutor {
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// always command the coarse mirror to setup values at the start of all procedures
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
-						.getGlobalConfig().getCoarseMirrorDefault());
-
-				Future<Integer> twoPosCommandFuture = null;
-				Future<Integer> refBeamFuture = null;
-				// command to mask selected
-				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-				// command to filter selected
-				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-
-				if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-					// select ref beam based on filter wavelength
-					ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
-					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum());
-
-					// extend two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-				} else {
-					// turn off reference beams
-					statusLogger.log("camera.cmd.ref_beam", 0);
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(0);
-
-					// retract two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
-				}
-
-				// wait for all commands to complete
-				Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-						coarseMirrorCommandFuture);
-				statusLogger.log("camera.cmd.complete");
-
-			}
-
+			/**********************************************/
+			/*                 Ready Camera               */
+			/**********************************************/			
+			readyCamera.execute(procedure);
+			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 

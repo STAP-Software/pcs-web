@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.procedure.executor;
 
 import java.util.Arrays;
-import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
@@ -22,15 +21,14 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -83,8 +81,8 @@ public class PupilRegistrationExecutor {
 	private ComputationContext computationContext;
 	@EJB
 	private CenterTelescopeCalc centerTelescopeCalc;
-	//@EJB
-	//private PupilRegistrator pupilRegistrator;
+	@EJB
+	private ReadyCamera readyCamera;
 	@EJB
 	PhysicalModel physicalModel;
 	@EJB
@@ -163,51 +161,10 @@ public class PupilRegistrationExecutor {
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// always command the coarse mirror to setup values at the start of all procedures
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
-						.getGlobalConfig().getCoarseMirrorDefault());
-				
-				// TODO: implement
-				//Future<Point> fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(procedure.getProcedureConfigSet()
-				//		.getGlobalConfig().getFineMirrorDefault());
-
-				Future<Integer> twoPosCommandFuture = null;
-				Future<Integer> refBeamFuture = null;
-				// command to mask selected
-				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-				// command to filter selected
-				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-
-				if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-					// select ref beam based on filter wavelength
-					ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
-					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum());
-
-					// extend two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-				} else {
-					// turn off reference beams
-					statusLogger.log("camera.cmd.ref_beam", 0);
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(0);
-
-					// retract two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
-				}
-
-				// wait for all commands to complete
-				// TODO: complete this
-				//Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-				//		coarseMirrorCommandFuture, fineMirrorCommandFuture);
-				statusLogger.log("camera.cmd.complete");
-
-			}
+			/**********************************************/
+			/*                 Ready Camera               */
+			/**********************************************/			
+			readyCamera.execute(procedure);
 
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
@@ -249,7 +206,7 @@ public class PupilRegistrationExecutor {
 			/*            calcPupilRegErrorDefaults              */
 			/*****************************************************/
 					
-			/*
+			
 			PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 				procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
 				procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
@@ -260,17 +217,7 @@ public class PupilRegistrationExecutor {
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
 				procedureConfig.getPupilMask().getSpotDiameter());
 				
-			/*
-			// PupilRefErrorResult:
-			// x registration error (m)
-			// y registration error (m)
-			// phi rotation error (r)
-			// x registration error using approx calc
-			// y registration error using approx calc
-			// phi registration error using approx calc
-			// scale error
-
-			
+						
 			/*****************************************************/
 			/*           determine fine/coarse PR Commands       */
 			/*****************************************************/
