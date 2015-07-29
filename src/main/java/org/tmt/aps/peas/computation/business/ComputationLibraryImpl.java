@@ -625,7 +625,6 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			statusLogger.log(retVal);
 			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode());
 		}
-
 		
 		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult((Float) output[0], (Float) output[1], (Float) output[2], 
 				(Float) output[3], (Float) output[4], (Float) output[5], (Float) output[6]);
