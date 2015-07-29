@@ -110,7 +110,19 @@
 				</p:panelGrid>
 				</p:fieldset>
 
-				 
+				<p:fieldset legend="Pupil Registration Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{procedureController.procedure.procedureType.pupilRegistration}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="Fractional Intensity Calculation Method" />
+       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.pupilRegErrorConfig.fractionalIntensityCalcMethod}">
+             			<f:selectItem itemLabel="Use Peripheral Subimages (PCS)" itemValue="1" />
+            			<f:selectItem itemLabel="Use Interior Subimages (APS)" itemValue="2" />
+					</p:selectOneMenu>
+  
+				</p:panelGrid>
+				</p:fieldset>
+
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm"

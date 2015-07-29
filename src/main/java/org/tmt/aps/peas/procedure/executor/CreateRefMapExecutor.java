@@ -87,8 +87,11 @@ public class CreateRefMapExecutor {
 	@EJB
 	private CentroidMapMgmt refBeamMapMgmt;
 	@EJB
+	private ReadyCamera readyCamera;
+	@EJB	
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
+	
 	private List<String> logMessages;
 
 	public List<String> getLogMessages() {
@@ -138,61 +141,10 @@ public class CreateRefMapExecutor {
 			END IF
 			*/
 
-			
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// TODO: SUFS Specific code
-				/*
-				IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN  ! SUfs specific code
-		           OK = SUFS_GROUP_SELECT(ZREFMAP_GROUP)
-		           IF (.NOT.OK) THEN
-		              TEXT = 'Group not positioned correctly error.'
-		              CALL DISP_WRITE(TEXT, LEN(TEXT))
-
-		              GOTO 900
-		           END IF
-		        END IF
-				*/
-				
-				// TODO: Special logic for selecting which ref beam for UFS/SUFS
-				/*
-				IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
-					IF(ZREFMAP_REF.GT.9) THEN
-						REFNUM = 'F'
-					ELSE
-						WRITE(UNIT=REFNUM, FMT='(I1)') ZREFMAP_REF
-					END IF
-					OK = ACTIVATE_REF_BEAM(REFNUM)
-				END IF
-				*/
-				
-				// always command the coarse mirror to setup values at the start of all procedures
-				statusLogger.log("camera.cmd.coarse_mirror", procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault());
-
-				Future<Integer> twoPosCommandFuture = null;
-				Future<Integer> refBeamFuture = null;
-				// command to mask selected
-				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-				// command to filter selected
-				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-		        	
-		        // turn on ref beam
-		        ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
-				statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
-		        refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum()); 
-
-				// extend two pos mirror
-		        statusLogger.log("camera.cmd.two_pos_device", "extend");
-		        twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-			
-				// wait for all commands to complete
-		        Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture, coarseMirrorCommandFuture);
-	        	statusLogger.log("camera.cmd.complete");
-				
-			}
+			/**********************************************/
+			/*                 Ready Camera               */
+			/**********************************************/			
+			readyCamera.execute(procedure);
 
 			procedureExecutionState.setPercentComplete(25);
 			
@@ -224,9 +176,6 @@ public class CreateRefMapExecutor {
 	        	statusLogger.log("camera.cmd.complete");
 			}
 
-								
-			
-						
 			statusLogger.log("procedure.success",  procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setPercentComplete(100);

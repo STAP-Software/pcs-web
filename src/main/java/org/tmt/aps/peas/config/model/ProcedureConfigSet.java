@@ -32,6 +32,10 @@ public class ProcedureConfigSet {
 	private FindCentConfig findCentConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "pupilRegErrorConfigId")
+	private PupilRegErrorConfig pupilRegErrorConfig;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "centroidOffsetsConfigId")
 	private CentroidOffsetsConfig centroidOffsetsConfig;
 	
@@ -116,6 +120,15 @@ public class ProcedureConfigSet {
 	public void setAutoCenterTelConfig(AutoCenterTelConfig autoCenterTelConfig) {
 		this.autoCenterTelConfig = autoCenterTelConfig;
 	}
+
+	public PupilRegErrorConfig getPupilRegErrorConfig() {
+		return pupilRegErrorConfig;
+	}
+
+	public void setPupilRegErrorConfig(PupilRegErrorConfig pupilRegErrorConfig) {
+		this.pupilRegErrorConfig = pupilRegErrorConfig;
+	}
+
 
 
 }

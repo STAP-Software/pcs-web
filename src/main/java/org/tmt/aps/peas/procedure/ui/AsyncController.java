@@ -336,36 +336,15 @@ public class AsyncController {
 	}
 	
 	public void doCloseUserPrompt1() {
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_INFO) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
-		}
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
-		}
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE);
-		}
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL_BIFLOW) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY);
-		}
+		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton1Value());
 	}
 
 	public void doCloseUserPrompt2() {
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_NO);
-		}
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY);
-		}
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL_BIFLOW) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT);
-		}
+		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton2Value());
 	}
 
 	public void doCloseUserPrompt3() {
-		if (procedureController.getCurrentPrompt().getPromptType() == UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) {
-			userPromptMgmt.setReturnState(UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT);
-		}
+		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton3Value());
 	}
 
 

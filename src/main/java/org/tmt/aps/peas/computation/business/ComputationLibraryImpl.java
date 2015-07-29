@@ -28,16 +28,20 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
+import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
@@ -602,6 +606,46 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return pistonActs;	
 
 	}
+	
+	
+	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
+			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter)
+					throws Exception {
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculatePupilRegError"));
+
+		JcalculatePupilRegError jcalculatePupilRegError = new JcalculatePupilRegError();
+		RetVal retVal = new RetVal();
+
+
+		Object[] output = jcalculatePupilRegError.jcalculatePupilRegError(retVal, pupilRegErrorConfig.getFractionalIntensityCalcMethod(),
+				centroidMap.getFindCentroidsResult().getIntensityList(), numSpots, pupilRegErrorConfig.getnStart(), peripheralSpotTheta, 
+				peripheralSpotPerp, peripheralSpotParallel, aHex, spotDiameter);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode());
+		}
+
+		
+		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult((Float) output[0], (Float) output[1], (Float) output[2], 
+				(Float) output[3], (Float) output[4], (Float) output[5], (Float) output[6]);
+		
+		
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculatePupilRegError"));
+
+		return pupilRegErrorResult;
+
+	}
+	
+	@Override
+	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+					throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 	// private convenience methods
 	private float[] flatten2dArray(float[][] input) {
 		float[] result = new float[input.length * input[0].length];
@@ -676,6 +720,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		return result;
 	}
+
+
+	
+	
+	
 }
 
 

@@ -52,7 +52,7 @@
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue=""/> 
-										<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
+										<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
 										<p:ajax update=":advancedForm intTime" listener="#{procedureController.doUpdatePupilMask}" />
 									</p:selectOneMenu>
 								</p:column>

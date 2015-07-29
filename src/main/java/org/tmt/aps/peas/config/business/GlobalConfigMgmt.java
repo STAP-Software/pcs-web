@@ -18,6 +18,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
@@ -64,6 +65,16 @@ public class GlobalConfigMgmt {
 	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId) {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+	
+	public PupilRegErrorConfigDefaults findPupilRegErrorConfig(Long pupilMaskTypeId) {
+		
+		TypedQuery<PupilRegErrorConfigDefaults> query = em.createNamedQuery("pupilRegErrorConfig.findByMaskType", PupilRegErrorConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		
 		query.setMaxResults(1);
