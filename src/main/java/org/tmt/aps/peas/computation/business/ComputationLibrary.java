@@ -23,6 +23,7 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -82,5 +83,8 @@ public interface ComputationLibrary {
 
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
 			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter) throws Exception;
+
+	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit) throws Exception;
 
 }

@@ -32,6 +32,7 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -689,6 +690,17 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		return result;
 	}
+
+	@Override
+	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+					throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	
+	
+	
 }
 
 

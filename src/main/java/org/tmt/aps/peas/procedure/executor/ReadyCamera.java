@@ -10,13 +10,11 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
 @Singleton
@@ -64,10 +62,16 @@ public class ReadyCamera {
 			END IF
 			*/
 			
-			// always command the coarse mirror to setup values at the start of all procedures
-			Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
-					.getGlobalConfig().getCoarseMirrorDefault());
-
+			// always command the coarse and fine mirror to setup values at the start of all procedures
+			Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
+			Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(coarseMirrorDefault);
+			statusLogger.log("camera.cmd.coarse_mirror", coarseMirrorDefault.x, coarseMirrorDefault.y);
+			
+			Point fineMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getFineMirrorDefault();
+			Future<Point> fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(fineMirrorDefault);
+			statusLogger.log("camera.cmd.fine_mirror", fineMirrorDefault.x, fineMirrorDefault.y);
+			
+			
 			Future<Integer> twoPosCommandFuture = null;
 			Future<Integer> refBeamFuture = null;
 			// command to mask selected
@@ -98,7 +102,7 @@ public class ReadyCamera {
 
 			// wait for all commands to complete
 			Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-					coarseMirrorCommandFuture);
+					coarseMirrorCommandFuture, fineMirrorCommandFuture);
 			statusLogger.log("camera.cmd.complete");
 
 		}

@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
@@ -27,6 +28,7 @@ import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
@@ -249,8 +251,16 @@ public class PupilRegistrationExecutor {
 				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
 			}
 			
-			// DeterminePrCommandsResult prCommandResult = determinePrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
-			//	initialFinePosition, initialCoarsePosition, largeMoveThreshold, fineTiltPositionOffloadLimit);
+			// TODO: these should be configuration somewhere
+			float largeMoveThreshold = 0.0f; 
+			float fineTiltPositionOffloadLimit = 0.0f;
+						
+			Point initialCoarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
+			Point initialFinePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
+
+			
+			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
+			initialFinePosition, initialCoarsePosition, largeMoveThreshold, fineTiltPositionOffloadLimit);
 			
 			
 			// this will use calcuations:
@@ -262,15 +272,24 @@ public class PupilRegistrationExecutor {
 			/*         move fine, coarse, both, or none          */
 			/*****************************************************/
 			
-			/*
-			if (prCommandResult.isCoarseCommands()) {
+			Future<Point> coarseMirrorCommandFuture = null;
+			Future<Point> fineMirrorCommandFuture = null;
+			
+			if (calcPrCommandsResult.hasCoarseCommands()) {
 				// always command the coarse mirror to setup values at the start of all procedures
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(<some Point value>);
-			} . . .
-			Future<Point> fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(<some Point value>);
+				coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(calcPrCommandsResult.getCoarseCommands());
+				statusLogger.log("camera.cmd.coarse_mirror", calcPrCommandsResult.getCoarseCommands().x, calcPrCommandsResult.getCoarseCommands().y);
 
+			} 
+			if (calcPrCommandsResult.hasFineCommands()) {
+				fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(calcPrCommandsResult.getFineCommands());
+				statusLogger.log("camera.cmd.fine_mirror", calcPrCommandsResult.getFineCommands().x, calcPrCommandsResult.getFineCommands().y);
+			}
+			
 			Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
-			*/
+			
+			statusLogger.log("camera.cmd.complete");
+
 			
 			
 			// fill the iteration output: TODO all pupilRegErrorResultFields

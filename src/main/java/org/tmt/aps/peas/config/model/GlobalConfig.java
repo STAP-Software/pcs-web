@@ -40,6 +40,8 @@ public class GlobalConfig {
 		
 	float coarseMirrorX;
 	float coarseMirrorY;
+	float fineMirrorX;
+	float fineMirrorY;
 
 	boolean removeBadPixels;
 
@@ -83,6 +85,22 @@ public class GlobalConfig {
 
 	public void setCoarseMirrorY(float coarseMirrorY) {
 		this.coarseMirrorY = coarseMirrorY;
+	}
+
+	public float getFineMirrorX() {
+		return fineMirrorX;
+	}
+
+	public void setFineMirrorX(float fineMirrorX) {
+		this.fineMirrorX = fineMirrorX;
+	}
+
+	public float getFineMirrorY() {
+		return fineMirrorY;
+	}
+
+	public void setFineMirrorY(float fineMirrorY) {
+		this.fineMirrorY = fineMirrorY;
 	}
 
 	public boolean isRemoveBadPixels() {
@@ -160,5 +178,9 @@ public class GlobalConfig {
 
 	public Point getCoarseMirrorDefault() {
 		return new Point((int)coarseMirrorX, (int)coarseMirrorY);
+	}
+	
+	public Point getFineMirrorDefault() {
+		return new Point((int)fineMirrorX, (int)fineMirrorY);
 	}
 }
