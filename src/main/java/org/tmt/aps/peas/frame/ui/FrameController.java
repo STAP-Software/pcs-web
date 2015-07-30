@@ -486,7 +486,7 @@ public class FrameController implements Serializable {
 			
 			for (FloatPoint guess: guessList) {
 			
-				FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f);
+				FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f, 0);
 				
 				// load up defaults for mask type 
 				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId());

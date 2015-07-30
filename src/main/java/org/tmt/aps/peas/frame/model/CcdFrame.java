@@ -252,7 +252,13 @@ public class CcdFrame {
 	
 	public int getFrameLightSource() {
 		if (cameraState == null) {
-			return ProcedureConfig.LIGHT_SOURCE_STAR;
+			// for legacy frames not in the database we use the fits filename to see if it is a ref beam 
+			FitsFilename fitsFilenameObject = new FitsFilename(fitsFilename);
+			if (fitsFilenameObject.getProcedureTypeCd().equals("RB")) {
+				return ProcedureConfig.LIGHT_SOURCE_LED;
+			} else {
+				return ProcedureConfig.LIGHT_SOURCE_STAR;
+			}
 		}
 		return (cameraState.getRefBeamPos() > 0) ? ProcedureConfig.LIGHT_SOURCE_LED : ProcedureConfig.LIGHT_SOURCE_STAR;
 	}

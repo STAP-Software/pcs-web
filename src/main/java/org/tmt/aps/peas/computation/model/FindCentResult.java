@@ -10,11 +10,13 @@ public class FindCentResult {
 	
 	float subimageIntensity;
 	float peakIntensity;
+	int findCentStatus;
 	
-	public FindCentResult(FloatPoint centroid, float subimageIntensity, float peakIntensity) {
+	public FindCentResult(FloatPoint centroid, float subimageIntensity, float peakIntensity, int findCentStatus) {
 		this.centroid = centroid;
 		this.subimageIntensity = subimageIntensity;
 		this.peakIntensity = peakIntensity;
+		this.findCentStatus = findCentStatus;
 	}
 	
 	public FloatPoint getCentroid() {
@@ -35,6 +37,17 @@ public class FindCentResult {
 	public void setPeakIntensity(float peakIntensity) {
 		this.peakIntensity = peakIntensity;
 	}
+
+	public int getFindCentStatus() {
+		return findCentStatus;
+	}
+
+	public void setFindCentStatus(int findCentStatus) {
+		this.findCentStatus = findCentStatus;
+	}
 	
+	public boolean isGoodCentroid() {
+		return findCentStatus == 0;
+	}
 	
 }

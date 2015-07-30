@@ -34,11 +34,9 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
-import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -198,7 +196,7 @@ public class PupilRegistrationExecutor {
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
+			ScaleError scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
 
 
@@ -259,6 +257,7 @@ public class PupilRegistrationExecutor {
 			Point initialFinePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
 
 			
+			
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
 			initialFinePosition, initialCoarsePosition, largeMoveThreshold, fineTiltPositionOffloadLimit);
 			
@@ -288,8 +287,9 @@ public class PupilRegistrationExecutor {
 			
 			Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
 			
-			statusLogger.log("camera.cmd.complete");
-
+			if (calcPrCommandsResult.hasCoarseCommands() || calcPrCommandsResult.hasFineCommands()) {
+				statusLogger.log("camera.cmd.complete");
+			}
 			
 			
 			// fill the iteration output: TODO all pupilRegErrorResultFields

@@ -534,7 +534,15 @@ public class ProcedureController implements Serializable {
 
 		}
 
-		procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);
+		try {
+		
+			procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);
+		
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Error Initializing Procedure, check log files for details"));
+		}
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
@@ -548,6 +556,7 @@ public class ProcedureController implements Serializable {
 		} else if (procedure.getProcedureType().isCenterTelescope()) {
 			centerTelescopeExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		}
+		
 
 		logger.debug("doExecuteProcedure::after executor call");
 
@@ -759,7 +768,7 @@ public class ProcedureController implements Serializable {
 		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f);
+		FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f, 0);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());

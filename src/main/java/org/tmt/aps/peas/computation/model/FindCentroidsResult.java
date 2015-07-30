@@ -11,22 +11,22 @@ public class FindCentroidsResult {
 	
 
 	
-	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak) {
+	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak, int[] findCentStatus) {
 		
 		findCentResultList = new ArrayList<FindCentResult>();
 		
 		for (int i = 0; i< xCent.length; i++) {
-			FindCentResult findCentResult = new FindCentResult(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i]);
+			FindCentResult findCentResult = new FindCentResult(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
 			findCentResultList.add(findCentResult);
 		}
 	}
 	
-	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak) {
+	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak, List<Integer> findCentStatus) {
 		
 		findCentResultList = new ArrayList<FindCentResult>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), intensity.get(i), peak.get(i));
+			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
 			findCentResultList.add(findCentResult);
 		}
 	}
@@ -36,7 +36,7 @@ public class FindCentroidsResult {
 		findCentResultList = new ArrayList<FindCentResult>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), 0.0f, 0.0f);
+			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), 0.0f, 0.0f, 0);
 			findCentResultList.add(findCentResult);
 		}
 	}
@@ -72,6 +72,17 @@ public class FindCentroidsResult {
 		}
 
 		return peaks;
+	}
+	
+	public int[] getFindCentStatusList() {
+		
+		int[] statuses = new int[findCentResultList.size()];
+		int i=0;
+		for (FindCentResult findCentResult : findCentResultList) {
+			statuses[i++] = findCentResult.getFindCentStatus();
+		}
+
+		return statuses;
 	}
 	
 	public String toString() {

@@ -93,7 +93,7 @@ public class ProcedureExecutionMgmt {
 	@EJB
 	private FrameSimulator frameSimulator;
 
-	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) {
+	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) throws Exception {
 
 		logger.info("performProcedureStartup 1");
 
@@ -119,7 +119,20 @@ public class ProcedureExecutionMgmt {
 		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
 		
-		
+		// get FIDefaults and create a procedure related copy
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+
+			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
+					pupilMaskType.getPupilMaskTypeId(),
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+
+			// use defaults as actuals if user doesn't subsequently change them
+			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
+
+			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
+
+		}
+
 		// load up pupilRegError config
 		if (pupilMaskType.isPupilMaskTypePh() || pupilMaskType.isPupilMaskTypeFs()) {
 			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = globalConfigMgmt.findPupilRegErrorConfig(pupilMaskType.getPupilMaskTypeId());

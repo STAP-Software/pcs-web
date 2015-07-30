@@ -46,6 +46,7 @@ import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
+import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
@@ -111,7 +112,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
-		FindCentResult findCentResult = new FindCentResult(centroid, (Float)result[2], (Float)result[3]);
+		FindCentResult findCentResult = new FindCentResult(centroid, (Float)result[2], (Float)result[3], 0);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
 
@@ -155,9 +156,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
 		float[] peak = new float[arrayLen];
+		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), x_guesses,
-				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity, peak);
+				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity, peak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -165,7 +167,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak);
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, findCentStatus);
 		
 
 		// Code for findCent unit testing
@@ -502,6 +504,42 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// store fi_param values
 		return new ScaleError((Float) output[0], (Float) output[1]);
 	}
+	
+	
+
+	@Override
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
+
+		JfineScreenScaleError jfineScreenScaleError = new JfineScreenScaleError();
+		RetVal retVal = new RetVal();
+
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+
+		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpots);
+		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpots);
+		
+		// TODO: fake data for now
+		int numSpots = centroidOffsets.size();
+		int[] good_spots = new int[numSpots];
+		for (int i = 0; i < numSpots; i++) {
+			good_spots[i] = 1;
+		}
+
+
+		Object output[] = jfineScreenScaleError.jfineScreenScaleError(retVal, good_spots, offsets, x_ref_def, y_ref_def);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Fine Screen Scale Error Calculation Error");
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
+
+		// store fi_param values
+		return new ScaleError((Float) output[0], (Float) output[1]);
+	}
 
 	@Override
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
@@ -642,7 +680,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
 					throws Exception {
 		// TODO Auto-generated method stub
-		return null;
+		// FIXEME: test only
+		CalcPrCommandsResult calcPrCommandsResult = new CalcPrCommandsResult();
+
+		return calcPrCommandsResult;
 	}
 
 	// private convenience methods

@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
@@ -274,6 +275,9 @@ public class GetFrameCentroidsExecutor {
 		centroidMap.setPeakMapData(peakMapData);
 		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.getPeakList());
 		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
+		
+		String findCentStatusData = IntegerListEncoder.encodeList(findCentroidsResult.getFindCentStatusList());
+		centroidMap.setFindCentStatusData(findCentStatusData);
 		
 
 		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here

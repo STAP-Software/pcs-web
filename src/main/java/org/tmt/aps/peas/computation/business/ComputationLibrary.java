@@ -87,4 +87,6 @@ public interface ComputationLibrary {
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit) throws Exception;
 
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception;
+
 }

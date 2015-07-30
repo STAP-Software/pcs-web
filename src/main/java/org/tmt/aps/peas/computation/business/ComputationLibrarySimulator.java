@@ -141,7 +141,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 			throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);
-		return new FindCentResult(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f);
+		return new FindCentResult(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
 	}
 	
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
@@ -251,6 +251,12 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
 					throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
