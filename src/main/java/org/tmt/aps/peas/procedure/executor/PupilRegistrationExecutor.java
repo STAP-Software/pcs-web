@@ -15,6 +15,7 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
+import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
@@ -199,6 +200,49 @@ public class PupilRegistrationExecutor {
 			ScaleError scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
 
+			
+			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
+			procedureOutput.addIteration(pio);
+			pio.setIteration(0);
+			pio.setDeltaAzEl(deltaAzEl);
+
+			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
+			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
+			pio.setScaleError(scaleError.getScaleError());
+
+			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
+			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
+			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
+
+			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
+			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
+
+			pio.setScaleError(scaleError.getScaleError());
+			pio.setSlopeError(scaleError.getSlopeError());
+
+			pio.setTelescopeMoved(false);
+
+			// fill the output - many of these are copied from the one iteration
+			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
+			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
+
+			procedureOutput.setScaleError(pio.getScaleError());
+
+			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
+			procedureOutput.setMaxOffset(pio.getMaxOffset());
+			procedureOutput.setRmsOffset(pio.getRmsOffset());
+
+			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
+			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
+
+			procedureOutput.setScaleError(pio.getScaleError());
+			procedureOutput.setSlopeError(pio.getSlopeError());
+
+			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
+			
+			
 
 			procedureExecutionState.setPercentComplete(80);
 			
@@ -217,6 +261,15 @@ public class PupilRegistrationExecutor {
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
 				procedureConfig.getPupilMask().getSpotDiameter());
 				
+			
+				// log values 
+				statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
+						new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
+				
+				
+				BeanUtils.copyProperties(pio, pupilRegErrorResult);
+				BeanUtils.copyProperties(procedureOutput, pupilRegErrorResult);
+			
 						
 			/*****************************************************/
 			/*           determine fine/coarse PR Commands       */
@@ -294,47 +347,7 @@ public class PupilRegistrationExecutor {
 			
 			// fill the iteration output: TODO all pupilRegErrorResultFields
 			// TODO: what was moved and how much
-			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
-			procedureOutput.addIteration(pio);
 
-			pio.setIteration(0);
-			pio.setDeltaAzEl(deltaAzEl);
-
-			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setScaleError(scaleError.getScaleError());
-
-			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
-			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
-			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
-
-			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
-			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
-
-			pio.setScaleError(scaleError.getScaleError());
-			pio.setSlopeError(scaleError.getSlopeError());
-
-			pio.setTelescopeMoved(false);
-
-			// fill the output - many of these are copied from the one iteration
-			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
-			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-
-			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
-			procedureOutput.setMaxOffset(pio.getMaxOffset());
-			procedureOutput.setRmsOffset(pio.getRmsOffset());
-
-			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
-			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-			procedureOutput.setSlopeError(pio.getSlopeError());
-
-			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
-			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
-			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 
 			
 					
