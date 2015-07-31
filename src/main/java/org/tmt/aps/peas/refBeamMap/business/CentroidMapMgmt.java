@@ -5,20 +5,29 @@
  */
 package org.tmt.aps.peas.refBeamMap.business;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
+import org.tmt.aps.peas.config.model.MissingSpotList;
+import org.tmt.aps.peas.config.model.PeripheralSpotList;
+import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
@@ -30,29 +39,32 @@ public class CentroidMapMgmt {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private static final long ONE_DAY_MS = 24 * 60 * 60 * 1000;
-	
+
+	@EJB
+	MissingSpotsMgmt missingSpotsMgmt;
+
 	@PersistenceContext
 	private EntityManager em;
 
 	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		return getCurrentSessionRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, -1);
 	}
-		
+
 	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 		RefBeamMap refBeamMap = getCurrentRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, sufsGroupNumber);
-		
+
 		if (refBeamMap == null) {
 			return null;
 		}
-		
+
 		// if older than 12 hours, then is not from this night session
-		if ((System.currentTimeMillis() - refBeamMap.getCreateDate().getTime()) > (ONE_DAY_MS/2)) {
+		if ((System.currentTimeMillis() - refBeamMap.getCreateDate().getTime()) > (ONE_DAY_MS / 2)) {
 			return null;
 		}
-		
+
 		return refBeamMap;
 	}
-	
+
 	public RefBeamMap getCurrentRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 
 		TypedQuery<RefBeamMap> query;
@@ -60,9 +72,9 @@ public class CentroidMapMgmt {
 			query = em.createNamedQuery("findCurrentSufsRefBeamMap", RefBeamMap.class);
 			query.setParameter("sufsGroupNumber", sufsGroupNumber);
 		} else {
-			query = em.createNamedQuery("findCurrentRefBeamMap", RefBeamMap.class);			
+			query = em.createNamedQuery("findCurrentRefBeamMap", RefBeamMap.class);
 		}
-		 
+
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
@@ -70,17 +82,15 @@ public class CentroidMapMgmt {
 		query.setMaxResults(1);
 		try {
 			RefBeamMap refBeamMap = query.getSingleResult();
-	
+
 			return refBeamMap;
-			
+
 		} catch (Exception e) {
 			logger.info("No reference beam map found.");
 			return null;
 		}
 
 	}
-
-
 
 	public RefBeamMap getRefBeamDefMap(Long pupilMaskTypeId) {
 
@@ -92,17 +102,66 @@ public class CentroidMapMgmt {
 
 		// decode String into transient FloatPoint values
 		List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
-		
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(centroidList);
+
+		// to create a list of SubimageDefs
+
+		List<Subimage> subimageList = new ArrayList<Subimage>();
+
+		int i = 0;
+		for (FloatPoint centroid : centroidList) {
+			// make some subimageDefs without spotTypes and missingSpotTypes
+			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_GOOD);
+			// make some subimages without intensities or findCentResults
+			Subimage subimage = new Subimage(subimageDef, centroid, 0.0f, 0.0f, 0);
+			subimageList.add(subimage);
+		}
+
+		// merge this list with the spotType and missingSpotType lists
+		MissingSpotList missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, pupilMaskTypeId);
+		MissingSpotList missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, pupilMaskTypeId);
+
+		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
+		for (Integer spot : missingSpotListAnalysisDecoded) {
+			subimageList.get(spot - 1).getSubimageDef().setMissingSpotType(Constants.MISSING_SPOT_TYPE_ANALYSIS);
+		}
+
+		// F&I missing value overrides analysis
+		List<Integer> missingSpotListFandIDecoded = IntegerListEncoder.decodeList(missingSpotListFandI.getMissingSpotListEncoded());
+		for (Integer spot : missingSpotListFandIDecoded) {
+			subimageList.get(spot - 1).getSubimageDef().setMissingSpotType(Constants.MISSING_SPOT_TYPE_FANDI);
+		}
+
+		// apply peripheral spot definitions
+		try {
+			PeripheralSpotList peripheralSpotList = findPeripheralSpotList(pupilMaskTypeId);
+			List<Integer> peripheralSpotListDecoded = IntegerListEncoder.decodeList(peripheralSpotList.getPeripheralSpotListEncoded());
+			for (Integer spot : peripheralSpotListDecoded) {
+				subimageList.get(spot - 1).getSubimageDef().setSpotType(Constants.SPOT_TYPE_PERIPHERAL);
+			}
+		} catch (NoResultException e) {
+			// if no peripherals, then do nothing
+		}
+
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(subimageList);
 		refBeamMap.getCentroidMap().setFindCentroidsResult(findCentroidsResult);
 
 		return refBeamMap;
 	}
 
+	public PeripheralSpotList findPeripheralSpotList(Long pupilMaskTypeId) {
+
+		TypedQuery<PeripheralSpotList> query = em.createNamedQuery("findPeripheralSpotList", PeripheralSpotList.class);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+
+		query.setMaxResults(1);
+
+		return query.getSingleResult();
+	}
+
 	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 
 		refBeamMap.setCreateDate(new Date());
-				
+
 		logger.info(MessageGenerator.generateMessage("record.create", "refBeamMap"));
 		em.persist(refBeamMap);
 
@@ -112,7 +171,7 @@ public class CentroidMapMgmt {
 	public CentroidMap saveCentroidMap(CentroidMap centroidMap) {
 
 		centroidMap.setCreateDate(new Date());
-		
+
 		logger.info(MessageGenerator.generateMessage("record.create", "centroidMap"));
 		em.persist(centroidMap);
 
@@ -125,7 +184,7 @@ public class CentroidMapMgmt {
 		if (refBeamMap.isNewRecord()) {
 			saveRefBeamMap(refBeamMap, procedure);
 		}
-		
+
 		ProcedureRefBeamMap procedureRefBeamMap = new ProcedureRefBeamMap();
 		procedureRefBeamMap.setProcedure(procedure);
 		procedureRefBeamMap.setRefBeamMap(refBeamMap);
@@ -135,5 +194,4 @@ public class CentroidMapMgmt {
 		em.persist(procedureRefBeamMap);
 	}
 
-	
 }

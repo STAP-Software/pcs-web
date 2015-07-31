@@ -18,6 +18,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
+import org.tmt.aps.peas.config.model.PeripheralSpotList;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -134,4 +135,6 @@ public class GlobalConfigMgmt {
 		
 		return query.getSingleResult();	
 	}
+	
+
 }

@@ -26,10 +26,10 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
-import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
@@ -91,7 +91,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return c[0];
 	}
 
-	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+	// TODO: needs spot type: (interior vs peripheral), also if we have a spot not to be used in analysis, we can ignore it.
+	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCent"));
 
@@ -112,13 +113,18 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
-		FindCentResult findCentResult = new FindCentResult(centroid, (Float)result[2], (Float)result[3], 0);
+		// TODO: subimageDef needs to be passed in for use and replaces the null here
+		Subimage subimage = new Subimage(null, centroid, (Float)result[2], (Float)result[3], 0);
+		
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
 
-		return findCentResult;
+		return subimage;
 	}
 
+	// TODO: needs spot type: (interior vs peripheral), also if we have a spot not to be used in analysis, we can ignore it.
+	// findCentStatus is also a property of a spot, to be used by calcs after this.
+	// TODO: centroidMap should ultimately return all subimages that are 1) ignored, 2) not found, 3) not to be used for analysis
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
@@ -269,6 +275,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
+	
+	// TODO: needs spot flag (0,1,2)
 	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap)
 			throws ComputationException {
 
@@ -398,7 +406,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 
-	@Override
+	// TODO: list of spots that are found (no find_cent errors) (bad spot (not to be used for analysis, and was actually found by find_cent), good interior, good peripheral)
 	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType) throws ComputationException {
 
@@ -448,6 +456,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
+	// TODO: list of spots that are found (no find_cent errors) (bad spot (not to be used for analysis, and was actually found by find_cent), good interior, good peripheral)
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
@@ -507,7 +516,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	
 	
 
-	@Override
+	// TODO: list of spots that are found (no find_cent errors) (bad spot (not to be used for analysis, and was actually found by find_cent), good interior, good peripheral)
 	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
@@ -645,7 +654,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 	
-	
+	// TODO: list of spots that are found (no find_cent errors) (bad spot (not to be used for analysis, and was actually found by find_cent), good interior, good peripheral)
+	// intensity is set to zero for spots to be 'ignored'
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
 			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter)
 					throws Exception {

@@ -42,7 +42,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -768,7 +768,7 @@ public class ProcedureController implements Serializable {
 		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(null, guess, 0.0f, 0.0f, 0);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
@@ -779,12 +779,12 @@ public class ProcedureController implements Serializable {
 
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
 
-			findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			subimage = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
-		FloatPoint centroid = findCentResult.getCentroid();
+		FloatPoint centroid = subimage.getCentroid();
 		
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();

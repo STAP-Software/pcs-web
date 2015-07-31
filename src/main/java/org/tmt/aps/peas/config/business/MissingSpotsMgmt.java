@@ -22,8 +22,8 @@ public class MissingSpotsMgmt {
 	@PersistenceContext
 	private EntityManager em;
 	
-	
 	public MissingSpotList findMissingSpotList(int spotListType, Long pupilMaskTypeId) {
+		System.out.println(spotListType + "::" +  pupilMaskTypeId);
 		logger.debug("findMissingSpotList::");
 		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeAndMask", MissingSpotList.class);
 		query.setParameter("spotListType", spotListType);

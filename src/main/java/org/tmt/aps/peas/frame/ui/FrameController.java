@@ -39,7 +39,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
@@ -486,7 +486,7 @@ public class FrameController implements Serializable {
 			
 			for (FloatPoint guess: guessList) {
 			
-				FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f, 0);
+				Subimage subimage = new Subimage(null, guess, 0.0f, 0.0f, 0);
 				
 				// load up defaults for mask type 
 				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId());
@@ -498,7 +498,7 @@ public class FrameController implements Serializable {
 	
 				float[][] frame = ccdFrame.getCorrectedFrame();
 	
-				findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+				subimage = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 			
 				// 2. determine metrics against the first subimage				
 				
@@ -508,12 +508,12 @@ public class FrameController implements Serializable {
 				
 				if (count == 0) {
 					
-					firstCentroid = findCentResult.getCentroid();
+					firstCentroid = subimage.getCentroid();
 					
 				} else {
 					
 					// calculate delta centroid
-					FloatPoint centroid = findCentResult.getCentroid();
+					FloatPoint centroid = subimage.getCentroid();
 					float deltaX = centroid.x - firstCentroid.x;
 					float deltaY = centroid.y - firstCentroid.y;
 					deltaPos = new FloatPoint(deltaX, deltaY);
@@ -526,8 +526,8 @@ public class FrameController implements Serializable {
 				
 				}
 				
-				MarkedSubimage markedSubimage = new MarkedSubimage(++count,findCentResult.getCentroid(), findCentResult.getSubimageIntensity(), 
-						findCentResult.getPeakIntensity(), deltaPos, deltaDistance, deltaAngle);
+				MarkedSubimage markedSubimage = new MarkedSubimage(++count,subimage.getCentroid(), subimage.getSubimageIntensity(), 
+						subimage.getPeakIntensity(), deltaPos, deltaDistance, deltaAngle);
 				
 				// 3. create the table data 
 				markedSubimageList.add(markedSubimage);

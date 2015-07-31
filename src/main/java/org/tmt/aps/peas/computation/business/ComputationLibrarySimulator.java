@@ -14,7 +14,6 @@ import javax.naming.InitialContext;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
-import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
@@ -24,10 +23,10 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
-import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
@@ -137,11 +136,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 
 	@Override
-	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
+	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
 			throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);
-		return new FindCentResult(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
+		return new Subimage(null, new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
 	}
 	
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {

@@ -37,7 +37,6 @@ public class ConstantsCache {
 	private PhasingConstants phasingConstants;
 	private SufsConstants sufsConstants;
 	
-	private List<RefBeamMap> refBeamDefMapList;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -60,20 +59,7 @@ public class ConstantsCache {
 		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
 		logger.info("\n\nSUFS Constants: \n" + sufsConstants);
 		*/
-		// get ref def maps
-		refBeamDefMapList = new ArrayList<RefBeamMap>();
-		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(1)));
-		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(2)));
-		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(3)));
-		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(4)));
-		refBeamDefMapList.add(centroidMapMgmt.getRefBeamDefMap(new Long(5)));
-		/*
-		logger.info("\n\nRefDefMap 036: \n" + getRefBeamDefMap(new Long(1)));
-		logger.info("\n\nRefDefMap 160: \n" + getRefBeamDefMap(new Long(2)));
-		logger.info("\n\nRefDefMap 508: \n" + getRefBeamDefMap(new Long(3)));
-		logger.info("\n\nRefDefMap UFS: \n" + getRefBeamDefMap(new Long(4)));
-		logger.info("\n\nRefDefMap SUFS: \n" + getRefBeamDefMap(new Long(5)));
-*/
+
 	}
 
 
@@ -93,8 +79,5 @@ public class ConstantsCache {
 		return sufsConstants;
 	}
 
-	public RefBeamMap getRefBeamDefMap(Long pupilMaskTypeId) {
-		return refBeamDefMapList.get(pupilMaskTypeId.intValue()-1);
-	}
 	
 }

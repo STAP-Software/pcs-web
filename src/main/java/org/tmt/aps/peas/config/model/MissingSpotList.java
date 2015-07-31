@@ -26,7 +26,7 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and o.sufsGroup = :sufsGroup" )
 })
 public class MissingSpotList {
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long missingSpotListId;

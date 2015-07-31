@@ -13,25 +13,25 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.MissingSpotList;
-import org.tmt.aps.peas.config.model.Subimage;
+import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 
 @Named
@@ -42,6 +42,8 @@ public class MissingSpotsController implements Serializable {
 
 	@EJB
 	MissingSpotsMgmt missingSpotsMgmt;
+	@EJB
+	SubimageDefCache subimageDefCache;
 	@EJB
 	CameraDefMgmt cameraDefMgmt;
 	@EJB
@@ -54,7 +56,7 @@ public class MissingSpotsController implements Serializable {
 
 	private List<Integer> spots;
 
-	private List<Subimage> subimageDefList;
+	private List<SubimageDef> subimageDefList;
 
 	String centroidNumbers; // for javascript svg display
 	String centroidXs; // for javascript svg display
@@ -77,6 +79,7 @@ public class MissingSpotsController implements Serializable {
 			pupilMaskType = pupilMaskTypeList.get(0);
 			spotListType = 1;
 			sufsGroupList = cameraDefMgmt.findSufsGroups();
+						
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -89,44 +92,18 @@ public class MissingSpotsController implements Serializable {
 		
 		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
 
-		// TODO: read in subimageDefList based on pupilMaskType
-		subimageDefList = new ArrayList<Subimage>();
-
-		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
-			for (int i = 0; i < Subimage.PT_DEF_X_ARRAY.length; i++) {
-				Subimage subimage = new Subimage(i + 1, Subimage.PT_DEF_X_ARRAY[i], Subimage.PT_DEF_Y_ARRAY[i]);
-				subimageDefList.add(subimage);
-			}
-		}
-
-		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
-			for (int i = 0; i < Subimage.CPH_DEF_X_ARRAY.length; i++) {
-				Subimage subimage = new Subimage(i + 1, Subimage.CPH_DEF_X_ARRAY[i], Subimage.CPH_DEF_Y_ARRAY[i]);
-				subimageDefList.add(subimage);
-			}
-		}
-		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_508)) {
-			for (int i = 0; i < Subimage.FS_DEF_X_ARRAY.length; i++) {
-				Subimage subimage = new Subimage(i + 1, Subimage.FS_DEF_X_ARRAY[i], Subimage.FS_DEF_Y_ARRAY[i]);
-				subimageDefList.add(subimage);
-			}
-		}
-		if (pupilMaskType.getPupilMaskTypeId().equals(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS)) {
-			for (int i = 0; i < Subimage.SUFS_DEF_X_ARRAY.length; i++) {
-				Subimage subimage = new Subimage(i + 1, Subimage.SUFS_DEF_X_ARRAY[i], Subimage.SUFS_DEF_Y_ARRAY[i]);
-				subimageDefList.add(subimage);
-			}
-		}
-
+		// read in current values from the cache
+		subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+		
 
 		// generate centroid numbers, x and y positions
 		StringBuffer numBuf = new StringBuffer();
 		StringBuffer xBuf = new StringBuffer();
 		StringBuffer yBuf = new StringBuffer();
-		for (Subimage subimage : subimageDefList) {
-			numBuf.append(subimage.getSubimageNumber() + ",");
-			xBuf.append(subimage.getxCcd() + ",");
-			yBuf.append(subimage.getyCcd() + ",");
+		for (SubimageDef subimageDef : subimageDefList) {
+			numBuf.append(subimageDef.getSubimageNumber() + ",");
+			xBuf.append(subimageDef.getCentroid().x + ",");
+			yBuf.append(subimageDef.getCentroid().y + ",");
 		}
 		numBuf.deleteCharAt(numBuf.length() - 1);
 		xBuf.deleteCharAt(xBuf.length() - 1);
@@ -332,6 +309,9 @@ public class MissingSpotsController implements Serializable {
 				missingSpotsMgmt.createMissingSpotList(missingSpotList);
 			} else {
 				missingSpotsMgmt.updateMissingSpotList(missingSpotList);
+				
+				// TODO: also update the cache
+				
 			}
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());

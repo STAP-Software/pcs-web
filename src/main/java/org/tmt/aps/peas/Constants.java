@@ -50,11 +50,18 @@ public class Constants {
 
 	public static final int SPOT_TYPE_INTERIOR = 1;
 	public static final int SPOT_TYPE_PERIPHERAL = 2;
-	
+
+	public static final int MISSING_SPOT_TYPE_GOOD = 0;
+	public static final int MISSING_SPOT_TYPE_FANDI = 1;
+	public static final int MISSING_SPOT_TYPE_ANALYSIS = 2;
+
 	
 	public static final double PI = 3.14159265;
 	
 	public static final double DEG2RAD = 2 * PI / 360.0;
 	
 	public static final long MS_PER_HOUR = 1000 * 60 * 60;
+	
+	
+	
 }

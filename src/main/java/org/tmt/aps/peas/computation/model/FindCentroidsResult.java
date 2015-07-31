@@ -4,49 +4,75 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.config.model.SubimageDef;
 
 public class FindCentroidsResult {
 
-	private List<FindCentResult> findCentResultList;
+	private List<Subimage> subimageList;
 	
 
+	public FindCentroidsResult() {
+		
+	}
 	
 	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak, int[] findCentStatus) {
 		
-		findCentResultList = new ArrayList<FindCentResult>();
+		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< xCent.length; i++) {
-			FindCentResult findCentResult = new FindCentResult(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
-			findCentResultList.add(findCentResult);
+			// TODO: merge in real subimageDef
+			Subimage subimage = new Subimage(null, new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
+			subimageList.add(subimage);
 		}
 	}
 	
 	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak, List<Integer> findCentStatus) {
 		
-		findCentResultList = new ArrayList<FindCentResult>();
+		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
-			findCentResultList.add(findCentResult);
+			// TODO: merge in real subimageDef
+			Subimage subimage = new Subimage(null, centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
+			subimageList.add(subimage);
 		}
 	}
 	
-	public FindCentroidsResult(List<FloatPoint> centroidList) {
+	/*
+	public static FindCentroidsResult createFromCentroidList(List<FloatPoint> centroidList) {
 		
-		findCentResultList = new ArrayList<FindCentResult>();
+		FindCentroidsResult result = new FindCentroidsResult();
+		
+		List<Subimage> subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			FindCentResult findCentResult = new FindCentResult(centroidList.get(i), 0.0f, 0.0f, 0);
-			findCentResultList.add(findCentResult);
+			// TODO: merge in real subimageDef
+			Subimage subimage = new Subimage(null, centroidList.get(i), 0.0f, 0.0f, 0);
+			subimageList.add(subimage);
 		}
+		result.setSubimageList(subimageList);
+		
+		return result;
 	}
 	
+	private void setSubimageList(List<Subimage> subimageList) {
+		this.subimageList = subimageList;
+	}
+
+	*/
+	
+	public FindCentroidsResult(List<Subimage> subimageList) {
+		this.subimageList = subimageList;
+	}
+	
+	
+	
+
 	public List<FloatPoint> getCentroidList() {
 		
 		List<FloatPoint> centroids = new ArrayList<FloatPoint>();
 		
-		for (FindCentResult findCentResult : findCentResultList) {
-			centroids.add(findCentResult.getCentroid());
+		for (Subimage subimage : subimageList) {
+			centroids.add(subimage.getCentroid());
 		}
 
 		return centroids;
@@ -54,10 +80,10 @@ public class FindCentroidsResult {
 
 	public float[] getIntensityList() {
 		
-		float[] intensities = new float[findCentResultList.size()];
+		float[] intensities = new float[subimageList.size()];
 		int i=0;
-		for (FindCentResult findCentResult : findCentResultList) {
-			intensities[i++] = findCentResult.getSubimageIntensity();
+		for (Subimage subimage : subimageList) {
+			intensities[i++] = subimage.getSubimageIntensity();
 		}
 
 		return intensities;
@@ -65,10 +91,10 @@ public class FindCentroidsResult {
 	
 	public float[] getPeakList() {
 		
-		float[] peaks = new float[findCentResultList.size()];
+		float[] peaks = new float[subimageList.size()];
 		int i=0;
-		for (FindCentResult findCentResult : findCentResultList) {
-			peaks[i++] = findCentResult.getPeakIntensity();
+		for (Subimage subimage : subimageList) {
+			peaks[i++] = subimage.getPeakIntensity();
 		}
 
 		return peaks;
@@ -76,13 +102,22 @@ public class FindCentroidsResult {
 	
 	public int[] getFindCentStatusList() {
 		
-		int[] statuses = new int[findCentResultList.size()];
+		int[] statuses = new int[subimageList.size()];
 		int i=0;
-		for (FindCentResult findCentResult : findCentResultList) {
-			statuses[i++] = findCentResult.getFindCentStatus();
+		for (Subimage subimage : subimageList) {
+			statuses[i++] = subimage.getFindCentStatus();
 		}
 
 		return statuses;
+	}
+	
+	// returns a list of the subimage defs for the subimages
+	public List<SubimageDef> getSubimageDefList() {
+		List<SubimageDef> subimageDefList = new ArrayList<SubimageDef>();
+		for (Subimage subimage : subimageList) {
+			subimageDefList.add(subimage.getSubimageDef());
+		}
+		return subimageDefList;
 	}
 	
 	public String toString() {
