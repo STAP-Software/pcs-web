@@ -486,7 +486,7 @@ public class FrameController implements Serializable {
 			
 			for (FloatPoint guess: guessList) {
 			
-				Subimage subimage = new Subimage(null, guess, 0.0f, 0.0f, 0);
+				Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
 				
 				// load up defaults for mask type 
 				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId());

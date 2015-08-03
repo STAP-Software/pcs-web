@@ -51,9 +51,9 @@ public class Constants {
 	public static final int SPOT_TYPE_INTERIOR = 1;
 	public static final int SPOT_TYPE_PERIPHERAL = 2;
 
-	public static final int MISSING_SPOT_TYPE_GOOD = 0;
-	public static final int MISSING_SPOT_TYPE_FANDI = 1;
-	public static final int MISSING_SPOT_TYPE_ANALYSIS = 2;
+	public static final int MISSING_SPOT_TYPE_NOT_EXPECTED = 0;
+	public static final int MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS = 1;
+	public static final int MISSING_SPOT_TYPE_USE = 2;
 
 	
 	public static final double PI = 3.14159265;

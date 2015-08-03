@@ -27,6 +27,7 @@ import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
@@ -73,7 +74,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap) throws ComputationException {
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, SubimageDefList subimageDefList) throws ComputationException {
 		
 		RetVal retVal = new RetVal();
 		
@@ -85,7 +86,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		float frame_avg = 0.0f; // average background of frame (TODO) from backgroundStats
 		float frame_sigma = 20.0f; // frame background sigma (TODO) from backgroundStats
 		
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getFindCentroidsResult().getCentroidList();
+		List<FloatPoint> refDefCentroids = subimageDefList.getSubimageDefListCentroids();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 		
@@ -140,7 +141,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 			throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);
-		return new Subimage(null, new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
+		return new Subimage(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
 	}
 	
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {

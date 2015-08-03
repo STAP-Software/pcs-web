@@ -1,19 +1,16 @@
 package org.tmt.aps.peas.computation.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.config.model.SubimageDef;
 
 public class Subimage {
 
-	SubimageDef subimageDef;
 	FloatPoint centroid;
 	
 	float subimageIntensity;
 	float peakIntensity;
 	int findCentStatus;
 	
-	public Subimage(SubimageDef subimageDef, FloatPoint centroid, float subimageIntensity, float peakIntensity, int findCentStatus) {
-		this.subimageDef = subimageDef;
+	public Subimage(FloatPoint centroid, float subimageIntensity, float peakIntensity, int findCentStatus) {
 		this.centroid = centroid;
 		this.subimageIntensity = subimageIntensity;
 		this.peakIntensity = peakIntensity;
@@ -47,14 +44,6 @@ public class Subimage {
 		this.findCentStatus = findCentStatus;
 	}
 	
-	public SubimageDef getSubimageDef() {
-		return subimageDef;
-	}
-
-	public void setSubimageDef(SubimageDef subimageDef) {
-		this.subimageDef = subimageDef;
-	}
-
 	public boolean isGoodCentroid() {
 		return findCentStatus == 0;
 	}

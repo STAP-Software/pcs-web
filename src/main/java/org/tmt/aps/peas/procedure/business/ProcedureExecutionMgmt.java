@@ -108,11 +108,6 @@ public class ProcedureExecutionMgmt {
 
 		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType();
 		
-		// add the associated ref def map to the fi config for this procedure
-		if (!procedure.getProcedureType().isCenterTelescope()) {
-			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(pupilMaskType.getPupilMaskTypeId());
-			procedure.setRefDefMap(refDefMap);
-		}
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy

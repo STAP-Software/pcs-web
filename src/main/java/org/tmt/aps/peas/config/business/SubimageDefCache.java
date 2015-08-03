@@ -15,12 +15,9 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.common.IntegerListEncoder;
-import org.tmt.aps.peas.config.model.MissingSpotList;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Singleton
 @Startup
@@ -35,19 +32,19 @@ public class SubimageDefCache {
 	@EJB
 	CentroidMapMgmt centroidMapMgmt;
 		
-	private Map<Long, List<SubimageDef>> subimageDefMap;
+	private Map<Long, SubimageDefList> subimageDefMap;
 
 	@PostConstruct
 	public void init() throws Exception {
 
 		// get ref def maps
-		subimageDefMap = new HashMap<Long, List<SubimageDef>>();
+		subimageDefMap = new HashMap<Long, SubimageDefList>();
 		
 		// No UFS/SUFS for now, will upgrade later
 		for (int i=1; i<4; i++) {
 			
-			RefBeamMap refBeamMap = centroidMapMgmt.getRefBeamDefMap(new Long(i));
-			List<SubimageDef> subimageDefList = refBeamMap.getCentroidMap().getFindCentroidsResult().getSubimageDefList();
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(new Long(i));
+			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
 			subimageDefMap.put(new Long(i), subimageDefList);
 		
@@ -57,9 +54,11 @@ public class SubimageDefCache {
 		
 	}
 	
-	public List<SubimageDef> getSubimageDefList(Long pupilMaskTypeId) {
+	public SubimageDefList getSubimageDefList(Long pupilMaskTypeId) {
 		
-		return subimageDefMap.get(pupilMaskTypeId);
+		SubimageDefList subimageDefList = subimageDefMap.get(pupilMaskTypeId);
+		
+		return subimageDefList;
 	}
 	
 }

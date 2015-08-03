@@ -30,6 +30,7 @@ import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
@@ -114,7 +115,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
 		// TODO: subimageDef needs to be passed in for use and replaces the null here
-		Subimage subimage = new Subimage(null, centroid, (Float)result[2], (Float)result[3], 0);
+		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], 0);
 		
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
@@ -276,8 +277,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	
-	// TODO: needs spot flag (0,1,2)
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap)
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, SubimageDefList subimageDefList)
 			throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findAndIdentify"));
@@ -290,17 +290,13 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
 
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getFindCentroidsResult().getCentroidList();
+		List<FloatPoint> refDefCentroids = subimageDefList.getSubimageDefListCentroids();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 
 		// initialize spot_flag
-		// TODO: this needs to be derived from missing spots
-		int[] spot_flag = new int[numSpots];
-		for (int i = 0; i < numSpots; i++) {
-			spot_flag[i] = 2;
-		}
-
+		int[] spot_flag = subimageDefList.getMissingSpotFlags();
+		
 		// Force scale and rotation values, potentially coming from current ref map
 		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
 				.getCentroidMap().getScale() : fiConfig.getForceScaleValue();

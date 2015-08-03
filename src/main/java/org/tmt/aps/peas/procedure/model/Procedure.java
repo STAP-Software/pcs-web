@@ -119,8 +119,6 @@ public class Procedure {
 	private ProcedureOutput procedureOutput;
 	@Transient 
 	private RefBeamMap refBeamMap;  // the refBeamMap taken and/or used in this procedure
-	@Transient 
-	private RefBeamMap refDefMap;  // the refDefMap used for this f&i in this procedure
 	
 	
 	public Procedure() {
@@ -263,14 +261,6 @@ public class Procedure {
 
 	public void setProcedureConfigSet(ProcedureConfigSet procedureConfigSet) {
 		this.procedureConfigSet = procedureConfigSet;
-	}
-
-	public RefBeamMap getRefDefMap() {
-		return refDefMap;
-	}
-
-	public void setRefDefMap(RefBeamMap refDefMap) {
-		this.refDefMap = refDefMap;
 	}
 
 	public ProcedureOutput getProcedureOutput() {

@@ -93,7 +93,7 @@ public class MissingSpotsController implements Serializable {
 		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
 
 		// read in current values from the cache
-		subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+		subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId()).getListOfSubimageDefs();
 		
 
 		// generate centroid numbers, x and y positions

@@ -188,6 +188,7 @@ public class PassiveTiltExecutor {
 							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
 							.getFilterTypeId(), -1);
 
+
 				}
 			}
 

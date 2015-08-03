@@ -23,19 +23,13 @@ public class SubimageDef {
 	FloatPoint centroid;
 	int spotType; // 1 = interior, 2 = peripheral
 	int missingSpotType;  // 1, 2 or 3
-	
-	// this class replaces FindCentResult
-	// maybe this class should be called SubimageDef and stay here.
-	// then a Subimage class could be created that inherits from this class, and that class would live where CentroidMap is created (refBeamMap package)
-	
-	// this is the class where we can put in spot type (peripheral or interior)
-	// this is the class where we can put in the missing spot config:  good, missing for f&i, missing for analysis
-	// this is the class where we can put all other find_cent values for a centroid.
-	
+		
 
 	public SubimageDef(int subimageNumber, FloatPoint centroid, int spotType, int missingSpotType) {
 		this.subimageNumber = subimageNumber;
 		this.centroid = centroid;
+		this.spotType = spotType;
+		this.missingSpotType = missingSpotType;
 	}
 	
 	public int getSubimageNumber() {

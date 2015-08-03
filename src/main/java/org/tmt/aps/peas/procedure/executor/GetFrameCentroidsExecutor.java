@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -23,6 +22,7 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -61,6 +61,8 @@ public class GetFrameCentroidsExecutor {
 	private StatusLogger statusLogger;
 	@EJB
 	private PhysicalModel physicalModel;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private ComputationContext computationContext;
 
@@ -143,7 +145,7 @@ public class GetFrameCentroidsExecutor {
 		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 
 		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
-				procedure.getRefDefMap());
+				subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId()));
 
 		logger.info("Find and Identify completed");
 
@@ -249,7 +251,7 @@ public class GetFrameCentroidsExecutor {
 			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 
-		}
+		} 
 			
 
 		

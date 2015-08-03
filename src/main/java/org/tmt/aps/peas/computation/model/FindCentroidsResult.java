@@ -21,7 +21,7 @@ public class FindCentroidsResult {
 		
 		for (int i = 0; i< xCent.length; i++) {
 			// TODO: merge in real subimageDef
-			Subimage subimage = new Subimage(null, new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
+			Subimage subimage = new Subimage(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
 			subimageList.add(subimage);
 		}
 	}
@@ -32,7 +32,7 @@ public class FindCentroidsResult {
 		
 		for (int i = 0; i< centroidList.size(); i++) {
 			// TODO: merge in real subimageDef
-			Subimage subimage = new Subimage(null, centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
+			Subimage subimage = new Subimage(centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
 			subimageList.add(subimage);
 		}
 	}
@@ -109,15 +109,6 @@ public class FindCentroidsResult {
 		}
 
 		return statuses;
-	}
-	
-	// returns a list of the subimage defs for the subimages
-	public List<SubimageDef> getSubimageDefList() {
-		List<SubimageDef> subimageDefList = new ArrayList<SubimageDef>();
-		for (Subimage subimage : subimageList) {
-			subimageDefList.add(subimage.getSubimageDef());
-		}
-		return subimageDefList;
 	}
 	
 	public String toString() {

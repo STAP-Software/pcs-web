@@ -92,7 +92,7 @@ public class CentroidMapMgmt {
 
 	}
 
-	public RefBeamMap getRefBeamDefMap(Long pupilMaskTypeId) {
+	public List<SubimageDef> getSubimageDefList(Long pupilMaskTypeId) {
 
 		TypedQuery<RefBeamMap> query = em.createNamedQuery("findRefBeamDefMap", RefBeamMap.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
@@ -105,15 +105,14 @@ public class CentroidMapMgmt {
 
 		// to create a list of SubimageDefs
 
-		List<Subimage> subimageList = new ArrayList<Subimage>();
+		List<SubimageDef> subimageDefList = new ArrayList<SubimageDef>();
 
 		int i = 0;
 		for (FloatPoint centroid : centroidList) {
 			// make some subimageDefs without spotTypes and missingSpotTypes
-			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_GOOD);
+			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_USE);
 			// make some subimages without intensities or findCentResults
-			Subimage subimage = new Subimage(subimageDef, centroid, 0.0f, 0.0f, 0);
-			subimageList.add(subimage);
+			subimageDefList.add(subimageDef);
 		}
 
 		// merge this list with the spotType and missingSpotType lists
@@ -122,13 +121,13 @@ public class CentroidMapMgmt {
 
 		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListAnalysisDecoded) {
-			subimageList.get(spot - 1).getSubimageDef().setMissingSpotType(Constants.MISSING_SPOT_TYPE_ANALYSIS);
+			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS);
 		}
 
 		// F&I missing value overrides analysis
 		List<Integer> missingSpotListFandIDecoded = IntegerListEncoder.decodeList(missingSpotListFandI.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListFandIDecoded) {
-			subimageList.get(spot - 1).getSubimageDef().setMissingSpotType(Constants.MISSING_SPOT_TYPE_FANDI);
+			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);
 		}
 
 		// apply peripheral spot definitions
@@ -136,16 +135,13 @@ public class CentroidMapMgmt {
 			PeripheralSpotList peripheralSpotList = findPeripheralSpotList(pupilMaskTypeId);
 			List<Integer> peripheralSpotListDecoded = IntegerListEncoder.decodeList(peripheralSpotList.getPeripheralSpotListEncoded());
 			for (Integer spot : peripheralSpotListDecoded) {
-				subimageList.get(spot - 1).getSubimageDef().setSpotType(Constants.SPOT_TYPE_PERIPHERAL);
+				subimageDefList.get(spot - 1).setSpotType(Constants.SPOT_TYPE_PERIPHERAL);
 			}
 		} catch (NoResultException e) {
 			// if no peripherals, then do nothing
 		}
 
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(subimageList);
-		refBeamMap.getCentroidMap().setFindCentroidsResult(findCentroidsResult);
-
-		return refBeamMap;
+		return subimageDefList;
 	}
 
 	public PeripheralSpotList findPeripheralSpotList(Long pupilMaskTypeId) {
