@@ -13,6 +13,9 @@ import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -35,6 +38,8 @@ public class CenterTelescopeCalc {
 	private StatusLogger statusLogger;
 	@EJB
 	private DcsMgmt dcsMgmt;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private ComputationContext computationContext;
 	@EJB
@@ -65,9 +70,13 @@ public class CenterTelescopeCalc {
 			/*             calculateCentroidOffsets              */
 			/*****************************************************/
 
+			FindCentroidsResult findCentroidsResult = procedureCcdFrame.getCentroidMap().getFindCentroidsResult();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+											
 			centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
 					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), 
-					procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
+					procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType(), subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), 
+					findCentroidsResult.getFindCentStatusList());
 
 			// go from centroidOffsetsResult.imageTranslation to deltaAz,El
 			deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 

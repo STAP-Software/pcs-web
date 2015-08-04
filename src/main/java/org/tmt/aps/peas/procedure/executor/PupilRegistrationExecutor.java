@@ -26,9 +26,12 @@ import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -92,6 +95,8 @@ public class PupilRegistrationExecutor {
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
 	private ConstantsCache constantsCache;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
 
@@ -188,7 +193,12 @@ public class PupilRegistrationExecutor {
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
-			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets());
+			FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
+			
+			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			/*****************************************************/
 			/*              passiveTiltScaleError                */
@@ -198,7 +208,7 @@ public class PupilRegistrationExecutor {
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
 			ScaleError scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots);
+					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			
 			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
@@ -259,7 +269,8 @@ public class PupilRegistrationExecutor {
 				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotParallel(),
 				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotTheta(),
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
-				procedureConfig.getPupilMask().getSpotDiameter());
+				procedureConfig.getPupilMask().getSpotDiameter(), 
+				subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
 			
 				// log values 

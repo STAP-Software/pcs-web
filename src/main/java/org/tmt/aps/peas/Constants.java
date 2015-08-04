@@ -62,6 +62,9 @@ public class Constants {
 	
 	public static final long MS_PER_HOUR = 1000 * 60 * 60;
 	
+	public static final int FIND_CENT_STATUS_SUCCESS = 0;
+	public static final int FIND_CENT_STATUS_NOT_PERFORMED = -1;
+	
 	
 	
 }

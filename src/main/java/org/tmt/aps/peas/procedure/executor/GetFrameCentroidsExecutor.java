@@ -22,8 +22,10 @@ import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -37,6 +39,7 @@ import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -144,8 +147,10 @@ public class GetFrameCentroidsExecutor {
 
 		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
 		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
-				subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId()));
+				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags());
 
 		logger.info("Find and Identify completed");
 
@@ -313,11 +318,13 @@ public class GetFrameCentroidsExecutor {
 			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
 			centroidMap = null;
 			try {
 	
 				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-						.getFindCentConfig());
+						.getFindCentConfig(), subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags());
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	

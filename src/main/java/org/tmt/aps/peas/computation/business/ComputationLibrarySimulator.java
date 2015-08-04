@@ -36,6 +36,7 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
@@ -74,7 +75,16 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, SubimageDefList subimageDefList) throws ComputationException {
+
+
+	
+	
+	
+	
+	
+	
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap,
+			List<FloatPoint> refDefCentroids, int[] missingSpotFlags) throws ComputationException {
 		
 		RetVal retVal = new RetVal();
 		
@@ -86,7 +96,6 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		float frame_avg = 0.0f; // average background of frame (TODO) from backgroundStats
 		float frame_sigma = 20.0f; // frame background sigma (TODO) from backgroundStats
 		
-		List<FloatPoint> refDefCentroids = subimageDefList.getSubimageDefListCentroids();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 		
@@ -137,14 +146,15 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 
 	@Override
-	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType)
-			throws ComputationException {
+	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 		// TODO Auto-generated method stub
 		logger.debug("findCentConfig = " + findCentConfig);
 		return new Subimage(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
 	}
 	
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig, int[] nspotTypes,
+			int[] missingSpotFlags) throws ComputationException {
+
 		
 		return null;
 		
@@ -162,8 +172,9 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
-			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType ) throws ComputationException {
+	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags,
+			int[] findCentStatusList) throws ComputationException {
 		
 		
 		List<FloatPoint> offsets = new ArrayList<FloatPoint>();
@@ -183,15 +194,16 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	
 	@Override
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
-			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter)
-					throws Exception {
+			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter,
+			int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 
 	@Override
-	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags,
+			int[] findCentStatusList) throws ComputationException {
 		// TODO Auto-generated method stub
 		return new CentroidStatsResult(23, 1.2f, 0.42f, 0.8f, 0.5f);
 	}
@@ -256,7 +268,8 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception {
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes,
+			int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -3,13 +3,13 @@ package org.tmt.aps.peas.computation.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.config.model.SubimageDef;
 
 public class FindCentroidsResult {
 
 	private List<Subimage> subimageList;
-	
 
 	public FindCentroidsResult() {
 		
@@ -20,7 +20,6 @@ public class FindCentroidsResult {
 		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< xCent.length; i++) {
-			// TODO: merge in real subimageDef
 			Subimage subimage = new Subimage(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
 			subimageList.add(subimage);
 		}
@@ -31,7 +30,6 @@ public class FindCentroidsResult {
 		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			// TODO: merge in real subimageDef
 			Subimage subimage = new Subimage(centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
 			subimageList.add(subimage);
 		}
@@ -65,8 +63,6 @@ public class FindCentroidsResult {
 	}
 	
 	
-	
-
 	public List<FloatPoint> getCentroidList() {
 		
 		List<FloatPoint> centroids = new ArrayList<FloatPoint>();
@@ -110,6 +106,7 @@ public class FindCentroidsResult {
 
 		return statuses;
 	}
+	
 	
 	public String toString() {
 		

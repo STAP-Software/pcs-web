@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
@@ -29,8 +28,11 @@ import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
@@ -40,7 +42,6 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -97,6 +98,8 @@ public class PassiveTiltExecutor {
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
 	private ConstantsCache constantsCache;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
 
@@ -225,7 +228,13 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
-			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets());
+
+			FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
+			
+			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			/*****************************************************/
 			/*              passiveTiltScaleError                */

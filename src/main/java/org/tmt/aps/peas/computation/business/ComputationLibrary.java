@@ -30,6 +30,7 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
@@ -46,21 +47,21 @@ public interface ComputationLibrary {
 	
 	public float calcRms(float[][] data);
 	
-	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int spotType) throws ComputationException;
+	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException;
 
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException;
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException;
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, SubimageDefList subimageDefList) throws ComputationException;
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags) throws ComputationException;
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException, HandMarkRequiredException;
 
-	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids, 
-			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType) throws ComputationException;
+	public CentroidOffsetsResult  calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException;
 	
 	
-	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException;
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException;
 	
 	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException;
 	
@@ -83,11 +84,11 @@ public interface ComputationLibrary {
 	public float getMedianValue(float[] inputs) throws Exception;
 
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
-			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter) throws Exception;
+			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
 
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit) throws Exception;
 
-	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots) throws Exception;
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
 
 }
