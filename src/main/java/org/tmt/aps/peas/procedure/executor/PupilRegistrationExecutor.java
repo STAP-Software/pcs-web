@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -32,7 +33,6 @@ import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
-import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
@@ -41,6 +41,8 @@ import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
+import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -292,14 +294,14 @@ public class PupilRegistrationExecutor {
 			// prompt user with registration error values
 			
 			boolean centerPupil = false;
-			if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_COMMAND_TILT_PLATE_PROMPT) {
+			if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_PROMPT) {
 				// ask the user
 				
 				// TODO: include the PR error result in the dialog
 				centerPupil = userPromptMgmt.displayYesNoDialog("\nCommand Tilt Plates to correct pupil registration errors?");
 				
 			} else {
-				centerPupil = procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_COMMAND_TILT_PLATE_YES;
+				centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
 			}
 			
 			int desiredCenterPupilMech = 0;
@@ -314,26 +316,23 @@ public class PupilRegistrationExecutor {
 			}
 			
 			// TODO: these should be configuration somewhere
-			float largeMoveThreshold = 0.0f; 
-			float fineTiltPositionOffloadLimit = 0.0f;
+			float largeMoveThreshold = 10.0f; 
+			float fineTiltPositionOffloadLimit = 4000.0f;
 						
-			Point initialCoarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
-			Point initialFinePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
 
-			
-			
+			CoarseTiltMirror coarseMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
+			FineTiltMirror fineMirror = physicalModel.getInstrument().getCamera().getFineTiltMirror();
+
+			// need to know current positions which is available in the coarse and fine mirror objects
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
-			initialFinePosition, initialCoarsePosition, largeMoveThreshold, fineTiltPositionOffloadLimit);
-			
-			
-			// this will use calcuations:
-			// calcFineTiltPRCommands()
-			// calcCoarseTiltPRCommands()
+			fineMirror, coarseMirror, largeMoveThreshold, fineTiltPositionOffloadLimit);
 
 			
 			/*****************************************************/
 			/*         move fine, coarse, both, or none          */
 			/*****************************************************/
+			
+			statusLogger.log("calc.pupil_reg.cmd_offloaded");
 			
 			Future<Point> coarseMirrorCommandFuture = null;
 			Future<Point> fineMirrorCommandFuture = null;

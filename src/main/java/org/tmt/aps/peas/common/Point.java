@@ -106,6 +106,10 @@ public class Point {
         this.y += dy;
     }
 
+    public boolean isZero() {
+    	return this.x == 0 && this.y == 0;
+    }
+    
     /**
      * Determines whether or not two points are equal. Two instances of
      * <code>Point2D</code> are equal if the values of their
@@ -130,4 +134,8 @@ public class Point {
     public String toString() {
         return x + "," + y;
     }
+
+	public static Point add(Point p1, Point p2) {
+		return new Point(p1.x + p2.x, p1.y + p2.y);
+	}
 }

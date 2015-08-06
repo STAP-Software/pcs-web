@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
@@ -30,16 +31,15 @@ import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.Subimage;
-import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
-import org.tmt.aps.peas.config.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
-import org.tmt.aps.peas.config.model.SubimageDef;
+import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
+import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
@@ -665,16 +665,6 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 	
-	@Override
-	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			Point initialFinePosition, Point initialCoarsePosition, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
-					throws Exception {
-		// TODO Auto-generated method stub
-		// FIXEME: test only
-		CalcPrCommandsResult calcPrCommandsResult = new CalcPrCommandsResult();
-
-		return calcPrCommandsResult;
-	}
 
 	// private convenience methods
 	private float[] flatten2dArray(float[][] input) {
@@ -764,8 +754,34 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 
+	@Override
+	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+					throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
+		
+		CalcPrCommandsResult result = JavaComputations.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult,
+			 fineTiltMirror, coarseTiltMirror, largeMoveThreshold, fineTiltPositionOffloadLimit);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
+		
+		return result;
+	}
 
-	
+
+	public Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
+		
+		Point result = JavaComputations.calcCoarseMirrorCmds(desiredMotion, leverCoarse, oraFactor);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
+		
+		return result;
+
+	}
+
 	
 	
 }

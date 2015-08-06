@@ -11,9 +11,13 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.TriState;
 import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
+import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
@@ -172,5 +176,237 @@ public class JavaComputations {
 		
 		return median;
 	}
+
+	public static CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+					throws Exception {
 	
+		
+		if (!centerPupil) {
+			return new CalcPrCommandsResult(null, null);
+		}
+	
+		// the desired correction is typically the negative of the pupil reg error result in x and y
+		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX(), -pupilRegErrorResult.getRegErrorY());
+	
+		
+		// if desiredCenterPupilMech is FineTilt, then check to see if it is outside limits.  If it is outside limits, offload to coarse.
+		if (desiredCenterPupilMech == Constants.AUTO_CENTER_PUPIL_MECH_FINE) {
+			// Fine desired, if either x or y move exceeds limits, offload to coarse mirror
+			
+			return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror, fineTiltPositionOffloadLimit);
+			
+			
+		} else if (desiredCenterPupilMech == Constants.AUTO_CENTER_PUPIL_MECH_COARSE) {
+			// coarse desired, only move coarse mirror
+			
+			Point coarseMirrorPosDelta = calcCoarseMirrorCmds(desiredCorrection, coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());
+			
+			Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), coarseMirrorPosDelta);
+			
+			return new CalcPrCommandsResult(coarseMirrorPosCmds, null);
+			
+		} else {
+			// Auto case: if pupilRegError x or y exceeds large move threshold, use coarse, otherwise fine
+			if (Math.abs(desiredCorrection.x) > largeMoveThreshold || Math.abs(desiredCorrection.y) > largeMoveThreshold) {
+				
+				// only move coarse
+				Point coarseMirrorPosDelta = calcCoarseMirrorCmds(desiredCorrection, coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());
+				
+				Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), coarseMirrorPosDelta);
+				
+				return new CalcPrCommandsResult(coarseMirrorPosCmds, null);
+				
+			} else {
+				
+				return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror, fineTiltPositionOffloadLimit);
+			}
+			
+		}
+
+	}
+	
+	
+	private static CalcPrCommandsResult checkFineForOffloading(FloatPoint desiredCorrection, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float fineTiltPositionOffloadLimit) {
+		
+		// get the commands we would require to move only the fine mech
+		Point fineMirrorDeltas = calcFineMirrorCmds(desiredCorrection, fineTiltMirror.getMechanismLeverArm(), fineTiltMirror.getWindowThickness(), fineTiltMirror.getXbk7(), fineTiltMirror.getPupilMagnification());
+		
+		Point fineMirrorPosCmds = Point.add(fineTiltMirror.getCurrentPosition(), fineMirrorDeltas);
+		
+		// check commands against limits
+		if (Math.abs(fineMirrorPosCmds.x)  > fineTiltPositionOffloadLimit || Math.abs(fineMirrorPosCmds.y)  > fineTiltPositionOffloadLimit) {
+			
+			// determine offloading values
+			Point offloadedCoarseDelta = offloadFineToCoarse(fineMirrorPosCmds, coarseTiltMirror, fineTiltMirror);
+
+			Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), offloadedCoarseDelta);
+
+			// return commands for coarse mirror and send fine to 0,0
+			return new CalcPrCommandsResult(coarseMirrorPosCmds, new Point(0,0), true);
+			
+		} else {
+			// just command fine mechanism
+			return new CalcPrCommandsResult(null, fineMirrorPosCmds, true);
+		}
+
+	}
+	
+	
+	/*
+	Offloading from Tilt plate to Coarse Mirror
+		Given the current X,Y tilt plate positions, calculate the needed X/Y coarse mirror commands to send in order to “zero” the tilt plate.  The releaiveX/Y coarse mirror commands from this routine should be added to the current X/Y coarse mirror positions and the tilt plate should be send to 0,0.  Note that this offload will introduce an ~5mm pupil registration error, as we only command the mechanisms to the nearest micron.
+		Relevant parameters:none
+			Inputs:
+				currentXTiltPos
+					Description: current position of X tilt motor mike
+					Units: microns
+				currentYTiltPos
+					Description: current position of X tilt motor mike
+					Units: microns
+			Output:
+				relativeXCoarseCmd
+					Description: X coarse mirror motion to zero X  tilt plate
+					Units: microns
+					Data type: Integer  
+				relativeYCoarseCmd
+					Description: Y coarse mirror motion to zero Y tilt plate
+					Units: microns
+					Data type: Integer
+			Calculations
+				Calculate needed sensitivities
+					calcCoarseMirrorCmd(1000,1000,xCoarseSens, yCoarseSens)
+					calcFineTiltCmd(1000,1000,xTiltSens, yTiltSens)
+				Calculate output
+					relativeXCoarseCmd = round(xCoarseSens/xTiltSens*currentXTiltPos)
+					relativeYCoarseCmd = round(yCoarseSens/yTiltSens*currentYTiltPos)
+	 */
+	
+	private static Point offloadFineToCoarse(Point fineMirrorCmds, CoarseTiltMirror coarseTiltMirror, FineTiltMirror fineTiltMirror) {
+		
+		Point coarseSensitivity = calcCoarseMirrorCmds(new FloatPoint(1000.0f, 1000.0f), coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());		
+		Point fineSensitivity = calcFineMirrorCmds(new FloatPoint(1000.0f, 1000.0f), fineTiltMirror.getMechanismLeverArm(), fineTiltMirror.getWindowThickness(), fineTiltMirror.getXbk7(), fineTiltMirror.getPupilMagnification());
+		
+		int relativeXCoarseCmd = Math.round(coarseSensitivity.x / fineSensitivity.x * fineMirrorCmds.x);
+		int relativeYCoarseCmd = Math.round(coarseSensitivity.y / fineSensitivity.y * fineMirrorCmds.y);
+
+		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
+	}
+	
+	
+	/*
+		Coarse Mirror Commands (calcCoarseMirrorCmd)
+		Relevant Parameters:
+			ORAFactor
+				Description: Radians of mirror tilt per mm of primary mirror motion
+				Units: Radians of mirror/mm of M1
+			xLeverCoarse
+				Description: X Lever arm of coarse mirror mike
+				Units: microns
+			yLeverCoarse
+				Description: Y Lever arm of coarse mirror mike
+				Units: microns
+		Inputs:
+			desiredXMotion
+				Description: The desired motion in X of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
+				Units: mm at M1
+			desiredYMotion
+				Description: The desired motion in Y of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
+				Units: mm at M1
+		Outputs:
+			relativeXCoarseCmd
+				Description: How far to move the X coarse mike
+				Units: microns
+				Data type: integer
+			relativeYCoarseCmd
+				Description: How far to move the Y coarse mike
+				Units: microns
+				Data type: integer
+		Calculations:
+			relativeXCoarseCmd = round(desiredXMotion*ORAFactor*xLeverCoarse)
+			relativeYCoarseCmd = round(desiredYMotion*ORAFactor*yLeverCoarse)
+
+		Notes/comments/todo’s
+			SUFS has a negative sign compared to these values, I think?
+			Currently parameters are the same for PCS 1 and 2, but in theory could be different
+			If want to steer to a new segment, then I think we should input the desired motion to steer to that segment, which is not how the current code handles things.
+
+*/
+	public static Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) {
+		// TODO Auto-generated method stub
+		
+		
+		int relativeXCoarseCmd = Math.round(desiredMotion.x * oraFactor * leverCoarse.x);
+		int relativeYCoarseCmd = Math.round(desiredMotion.y * oraFactor * leverCoarse.y);
+
+		
+		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
+	}
+	
+	/*
+	 
+	Tilt plate Commands (calcFineTiltCmd)
+		Relevant Parameters:
+		
+		windowThickness
+			Value: 18800.0
+			Description: Thickness of window in Tilt plate mechanism
+			Units:  microns
+		xbk7Index
+			Value: 1.515
+			Description: Index of BK7 tilt window at 633 nm
+			Units: N/A
+		pupilDemag
+			Value: 201.34
+			Description: Demagnification of primary pupil within PCS
+			Units: N/A
+		xLeverFine
+			Value:55600.0
+			Description: X Lever arm of coarse mirror mike
+			Units: microns
+		yLeverFine
+			Value: 47300.0
+			Description: Y Lever arm of coarse mirror mike
+			Units: microns
+
+	Inputs:
+		desiredXMotion
+			Description: The desired motion in X of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
+			Units: mm at M1
+			desiredYMotion
+			Description: The desired motion in Y of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
+			Units: mm at M1
+	Outputs:
+		relativeXTiltCmd
+			Description: How far to move the X tilt mike
+			Units: microns
+			Data type: integer
+		relativeYTiltCmd
+			Description: How far to move the Y tilt mike
+			Units: microns
+			Data type: integer
+
+	Calculations:
+		Convert desired motion at primary in mm to motion at mask in microns
+			xMask = desiredXMotion*1000.0/pupilDemag
+			yMask = desiredYMotion*1000.0/pupilDemag
+			relativeXTiltCmd = round(xMask*xLeverFine/windowThickness * xbk7Index/(xbk7Index-1))
+			relativeYTiltCmd = round(yMask*yLeverFine/windowThickness * xbk7Index/(xbk7Index-1))
+
+	Notes/comments/todo’s
+		SUFS has a negative sign compared to these values, I think? However, it never uses the fine tile plate
+		Currently parameters are the same for PCS 1 and 2, but in theory could be different
+
+	 */
+	
+	public static Point calcFineMirrorCmds(FloatPoint desiredMotion, FloatPoint leverFine, float windowThickness, float xbk7Index, float pupilDemag) {
+	
+		float xMask = desiredMotion.x * 1000.0f / pupilDemag;
+		float yMask = desiredMotion.y * 1000.0f / pupilDemag;
+		int relativeXTiltCmd = Math.round(xMask * leverFine.x / windowThickness * xbk7Index/(xbk7Index-1));
+		int relativeYTiltCmd = Math.round(yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
+
+		return new Point(relativeXTiltCmd, relativeYTiltCmd);
+	}
+
 }

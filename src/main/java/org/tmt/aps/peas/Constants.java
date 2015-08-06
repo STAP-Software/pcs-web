@@ -31,9 +31,9 @@ public class Constants {
 	public static final int AUTO_CENTER_TELESCOPE_NO = 2;
 	public static final int AUTO_CENTER_TELESCOPE_PROMPT = 3;
 
-	public static final int AUTO_COMMAND_TILT_PLATE_YES = 1;
-	public static final int AUTO_COMMAND_TILT_PLATE_NO = 2;
-	public static final int AUTO_COMMAND_TILT_PLATE_PROMPT = 3;
+	public static final int AUTO_CENTER_PUPIL_YES = 1;
+	public static final int AUTO_CENTER_PUPIL_NO = 2;
+	public static final int AUTO_CENTER_PUPIL_PROMPT = 3;
 
 	public static final int AUTO_CENTER_PUPIL_MECH_COARSE = 1;
 	public static final int AUTO_CENTER_PUPIL_MECH_FINE = 2;
