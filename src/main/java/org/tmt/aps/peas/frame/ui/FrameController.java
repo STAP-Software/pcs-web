@@ -489,7 +489,7 @@ public class FrameController implements Serializable {
 				Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
 				
 				// load up defaults for mask type 
-				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId());
+				FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId(), Constants.SPOT_TYPE_INTERIOR);
 						
 				// then set the search radius for hand marking
 				findCentConfig.setIrad(searchRadius);

@@ -20,7 +20,7 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @PrimaryKeyJoinColumn(name="findCentConfigId")
 @NamedQueries({
 	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId" )
+			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and p.spotType = :spotType" )
 })
 public class FindCentConfigDefaults extends FindCentConfig {
 
@@ -28,6 +28,16 @@ public class FindCentConfigDefaults extends FindCentConfig {
 	@ManyToOne
 	@JoinColumn(name = "pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
+
+	int spotType;
+	
+	public int getSpotType() {
+		return spotType;
+	}
+
+	public void setSpotType(int spotType) {
+		this.spotType = spotType;
+	}
 
 	public PupilMaskType getPupilMaskType() {
 		return pupilMaskType;

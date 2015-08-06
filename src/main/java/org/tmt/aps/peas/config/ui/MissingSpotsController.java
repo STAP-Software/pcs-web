@@ -31,7 +31,9 @@ import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
+import org.tmt.aps.peas.session.ui.SessionController;
+import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 
 @Named
@@ -48,9 +50,17 @@ public class MissingSpotsController implements Serializable {
 	CameraDefMgmt cameraDefMgmt;
 	@EJB
 	PeasProperties peasProperties;
+	@EJB
+	TelescopeMgmt telescopeMgmt;
+	@Inject
+	SessionController sessionController;
+	
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
+
+	
+	Telescope telescope;
 
 	private List<Integer> selectedSpots;
 
@@ -74,6 +84,10 @@ public class MissingSpotsController implements Serializable {
 	public void init() {
 
 		try {
+			
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+			telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
+
 
 			pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
 			pupilMaskType = pupilMaskTypeList.get(0);
@@ -259,9 +273,9 @@ public class MissingSpotsController implements Serializable {
 		try {
 			if (pupilMaskType.isPupilMaskTypeSufs()) {
 				logger.debug("SUFS Group = " + sufsGroup);
-				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
 			} else {
-				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId());
 			}
 			logger.debug("missing spot list encoded = " + missingSpotList.getMissingSpotListEncoded());
 		} catch (Exception e) {
@@ -280,9 +294,9 @@ public class MissingSpotsController implements Serializable {
 	public String doViewMissingSpots() {
 		try {
 			if (pupilMaskType.isPupilMaskTypeSufs()) {
-				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
 			} else {
-				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, pupilMaskType.getPupilMaskTypeId());
+				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId());
 			}
 			updateCentroidDisplay();
 			

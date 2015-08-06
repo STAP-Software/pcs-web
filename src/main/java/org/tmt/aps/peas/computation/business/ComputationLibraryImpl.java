@@ -125,7 +125,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	// findCentStatus is also a property of a spot, to be used by calcs after this.
 	// TODO: want nGauss passed in to be an array.
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -152,10 +152,23 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int[] y_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractYArray(guessList));
 
 
-		// TODO: temporary only
 		int[] nGauss = new int[arrayLen];
+		int[] irad = new int[arrayLen];
+		int[] imargin = new int[arrayLen];
+		int[] itermax = new int[arrayLen];
 		for (int i = 0; i < arrayLen; i++) {
-			nGauss[i] = findCentConfig.getNgauss();
+			
+			if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
+				nGauss[i] = findCentConfigInterior.getNgauss();
+				irad[i] = findCentConfigInterior.getIrad();
+				imargin[i] = findCentConfigInterior.getImargin();
+				itermax[i] = findCentConfigInterior.getItermax();
+			} else {
+				nGauss[i] = findCentConfigPeripheral.getNgauss();	
+				irad[i] = findCentConfigPeripheral.getIrad();
+				imargin[i] = findCentConfigPeripheral.getImargin();
+				itermax[i] = findCentConfigPeripheral.getItermax();
+			}
 		}
 		
 		
@@ -165,8 +178,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[] peak = new float[arrayLen];
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
-		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), x_guesses,
-				y_guesses, findCentConfig.getItermax(), nspotTypes, missingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
+		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
+				y_guesses, itermax, nspotTypes, missingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);

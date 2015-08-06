@@ -204,7 +204,7 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("frame.mark_guess", guess);
 			
 			// call find cent with the guess
-			Subimage subimage = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
+			Subimage subimage = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfigInterior(), Constants.SPOT_TYPE_INTERIOR);
 			FloatPoint centroid = subimage.getCentroid();
 			procedureOutput.setCentroid(centroid);
 			

@@ -232,7 +232,7 @@ public class ProcedureController implements Serializable {
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
 		try {
-			int irad = procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
+			int irad = procedure.getProcedureConfigSet().getFindCentConfigInterior().getIrad();
 			if (frameMarkingMode)
 				return "" + (irad * 2);
 			return "" + irad;
@@ -771,7 +771,7 @@ public class ProcedureController implements Serializable {
 		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
 
 		try {
-			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
+			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfigInterior());
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
 

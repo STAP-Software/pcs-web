@@ -15,6 +15,7 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
@@ -111,8 +112,10 @@ public class ProcedureExecutionMgmt {
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId());
-		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_INTERIOR);
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
+		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
 		// get FIDefaults and create a procedure related copy
 		if (!procedure.getProcedureType().isCenterTelescope()) {

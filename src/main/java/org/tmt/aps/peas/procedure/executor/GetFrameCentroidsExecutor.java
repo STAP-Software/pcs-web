@@ -323,8 +323,10 @@ public class GetFrameCentroidsExecutor {
 			centroidMap = null;
 			try {
 	
-				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-						.getFindCentConfig(), subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags());
+				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, 
+						procedure.getProcedureConfigSet().getFindCentConfigInterior(), 
+						procedure.getProcedureConfigSet().getFindCentConfigPeripheral(), 
+						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags());
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	

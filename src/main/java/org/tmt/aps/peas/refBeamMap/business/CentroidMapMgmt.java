@@ -92,7 +92,7 @@ public class CentroidMapMgmt {
 
 	}
 
-	public List<SubimageDef> getSubimageDefList(Long pupilMaskTypeId) {
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId) {
 
 		TypedQuery<RefBeamMap> query = em.createNamedQuery("findRefBeamDefMap", RefBeamMap.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
@@ -116,8 +116,8 @@ public class CentroidMapMgmt {
 		}
 
 		// merge this list with the spotType and missingSpotType lists
-		MissingSpotList missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, pupilMaskTypeId);
-		MissingSpotList missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, pupilMaskTypeId);
+		MissingSpotList missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, telescopeId, pupilMaskTypeId);
+		MissingSpotList missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId);
 
 		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListAnalysisDecoded) {

@@ -154,7 +154,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return new Subimage(new FloatPoint(guess.x - 10.0f, guess.y - 10.0f), 0.0f, 0.0f, 0);
 	}
 	
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig, int[] nspotTypes,
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes,
 			int[] missingSpotFlags) throws ComputationException {
 
 		

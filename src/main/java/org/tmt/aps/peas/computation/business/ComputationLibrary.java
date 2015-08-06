@@ -49,7 +49,7 @@ public interface ComputationLibrary {
 	
 	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException;
 
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException;
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior, FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException;
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	

@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.config.business;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
@@ -18,7 +20,6 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.config.model.PeripheralSpotList;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -63,14 +64,15 @@ public class GlobalConfigMgmt {
 
 	}
 
-	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId) {
+	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, int spotType) {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
-		
+		query.setParameter("spotType", spotType);
+				
 		query.setMaxResults(1);
 		
-		return query.getSingleResult();	
+		return query.getSingleResult();
 	}
 	
 	public PupilRegErrorConfigDefaults findPupilRegErrorConfig(Long pupilMaskTypeId) {
