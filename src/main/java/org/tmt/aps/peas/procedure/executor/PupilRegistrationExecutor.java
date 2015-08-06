@@ -19,6 +19,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
@@ -298,7 +299,7 @@ public class PupilRegistrationExecutor {
 				// ask the user
 				
 				// TODO: include the PR error result in the dialog
-				centerPupil = userPromptMgmt.displayYesNoDialog("\nCommand Tilt Plates to correct pupil registration errors?");
+				centerPupil = userPromptMgmt.displayYesNoDialog("\nSend commands to correct pupil registration errors?");
 				
 			} else {
 				centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
@@ -309,8 +310,13 @@ public class PupilRegistrationExecutor {
 				
 				String[] choices = {"Fine", "Coarse", "AutoDetermine"};
 				int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
-				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog("\nChoose mechanism to center pupil:", choices, values);
 				
+				String text = MessageGenerator.generateMessage("calc.pupil_reg_error", 
+				new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
+				new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
+				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
+						choices, values);
+							
 			} else {
 				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
 			}						
