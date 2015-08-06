@@ -756,13 +756,13 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	@Override
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
 		
 		CalcPrCommandsResult result = JavaComputations.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult,
-			 fineTiltMirror, coarseTiltMirror, largeMoveThreshold, fineTiltPositionOffloadLimit);
+			 fineTiltMirror, coarseTiltMirror);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
 		

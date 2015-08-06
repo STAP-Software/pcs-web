@@ -25,6 +25,7 @@ public class CoarseTiltMirror implements DeviceStates {
 	private float mechanismLeverArmX;
 	private float mechanismLeverArmY;
 	private float orafactor;
+	private int minMove;
 
 	@Transient
 	private Point currentPosition;
@@ -78,6 +79,13 @@ public class CoarseTiltMirror implements DeviceStates {
 		this.orafactor = orafactor;
 	}
 
+	public int getMinMove() {
+		return minMove;
+	}
+	
+	public void setMinMove(int minMove) {
+		this.minMove = minMove;
+	}
 	public Point getCurrentPosition() {
 		return currentPosition;
 	}

@@ -313,19 +313,14 @@ public class PupilRegistrationExecutor {
 				
 			} else {
 				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
-			}
-			
-			// TODO: these should be configuration somewhere
-			float largeMoveThreshold = 10.0f; 
-			float fineTiltPositionOffloadLimit = 4000.0f;
-						
+			}						
 
 			CoarseTiltMirror coarseMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
 			FineTiltMirror fineMirror = physicalModel.getInstrument().getCamera().getFineTiltMirror();
 
 			// need to know current positions which is available in the coarse and fine mirror objects
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
-			fineMirror, coarseMirror, largeMoveThreshold, fineTiltPositionOffloadLimit);
+			fineMirror, coarseMirror);
 
 			
 			/*****************************************************/

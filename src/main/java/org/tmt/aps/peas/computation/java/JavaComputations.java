@@ -178,7 +178,7 @@ public class JavaComputations {
 	}
 
 	public static CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float largeMoveThreshold, float fineTiltPositionOffloadLimit)
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
 	
 		
@@ -194,7 +194,7 @@ public class JavaComputations {
 		if (desiredCenterPupilMech == Constants.AUTO_CENTER_PUPIL_MECH_FINE) {
 			// Fine desired, if either x or y move exceeds limits, offload to coarse mirror
 			
-			return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror, fineTiltPositionOffloadLimit);
+			return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror);
 			
 			
 		} else if (desiredCenterPupilMech == Constants.AUTO_CENTER_PUPIL_MECH_COARSE) {
@@ -208,18 +208,19 @@ public class JavaComputations {
 			
 		} else {
 			// Auto case: if pupilRegError x or y exceeds large move threshold, use coarse, otherwise fine
-			if (Math.abs(desiredCorrection.x) > largeMoveThreshold || Math.abs(desiredCorrection.y) > largeMoveThreshold) {
+			
+			Point coarseMirrorPosDelta = calcCoarseMirrorCmds(desiredCorrection, coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());
+			
+			if (Math.abs(coarseMirrorPosDelta.x) > coarseTiltMirror.getMinMove() || Math.abs(coarseMirrorPosDelta.y) > coarseTiltMirror.getMinMove()) {
 				
-				// only move coarse
-				Point coarseMirrorPosDelta = calcCoarseMirrorCmds(desiredCorrection, coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());
-				
+				// only move coarse				
 				Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), coarseMirrorPosDelta);
 				
 				return new CalcPrCommandsResult(coarseMirrorPosCmds, null);
 				
 			} else {
 				
-				return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror, fineTiltPositionOffloadLimit);
+				return checkFineForOffloading(desiredCorrection, fineTiltMirror, coarseTiltMirror);
 			}
 			
 		}
@@ -227,7 +228,7 @@ public class JavaComputations {
 	}
 	
 	
-	private static CalcPrCommandsResult checkFineForOffloading(FloatPoint desiredCorrection, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float fineTiltPositionOffloadLimit) {
+	private static CalcPrCommandsResult checkFineForOffloading(FloatPoint desiredCorrection, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror) {
 		
 		// get the commands we would require to move only the fine mech
 		Point fineMirrorDeltas = calcFineMirrorCmds(desiredCorrection, fineTiltMirror.getMechanismLeverArm(), fineTiltMirror.getWindowThickness(), fineTiltMirror.getXbk7(), fineTiltMirror.getPupilMagnification());
@@ -235,7 +236,7 @@ public class JavaComputations {
 		Point fineMirrorPosCmds = Point.add(fineTiltMirror.getCurrentPosition(), fineMirrorDeltas);
 		
 		// check commands against limits
-		if (Math.abs(fineMirrorPosCmds.x)  > fineTiltPositionOffloadLimit || Math.abs(fineMirrorPosCmds.y)  > fineTiltPositionOffloadLimit) {
+		if (Math.abs(fineMirrorPosCmds.x)  > fineTiltMirror.getOffloadThreshold() || Math.abs(fineMirrorPosCmds.y)  > fineTiltMirror.getOffloadThreshold()) {
 			
 			// determine offloading values
 			Point offloadedCoarseDelta = offloadFineToCoarse(fineMirrorPosCmds, coarseTiltMirror, fineTiltMirror);

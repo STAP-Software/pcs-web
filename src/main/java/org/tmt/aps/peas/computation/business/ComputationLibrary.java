@@ -87,7 +87,7 @@ public interface ComputationLibrary {
 			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
 
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror, float largeMoveThreshold, float fineTiltPositionOffloadLimit) throws Exception;
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror) throws Exception;
 
 	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
 
