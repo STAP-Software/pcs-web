@@ -248,7 +248,7 @@ public class JavaComputations {
 			
 		} else {
 			// just command fine mechanism
-			return new CalcPrCommandsResult(null, fineMirrorPosCmds, true);
+			return new CalcPrCommandsResult(null, fineMirrorPosCmds, false);
 		}
 
 	}

@@ -327,7 +327,9 @@ public class PupilRegistrationExecutor {
 			/*         move fine, coarse, both, or none          */
 			/*****************************************************/
 			
-			statusLogger.log("calc.pupil_reg.cmd_offloaded");
+			if (calcPrCommandsResult.isOffloaded()) {
+				statusLogger.log("calc.pupil_reg.cmd_offloaded");
+			}
 			
 			Future<Point> coarseMirrorCommandFuture = null;
 			Future<Point> fineMirrorCommandFuture = null;
