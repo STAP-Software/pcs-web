@@ -269,8 +269,18 @@ public class SessionController implements Serializable {
 		if (pList == null || pList.size() == 0) {
 			return null;
 		}
+		
+		Procedure lastProcedure = null;
+		int maxProcNum = 0;
+		for (Procedure procedure : pList) {
+			String procNumStr = procedure.getProcedureNumber();
+			if (procNumStr.indexOf(".") < 0 && (new Integer(procNumStr)) > maxProcNum) {
+				lastProcedure = procedure;
+				maxProcNum = new Integer(procNumStr);
+			}
+		}
 
-		return pList.get(pList.size() - 1);
+		return lastProcedure;
 
 	}
 
