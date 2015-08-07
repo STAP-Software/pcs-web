@@ -18,7 +18,7 @@ public class PupilRegErrorResult {
 		this.regErrorY = regErrorY;
 		this.regErrorPhi = regErrorPhi;
 		this.regErrorApproxX = regErrorApproxX;
-		this.regErrorApproxY = regErrorApproxX;
+		this.regErrorApproxY = regErrorApproxY;
 		this.regErrorApproxPhi = regErrorApproxPhi;
 		this.regScaleError = regScaleError;
 	

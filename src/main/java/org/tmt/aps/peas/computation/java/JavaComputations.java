@@ -285,11 +285,11 @@ public class JavaComputations {
 	
 	private static Point offloadFineToCoarse(Point fineMirrorCmds, CoarseTiltMirror coarseTiltMirror, FineTiltMirror fineTiltMirror) {
 		
-		Point coarseSensitivity = calcCoarseMirrorCmds(new FloatPoint(1000.0f, 1000.0f), coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());		
-		Point fineSensitivity = calcFineMirrorCmds(new FloatPoint(1000.0f, 1000.0f), fineTiltMirror.getMechanismLeverArm(), fineTiltMirror.getWindowThickness(), fineTiltMirror.getXbk7(), fineTiltMirror.getPupilMagnification());
+		Point coarseSensitivity = calcCoarseMirrorCmds(new FloatPoint(1.0f, 1.0f), coarseTiltMirror.getMechanismLeverArm(), coarseTiltMirror.getOrafactor());		
+		Point fineSensitivity = calcFineMirrorCmds(new FloatPoint(1.0f, 1.0f), fineTiltMirror.getMechanismLeverArm(), fineTiltMirror.getWindowThickness(), fineTiltMirror.getXbk7(), fineTiltMirror.getPupilMagnification());
 		
-		int relativeXCoarseCmd = Math.round(coarseSensitivity.x / fineSensitivity.x * fineMirrorCmds.x);
-		int relativeYCoarseCmd = Math.round(coarseSensitivity.y / fineSensitivity.y * fineMirrorCmds.y);
+		int relativeXCoarseCmd = Math.round((float)coarseSensitivity.x / (float)fineSensitivity.x * (float)fineMirrorCmds.x);
+		int relativeYCoarseCmd = Math.round((float)coarseSensitivity.y / (float)fineSensitivity.y * (float)fineMirrorCmds.y);
 
 		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
 	}
@@ -310,10 +310,10 @@ public class JavaComputations {
 		Inputs:
 			desiredXMotion
 				Description: The desired motion in X of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
-				Units: mm at M1
+				Units: m at M1
 			desiredYMotion
 				Description: The desired motion in Y of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
-				Units: mm at M1
+				Units: m at M1
 		Outputs:
 			relativeXCoarseCmd
 				Description: How far to move the X coarse mike
@@ -337,8 +337,8 @@ public class JavaComputations {
 		// TODO Auto-generated method stub
 		
 		
-		int relativeXCoarseCmd = Math.round(desiredMotion.x * oraFactor * leverCoarse.x);
-		int relativeYCoarseCmd = Math.round(desiredMotion.y * oraFactor * leverCoarse.y);
+		int relativeXCoarseCmd = Math.round(desiredMotion.x * 1000.0f * oraFactor * leverCoarse.x);
+		int relativeYCoarseCmd = Math.round(desiredMotion.y * 1000.0f * oraFactor * leverCoarse.y);
 
 		
 		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
@@ -373,10 +373,10 @@ public class JavaComputations {
 	Inputs:
 		desiredXMotion
 			Description: The desired motion in X of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
-			Units: mm at M1
+			Units: m at M1
 			desiredYMotion
 			Description: The desired motion in Y of the pupil at the mask in PCS. Note this would typically be the negative of the error calculated by calculatePupilRegError
-			Units: mm at M1
+			Units: m at M1
 	Outputs:
 		relativeXTiltCmd
 			Description: How far to move the X tilt mike
@@ -402,8 +402,8 @@ public class JavaComputations {
 	
 	public static Point calcFineMirrorCmds(FloatPoint desiredMotion, FloatPoint leverFine, float windowThickness, float xbk7Index, float pupilDemag) {
 	
-		float xMask = desiredMotion.x * 1000.0f / pupilDemag;
-		float yMask = desiredMotion.y * 1000.0f / pupilDemag;
+		float xMask = desiredMotion.x * 1000.0f * 1000.0f / pupilDemag;
+		float yMask = desiredMotion.y * 1000.0f * 1000.0f / pupilDemag;
 		int relativeXTiltCmd = Math.round(xMask * leverFine.x / windowThickness * xbk7Index/(xbk7Index-1));
 		int relativeYTiltCmd = Math.round(yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
 
