@@ -4,11 +4,10 @@
 <script type="text/javascript">  
 //<![CDATA[
 
-
     
 function runDrawMissingSpots() {
 	
-	window.setTimeout("drawSpots()", 10);
+	window.setTimeout("drawSpots()", 100);
 }
 
 function drawSpots() {
@@ -41,6 +40,8 @@ function drawSpots() {
  	
 	ctx.font = fontSize + "px Arial";
  			
+	alert("length = " + numbersArray.length);
+	
 	for (i = 0; i < numbersArray.length; i++) {
 		var missingSpot = false;
 		for (j = 0; j < msArray.length; j++) {
@@ -57,6 +58,9 @@ function drawSpots() {
 		ctx.fillText(numbersArray[i], (xArray[i] * 0.78) - 45, (yArray[i] * 0.78) - 20);	
 	}
 }
+
+
+
 //]]>  
 </script>  
 
