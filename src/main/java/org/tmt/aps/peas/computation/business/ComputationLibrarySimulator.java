@@ -86,7 +86,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	
 	
 	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap,
-			List<FloatPoint> refDefCentroids, int[] missingSpotFlags) throws ComputationException {
+			List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
 		
 		RetVal retVal = new RetVal();
 		
@@ -155,7 +155,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 	
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes,
-			int[] missingSpotFlags) throws ComputationException {
+			int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
 
 		
 		return null;

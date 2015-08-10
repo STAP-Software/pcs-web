@@ -49,11 +49,11 @@ public interface ComputationLibrary {
 	
 	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException;
 
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior, FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException;
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior, FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean isRefMap) throws ComputationException;
 	
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException;
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags) throws ComputationException;
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean isRefMap) throws ComputationException;
 	
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException, AbortProcedureException, HandMarkRequiredException;
 

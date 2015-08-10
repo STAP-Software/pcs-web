@@ -124,8 +124,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 
 	// findCentStatus is also a property of a spot, to be used by calcs after this.
-	// TODO: want nGauss passed in to be an array.
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -171,6 +170,14 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 			}
 		}
 		
+		// if isRefMap, then set all missingSpotFlags to use
+		int[] passedMissingSpotFlags = missingSpotFlags;
+		if (isRefMap) {
+			passedMissingSpotFlags = new int[missingSpotFlags.length];
+			for (int i=0; i<missingSpotFlags.length; i++) {
+				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
+			}
+		}
 		
 		float[] x_cent = new float[arrayLen];
 		float[] y_cent = new float[arrayLen];
@@ -179,7 +186,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
-				y_guesses, itermax, nspotTypes, missingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
+				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -290,7 +297,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags)
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean isRefMap)
 			throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findAndIdentify"));
@@ -306,6 +313,14 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 
+		// if isRefMap, then set all missingSpotFlags to use
+		int[] passedMissingSpotFlags = missingSpotFlags;
+		if (isRefMap) {
+			passedMissingSpotFlags = new int[missingSpotFlags.length];
+			for (int i=0; i<missingSpotFlags.length; i++) {
+				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
+			}
+		}
 		
 		// Force scale and rotation values, potentially coming from current ref map
 		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
@@ -322,7 +337,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 				fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), fiConfig.getnPeakMinThresh(),
 				fiConfig.getnPeakMaxThresh(), fiConfig.isForceScale() ? 1 : 0, forceScaleValue, fiConfig.isForceRotation() ? 1 : 0,
 				forceRotationRad, fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), fiConfig.getSpiralRingCount(),
-				missingSpotFlags, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
+				passedMissingSpotFlags, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
 				fiParams, fiResult.getN0123(), fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
 
 		if (retVal.getCode() > 0) {
