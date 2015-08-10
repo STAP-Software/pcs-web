@@ -272,7 +272,7 @@ public class PupilRegistrationExecutor {
 				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotParallel(),
 				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotTheta(),
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
-				procedureConfig.getPupilMask().getSpotDiameter(), 
+				procedureConfig.getPupilMask().getSpotDiamPeripheral(), 
 				subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
 			

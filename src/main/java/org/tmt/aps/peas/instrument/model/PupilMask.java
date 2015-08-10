@@ -38,7 +38,8 @@ public class PupilMask {
 
 	private int wheelPosition;
 
-	private float spotDiameter;
+	private float spotDiamInterior;
+	private float spotDiamPeripheral;
 
 	private float radPerPixel;
 	private float secPerPixel;
@@ -105,12 +106,20 @@ public class PupilMask {
 		this.pupilMaskType = pupilMaskType;
 	}
 
-	public float getSpotDiameter() {
-		return spotDiameter;
+	public float getSpotDiamInterior() {
+		return spotDiamInterior;
 	}
 
-	public void setSpotDiameter(float spotDiameter) {
-		this.spotDiameter = spotDiameter;
+	public void setSpotDiamInterior(float spotDiamInterior) {
+		this.spotDiamInterior = spotDiamInterior;
+	}
+
+	public float getSpotDiamPeripheral() {
+		return spotDiamPeripheral;
+	}
+
+	public void setSpotDiamPeripheral(float spotDiamPeripheral) {
+		this.spotDiamPeripheral = spotDiamPeripheral;
 	}
 
 	public float getRadPerPixel() {
