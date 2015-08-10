@@ -345,13 +345,18 @@ public class GetFrameCentroidsExecutor {
 						
 			frameDisplayMgmt.displayMarkedFrame();
 	
-			boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
-					"Have the correct centroids been found?");
-	
-			// as part of the display, ask the user if it is OK (only passive tilt)
-			// throw a UserAssistException if they don't like it.
-			if (!userResponse) {
-				throw new HandMarkRequiredException();
+			// if PassiveTilt ask the user if the correct centroids have been found
+			if (procedure.getProcedureType().isPassiveTilt()) {
+			
+				boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
+						"Have the correct centroids been found?");
+		
+				// as part of the display, ask the user if it is OK (only passive tilt)
+				// throw a UserAssistException if they don't like it.
+				if (!userResponse) {
+					throw new HandMarkRequiredException();
+				}
+			
 			}
 
 		} catch (FandIException e1) {
