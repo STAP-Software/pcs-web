@@ -877,17 +877,19 @@ public class ProcedureController implements Serializable {
 		int x = (new Double(xStr)).intValue(); 
 		int y = (new Double(yStr)).intValue(); 
 
-		int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
-		
-		// place within bounds
-		x = (x < 0) ? 0 : x;
-		y = (y < 0) ? 0 : y;
-		x = (x > size-1) ? size-1 : x;
-		y = (y > size-1) ? size-1 : y;
-		
-		int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
-		
-		pixelValue = "" + value;
+		if (selectedFrame.getCcdFrame() != null) {
+			int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
+			
+			// place within bounds
+			x = (x < 0) ? 0 : x;
+			y = (y < 0) ? 0 : y;
+			x = (x > size-1) ? size-1 : x;
+			y = (y > size-1) ? size-1 : y;
+			
+			int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
+			
+			pixelValue = "" + value;
+		}
 	}
 
 

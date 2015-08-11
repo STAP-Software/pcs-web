@@ -201,7 +201,8 @@ public class ProcedureExecutionMgmt {
 		logger.error(MessageGenerator.generateMessage("generic.error"), procedureException);
 
 		statusLogger.log("procedure.exception", procedureException.getMessage());
-
+		
+		
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		procedureExecutionState.setExecutionStatus(false);
 		procedureExecutionState.setProcedureException(procedureException);

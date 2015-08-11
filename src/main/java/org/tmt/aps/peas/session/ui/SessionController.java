@@ -6,22 +6,17 @@
 package org.tmt.aps.peas.session.ui;
 
 import java.io.Serializable;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
-import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
@@ -29,10 +24,12 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.business.SessionMgmt;
+import org.tmt.aps.peas.session.model.ExtInfConnectConfig;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -51,6 +48,8 @@ public class SessionController implements Serializable {
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	PeasProperties peasProperties;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -66,7 +65,10 @@ public class SessionController implements Serializable {
 	Instrument instrument;
 
 	boolean advancedViewMode;
+	boolean extInfSimulationMode = true;
+	
 	String password;
+	
 
 	@PostConstruct
 	private void init() {
@@ -94,6 +96,7 @@ public class SessionController implements Serializable {
 			session = currentSession;
 
 			advancedViewMode = false;
+			
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -152,6 +155,14 @@ public class SessionController implements Serializable {
 		this.advancedViewMode = advancedViewMode;
 	}
 
+	public boolean isExtInfSimulationMode() {
+		return extInfSimulationMode;
+	}
+
+	public void setExtInfSimulationMode(boolean extInfSimulationMode) {
+		this.extInfSimulationMode = extInfSimulationMode;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -160,6 +171,10 @@ public class SessionController implements Serializable {
 		this.password = password;
 	}
 
+
+	public ExtInfConnectConfig getExtInfConnectConfig() {
+		return extInfConfigState.getExtInfConnectConfig();
+	}
 
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;
@@ -302,6 +317,41 @@ public class SessionController implements Serializable {
 			requestContext.update("menuForm");
 		}
 		requestContext.update("procedureDetailForm");
+	}
+
+	public void extInfChangeListener() {
+		// here we check the mode and popup dialog at correct state change
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		if (extInfSimulationMode == true) {
+			
+			// default all the ext interface checkboxes in the dialog only
+//			requestContext.execute("setAllExtInfCheckboxes()");
+			requestContext.execute("extInfDialog.show()");
+			
+		} else {
+			// turn off all the ext interfaces
+			getExtInfConnectConfig().reset();
+			
+			extInfSimulationMode = true;
+			requestContext.update("extInfMode");
+		}
+	}
+
+	public void doExtInfChange(boolean ok) {
+		// here we check the password and change the mode accordingly
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+
+		if (ok) {
+			extInfSimulationMode = false;
+			requestContext.update("menuForm");
+		} else {
+			extInfSimulationMode = true;
+			// turn off all the ext interfaces
+			getExtInfConnectConfig().reset();
+		}
+		
+		requestContext.update("extInfMode");
+
 	}
 
 }

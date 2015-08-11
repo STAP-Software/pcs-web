@@ -165,10 +165,11 @@ public class PupilRegistrationExecutor {
 
 			}
 			
+			procedureExecutionState.setPercentComplete(10);
+
 			
 			procedure.setRefBeamMap(currentRefMap);
 
-			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
 			/**********************************************/
 			/*                 Ready Camera               */
@@ -178,7 +179,7 @@ public class PupilRegistrationExecutor {
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
-			logger.debug("light source 2 = " + procedureConfig.getLightSource());
+			procedureExecutionState.setPercentComplete(20);
 
 			
 			/*****************************************************/
@@ -188,10 +189,13 @@ public class PupilRegistrationExecutor {
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
 			CenterTelescopeCalcResult centerTelescopeCalcResult = centerTelescopeCalc.centerTelescope(procedure, currentSession);
-			
+
+			procedureExecutionState.setPercentComplete(30);
+
 			CentroidOffsetsResult centroidOffsetsResult= centerTelescopeCalcResult.getCentroidOffsetsResult();
 			FloatPoint deltaAzEl = centerTelescopeCalcResult.getDeltaAzEl();
 	
+			procedureExecutionState.setPercentComplete(40);
 			
 			/*****************************************************/
 			/*              calculateCentroidStats               */
@@ -202,6 +206,8 @@ public class PupilRegistrationExecutor {
 			
 			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+
+			procedureExecutionState.setPercentComplete(50);
 
 			/*****************************************************/
 			/*              passiveTiltScaleError                */
@@ -257,7 +263,7 @@ public class PupilRegistrationExecutor {
 			
 			
 
-			procedureExecutionState.setPercentComplete(80);
+			procedureExecutionState.setPercentComplete(70);
 			
 			/*****************************************************/
 			/*            calcPupilRegErrorDefaults              */
@@ -279,7 +285,9 @@ public class PupilRegistrationExecutor {
 				// log values 
 				statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
 						new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
-				
+	
+				procedureExecutionState.setPercentComplete(80);
+
 				
 				BeanUtils.copyProperties(pio, pupilRegErrorResult);
 				BeanUtils.copyProperties(procedureOutput, pupilRegErrorResult);
@@ -321,6 +329,8 @@ public class PupilRegistrationExecutor {
 				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
 			}						
 
+			procedureExecutionState.setPercentComplete(85);
+
 			CoarseTiltMirror coarseMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
 			FineTiltMirror fineMirror = physicalModel.getInstrument().getCamera().getFineTiltMirror();
 
@@ -328,6 +338,7 @@ public class PupilRegistrationExecutor {
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
 			fineMirror, coarseMirror);
 
+			procedureExecutionState.setPercentComplete(90);
 			
 			/*****************************************************/
 			/*         move fine, coarse, both, or none          */

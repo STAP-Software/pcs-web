@@ -10,6 +10,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
@@ -30,7 +31,7 @@ public class ReadyCamera {
 	private CameraMgmt cameraMgmt;
 
 
-
+	@Abortable
 	public void execute(Procedure procedure) throws Throwable {
 		
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();

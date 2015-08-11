@@ -1,0 +1,58 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+  
+		<p:dialog id="extInfDlg" header="Connect to RPC Interfaces" widgetVar="extInfDialog" closable="false" modal="true" resizable="false">  
+    		<h:form id="extInfDialogForm">
+    		<div style="margin: 20px">
+    		<br/>
+    		
+    		
+			<p:fieldset legend="External Interfaces Connection Setup" toggleable="true" toggleSpeed="500">
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<h:outputLabel value="Camera" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.camera}" widgetVar="cameraCheck" />
+
+					<h:outputLabel value="CCD" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.ccd}" widgetVar="ccdCheck" />
+
+					<h:outputLabel value="ACS" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.acs}" widgetVar="acsCheck" />
+
+					<h:outputLabel value="DCS" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.dcs}" widgetVar="dcsCheck" />
+
+				</p:panelGrid>
+
+			</p:fieldset>
+    		
+    		
+    		<br/>
+    		<br/>
+    		</div>   
+    		<p:commandButton id="button1" value="Cancel" style="float:right" update=":growl :errorGrowl :menuForm"
+					action="#{sessionController.doExtInfChange(false)}" oncomplete="extInfDialog.hide();" />
+			<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
+					action="#{sessionController.doExtInfChange(true)}" oncomplete="extInfDialog.hide();"  />
+			</h:form>
+		</p:dialog> 
+		
+<script>
+
+//<![CDATA[		
+		
+	function setAllExtInfCheckboxes() {
+		cameraCheck.check();
+		ccdCheck.check();
+		acsCheck.check();
+		dcsCheck.check();
+	}
+           
+           
+//]]>
+	
+</script>
+
+
+</ui:composition>

@@ -8,6 +8,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
@@ -46,6 +47,7 @@ public class CenterTelescopeCalc {
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
 
+	@Abortable
 	public CenterTelescopeCalcResult centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		
 		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();

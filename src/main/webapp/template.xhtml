@@ -32,19 +32,46 @@
 		<f:event type="javax.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
-		
-		
-				
-		
 		<p:layout fullPage="true">
 
 			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
 
-				<h:outputText value="Phasing Camera System" style="margin:40px;color:#d4f8ff;font-size:30pt;text-shadow: 1px 1px 1px #bbb;" />
-				<h:outputText value="#{sessionController.telescope.telescopeName}" style="margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:panelGroup style="float:left">
+
+				<h:outputText value="Phasing Camera System" style="position: relative; top:10px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="#{sessionController.telescope.telescopeName}" style="position: relative; top:10px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				
+				</h:panelGroup>
+				 <h:panelGroup id="extInfMode" style="float:left">
+				
+				<h:outputText id="extInfSim" value="Simulation Mode: no interfaces connected" style="position:relative; top:20px; margin:40px;color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" 
+					rendered="#{sessionController.extInfSimulationMode}"/>
+
+				<h:panelGrid id="extInfConn" columns="5" rendered="#{!sessionController.extInfSimulationMode}" 
+					columnClasses="btmsFormLabelColumn, btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn" >
+					<p:spacer width="80" height="1"/>
+					<h:outputText value="CAM: " style="position: relative; margin-left:40px; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.camera}" />
+					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.camera}" />
+					<h:outputText value="ACS: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.acs}" />
+					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.acs}" />
+					<p:spacer width="80" height="1"/>
+					<h:outputText value="CCD: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.ccd}" />
+					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.ccd}" />
+					<h:outputText value="DCS: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.dcs}" />
+					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.dcs}" />
+				</h:panelGrid>
+				
+				</h:panelGroup>
+				
+				
 				<div style="float:right;margin-right:30px;margin-top:20px;">
 				<h:outputText value="" style="color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" />
 				</div>
+				
 				<p:ajaxStatus style="display:block;margin-top:1.2em;float:right">
   
     				<f:facet name="start">
@@ -55,6 +82,9 @@
     				</f:facet>
  
  				</p:ajaxStatus>
+ 				
+ 				
+ 				
 				
 			</p:layoutUnit>
 
@@ -81,6 +111,7 @@
 		<ui:include src="modules/util/helpAboutDialog.xhtml"/>
 		<ui:include src="modules/util/helpDialog.xhtml"/>
 		<ui:include src="modules/util/loginDialog.xhtml"/>
+		<ui:include src="modules/config/extInfDialog.xhtml"/>
 
 		
 
