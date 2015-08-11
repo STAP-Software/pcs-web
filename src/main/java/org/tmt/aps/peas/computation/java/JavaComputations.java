@@ -183,7 +183,7 @@ public class JavaComputations {
 	
 		
 		if (!centerPupil) {
-			return new CalcPrCommandsResult(null, null);
+			return new CalcPrCommandsResult(null, null, null, null);
 		}
 	
 		// the desired correction is typically the negative of the pupil reg error result in x and y
@@ -204,7 +204,7 @@ public class JavaComputations {
 			
 			Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), coarseMirrorPosDelta);
 			
-			return new CalcPrCommandsResult(coarseMirrorPosCmds, null);
+			return new CalcPrCommandsResult(coarseMirrorPosCmds, null, coarseMirrorPosDelta, null);
 			
 		} else {
 			// Auto case: if pupilRegError x or y exceeds large move threshold, use coarse, otherwise fine
@@ -216,7 +216,7 @@ public class JavaComputations {
 				// only move coarse				
 				Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), coarseMirrorPosDelta);
 				
-				return new CalcPrCommandsResult(coarseMirrorPosCmds, null);
+				return new CalcPrCommandsResult(coarseMirrorPosCmds, null, coarseMirrorPosDelta, null);
 				
 			} else {
 				
@@ -243,12 +243,14 @@ public class JavaComputations {
 
 			Point coarseMirrorPosCmds = Point.add(coarseTiltMirror.getCurrentPosition(), offloadedCoarseDelta);
 
+			Point fineMirrorDelta = Point.multiply(fineTiltMirror.getCurrentPosition(), -1);
+			
 			// return commands for coarse mirror and send fine to 0,0
-			return new CalcPrCommandsResult(coarseMirrorPosCmds, new Point(0,0), true);
+			return new CalcPrCommandsResult(coarseMirrorPosCmds, new Point(0,0), offloadedCoarseDelta, fineMirrorDelta, true);
 			
 		} else {
 			// just command fine mechanism
-			return new CalcPrCommandsResult(null, fineMirrorPosCmds, false);
+			return new CalcPrCommandsResult(null, fineMirrorPosCmds, null, fineMirrorDeltas, false);
 		}
 
 	}

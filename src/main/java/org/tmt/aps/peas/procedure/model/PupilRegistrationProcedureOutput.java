@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
 // TODO - display i/fs need to change
@@ -36,6 +36,11 @@ public class PupilRegistrationProcedureOutput extends ProcedureOutput implements
 	private float regScaleError; // scale error
 
 	
+	private Point coarseMirrorCommands;
+	private Point fineMirrorCommands;
+	private boolean offloaded;
+	private Point coarseMirrorDeltas;
+	private Point fineMirrorDeltas;
 	
 	
 	public FloatPoint getTranslationFromRefBeam() {
@@ -153,6 +158,36 @@ public class PupilRegistrationProcedureOutput extends ProcedureOutput implements
 	}
 	public void setRegScaleError(float regScaleError) {
 		this.regScaleError = regScaleError;
+	}
+	public Point getCoarseMirrorCommands() {
+		return coarseMirrorCommands;
+	}
+	public void setCoarseMirrorCommands(Point coarseMirrorCommands) {
+		this.coarseMirrorCommands = coarseMirrorCommands;
+	}
+	public Point getFineMirrorCommands() {
+		return fineMirrorCommands;
+	}
+	public void setFineMirrorCommands(Point fineMirrorCommands) {
+		this.fineMirrorCommands = fineMirrorCommands;
+	}
+	public boolean isOffloaded() {
+		return offloaded;
+	}
+	public void setOffloaded(boolean offloaded) {
+		this.offloaded = offloaded;
+	}
+	public Point getCoarseMirrorDeltas() {
+		return coarseMirrorDeltas;
+	}
+	public void setCoarseMirrorDeltas(Point coarseMirrorDeltas) {
+		this.coarseMirrorDeltas = coarseMirrorDeltas;
+	}
+	public Point getFineMirrorDeltas() {
+		return fineMirrorDeltas;
+	}
+	public void setFineMirrorDeltas(Point fineMirrorDeltas) {
+		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
 	
 	

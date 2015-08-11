@@ -8,36 +8,48 @@ public class CalcPrCommandsResult {
 	Point coarseMirrorCommands;
 	Point fineMirrorCommands;
 	boolean offloaded;
+	Point coarseMirrorDeltas;
+	Point fineMirrorDeltas;
 	
-	public CalcPrCommandsResult(Point coarseMirrorCommands, Point fineMirrorCommands) {
+	public CalcPrCommandsResult(Point coarseMirrorCommands, Point fineMirrorCommands, Point coarseMirrorDeltas, Point fineMirrorDeltas) {
 		this.coarseMirrorCommands = coarseMirrorCommands;
 		this.fineMirrorCommands = fineMirrorCommands;
+		this.coarseMirrorDeltas = coarseMirrorDeltas;
+		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
 
-	public CalcPrCommandsResult(Point coarseMirrorCommands, Point fineMirrorCommands, boolean offloaded) {
+	public CalcPrCommandsResult(Point coarseMirrorCommands, Point fineMirrorCommands,  Point coarseMirrorDeltas, Point fineMirrorDeltas, boolean offloaded) {
 		this.coarseMirrorCommands = coarseMirrorCommands;
 		this.fineMirrorCommands = fineMirrorCommands;
+		this.coarseMirrorDeltas = coarseMirrorDeltas;
+		this.fineMirrorDeltas = fineMirrorDeltas;
 		this.offloaded = offloaded;
 	}
 
-	public boolean hasCoarseCommands() {
+	public boolean hasCoarseMirrorCommands() {
 		
 		return coarseMirrorCommands != null;
 	}
 
-	public boolean hasFineCommands() {
+	public boolean hasFineMirrorCommands() {
 		
 		return fineMirrorCommands != null;
 	}
 
-	public Point getCoarseCommands() {
-		
+	public Point getCoarseMirrorCommands() {
 		return coarseMirrorCommands;
 	}
 
-	public Point getFineCommands() {
-		
+	public Point getFineMirrorCommands() {
 		return fineMirrorCommands;
+	}
+
+	public Point getCoarseMirrorDeltas() {
+		return coarseMirrorDeltas;
+	}
+
+	public Point getFineMirrorDeltas() {
+		return fineMirrorDeltas;
 	}
 
 	public boolean isOffloaded() {

@@ -138,4 +138,8 @@ public class Point {
 	public static Point add(Point p1, Point p2) {
 		return new Point(p1.x + p2.x, p1.y + p2.y);
 	}
+	public static Point multiply(Point p1, int val) {
+		return new Point(p1.x * val, p1.y * val);
+	}
+
 }
