@@ -325,7 +325,7 @@ public class SessionController implements Serializable {
 		if (extInfSimulationMode == true) {
 			
 			// default all the ext interface checkboxes in the dialog only
-//			requestContext.execute("setAllExtInfCheckboxes()");
+			requestContext.execute("setAllExtInfCheckboxes()");
 			requestContext.execute("extInfDialog.show()");
 			
 		} else {
