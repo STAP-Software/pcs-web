@@ -35,9 +35,9 @@ public class StatusLogController implements Serializable {
 	
 	public ProcedureStatusLog getProcedureStatusLog() {
 		if (procedureStatusLog == null || procedureStatusLog.getLogEntryList() == null) {
-			logger.debug("getProcedureStatusLog:: " + procedureStatusLog);
+			//logger.debug("getProcedureStatusLog:: " + procedureStatusLog);
 		} else {
-			logger.debug("getProcedureStatusLog:: " + procedureStatusLog.getLogEntryList().size());		
+			//logger.debug("getProcedureStatusLog:: " + procedureStatusLog.getLogEntryList().size());		
 		}
 		return procedureStatusLog;
 	}

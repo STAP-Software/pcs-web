@@ -216,9 +216,14 @@ public class PupilRegistrationExecutor {
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			ScaleError scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
+			ScaleError scaleError = new ScaleError(0.0f, 0.0f); // initialize to zero for PH case which does not compute it
+			
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+			
+				scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
+			}
 			
 			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
 			procedureOutput.addIteration(pio);

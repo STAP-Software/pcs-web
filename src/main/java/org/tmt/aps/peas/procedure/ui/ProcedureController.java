@@ -868,8 +868,11 @@ public class ProcedureController implements Serializable {
 
 		}
 	}
+
 	
 	public void doGetFrameValue() {
+		
+		
 		// TODO: get the x,y from the form and use it to populate the value field
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
@@ -877,7 +880,7 @@ public class ProcedureController implements Serializable {
 		int x = (new Double(xStr)).intValue(); 
 		int y = (new Double(yStr)).intValue(); 
 
-		if (selectedFrame.getCcdFrame() != null) {
+		if (selectedFrame.getCcdFrame().getRawFrame() != null) {
 			int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
 			
 			// place within bounds
@@ -889,7 +892,10 @@ public class ProcedureController implements Serializable {
 			int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
 			
 			pixelValue = "" + value;
+			
+			
 		}
+		
 	}
 
 

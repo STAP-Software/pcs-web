@@ -107,8 +107,15 @@ public class ProcedureExecutionMgmt {
 		procedure.setInstrument(physicalModel.getInstrument());
 		procedure.setTelescope(physicalModel.getTelescope());
 
-		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType();
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
+		// need to propagate pupilMask and filter types into to procedureConfig object
+		// FIXME: this needs to be handled more automatically within the model classes
+		procedureConfig.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
+		procedureConfig.setFilterType(procedureConfig.getFilter().getFilterType());
+		
+		PupilMaskType pupilMaskType = procedureConfig.getPupilMaskType();
+
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
