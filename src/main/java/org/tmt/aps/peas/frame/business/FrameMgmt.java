@@ -214,7 +214,14 @@ public class FrameMgmt {
 				// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
 				// TODO: This needs to be improved to get a frame from file given the procedure type
 				// TODO: the filename should be part of the peas.properties
-				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+				
+				if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+				} else if (procedureConfig.getPupilMaskType().isPupilMaskTypePh()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_041_01.FTS");
+				} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_018_01.FTS");
+				}
 				byte[] falseColorPng = loadPng(ccdFrame, true);
 				ccdFrame.setFalseColorPng(falseColorPng);
 				// simulate camera state too

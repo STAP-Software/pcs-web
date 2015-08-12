@@ -334,9 +334,10 @@ public class ProcedureExecutionMgmt {
 
 		// if the executionStatus is 'running', then we must be starting a sub-procedure
 		boolean isSubProcedure = procedureExecutionState.getExecutionStatus();
-		String superProcedureNum = isSubProcedure ? procedureExecutionState.getCurrentProcedure().getProcedureNumber() : null;
+		Procedure superProcedure = isSubProcedure ? procedureExecutionState.getCurrentProcedure() : null;
+		String superProcedureNumber = (superProcedure == null) ? null : superProcedure.getProcedureNumber();
 
-		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNum);
+		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNumber);
 		procedure.setProcedureNumber(procNum);
 
 		ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(
@@ -348,24 +349,43 @@ public class ProcedureExecutionMgmt {
 		// and associate it with the procedure
 		procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
 
-		// get the default mask, if it is installed on the wheel
-		PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
-				physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
-
-		procedureConfig.setPupilMask(defaultMask);
-
-		// get the filter to default to if it exists
-		Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(),
-				physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
-
-		procedureConfig.setFilter(defaultFilter);
+		
+		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask and filter
+		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
+			
+			// get pupilMask and Filter from the parent
+			PupilMask refMapMask = superProcedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+			procedureConfig.setPupilMask(refMapMask);
+			procedureConfig.setPupilMaskType(refMapMask.getPupilMaskType());
+			
+			Filter refMapFilter = superProcedure.getProcedureConfigSet().getProcedureConfig().getFilter();
+			procedureConfig.setFilter(refMapFilter);
+			procedureConfig.setFilterType(refMapFilter.getFilterType());
+						
+		} else {
+		
+			// get the default mask, if it is installed on the wheel
+			PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
+					physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+	
+			procedureConfig.setPupilMask(defaultMask);
+	
+			// get the filter to default to if it exists
+			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
+	
+			procedureConfig.setFilter(defaultFilter);
+		
+		}
+		
 
 		// if procedure type is create ref map, then populate ref beam and integration times from the table
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// these get set into procedure config
 			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(),
-					defaultMask.getPupilMaskType().getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
+					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+					procedureConfig.getFilter().getFilterType().getFilterTypeId());
 		}
 
 		// select defaults based on mask and light source
