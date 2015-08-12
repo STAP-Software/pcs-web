@@ -69,7 +69,7 @@ public class ExtInfFactory {
 
 		try {
 
-			if (extInfConfigState.getExtInfConnectConfig().isAcs()) {
+			if (extInfConfigState.getExtInfConnectConfig().isAcsEnabled()) {
 				return getAcsCommandRemote(telescopeId);
 			} else {
 				return new AcsCommandSimulator();
@@ -87,7 +87,7 @@ public class ExtInfFactory {
 
 		try {
 
-			if (extInfConfigState.getExtInfConnectConfig().isCamera()) {
+			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 				return getCameraCommandRemote(telescopeId);
 			} else {
 				return new CameraCommandSimulator();
@@ -103,7 +103,7 @@ public class ExtInfFactory {
 
 		try {
 			
-			if (extInfConfigState.getExtInfConnectConfig().isCcd()) {
+			if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
 				return getCcdCommandRemote(telescopeId);
 			} else {
 				return new CcdCommandSimulator();
@@ -119,7 +119,7 @@ public class ExtInfFactory {
 
 		try {
 
-			if (extInfConfigState.getExtInfConnectConfig().isDcs()) {
+			if (extInfConfigState.getExtInfConnectConfig().isDcsEnabled()) {
 				return getDcsCommandRemote(telescopeId);
 			} else {
 				return dcsCommandSimulator;

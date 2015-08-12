@@ -32,10 +32,13 @@
 		<f:event type="javax.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
+
+
 		<p:layout fullPage="true">
 
 			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
-
+					
+				<h:form id="topForm">
 				<h:panelGroup style="float:left">
 
 				<h:outputText value="Phasing Camera System" style="position: relative; top:10px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
@@ -45,27 +48,24 @@
 				 <h:panelGroup id="extInfMode" style="float:left">
 				
 				<h:outputText id="extInfSim" value="Simulation Mode: no interfaces connected" style="position:relative; top:20px; margin:40px;color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" 
-					rendered="#{sessionController.extInfSimulationMode}"/>
+					rendered="#{sessionController.renderSimulationMode}"/>
 
-				<h:panelGrid id="extInfConn" columns="5" rendered="#{!sessionController.extInfSimulationMode}" 
+				<h:panelGrid id="extInfConn" columns="5" rendered="#{!sessionController.renderSimulationMode}" 
 					columnClasses="btmsFormLabelColumn, btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn" >
 					<p:spacer width="80" height="1"/>
 					<h:outputText value="CAM: " style="position: relative; margin-left:40px; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
-					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.camera}" />
-					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.camera}" />
+					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					<h:outputText value="ACS: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
-					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.acs}" />
-					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.acs}" />
+					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					<p:spacer width="80" height="1"/>
 					<h:outputText value="CCD: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
-					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.ccd}" />
-					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.ccd}" />
+					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					<h:outputText value="DCS: " style="position: relative; margin-left:40px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
-					<h:outputText value="Connected" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.dcs}" />
-					<h:outputText value="Simulator" style="position: relative; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{!sessionController.extInfConnectConfig.dcs}" />
+					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 				</h:panelGrid>
 				
 				</h:panelGroup>
+				<p:poll async="true" immediate="true" interval="2" update="extInfMode" />
 				
 				
 				<div style="float:right;margin-right:30px;margin-top:20px;">
@@ -84,7 +84,7 @@
  				</p:ajaxStatus>
  				
  				
- 				
+ 				</h:form>
 				
 			</p:layoutUnit>
 

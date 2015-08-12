@@ -23,13 +23,11 @@ public class ExtInfConfigState {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	ExtInfConnectConfig extInfConnectConfig;
-
 	
 	@PostConstruct
 	void init() throws Exception {
 		
 		extInfConnectConfig = new ExtInfConnectConfig();
-
 
 	}
 
@@ -38,5 +36,6 @@ public class ExtInfConfigState {
 	public ExtInfConnectConfig getExtInfConnectConfig() {
 		return extInfConnectConfig;
 	}
+
 
 }

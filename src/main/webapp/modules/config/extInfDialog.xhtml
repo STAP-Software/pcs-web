@@ -12,16 +12,16 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 					<h:outputLabel value="Camera" />
-					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.camera}" widgetVar="cameraCheck" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.cameraEnabled}" widgetVar="cameraCheck" />
 
 					<h:outputLabel value="CCD" />
-					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.ccd}" widgetVar="ccdCheck" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.ccdEnabled}" widgetVar="ccdCheck" />
 
 					<h:outputLabel value="ACS" />
-					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.acs}" widgetVar="acsCheck" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.acsEnabled}" widgetVar="acsCheck" />
 
 					<h:outputLabel value="DCS" />
-					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.dcs}" widgetVar="dcsCheck" />
+					<p:selectBooleanCheckbox value="#{sessionController.extInfConnectConfig.dcsEnabled}" widgetVar="dcsCheck" />
 
 				</p:panelGrid>
 
