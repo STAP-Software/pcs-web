@@ -78,6 +78,9 @@ public class AsyncController {
 		return frameDisplayMgmt.getPendingMarkAction();
 	}
 
+	public boolean getAbortRequested() {
+		return procedureExecutionState.getAbortRequested();
+	}
 
 	public void asyncListener() {
 
