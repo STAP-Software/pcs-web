@@ -301,13 +301,15 @@ public class PupilRegistrationExecutor {
 			// what the commands are and which mechanisms to move.
 			
 			// prompt user with registration error values
-			
+			String text = MessageGenerator.generateMessage("calc.pupil_reg_error", 
+			new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f));
+				
 			boolean centerPupil = false;
 			if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_PROMPT) {
 				// ask the user
 				
-				// TODO: include the PR error result in the dialog
-				centerPupil = userPromptMgmt.displayYesNoDialog("\nSend commands to correct pupil registration errors?");
+				// include the PR error result in the dialog
+				centerPupil = userPromptMgmt.displayYesNoDialog(text + "\n\nSend commands to correct pupil registration errors?");
 				
 			} else {
 				centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
@@ -319,9 +321,6 @@ public class PupilRegistrationExecutor {
 				String[] choices = {"Fine", "Coarse", "AutoDetermine"};
 				int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
 				
-				String text = MessageGenerator.generateMessage("calc.pupil_reg_error", 
-				new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
-				new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
 				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
 						choices, values);
 							
@@ -374,13 +373,7 @@ public class PupilRegistrationExecutor {
 				statusLogger.log("camera.cmd.complete");
 			}
 			
-			
-			// fill the iteration output: TODO all pupilRegErrorResultFields
-			// TODO: what was moved and how much
-
-
-			
-					
+								
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setPercentComplete(100);
