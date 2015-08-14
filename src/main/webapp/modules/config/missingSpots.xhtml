@@ -76,17 +76,14 @@
 <script type="text/javascript">  
 //<![CDATA[
     
-
-  
 function runDrawMissingSpots() {
-	
-	window.setTimeout("drawSpots()", 100);
+	window.setTimeout("drawMissingSpots()", 100);
 }
 
 
-function drawSpots() {
-	
-	alert("in drawSpots");
+
+
+function drawMissingSpots() {
 	
 	var c = document.getElementById("spotCanvas");
 	var ctx = c.getContext("2d");
@@ -116,8 +113,6 @@ function drawSpots() {
 	}
 	
 	ctx.font = fontSize + "px Arial";
-			
-	alert("length = " + numbersArray.length);
 	
 	for (i = 0; i < numbersArray.length; i++) {
 		var missingSpot = false;
@@ -134,12 +129,13 @@ function drawSpots() {
 		}
 		ctx.fillText(numbersArray[i], (xArray[i] * 0.78) - 45, (yArray[i] * 0.78) - 20);	
 	}
+	
 }
 
 $(window).load(function() {
-	alert("^^");
-	window.setTimeout("drawSpots()", 1000);
-	alert("past drawSpots");
+
+	window.setTimeout("drawMissingSpots()", 1000);
+
 });
 
 
