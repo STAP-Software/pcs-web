@@ -16,9 +16,8 @@
 						</p:column>
 						<p:column styleClass="btmsFormInputColumn">
 							<p:selectOneMenu value="#{frameController.pupilMask}" converter="#{pupilMaskConverter}">
-								<f:selectItem itemLabel="Select One" itemValue=""/> 
 								<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
-								<p:ajax update=":markingForm markingInfoTable" listener="#{frameController.doSetupMarkingInfoDialog}" />
+								<p:ajax update=":markingForm markingInfoTable" listener="#{frameController.doUpdateMarkingInfoDialog}" />
 							</p:selectOneMenu>
 						</p:column>
 					</p:row>
