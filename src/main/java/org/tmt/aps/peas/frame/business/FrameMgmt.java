@@ -228,6 +228,9 @@ public class FrameMgmt {
 				CameraState cameraState = new CameraState();
 				cameraState.setCcdTemp(44.4f);
 				ccdFrame.setCameraState(cameraState);
+				Instrument instrument = physicalModel.getInstrument();
+				ccdFrame.setInstrumentId(instrument.getInstrumentId());
+
 
 
 			} else {
