@@ -126,7 +126,7 @@ public class ProcedureExecutionMgmt {
 		
 		// get FIDefaults and create a procedure related copy
 		// FIXME: This would overwrite whatever the user wanted
-		/*
+	
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
 			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
@@ -138,7 +138,7 @@ public class ProcedureExecutionMgmt {
 
 			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
 		}
-		*/
+		
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now

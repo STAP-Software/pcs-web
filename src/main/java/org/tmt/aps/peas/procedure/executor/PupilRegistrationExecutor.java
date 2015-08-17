@@ -306,8 +306,9 @@ public class PupilRegistrationExecutor {
 			// what the commands are and which mechanisms to move.
 			
 			// prompt user with registration error values
-			String text = MessageGenerator.generateMessage("calc.pupil_reg_error", 
-			new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f));
+			FloatPoint regErrorMm = new FloatPoint(pupilRegErrorResult.getRegErrorX() * 1000.0f, pupilRegErrorResult.getRegErrorY() * 1000.0f);
+				
+			String text = MessageGenerator.generateMessage("calc.pupil_reg_error", regErrorMm.x, regErrorMm.y);
 				
 			boolean centerPupil = false;
 			if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_PROMPT) {
@@ -316,9 +317,15 @@ public class PupilRegistrationExecutor {
 				// include the PR error result in the dialog
 				centerPupil = userPromptMgmt.displayYesNoDialog(text + "\n\nSend commands to correct pupil registration errors?");
 				
-			} else {
-				centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
-			}
+			} else if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES) {
+				
+				// only move if error more than centerPupilThresh
+				float centerPupilThresh = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getCenterPupilThresh();
+				if (regErrorMm.x > centerPupilThresh || regErrorMm.y > centerPupilThresh) {
+				
+					centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
+				}
+			} 
 			
 			int desiredCenterPupilMech = 0;
 			if (procedureConfig.getAutoCenterPupilMechanism() == Constants.AUTO_CENTER_PUPIL_MECH_PROMPT) {

@@ -35,6 +35,7 @@ public class PupilRegErrorConfig {
 	
 	private int fractionalIntensityCalcMethod;
 	private int nStart;
+	private float centerPupilThresh;
 
 	public PupilRegErrorConfig() {
 		
@@ -54,35 +55,36 @@ public class PupilRegErrorConfig {
 	}
 
 	
-
-
 	public Long getPupilRegErrorConfigId() {
 		return pupilRegErrorConfigId;
 	}
-
 
 	public void setPupilRegErrorConfigId(Long pupilRegErrorConfigId) {
 		this.pupilRegErrorConfigId = pupilRegErrorConfigId;
 	}
 
-
 	public int getFractionalIntensityCalcMethod() {
 		return fractionalIntensityCalcMethod;
 	}
-
 
 	public void setFractionalIntensityCalcMethod(int fractionalIntensityCalcMethod) {
 		this.fractionalIntensityCalcMethod = fractionalIntensityCalcMethod;
 	}
 
-
 	public int getnStart() {
 		return nStart;
 	}
 
-
 	public void setnStart(int nStart) {
 		this.nStart = nStart;
+	}
+
+	public float getCenterPupilThresh() {
+		return centerPupilThresh;
+	}
+
+	public void setCenterPupilThresh(float centerPupilThresh) {
+		this.centerPupilThresh = centerPupilThresh;
 	}
 
 
