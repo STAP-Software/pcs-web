@@ -125,6 +125,8 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
 		// get FIDefaults and create a procedure related copy
+		// FIXME: This would overwrite whatever the user wanted
+		/*
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
 			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
@@ -135,14 +137,8 @@ public class ProcedureExecutionMgmt {
 			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
 
 			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
-
 		}
-
-		// load up pupilRegError config
-		if (pupilMaskType.isPupilMaskTypePh() || pupilMaskType.isPupilMaskTypeFs()) {
-			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = globalConfigMgmt.findPupilRegErrorConfig(pupilMaskType.getPupilMaskTypeId());
-			procedure.getProcedureConfigSet().setPupilRegErrorConfig(new PupilRegErrorConfig(pupilRegErrorConfigDefaults));
-		}
+		*/
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now
@@ -414,6 +410,14 @@ public class ProcedureExecutionMgmt {
 				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
 
+		// set pupilRegErrorCalc defaults based on pupilMaskType
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypePh() || procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = 
+					globalConfigMgmt.findPupilRegErrorConfig(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			PupilRegErrorConfig pupilRegErrorConfig = new PupilRegErrorConfig(pupilRegErrorConfigDefaults);
+			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
+		}
+
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
 				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
@@ -424,6 +428,9 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		
+		
+		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();
 
