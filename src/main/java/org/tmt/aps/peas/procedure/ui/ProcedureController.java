@@ -45,6 +45,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -691,27 +692,7 @@ public class ProcedureController implements Serializable {
 
 	}
 
-	public void doUpdatePupilMask() {
 
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-
-			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
-	}
-
-	public void doUpdateFilter() {
-
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-
-			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
-	}
 
 	public void doSaveContext() {
 
@@ -738,6 +719,10 @@ public class ProcedureController implements Serializable {
 		frameInstrument.updateState(cameraState);
 	}
 
+	// ====================================================================================== //
+	// Select Listeners                                                                       //
+	// ====================================================================================== //
+
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
@@ -749,6 +734,35 @@ public class ProcedureController implements Serializable {
 		logger.debug("int time = " + intTime);
 	}
 
+	public void pupilMaskSelectListener() throws Exception {
+
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+		
+		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+	}
+
+	public void filterSelectListener() {
+
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+	}	
+	public void lightSourceSelectListener() throws Exception {
+		
+		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+
+	}
+	
 	// ====================================================================================== //
 	// Frame Displays //
 	// ====================================================================================== //

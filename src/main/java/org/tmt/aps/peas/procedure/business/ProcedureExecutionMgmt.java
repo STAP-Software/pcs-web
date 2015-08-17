@@ -124,20 +124,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
-		// get FIDefaults and create a procedure related copy
-		// FIXME: This would overwrite whatever the user wanted
-	
-		if (!procedure.getProcedureType().isCenterTelescope()) {
 
-			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
-					pupilMaskType.getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
-
-			// use defaults as actuals if user doesn't subsequently change them
-			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
-
-			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
-		}
 		
 		logger.info("performProcedureStartup 3");
 
@@ -392,18 +379,7 @@ public class ProcedureExecutionMgmt {
 		}
 
 		// select defaults based on mask and light source
-		if (!procedure.getProcedureType().isCenterTelescope()) {
-
-			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
-
-			// use defaults as actuals if user doesn't subsequently change them
-			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
-
-			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
-
-		}
+		reloadFIConfig(procedure, physicalModel.getInstrument().getInstrumentId());
 
 		// set centroid offsets calculation defaults based on procedure type
 		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt
@@ -452,6 +428,22 @@ public class ProcedureExecutionMgmt {
 		List<Float> integrationTimeList = new ArrayList<Float>();
 		integrationTimeList.add(refMapConfigDefaults.getIntegrationTime());
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTimeList(integrationTimeList);
+	}
+	
+	public void reloadFIConfig(Procedure procedure, Long instrumentId) throws Exception {
+		
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+
+			PupilMask selectedMask = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+		
+			// reload FI Config Defaults when pupil mask changes
+			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(instrumentId, 
+					selectedMask.getPupilMaskType().getPupilMaskTypeId(),
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		
+			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
+		}
+		
 	}
 
 }

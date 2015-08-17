@@ -53,7 +53,7 @@
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue=""/> 
 										<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
-										<p:ajax update=":advancedForm intTime" listener="#{procedureController.doUpdatePupilMask}" />
+										<p:ajax update=":advancedForm intTime" listener="#{procedureController.pupilMaskSelectListener}" />
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
