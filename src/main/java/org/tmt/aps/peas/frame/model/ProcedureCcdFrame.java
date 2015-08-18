@@ -30,6 +30,7 @@ import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 	@NamedQuery(name = "findAllFramesForProcedure", query = "SELECT pcf from ProcedureCcdFrame pcf "
 			+ "INNER JOIN FETCH pcf.ccdFrame INNER JOIN FETCH pcf.procedure p left outer join fetch pcf.centroidMap where p.procedureId = :procedureId" ),
 	@NamedQuery(name = "findProcedureCcdFramesShallow", query = "SELECT pcf from ProcedureCcdFrame pcf "
+			+ "INNER JOIN FETCH pcf.ccdFrame cf INNER JOIN FETCH cf.cameraState "
 			+ "INNER JOIN pcf.procedure p where p.procedureId = :procedureId" )
 
 })

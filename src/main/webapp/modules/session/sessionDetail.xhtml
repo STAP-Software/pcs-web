@@ -123,22 +123,26 @@
                 					</f:facet>
 
 									<h:outputLabel value="Integration Time (sec)" />
-									<h:outputText value="15.00" />
+									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" />
 	
 									<h:outputLabel value="Telescope Elevation (deg)" />
-									<h:outputText value="66.25" />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" />
 									
 									<h:outputLabel value="Star Name" />
 									<h:outputText value="#{procedure.starName}" />
 									
 									<h:outputLabel value="Coarse Mirror (x, y) (um)" />
 									<h:panelGroup>
-									<h:outputText value="264" /><h:outputText value=", " /><h:outputText value="264" />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
+									<h:outputText value=", " />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorY}" />
 									</h:panelGroup>
 									
 									<h:outputLabel value="Fine Mirror (x, y) (um)" />
 									<h:panelGroup>
-									<h:outputText value="264" /><h:outputText value=", " /><h:outputText value="264" />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateX}" />
+									<h:outputText value=", " />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateY}" />
 									</h:panelGroup>
 								
 								</p:panelGrid>

@@ -224,13 +224,28 @@ public class FrameMgmt {
 				}
 				byte[] falseColorPng = loadPng(ccdFrame, true);
 				ccdFrame.setFalseColorPng(falseColorPng);
+				
 				// simulate camera state too
-				CameraState cameraState = new CameraState();
-				cameraState.setCcdTemp(44.4f);
-				ccdFrame.setCameraState(cameraState);
 				Instrument instrument = physicalModel.getInstrument();
+				CameraState cameraState = new CameraState(instrument);
+				//cameraState.setCcdTemp(44.4f);
+				//cameraState.setSteeringMirrorX(234);
+				//cameraState.setSteeringMirrorY(2);
+				//cameraState.setTiltPlateX(35);
+				//cameraState.setTiltPlateY(-7);
+				ccdFrame.setCameraState(cameraState);
 				ccdFrame.setInstrumentId(instrument.getInstrumentId());
 
+				telescopeMgmt.refreshStatus();
+				
+				// store telescope information with frame when it is taken
+				Telescope telescope = physicalModel.getTelescope();
+				ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+				ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
+				ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
+				ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+				ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
+				ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 
 
 			} else {
