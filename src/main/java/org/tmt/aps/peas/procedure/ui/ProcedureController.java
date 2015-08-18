@@ -745,6 +745,7 @@ public class ProcedureController implements Serializable {
 		}
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
 	}
 
 	public void filterSelectListener() {

@@ -386,6 +386,9 @@ public class ProcedureExecutionMgmt {
 				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
 
+		// select defaults based on pupil mask
+		reloadPupilRegErrorConfig(procedure);
+		
 		// set pupilRegErrorCalc defaults based on pupilMaskType
 		if (procedureConfig.getPupilMaskType().isPupilMaskTypePh() || procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
 			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = 
@@ -444,6 +447,20 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
 		}
 		
+	}
+	
+	public void reloadPupilRegErrorConfig(Procedure procedure) throws Exception {
+	
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();	
+			
+		// set pupilRegErrorCalc defaults based on pupilMaskType
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypePh() || procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = 
+					globalConfigMgmt.findPupilRegErrorConfig(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			PupilRegErrorConfig pupilRegErrorConfig = new PupilRegErrorConfig(pupilRegErrorConfigDefaults);
+			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
+		}
+	
 	}
 
 }
