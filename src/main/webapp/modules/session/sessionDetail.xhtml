@@ -3,7 +3,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
 
 
 
@@ -89,15 +90,12 @@
 							<h:outputText
 								value="#{procedure.procedureType.procedureTypeName}" />
 						</p:column>
-						<p:column headerText="Started" style="width:10%">
-							<h:outputText value="#{procedure.executionStartTime}" >
-								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
-							</h:outputText>
-							<p:spacer width="6px"/>
-							<h:outputText value="UTC"/>
+						<p:column headerText="Frames">
+							<h:outputText
+								value="#{fn:length(procedure.procedureCcdFrameList)}" />
 						</p:column>
-						<p:column headerText="Completed" style="width:10%">
-							<h:outputText value="#{procedure.executionEndTime}" >
+						<p:column headerText="Start Time" style="width:10%">
+							<h:outputText value="#{procedure.executionStartTime}" >
 								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
 							</h:outputText>
 							<p:spacer width="6px"/>
@@ -113,57 +111,84 @@
 						</p:column>
 
 						<p:rowExpansion>
-							<p:panelGrid columns="4" style="margin:20px; width:550px"
-								styleClass="pcsForm"
-								columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
+							<p:panelGrid columns="3" style="margin:5px; width:800px"
+								styleClass="pcsFormNoBorder alignTop">
 
+								<p:panelGrid columns="2"
+									styleClass="pcsFormNoBorder" style="width:250px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-								<h:outputLabel value="Integration Time (sec)" />
-								<h:outputText value="15.00" />
+									<f:facet name="header">
+                    					General 
+                					</f:facet>
 
-								<h:outputLabel value="Telescope Elevation (deg)" />
-								<h:outputText value="66.25" />
+									<h:outputLabel value="Integration Time (sec)" />
+									<h:outputText value="15.00" />
+	
+									<h:outputLabel value="Telescope Elevation (deg)" />
+									<h:outputText value="66.25" />
+									
+									<h:outputLabel value="Star Name" />
+									<h:outputText value="#{procedure.starName}" />
+									
+									<h:outputLabel value="Coarse Mirror (x, y) (um)" />
+									<h:panelGroup>
+									<h:outputText value="264" /><h:outputText value=", " /><h:outputText value="264" />
+									</h:panelGroup>
+									
+									<h:outputLabel value="Fine Mirror (x, y) (um)" />
+									<h:panelGroup>
+									<h:outputText value="264" /><h:outputText value=", " /><h:outputText value="264" />
+									</h:panelGroup>
+								
+								</p:panelGrid>
+								
+								<p:panelGrid columns="2"
+									styleClass="pcsFormNoBorder" style="width:220px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-								<h:outputLabel value="FWHM (pix)" />
-								<h:outputText value="2.90" />
+									<f:facet name="header">
+                    					M1, M2 
+                					</f:facet>
 
-								<h:outputLabel value="ACS commands sent" />
-								<h:outputText value="No" />
+									<h:outputLabel value="M1 Cmds RMS (nm)" />
+									<h:outputText value="nan" />
+	
+									<h:outputLabel value="Secondary Theta X (deg)" />
+									<h:outputText value="0.56" />
+	
+									<h:outputLabel value="Secondary Theta Y (deg)" />
+									<h:outputText value="3.2" />
+	
+									<h:outputLabel value="Secondary Focus (units??)" />
+									<h:outputText value="6.65" />
 
-								<h:outputLabel value="Theta80 (pix)" />
-								<h:outputText value="6.36" />
+								</p:panelGrid>
 
-								<h:outputLabel value="Number of Frames" />
-								<h:outputText value="1" />
+								<p:panelGrid columns="2" 
+									styleClass="pcsFormNoBorder" style="width:300px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-								<h:outputLabel value="Centroid RMS (pix)" />
-								<h:outputText value="1.74" />
+									<f:facet name="header">
+                    					Phasing 
+                					</f:facet>
+	
+									<h:outputLabel value="Phasing Piston RMS (units??)" />
+									<h:outputText value="6.36" />
+	
+									<h:outputLabel value="Phasing Residuals (units??)" />
+									<h:outputText value="8.88" />
+	
+									<h:outputLabel value="Number of Phasing Edges" />
+									<h:outputText value="83" />
+	
+									<h:outputLabel value="RMS of M1 commands FM only (units??)" />
+									<h:outputText value="0" />
+	
+									<h:outputLabel value="RMS of M1 commands no FM (units??)" />
+									<h:outputText value="0" />
 
-								<h:outputLabel value="ACS Snap # After" />
-								<h:outputText value="0" />
-
-								<h:outputLabel value="Act Cmd RMS (nm)" />
-								<h:outputText value="nan" />
-
-								<h:outputLabel value="Star Name" />
-								<h:outputText value="#{procedure.starName}" />
-
-								<h:outputLabel value="Equiv. Focus Mode (nm)" />
-								<h:outputText value="0.0" />
-
-								<h:outputLabel value="Star Sp Type" />
-								<h:outputText value="#{procedure.starSpType}" />
-
-								<h:outputLabel value="Coarse Mirror X (um)" />
-								<h:outputText value="264" />
-
-								<h:outputLabel value="Star Vmag" />
-								<h:outputText value="#{procedure.starVmag}" />
-
-								<h:outputLabel value="Coarse Mirror Y (um)" />
-								<h:outputText value="-1" />
-
-
+							</p:panelGrid>
 							</p:panelGrid>
 
 						</p:rowExpansion>
