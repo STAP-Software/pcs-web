@@ -147,6 +147,9 @@ public class PupilRegistrationExecutor {
 
 			if (currentRefMap == null) {
 
+				// pupil registration only cares if we have a ref beam map for the filter/pupil mask/instrument, not if it is recent, etc
+				// this is because pupil registration is interested in intensities, not offsets
+				
 				CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
 				Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
 						ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), 

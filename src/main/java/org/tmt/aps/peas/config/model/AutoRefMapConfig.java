@@ -28,6 +28,7 @@ public class AutoRefMapConfig {
 	private int numTrialsLimit; 
 	private int refMapExpirationAge;
 	private float coarseTiltChangeThresh;
+	private float fineTiltChangeThresh;
 	private float ccdTempChangeThresh;
 	
 	public AutoRefMapConfig() {
@@ -79,6 +80,14 @@ public class AutoRefMapConfig {
 
 	public void setCcdTempChangeThresh(float ccdTempChangeThresh) {
 		this.ccdTempChangeThresh = ccdTempChangeThresh;
+	}
+
+	public float getFineTiltChangeThresh() {
+		return fineTiltChangeThresh;
+	}
+
+	public void setFineTiltChangeThresh(float fineTiltChangeThresh) {
+		this.fineTiltChangeThresh = fineTiltChangeThresh;
 	}
 
 

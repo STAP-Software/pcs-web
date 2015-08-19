@@ -240,10 +240,10 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return JavaComputations.addMatricies(matrix1, matrix2);
 	}
 
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
-		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, temperature,  
 				numIterations, currentDate, currentRefMap);
 	}
 

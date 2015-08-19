@@ -738,17 +738,18 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return result;
 	}
-
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
+	
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
-
-		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
+		
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, temperature,  
 				numIterations, currentDate, currentRefMap);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
+
 
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
 		

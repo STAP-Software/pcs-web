@@ -74,7 +74,7 @@ public interface ComputationLibrary {
 	
 	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException;
 
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, int numIterations,
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, int numIterations,
 			Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException;
 	
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove);

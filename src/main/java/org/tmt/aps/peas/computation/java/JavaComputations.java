@@ -66,7 +66,7 @@ public class JavaComputations {
 		}
 	}
 
-	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float ccdTemperature, int numIterations,
+	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdTemperature, int numIterations,
 			Date currentDate, RefBeamMap currentRefMap) throws AutoRefMapCheckException {
 
 		CameraState cameraState = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame()
@@ -82,17 +82,26 @@ public class JavaComputations {
 
 		}
 
-		if (Math.abs(currentPosition.x - cameraState.getSteeringMirrorX()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			throw new AutoRefMapCheckException("autorefmap.coarse_x_change_limit_exceeded", currentPosition.x,
+		if (Math.abs(currentCoarsePosition.x - cameraState.getSteeringMirrorX()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.coarse_x_change_limit_exceeded", currentCoarsePosition.x,
 					cameraState.getSteeringMirrorX());
-
 		}
 
-		if (Math.abs(currentPosition.y - cameraState.getSteeringMirrorY()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
-			throw new AutoRefMapCheckException("autorefmap.coarse_y_change_limit_exceeded", currentPosition.y,
+		if (Math.abs(currentCoarsePosition.y - cameraState.getSteeringMirrorY()) > autoRefMapConfig.getCoarseTiltChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.coarse_y_change_limit_exceeded", currentCoarsePosition.y,
 					cameraState.getSteeringMirrorY());
-
 		}
+
+		if (Math.abs(currentFinePosition.x - cameraState.getTiltPlateX()) > autoRefMapConfig.getFineTiltChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.fine_x_change_limit_exceeded", currentFinePosition.x,
+					cameraState.getTiltPlateX());
+		}
+
+		if (Math.abs(currentFinePosition.y - cameraState.getTiltPlateY()) > autoRefMapConfig.getFineTiltChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.fine_y_change_limit_exceeded", currentFinePosition.y,
+					cameraState.getTiltPlateY());
+		}
+
 
 		// time threshold comparison, expire age thresh in hours
 		long delta = currentDate.getTime() - currentRefMap.getCreateDate().getTime();

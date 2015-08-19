@@ -157,7 +157,7 @@ public class PassiveTiltExecutor {
 					try {
 						
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-								physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {
 
