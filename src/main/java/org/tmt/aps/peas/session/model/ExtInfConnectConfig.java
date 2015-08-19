@@ -61,19 +61,19 @@ public class ExtInfConnectConfig {
 		if (cameraEnabled) {
 			return cameraHeartbeatStatus ? "Connected" : "Communication Failure";
 		}
-		return cameraHeartbeatStatus ? "Simulator" : "Disconnecting";
+		return cameraHeartbeatStatus ? "Disconnected" : "Disconnecting";
 	}
 	
 	public String getCcdStatus() {
-		return ccdEnabled ? "Connected" : "Simulator";
+		return ccdEnabled ? "Connected" : "Disconnected";
 	}
 	
 	public String getAcsStatus() {
-		return acsEnabled ? "Connected" : "Simulator";
+		return acsEnabled ? "Connected" : "Disconnected";
 	}
 	
 	public String getDcsStatus() {
-		return dcsEnabled ? "Connected" : "Simulator";
+		return dcsEnabled ? "Connected" : "Disconnected";
 	}
 
 

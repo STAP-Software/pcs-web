@@ -47,7 +47,7 @@
 				</h:panelGroup>
 				 <h:panelGroup id="extInfMode" style="float:left">
 				
-				<h:outputText id="extInfSim" value="Simulation Mode: no interfaces connected" style="position:relative; top:20px; margin:40px;color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" 
+				<h:outputText id="extInfSim" value="Disconnected: select Session -> Connect to run PCS" style="position:relative; top:20px; margin:40px;color:#ffd8d4;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" 
 					rendered="#{sessionController.renderSimulationMode}"/>
 
 				<h:panelGrid id="extInfConn" columns="5" rendered="#{!sessionController.renderSimulationMode}" 
