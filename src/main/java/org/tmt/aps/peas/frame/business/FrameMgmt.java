@@ -35,6 +35,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
@@ -79,6 +80,8 @@ public class FrameMgmt {
 	CameraMgmt cameraMgmt;
 	@EJB
 	private ComputationContext computationContext;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
@@ -192,7 +195,7 @@ public class FrameMgmt {
 		try {
 		
 			// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
-			boolean ccdSimulator = !(new Boolean(peasProperties.getProp("org.tmt.aps.peas.ccd_enabled")));
+			boolean ccdSimulator = !extInfConfigState.getExtInfConnectConfig().isCameraEnabled();
 			
 			// get the frame from CCD or from file, depending on the called type
 			ccdMgmt.fastWipeCcd();

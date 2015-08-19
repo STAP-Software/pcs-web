@@ -19,6 +19,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
@@ -93,6 +94,8 @@ public class ProcedureExecutionMgmt {
 	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameSimulator frameSimulator;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) throws Exception {
 
@@ -214,10 +217,7 @@ public class ProcedureExecutionMgmt {
 			logger.debug("performProcedureCompletion::persist procedure");
 
 			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
-			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
-			boolean cameraEnabled = new Boolean(cameraEnabledStr);
-
-			if (cameraEnabled) {
+			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 				// create a config defaults object to save back
 				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
 						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
