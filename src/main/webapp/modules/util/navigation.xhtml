@@ -18,9 +18,9 @@
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null}" />
 					<p:submenu label="Run" icon="ui-icon-gear" >
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="true"/>
+						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="true"/>
+						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="true"/>
 						<p:separator />
 						<p:menuitem value="Create Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.procedureExecuting}"/>
