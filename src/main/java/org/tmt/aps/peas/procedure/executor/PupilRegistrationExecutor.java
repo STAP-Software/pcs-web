@@ -321,7 +321,7 @@ public class PupilRegistrationExecutor {
 				
 				// only move if error more than centerPupilThresh
 				float centerPupilThresh = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getCenterPupilThresh();
-				if (regErrorMm.x > centerPupilThresh || regErrorMm.y > centerPupilThresh) {
+				if (Math.abs(regErrorMm.x) > centerPupilThresh || Math.abs(regErrorMm.y) > centerPupilThresh) {
 				
 					centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
 				}

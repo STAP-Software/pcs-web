@@ -147,36 +147,26 @@
 								
 								</p:panelGrid>
 								
-								<p:panelGrid columns="2"
-									styleClass="pcsFormNoBorder" style="width:220px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-									<f:facet name="header">
-                    					M1, M2 
-                					</f:facet>
-
-									<h:outputLabel value="M1 Cmds RMS (nm)" />
-									<h:outputText value="nan" />
-	
-									<h:outputLabel value="Secondary Theta X (deg)" />
-									<h:outputText value="0.56" />
-	
-									<h:outputLabel value="Secondary Theta Y (deg)" />
-									<h:outputText value="3.2" />
-	
-									<h:outputLabel value="Secondary Focus (units??)" />
-									<h:outputText value="6.65" />
-
-								</p:panelGrid>
-
 								<p:panelGrid columns="2" 
 									styleClass="pcsFormNoBorder" style="width:300px"
 									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 									<f:facet name="header">
-                    					Phasing 
+                    					#{procedure.procedureType.procedureTypeName} 
                 					</f:facet>
 	
+									<h:outputLabel value="M1 Cmds RMS (nm)" />
+									<h:outputText value="nan" />
+	
+									<h:outputLabel value="Secondary Theta X (arcsec)" />
+									<h:outputText value="0.56" />
+	
+									<h:outputLabel value="Secondary Theta Y (arcsec)" />
+									<h:outputText value="3.2" />
+	
+									<h:outputLabel value="Secondary Focus (units??)" />
+									<h:outputText value="6.65" />
+
 									<h:outputLabel value="Phasing Piston RMS (units??)" />
 									<h:outputText value="6.36" />
 	
