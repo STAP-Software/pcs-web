@@ -9,6 +9,7 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
@@ -19,6 +20,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
@@ -38,6 +40,7 @@ import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -56,7 +59,6 @@ import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -72,6 +74,8 @@ public class ProcedureExecutionMgmt {
 	private SessionMgmt sessionMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
+	@EJB
+	private CameraMgmt cameraMgmt;
 	@EJB
 	private FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
@@ -212,6 +216,10 @@ public class ProcedureExecutionMgmt {
 			sessionMgmt.updateCurrentSession(currentSession);
 
 			// save the current coarse mirror state in global config
+			// get and wait for the current state and store it
+			Future<Boolean> refreshFuture = cameraMgmt.refreshStatus();
+			Utils.waitForComplete(refreshFuture);
+			
 			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
 			Point finePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
 			logger.debug("performProcedureCompletion::persist procedure");
