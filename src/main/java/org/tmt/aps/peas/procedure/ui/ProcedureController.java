@@ -543,6 +543,8 @@ public class ProcedureController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			FacesContext.getCurrentInstance().addMessage(null,
 					new FacesMessage("Error Initializing Procedure, check log files for details"));
+			
+			return;
 		}
 
 		// kick off asynchronous procedure
