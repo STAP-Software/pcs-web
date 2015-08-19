@@ -41,13 +41,16 @@
 				<h:form id="topForm">
 				<h:panelGroup style="float:left">
 
-				<h:outputText value="Phasing Camera System" style="position: relative; top:10px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
-				<h:outputText value="#{sessionController.telescope.telescopeName}" style="position: relative; top:10px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="Phasing Camera System" style="position: relative; top:14px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="#{sessionController.telescope.telescopeName}" style="position: relative; top:14px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
 				
 				</h:panelGroup>
 				 <h:panelGroup id="extInfMode" style="float:left">
 				
-				<h:outputText id="extInfSim" value="Disconnected: select Session -> Connect to run PCS" style="position:relative; top:20px; margin:40px;color:#ffd8d4;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" 
+				<h:outputText id="extInfSim" value="Disconnected" style="position:relative; top:18px; margin:40px;color:#ff4444;font-size:20pt;text-shadow: 1px 1px 1px #b22;" 
+					rendered="#{sessionController.renderSimulationMode}"/>
+					
+				<h:outputText  value="select 'Session -> Connect' to run PCS" style="position:relative; top:18px; margin:20px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" 
 					rendered="#{sessionController.renderSimulationMode}"/>
 
 				<h:panelGrid id="extInfConn" columns="5" rendered="#{!sessionController.renderSimulationMode}" 
