@@ -897,7 +897,7 @@ public class ProcedureController implements Serializable {
 		int x = (new Double(xStr)).intValue(); 
 		int y = (new Double(yStr)).intValue(); 
 
-		
+		// check for null so we don't get exceptions
 		if (selectedFrame.getCcdFrame().getRawFrame() != null) {
 			int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
 			
