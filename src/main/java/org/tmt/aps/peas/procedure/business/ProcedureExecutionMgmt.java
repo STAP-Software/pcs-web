@@ -209,6 +209,8 @@ public class ProcedureExecutionMgmt {
 	public void performProcedureCompletion(Procedure procedure, Session currentSession) {
 
 		try {
+			
+			Utils.waitFor(3000);
 			procedure.setExecutionEndTime(new Date());
 
 			logger.debug("performProcedureCompletion 1");
