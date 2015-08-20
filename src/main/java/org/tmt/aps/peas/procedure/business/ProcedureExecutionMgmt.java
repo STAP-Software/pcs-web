@@ -210,7 +210,6 @@ public class ProcedureExecutionMgmt {
 
 		try {
 			
-			Utils.waitFor(3000);
 			procedure.setExecutionEndTime(new Date());
 
 			logger.debug("performProcedureCompletion 1");
@@ -314,7 +313,14 @@ public class ProcedureExecutionMgmt {
 			}
 
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
+			
+			// wait so that async controller can catch up
+			Utils.waitFor(3000);
+
+			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
+
+
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
