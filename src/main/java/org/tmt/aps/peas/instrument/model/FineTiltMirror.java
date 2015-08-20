@@ -27,6 +27,7 @@ public class FineTiltMirror implements DeviceStates {
 	private float windowThickness;
 	private float xbk7;
 	private float pupilMagnification;
+	private int offloadThreshold;
 
 	@Transient
 	private Point currentPosition;
@@ -114,6 +115,12 @@ public class FineTiltMirror implements DeviceStates {
 		this.pupilMagnification = pupilMagnification;
 	}
 	
+	public int getOffloadThreshold() {
+		return offloadThreshold;
+	}
+	public void setOffloadThreshold(int offloadThreshold) {
+		this.offloadThreshold = offloadThreshold;
+	}
 	public Point getCurrentPosition() {
 		return currentPosition;
 	}

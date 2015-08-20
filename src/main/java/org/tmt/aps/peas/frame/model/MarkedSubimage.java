@@ -9,18 +9,20 @@ public class MarkedSubimage {
 	FloatPoint centroid; 
 	float totalIntensity; 
 	float peakIntensity; 
+	int findCentStatus;
 	FloatPoint firstSubimageDelta; 
 	float firstSubimageDistance;
 	float firstSubimageAngle;
 	
 	
-	public MarkedSubimage(int markNumber, FloatPoint centroid, float totalIntensity, float peakIntensity, FloatPoint firstSubimageDelta, 
-			float firstSubimageDistance, float firstSubimageAngle) {
+	public MarkedSubimage(int markNumber, FloatPoint centroid, float totalIntensity, float peakIntensity, int findCentStatus,
+			FloatPoint firstSubimageDelta, float firstSubimageDistance, float firstSubimageAngle) {
 		
 		this.markNumber = markNumber;
 		this.centroid = centroid;
 		this.totalIntensity = totalIntensity;
 		this.peakIntensity = peakIntensity;
+		this.findCentStatus = findCentStatus;
 		this.firstSubimageDelta = firstSubimageDelta;
 		this.firstSubimageDistance = firstSubimageDistance;
 		this.firstSubimageAngle = firstSubimageAngle;
@@ -68,6 +70,14 @@ public class MarkedSubimage {
 	}
 	public void setFirstSubimageAngle(float firstSubimageAngle) {
 		this.firstSubimageAngle = firstSubimageAngle;
+	}
+
+	public int getFindCentStatus() {
+		return findCentStatus;
+	}
+
+	public void setFindCentStatus(int findCentStatus) {
+		this.findCentStatus = findCentStatus;
 	}
 	
 	

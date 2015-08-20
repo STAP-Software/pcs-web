@@ -22,23 +22,25 @@ public class MissingSpotsMgmt {
 	@PersistenceContext
 	private EntityManager em;
 	
-	
-	public MissingSpotList findMissingSpotList(int spotListType, Long pupilMaskTypeId) {
+	public MissingSpotList findMissingSpotList(int spotListType, Long telescopeId, Long pupilMaskTypeId) {
+		System.out.println(spotListType + "::" +  pupilMaskTypeId);
 		logger.debug("findMissingSpotList::");
 		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeAndMask", MissingSpotList.class);
 		query.setParameter("spotListType", spotListType);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("telescopeId", telescopeId);
 		
 		query.setMaxResults(1);
 		
 		return query.getSingleResult();
 	}
 	
-	public MissingSpotList findMissingSpotList(int spotListType, Long pupilMaskTypeId, int sufsGroup) {
+	public MissingSpotList findMissingSpotList(int spotListType, Long telescopeId, Long pupilMaskTypeId, int sufsGroup) {
 		logger.debug("findMissingSpotList::");
 		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeMaskGroup", MissingSpotList.class);
 		query.setParameter("spotListType", spotListType);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("telescopeId", telescopeId);
 		query.setParameter("sufsGroup", sufsGroup);
 		
 		query.setMaxResults(1);

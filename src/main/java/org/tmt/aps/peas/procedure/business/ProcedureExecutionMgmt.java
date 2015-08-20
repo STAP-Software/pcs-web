@@ -9,15 +9,19 @@ import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import javax.ejb.EJB;
 import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
@@ -33,7 +37,10 @@ import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
@@ -46,12 +53,12 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -67,6 +74,8 @@ public class ProcedureExecutionMgmt {
 	private SessionMgmt sessionMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
+	@EJB
+	private CameraMgmt cameraMgmt;
 	@EJB
 	private FrameDisplayMgmt frameDisplayMgmt;
 	@EJB
@@ -89,8 +98,10 @@ public class ProcedureExecutionMgmt {
 	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameSimulator frameSimulator;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
-	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) {
+	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) throws Exception {
 
 		logger.info("performProcedureStartup 1");
 
@@ -103,19 +114,25 @@ public class ProcedureExecutionMgmt {
 		procedure.setInstrument(physicalModel.getInstrument());
 		procedure.setTelescope(physicalModel.getTelescope());
 
-		// add the associated ref def map to the fi config for this procedure
-		if (!procedure.getProcedureType().isCenterTelescope()) {
-			RefBeamMap refDefMap = centroidMapMgmt.getRefBeamDefMap(
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			procedure.setRefDefMap(refDefMap);
-		}
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+		
+		// need to propagate pupilMask and filter types into to procedureConfig object
+		// FIXME: this needs to be handled more automatically within the model classes
+		procedureConfig.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
+		procedureConfig.setFilterType(procedureConfig.getFilter().getFilterType());
+		
+		PupilMaskType pupilMaskType = procedureConfig.getPupilMaskType();
+
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaults = globalConfigMgmt.findFindCentConfig(
-				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-		procedure.getProcedureConfigSet().setFindCentConfig(new FindCentConfig(findCentConfigDefaults));
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_INTERIOR);
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
+		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
+		
 
+		
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now
@@ -181,7 +198,8 @@ public class ProcedureExecutionMgmt {
 		logger.error(MessageGenerator.generateMessage("generic.error"), procedureException);
 
 		statusLogger.log("procedure.exception", procedureException.getMessage());
-
+		
+		
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		procedureExecutionState.setExecutionStatus(false);
 		procedureExecutionState.setProcedureException(procedureException);
@@ -198,19 +216,23 @@ public class ProcedureExecutionMgmt {
 			sessionMgmt.updateCurrentSession(currentSession);
 
 			// save the current coarse mirror state in global config
+			// get and wait for the current state and store it
+			Future<Boolean> refreshFuture = cameraMgmt.refreshStatus();
+			Utils.waitForComplete(refreshFuture);
+			
 			Point coarsePosition = physicalModel.getInstrument().getCamera().getCoarseTiltMirror().getCurrentPosition();
+			Point finePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
 			logger.debug("performProcedureCompletion::persist procedure");
 
 			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
-			String cameraEnabledStr = peasProperties.getProp("org.tmt.aps.peas.camera_enabled");
-			boolean cameraEnabled = new Boolean(cameraEnabledStr);
-
-			if (cameraEnabled) {
+			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 				// create a config defaults object to save back
 				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
 						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
 				globalConfigDefaults.setCoarseMirrorX(coarsePosition.x);
 				globalConfigDefaults.setCoarseMirrorY(coarsePosition.y);
+				globalConfigDefaults.setFineMirrorX(finePosition.x);
+				globalConfigDefaults.setFineMirrorY(finePosition.y);
 				globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 			}
 			logger.debug("performProcedureCompletion::globalConfig updated");
@@ -310,9 +332,10 @@ public class ProcedureExecutionMgmt {
 
 		// if the executionStatus is 'running', then we must be starting a sub-procedure
 		boolean isSubProcedure = procedureExecutionState.getExecutionStatus();
-		String superProcedureNum = isSubProcedure ? procedureExecutionState.getCurrentProcedure().getProcedureNumber() : null;
+		Procedure superProcedure = isSubProcedure ? procedureExecutionState.getCurrentProcedure() : null;
+		String superProcedureNumber = (superProcedure == null) ? null : superProcedure.getProcedureNumber();
 
-		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNum);
+		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNumber);
 		procedure.setProcedureNumber(procNum);
 
 		ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(
@@ -324,44 +347,63 @@ public class ProcedureExecutionMgmt {
 		// and associate it with the procedure
 		procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
 
-		// get the default mask, if it is installed on the wheel
-		PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
-				physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
-
-		procedureConfig.setPupilMask(defaultMask);
-
-		// get the filter to default to if it exists
-		Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(),
-				physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
-
-		procedureConfig.setFilter(defaultFilter);
+		
+		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask and filter
+		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
+			
+			// get pupilMask and Filter from the parent
+			PupilMask refMapMask = superProcedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+			procedureConfig.setPupilMask(refMapMask);
+			procedureConfig.setPupilMaskType(refMapMask.getPupilMaskType());
+			
+			Filter refMapFilter = superProcedure.getProcedureConfigSet().getProcedureConfig().getFilter();
+			procedureConfig.setFilter(refMapFilter);
+			procedureConfig.setFilterType(refMapFilter.getFilterType());
+						
+		} else {
+		
+			// get the default mask, if it is installed on the wheel
+			PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
+					physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+	
+			procedureConfig.setPupilMask(defaultMask);
+	
+			// get the filter to default to if it exists
+			Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(procedureConfig.getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
+	
+			procedureConfig.setFilter(defaultFilter);
+		
+		}
+		
 
 		// if procedure type is create ref map, then populate ref beam and integration times from the table
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// these get set into procedure config
 			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(),
-					defaultMask.getPupilMaskType().getPupilMaskTypeId(), defaultFilter.getFilterType().getFilterTypeId());
+					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+					procedureConfig.getFilter().getFilterType().getFilterTypeId());
 		}
 
 		// select defaults based on mask and light source
-		if (!procedure.getProcedureType().isCenterTelescope()) {
-
-			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(physicalModel.getInstrument().getInstrumentId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
-
-			// use defaults as actuals if user doesn't subsequently change them
-			FIConfig fiConfig = new FIConfig(fiConfigDefaults);
-
-			procedure.getProcedureConfigSet().setFiConfig(fiConfig);
-
-		}
+		reloadFIConfig(procedure, physicalModel.getInstrument().getInstrumentId());
 
 		// set centroid offsets calculation defaults based on procedure type
 		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt
 				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
+
+		// select defaults based on pupil mask
+		reloadPupilRegErrorConfig(procedure);
+		
+		// set pupilRegErrorCalc defaults based on pupilMaskType
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypePh() || procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = 
+					globalConfigMgmt.findPupilRegErrorConfig(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			PupilRegErrorConfig pupilRegErrorConfig = new PupilRegErrorConfig(pupilRegErrorConfigDefaults);
+			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
+		}
 
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
@@ -373,6 +415,9 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		
+		
+		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();
 
@@ -394,6 +439,36 @@ public class ProcedureExecutionMgmt {
 		List<Float> integrationTimeList = new ArrayList<Float>();
 		integrationTimeList.add(refMapConfigDefaults.getIntegrationTime());
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTimeList(integrationTimeList);
+	}
+	
+	public void reloadFIConfig(Procedure procedure, Long instrumentId) throws Exception {
+		
+		if (!procedure.getProcedureType().isCenterTelescope()) {
+
+			PupilMask selectedMask = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+		
+			// reload FI Config Defaults when pupil mask changes
+			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(instrumentId, 
+					selectedMask.getPupilMaskType().getPupilMaskTypeId(),
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		
+			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
+		}
+		
+	}
+	
+	public void reloadPupilRegErrorConfig(Procedure procedure) throws Exception {
+	
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();	
+			
+		// set pupilRegErrorCalc defaults based on pupilMaskType
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypePh() || procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+			PupilRegErrorConfigDefaults pupilRegErrorConfigDefaults = 
+					globalConfigMgmt.findPupilRegErrorConfig(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			PupilRegErrorConfig pupilRegErrorConfig = new PupilRegErrorConfig(pupilRegErrorConfigDefaults);
+			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
+		}
+	
 	}
 
 }

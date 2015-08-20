@@ -44,6 +44,19 @@ public class IntegerListEncoder {
 		return buf.toString();
 	}
 	
+	public static String encodeList(int[] numberList) {
+		
+		StringBuffer buf = new StringBuffer();
+		for (int i = 0; i<numberList.length; i++) {
+			int number = numberList[i];
+			buf.append(number + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+	}
+	
 	public static List<Integer> removeNumber(List<Integer> numberList, Integer number) {
 		
 		numberList.remove(number);

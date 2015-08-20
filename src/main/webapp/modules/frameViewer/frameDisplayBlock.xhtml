@@ -20,7 +20,7 @@
 				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(true)}" rendered="#{not frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 			</p:submenu>
 			<p:submenu label="Marking" icon="ui-icon-pencil">
-				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doSetupMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
+				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doUpdateMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
 			</p:submenu>
 
 
@@ -28,8 +28,6 @@
 		
 		<!--   -->
 		
-		
-
 		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="1024px" width="1024px" style="position: absolute;left:-10000px" />
 
 		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
@@ -65,15 +63,14 @@
 		<f:facet name="footer">
 			<a id="saveAsPngId" href="#" download="frame.png" />
 		
-			<p:commandButton style="float:right" value="Done" icon="ui-icon-close" ajax="false" action="#{ccdManualController.doCancel}" />
 			<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
-				action="#{frameController.doUndoMarking}" update=":frameHiddenForm" oncomplete="redraw();"/>
+				action="#{frameController.doUndoMarking}" update=":frameHiddenForm :markingForm" oncomplete="redraw();"/>
 			<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-				action="#{frameController.doResetMarking}" update=":frameHiddenForm" oncomplete="redraw();"/>
+				action="#{frameController.doResetMarking}" update=":frameHiddenForm :markingForm" oncomplete="redraw();"/>
 				
 		</f:facet>
 	</p:panelGrid>
-	<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
+	<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm :markingForm" oncomplete="markFrame();" />
 	<p:remoteCommand name="frameValue" action="#{frameController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />
 
 

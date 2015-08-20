@@ -50,7 +50,8 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig pc INNER JOIN FETCH pcs.globalConfig "
 			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "
 			+ "LEFT OUTER JOIN FETCH cf.cameraState INNER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.fiConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.findCentConfig LEFT OUTER JOIN FETCH pcs.centroidOffsetsConfig LEFT OUTER JOIN FETCH pc.pupilMask "
+			+ "LEFT OUTER JOIN FETCH pcs.pupilRegErrorConfig "
+			+ "LEFT OUTER JOIN FETCH pcs.findCentConfigInterior LEFT OUTER JOIN FETCH pcs.findCentConfigPeripheral LEFT OUTER JOIN FETCH pcs.centroidOffsetsConfig LEFT OUTER JOIN FETCH pc.pupilMask "
 			+ "LEFT OUTER JOIN FETCH pc.filter LEFT OUTER JOIN FETCH pc.referenceBeam "
 			+ "WHERE p.procedureId = :procedureId" )
 	
@@ -119,8 +120,6 @@ public class Procedure {
 	private ProcedureOutput procedureOutput;
 	@Transient 
 	private RefBeamMap refBeamMap;  // the refBeamMap taken and/or used in this procedure
-	@Transient 
-	private RefBeamMap refDefMap;  // the refDefMap used for this f&i in this procedure
 	
 	
 	public Procedure() {
@@ -263,14 +262,6 @@ public class Procedure {
 
 	public void setProcedureConfigSet(ProcedureConfigSet procedureConfigSet) {
 		this.procedureConfigSet = procedureConfigSet;
-	}
-
-	public RefBeamMap getRefDefMap() {
-		return refDefMap;
-	}
-
-	public void setRefDefMap(RefBeamMap refDefMap) {
-		this.refDefMap = refDefMap;
 	}
 
 	public ProcedureOutput getProcedureOutput() {

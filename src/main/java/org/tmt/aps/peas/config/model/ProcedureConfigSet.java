@@ -28,8 +28,16 @@ public class ProcedureConfigSet {
 	private FIConfig fiConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "findCentConfigId")
-	private FindCentConfig findCentConfig;
+	@JoinColumn(name = "findCentConfigInteriorId")
+	private FindCentConfig findCentConfigInterior;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "findCentConfigPeripheralId")
+	private FindCentConfig findCentConfigPeripheral;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "pupilRegErrorConfigId")
+	private PupilRegErrorConfig pupilRegErrorConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "centroidOffsetsConfigId")
@@ -77,12 +85,20 @@ public class ProcedureConfigSet {
 		this.fiConfig = fiConfig;
 	}
 
-	public FindCentConfig getFindCentConfig() {
-		return findCentConfig;
+	public FindCentConfig getFindCentConfigInterior() {
+		return findCentConfigInterior;
 	}
 
-	public void setFindCentConfig(FindCentConfig findCentConfig) {
-		this.findCentConfig = findCentConfig;
+	public void setFindCentConfigInterior(FindCentConfig findCentConfigInterior) {
+		this.findCentConfigInterior = findCentConfigInterior;
+	}
+
+	public FindCentConfig getFindCentConfigPeripheral() {
+		return findCentConfigPeripheral;
+	}
+
+	public void setFindCentConfigPeripheral(FindCentConfig findCentConfigPeripheral) {
+		this.findCentConfigPeripheral = findCentConfigPeripheral;
 	}
 
 	public GlobalConfig getGlobalConfig() {
@@ -116,6 +132,15 @@ public class ProcedureConfigSet {
 	public void setAutoCenterTelConfig(AutoCenterTelConfig autoCenterTelConfig) {
 		this.autoCenterTelConfig = autoCenterTelConfig;
 	}
+
+	public PupilRegErrorConfig getPupilRegErrorConfig() {
+		return pupilRegErrorConfig;
+	}
+
+	public void setPupilRegErrorConfig(PupilRegErrorConfig pupilRegErrorConfig) {
+		this.pupilRegErrorConfig = pupilRegErrorConfig;
+	}
+
 
 
 }

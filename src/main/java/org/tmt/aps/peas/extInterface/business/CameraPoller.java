@@ -38,7 +38,7 @@ public class CameraPoller {
 				//logger.info("refreshing camera status");
 				cameraMgmt.refreshStatus();
 
-			} catch (Exception e) {
+			} catch (Throwable e) {
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
 

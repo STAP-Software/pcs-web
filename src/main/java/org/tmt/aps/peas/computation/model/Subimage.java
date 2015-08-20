@@ -1,20 +1,20 @@
 package org.tmt.aps.peas.computation.model;
 
-import java.util.List;
-
 import org.tmt.aps.peas.common.FloatPoint;
 
-public class FindCentResult {
+public class Subimage {
 
 	FloatPoint centroid;
 	
 	float subimageIntensity;
 	float peakIntensity;
+	int findCentStatus;
 	
-	public FindCentResult(FloatPoint centroid, float subimageIntensity, float peakIntensity) {
+	public Subimage(FloatPoint centroid, float subimageIntensity, float peakIntensity, int findCentStatus) {
 		this.centroid = centroid;
 		this.subimageIntensity = subimageIntensity;
 		this.peakIntensity = peakIntensity;
+		this.findCentStatus = findCentStatus;
 	}
 	
 	public FloatPoint getCentroid() {
@@ -35,6 +35,17 @@ public class FindCentResult {
 	public void setPeakIntensity(float peakIntensity) {
 		this.peakIntensity = peakIntensity;
 	}
+
+	public int getFindCentStatus() {
+		return findCentStatus;
+	}
+
+	public void setFindCentStatus(int findCentStatus) {
+		this.findCentStatus = findCentStatus;
+	}
 	
+	public boolean isGoodCentroid() {
+		return findCentStatus == 0;
+	}
 	
 }

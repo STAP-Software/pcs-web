@@ -22,7 +22,7 @@
 						disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{filterConverter}">
 					<f:selectItem itemLabel="Select One" itemValue=""/> 
 					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
-					<p:ajax update=":advancedForm :procedureDetailForm:procedureDetailPanel" listener="#{procedureController.doUpdateFilter}" />
+					<p:ajax update=":advancedForm :procedureDetailForm:procedureDetailPanel" listener="#{procedureController.filterSelectListener}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Light Source" />
@@ -30,7 +30,7 @@
 						disabled="#{(procedureController.procedure.procedureState gt 1) or procedureController.procedure.procedureType.createRefMap}" >
 					<f:selectItem itemLabel="Star" itemValue="1"/> 
 					<f:selectItem itemLabel="Reference Beam" itemValue="2"/>
-					<p:ajax update=":advancedDlg" oncomplete="advancedDialog.show();" />
+					<p:ajax update=":advancedDlg" oncomplete="advancedDialog.show();" listener="#{procedureController.lightSourceSelectListener}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" />
@@ -110,7 +110,19 @@
 				</p:panelGrid>
 				</p:fieldset>
 
-				 
+				<p:fieldset legend="Pupil Registration Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{procedureController.procedure.procedureType.pupilRegistration}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="Fractional Intensity Normalization Method" />
+       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.pupilRegErrorConfig.fractionalIntensityCalcMethod}">
+             			<f:selectItem itemLabel="Use Peripheral Subimages (PCS)" itemValue="1" />
+            			<f:selectItem itemLabel="Use Interior Subimages (APS)" itemValue="2" />
+					</p:selectOneMenu>
+  
+				</p:panelGrid>
+				</p:fieldset>
+
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm"

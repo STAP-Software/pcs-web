@@ -16,6 +16,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.Instrument;
 
 @Singleton
 public class FrameSimulator {
@@ -49,6 +50,9 @@ public class FrameSimulator {
 		CameraState cameraState = new CameraState();
 		cameraState.setCcdTemp(44.4f);
 		ccdFrame.setCameraState(cameraState);
+		Instrument instrument = physicalModel.getInstrument();
+		ccdFrame.setInstrumentId(instrument.getInstrumentId());
+
 		
 		return ccdFrame;
 	}

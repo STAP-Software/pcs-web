@@ -1,19 +1,15 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 
 //TODO - display i/fs need to change
-public class PupilRegistrationIterationOutput extends ProcedureIterationOutput implements ActuatorDeltasDisplayValues {
+public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;
 	
-	private float[][] tipTiltActuatorDeltas = new float[36][3];
-	private float[][] pistonActuatorDeltas = new float[36][3];
-
-	private float[][] m1ActuatorCmds;
-	private float m1ActuatorCmdsRms;
 	private FloatPoint[] ccdCentroidOffsets;
 	private FloatPoint[] cartesianCentroidOffsets;
 	
@@ -26,8 +22,26 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput i
 	private float scaleError;
 	private float slopeError;
 	
-	private float pistonActuatorDeltasRms;
 
+	
+	// pupil reg specific
+	
+	private float regErrorX; // x registration error (m)
+	private float regErrorY; // y registration error (m)
+	private float regErrorPhi; // phi rotation error (r)
+	private float regErrorApproxX; // x registration error using approx calc (m)
+	private float regErrorApproxY; // y registration error using approx calc (m)
+	private float regErrorApproxPhi; // phi rotation error using approx calc (r)
+	private float regScaleError; // scale error
+
+
+	private Point coarseMirrorCommands;
+	private Point fineMirrorCommands;
+	private boolean offloaded;
+	private Point coarseMirrorDeltas;
+	private Point fineMirrorDeltas;
+
+	
 	public boolean isTelescopeMoved() {
 		return telescopeMoved;
 	}
@@ -40,18 +54,7 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput i
 	public void setDeltaAzEl(FloatPoint deltaAzEl) {
 		this.deltaAzEl = deltaAzEl;
 	}
-	public float[][] getM1ActuatorCmds() {
-		return m1ActuatorCmds;
-	}
-	public void setM1ActuatorCmds(float[][] m1ActuatorCmds) {
-		this.m1ActuatorCmds = m1ActuatorCmds;
-	}
-	public float getM1ActuatorCmdsRms() {
-		return m1ActuatorCmdsRms;
-	}
-	public void setM1ActuatorCmdsRms(float m1ActuatorCmdsRms) {
-		this.m1ActuatorCmdsRms = m1ActuatorCmdsRms;
-	}
+
 
 	public FloatPoint[] getCcdCentroidOffsets() {
 		return ccdCentroidOffsets;
@@ -107,23 +110,78 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput i
 	public void setSlopeError(float slopeError) {
 		this.slopeError = slopeError;
 	}
-	public float[][] getTipTiltActuatorDeltas() {
-		return tipTiltActuatorDeltas;
+
+	public float getRegErrorX() {
+		return regErrorX;
 	}
-	public void setTipTiltActuatorDeltas(float[][] tipTiltActuatorDeltas) {
-		this.tipTiltActuatorDeltas = tipTiltActuatorDeltas;
+	public void setRegErrorX(float regErrorX) {
+		this.regErrorX = regErrorX;
 	}
-	public float[][] getPistonActuatorDeltas() {
-		return pistonActuatorDeltas;
+	public float getRegErrorY() {
+		return regErrorY;
 	}
-	public void setPistonActuatorDeltas(float[][] pistonActuatorDeltas) {
-		this.pistonActuatorDeltas = pistonActuatorDeltas;
+	public void setRegErrorY(float regErrorY) {
+		this.regErrorY = regErrorY;
 	}
-	public float getPistonActuatorDeltasRms() {
-		return pistonActuatorDeltasRms;
+	public float getRegErrorPhi() {
+		return regErrorPhi;
 	}
-	public void setPistonActuatorDeltasRms(float pistonActuatorDeltasRms) {
-		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
+	public void setRegErrorPhi(float regErrorPhi) {
+		this.regErrorPhi = regErrorPhi;
+	}
+	public float getRegErrorApproxX() {
+		return regErrorApproxX;
+	}
+	public void setRegErrorApproxX(float regErrorApproxX) {
+		this.regErrorApproxX = regErrorApproxX;
+	}
+	public float getRegErrorApproxY() {
+		return regErrorApproxY;
+	}
+	public void setRegErrorApproxY(float regErrorApproxY) {
+		this.regErrorApproxY = regErrorApproxY;
+	}
+	public float getRegErrorApproxPhi() {
+		return regErrorApproxPhi;
+	}
+	public void setRegErrorApproxPhi(float regErrorApproxPhi) {
+		this.regErrorApproxPhi = regErrorApproxPhi;
+	}
+	public float getRegScaleError() {
+		return regScaleError;
+	}
+	public void setRegScaleError(float regScaleError) {
+		this.regScaleError = regScaleError;
+	}
+	public Point getCoarseMirrorCommands() {
+		return coarseMirrorCommands;
+	}
+	public void setCoarseMirrorCommands(Point coarseMirrorCommands) {
+		this.coarseMirrorCommands = coarseMirrorCommands;
+	}
+	public Point getFineMirrorCommands() {
+		return fineMirrorCommands;
+	}
+	public void setFineMirrorCommands(Point fineMirrorCommands) {
+		this.fineMirrorCommands = fineMirrorCommands;
+	}
+	public boolean isOffloaded() {
+		return offloaded;
+	}
+	public void setOffloaded(boolean offloaded) {
+		this.offloaded = offloaded;
+	}
+	public Point getCoarseMirrorDeltas() {
+		return coarseMirrorDeltas;
+	}
+	public void setCoarseMirrorDeltas(Point coarseMirrorDeltas) {
+		this.coarseMirrorDeltas = coarseMirrorDeltas;
+	}
+	public Point getFineMirrorDeltas() {
+		return fineMirrorDeltas;
+	}
+	public void setFineMirrorDeltas(Point fineMirrorDeltas) {
+		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
 	
 	

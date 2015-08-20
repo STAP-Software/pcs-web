@@ -35,6 +35,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
@@ -79,6 +80,8 @@ public class FrameMgmt {
 	CameraMgmt cameraMgmt;
 	@EJB
 	private ComputationContext computationContext;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
@@ -192,7 +195,7 @@ public class FrameMgmt {
 		try {
 		
 			// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
-			boolean ccdSimulator = !(new Boolean(peasProperties.getProp("org.tmt.aps.peas.ccd_enabled")));
+			boolean ccdSimulator = !extInfConfigState.getExtInfConnectConfig().isCameraEnabled();
 			
 			// get the frame from CCD or from file, depending on the called type
 			ccdMgmt.fastWipeCcd();
@@ -214,13 +217,38 @@ public class FrameMgmt {
 				// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
 				// TODO: This needs to be improved to get a frame from file given the procedure type
 				// TODO: the filename should be part of the peas.properties
-				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+				
+				if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
+				} else if (procedureConfig.getPupilMaskType().isPupilMaskTypePh()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_041_01.FTS");
+				} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
+					ccdFrame = loadFitsFrame("K1_10AUG06_RB_018_01.FTS");
+				}
 				byte[] falseColorPng = loadPng(ccdFrame, true);
 				ccdFrame.setFalseColorPng(falseColorPng);
+				
 				// simulate camera state too
-				CameraState cameraState = new CameraState();
-				cameraState.setCcdTemp(44.4f);
+				Instrument instrument = physicalModel.getInstrument();
+				CameraState cameraState = new CameraState(instrument);
+				//cameraState.setCcdTemp(44.4f);
+				//cameraState.setSteeringMirrorX(234);
+				//cameraState.setSteeringMirrorY(2);
+				//cameraState.setTiltPlateX(35);
+				//cameraState.setTiltPlateY(-7);
 				ccdFrame.setCameraState(cameraState);
+				ccdFrame.setInstrumentId(instrument.getInstrumentId());
+
+				telescopeMgmt.refreshStatus();
+				
+				// store telescope information with frame when it is taken
+				Telescope telescope = physicalModel.getTelescope();
+				ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+				ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
+				ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
+				ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+				ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
+				ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 
 
 			} else {

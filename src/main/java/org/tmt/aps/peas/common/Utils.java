@@ -17,10 +17,14 @@ public class Utils {
 
 	public static void waitForComplete(Future... futures) throws Exception {
 
+		// if a future is null, then ignore it
+		
+		
 		while (true) {
 
 			boolean allDone = true;
 			for (Future f : futures) {
+				if (f == null) continue;
 				if (!f.isDone()) {
 					allDone = false;
 				}
@@ -38,6 +42,7 @@ public class Utils {
 
 		try {
 			for (Future f : futures) {
+				if (f == null) continue;
 				logger.info("Testing Future: " + f);
 				f.get();
 			}

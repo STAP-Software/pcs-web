@@ -120,8 +120,9 @@ body {
   	margin-right:0.5em;
   	padding-top:0.2em;
   	text-align:right;
-  	font-weight:normal;
+  	font-weight:bold;
    	font-size: 1em;
+   	color: #666666;
 }
 .btmsFormLabelColumn a {
 	float: right;
@@ -221,6 +222,10 @@ div.btmsBreadcrumb ul li a.ui-icon {
 
 .pcsForm tbody tr td {
 	vertical-align: bottom !important;
+}
+
+.alignTop td {
+	vertical-align: top !important;
 }
 
 .btmsForm .btmsFormLabelColumn, .pcsForm .btmsFormLabelColumn, .pcsFormNoBorder .btmsFormLabelColumn {

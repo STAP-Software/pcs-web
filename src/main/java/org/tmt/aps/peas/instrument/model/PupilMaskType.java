@@ -98,6 +98,14 @@ public class PupilMaskType {
 		return pupilMaskTypeId.longValue() == PUPIL_MASK_TYPE_ID_36.longValue();
 	}
 	
+	public boolean isPupilMaskTypePh() {
+		return pupilMaskTypeId.longValue() == PUPIL_MASK_TYPE_ID_160.longValue();
+	}
+	
+	public boolean isPupilMaskTypeFs() {
+		return pupilMaskTypeId.longValue() == PUPIL_MASK_TYPE_ID_508.longValue();
+	}
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof PupilMaskType) {
 			PupilMaskType candidate = (PupilMaskType) obj;

@@ -36,6 +36,16 @@ public class MessageGenerator {
 		args[1] = val2;
 		return MessageFormat.format(pattern, args);	
 	}
+		
+	public static String generateMessage(String key, Object val1, Object val2, Object val3) {
+		
+		String pattern = ResourceBundle.getBundle("messages").getString(key);
+		Object[] args = new Object[3];
+		args[0] = val1;
+		args[1] = val2;
+		args[2] = val3;
+		return MessageFormat.format(pattern, args);	
+	}
 	
 	public static String generateMessage(String key, Object val1, Object val2, Object val3, Object val4) {
 		

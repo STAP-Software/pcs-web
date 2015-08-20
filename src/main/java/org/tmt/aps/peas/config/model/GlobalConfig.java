@@ -38,8 +38,10 @@ public class GlobalConfig {
 	@Temporal(TemporalType.TIMESTAMP)
 	Date updateDate;
 		
-	float coarseMirrorX;
-	float coarseMirrorY;
+	int coarseMirrorX;
+	int coarseMirrorY;
+	int fineMirrorX;
+	int fineMirrorY;
 
 	boolean removeBadPixels;
 
@@ -69,20 +71,37 @@ public class GlobalConfig {
 		}
 	}
 
-	public float getCoarseMirrorX() {
+
+	public int getCoarseMirrorX() {
 		return coarseMirrorX;
 	}
 
-	public void setCoarseMirrorX(float coarseMirrorX) {
+	public void setCoarseMirrorX(int coarseMirrorX) {
 		this.coarseMirrorX = coarseMirrorX;
 	}
 
-	public float getCoarseMirrorY() {
+	public int getCoarseMirrorY() {
 		return coarseMirrorY;
 	}
 
-	public void setCoarseMirrorY(float coarseMirrorY) {
+	public void setCoarseMirrorY(int coarseMirrorY) {
 		this.coarseMirrorY = coarseMirrorY;
+	}
+
+	public int getFineMirrorX() {
+		return fineMirrorX;
+	}
+
+	public void setFineMirrorX(int fineMirrorX) {
+		this.fineMirrorX = fineMirrorX;
+	}
+
+	public int getFineMirrorY() {
+		return fineMirrorY;
+	}
+
+	public void setFineMirrorY(int fineMirrorY) {
+		this.fineMirrorY = fineMirrorY;
 	}
 
 	public boolean isRemoveBadPixels() {
@@ -160,5 +179,9 @@ public class GlobalConfig {
 
 	public Point getCoarseMirrorDefault() {
 		return new Point((int)coarseMirrorX, (int)coarseMirrorY);
+	}
+	
+	public Point getFineMirrorDefault() {
+		return new Point((int)fineMirrorX, (int)fineMirrorY);
 	}
 }

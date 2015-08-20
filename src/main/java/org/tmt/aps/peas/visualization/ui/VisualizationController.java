@@ -20,7 +20,9 @@ import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -49,6 +51,8 @@ public class VisualizationController implements Serializable {
 	GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
 	ConstantsCache constantsCache;
+	@EJB
+	SubimageDefCache subimageDefCache;
 
 	@Inject
 	ProcedureController procedureController;
@@ -79,8 +83,8 @@ public class VisualizationController implements Serializable {
 
 		try {
 			// TODO: do other queries as each new procedure type is added
-			RefBeamMap refDefMapPassiveTilt = centroidMapMgmt.getRefBeamDefMap(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-			List<FloatPoint> refDefValueListPassiveTilt = refDefMapPassiveTilt.getCentroidMap().getFindCentroidsResult().getCentroidList();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+			List<FloatPoint> refDefValueListPassiveTilt = subimageDefList.getSubimageDefListCentroids();
 			float[] xArray = FloatPointListEncoder.extractXArray(refDefValueListPassiveTilt);
 			centDefPassiveTiltXs = FloatListEncoder.encodeList(xArray);
 			float[] yArray = FloatPointListEncoder.extractYArray(refDefValueListPassiveTilt);

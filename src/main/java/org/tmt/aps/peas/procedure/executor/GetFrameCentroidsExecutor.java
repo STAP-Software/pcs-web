@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,12 +16,16 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -36,6 +39,7 @@ import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -60,6 +64,8 @@ public class GetFrameCentroidsExecutor {
 	private StatusLogger statusLogger;
 	@EJB
 	private PhysicalModel physicalModel;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private ComputationContext computationContext;
 
@@ -141,8 +147,10 @@ public class GetFrameCentroidsExecutor {
 
 		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		
 		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
-				procedure.getRefDefMap());
+				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), procedure.getProcedureType().isCreateRefMap());
 
 		logger.info("Find and Identify completed");
 
@@ -248,7 +256,10 @@ public class GetFrameCentroidsExecutor {
 			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 
-		}
+		} 
+			
+
+		
 	}
 
 
@@ -271,6 +282,9 @@ public class GetFrameCentroidsExecutor {
 		centroidMap.setPeakMapData(peakMapData);
 		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.getPeakList());
 		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
+		
+		String findCentStatusData = IntegerListEncoder.encodeList(findCentroidsResult.getFindCentStatusList());
+		centroidMap.setFindCentStatusData(findCentStatusData);
 		
 
 		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
@@ -304,11 +318,15 @@ public class GetFrameCentroidsExecutor {
 			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
 			centroidMap = null;
 			try {
 	
-				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, procedure.getProcedureConfigSet()
-						.getFindCentConfig());
+				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, 
+						procedure.getProcedureConfigSet().getFindCentConfigInterior(), 
+						procedure.getProcedureConfigSet().getFindCentConfigPeripheral(), 
+						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), procedure.getProcedureType().isCreateRefMap());
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	
@@ -327,13 +345,18 @@ public class GetFrameCentroidsExecutor {
 						
 			frameDisplayMgmt.displayMarkedFrame();
 	
-			boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
-					"Have the correct centroids been found?");
-	
-			// as part of the display, ask the user if it is OK (only passive tilt)
-			// throw a UserAssistException if they don't like it.
-			if (!userResponse) {
-				throw new HandMarkRequiredException();
+			// if PassiveTilt ask the user if the correct centroids have been found
+			if (procedure.getProcedureType().isPassiveTilt()) {
+			
+				boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
+						"Have the correct centroids been found?");
+		
+				// as part of the display, ask the user if it is OK (only passive tilt)
+				// throw a UserAssistException if they don't like it.
+				if (!userResponse) {
+					throw new HandMarkRequiredException();
+				}
+			
 			}
 
 		} catch (FandIException e1) {

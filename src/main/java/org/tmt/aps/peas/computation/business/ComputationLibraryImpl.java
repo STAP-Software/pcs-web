@@ -22,26 +22,33 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
-import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
+import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
+import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
+import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
@@ -86,13 +93,13 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return c[0];
 	}
 
-	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCent"));
 
 		JfindCent jfindCent = new JfindCent();
 		RetVal retVal = new RetVal();
-
+		
 		logger.debug("findCent::  " + guess + ", value = " + frame[(int) guess.x][(int) guess.y]);
 
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
@@ -107,14 +114,17 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
-		FindCentResult findCentResult = new FindCentResult(centroid, (Float)result[2], (Float)result[3]);
+		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], 0);
+		
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
 
-		return findCentResult;
+		return subimage;
 	}
 
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfig) throws ComputationException {
+
+	// findCentStatus is also a property of a spot, to be used by calcs after this.
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -140,20 +150,43 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int[] x_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractXArray(guessList));
 		int[] y_guesses = Utils.floatArrayToIntArray(FloatPointListEncoder.extractYArray(guessList));
 
-		// TODO: This needs to be generalized
 
-		int[] nspotType = new int[arrayLen];
+		int[] nGauss = new int[arrayLen];
+		int[] irad = new int[arrayLen];
+		int[] imargin = new int[arrayLen];
+		int[] itermax = new int[arrayLen];
 		for (int i = 0; i < arrayLen; i++) {
-			nspotType[i] = Constants.SPOT_TYPE_INTERIOR;
+			
+			if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
+				nGauss[i] = findCentConfigInterior.getNgauss();
+				irad[i] = findCentConfigInterior.getIrad();
+				imargin[i] = findCentConfigInterior.getImargin();
+				itermax[i] = findCentConfigInterior.getItermax();
+			} else {
+				nGauss[i] = findCentConfigPeripheral.getNgauss();	
+				irad[i] = findCentConfigPeripheral.getIrad();
+				imargin[i] = findCentConfigPeripheral.getImargin();
+				itermax[i] = findCentConfigPeripheral.getItermax();
+			}
 		}
-
+		
+		// if isRefMap, then set all missingSpotFlags to use
+		int[] passedMissingSpotFlags = missingSpotFlags;
+		if (isRefMap) {
+			passedMissingSpotFlags = new int[missingSpotFlags.length];
+			for (int i=0; i<missingSpotFlags.length; i++) {
+				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
+			}
+		}
+		
 		float[] x_cent = new float[arrayLen];
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
 		float[] peak = new float[arrayLen];
+		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
-		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, findCentConfig.getIrad(), findCentConfig.getImargin(), x_guesses,
-				y_guesses, findCentConfig.getItermax(), nspotType, findCentConfig.getNgauss(), x_cent, y_cent, intensity, peak);
+		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
+				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -161,7 +194,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak);
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, findCentStatus);
 		
 
 		// Code for findCent unit testing
@@ -263,7 +296,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, RefBeamMap refDefMap)
+	
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean isRefMap)
 			throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findAndIdentify"));
@@ -276,17 +310,18 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int nsp = -1; // segment number of current group
 		int ngp = -1; // sufs group number
 
-		List<FloatPoint> refDefCentroids = refDefMap.getCentroidMap().getFindCentroidsResult().getCentroidList();
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(refDefCentroids);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(refDefCentroids);
 
-		// initialize spot_flag
-		// TODO: this needs to be derived from missing spots
-		int[] spot_flag = new int[numSpots];
-		for (int i = 0; i < numSpots; i++) {
-			spot_flag[i] = 2;
+		// if isRefMap, then set all missingSpotFlags to use
+		int[] passedMissingSpotFlags = missingSpotFlags;
+		if (isRefMap) {
+			passedMissingSpotFlags = new int[missingSpotFlags.length];
+			for (int i=0; i<missingSpotFlags.length; i++) {
+				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
+			}
 		}
-
+		
 		// Force scale and rotation values, potentially coming from current ref map
 		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
 				.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
@@ -302,7 +337,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 				fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), fiConfig.getnPeakMinThresh(),
 				fiConfig.getnPeakMaxThresh(), fiConfig.isForceScale() ? 1 : 0, forceScaleValue, fiConfig.isForceRotation() ? 1 : 0,
 				forceRotationRad, fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), fiConfig.getSpiralRingCount(),
-				spot_flag, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
+				passedMissingSpotFlags, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
 				fiParams, fiResult.getN0123(), fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
 
 		if (retVal.getCode() > 0) {
@@ -392,9 +427,9 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 
-	@Override
+	
 	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
-			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType) throws ComputationException {
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidOffsets"));
 
@@ -406,21 +441,19 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(refMapCentroids);
 		float[][] centroid = FloatPointListEncoder.convertToNby2Array(centroids);
 
-		// initialize spot_flag
-		// TODO: this needs to be derived from missing spots
 		int numSpots = centroids.size();
-		int[] good_spots = new int[numSpots];
-		for (int i = 0; i < numSpots; i++) {
-			good_spots[i] = 1;
-		}
 
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
+
+		
 		// output arrays
 		float[][] ccdOffsets = new float[numSpots][2];
 		float[][] cartesianOffsets = new float[numSpots][2];
 		float[] image_translation = new float[2];
 
 		Object output[] = jcalculateCentroidOffsets.jcalculateCentroidOffsets(retVal, centroid, ref_cent,
-				centroidOffsetsConfig.isRemoveScale() ? 1 : 0, centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, ccdOffsets,
+				centroidOffsetsConfig.isRemoveScale() ? 1 : 0, centroidOffsetsConfig.isRemoveRotation() ? 1 : 0, good_spots, nspotTypes, ccdOffsets,
 				image_translation);
 
 		if (retVal.getCode() > 0) {
@@ -442,7 +475,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
-	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets) throws ComputationException {
+	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
 
@@ -451,15 +484,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
 
-		// initialize spot_flag
-		// TODO: this needs to be derived from missing spots
-		int numSpots = centroidOffsets.size();
-		int[] good_spots = new int[numSpots];
-		for (int i = 0; i < numSpots; i++) {
-			good_spots[i] = 1;
-		}
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
 
-		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots);
+		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots, nspotTypes);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -494,6 +522,36 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
+
+		// store fi_param values
+		return new ScaleError((Float) output[0], (Float) output[1]);
+	}
+	
+	
+
+	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
+
+		JfineScreenScaleError jfineScreenScaleError = new JfineScreenScaleError();
+		RetVal retVal = new RetVal();
+
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+
+		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpots);
+		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpots);
+		
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
+
+		Object output[] = jfineScreenScaleError.jfineScreenScaleError(retVal, good_spots, offsets, x_ref_def, y_ref_def);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Fine Screen Scale Error Calculation Error");
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
 
 		// store fi_param values
 		return new ScaleError((Float) output[0], (Float) output[1]);
@@ -602,6 +660,40 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return pistonActs;	
 
 	}
+	
+	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
+			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList)
+					throws Exception {
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculatePupilRegError"));
+
+		JcalculatePupilRegError jcalculatePupilRegError = new JcalculatePupilRegError();
+		RetVal retVal = new RetVal();
+
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
+
+		
+		Object[] output = jcalculatePupilRegError.jcalculatePupilRegError(retVal, pupilRegErrorConfig.getFractionalIntensityCalcMethod(),
+				centroidMap.getFindCentroidsResult().getIntensityList(), numSpots, pupilRegErrorConfig.getnStart(), good_spots, peripheralSpotTheta, 
+				peripheralSpotPerp, peripheralSpotParallel, aHex, spotDiameter);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode());
+		}
+		
+		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult((Float) output[0], (Float) output[1], (Float) output[2], 
+				(Float) output[3], (Float) output[4], (Float) output[5], (Float) output[6]);
+		
+		
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculatePupilRegError"));
+
+		return pupilRegErrorResult;
+
+	}
+	
+
 	// private convenience methods
 	private float[] flatten2dArray(float[][] input) {
 		float[] result = new float[input.length * input[0].length];
@@ -623,6 +715,19 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 	
+	private int[] goodCentroidsFound(int[] missingSpotFlags, int[] findCentStatusList) {
+		int[] found = new int[findCentStatusList.length];
+
+		for (int i=0; i<found.length; i++) {
+			boolean isGood = findCentStatusList[i] == Constants.FIND_CENT_STATUS_SUCCESS && missingSpotFlags[i] == Constants.MISSING_SPOT_TYPE_USE;
+			found[i] = isGood ? 1 : 0;
+		}
+
+		return found;
+
+	}
+
+	
 	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "addMatricies"));
@@ -633,17 +738,18 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return result;
 	}
-
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentPosition, float temperature, 
+	
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
-
-		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentPosition, temperature,  
+		
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, temperature,  
 				numIterations, currentDate, currentRefMap);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
+
 
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
 		
@@ -676,6 +782,37 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		return result;
 	}
+
+	@Override
+	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
+			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
+					throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
+		
+		CalcPrCommandsResult result = JavaComputations.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult,
+			 fineTiltMirror, coarseTiltMirror);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
+		
+		return result;
+	}
+
+
+	public Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
+		
+		Point result = JavaComputations.calcCoarseMirrorCmds(desiredMotion, leverCoarse, oraFactor);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
+		
+		return result;
+
+	}
+
+	
+	
 }
 
 

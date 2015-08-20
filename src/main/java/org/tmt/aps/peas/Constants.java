@@ -31,13 +31,14 @@ public class Constants {
 	public static final int AUTO_CENTER_TELESCOPE_NO = 2;
 	public static final int AUTO_CENTER_TELESCOPE_PROMPT = 3;
 
-	public static final int AUTO_COMMAND_TILT_PLATE_YES = 1;
-	public static final int AUTO_COMMAND_TILT_PLATE_NO = 2;
-	public static final int AUTO_COMMAND_TILT_PLATE_PROMPT = 3;
+	public static final int AUTO_CENTER_PUPIL_YES = 1;
+	public static final int AUTO_CENTER_PUPIL_NO = 2;
+	public static final int AUTO_CENTER_PUPIL_PROMPT = 3;
 
 	public static final int AUTO_CENTER_PUPIL_MECH_COARSE = 1;
 	public static final int AUTO_CENTER_PUPIL_MECH_FINE = 2;
-	public static final int AUTO_CENTER_PUPIL_MECH_PROMPT = 3;
+	public static final int AUTO_CENTER_PUPIL_MECH_AUTO = 3;
+	public static final int AUTO_CENTER_PUPIL_MECH_PROMPT = 4;
 
 	public static final int AUTO_SEND_ACT_DELTAS_YES = 1;
 	public static final int AUTO_SEND_ACT_DELTAS_NO = 2;
@@ -49,11 +50,21 @@ public class Constants {
 
 	public static final int SPOT_TYPE_INTERIOR = 1;
 	public static final int SPOT_TYPE_PERIPHERAL = 2;
-	
+
+	public static final int MISSING_SPOT_TYPE_NOT_EXPECTED = 0;
+	public static final int MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS = 1;
+	public static final int MISSING_SPOT_TYPE_USE = 2;
+
 	
 	public static final double PI = 3.14159265;
 	
 	public static final double DEG2RAD = 2 * PI / 360.0;
 	
 	public static final long MS_PER_HOUR = 1000 * 60 * 60;
+	
+	public static final int FIND_CENT_STATUS_SUCCESS = 0;
+	public static final int FIND_CENT_STATUS_NOT_PERFORMED = -1;
+	
+	
+	
 }

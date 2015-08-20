@@ -52,8 +52,8 @@
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue=""/> 
-										<f:selectItems value="#{sessionController.instrument.camera.pupilWheel.origPupilMaskList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
-										<p:ajax update=":advancedForm intTime" listener="#{procedureController.doUpdatePupilMask}" />
+										<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
+										<p:ajax update=":advancedForm intTime" listener="#{procedureController.pupilMaskSelectListener}" />
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
@@ -142,7 +142,7 @@
 								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm"
 								disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
 							<p:spacer width="30px" />
-							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" />
+							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
 							<br />
 							<br />
 							<p:progressBar widgetVar="pbAjax" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated"
@@ -308,9 +308,9 @@
 				</p:accordionPanel>
 
 			</p:panelGrid>
-			<p:remoteCommand name="handMark" action="#{procedureController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" />
-			<p:remoteCommand name="frameValue" action="#{procedureController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />	
-			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
+			<p:remoteCommand name="handMark" action="#{procedureController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" /> 
+			<p:remoteCommand name="frameValue" action="#{procedureController.doGetFrameValue}" process="@this" update=":frameHiddenForm" oncomplete="displayFrameValue();" />	
+ 			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
 		</h:form>
 
 		<ui:include src="advancedOptions.xhtml" />
@@ -387,14 +387,18 @@
 	 	if (xField != null && xField.length > 0) {
 	 	
 			for (var i = 0; i < xArray.length; i++) {
-				ctx.beginPath();
-				// divide by 2 when frame is displayed 512x512
-				ctx.arc(xArray[i]/2,yArray[i]/2,spotRad/2,0,2*Math.PI);
-				ctx.strokeStyle = '#ff0000';
-				ctx.lineWidth = 2;
-				ctx.stroke();
-				if (handMark == "true") {
-					ctx.fillText("" + (i+1), xArray[i]/2 - 14, yArray[i]/2 - 15);
+				
+				if (xArray[i] != 0.0 && yArray[i] != 0.0) {
+				
+					ctx.beginPath();
+					// divide by 2 when frame is displayed 512x512
+					ctx.arc(xArray[i]/2,yArray[i]/2,spotRad/2,0,2*Math.PI);
+					ctx.strokeStyle = '#ff0000';
+					ctx.lineWidth = 2;
+					ctx.stroke();
+					if (handMark == "true") {
+						ctx.fillText("" + (i+1), xArray[i]/2 - 14, yArray[i]/2 - 15);
+					}
 				}
 			}
 		}

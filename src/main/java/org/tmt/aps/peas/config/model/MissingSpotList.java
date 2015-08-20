@@ -16,17 +16,18 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.telescope.model.Telescope;
 
 @Entity
 @Table(name = "MissingSpotList")
 @NamedQueries({
-	@NamedQuery(name = "findSpotListByTypeAndMask", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId" ),
-	@NamedQuery(name = "findSpotListByTypeMaskGroup", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and o.sufsGroup = :sufsGroup" )
+	@NamedQuery(name = "findSpotListByTypeAndMask", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.telescope t "
+			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and t.telescopeId = :telescopeId" ),
+	@NamedQuery(name = "findSpotListByTypeMaskGroup", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.telescope t "
+			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and t.telescopeId = :telescopeId and o.sufsGroup = :sufsGroup" )
 })
 public class MissingSpotList {
-
+	
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long missingSpotListId;
@@ -38,6 +39,10 @@ public class MissingSpotList {
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
+
+	@ManyToOne
+	@JoinColumn (name="telescopeId")
+	private Telescope telescope;
 
 	
 	
@@ -90,6 +95,13 @@ public class MissingSpotList {
 		this.pupilMaskType = pupilMaskType;
 	}
  
+	public Telescope getTelescope() {
+		return telescope;
+	}
+
+	public void setTelescope(Telescope telescope) {
+		this.telescope = telescope;
+	}
 
 	public boolean isNewRecord() {
 		return missingSpotListId == null;

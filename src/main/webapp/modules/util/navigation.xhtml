@@ -7,6 +7,10 @@
 				<p:menubar>
 				
 					<p:submenu label="Session" icon="ui-icon-document">
+					
+						<p:menuitem value="Connect ..." ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{sessionController.extInfSimulationMode}"/>
+						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode}"/>
+					
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="View Current Session" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
@@ -14,9 +18,9 @@
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null}" />
 					<p:submenu label="Run" icon="ui-icon-gear" >
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="true"/>
+						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="true"/>
+						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="true"/>
 						<p:separator />
 						<p:menuitem value="Create Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.procedureExecuting}"/>
@@ -76,8 +80,7 @@
 						<p:menuitem value="Documentation"  action="#{helpController.doViewDocumentation}" />
 					</p:submenu>
 					
-					<f:facet name="options">
-            			
+					<f:facet name="options">            			
             			<p:selectBooleanButton id="value2" value="#{sessionController.advancedViewMode}" onLabel="Expert Mode" offLabel="OA Mode"  style="margin-right:10px">
             				<p:ajax update="@form" listener="#{sessionController.modeChangeListener}"/> 
         				</p:selectBooleanButton>

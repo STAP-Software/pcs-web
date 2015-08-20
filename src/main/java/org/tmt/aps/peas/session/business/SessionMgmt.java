@@ -21,6 +21,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -53,6 +54,14 @@ public class SessionMgmt {
 			try {
 				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId());
 				procedure.setProcedureOutput(procedureOutput);
+				
+				// get the frame list shallow for the summary list
+				TypedQuery<ProcedureCcdFrame> query2 = em.createNamedQuery("findProcedureCcdFramesShallow", ProcedureCcdFrame.class);
+				query2.setParameter("procedureId", procedure.getProcedureId());
+				
+				List<ProcedureCcdFrame> procedureCcdFrameList = query2.getResultList();
+				procedure.setProcedureCcdFrameList(procedureCcdFrameList);
+				
 			} catch (Exception e) {
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
@@ -148,9 +157,14 @@ public class SessionMgmt {
 				return "" + newMajorNum;
 			} else {
 				if (isLatestProcedureSubProcedure) {
+					// FIXME this code only works if we are persisting and autocommiting each procedure as they are completed.
+					
 					// extract minor number
-					String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
-					return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
+					//String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
+					//return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
+					
+					// TODO: get rid of this and reinstate the above when partial commits of procedures are implemented.
+					return superProcedureNum + ".1";
 				} else {
 					return superProcedureNum + ".1";
 				}

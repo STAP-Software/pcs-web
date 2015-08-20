@@ -38,10 +38,10 @@ public class FindCentConfig {
 	private int ngauss;
 	private int itermax;
 
+	
 	public FindCentConfig() {
 		
 	}
-
 
 	public FindCentConfig(FindCentConfig source) {
 		
@@ -60,26 +60,21 @@ public class FindCentConfig {
 		return findCentConfigId;
 	}
 
-
 	public void setFindCentConfigId(Long findCentConfigId) {
 		this.findCentConfigId = findCentConfigId;
 	}
-
 
 	public int getIrad() {
 		return irad;
 	}
 
-
 	public void setIrad(int irad) {
 		this.irad = irad;
 	}
 
-
 	public int getImargin() {
 		return imargin;
 	}
-
 
 	public void setImargin(int imargin) {
 		this.imargin = imargin;
@@ -89,17 +84,13 @@ public class FindCentConfig {
 		return ngauss;
 	}
 
-
 	public void setNgauss(int ngauss) {
 		this.ngauss = ngauss;
 	}
 
-
-
 	public int getItermax() {
 		return itermax;
 	}
-
 
 	public void setItermax(int itermax) {
 		this.itermax = itermax;

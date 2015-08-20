@@ -29,7 +29,7 @@
 			
 			<p:spacer height="10px" />
 			
-			<p:fieldset legend="Workflow Preferences" toggleable="true" toggleSpeed="500">
+			<p:fieldset legend="General Workflow Preferences" rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
@@ -43,20 +43,47 @@
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
+					<h:outputLabel value="Automatic Reference Beam Taking" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoTakeRefBeam}" disabled="#{procedureController.procedure.procedureState gt 1}">
+						<f:selectItem itemLabel="Auto Take Ref Maps" itemValue="1" />
+						<f:selectItem itemLabel="Never Take Ref Maps" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+				</p:panelGrid>
+			</p:fieldset>
+
+			<p:spacer height="10px" />
+					
+			<p:fieldset legend="Pupil Registration Workflow Preferences" rendered="#{procedureController.procedure.procedureType.pupilRegistration or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
+				
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
 					<h:outputLabel value="Auto Center Pupil" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoCenterPupil}" disabled="#{procedureController.procedure.procedureState gt 1}">
-						<f:selectItem itemLabel="Auto Command Tilt Plate" itemValue="1" />
-						<f:selectItem itemLabel="Never Command Tilt Plate" itemValue="2" />
-						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+						<f:selectItem itemLabel="Auto Command" itemValue="1" />
+						<f:selectItem itemLabel="Never Command" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User" itemValue="3" />
 					</p:selectOneMenu>
 
 					<h:outputLabel value="Center Pupil Mechanism" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoCenterPupilMechanism}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Coarse" itemValue="1" />
 						<f:selectItem itemLabel="Fine" itemValue="2" />
-						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+						<f:selectItem itemLabel="Auto Determine" itemValue="3" />
+						<f:selectItem itemLabel="Prompt User" itemValue="4" />
 					</p:selectOneMenu>
 
+				</p:panelGrid>
+				
+			</p:fieldset>
+
+			<p:spacer height="10px" />
+					
+			<!-- TODO: add rendering for sufs -->
+			<p:fieldset legend="Mirror Alignment Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
+					
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
 					<h:outputLabel value="Auto Send Actuator Cmds" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoSendActuatorCmds}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Command Primary" itemValue="1" />
@@ -64,18 +91,10 @@
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
 					</p:selectOneMenu>
 
-					<h:outputLabel value="Automatic Reference Beam Taking" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoTakeRefBeam}" disabled="#{procedureController.procedure.procedureState gt 1}">
-						<f:selectItem itemLabel="Auto Take Ref Maps" itemValue="1" />
-						<f:selectItem itemLabel="Never Take Ref Maps" itemValue="2" />
-						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
-					</p:selectOneMenu>
-
-
 				</p:panelGrid>
 
 			</p:fieldset>
-
+			
 			<p:spacer height="10px" />
 			<br/>
 

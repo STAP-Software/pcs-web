@@ -14,16 +14,11 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.Camera;
-import org.tmt.aps.peas.instrument.model.Ccd;
-import org.tmt.aps.peas.instrument.model.DeviceStates;
 import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.instrument.model.Shutter;
-import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 
 @Stateless
 public class CameraMgmt {
@@ -36,6 +31,8 @@ public class CameraMgmt {
 	CameraMgmtAsync cameraMgmtAsync;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 	// All Camera Commands should be defined here
 
@@ -176,14 +173,22 @@ public class CameraMgmt {
 	@Asynchronous
 	public Future<Boolean> refreshStatus() throws Exception {
 
-		Instrument instrument = physicalModel.getInstrument();
+		try {
 		
-		CameraStatus cameraStatus = queryCameraStatus();
+			Instrument instrument = physicalModel.getInstrument();
+			
+			CameraStatus cameraStatus = queryCameraStatus();
+	
+			instrument.updateState(cameraStatus);
 
-		instrument.updateState(cameraStatus);
-		
-		//logger.info(">> status refresh compete <<");
-		
+			// set heartbeat status to true
+			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);
+			
+		} catch (Throwable t) {
+			// set heartbeat status to false
+			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(false);
+		}
+				
 		return new AsyncResult<Boolean>(true);
 	}
 

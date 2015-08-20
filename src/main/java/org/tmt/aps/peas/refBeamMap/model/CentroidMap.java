@@ -25,6 +25,7 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -61,6 +62,8 @@ public class CentroidMap {
 	String intensityMapData;
 	@Column
 	String peakMapData;
+	@Column
+	String findCentStatusData;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
@@ -141,6 +144,14 @@ public class CentroidMap {
 
 	public void setCentroidMapData(String centroidMapData) {
 		this.centroidMapData = centroidMapData;
+	}
+
+	public void setFindCentStatusData(String findCentStatusData) {
+		this.findCentStatusData = findCentStatusData;
+	}
+
+	public String getFindCentStatusData() {
+		return findCentStatusData;
 	}
 
 	public Date getCreateDate() {
@@ -236,8 +247,9 @@ public class CentroidMap {
 			List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(getCentroidMapData());
 			List<Float> intensityList = FloatListEncoder.decodeList(getIntensityMapData());
 			List<Float> peakList = FloatListEncoder.decodeList(getPeakMapData());
+			List<Integer> findCentStatus = IntegerListEncoder.decodeList(getFindCentStatusData());
 			
-			findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList);
+			findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList, findCentStatus);
 		}
 		
 		return findCentroidsResult;

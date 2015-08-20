@@ -20,31 +20,28 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
-import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
-import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
-import org.tmt.aps.peas.frame.business.PupilRegistrator;
-import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -58,7 +55,6 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
-import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -78,8 +74,8 @@ public class PassiveTiltExecutor {
 	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
-	//@EJB
-	//private FrameDisplayMgmt frameDisplayMgmt;
+	@EJB
+	private ReadyCamera readyCamera;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -97,9 +93,13 @@ public class PassiveTiltExecutor {
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 	@EJB
+	private CenterTelescopeCalc centerTelescopeCalc;
+	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
 	private ConstantsCache constantsCache;
+	@EJB
+	private SubimageDefCache subimageDefCache;
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
 
@@ -157,7 +157,7 @@ public class PassiveTiltExecutor {
 					try {
 						
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-								physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {
 
@@ -191,6 +191,7 @@ public class PassiveTiltExecutor {
 							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
 							.getFilterTypeId(), -1);
 
+
 				}
 			}
 
@@ -198,165 +199,42 @@ public class PassiveTiltExecutor {
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// always command the coarse mirror to setup values at the start of all procedures
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(procedure.getProcedureConfigSet()
-						.getGlobalConfig().getCoarseMirrorDefault());
-
-				Future<Integer> twoPosCommandFuture = null;
-				Future<Integer> refBeamFuture = null;
-				// command to mask selected
-				statusLogger.log("camera.cmd.pupil_wheel", procedureConfig.getPupilMask().getWheelPosition());
-				Future<Integer> pupilMaskCommandFuture = cameraMgmt.commandPupilMask(procedureConfig.getPupilMask().getWheelPosition());
-				// command to filter selected
-				statusLogger.log("camera.cmd.filter_wheel", procedureConfig.getFilter().getWheelPosition());
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-
-				if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-					// select ref beam based on filter wavelength
-					ReferenceBeam refBeam = procedureConfig.getReferenceBeam();
-					statusLogger.log("camera.cmd.ref_beam", refBeam.getRefBeamNum());
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(refBeam.getRefBeamNum());
-
-					// extend two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
-				} else {
-					// turn off reference beams
-					statusLogger.log("camera.cmd.ref_beam", 0);
-					refBeamFuture = cameraMgmt.commandReferenceBeamState(0);
-
-					// retract two pos mirror
-					statusLogger.log("camera.cmd.two_pos_device", "extend");
-					twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
-				}
-
-				// wait for all commands to complete
-				Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-						coarseMirrorCommandFuture);
-				statusLogger.log("camera.cmd.complete");
-
-			}
-
+			/**********************************************/
+			/*                 Ready Camera               */
+			/**********************************************/			
+			readyCamera.execute(procedure);
+			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			
-			ProcedureCcdFrame procedureCcdFrame = null;
-			CentroidOffsetsResult centroidOffsetsResult = null;
-
-			FloatPoint lastMove = null;
-			FloatPoint deltaAzEl;
 			
-			while (true) {
-
-				logger.debug("light source 3 = " + procedureConfig.getLightSource());
-
-				procedureCcdFrame = getFrameCentroidsExecutor.executeProcedure(procedure, currentSession);
-
-				statusLogger.log("calc.centroid_resid");
-
-				/*****************************************************/
-				/*             calculateCentroidOffsets              */
-				/*****************************************************/
-
-				centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
-						procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), procedure.getProcedureConfigSet()
-								.getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType());
-
-				// go from centroidOffsetsResult.imageTranslation to deltaAz,El
-				deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
-						new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
-
-
-				// test deltaAzEl against thresholds for telescope move
-				AutoCenterTelConfig autoCenterTelConfig = procedure.getProcedureConfigSet().getAutoCenterTelConfig();
-				AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
-				// log what result was found
-				statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
-
-				if (aResult.getRecenterTelescope().isNo() || procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_NO) {
-					break; // leave the loop if nothing to do
-				}
-
-				if (aResult.getRecenterTelescope().isYes() && procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) {
-
-					// perform telescope move
-					lastMove = deltaAzEl;
-					statusLogger.log("telescope.cmd.start");
-					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
-					statusLogger.log("telescope.cmd.end");
-				}
-
-				
-				
-				// prompt user if required by settings or required due to abnormal result
-				boolean userReply = false;
-				if (aResult.getRecenterTelescope().isPrompt()) {
-					
-					// ask user if they want to center the telescope
-					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
-							aResult.getReasonArgs()) + "\nMove Telescope?");
-					
-					if (userReply) {
-						// perform telescope move
-						lastMove = deltaAzEl;
-						statusLogger.log("telescope.cmd.start");
-						dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
-						statusLogger.log("telescope.cmd.end");						
-					} else {
-						break;
-					}
-					
-				} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
-					// ask user if they want to center the telescope
-					userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
-							aResult.getReasonArgs()) + "\nMove Telescope?");
-					
-					if (userReply) {
-						// perform telescope move
-						lastMove = deltaAzEl;
-						statusLogger.log("telescope.cmd.start");
-						dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
-						statusLogger.log("telescope.cmd.end");						
-					} else {
-						break; // if user doesn't want to move telescope, no point in re-taking frame
-					}
-					
-				}
-
-
-				if (aResult.getRetakeFrame().isNo()) {
-					break;
-				}
-
-				if (aResult.getRetakeFrame().isPrompt()) {
-
-					// ask user if they want to re-take the frame
-					int reply = userPromptMgmt.displayFlowControlTriFlowDialog("Frame needs to be retaken.  Press: 'Retry' to re-take frame, 'Continue' to continue procedure with this frame, 'Abort' to abort test now.");
-				
-					if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-						
-						// TODO: put in logic here (throw user abort exception?
-						
-					} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
-						break; // continue on
-					}
-				}
-	
-				// go back and re-take frame
-
-			}
+			/*****************************************************/
+			/*          centerTelescopeCalc subprocedure         */
+			/*****************************************************/
+			
+			// This is not implemented as a standard subprocedure because of the data we need returned.
+			
+			CenterTelescopeCalcResult centerTelescopeCalcResult = centerTelescopeCalc.centerTelescope(procedure, currentSession);
+			
+			CentroidOffsetsResult centroidOffsetsResult= centerTelescopeCalcResult.getCentroidOffsetsResult();
+			FloatPoint deltaAzEl = centerTelescopeCalcResult.getDeltaAzEl();
+			
 
 			procedureExecutionState.setPercentComplete(80);
 
 			/*****************************************************/
 			/*              calculateCentroidStats               */
 			/*****************************************************/
-			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets());
+
+			FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
+			
+			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			/*****************************************************/
 			/*              passiveTiltScaleError                */

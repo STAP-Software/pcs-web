@@ -8,6 +8,7 @@ package org.tmt.aps.peas.procedure.ui;
 import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -41,9 +42,10 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -57,18 +59,21 @@ import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
+import org.tmt.aps.peas.procedure.executor.PupilRegistrationExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.procedure.model.PupilRegistrationProcedureOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
@@ -89,6 +94,8 @@ public class ProcedureController implements Serializable {
 	ProcedureMgmt procedureMgmt;
 	@EJB
 	PassiveTiltExecutor passiveTiltExecutor;
+	@EJB
+	PupilRegistrationExecutor pupilRegistrationExecutor;
 	@EJB
 	CreateRefMapExecutor createRefMapExecutor;
 	@EJB
@@ -148,7 +155,9 @@ public class ProcedureController implements Serializable {
 	boolean frameMarkingMode = false;
 	String pixelValue;
 	List<Procedure> procedureList;
-
+	List<PupilMask> pupilMaskSelectList;
+	List<PupilMask> prPupilMaskSelectList;
+	
 	@PostConstruct
 	private void init() throws Exception {
 
@@ -157,6 +166,16 @@ public class ProcedureController implements Serializable {
 		// set up the instrument to be associated with each frame to display archived state
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
+		
+		pupilMaskSelectList = sessionController.getInstrument().getCamera().getPupilWheel().getOrigPupilMaskList();
+		
+		prPupilMaskSelectList = new ArrayList<PupilMask>();
+		for (PupilMask pupilMask : pupilMaskSelectList) {
+			if (pupilMask.getPupilMaskType().isPupilMaskTypeFs() || pupilMask.getPupilMaskType().isPupilMaskTypePh()) {
+				prPupilMaskSelectList.add(pupilMask);
+			}
+		}
+
 	}
 
 	public Procedure getProcedure() {
@@ -214,7 +233,7 @@ public class ProcedureController implements Serializable {
 	// search radius is from findCentConfig
 	public String getFrameSearchRadius() {
 		try {
-			int irad = procedure.getProcedureConfigSet().getFindCentConfig().getIrad();
+			int irad = procedure.getProcedureConfigSet().getFindCentConfigInterior().getIrad();
 			if (frameMarkingMode)
 				return "" + (irad * 2);
 			return "" + irad;
@@ -283,6 +302,16 @@ public class ProcedureController implements Serializable {
 		return frameDisplayMgmt.getFrameInstructionImageName();
 	}
 
+	// the mask list is supplied here where we know what the procedure is
+	public List<PupilMask> getPupilMaskSelectList() {
+		if (procedure.getProcedureType().isPupilRegistration()) {
+			return prPupilMaskSelectList;
+		} else {
+			return pupilMaskSelectList;
+		}
+	}
+	
+	
 	public StreamedContent getGraphicImage() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -356,7 +385,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderPupilMaskSelect() {
-		return procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+		return procedure.getProcedureType().isCreateRefMap() || procedure.getProcedureType().isPupilRegistration();
 	}
 
 	public boolean getRenderNumTrials() {
@@ -399,7 +428,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public String doNewPupilRegistration() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION, null);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION, new PupilRegistrationProcedureOutput());
 	}
 
 	public String doNewCenterTelescope() {
@@ -423,7 +452,7 @@ public class ProcedureController implements Serializable {
 		} else if (lastProcedureType.isPassiveTilt()) {
 			return doNewPassiveTilt();
 		} else if (lastProcedureType.isPupilRegistration()) {
-			return doNewPassiveTilt();
+			return doNewPupilRegistration();
 		} else if (lastProcedureType.isFineScreen()) {
 			return doNewPassiveTilt();
 		} else if (lastProcedureType.isPhasing()) {
@@ -506,7 +535,17 @@ public class ProcedureController implements Serializable {
 
 		}
 
-		procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);
+		try {
+		
+			procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);
+		
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Error Initializing Procedure, check log files for details"));
+			
+			return;
+		}
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
@@ -515,9 +554,12 @@ public class ProcedureController implements Serializable {
 			createRefMapExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPassiveTilt()) {
 			passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedure.getProcedureType().isPupilRegistration()) {
+			pupilRegistrationExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isCenterTelescope()) {
 			centerTelescopeExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		}
+		
 
 		logger.debug("doExecuteProcedure::after executor call");
 
@@ -652,27 +694,7 @@ public class ProcedureController implements Serializable {
 
 	}
 
-	public void doUpdatePupilMask() {
 
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-
-			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
-	}
-
-	public void doUpdateFilter() {
-
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
-
-			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
-	}
 
 	public void doSaveContext() {
 
@@ -699,6 +721,10 @@ public class ProcedureController implements Serializable {
 		frameInstrument.updateState(cameraState);
 	}
 
+	// ====================================================================================== //
+	// Select Listeners                                                                       //
+	// ====================================================================================== //
+
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
@@ -710,6 +736,36 @@ public class ProcedureController implements Serializable {
 		logger.debug("int time = " + intTime);
 	}
 
+	public void pupilMaskSelectListener() throws Exception {
+
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+		
+		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
+	}
+
+	public void filterSelectListener() {
+
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+	}	
+	public void lightSourceSelectListener() throws Exception {
+		
+		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+
+	}
+	
 	// ====================================================================================== //
 	// Frame Displays //
 	// ====================================================================================== //
@@ -729,10 +785,10 @@ public class ProcedureController implements Serializable {
 		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		FindCentResult findCentResult = new FindCentResult(guess, 0.0f, 0.0f);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
 
 		try {
-			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfig());
+			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfigInterior());
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
 
@@ -740,12 +796,12 @@ public class ProcedureController implements Serializable {
 
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
 
-			findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			subimage = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 
-		FloatPoint centroid = findCentResult.getCentroid();
+		FloatPoint centroid = subimage.getCentroid();
 		
 		String centroidXs = getFrameCentroidXs();
 		String centroidYs = getFrameCentroidYs();
@@ -829,8 +885,11 @@ public class ProcedureController implements Serializable {
 
 		}
 	}
+
 	
 	public void doGetFrameValue() {
+		
+		
 		// TODO: get the x,y from the form and use it to populate the value field
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
@@ -838,17 +897,23 @@ public class ProcedureController implements Serializable {
 		int x = (new Double(xStr)).intValue(); 
 		int y = (new Double(yStr)).intValue(); 
 
-		int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
 		
-		// place within bounds
-		x = (x < 0) ? 0 : x;
-		y = (y < 0) ? 0 : y;
-		x = (x > size-1) ? size-1 : x;
-		y = (y > size-1) ? size-1 : y;
+		if (selectedFrame.getCcdFrame().getRawFrame() != null) {
+			int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
+			
+			// place within bounds
+			x = (x < 0) ? 0 : x;
+			y = (y < 0) ? 0 : y;
+			x = (x > size-1) ? size-1 : x;
+			y = (y > size-1) ? size-1 : y;
+			
+			int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
+			
+			pixelValue = "" + value;
+			
+			
+		}
 		
-		int value = selectedFrame.getCcdFrame().getRawFrame()[x][y];
-		
-		pixelValue = "" + value;
 	}
 
 

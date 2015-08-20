@@ -22,7 +22,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
-import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -204,8 +204,8 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("frame.mark_guess", guess);
 			
 			// call find cent with the guess
-			FindCentResult findCentResult = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfig(), Constants.SPOT_TYPE_INTERIOR);
-			FloatPoint centroid = findCentResult.getCentroid();
+			Subimage subimage = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfigInterior(), Constants.SPOT_TYPE_INTERIOR);
+			FloatPoint centroid = subimage.getCentroid();
 			procedureOutput.setCentroid(centroid);
 			
 			procedureExecutionState.setPercentComplete(80);
