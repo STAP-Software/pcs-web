@@ -311,12 +311,12 @@ public class ProcedureExecutionMgmt {
 				// don't stop just because we can't read it all back
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
+			
+			// do not allow procedure to complete until frame requests have been met
+			frameDisplayMgmt.waitForPendingDisplays();
+			
 
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
-			
-			// wait so that async controller can catch up
-			Utils.waitFor(3000);
-
 			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
 

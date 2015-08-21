@@ -24,6 +24,7 @@ public class ProcedureExecutionState {
 	
 	private boolean executionStatus;
 	private boolean abortRequested;
+	private boolean onCompletePerformed;
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
@@ -34,6 +35,7 @@ public class ProcedureExecutionState {
 		currentProcedure.setPercentComplete(0);
 		procedureException = null;
 		abortRequested = false;
+		onCompletePerformed = false;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -128,6 +130,14 @@ public class ProcedureExecutionState {
 		} else {
 			executionStatus = false;
 		}
+	}
+
+	public void setOnCompletePerformed(boolean onCompletePerformed) {
+		this.onCompletePerformed = onCompletePerformed;
+	}
+
+	public boolean getOnCompletePerformed() {
+		return onCompletePerformed;
 	}
 
 

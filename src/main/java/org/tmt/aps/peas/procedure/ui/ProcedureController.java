@@ -135,6 +135,8 @@ public class ProcedureController implements Serializable {
 	private StatusLogController statusLogController;
 	@Inject
 	private FrameController frameController;
+	@Inject
+	private AsyncController asyncController;
 
 	// need to exchange when changing from subprocedure and back
 	Procedure procedure;
@@ -534,7 +536,9 @@ public class ProcedureController implements Serializable {
 					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));
 
 		}
-
+		// reset marking mode in case of hiccup in previous procedure
+		frameMarkingMode = false;
+		
 		try {
 		
 			procedureExecutionMgmt.performProcedureStartup(procedure, selectedFitsFiles);

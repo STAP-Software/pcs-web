@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.procedure.ui;
 
+import java.io.Serializable;
+
 import javax.ejb.EJB;
 import javax.faces.bean.SessionScoped;
 import javax.faces.context.FacesContext;
@@ -34,7 +36,7 @@ import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 @Named
 @SessionScoped
-public class AsyncController {
+public class AsyncController implements Serializable {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -59,7 +61,6 @@ public class AsyncController {
 	@Inject
 	BreadcrumbMenuBean breadcrumbMenuBean;
 	
-
 	
 	public boolean getDisplayNewFrame() {
 		return frameDisplayMgmt.getPendingDisplay();
@@ -81,7 +82,7 @@ public class AsyncController {
 	public boolean getAbortRequested() {
 		return procedureExecutionState.getAbortRequested();
 	}
-
+	
 	public void asyncListener() {
 
 		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
@@ -310,8 +311,10 @@ public class AsyncController {
 			// update the currentSessionPersisted for use in the UI
 			sessionController.updateCurrentSessionPersisted();
 			
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		} finally {
+			setOnCompletePerformed(true);
 		}
 	}
 
@@ -355,6 +358,12 @@ public class AsyncController {
 		return procedureExecutionState.getExecutionStatus();
 	}
 
+	public boolean isOnCompletePerformed() {
+		return procedureExecutionState.getOnCompletePerformed();
+	}
+	public void setOnCompletePerformed(boolean state) {
+		procedureExecutionState.setOnCompletePerformed(state);
+	}
 
 	public int getPercentComplete() {
 		logger.debug("getPercentComplete::" + procedureExecutionState.getPercentComplete());

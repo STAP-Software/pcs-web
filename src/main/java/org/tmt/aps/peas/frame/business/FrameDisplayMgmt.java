@@ -17,6 +17,7 @@ import javax.ejb.Singleton;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Utils;
 
 @Singleton
 @Lock(LockType.READ)
@@ -87,6 +88,21 @@ public class FrameDisplayMgmt implements Serializable {
 		this.frameInstructionImageName = "";
 	}
 
+	
+	public void waitForPendingDisplays() {
+		
+		int timeout = 0;
+		
+		// here we wait until the return state changes
+		while(getPendingDisplay() || getPendingMarkedDisplay() || timeout > 10) {
+						
+			Utils.waitFor(1000);
+			
+			timeout++;
+		}
+		
+	}
+	
 	public void setPendingDisplay(boolean b) {
 		pendingDisplay = b;
 	}
