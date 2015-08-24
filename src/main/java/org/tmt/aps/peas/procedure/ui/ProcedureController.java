@@ -768,8 +768,10 @@ public class ProcedureController implements Serializable {
 		
 		// if light source is now LED, load up refBeam #1 as a default
 		if (procedure.getProcedureConfigSet().getProcedureConfig().getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-			ReferenceBeam refBeam1 = sessionController.getInstrument().getCamera().getOrderedReferenceBeamList().get(0);
-			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refBeam1);
+			if (procedure.getProcedureConfigSet().getProcedureConfig().getReferenceBeam() == null) {
+				ReferenceBeam refBeam1 = sessionController.getInstrument().getCamera().getOrderedReferenceBeamList().get(0);
+				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refBeam1);
+			}
 		}
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
