@@ -45,7 +45,6 @@ import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
-import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -60,6 +59,7 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
@@ -765,6 +765,12 @@ public class ProcedureController implements Serializable {
 		}
 	}	
 	public void lightSourceSelectListener() throws Exception {
+		
+		// if light source is now LED, load up refBeam #1 as a default
+		if (procedure.getProcedureConfigSet().getProcedureConfig().getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+			ReferenceBeam refBeam1 = sessionController.getInstrument().getCamera().getOrderedReferenceBeamList().get(0);
+			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refBeam1);
+		}
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 
