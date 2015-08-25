@@ -349,7 +349,7 @@ public class JavaComputations {
 		
 		
 		int relativeXCoarseCmd = Math.round(desiredMotion.x * 1000.0f * oraFactor * leverCoarse.x);
-		int relativeYCoarseCmd = Math.round(desiredMotion.y * 1000.0f * oraFactor * leverCoarse.y);
+		int relativeYCoarseCmd = Math.round(-1.0f * desiredMotion.y * 1000.0f * oraFactor * leverCoarse.y);
 
 		
 		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
@@ -416,7 +416,7 @@ public class JavaComputations {
 		float xMask = desiredMotion.x * 1000.0f * 1000.0f / pupilDemag;
 		float yMask = desiredMotion.y * 1000.0f * 1000.0f / pupilDemag;
 		int relativeXTiltCmd = Math.round(xMask * leverFine.x / windowThickness * xbk7Index/(xbk7Index-1));
-		int relativeYTiltCmd = Math.round(yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
+		int relativeYTiltCmd = Math.round(-1.0f * yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
 
 		return new Point(relativeXTiltCmd, relativeYTiltCmd);
 	}
