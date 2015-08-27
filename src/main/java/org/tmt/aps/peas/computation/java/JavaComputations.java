@@ -195,8 +195,10 @@ public class JavaComputations {
 			return new CalcPrCommandsResult(null, null, null, null);
 		}
 	
+		//8/26/2015 we are overshooting use a scale factor here
 		// the desired correction is typically the negative of the pupil reg error result in x and y
-		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX(), -pupilRegErrorResult.getRegErrorY());
+		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX()*0.5f, -pupilRegErrorResult.getRegErrorY()*0.5f);
+		
 	
 		
 		// if desiredCenterPupilMech is FineTilt, then check to see if it is outside limits.  If it is outside limits, offload to coarse.
