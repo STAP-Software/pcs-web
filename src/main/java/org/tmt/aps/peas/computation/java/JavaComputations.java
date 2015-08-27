@@ -195,8 +195,10 @@ public class JavaComputations {
 			return new CalcPrCommandsResult(null, null, null, null);
 		}
 	
+		//8/26/2015 we are overshooting use a scale factor here
 		// the desired correction is typically the negative of the pupil reg error result in x and y
-		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX(), -pupilRegErrorResult.getRegErrorY());
+		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX()*0.5f, -pupilRegErrorResult.getRegErrorY()*0.5f);
+		
 	
 		
 		// if desiredCenterPupilMech is FineTilt, then check to see if it is outside limits.  If it is outside limits, offload to coarse.
@@ -349,7 +351,7 @@ public class JavaComputations {
 		
 		
 		int relativeXCoarseCmd = Math.round(desiredMotion.x * 1000.0f * oraFactor * leverCoarse.x);
-		int relativeYCoarseCmd = Math.round(desiredMotion.y * 1000.0f * oraFactor * leverCoarse.y);
+		int relativeYCoarseCmd = Math.round(-1.0f * desiredMotion.y * 1000.0f * oraFactor * leverCoarse.y);
 
 		
 		return new Point(relativeXCoarseCmd, relativeYCoarseCmd);
@@ -416,7 +418,7 @@ public class JavaComputations {
 		float xMask = desiredMotion.x * 1000.0f * 1000.0f / pupilDemag;
 		float yMask = desiredMotion.y * 1000.0f * 1000.0f / pupilDemag;
 		int relativeXTiltCmd = Math.round(xMask * leverFine.x / windowThickness * xbk7Index/(xbk7Index-1));
-		int relativeYTiltCmd = Math.round(yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
+		int relativeYTiltCmd = Math.round(-1.0f * yMask * leverFine.y / windowThickness * xbk7Index/(xbk7Index-1));
 
 		return new Point(relativeXTiltCmd, relativeYTiltCmd);
 	}
