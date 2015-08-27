@@ -331,17 +331,19 @@ public class PupilRegistrationExecutor {
 			} 
 			
 			int desiredCenterPupilMech = 0;
-			if (procedureConfig.getAutoCenterPupilMechanism() == Constants.AUTO_CENTER_PUPIL_MECH_PROMPT) {
-				
-				String[] choices = {"Fine", "Coarse", "AutoDetermine"};
-				int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
-				
-				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
-						choices, values);
-							
-			} else {
-				desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
-			}						
+			if (centerPupil) {
+				if (procedureConfig.getAutoCenterPupilMechanism() == Constants.AUTO_CENTER_PUPIL_MECH_PROMPT) {
+					
+					String[] choices = {"Fine", "Coarse", "AutoDetermine"};
+					int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
+					
+					desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
+							choices, values);
+								
+				} else {
+					desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
+				}					
+			}
 
 			procedureExecutionState.setPercentComplete(85);
 
