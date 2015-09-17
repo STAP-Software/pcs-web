@@ -719,7 +719,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		int[] found = new int[findCentStatusList.length];
 
 		for (int i=0; i<found.length; i++) {
-			boolean isGood = findCentStatusList[i] == Constants.FIND_CENT_STATUS_SUCCESS && missingSpotFlags[i] == Constants.MISSING_SPOT_TYPE_USE;
+			boolean isGood = (findCentStatusList[i] == Constants.FIND_CENT_STATUS_SUCCESS ||  findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X ||  
+					findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) && missingSpotFlags[i] == Constants.MISSING_SPOT_TYPE_USE;
 			found[i] = isGood ? 1 : 0;
 		}
 

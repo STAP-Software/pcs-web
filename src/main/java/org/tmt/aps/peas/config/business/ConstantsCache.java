@@ -18,8 +18,8 @@ import org.tmt.aps.peas.config.model.PhasingConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorSegmentConstants;
 import org.tmt.aps.peas.config.model.SufsConstants;
+import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 @Singleton
 @Startup
@@ -36,6 +36,7 @@ public class ConstantsCache {
 	private PrimaryMirrorSegmentConstants primaryMirrorSegmentConstants;
 	private PhasingConstants phasingConstants;
 	private SufsConstants sufsConstants;
+	private TelescopeConstants telescopeConstants;
 	
 
 	@PostConstruct
@@ -44,21 +45,24 @@ public class ConstantsCache {
 		primaryMirrorSegmentConstants = new PrimaryMirrorSegmentConstants();
 		phasingConstants = new PhasingConstants();
 		sufsConstants = new SufsConstants();
+		telescopeConstants = new TelescopeConstants();
 		
 		List<Object> instances = new ArrayList<Object>();
 		instances.add(primaryMirrorConstants);
 		instances.add(primaryMirrorSegmentConstants);
 		instances.add(phasingConstants);
 		instances.add(sufsConstants);
+		instances.add(telescopeConstants);
 		
 		// populate constants
 		constantsMgmt.loadConstants(instances);
-		/*
+		
 		logger.info("\n\nPrimary Mirror Constants: \n" + primaryMirrorConstants);
 		logger.info("\n\nPrimary Mirror Segment Constants: \n" + primaryMirrorSegmentConstants);
 		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
 		logger.info("\n\nSUFS Constants: \n" + sufsConstants);
-		*/
+		logger.info("\n\nTelescope Constants: \n" + telescopeConstants);
+		
 
 	}
 
@@ -77,6 +81,10 @@ public class ConstantsCache {
 
 	public SufsConstants getSufsConstants() {
 		return sufsConstants;
+	}
+
+	public TelescopeConstants getTelescopeConstants() {
+		return telescopeConstants;
 	}
 
 	

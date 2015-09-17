@@ -63,6 +63,17 @@ public class Constants {
 	public static final long MS_PER_HOUR = 1000 * 60 * 60;
 	
 	public static final int FIND_CENT_STATUS_SUCCESS = 0;
+	//public static final int FIND_CENT_STATUS_?? = 1001;	
+	//public static final int FIND_CENT_STATUS_?? = 1003;	
+	//public static final int FIND_CENT_STATUS_?? = 1004;	
+	//public static final int FIND_CENT_STATUS_?? = 1005;	
+	//public static final int FIND_CENT_STATUS_?? = 1006;	
+	//public static final int FIND_CENT_STATUS_?? = 1007;	
+	//public static final int FIND_CENT_STATUS_?? = 1008;
+	//public static final int FIND_CENT_STATUS_?? = 1009;
+	//public static final int FIND_CENT_STATUS_?? = 1010;
+	public static final int FIND_CENT_STATUS_GAUSS_FALLBACK_X = 1011; 
+	public static final int FIND_CENT_STATUS_GAUSS_FALLBACK_Y = 1012; 
 	public static final int FIND_CENT_STATUS_NOT_PERFORMED = -1;
 	
 	
