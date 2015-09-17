@@ -58,7 +58,7 @@ import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
 @Singleton
 @Startup
-public class PassiveTiltExecutor {
+public class FineScreenExecutor {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -86,8 +86,6 @@ public class PassiveTiltExecutor {
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private ComputationContext computationContext;
-	//@EJB
-	//private PupilRegistrator pupilRegistrator;
 	@EJB
 	PhysicalModel physicalModel;
 	@EJB
@@ -127,7 +125,7 @@ public class PassiveTiltExecutor {
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 
-		logger.info("PassiveTiltExecutor::executeProcedure::");
+		logger.info("Fine Screen Executor::executeProcedure::");
 
 		try {
 
@@ -210,6 +208,293 @@ public class PassiveTiltExecutor {
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			
+			/*
+			 * 
+			         
+        
+        // TODO: what is a work message dialog??
+        // perhaps we would like to update the status panel to contain current messages along with % complete.
+        CALL CREATE_WORK_MESSAGE_DIALOG()
+        TEXT = 'Fine Screen, Initialization'
+
+
+
+C If needed auto point telesope back to segment 0
+	IF (.NOT.AUTO_POINT_TELESCOPE(FS_TEST,0)) GOTO 900
+                                                                               
+
+	// ready camera
+	// auto ref map call
+
+
+	DO I = 1, NUMBER_TRIALS
+	
+           WRITE(CI, FMT='(I2)') I
+           WRITE(CNT, FMT='(I2)') NUMBER_TRIALS
+           TEXT = 'Fine Screen, Loop '//CI//' of '//CNT
+
+           CALL FUPDATE_WORK_MESSAGE(TEXT, LEN(TEXT))
+           
+           // TODO: allow user to abort procedure inside this loop.
+           
+           
+          // TODO: call get corrected frame
+
+		  // TODO: call find and identify, findAllCentroids
+
+          // TODO: optionally display centroids
+
+		  // TODO: call pupil_registration for fine screen, then call CENTER_PUPIL
+          
+          
+		  // TODO: if the 'auto' pupil registration fails, then go into 'manual' mod  
+
+	      TEXT = 'Error Running Auto. Pupil Registration'
+	      CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+	      CALL FWARN_DIALOG(TEXT, LEN(TEXT), M_DIALOG)
+
+              IF (ZFINE_FRAME_SOURCE.EQ.CCD) THEN
+	         TEXT = 'Error Running Auto. Pupil Registration'//NL//
+     +                'Starting  Manual Registration'
+	         CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+	         CALL FWARN_DIALOG(TEXT, LEN(TEXT), M_DIALOG)
+
+                 CALL CENTER_PUPIL_MANUAL
+              ENDIF
+	  
+	  // TODO: in either case, check if PR is out of tolerance (FRAME_OK)
+C
+C Is Frame Ok?
+C
+           IF (.NOT.FRAME_OK) THEN
+	      TEXT = 'Pupil Registration Out of Tolerance'
+	      CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+C	      OK = FYNWARN_DIALOG(TEXT, 'Re-Take Frame', 'Continue', YES,
+C     +             M_DIALOG)
+	      OK = FYNWARN_DIALOG(TEXT, LEN(TEXT),
+     +    'Re-Take Frame', LEN('Re-Take Frame'), 
+     +    'Continue', LEN('Continue'), YES, M_DIALOG)
+              IF (OK) GOTO 100
+	   ENDIF
+
+		// TODO: calculate centroid offsets and optionally display them
+
+		// TODO: locally store offsets for this trial, plus image translation, rotation and scale
+
+	END DO ! End do of loop over N frames
+
+	// TODO: average all offsets over all iterations
+
+	// TODO: call calculate_centroid_stats on the average
+
+	// TODO: log imageRotation, imageScale, rrmsTotal, focusError, 50% enclosed energy, 80% enclosed energy
+
+	// TODO: optionally display avg offsets
+
+	
+	// FIXME: Do we still do this? 
+	// FIXME: the following code is poorly written with too much cut and paste.  
+    IF (ZFINE_CALC_MODE.EQ.CALC_MODE_PASSIVE) THEN
+
+    	CALL CONVERT_FINE_TO_PASSIVE
+
+	   	REF_PUPIL_NUMBER = POS_36
+        PASSIVE_TILT_TEST = .TRUE.
+	   	CALL CALCULATE_CENTROID_STATS(OFFSETS)
+
+		// TODO: log pseudo pt rms, focus, e80, e50, etc
+
+		// TODO: optionally display pseudo passive tilt centroid offsets
+
+		// TODO: call actuator_lengths
+        ACTUATOR_LENGTHS(ACT_OPTION, ZFINE_AUTODISP_ACT, ZFINE_AUTOPRIMACT)
+	   
+	   ZPROCLOG_DATA_ACS_FOCUS = ZPROCLOG_DATA_PRIMARY_ACT_FM_RMS/41.1
+
+    ELSE IF (ZFINE_CALC_MODE.EQ.CALC_MODE_SECONDARY) THEN
+                                                                                
+        TEXT = 'Calculating Segment Zernikes'
+        CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+        CALL CALCULATE_ZERNIKE
+
+	   	IF(ZFINE_CALC_CHOICE.EQ.0) GOTO 200
+	    IF(ZFINE_CALC_CHOICE.EQ.1) ACT_OPTION = 1  ! Piston
+	    IF(ZFINE_CALC_CHOICE.EQ.2) ACT_OPTION = 2  ! Tilt
+	    IF(ZFINE_CALC_CHOICE.EQ.3) ACT_OPTION = 3  ! Both
+                                                                  
+        TEXT = 'Calculating Secondary Actuators'
+        CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+        SECONDARY_ACTUATOR(ACT_OPTION, ZFINE_AUTOSECONDACT, ZFINE_AUTOCENTERTEL)
+           
+           
+		// FIXME: we do not modify values.  We create new ones.
+C Secondary_actuators modifies the offsets to account for the secondary misplacment. 
+C So, we need to recalculate the zernike's
+
+		// FIXME: probably don't have to do this
+C Let's save the original zernike's.
+	   DO I = 1, 36
+	      DO J = 1, 15
+	         ORIGINAL_ZERNIKE(I,J) = SEGMENT_ZERNIKE(I,J)
+	      ENDDO
+	   ENDDO 
+
+ 
+           TEXT = 'Calculating Segment Zernikes'
+           CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+           CALL CALCULATE_ZERNIKE                            
+
+	ELSE ! Calc both primary and passive 
+
+           TEXT = 'Calculating Segment Zernikes'
+
+           CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+           CALL CALCULATE_ZERNIKE
+
+                
+	   IF(ZFINE_CALC_CHOICE.EQ.0) GOTO 200
+	   IF(ZFINE_CALC_CHOICE.EQ.1) ACT_OPTION = 1  ! Piston
+	   IF(ZFINE_CALC_CHOICE.EQ.2) ACT_OPTION = 2  ! Tilt
+	   IF(ZFINE_CALC_CHOICE.EQ.3) ACT_OPTION = 3  ! Both
+                                                                  
+           TEXT = 'Calculating Secondary Actuators'
+
+           CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+           OK = SECONDARY_ACTUATOR(ACT_OPTION, ZFINE_AUTOSECONDACT, ZFINE_AUTOCENTERTEL)
+           IF (.NOT.OK) GOTO 600
+
+C
+C Secondary_actuators modifies the offsets to account for the
+C secondary misplacment. So, we need to recalculate the zernike's
+C
+C
+C Let's save the original zernike's.
+C
+
+	   DO I = 1, 36
+	      DO J = 1, 15
+	         ORIGINAL_ZERNIKE(I,J) = SEGMENT_ZERNIKE(I,J)
+	      ENDDO
+	   ENDDO 
+           TEXT = 'Calculating Segment Zernikes'
+
+           CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+           CALL CALCULATE_ZERNIKE
+
+C
+C Passive tilt stuff
+C
+           CALL CONVERT_FINE_TO_PASSIVE
+
+	   REF_PUPIL_NUMBER = POS_36
+           PASSIVE_TILT_TEST = .TRUE.
+C
+C	   calculate ACS FM
+C
+	   CALL CALCULATE_CENTROID_STATS(OFFSETS)
+
+           ZPROCLOG_DATA_CENTOFF_PSEUDO_RMS = RRMS_TOTAL
+           ZPROCLOG_DATA_CENTOFF_PSEUDO_FOCUS = FOCUS_ERROR 
+           ZPROCLOG_DATA_CENTOFF_PSEUDO_E80 = ENCLOSED_ENERGY 
+           ZPROCLOG_DATA_CENTOFF_PSEUDO_E50 = ENCLOSED_50_ENERGY 
+c	   ZPROCLOG_DATA.ACS_FOCUS = FOCUS_ERROR / PCSFOCUSTOACS
+
+C PCSP
+C Conditional must evaluate to logical
+C           IF (ZFINE_AUTODISP_AVG_OFFSETS) THEN
+           IF (ZFINE_AUTODISP_AVG_OFFSETS .NE. 0) THEN
+C PCSP END
+
+	      CALL DISPLAY_CENTROID_OFFSETS(OFFSETS, IMAGE_TRANSLATION,
+     +          IMAGE_ROTATION, IMAGE_SCALE, 0)
+	   ENDIF
+
+	   DO J=1,36       ! Store pseudo pt offsets
+           OFFSETS_PT(J,1) = OFFSETS(J,1)
+           OFFSETS_PT(J,2) = OFFSETS(J,2)
+       ENDDO
+       IMAGE_TRANS_PT(1) = IMAGE_TRANSLATION(1)
+       IMAGE_TRANS_PT(2) = IMAGE_TRANSLATION(2)
+       IMAGE_ROTATION_PT = IMAGE_ROTATION
+       IMAGE_SCALE_PT = IMAGE_SCALE
+
+
+        PASSIVE_TILT_TEST = .FALSE.
+
+        OK = ACTUATOR_LENGTHS(ACT_OPTION,ZFINE_AUTODISP_ACT, ZFINE_AUTOPRIMACT)
+	   	REF_PUPIL_NUMBER = POS_508
+        
+
+
+	   ZPROCLOG_DATA_ACS_FOCUS = ZPROCLOG_DATA_PRIMARY_ACT_FM_RMS/41.1
+
+        END IF                                                         
+
+
+                                                                               
+      FUNCTION FS_SECONDACT()
+C*******************************************************************************
+C  REVISIONS:                                                                   
+C                                                                               
+C  Vers  1.0    8/24/88    (Scott Michaels)  - This is the original version     
+C  Vers  2.0    4/20/95    (Scott Michaels)  - Motif Upgrade
+C*******************************************************************************
+
+	IMPLICIT NONE
+
+      INCLUDE    'CENTROIDS.CMN'
+      INCLUDE    'PCS_LOGICALS.CMN'
+      INCLUDE    'CAMERA_INTERFACE.CMN'
+      INCLUDE    'SETUP.CMN'
+      INCLUDE    'FUNCTIONS.CMN'
+      INCLUDE    'ZERNIKE.CMN'
+      INCLUDE    'ACS_DCS_SHR.CMN'
+      INCLUDE    'INCOMPLETE_MIRROR.CMN'
+      INCLUDE    'PCS_FORT2GUI.CMN'
+                                                                                
+        INTEGER    ACT_OPTION                                       
+	LOGICAL    FS_SECONDACT
+
+C**************************************************************                 
+C                                                                               
+C                                                                               
+C**************************************************************                 
+                                       
+	FS_SECONDACT = .FALSE.
+                                         
+	IF(ZFINE_CALC_CHOICE.EQ.0) GOTO 900
+	IF(ZFINE_CALC_CHOICE.EQ.1) ACT_OPTION = 1  ! Piston
+	IF(ZFINE_CALC_CHOICE.EQ.2) ACT_OPTION = 2  ! Tilt
+	IF(ZFINE_CALC_CHOICE.EQ.3) ACT_OPTION = 3  ! Both
+                                                                  
+        TEXT = 'Calculating Secondary Actuators'
+
+        CALL DISP_WRITE(TEXT, LEN(TEXT))
+
+        OK = SECONDARY_ACTUATOR(ACT_OPTION, PROMPT_USER, 
+     +    ZFINE_AUTOCENTERTEL)
+
+        IF (.NOT.OK) GOTO 900
+	
+	FS_SECONDACT = .TRUE.
+
+900	RETURN
+	END
+
+
+*/
+			
+			
+			
 			
 			/*****************************************************/
 			/*          centerTelescopeCalc subprocedure         */
@@ -290,9 +575,7 @@ public class PassiveTiltExecutor {
 			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
-				graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
-			}
+			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
 
 			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
 			/*****************************************************/
@@ -349,9 +632,7 @@ public class PassiveTiltExecutor {
 			procedureOutput.setPistonActuatorDeltasRms(pio.getPistonActuatorDeltasRms());
 
 			// display the pistonDeltas
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
-				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
-			}
+			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 
 			// display RMS piston deltas to user in dialog
 			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", desiredActDeltasRms);
