@@ -178,6 +178,25 @@ public class ConstantsMgmt {
 						method.invoke(constantsInstance, (Object)float2dArray);
 						break;
 
+						
+					case Constant.DATA_TYPE_FLOAT_POINT:
+						FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(constant.getData()).toArray(new FloatPoint[] {});
+						
+						FloatPoint floatPoint2dArray[][] = new FloatPoint[constant.getDimension1()][constant.getDimension2()];
+						
+						// flat array now needs to be read into 2-d array
+						int fpk=0;
+						for (int fpi=0; fpi<constant.getDimension1(); fpi++) {
+							for (int fpj=0; fpj<constant.getDimension2(); fpj++) {
+								floatPoint2dArray[fpi][fpj] = floatPointArray[fpk++];
+							}
+						}
+						
+						method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), FloatPoint[][].class);
+						method.invoke(constantsInstance, (Object) floatPoint2dArray);
+						break;
+
+						
 					}
 				}
 

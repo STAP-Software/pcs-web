@@ -32,6 +32,8 @@ public class PrimaryMirrorConstants {
 	
 	float[][] aMatrix;
 	
+	FloatPoint[][] fineScreenSpotCoords;
+	
 	public int[] getnColor() {
 		return nColor;
 	}
@@ -117,7 +119,6 @@ public class PrimaryMirrorConstants {
 		this.primaryActuatorTriangle = primaryActuatorTriangle;
 	}
 	
-	
 	public FloatPoint[] getPrimaryActPos() {
 		return primaryActPos;
 	}
@@ -131,6 +132,14 @@ public class PrimaryMirrorConstants {
 	public void setaMatrix(float[][] aMatrix) {
 		this.aMatrix = aMatrix;
 	}
+	
+	public FloatPoint[][] getFineScreenSpotCoords() {
+		return fineScreenSpotCoords;
+	}
+	public void setFineScreenSpotCoords(FloatPoint[][] fineScreenSpotCoords) {
+		this.fineScreenSpotCoords = fineScreenSpotCoords;
+	}
+	
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
@@ -201,6 +210,17 @@ public class PrimaryMirrorConstants {
 		buf.append("\naHex = " + aHex);
 		buf.append("\nprimaryActuatorTriangle = " + primaryActuatorTriangle);
 
+		
+		buf.append("\nfineScreenSpotCoords = ");
+		for (int i=0; i<fineScreenSpotCoords.length; i++) {
+			buf.append("[");
+			for (int j=0; j<fineScreenSpotCoords[0].length; j++) {
+				buf.append(fineScreenSpotCoords[i][j] + ", ");
+			}
+			buf.append("],");
+		}
+
+		
 		buf.append("\n");
 		return buf.toString();
 	}
