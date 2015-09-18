@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -26,6 +28,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
+import org.tmt.aps.peas.session.model.Session;
 
 @Stateless
 public class ProcedureMgmt {
@@ -104,9 +107,26 @@ public class ProcedureMgmt {
 		procedureCcdFrame.setFrameFieldDisplayList(myList);
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Procedure updateProcedure(Procedure procedure) {
 		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
 		em.merge(procedure);
+		return procedure;
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Session createSession(Session session) {
+		logger.info(MessageGenerator.generateMessage("record.create", "session"));
+		em.persist(session);
+		return session;
+	}
+	
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Procedure createProcedure(Procedure procedure) {
+		
+		logger.info(MessageGenerator.generateMessage("record.create", "procedure"));
+		em.persist(procedure);
 		return procedure;
 	}
 	

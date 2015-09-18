@@ -14,17 +14,11 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
-
-import nom.tam.fits.BasicHDU;
-import nom.tam.fits.Data;
-import nom.tam.fits.Fits;
-import nom.tam.fits.HDU;
-import nom.tam.fits.Header;
-import nom.tam.fits.PrimaryHDU;
-import nom.tam.util.BufferedDataOutputStream;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.filefilter.WildcardFileFilter;
@@ -51,8 +45,18 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
+
+import nom.tam.fits.BasicHDU;
+import nom.tam.fits.Data;
+import nom.tam.fits.Fits;
+import nom.tam.fits.HDU;
+import nom.tam.fits.Header;
+import nom.tam.fits.PrimaryHDU;
+import nom.tam.util.BufferedDataOutputStream;
 
 @Stateless
 public class FrameMgmt {
@@ -76,6 +80,8 @@ public class FrameMgmt {
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
 	CcdMgmt ccdMgmt;
+	@EJB
+	CentroidMapMgmt centroidMapMgmt;
 	@EJB
 	CameraMgmt cameraMgmt;
 	@EJB
@@ -112,6 +118,7 @@ public class FrameMgmt {
 
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		// determine FITS file name
 		FitsFilename fitsFilename = new FitsFilename(
@@ -158,6 +165,7 @@ public class FrameMgmt {
 		
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
 		// create a ProcedureCcdRecord
 
@@ -184,8 +192,11 @@ public class FrameMgmt {
 			logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
 			em.persist(ccdFrame);
 		}
+	
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 
+		em.merge(procedureCcdFrame.getCentroidMap());  // FIXME: attach the detached object 
+		
 		// perform the association
 		logger.info(MessageGenerator.generateMessage("record.create", "procedureCcdFrame"));
 		em.persist(procedureCcdFrame);

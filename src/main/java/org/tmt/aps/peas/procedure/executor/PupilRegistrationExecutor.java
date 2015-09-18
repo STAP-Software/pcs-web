@@ -152,7 +152,7 @@ public class PupilRegistrationExecutor {
 				
 				CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
 				Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
-						ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession.getSessionId(), 
+						ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession, 
 						procedure.getTestNumber(), po);
 
 				procedureExecutionMgmt.performProcedureStartup(subProcedure, null);

@@ -91,7 +91,7 @@ public class FloatPoint {
      * The returned string may be empty but may not be <code>null</code>.
      */
     public String toString() {
-        return "[" + x + "," + y + "]";
+        return  x + "," + y ;
     }
     
 }

@@ -11,6 +11,8 @@ import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -154,8 +156,15 @@ public class CentroidMapMgmt {
 		return query.getSingleResult();
 	}
 
-	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap) {
 
+		// FIXME: not sure why we need to do it this way, but need to attach the centroid map entity before saving it
+		CentroidMap centroidMap = em.find(CentroidMap.class, refBeamMap.getCentroidMap().getCentroidMapId());
+		em.merge(centroidMap);
+		refBeamMap.setCentroidMap(centroidMap);
+		
+		
 		refBeamMap.setCreateDate(new Date());
 
 		logger.info(MessageGenerator.generateMessage("record.create", "refBeamMap"));
@@ -164,6 +173,7 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public CentroidMap saveCentroidMap(CentroidMap centroidMap) {
 
 		centroidMap.setCreateDate(new Date());
@@ -174,12 +184,9 @@ public class CentroidMapMgmt {
 		return centroidMap;
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void associateRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 
-		// if refBeam map does not exist, then create it
-		if (refBeamMap.isNewRecord()) {
-			saveRefBeamMap(refBeamMap, procedure);
-		}
 
 		ProcedureRefBeamMap procedureRefBeamMap = new ProcedureRefBeamMap();
 		procedureRefBeamMap.setProcedure(procedure);

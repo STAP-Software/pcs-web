@@ -135,6 +135,11 @@ public class Session {
 	public String toString() {
 		return "Telescope: " + telescope.getTelescopeName() + ", Date: " + getSessionDateFormatted();
 	}
+
+	public boolean isNewRecord() {
+		// TODO Auto-generated method stub
+		return sessionId == null;
+	}
 	
 	
 }

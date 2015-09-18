@@ -59,6 +59,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -164,6 +165,13 @@ public class ProcedureExecutionMgmt {
 		procedureExecutionState.setExecutionStatus(true);
 		logger.info("Setting execution status to true");
 		procedureExecutionState.setPercentComplete(0);
+		
+		// if the session is new, then create it
+		if (procedure.getSession().isNewRecord()) {
+			Session session = procedureMgmt.createSession(procedure.getSession());
+			procedure.setSession(session);
+		}
+		procedureMgmt.createProcedure(procedure);
 
 		statusLogger.initLog();
 
@@ -242,6 +250,13 @@ public class ProcedureExecutionMgmt {
 			if (procedure.getProcedureCcdFrameList() != null) {
 				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 					procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
+
+					// save the associated centroid map
+					if (procedureCcdFrame.getCentroidMap() != null) {
+						CentroidMap centroidMap = centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
+						procedureCcdFrame.setCentroidMap(centroidMap);
+					}
+					
 					frameMgmt.associateCcdFrame(procedureCcdFrame);
 
 					logger.debug("performProcedureCompletion::persisting frame");
@@ -268,10 +283,7 @@ public class ProcedureExecutionMgmt {
 
 					logger.debug("performProcedureCompletion::loadedOrCreatedPng");
 
-					// save the associated centroid map
-					if (procedureCcdFrame.getCentroidMap() != null) {
-						centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
-					}
+					
 				}
 			}
 
@@ -280,6 +292,12 @@ public class ProcedureExecutionMgmt {
 
 			// associate ref beam map
 			if (procedure.getRefBeamMap() != null) {
+				
+				// if refBeam map does not exist, then create it
+				if (procedure.getRefBeamMap().isNewRecord()) {
+					centroidMapMgmt.saveRefBeamMap(procedure.getRefBeamMap());
+				}
+
 				centroidMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
 			}
 
@@ -320,14 +338,15 @@ public class ProcedureExecutionMgmt {
 			
 			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
 
-
+			// update in database
+			procedureMgmt.updateProcedure(procedure);
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
-	public Procedure performProcedureSetup(Long procedureTypeId, Long sessionId, String testNumber, ProcedureOutput procedureOutput)
+	public Procedure performProcedureSetup(Long procedureTypeId, Session session, String testNumber, ProcedureOutput procedureOutput)
 			throws Exception {
 		Procedure procedure = new Procedure();
 
@@ -337,13 +356,14 @@ public class ProcedureExecutionMgmt {
 		procedure.setTestNumber(testNumber);
 
 		procedure.setProcedureOutput(procedureOutput);
+		procedure.setSession(session);
 
 		// if the executionStatus is 'running', then we must be starting a sub-procedure
 		boolean isSubProcedure = procedureExecutionState.getExecutionStatus();
 		Procedure superProcedure = isSubProcedure ? procedureExecutionState.getCurrentProcedure() : null;
 		String superProcedureNumber = (superProcedure == null) ? null : superProcedure.getProcedureNumber();
 
-		String procNum = sessionMgmt.getNextProcedureNumber(sessionId, superProcedureNumber);
+		String procNum = sessionMgmt.getNextProcedureNumber(session.getSessionId(), superProcedureNumber);
 		procedure.setProcedureNumber(procNum);
 
 		ProcedureConfigDefaults procedureConfigDefaults = procedureMgmt.findDefaultProcedureConfig(

@@ -13,6 +13,8 @@ import java.util.TimeZone;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.PersistenceContext;
@@ -103,6 +105,7 @@ public class SessionMgmt {
 
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Session createNewSession(Instrument instrument, Telescope telescope) throws Exception {
 		// create a new session object
 		Session session = new Session();
@@ -124,6 +127,7 @@ public class SessionMgmt {
 
 	
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Session updateSession(Session session) {
 		logger.info(MessageGenerator.generateMessage("record.update", "session"));
 		em.merge(session);
@@ -177,6 +181,7 @@ public class SessionMgmt {
 		
 	}
 
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateCurrentSession(Session currentSession) {
 		// update the session object (and all the procedures in the list)
 		

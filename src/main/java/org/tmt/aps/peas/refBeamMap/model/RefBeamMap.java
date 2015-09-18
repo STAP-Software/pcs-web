@@ -65,7 +65,7 @@ public class RefBeamMap {
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn (name="centroidMapId")
 	private CentroidMap centroidMap;
 

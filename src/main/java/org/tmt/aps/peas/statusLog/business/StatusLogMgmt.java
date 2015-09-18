@@ -8,6 +8,8 @@ package org.tmt.aps.peas.statusLog.business;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.ejb.TransactionAttribute;
+import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
@@ -38,6 +40,7 @@ public class StatusLogMgmt {
 		return statusLog;
 	}
 	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void saveStatusLog(ProcedureStatusLog statusLog, Long procedureId) {
 		for (StatusLogEntry logEntry : statusLog.getLogEntryList()) {
 			logEntry.setProcedureId(procedureId);
