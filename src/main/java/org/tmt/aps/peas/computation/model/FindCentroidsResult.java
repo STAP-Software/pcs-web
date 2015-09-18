@@ -107,6 +107,15 @@ public class FindCentroidsResult {
 		return statuses;
 	}
 	
+	public boolean containsGaussianCmFallbackCentroids() {
+		for (Subimage subimage : subimageList) {
+			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) {
+				return true;
+			}
+		}	
+		return false;
+	}
 	
 	public String toString() {
 		
