@@ -80,11 +80,11 @@
 			<p:spacer height="10px" />
 					
 			<!-- TODO: add rendering for sufs -->
-			<p:fieldset legend="Mirror Alignment Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
+			<p:fieldset legend="M1 Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
 					
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
-					<h:outputLabel value="Auto Send Actuator Cmds" />
+					<h:outputLabel value="Auto Command Primary" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoSendActuatorCmds}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Command Primary" itemValue="1" />
 						<f:selectItem itemLabel="Never Command Primary" itemValue="2" />
@@ -96,6 +96,24 @@
 			</p:fieldset>
 			
 			<p:spacer height="10px" />
+			
+			<p:fieldset legend="M2 Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.fineScreen}">
+					
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
+					<h:outputLabel value="Auto Command Secondary" />
+					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoSendActuatorCmds}" disabled="#{procedureController.procedure.procedureState gt 1}">
+						<f:selectItem itemLabel="Auto Command Secondary" itemValue="1" />
+						<f:selectItem itemLabel="Never Command Secondary" itemValue="2" />
+						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
+					</p:selectOneMenu>
+
+				</p:panelGrid>
+
+			</p:fieldset>
+			
+			<p:spacer height="10px" />
+			
 			<br/>
 
 			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"

@@ -78,4 +78,9 @@ public class Constants {
 	
 	
 	
+	public static final int CALC_M2_METHOD_RAY_TRACE = 1;
+	public static final int CALC_M2_METHOD_ZERNIKE = 2;
+	
+	
+	
 }

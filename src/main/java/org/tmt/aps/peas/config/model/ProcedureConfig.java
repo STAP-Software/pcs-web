@@ -76,6 +76,8 @@ public class ProcedureConfig {
 	private int autoCenterPupilMechanism;
 	@Column(name="autoSendActuatorCmdsFlg")
 	private int autoSendActuatorCmds;
+	@Column(name="autoCommandSecondaryFlg")
+	private int autoCommandSecondary;
 	@Column(name="autoTakeRefBeamFlg")
 	private int autoTakeRefBeam;
 	
@@ -203,6 +205,14 @@ public class ProcedureConfig {
 
 	public void setAutoSendActuatorCmds(int autoSendActuatorCmds) {
 		this.autoSendActuatorCmds = autoSendActuatorCmds;
+	}
+
+	public int getAutoCommandSecondary() {
+		return autoCommandSecondary;
+	}
+
+	public void setAutoCommandSecondary(int autoCommandSecondary) {
+		this.autoCommandSecondary = autoCommandSecondary;
 	}
 
 	public Date getUpdateDate() {

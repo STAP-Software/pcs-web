@@ -123,6 +123,20 @@
 				</p:panelGrid>
 				</p:fieldset>
 
+				<p:fieldset legend="Pupil Registration Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{procedureController.procedure.procedureType.fineScreen}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="M2/M1 Calculation Method" />
+       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.calcM2M1Config.calcMethod}">
+             			<f:selectItem itemLabel="Ray Trace" itemValue="1" />
+            			<f:selectItem itemLabel="Zernikes" itemValue="2" />
+					</p:selectOneMenu>
+  
+				</p:panelGrid>
+				</p:fieldset>
+
+
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm"

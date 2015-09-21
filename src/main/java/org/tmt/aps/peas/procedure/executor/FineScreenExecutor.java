@@ -189,13 +189,14 @@ public class FineScreenExecutor {
 							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
 							.getFilterTypeId(), -1);
 
-
 				}
 			}
 
 			procedure.setRefBeamMap(currentRefMap);
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
+			
+			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 						
 			/**********************************************/
 			/*                 Ready Camera               */

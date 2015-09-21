@@ -11,15 +11,13 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "CalcM2M1Config")
@@ -88,6 +86,13 @@ public class CalcM2M1Config {
 		this.m2PistonUnitPertibation = m2PistonUnitPertibation;
 	}
 
+	public boolean isCalcMethodRayTrace() {
+		return calcMethod == Constants.CALC_M2_METHOD_RAY_TRACE;
+	}
+
+	public boolean isCalcMethodZernike() {
+		return calcMethod == Constants.CALC_M2_METHOD_ZERNIKE;
+	}
 
 	public String toString() {
 		
