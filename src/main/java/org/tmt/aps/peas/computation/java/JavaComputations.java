@@ -15,6 +15,7 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -187,7 +188,7 @@ public class JavaComputations {
 	}
 
 	public static CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
+			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
 	
 		
@@ -195,9 +196,15 @@ public class JavaComputations {
 			return new CalcPrCommandsResult(null, null, null, null);
 		}
 	
-		//8/26/2015 we are overshooting use a scale factor here
+		// 8/26/2015 we are overshooting use a scale factor here
 		// the desired correction is typically the negative of the pupil reg error result in x and y
-		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX()*0.5f, -pupilRegErrorResult.getRegErrorY()*0.5f);
+		
+		float gainFactor = (pupilRegErrorResult.getRegErrorX() > pupilRegErrorConfig.getSmallLargeCommandThreshold() || 
+				pupilRegErrorResult.getRegErrorY() > pupilRegErrorConfig.getSmallLargeCommandThreshold()) ? 
+				pupilRegErrorConfig.getLargeCommandGainFactor() : 
+				pupilRegErrorConfig.getSmallCommandGainFactor();
+		
+		FloatPoint desiredCorrection = new FloatPoint(-pupilRegErrorResult.getRegErrorX()*gainFactor, -pupilRegErrorResult.getRegErrorY()*gainFactor);
 		
 	
 		

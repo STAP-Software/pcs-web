@@ -264,7 +264,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 	@Override
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
-			FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
+			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
 		// TODO Auto-generated method stub
 		return null;

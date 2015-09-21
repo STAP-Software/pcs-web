@@ -352,7 +352,7 @@ public class PupilRegistrationExecutor {
 
 			// need to know current positions which is available in the coarse and fine mirror objects
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
-			fineMirror, coarseMirror);
+					procedure.getProcedureConfigSet().getPupilRegErrorConfig(), fineMirror, coarseMirror);
 
 			BeanUtils.copyProperties(pio, calcPrCommandsResult);
 			BeanUtils.copyProperties(procedureOutput, calcPrCommandsResult);

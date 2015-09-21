@@ -36,6 +36,9 @@ public class PupilRegErrorConfig {
 	private int fractionalIntensityCalcMethod;
 	private int nStart;
 	private float centerPupilThresh;
+	private float smallCommandGainFactor;  // meters
+	private float largeCommandGainFactor; // meters
+	private float smallLargeCommandThreshold; // meters
 
 	public PupilRegErrorConfig() {
 		
@@ -87,6 +90,30 @@ public class PupilRegErrorConfig {
 		this.centerPupilThresh = centerPupilThresh;
 	}
 
+	public float getSmallCommandGainFactor() {
+		return smallCommandGainFactor;
+	}
+
+	public void setSmallCommandGainFactor(float smallCommandGainFactor) {
+		this.smallCommandGainFactor = smallCommandGainFactor;
+	}
+
+	public float getLargeCommandGainFactor() {
+		return largeCommandGainFactor;
+	}
+
+	public void setLargeCommandGainFactor(float largeCommandGainFactor) {
+		this.largeCommandGainFactor = largeCommandGainFactor;
+	}
+
+	public float getSmallLargeCommandThreshold() {
+		return smallLargeCommandThreshold;
+	}
+
+	public void setSmallLargeCommandThreshold(float smallLargeCommandThreshold) {
+		this.smallLargeCommandThreshold = smallLargeCommandThreshold;
+	}
+
 
 	public String toString() {
 		
@@ -94,8 +121,13 @@ public class PupilRegErrorConfig {
 		buf.append("PupilRegErrorConfig:");
 		buf.append("\nfractionalIntensityCalcMethod = " + fractionalIntensityCalcMethod);
 		buf.append("\nnStart = " + nStart);
+		buf.append("\nsmallCommandGainFactor = " + smallCommandGainFactor);
+		buf.append("\nlargeCommandGainFactor = " + largeCommandGainFactor);
+		buf.append("\nsmallLargeCommandThreshold = " + smallLargeCommandThreshold);
 		buf.append("\n");
 
 		return buf.toString();
 	}
+
+
 }
