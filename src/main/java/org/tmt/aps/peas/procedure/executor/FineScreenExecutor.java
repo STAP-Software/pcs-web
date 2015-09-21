@@ -45,8 +45,8 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.FineScreenProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
-import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -134,7 +134,7 @@ public class FineScreenExecutor {
 
 			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
-			PassiveTiltProcedureOutput procedureOutput = (PassiveTiltProcedureOutput) procedure.getProcedureOutput();
+			FineScreenProcedureOutput procedureOutput = (FineScreenProcedureOutput) procedure.getProcedureOutput();
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			statusLogger.log("camera.not_init");
@@ -196,7 +196,7 @@ public class FineScreenExecutor {
 			procedure.setRefBeamMap(currentRefMap);
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
-			
+						
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
@@ -252,13 +252,15 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*              passiveTiltScaleError                */
 			/*****************************************************/
-			
+			// FIXME: this kills Jboss while running the Fortran routine
+			/*
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
 			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
-
+			*/
+			
 			// fill the iteration output
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
 			procedureOutput.addIteration(pio);
@@ -268,7 +270,7 @@ public class FineScreenExecutor {
 
 			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
 			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setScaleError(scaleError.getScaleError());
+			//pio.setScaleError(scaleError.getScaleError());
 
 			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
 			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
@@ -277,8 +279,8 @@ public class FineScreenExecutor {
 			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
 			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
 
-			pio.setScaleError(scaleError.getScaleError());
-			pio.setSlopeError(scaleError.getSlopeError());
+			//pio.setScaleError(scaleError.getScaleError());
+			//pio.setSlopeError(scaleError.getSlopeError());
 
 			pio.setTelescopeMoved(false);
 
@@ -309,6 +311,7 @@ public class FineScreenExecutor {
 
 			
 			// TODO: call pupil_registration for fine screen, then call CENTER_PUPIL
+			// PUPIL REG needs to be a SUB-PROCEDURE
           
           
 			
@@ -328,8 +331,14 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*                  ttOffsetsToActs                  */
 			/*****************************************************/
+			
+			/**
+			 * can not call as is
+			 *
+			
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
+			
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
 					centroidOffsetsResult.getCartesianCentroidOffsets());
 
@@ -338,6 +347,11 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*                  decomposeActs                    */
 			/*****************************************************/
+			
+			/**
+			 * can not call yet
+			 *
+			
 			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
 
 			// Calculate the optimal pistons associated with the calculated
@@ -348,6 +362,10 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*                  optimalPistons                   */
 			/*****************************************************/
+			
+			/**
+			 * cannot call yet
+			 *
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
 			float[][] pistonActs = computationLibrary.optimalPistons(controlMatrix, decomposeActResult.getTipTiltActs());
 
@@ -359,11 +377,17 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*               calcDesiredActCommands              */
 			/*****************************************************/
+			
+			/**
+			 * cannot call yet 
+			 *
+			
 			float[][] desiredActDeltas = computationLibrary.addMatricies(decomposeActResult.getTipTiltActs(), pistonActs);
 
 			// calculate RMS of the actuator cmds
 			float desiredActDeltasRms = computationLibrary.calcRms(desiredActDeltas);
 
+			
 			// set iteration and procedure outputs
 			pio.setTipTiltActuatorDeltas(decomposeActResult.getTipTiltActs());
 			pio.setPistonActuatorDeltas(pistonActs);
@@ -377,6 +401,8 @@ public class FineScreenExecutor {
 			procedureOutput.setTipTiltActuatorDeltas(pio.getTipTiltActuatorDeltas());
 			procedureOutput.setPistonActuatorDeltas(pio.getPistonActuatorDeltas());
 			procedureOutput.setPistonActuatorDeltasRms(pio.getPistonActuatorDeltasRms());
+
+			
 
 			// display the pistonDeltas
 			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
@@ -408,6 +434,8 @@ public class FineScreenExecutor {
 
 			}
 			procedureOutput.setM1CmdsSent(commandsSent);
+
+			*/
 
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				

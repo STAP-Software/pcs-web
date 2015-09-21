@@ -65,10 +65,12 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
+import org.tmt.aps.peas.procedure.executor.FineScreenExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.executor.PupilRegistrationExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.FineScreenProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -94,6 +96,8 @@ public class ProcedureController implements Serializable {
 	ProcedureMgmt procedureMgmt;
 	@EJB
 	PassiveTiltExecutor passiveTiltExecutor;
+	@EJB
+	FineScreenExecutor fineScreenExecutor;
 	@EJB
 	PupilRegistrationExecutor pupilRegistrationExecutor;
 	@EJB
@@ -422,7 +426,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public String doNewFineScreen() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN, null);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN, new FineScreenProcedureOutput());
 	}
 
 	public String doNewSufs() {
@@ -456,7 +460,7 @@ public class ProcedureController implements Serializable {
 		} else if (lastProcedureType.isPupilRegistration()) {
 			return doNewPupilRegistration();
 		} else if (lastProcedureType.isFineScreen()) {
-			return doNewPassiveTilt();
+			return doNewFineScreen();
 		} else if (lastProcedureType.isPhasing()) {
 			return doNewPassiveTilt();
 		} else if (lastProcedureType.isSufs()) {
@@ -558,6 +562,8 @@ public class ProcedureController implements Serializable {
 			createRefMapExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPassiveTilt()) {
 			passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedure.getProcedureType().isFineScreen()) {
+			fineScreenExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPupilRegistration()) {
 			pupilRegistrationExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isCenterTelescope()) {

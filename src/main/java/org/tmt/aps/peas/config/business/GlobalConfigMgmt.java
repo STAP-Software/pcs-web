@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
+import org.tmt.aps.peas.config.model.CalcM2M1ConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
@@ -85,6 +86,17 @@ public class GlobalConfigMgmt {
 		return query.getSingleResult();	
 	}
 	
+	public CalcM2M1ConfigDefaults findCalcM2M1Config(Long procedureTypeId) {
+		
+		TypedQuery<CalcM2M1ConfigDefaults> query = em.createNamedQuery("calcM2M1Config.findByProcedureType", CalcM2M1ConfigDefaults.class);
+		query.setParameter("procedureTypeId", procedureTypeId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+
+	
 	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId) {
 		
 		TypedQuery<CentroidOffsetsConfigDefaults> query = em.createNamedQuery("findByProcedureType", CentroidOffsetsConfigDefaults.class);
@@ -137,6 +149,7 @@ public class GlobalConfigMgmt {
 		
 		return query.getSingleResult();	
 	}
+
 	
 
 }

@@ -27,6 +27,8 @@ import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfigDefaults;
+import org.tmt.aps.peas.config.model.CalcM2M1Config;
+import org.tmt.aps.peas.config.model.CalcM2M1ConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -433,6 +435,14 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
 		}
 
+		// set calcm2m1 defaults
+		if (procedure.getProcedureType().isFineScreen()) {
+			CalcM2M1ConfigDefaults calcM2M1ConfigDefaults = 
+					globalConfigMgmt.findCalcM2M1Config(procedure.getProcedureType().getProcedureTypeId());
+			CalcM2M1Config calcM2M1Config = new CalcM2M1Config(calcM2M1ConfigDefaults);
+			procedure.getProcedureConfigSet().setCalcM2M1Config(calcM2M1Config);
+		}
+
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
 				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
@@ -443,8 +453,6 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
-		
-		
 		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();
