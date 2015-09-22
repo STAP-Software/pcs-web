@@ -84,6 +84,7 @@ public class GetFrameCentroidsExecutor {
 	CentroidMap centroidMap = null;
 	FIConfig fiConfig = null;
 	FIResult fiResult = null;
+	FindCentroidsResult findCentroidsResult = null;
 	Procedure procedure = null;
 	ProcedureConfig procedureConfig = null;
 	int frameNumber = 0;
@@ -112,6 +113,7 @@ public class GetFrameCentroidsExecutor {
 		procedureCcdFrame = null;
 		centroidMap = null;
 		fiResult = null;
+		findCentroidsResult = null;
 
 		// initialize frame number
 		frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
@@ -197,6 +199,12 @@ public class GetFrameCentroidsExecutor {
 					fiConfig.getFracFilledThresh()));
 		}
 
+		if (e.isFracThreshExceededFindCent()) {
+			buf.append(MessageGenerator.generateMessage("find_cent.frac_vs_threshold", e.getFracThreshExceededFindCent(),
+					fiConfig.getFracFilledThresh()));
+		}
+
+		
 		if (e.isFourierThreshExceeded()) {
 			buf.append(MessageGenerator.generateMessage("fandi.fourqual_vs_threshold", fiResult.getFourierQuality(),
 					fiConfig.getFourierQualityThresh()));
@@ -308,7 +316,6 @@ public class GetFrameCentroidsExecutor {
 
 	private CentroidMap findAndDisplayCentroids(Procedure procedure, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
-		FindCentroidsResult findCentroidsResult = null;
 
 		try {
 
@@ -331,7 +338,34 @@ public class GetFrameCentroidsExecutor {
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	
 				procedureCcdFrame.setCentroidMap(centroidMap);
+
 				
+				// test for fracFilledThresh failed because of findCent
+				int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+
+				float fandiFilledBoxes = fiResult.getFracFilledBoxes() * numSpots;
+				// add any other missed spots from findCentroids
+				float findCentFilledBoxes = fandiFilledBoxes - findCentroidsResult.missedSpots();
+				float findCentFracFilled = findCentFilledBoxes/numSpots;
+				
+				if (findCentFracFilled < fiConfig.getFracFilledThresh()) {
+					
+					statusLogger.log("find_cent.frac_vs_threshold", findCentFracFilled, fiConfig.getFracFilledThresh());
+							
+					if (procedure.getProcedureType().isCreateRefMap()) {
+						// if this is a ref beam map, just fail
+						String text = MessageGenerator.generateMessage("find_cent.frac_vs_threshold", findCentFracFilled, fiConfig.getFracFilledThresh());
+						throw new Exception(text);
+					} else {
+						// otherwise create and throw a user assist exception
+						UserAssistRequiredException uare = new UserAssistRequiredException();
+						uare.setFracThreshExceededFindCent(findCentFracFilled);
+						throw uare;
+					}
+				}
+				
+			} catch (UserAssistRequiredException e) {
+				throw e;
 			} catch (Exception e) {
 				if (procedure.getProcedureType().isPassiveTilt()) {
 					throw new HandMarkRequiredException();

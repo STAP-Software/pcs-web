@@ -6,6 +6,7 @@ public class UserAssistRequiredException extends FandIException {
 	
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
+	private float fracThreshExceededFindCent = -1.0f;
 	private boolean fracThreshExceededPT;
 	private boolean fourierThreshExceeded;
 	private boolean badNSolution;
@@ -44,6 +45,15 @@ public class UserAssistRequiredException extends FandIException {
 	}
 	public void setFracThreshExceededPT(boolean fracThreshExceededPT) {
 		this.fracThreshExceededPT = fracThreshExceededPT;
+	}
+	public boolean isFracThreshExceededFindCent() {
+		return fracThreshExceededFindCent != -1.0f;
+	}
+	public float getFracThreshExceededFindCent() {
+		return fracThreshExceededFindCent;
+	}
+	public void setFracThreshExceededFindCent(float findCentFracFilled) {
+		this.fracThreshExceededFindCent = findCentFracFilled;
 	}
 
 }

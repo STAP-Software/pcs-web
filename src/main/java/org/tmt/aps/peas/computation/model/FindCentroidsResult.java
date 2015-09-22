@@ -117,6 +117,27 @@ public class FindCentroidsResult {
 		return false;
 	}
 	
+	
+	/**
+	 * 
+	 * @return the number of spots that find_cent missed e.g. status != 0, != -1 and != 1008 and != 1009
+	 * these are spots in addition to what f&i missed
+	 * 
+	 */
+	public int missedSpots() {
+		int missedSpots = 0;
+		for (Subimage subimage : subimageList) {
+			if (subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X && 
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y &&
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_NOT_PERFORMED &&
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_SUCCESS) {
+				
+				missedSpots++;				
+			}
+		}	
+		return missedSpots;
+	}
+	
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
