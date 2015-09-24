@@ -19,7 +19,6 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
@@ -27,7 +26,6 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
@@ -45,8 +43,8 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.FineScreenIterationOutput;
 import org.tmt.aps.peas.procedure.model.FineScreenProcedureOutput;
-import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -254,53 +252,32 @@ public class FineScreenExecutor {
 			/*              passiveTiltScaleError                */
 			/*****************************************************/
 			// FIXME: this kills Jboss while running the Fortran routine
-			/*
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
 			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
-			*/
+			
 			
 			// fill the iteration output
-			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
+			FineScreenIterationOutput pio = new FineScreenIterationOutput();
 			procedureOutput.addIteration(pio);
 
 			pio.setIteration(0);
-			pio.setDeltaAzEl(deltaAzEl);
 
-			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
-			//pio.setScaleError(scaleError.getScaleError());
+			pio.addCenterTelescopeCalcResult(centerTelescopeCalcResult);
 
-			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
-			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
-			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
-
-			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
-			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
-
-			//pio.setScaleError(scaleError.getScaleError());
-			//pio.setSlopeError(scaleError.getSlopeError());
-
+			pio.addCentroidOffsetsResult(centroidOffsetsResult);
+			
+			pio.addCentroidStatsResult(centroidStatsResult);
+			
+			pio.addScaleError(scaleError);
+			
 			pio.setTelescopeMoved(false);
 
 			// fill the output - many of these are copied from the one iteration
-			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
-			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-
-			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
-			procedureOutput.setMaxOffset(pio.getMaxOffset());
-			procedureOutput.setRmsOffset(pio.getRmsOffset());
-
-			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
-			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-			procedureOutput.setSlopeError(pio.getSlopeError());
-
+			procedureOutput.addFineScreenIterationOutput(pio);
+			
 			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
 			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
 			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
@@ -311,8 +288,8 @@ public class FineScreenExecutor {
 			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
 
 			
-			// TODO: call pupil_registration for fine screen, then call CENTER_PUPIL
-			// PUPIL REG needs to be a SUB-PROCEDURE
+			// TODO: call pupil_registration for fine screen, and center the pupil
+			
           
           
 			

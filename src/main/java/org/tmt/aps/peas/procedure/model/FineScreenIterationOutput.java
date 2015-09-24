@@ -1,6 +1,10 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 
 public class FineScreenIterationOutput extends ProcedureIterationOutput implements ActuatorDeltasDisplayValues {
@@ -126,4 +130,31 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	}
 	
 	
+	
+	// convienience routines to populate
+	
+	public void addCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
+	}
+	
+	public void addCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
+		setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
+	}
+	
+	public void addCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		
+		setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
+		setMaxOffset(centroidStatsResult.getMaxOffset());
+		setRmsOffset(centroidStatsResult.getRmsOffset());
+
+		setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
+		setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
+	}
+	
+	public void addScaleError(ScaleError scaleError) {
+		
+		setScaleError(scaleError.getScaleError());
+		setSlopeError(scaleError.getSlopeError());
+	}
 }

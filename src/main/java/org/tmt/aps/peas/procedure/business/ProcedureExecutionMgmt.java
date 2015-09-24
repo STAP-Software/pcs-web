@@ -224,6 +224,8 @@ public class ProcedureExecutionMgmt {
 
 			logger.debug("performProcedureCompletion 1");
 			// this persists the procedure
+			procedureMgmt.updateProcedure(procedure);
+
 			sessionMgmt.updateCurrentSession(currentSession);
 
 			// save the current coarse mirror state in global config

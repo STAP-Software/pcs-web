@@ -183,24 +183,6 @@ public class SessionMgmt {
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void updateCurrentSession(Session currentSession) {
-		// update the session object (and all the procedures in the list)
-		
-		// if sessionId is null, we create instead
-		if (currentSession.getSessionId() == null) {
-			logger.info(MessageGenerator.generateMessage("record.create", "currentSession"));
-			em.persist(currentSession);
-		} 
-		
-		for (Procedure procedure : currentSession.getProcedureList()) {
-			if (procedure.getSession() == null) {
-				if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_NEW && procedure.isNewRecord()) {
-					// if it executed and is not in the DB, then save it
-					procedure.setSession(currentSession);
-					logger.info(MessageGenerator.generateMessage("record.create", "procedure"));
-					em.persist(procedure);
-				}
-			}
-		}
 		
 		logger.info(MessageGenerator.generateMessage("record.update", "currentSession"));
 		em.merge(currentSession);

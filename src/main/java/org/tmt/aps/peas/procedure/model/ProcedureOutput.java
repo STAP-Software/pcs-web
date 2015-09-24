@@ -3,6 +3,8 @@ package org.tmt.aps.peas.procedure.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.beanutils.BeanUtils;
+
 
 public class ProcedureOutput implements ProcedureOutputable {
 
@@ -61,4 +63,5 @@ public class ProcedureOutput implements ProcedureOutputable {
 	public String getM1SnapNumberAfterDisplayText() {
 		return getM1SnapNumberAfter() == -1 ? "None" : "" + getM1SnapNumberAfter();
 	}
+	
 }

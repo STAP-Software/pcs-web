@@ -149,6 +149,23 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Centro
 		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
 	}
 	
-	
+	public void addFineScreenIterationOutput(FineScreenIterationOutput pio) {
+		
+		setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
+		setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
+
+		setScaleError(pio.getScaleError());
+
+		setMaxSpotNum(pio.getMaxSpotNum());
+		setMaxOffset(pio.getMaxOffset());
+		setRmsOffset(pio.getRmsOffset());
+
+		setEnclosedEnergy50(pio.getEnclosedEnergy50());
+		setEnclosedEnergy80(pio.getEnclosedEnergy80());
+
+		setScaleError(pio.getScaleError());
+		setSlopeError(pio.getSlopeError());
+	}
+
 	
 }
