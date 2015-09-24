@@ -229,7 +229,9 @@ public class GetFrameCentroidsExecutor {
 				handleHandMarking();
 			} else {
 			
-				centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);			
+				if (!e.isFracThreshExceededFindCent()) {
+					centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);				
+				}
 				procedureCcdFrame.setCentroidMap(centroidMap);
 			}
 			
@@ -339,6 +341,10 @@ public class GetFrameCentroidsExecutor {
 	
 				procedureCcdFrame.setCentroidMap(centroidMap);
 
+				// display the marked frame
+				frameDisplayMgmt.setMarking(findCentroidsResult.getCentroidList());
+							
+				frameDisplayMgmt.displayMarkedFrame();
 				
 				// test for fracFilledThresh failed because of findCent
 				int expectedSpotCount = subimageDefList.fandiExpectedSpotCount();
@@ -372,11 +378,6 @@ public class GetFrameCentroidsExecutor {
 					throw e;
 				}
 			}
-	
-			// display the marked frame
-			frameDisplayMgmt.setMarking(findCentroidsResult.getCentroidList());
-						
-			frameDisplayMgmt.displayMarkedFrame();
 	
 			// if PassiveTilt ask the user if the correct centroids have been found
 			if (procedure.getProcedureType().isPassiveTilt()) {
