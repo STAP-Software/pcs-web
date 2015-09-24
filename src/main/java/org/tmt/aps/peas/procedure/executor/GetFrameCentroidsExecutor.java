@@ -341,14 +341,13 @@ public class GetFrameCentroidsExecutor {
 
 				
 				// test for fracFilledThresh failed because of findCent
-				int numSpots = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots();
+				int expectedSpotCount = subimageDefList.fandiExpectedSpotCount();
 
-				float fandiFilledBoxes = fiResult.getFracFilledBoxes() * numSpots;
 				// add any other missed spots from findCentroids
-				float findCentFilledBoxes = fandiFilledBoxes - findCentroidsResult.missedSpots();
-				float findCentFracFilled = findCentFilledBoxes/numSpots;
+				float findCentFilledBoxes = fiResult.getNumFilledBoxes() - findCentroidsResult.missedSpots();
+				float findCentFracFilled = findCentFilledBoxes/expectedSpotCount;
 				
-				if (findCentFracFilled < fiConfig.getFracFilledThresh()) {
+				if (findCentFracFilled < fiConfig.getFracFilledThresh() && fiResult.getFracFilledBoxes() >= fiConfig.getFracFilledThresh()) {
 					
 					statusLogger.log("find_cent.frac_vs_threshold", findCentFracFilled, fiConfig.getFracFilledThresh());
 							

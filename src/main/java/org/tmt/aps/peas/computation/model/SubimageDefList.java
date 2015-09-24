@@ -52,6 +52,19 @@ public class SubimageDefList {
 		return spotFlag;
 	}
 	
+	public int fandiExpectedSpotCount() {
+			
+		int expectedCount=0;
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			if (subimageDef.getMissingSpotType() != Constants.MISSING_SPOT_TYPE_NOT_EXPECTED) {
+				expectedCount++;
+			}
+		}
+		
+		return expectedCount;
+
+	}
+	
 	// returns a one for a good spot for analysis, zero otherwise
 	public int[] useForAnalysis() {
 		
