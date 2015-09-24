@@ -346,8 +346,10 @@ public class GetFrameCentroidsExecutor {
 							
 				frameDisplayMgmt.displayMarkedFrame();
 				
-				// test for fracFilledThresh failed because of findCent
-				int expectedSpotCount = subimageDefList.fandiExpectedSpotCount();
+				// test for fracFilledThresh failed because of findCent			
+				int expectedSpotCount = procedure.getProcedureType().isCreateRefMap() ? 
+						procedureConfig.getPupilMask().getPupilMaskType().getNumSpots() :
+						subimageDefList.fandiExpectedSpotCount();
 
 				// add any other missed spots from findCentroids
 				float findCentFilledBoxes = fiResult.getNumFilledBoxes() - findCentroidsResult.missedSpots();
