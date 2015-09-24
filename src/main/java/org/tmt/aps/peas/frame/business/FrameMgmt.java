@@ -195,7 +195,9 @@ public class FrameMgmt {
 	
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 
-		em.merge(procedureCcdFrame.getCentroidMap());  // FIXME: attach the detached object 
+		if (procedureCcdFrame.getCentroidMap() != null) {
+			em.merge(procedureCcdFrame.getCentroidMap());  // FIXME: attach the detached object 
+		}
 		
 		// perform the association
 		logger.info(MessageGenerator.generateMessage("record.create", "procedureCcdFrame"));
