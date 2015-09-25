@@ -169,5 +169,25 @@ public class FloatPointListEncoder {
     	
     	return pList;
     }
+    
+    public static float[][] extractXfrom2dFloatPoint(FloatPoint[][] input) {
+    	float[][] result = new float[input.length][input[0].length];
+    	for(int i=0; i<input.length; i++) {
+    		for (int j=0; j<input[i].length; j++) {
+    			result[i][j] = input[i][j].x;
+    		}
+    	}
+    	return result;
+    }
+
+    public static float[][] extractYfrom2dFloatPoint(FloatPoint[][] input) {
+    	float[][] result = new float[input.length][input[0].length];
+    	for(int i=0; i<input.length; i++) {
+    		for (int j=0; j<input[i].length; j++) {
+    			result[i][j] = input[i][j].y;
+    		}
+    	}
+    	return result;
+    }
 
 }

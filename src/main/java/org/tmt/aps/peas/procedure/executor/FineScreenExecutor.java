@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
+import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -249,15 +250,14 @@ public class FineScreenExecutor {
 					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			/*****************************************************/
-			/*              passiveTiltScaleError                */
+			/*              fineScreenScaleError                 */
 			/*****************************************************/
-			// FIXME: this kills Jboss while running the Fortran routine
+			
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots);
-			
+			ScaleError scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
+					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 			
 			// fill the iteration output
 			FineScreenIterationOutput pio = new FineScreenIterationOutput();
@@ -291,9 +291,13 @@ public class FineScreenExecutor {
 			// TODO: call pupil_registration for fine screen, and center the pupil
 			
           
-          
-			
-			
+			// TODO: if calc option is Ray Trace:
+						
+			CalcM2M1Result result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
+					subimageDefList.getUseForM2SpotFlags(),
+					procedure.getProcedureConfigSet().getCalcM2M1Config(),
+					constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+					constantsCache.getTelescopeConstants());
 			
 			
 

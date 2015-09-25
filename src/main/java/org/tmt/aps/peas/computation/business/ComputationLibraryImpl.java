@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -33,16 +34,19 @@ import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.CalcM2M1Config;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
+import org.tmt.aps.peas.lang.interop.JcalculateM2M1RayTrace;
 import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
@@ -811,6 +815,68 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		return result;
 
+	}
+
+	@Override
+	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, TelescopeConstants telescopeConstants) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
+
+		
+		JcalculateM2M1RayTrace jcalculateM2M1RayTrace = new JcalculateM2M1RayTrace();
+		RetVal retVal = new RetVal();
+
+		// logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+
+		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+
+		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
+		List<FloatPoint> centroidOffsets = centroidOffsetsResult.getCartesianCentroidOffsets();
+		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsets);
+		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsets);
+		
+		int[] validSubimages = findCentroidsResult.getFoundSubimageFlags();
+
+		float[][] xLensletLocations = FloatPointListEncoder.extractXfrom2dFloatPoint(fineScreenSpotCoords);
+		float[][] yLensletLocations = FloatPointListEncoder.extractYfrom2dFloatPoint(fineScreenSpotCoords);
+		
+		
+		int arrayLen = offsetsX.length;
+
+		float[] m2TipTiltArr = new float[2];
+		
+		float[] m1OffsetsCorrectedForM2X = new float[arrayLen];
+		float[] m1OffsetsCorrectedForM2Y = new float[arrayLen];
+		
+		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
+				calcM2M1Config.getM2PistonUnitPertibation(), calcM2M1Config.getM2TTUnitPertibation(), xLensletLocations, yLensletLocations, 
+				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
+				telescopeConstants.getM1CurvatureRadius(), m2TipTiltArr, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("M2 ray trace calcuation error");
+		}
+
+		
+		float m2Piston = (Float)result[0];
+		float centroidResidual = (Float)result[1];
+		float pistonErrorMultiplier = (Float)result[2];
+		FloatPoint tipTiltErrorMulitplier = new FloatPoint((Float)result[3], (Float)result[4]);
+		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
+		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+		
+		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
+				 m1OffsetsCorrectedForM2);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateM2M1RayTrace"));
+
+		return calcM2M1Result;
+	
 	}
 
 	

@@ -58,6 +58,8 @@ public class FindCentroidsResult {
 
 	*/
 	
+	
+	
 	public FindCentroidsResult(List<Subimage> subimageList) {
 		this.subimageList = subimageList;
 	}
@@ -105,6 +107,19 @@ public class FindCentroidsResult {
 		}
 
 		return statuses;
+	}
+	
+	public int[] getFoundSubimageFlags() {
+		int[] foundFlags = new int[subimageList.size()];
+		int i=0;
+		for (Subimage subimage : subimageList) {
+			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
+		}
+
+		return foundFlags;
+
 	}
 	
 	public boolean containsGaussianCmFallbackCentroids() {

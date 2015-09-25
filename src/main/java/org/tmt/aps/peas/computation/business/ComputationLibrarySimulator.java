@@ -19,6 +19,7 @@ import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -31,12 +32,14 @@ import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
+import org.tmt.aps.peas.config.model.CalcM2M1Config;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.SubimageDef;
+import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -283,5 +286,11 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 		return null;
 	}
 
+	@Override
+	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult,  CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, TelescopeConstants telescopeConstants) throws Exception {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 }

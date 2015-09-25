@@ -92,6 +92,18 @@ public class SubimageDefList {
 		return nspotFlag;
 	}
 	
+	// use for M2 Calc
+	public int[] getUseForM2SpotFlags() {
+		int[] ufm2SpotFlag = new int[listOfSubimageDefs.size()];
+		
+		int i=0;
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			ufm2SpotFlag[i++] = subimageDef.getUseForM2Calc();
+		}
+		
+		return ufm2SpotFlag;
+	}
+	
 
 	
 	

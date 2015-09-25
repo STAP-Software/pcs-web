@@ -24,9 +24,8 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
+import org.tmt.aps.peas.config.model.M2CalcSpotList;
 import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.config.model.PeripheralSpotList;
 import org.tmt.aps.peas.config.model.SubimageDef;
@@ -112,7 +111,7 @@ public class CentroidMapMgmt {
 		int i = 0;
 		for (FloatPoint centroid : centroidList) {
 			// make some subimageDefs without spotTypes and missingSpotTypes
-			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_USE);
+			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_USE, 0);
 			// make some subimages without intensities or findCentResults
 			subimageDefList.add(subimageDef);
 		}
@@ -142,6 +141,21 @@ public class CentroidMapMgmt {
 		} catch (NoResultException e) {
 			// if no peripherals, then do nothing
 		}
+		
+		// apply M2 Calc spot definitions
+		if (pupilMaskTypeId == Constants.PUPIL_MASK_FINE_SCREEN) {
+			try {
+				M2CalcSpotList m2CalcSpotList = findM2CalcSpotList(telescopeId);
+				List<Integer> m2CalcSpotListDecoded = IntegerListEncoder.decodeList(m2CalcSpotList.getM2CalcSpotListEncoded());
+				for (Integer spot : m2CalcSpotListDecoded) {
+					subimageDefList.get(spot - 1).setUseForM2Calc(1);
+				}
+			} catch (NoResultException e) {
+				// if no M2Calcs, then do nothing
+			}
+		}
+		
+		
 
 		return subimageDefList;
 	}
@@ -150,6 +164,16 @@ public class CentroidMapMgmt {
 
 		TypedQuery<PeripheralSpotList> query = em.createNamedQuery("findPeripheralSpotList", PeripheralSpotList.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+
+		query.setMaxResults(1);
+
+		return query.getSingleResult();
+	}
+
+	public M2CalcSpotList findM2CalcSpotList(Long telescopeId) {
+
+		TypedQuery<M2CalcSpotList> query = em.createNamedQuery("findM2CalcSpotList", M2CalcSpotList.class);
+		query.setParameter("telescopeId", telescopeId);
 
 		query.setMaxResults(1);
 

@@ -23,13 +23,15 @@ public class SubimageDef {
 	FloatPoint centroid;
 	int spotType; // 1 = interior, 2 = peripheral
 	int missingSpotType;  // 1, 2 or 3
+	int useForM2Calc;
 		
 
-	public SubimageDef(int subimageNumber, FloatPoint centroid, int spotType, int missingSpotType) {
+	public SubimageDef(int subimageNumber, FloatPoint centroid, int spotType, int missingSpotType, int useForM2Calc) {
 		this.subimageNumber = subimageNumber;
 		this.centroid = centroid;
 		this.spotType = spotType;
 		this.missingSpotType = missingSpotType;
+		this.useForM2Calc = useForM2Calc;
 	}
 	
 	public int getSubimageNumber() {
@@ -62,6 +64,14 @@ public class SubimageDef {
 
 	public void setMissingSpotType(int missingSpotType) {
 		this.missingSpotType = missingSpotType;
+	}
+
+	public int getUseForM2Calc() {
+		return useForM2Calc;
+	}
+
+	public void setUseForM2Calc(int useForM2Calc) {
+		this.useForM2Calc = useForM2Calc;
 	}
 
 
