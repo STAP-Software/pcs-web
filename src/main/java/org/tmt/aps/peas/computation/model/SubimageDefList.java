@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.config.model.SubimageDef;
 
 public class SubimageDefList {
@@ -33,6 +35,28 @@ public class SubimageDefList {
 			centroidList.add(subimageDef.getCentroid());
 		}
 		return centroidList;
+	}
+	
+	public List<FloatPoint> getInteriorSubimageDefListCentroids() {
+		
+		List<FloatPoint> centroidList = new ArrayList<FloatPoint>();
+		
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			if (subimageDef.getSpotType() == Constants.SPOT_TYPE_INTERIOR) {
+				centroidList.add(subimageDef.getCentroid());
+			}
+		}
+		return centroidList;
+	}
+	
+	public String getInteriorCentroidXsAsString() {
+		float[] xArrayPt = FloatPointListEncoder.extractXArray(getInteriorSubimageDefListCentroids());
+		return FloatListEncoder.encodeList(xArrayPt);
+	}
+	
+	public String getInteriorCentroidYsAsString() {
+		float[] yArrayPt = FloatPointListEncoder.extractYArray(getInteriorSubimageDefListCentroids());
+		return FloatListEncoder.encodeList(yArrayPt);
 	}
 
 	// returns the 'spot_flag' array, where:

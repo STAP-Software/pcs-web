@@ -293,19 +293,14 @@ public class FineScreenExecutor {
           
 			// TODO: if calc option is Ray Trace:
 						
-			CalcM2M1Result result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
-					subimageDefList.getUseForM2SpotFlags(),
-					procedure.getProcedureConfigSet().getCalcM2M1Config(),
-					constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
-					constantsCache.getTelescopeConstants());
+			//CalcM2M1Result result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
+			//		subimageDefList.getUseForM2SpotFlags(),
+			//		procedure.getProcedureConfigSet().getCalcM2M1Config(),
+			//		constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+			//		constantsCache.getTelescopeConstants());
 			
 			
 
-			
-			
-			
-			
-			
 			
 			
 
@@ -315,7 +310,7 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			
 			/**
-			 * can not call as is
+			 * can not call yet
 			 *
 			
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());

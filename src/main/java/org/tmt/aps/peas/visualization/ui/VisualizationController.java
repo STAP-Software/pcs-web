@@ -57,9 +57,6 @@ public class VisualizationController implements Serializable {
 	@Inject
 	ProcedureController procedureController;
 
-	String centDefPassiveTiltXs;
-	String centDefPassiveTiltYs;
-
 	List<FloatPoint> refDefValueListPassiveTilt;
 
 	boolean showSegments = true;
@@ -82,46 +79,55 @@ public class VisualizationController implements Serializable {
 	private void init() {
 
 		try {
-			// TODO: do other queries as each new procedure type is added
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-			List<FloatPoint> refDefValueListPassiveTilt = subimageDefList.getSubimageDefListCentroids();
-			float[] xArray = FloatPointListEncoder.extractXArray(refDefValueListPassiveTilt);
-			centDefPassiveTiltXs = FloatListEncoder.encodeList(xArray);
-			float[] yArray = FloatPointListEncoder.extractYArray(refDefValueListPassiveTilt);
-			centDefPassiveTiltYs = FloatListEncoder.encodeList(yArray);
-
+			
 			act1Pos = FloatListEncoder.encodeList(constantsCache.getPrimaryMirrorConstants().getAct1Pos());
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
+	
+	// segment centers
+	public String getSegCentDefXs() {
+		// determine which procedure type we are in
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+		return subimageDefList.getInteriorCentroidXsAsString();
+	}
+	public String getSegCentDefYs() {
+		// determine which procedure type we are in
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+		return subimageDefList.getInteriorCentroidYsAsString();
+	}
+
 
 	public String getCentDefXs() {
 		// determine which procedure type we are in
 		if (procedureController.getProcedure() != null) {
-			if (procedureController.getProcedure().getProcedureType().isPassiveTilt()) {
-				return centDefPassiveTiltXs;
-			}
+			
+			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+			return subimageDefList.getInteriorCentroidXsAsString();
 		}
-		return centDefPassiveTiltXs; // default
-	}
-
-	public void setCentDefXs(String str) {
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+		return subimageDefList.getInteriorCentroidXsAsString(); // default
 	}
 
 	public String getCentDefYs() {
 		// determine which procedure type we are in
 		if (procedureController.getProcedure() != null) {
-			if (procedureController.getProcedure().getProcedureType().isPassiveTilt()) {
-				return centDefPassiveTiltYs;
-			}
+			
+			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+			return subimageDefList.getInteriorCentroidYsAsString();
 		}
-		return centDefPassiveTiltXs; // default
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+		return subimageDefList.getInteriorCentroidYsAsString(); // default
 	}
 
-	public void setCentDefYs(String str) {
-	}
+	public void setCentDefXs(String str) {}
+	public void setCentDefYs(String str) {}
+	public void setSegCentDefXs(String str) {}
+	public void setSegCentDefYs(String str) {}
 
 	public boolean isShowSegments() {
 		return showSegments;
