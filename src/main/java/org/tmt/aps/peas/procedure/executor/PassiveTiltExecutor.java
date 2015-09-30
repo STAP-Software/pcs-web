@@ -267,6 +267,10 @@ public class PassiveTiltExecutor {
 			pio.setScaleError(scaleError.getScaleError());
 			pio.setSlopeError(scaleError.getSlopeError());
 
+			pio.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+			pio.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+			pio.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
+
 			pio.setTelescopeMoved(false);
 
 			// fill the output - many of these are copied from the one iteration

@@ -6,12 +6,17 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
-public class FineScreenIterationOutput extends ProcedureIterationOutput implements ActuatorDeltasDisplayValues {
+public class FineScreenIterationOutput extends ProcedureIterationOutput implements CentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;
 	
+	private FloatPoint translationFromRefBeam = new FloatPoint(0.0f,0.0f);
+	private float rotationFromRefBeam;
+	private float scaleChangeFromRefBeam;
+
 	private float[][] tipTiltActuatorDeltas = new float[36][3];
 	private float[][] pistonActuatorDeltas = new float[36][3];
 
@@ -128,10 +133,29 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	public void setPistonActuatorDeltasRms(float pistonActuatorDeltasRms) {
 		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
 	}
+	public FloatPoint getTranslationFromRefBeam() {
+		return translationFromRefBeam;
+	}
+	public void setTranslationFromRefBeam(FloatPoint translationFromRefBeam) {
+		this.translationFromRefBeam = translationFromRefBeam;
+	}
+	public float getRotationFromRefBeam() {
+		return rotationFromRefBeam;
+	}
+	public void setRotationFromRefBeam(float rotationFromRefBeam) {
+		this.rotationFromRefBeam = rotationFromRefBeam;
+	}
+	public float getScaleChangeFromRefBeam() {
+		return scaleChangeFromRefBeam;
+	}
+	public void setScaleChangeFromRefBeam(float scaleChangeFromRefBeam) {
+		this.scaleChangeFromRefBeam = scaleChangeFromRefBeam;
+	}
 	
 	
 	
 	// convienience routines to populate
+	
 	
 	public void addCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
 		setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
@@ -140,6 +164,10 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	public void addCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
 		setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
 		setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
+		
+		setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+		setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+		setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 	}
 	
 	public void addCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
@@ -157,4 +185,6 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 		setScaleError(scaleError.getScaleError());
 		setSlopeError(scaleError.getSlopeError());
 	}
+	
+
 }

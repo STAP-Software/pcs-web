@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
   
 			<h:form id="menuForm">
 			
@@ -60,12 +60,17 @@
 					</p:submenu>
 					
 					<p:submenu label="Procedure Displays" icon="ui-icon-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
-						<p:submenu label="Iteration 1" >
-							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not visualizationController.centroidDisplayEnabled}"/>
-							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
-							<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
-							<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
+						
+						<c:forEach var="iterationOutput" items="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" varStatus="loop">
+						<p:submenu label="Iteration #{loop.index+1}" >
+							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not visualizationController.centroidDisplayEnabled}"/>
+							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
 						</p:submenu>
+						</c:forEach>
+					
+						<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
+						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
+						
 					</p:submenu>
 					
 				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.advancedViewMode}">

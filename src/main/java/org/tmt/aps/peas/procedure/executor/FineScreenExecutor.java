@@ -223,6 +223,7 @@ public class FineScreenExecutor {
 	//
     //       CALL FUPDATE_WORK_MESSAGE(TEXT, LEN(TEXT))
            
+		for (int i=0; i<2; i++) {
            
 			/*****************************************************/
 			/*          centerTelescopeCalc subprocedure         */
@@ -263,8 +264,6 @@ public class FineScreenExecutor {
 			FineScreenIterationOutput pio = new FineScreenIterationOutput();
 			procedureOutput.addIteration(pio);
 
-			pio.setIteration(0);
-
 			pio.addCenterTelescopeCalcResult(centerTelescopeCalcResult);
 
 			pio.addCentroidOffsetsResult(centroidOffsetsResult);
@@ -278,15 +277,13 @@ public class FineScreenExecutor {
 			// fill the output - many of these are copied from the one iteration
 			procedureOutput.addFineScreenIterationOutput(pio);
 			
-			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
-			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
-			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
-
 			/*****************************************************/
 			/*             Display Centroid Offsets              */
 			/*****************************************************/
-			graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
+			graphicDisplayMgmt.displayCentroidOffsets(pio);
 
+			
+		}
 			
 			// TODO: call pupil_registration for fine screen, and center the pupil
 			

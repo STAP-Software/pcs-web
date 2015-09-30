@@ -222,19 +222,27 @@ public class ProcedureOutputMgmt {
 				switch (fieldDescriptor.getDataType()) {
 				case Constant.DATA_TYPE_INT:
 					int[][] intArray = (int[][]) method.invoke(object, args);
-					for (int[] element : intArray) {
-						for (int subelement : element) {
-							buf.append("" + subelement + ", ");
+					if (intArray != null) {
+						for (int[] element : intArray) {
+							for (int subelement : element) {
+								buf.append("" + subelement + ", ");
+							}
 						}
+					} else {
+						buf.append(", ");
 					}
 					break;
 
 				case Constant.DATA_TYPE_FLOAT:
 					float[][] floatArray = (float[][]) method.invoke(object, args);
-					for (float[] element : floatArray) {
-						for (float subelement : element) {
-							buf.append("" + subelement + ", ");
+					if (floatArray != null) {
+						for (float[] element : floatArray) {
+							for (float subelement : element) {
+								buf.append("" + subelement + ", ");
+							}
 						}
+					} else {
+						buf.append(", ");
 					}
 					break;
 

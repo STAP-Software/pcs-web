@@ -34,6 +34,7 @@ public class ProcedureOutput implements ProcedureOutputable {
 			procedureIterationOutputList = new ArrayList<ProcedureIterationOutput>();
 		}
 		procedureIterationOutputList.add(pio);
+		pio.setIteration(procedureIterationOutputList.size()-1);
 	}
 
 	public List<ProcedureIterationOutput> getProcedureIterationOutputList() {

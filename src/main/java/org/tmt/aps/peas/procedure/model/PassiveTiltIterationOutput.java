@@ -2,11 +2,17 @@ package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
-public class PassiveTiltIterationOutput extends ProcedureIterationOutput implements ActuatorDeltasDisplayValues {
+public class PassiveTiltIterationOutput extends ProcedureIterationOutput implements CentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;
+	
+	private FloatPoint translationFromRefBeam = new FloatPoint(0.0f,0.0f);
+	private float rotationFromRefBeam;
+	private float scaleChangeFromRefBeam;
+
 	
 	private float[][] tipTiltActuatorDeltas = new float[36][3];
 	private float[][] pistonActuatorDeltas = new float[36][3];
@@ -124,6 +130,25 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	public void setPistonActuatorDeltasRms(float pistonActuatorDeltasRms) {
 		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
 	}
+	public FloatPoint getTranslationFromRefBeam() {
+		return translationFromRefBeam;
+	}
+	public void setTranslationFromRefBeam(FloatPoint translationFromRefBeam) {
+		this.translationFromRefBeam = translationFromRefBeam;
+	}
+	public float getRotationFromRefBeam() {
+		return rotationFromRefBeam;
+	}
+	public void setRotationFromRefBeam(float rotationFromRefBeam) {
+		this.rotationFromRefBeam = rotationFromRefBeam;
+	}
+	public float getScaleChangeFromRefBeam() {
+		return scaleChangeFromRefBeam;
+	}
+	public void setScaleChangeFromRefBeam(float scaleChangeFromRefBeam) {
+		this.scaleChangeFromRefBeam = scaleChangeFromRefBeam;
+	}
+
 	
 	
 }
