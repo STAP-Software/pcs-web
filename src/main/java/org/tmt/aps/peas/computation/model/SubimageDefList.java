@@ -116,13 +116,38 @@ public class SubimageDefList {
 		return nspotFlag;
 	}
 	
+	public int getNumberOfInteriorSpots() {
+		
+		int count=0;
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			if(subimageDef.getSpotType() == Constants.SPOT_TYPE_INTERIOR) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	public int getNumberOfPeripheralSpots() {
+		
+		int count=0;
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			if(subimageDef.getSpotType() == Constants.SPOT_TYPE_PERIPHERAL) {
+				count++;
+			}
+		}
+		return count;
+	}
+
+	
 	// use for M2 Calc
-	public int[] getUseForM2SpotFlags() {
-		int[] ufm2SpotFlag = new int[listOfSubimageDefs.size()];
+	public int[] getUseForM2InteriorSpotFlags() {
+		int[] ufm2SpotFlag = new int[getNumberOfInteriorSpots()];
 		
 		int i=0;
 		for (SubimageDef subimageDef : listOfSubimageDefs) {
-			ufm2SpotFlag[i++] = subimageDef.getUseForM2Calc();
+			if (subimageDef.getSpotType() == Constants.SPOT_TYPE_INTERIOR) {
+				ufm2SpotFlag[i++] = subimageDef.getUseForM2Calc();
+			}
 		}
 		
 		return ufm2SpotFlag;

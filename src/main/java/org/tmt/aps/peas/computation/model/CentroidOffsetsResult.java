@@ -1,7 +1,9 @@
 package org.tmt.aps.peas.computation.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 
@@ -33,6 +35,16 @@ public class CentroidOffsetsResult {
 
 	public List<FloatPoint> getCartesianCentroidOffsets() {
 		return cartesianCentroidOffsets;
+	}
+
+	public List<FloatPoint> getCartesianInteriorCentroidOffsets(int[] nspotTypes) {
+		List<FloatPoint> result = new ArrayList<FloatPoint>();
+		for (int i=0; i<cartesianCentroidOffsets.size(); i++) {
+			if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
+				result.add(cartesianCentroidOffsets.get(i));
+			}
+		}
+		return result;
 	}
 
 	public void setCartesianCentroidOffsets(List<FloatPoint> cartesianCentroidOffsets) {

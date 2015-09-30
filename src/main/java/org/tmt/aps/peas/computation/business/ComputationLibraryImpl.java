@@ -819,7 +819,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	@Override
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
-			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, TelescopeConstants telescopeConstants) throws Exception {
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
 
@@ -832,11 +832,11 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
 		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
-		List<FloatPoint> centroidOffsets = centroidOffsetsResult.getCartesianCentroidOffsets();
+		List<FloatPoint> centroidOffsets = centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes);
 		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsets);
 		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsets);
 		
-		int[] validSubimages = findCentroidsResult.getFoundSubimageFlags();
+		int[] validSubimages = findCentroidsResult.getFoundInteriorSubimageFlags(nspotTypes);
 
 		float[][] xLensletLocations = FloatPointListEncoder.extractXfrom2dFloatPoint(fineScreenSpotCoords);
 		float[][] yLensletLocations = FloatPointListEncoder.extractYfrom2dFloatPoint(fineScreenSpotCoords);

@@ -122,6 +122,28 @@ public class FindCentroidsResult {
 
 	}
 	
+	public int[] getFoundInteriorSubimageFlags(int[] nspotTypes) {
+		
+		List<Subimage> interiorList = new ArrayList<Subimage>();
+		for (int i=0; i<subimageList.size(); i++) {
+			if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
+				interiorList.add(subimageList.get(i));
+			}
+		}
+
+		int[] foundFlags = new int[interiorList.size()];
+		
+		int i=0;
+		for (Subimage subimage : interiorList) {
+			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
+		}
+
+		return foundFlags;
+
+	}
+
 	public boolean containsGaussianCmFallbackCentroids() {
 		for (Subimage subimage : subimageList) {
 			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 

@@ -288,7 +288,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 
 	@Override
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult,  CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
-			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, TelescopeConstants telescopeConstants) throws Exception {
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants) throws Exception {
 		// TODO Auto-generated method stub
 		return null;
 	}

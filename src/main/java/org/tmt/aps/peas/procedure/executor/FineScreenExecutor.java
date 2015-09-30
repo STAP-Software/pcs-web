@@ -283,20 +283,22 @@ public class FineScreenExecutor {
 			graphicDisplayMgmt.displayCentroidOffsets(pio);
 
 			
-		}
 			
 			// TODO: call pupil_registration for fine screen, and center the pupil
 			
           
 			// TODO: if calc option is Ray Trace:
 						
-			//CalcM2M1Result result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
-			//		subimageDefList.getUseForM2SpotFlags(),
-			//		procedure.getProcedureConfigSet().getCalcM2M1Config(),
-			//		constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
-			//		constantsCache.getTelescopeConstants());
+			CalcM2M1Result calcM2M1Result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
+					subimageDefList.getUseForM2InteriorSpotFlags(),
+					procedure.getProcedureConfigSet().getCalcM2M1Config(),
+					constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+					subimageDefList.getNspotTypes(),
+					constantsCache.getTelescopeConstants());
 			
+			System.out.println();
 			
+		}
 
 			
 			
