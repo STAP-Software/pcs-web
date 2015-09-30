@@ -841,13 +841,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		float[][] xLensletLocations = FloatPointListEncoder.extractXfrom2dFloatPoint(fineScreenSpotCoords);
 		float[][] yLensletLocations = FloatPointListEncoder.extractYfrom2dFloatPoint(fineScreenSpotCoords);
 		
-		
-		int arrayLen = offsetsX.length;
-
 		float[] m2TipTiltArr = new float[2];
 		
-		float[] m1OffsetsCorrectedForM2X = new float[arrayLen];
-		float[] m1OffsetsCorrectedForM2Y = new float[arrayLen];
+		float[] m1OffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
 		
 		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
 				calcM2M1Config.getM2PistonUnitPertibation(), calcM2M1Config.getM2TTUnitPertibation(), xLensletLocations, yLensletLocations, 
