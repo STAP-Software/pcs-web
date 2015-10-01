@@ -21,15 +21,12 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
-import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -85,7 +82,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 	//@EJB
 	//private PupilRegistrator pupilRegistrator;
 	@EJB
@@ -93,7 +90,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 	@EJB
-	private CenterTelescopeCalc centerTelescopeCalc;
+	private CenterTelescopeFlow centerTelescopeFlow;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
@@ -134,7 +131,7 @@ public class PassiveTiltExecutor {
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
-			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			PassiveTiltProcedureOutput procedureOutput = (PassiveTiltProcedureOutput) procedure.getProcedureOutput();
 
@@ -209,20 +206,22 @@ public class PassiveTiltExecutor {
 
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
-			
-			
+			// Set up the only iteration as the current output target
+			// TODO: hide these functions
+			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
+			procedureExecutionState.setCurrentOutputTarget(pio);
+			procedureOutput.addIteration(pio);
+
 			/*****************************************************/
 			/*          centerTelescopeCalc subprocedure         */
 			/*****************************************************/
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			CenterTelescopeCalcResult centerTelescopeCalcResult = centerTelescopeCalc.centerTelescope(procedure, currentSession);
+			centerTelescopeFlow.centerTelescope(procedure, currentSession);
 			
-			CentroidOffsetsResult centroidOffsetsResult= centerTelescopeCalcResult.getCentroidOffsetsResult();
-			FloatPoint deltaAzEl = centerTelescopeCalcResult.getDeltaAzEl();
+			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
 			
-
 			procedureExecutionState.setPercentComplete(80);
 
 			/*****************************************************/
@@ -233,7 +232,7 @@ public class PassiveTiltExecutor {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 
 			
-			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+			computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			/*****************************************************/
@@ -243,56 +242,12 @@ public class PassiveTiltExecutor {
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			ScaleError scaleError = computationLibrary.passiveTiltScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
+			computationLibrary.passiveTiltScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
-
-			// fill the iteration output
-			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
-			procedureOutput.addIteration(pio);
-
-			pio.setIteration(0);
-			pio.setDeltaAzEl(deltaAzEl);
-
-			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setScaleError(scaleError.getScaleError());
-
-			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
-			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
-			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
-
-			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
-			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
-
-			pio.setScaleError(scaleError.getScaleError());
-			pio.setSlopeError(scaleError.getSlopeError());
-
-			pio.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
-			pio.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
-			pio.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
 
 			pio.setTelescopeMoved(false);
 
-			// fill the output - many of these are copied from the one iteration
-			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
-			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-
-			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
-			procedureOutput.setMaxOffset(pio.getMaxOffset());
-			procedureOutput.setRmsOffset(pio.getRmsOffset());
-
-			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
-			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-			procedureOutput.setSlopeError(pio.getSlopeError());
-
-			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
-			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
-			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
-
+			
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
 				graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
@@ -304,6 +259,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
+			// TODO: the result here should be a TtOffsetsToActsResult object
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
 					centroidOffsetsResult.getCartesianCentroidOffsets());
 
@@ -314,43 +270,18 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
 
-			// Calculate the optimal pistons associated with the calculated
-			// actuators (minimizes the changes to the edges). Note that this
-			// routine just determines the optimal pistons; if you want to add
-			// these on to the tip/tilt pistons, you need to do it yourself.
 
 			/*****************************************************/
 			/*                  optimalPistons                   */
 			/*****************************************************/
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
-			float[][] pistonActs = computationLibrary.optimalPistons(controlMatrix, decomposeActResult.getTipTiltActs());
-
-			// calculate RMS of the actuator cmds
-			float pistonActsRms = computationLibrary.calcRms(pistonActs);
-
 			
-			// combine tip/tilt and piston commands
-			/*****************************************************/
-			/*               calcDesiredActCommands              */
-			/*****************************************************/
-			float[][] desiredActDeltas = computationLibrary.addMatricies(decomposeActResult.getTipTiltActs(), pistonActs);
+			// TODO: all the following calculations should be moved out of the executor and folded into one
+			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
+			
+			// fill the procedure output
+			procedureOutput.addPassiveTiltIterationOutput(pio);
 
-			// calculate RMS of the actuator cmds
-			float desiredActDeltasRms = computationLibrary.calcRms(desiredActDeltas);
-
-			// set iteration and procedure outputs
-			pio.setTipTiltActuatorDeltas(decomposeActResult.getTipTiltActs());
-			pio.setPistonActuatorDeltas(pistonActs);
-			pio.setPistonActuatorDeltasRms(pistonActsRms);
-
-			pio.setM1ActuatorCmds(desiredActDeltas);
-			pio.setM1ActuatorCmdsRms(desiredActDeltasRms);
-
-			procedureOutput.setM1ActuatorCmds(pio.getM1ActuatorCmds());
-			procedureOutput.setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
-			procedureOutput.setTipTiltActuatorDeltas(pio.getTipTiltActuatorDeltas());
-			procedureOutput.setPistonActuatorDeltas(pio.getPistonActuatorDeltas());
-			procedureOutput.setPistonActuatorDeltasRms(pio.getPistonActuatorDeltasRms());
 
 			// display the pistonDeltas
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
@@ -358,7 +289,7 @@ public class PassiveTiltExecutor {
 			}
 
 			// display RMS piston deltas to user in dialog
-			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", desiredActDeltasRms);
+			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
 			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
 
 			// command ACS
@@ -367,7 +298,7 @@ public class PassiveTiltExecutor {
 
 				try {
 					// send out the commands
-					acsMgmt.commandActuatorDeltas(desiredActDeltas);
+					acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
 
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
@@ -383,6 +314,8 @@ public class PassiveTiltExecutor {
 				}
 
 			}
+			
+			// TODO: eventually replace this with an framework solution
 			procedureOutput.setM1CmdsSent(commandsSent);
 
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {

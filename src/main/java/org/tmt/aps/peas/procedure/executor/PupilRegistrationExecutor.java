@@ -22,15 +22,15 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -47,6 +47,7 @@ import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.procedure.model.PupilRegistrationIterationOutput;
@@ -85,9 +86,9 @@ public class PupilRegistrationExecutor {
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 	@EJB
-	private CenterTelescopeCalc centerTelescopeCalc;
+	private CenterTelescopeFlow centerTelescopeFlow;
 	@EJB
 	private ReadyCamera readyCamera;
 	@EJB
@@ -134,7 +135,7 @@ public class PupilRegistrationExecutor {
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
-			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			PupilRegistrationProcedureOutput procedureOutput = (PupilRegistrationProcedureOutput) procedure.getProcedureOutput();
 
@@ -185,18 +186,24 @@ public class PupilRegistrationExecutor {
 			procedureExecutionState.setPercentComplete(20);
 
 			
+			// Set up the only iteration as the current output target
+			// TODO: hide these functions
+			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
+			procedureExecutionState.setCurrentOutputTarget(pio);
+			procedureOutput.addIteration(pio);
+
+			
 			/*****************************************************/
 			/*          centerTelescopeCalc subprocedure         */
 			/*****************************************************/
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			CenterTelescopeCalcResult centerTelescopeCalcResult = centerTelescopeCalc.centerTelescope(procedure, currentSession);
+			centerTelescopeFlow.centerTelescope(procedure, currentSession);
 
 			procedureExecutionState.setPercentComplete(30);
 
-			CentroidOffsetsResult centroidOffsetsResult= centerTelescopeCalcResult.getCentroidOffsetsResult();
-			FloatPoint deltaAzEl = centerTelescopeCalcResult.getDeltaAzEl();
+			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
 	
 			procedureExecutionState.setPercentComplete(40);
 			
@@ -218,58 +225,16 @@ public class PupilRegistrationExecutor {
 			
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
-			
-			ScaleError scaleError = new ScaleError(0.0f, 0.0f); // initialize to zero for PH case which does not compute it
-			
+						
 			if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
 			
-				scaleError = computationLibrary.fineScreenScaleError(centroidOffsetsResult.getCcdCentroidOffsets(),
+				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			}
 			
-			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
-			procedureOutput.addIteration(pio);
-			pio.setIteration(0);
-			pio.setDeltaAzEl(deltaAzEl);
-
-			pio.setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
-			pio.setScaleError(scaleError.getScaleError());
-
-			pio.setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
-			pio.setMaxOffset(centroidStatsResult.getMaxOffset());
-			pio.setRmsOffset(centroidStatsResult.getRmsOffset());
-
-			pio.setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
-			pio.setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
-
-			pio.setScaleError(scaleError.getScaleError());
-			pio.setSlopeError(scaleError.getSlopeError());
-
+			// TODO: handle with framework
 			pio.setTelescopeMoved(false);
-
-			// fill the output - many of these are copied from the one iteration
-			procedureOutput.setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
-			procedureOutput.setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-
-			procedureOutput.setMaxSpotNum(pio.getMaxSpotNum());
-			procedureOutput.setMaxOffset(pio.getMaxOffset());
-			procedureOutput.setRmsOffset(pio.getRmsOffset());
-
-			procedureOutput.setEnclosedEnergy50(pio.getEnclosedEnergy50());
-			procedureOutput.setEnclosedEnergy80(pio.getEnclosedEnergy80());
-
-			procedureOutput.setScaleError(pio.getScaleError());
-			procedureOutput.setSlopeError(pio.getSlopeError());
-
-			procedureOutput.setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
-			procedureOutput.setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
-			procedureOutput.setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
-			
-			
 
 			procedureExecutionState.setPercentComplete(70);
 			
@@ -277,7 +242,6 @@ public class PupilRegistrationExecutor {
 			/*            calcPupilRegErrorDefaults              */
 			/*****************************************************/
 					
-			
 			PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 				procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
 				procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
@@ -297,10 +261,6 @@ public class PupilRegistrationExecutor {
 				procedureExecutionState.setPercentComplete(80);
 
 				
-				BeanUtils.copyProperties(pio, pupilRegErrorResult);
-				BeanUtils.copyProperties(procedureOutput, pupilRegErrorResult);
-			
-						
 			/*****************************************************/
 			/*           determine fine/coarse PR Commands       */
 			/*****************************************************/
@@ -354,8 +314,10 @@ public class PupilRegistrationExecutor {
 			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
 					procedure.getProcedureConfigSet().getPupilRegErrorConfig(), fineMirror, coarseMirror);
 
-			BeanUtils.copyProperties(pio, calcPrCommandsResult);
-			BeanUtils.copyProperties(procedureOutput, calcPrCommandsResult);
+			
+			// fill the procedure output
+			procedureOutput.addPupilRegistrationIterationOutput(pio);
+
 			
 			procedureExecutionState.setPercentComplete(90);
 			

@@ -149,6 +149,30 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 		this.pistonActuatorDeltasRms = pistonActuatorDeltasRms;
 	}
 	
-	
+	// TODO: eventually supercede with just the high level calc results being copied
+	public void addPassiveTiltIterationOutput(PassiveTiltIterationOutput pio) {
+		
+		setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
+		setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
+
+		setScaleError(pio.getScaleError());
+
+		setMaxSpotNum(pio.getMaxSpotNum());
+		setMaxOffset(pio.getMaxOffset());
+		setRmsOffset(pio.getRmsOffset());
+
+		setEnclosedEnergy50(pio.getEnclosedEnergy50());
+		setEnclosedEnergy80(pio.getEnclosedEnergy80());
+
+		setScaleError(pio.getScaleError());
+		setSlopeError(pio.getSlopeError());
+		
+		setM1ActuatorCmds(pio.getM1ActuatorCmds());
+		setM1ActuatorCmdsRms(pio.getM1ActuatorCmdsRms());
+		setTipTiltActuatorDeltas(pio.getTipTiltActuatorDeltas());
+		setPistonActuatorDeltas(pio.getPistonActuatorDeltas());
+		setPistonActuatorDeltasRms(pio.getPistonActuatorDeltasRms());
+
+	}
 	
 }

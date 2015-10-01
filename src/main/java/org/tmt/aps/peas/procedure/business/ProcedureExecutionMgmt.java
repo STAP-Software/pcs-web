@@ -166,6 +166,7 @@ public class ProcedureExecutionMgmt {
 		// tell the world so the UI can disable things the user cannot touch
 		procedureExecutionState.setExecutionStatus(true);
 		logger.info("Setting execution status to true");
+		
 		procedureExecutionState.setPercentComplete(0);
 		
 		// if the session is new, then create it

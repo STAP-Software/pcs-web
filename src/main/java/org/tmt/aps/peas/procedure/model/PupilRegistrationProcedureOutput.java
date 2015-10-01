@@ -2,6 +2,7 @@ package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
 // TODO - display i/fs need to change
@@ -190,6 +191,38 @@ public class PupilRegistrationProcedureOutput extends ProcedureOutput implements
 		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
 	
-	
+	// TODO: eventually supercede with just the high level calc results being copied
+	public void addPupilRegistrationIterationOutput(PupilRegistrationIterationOutput pio) {
+		
+		setCcdCentroidOffsets(pio.getCcdCentroidOffsets());
+		setCartesianCentroidOffsets(pio.getCartesianCentroidOffsets());
+
+		setScaleError(pio.getScaleError());
+
+		setMaxSpotNum(pio.getMaxSpotNum());
+		setMaxOffset(pio.getMaxOffset());
+		setRmsOffset(pio.getRmsOffset());
+
+		setEnclosedEnergy50(pio.getEnclosedEnergy50());
+		setEnclosedEnergy80(pio.getEnclosedEnergy80());
+
+		setScaleError(pio.getScaleError());
+		setSlopeError(pio.getSlopeError());
+		
+		setRegErrorX(pio.getRegErrorX());
+		setRegErrorY(pio.getRegErrorY());
+		setRegErrorPhi(pio.getRegErrorPhi());
+		setRegErrorApproxX(pio.getRegErrorApproxX());
+		setRegErrorApproxY(pio.getRegErrorApproxY());
+		setRegErrorApproxPhi(pio.getRegErrorApproxPhi());
+		setRegScaleError(pio.getRegScaleError());
+
+		setCoarseMirrorCommands(pio.getCoarseMirrorCommands());
+		setFineMirrorCommands(pio.getFineMirrorCommands());
+		setCoarseMirrorDeltas(pio.getCoarseMirrorDeltas());
+		setFineMirrorDeltas(pio.getFineMirrorDeltas());
+		setOffloaded(pio.isOffloaded());
+
+	}
 	
 }

@@ -21,7 +21,7 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -41,7 +41,7 @@ import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
-
+@Deprecated
 public interface ComputationLibrary {
 
 	public float actuatorLengths(float a, float b) throws ComputationException;
@@ -66,7 +66,7 @@ public interface ComputationLibrary {
 	
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException;
 	
-	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException;
+	public ScaleErrorResult passiveTiltScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException;
 	
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets) throws ComputationException;
 	
@@ -92,7 +92,7 @@ public interface ComputationLibrary {
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror) throws Exception;
 
-	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
+	public ScaleErrorResult fineScreenScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception;
 
 	
 	public Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) throws Exception;

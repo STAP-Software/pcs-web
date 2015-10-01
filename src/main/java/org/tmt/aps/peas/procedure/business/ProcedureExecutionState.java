@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 
 @Singleton
 public class ProcedureExecutionState {
@@ -28,6 +29,7 @@ public class ProcedureExecutionState {
 	private CcdFrame currentFrame;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
+	private ProcedureOutputable currentOutputTarget;
 
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
@@ -138,6 +140,14 @@ public class ProcedureExecutionState {
 
 	public boolean getOnCompletePerformed() {
 		return onCompletePerformed;
+	}
+
+	public ProcedureOutputable getCurrentOutputTarget() {
+		return currentOutputTarget;
+	}
+
+	public void setCurrentOutputTarget(ProcedureOutputable currentOutputTarget) {
+		this.currentOutputTarget = currentOutputTarget;
 	}
 
 

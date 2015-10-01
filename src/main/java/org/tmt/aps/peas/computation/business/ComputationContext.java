@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 
 @Singleton
 @Startup
+@Deprecated
 public class ComputationContext {
 
 	@EJB 
@@ -50,11 +51,11 @@ public class ComputationContext {
 	public ComputationLibrary getComputationLibrary() {
 		
 		try {
-		if (fortranInstalled) {
-			return new ComputationLibraryImpl();
-		} else {
+		//if (fortranInstalled) {
+		//	return new ComputationLibraryImpl();
+		//} else {
 			return new ComputationLibrarySimulator();
-		}
+		//}
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;

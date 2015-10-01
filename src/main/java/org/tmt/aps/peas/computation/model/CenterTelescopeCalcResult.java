@@ -4,20 +4,10 @@ import org.tmt.aps.peas.common.FloatPoint;
 
 public class CenterTelescopeCalcResult {
 
-	private CentroidOffsetsResult centroidOffsetsResult;
 	private FloatPoint deltaAzEl;
 
-	public CenterTelescopeCalcResult(CentroidOffsetsResult centroidOffsetsResult, FloatPoint deltaAzEl) {
-		this.centroidOffsetsResult = centroidOffsetsResult;
+	public CenterTelescopeCalcResult(FloatPoint deltaAzEl) {
 		this.deltaAzEl = deltaAzEl;
-	}
-
-	public CentroidOffsetsResult getCentroidOffsetsResult() {
-		return centroidOffsetsResult;
-	}
-
-	public void setCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
-		this.centroidOffsetsResult = centroidOffsetsResult;
 	}
 
 	public FloatPoint getDeltaAzEl() {

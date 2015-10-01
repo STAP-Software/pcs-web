@@ -1,10 +1,11 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
@@ -153,10 +154,47 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	}
 	
 	
-	
 	// convienience routines to populate
+	// TODO: eventually these will supercede the above definitions
+	CenterTelescopeCalcResult centerTelescopeCalcResult;
+	CentroidOffsetsResult centroidOffsetsResult;
+	CentroidStatsResult centroidStatsResult;
+	ScaleErrorResult scaleErrorResult;
+	CalcM2M1Result calcM2M1Result;
+	
+	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
+		return centerTelescopeCalcResult;
+	}
+	public void setCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		this.centerTelescopeCalcResult = centerTelescopeCalcResult;
+	}
+	public CentroidOffsetsResult getCentroidOffsetsResult() {
+		return centroidOffsetsResult;
+	}
+	public void setCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		this.centroidOffsetsResult = centroidOffsetsResult;
+	}
+	public CentroidStatsResult getCentroidStatsResult() {
+		return centroidStatsResult;
+	}
+	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		this.centroidStatsResult = centroidStatsResult;
+	}
+	public ScaleErrorResult getScaleErrorResult() {
+		return scaleErrorResult;
+	}
+	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
+		this.scaleErrorResult = scaleErrorResult;
+	}
+	public CalcM2M1Result getCalcM2M1Result() {
+		return calcM2M1Result;
+	}
+	public void setCalcM2M1Result(CalcM2M1Result calcM2M1Result) {
+		this.calcM2M1Result = calcM2M1Result;
+	}
 	
 	
+	// TODO: eventually these will be eliminated
 	public void addCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
 		setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
 	}
@@ -168,6 +206,8 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 		setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
 		setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
 		setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
+		
+		
 	}
 	
 	public void addCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
@@ -180,11 +220,14 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 		setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
 	}
 	
-	public void addScaleError(ScaleError scaleError) {
+	public void addScaleErrorResult(ScaleErrorResult scaleErrorResult) {
 		
-		setScaleError(scaleError.getScaleError());
-		setSlopeError(scaleError.getSlopeError());
+		setScaleError(scaleErrorResult.getScaleError());
+		setSlopeError(scaleErrorResult.getSlopeError());
 	}
 	
 
+	public void addCalcM2M1Result(CalcM2M1Result calcM2M1Result) {
+		System.out.println("YYYYYAAAAAAYYYYY");
+	}
 }

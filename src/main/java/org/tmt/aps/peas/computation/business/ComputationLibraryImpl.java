@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import javax.naming.InitialContext;
+import javax.ejb.EJB;
+import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
@@ -19,18 +20,21 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.cdi.Computation;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -66,18 +70,14 @@ import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
-public class ComputationLibraryImpl implements ComputationLibrary {
+@Stateless
+public class ComputationLibraryImpl {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
+	@EJB
 	StatusLogger statusLogger;
 
-	// package protected constructor
-	ComputationLibraryImpl() throws Exception {
-
-		statusLogger = (StatusLogger) InitialContext.doLookup("java:module/StatusLogger");
-
-	}
 
 	public float actuatorLengths(float a, float b) throws ComputationException {
 
@@ -409,7 +409,19 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
-	// TODO: move to Fortran?
+	@Computation
+	public CenterTelescopeCalcResult centerTelescopeCalc(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "centerTelescopeCalc"));
+
+		FloatPoint result = JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "centerTelescopeCalc"));
+		
+		return new CenterTelescopeCalcResult(result);
+	}
+
+	/*
 	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "pixLocationToDeltaArcSeconds"));
@@ -420,6 +432,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 		return result;
 	}
+	*/
 	
 	public float calcRms(float[][] data) {
 		
@@ -433,6 +446,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 	}
 
 	
+	@Computation
 	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
@@ -480,6 +494,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
+	@Computation
 	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
@@ -506,8 +521,8 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
-	@Override
-	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
+	@Computation
+	public ScaleErrorResult passiveTiltScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "passiveTiltScaleError"));
 
@@ -529,12 +544,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
 
 		// store fi_param values
-		return new ScaleError((Float) output[0], (Float) output[1]);
+		return new ScaleErrorResult((Float) output[0], (Float) output[1]);
 	}
 	
 	
-
-	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
+	@Computation
+	public ScaleErrorResult fineScreenScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
 
@@ -559,10 +574,10 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
 
 		// store fi_param values
-		return new ScaleError((Float) output[0], (Float) output[1]);
+		return new ScaleErrorResult((Float) output[0], (Float) output[1]);
 	}
 
-	@Override
+	
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
 			throws ComputationException {
 		
@@ -603,7 +618,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return desiredActDeltas;
 	}
 
-	@Override
+	@Computation
 	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "decomposeActs"));
@@ -635,7 +650,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		
 	}
 
-	@Override
+	
 	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "optimalPistons"));
@@ -666,6 +681,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 	
+	@Computation
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
 			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList)
 					throws Exception {
@@ -768,7 +784,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 
-	@Override
+	
 	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
@@ -789,7 +805,7 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 		return result;
 	}
 
-	@Override
+	@Computation
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
@@ -817,13 +833,12 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 	}
 
-	@Override
+	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
 			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
 
-		
 		JcalculateM2M1RayTrace jcalculateM2M1RayTrace = new JcalculateM2M1RayTrace();
 		RetVal retVal = new RetVal();
 
@@ -874,6 +889,31 @@ public class ComputationLibraryImpl implements ComputationLibrary {
 
 		return calcM2M1Result;
 	
+	}
+
+	@Computation
+	public CalcDesiredActCommandsResult calcDesiredActCommands(float[][] controlMatrix, float[][] tipTiltActs) throws Exception {
+		
+		// Calculate the optimal pistons associated with the calculated
+		// actuators (minimizes the changes to the edges). Note that this
+		// routine just determines the optimal pistons; if you want to add
+		// these on to the tip/tilt pistons, you need to do it yourself.
+		float[][] pistonActs = optimalPistons(controlMatrix, tipTiltActs);
+
+		// calculate RMS of the actuator cmds
+		float pistonActsRms = calcRms(pistonActs);
+
+		
+		// combine tip/tilt and piston commands
+		/*****************************************************/
+		/*               calcDesiredActCommands              */
+		/*****************************************************/
+		float[][] desiredActDeltas = addMatricies(tipTiltActs, pistonActs);
+
+		// calculate RMS of the actuator cmds
+		float desiredActDeltasRms = calcRms(desiredActDeltas);
+		
+		return new CalcDesiredActCommandsResult(pistonActs, pistonActsRms, desiredActDeltas, desiredActDeltasRms);
 	}
 
 	

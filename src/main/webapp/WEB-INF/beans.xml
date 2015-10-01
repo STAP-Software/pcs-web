@@ -8,6 +8,7 @@
 	  <class>org.tmt.aps.peas.common.cdi.LoggingInterceptor</class>
 	  <class>org.tmt.aps.peas.common.cdi.AbortInterceptor</class>
 	  <class>org.tmt.aps.peas.common.cdi.ProcedureExceptionInterceptor</class>
+	  <class>org.tmt.aps.peas.common.cdi.ComputationInterceptor</class>
    </interceptors>
 
 </beans>

@@ -20,8 +20,8 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -73,7 +73,7 @@ public class CenterTelescopeExecutor {
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	private PupilRegistrator pupilRegistrator;
 	@EJB
@@ -113,7 +113,7 @@ public class CenterTelescopeExecutor {
 			
 			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();
 			
-			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
 			procedureExecutionState.setPercentComplete(5);
 			
@@ -219,22 +219,22 @@ public class CenterTelescopeExecutor {
 						
 			// get Az, El deltas
 			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
-			FloatPoint deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroid, desiredPixLocation, mask.getSecPerPixel());
-			procedureOutput.setDeltaAzEl(deltaAzEl);
+			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, mask.getSecPerPixel());
+			procedureOutput.setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
 			
 			procedureExecutionState.setPercentComplete(90);
 			
 			// display result and ask if we should move telescope
-			statusLogger.log("telescope.desired_move", deltaAzEl);
+			statusLogger.log("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
 			
-			String text = MessageGenerator.generateMessage("telescope.desired_move", deltaAzEl);
+			String text = MessageGenerator.generateMessage("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
 			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
 			procedureOutput.setCmdTelescope(cmdTelescope);
 			
 			// depending on what user answers, either command telescope or quit
 			if (cmdTelescope) {
 				statusLogger.log("telescope.cmd.start");
-				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+				dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
 				statusLogger.log("telescope.cmd.end");
 			}
 			

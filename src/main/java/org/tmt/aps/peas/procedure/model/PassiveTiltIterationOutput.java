@@ -1,6 +1,12 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
@@ -149,6 +155,94 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 		this.scaleChangeFromRefBeam = scaleChangeFromRefBeam;
 	}
 
+	// convienience routines to populate
+	// TODO: eventually these will supercede the above definitions
+	CenterTelescopeCalcResult centerTelescopeCalcResult;
+	CentroidOffsetsResult centroidOffsetsResult;
+	CentroidStatsResult centroidStatsResult;
+	ScaleErrorResult scaleErrorResult;
+	DecomposeActsResult decomposeActsResult;
+	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
+	
+	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
+		return centerTelescopeCalcResult;
+	}
+	public void setCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		this.centerTelescopeCalcResult = centerTelescopeCalcResult;
+	}
+	public CentroidOffsetsResult getCentroidOffsetsResult() {
+		return centroidOffsetsResult;
+	}
+	public void setCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		this.centroidOffsetsResult = centroidOffsetsResult;
+	}
+	public CentroidStatsResult getCentroidStatsResult() {
+		return centroidStatsResult;
+	}
+	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		this.centroidStatsResult = centroidStatsResult;
+	}
+	public ScaleErrorResult getScaleErrorResult() {
+		return scaleErrorResult;
+	}
+	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
+		this.scaleErrorResult = scaleErrorResult;
+	}	
+	public DecomposeActsResult getDecomposeActsResult() {
+		return decomposeActsResult;
+	}
+	public void setDecomposeActsResult(DecomposeActsResult decomposeActsResult) {
+		this.decomposeActsResult = decomposeActsResult;
+	}
+	public CalcDesiredActCommandsResult getCalcDesiredActCommandsResult() {
+		return calcDesiredActCommandsResult;
+	}
+	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
+		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
+	}
 	
 	
+	
+	// TODO: eventually these will be eliminated
+	public void addCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
+	}
+	
+	public void addCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
+		setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
+		
+		setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+		setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+		setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
+	}
+	
+	public void addCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		
+		setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
+		setMaxOffset(centroidStatsResult.getMaxOffset());
+		setRmsOffset(centroidStatsResult.getRmsOffset());
+
+		setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
+		setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
+	}
+	
+	public void addScaleErrorResult(ScaleErrorResult scaleErrorResult) {
+		
+		setScaleError(scaleErrorResult.getScaleError());
+		setSlopeError(scaleErrorResult.getSlopeError());
+	}
+
+	public void addDecomposeActsResult(DecomposeActsResult decomposeActsResult) {
+		setTipTiltActuatorDeltas(decomposeActsResult.getTipTiltActs());
+	}
+
+	public void addCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
+	
+		setPistonActuatorDeltas(calcDesiredActCommandsResult.getPistonActs());
+		setPistonActuatorDeltasRms(calcDesiredActCommandsResult.getPistonActsRms());
+		setM1ActuatorCmds(calcDesiredActCommandsResult.getDesiredActDeltas());
+		setM1ActuatorCmdsRms(calcDesiredActCommandsResult.getDesiredActDeltasRms());
+	}
+
 }

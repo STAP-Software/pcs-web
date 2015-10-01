@@ -9,8 +9,8 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.cdi.Abortable;
-import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
@@ -29,9 +29,9 @@ import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
-public class CenterTelescopeCalc {
+public class CenterTelescopeFlow {
 
-	static Logger logger = Logger.getLogger(CenterTelescopeCalc.class);
+	static Logger logger = Logger.getLogger(CenterTelescopeFlow.class);
 	
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
@@ -42,15 +42,15 @@ public class CenterTelescopeCalc {
 	@EJB
 	private SubimageDefCache subimageDefCache;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
 
 	@Abortable
-	public CenterTelescopeCalcResult centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
+	public void centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		
-		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+		//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
@@ -58,7 +58,7 @@ public class CenterTelescopeCalc {
 		CentroidOffsetsResult centroidOffsetsResult = null;
 
 		FloatPoint lastMove = null;
-		FloatPoint deltaAzEl;
+		
 		
 		while (true) {
 
@@ -81,13 +81,12 @@ public class CenterTelescopeCalc {
 					findCentroidsResult.getFindCentStatusList());
 
 			// go from centroidOffsetsResult.imageTranslation to deltaAz,El
-			deltaAzEl = computationLibrary.pixLocationToDeltaArcSeconds(centroidOffsetsResult.getImageTranslation(), 
+			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroidOffsetsResult.getImageTranslation(), 
 					new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
-
 
 			// test deltaAzEl against thresholds for telescope move
 			AutoCenterTelConfig autoCenterTelConfig = procedure.getProcedureConfigSet().getAutoCenterTelConfig();
-			AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, deltaAzEl, lastMove);
+			AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, centerTelescopeCalcResult.getDeltaAzEl(), lastMove);
 			// log what result was found
 			statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
 
@@ -98,9 +97,9 @@ public class CenterTelescopeCalc {
 			if (aResult.getRecenterTelescope().isYes() && procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) {
 
 				// perform telescope move
-				lastMove = deltaAzEl;
+				lastMove = centerTelescopeCalcResult.getDeltaAzEl();
 				statusLogger.log("telescope.cmd.start");
-				dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+				dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
 				statusLogger.log("telescope.cmd.end");
 			}
 
@@ -114,9 +113,9 @@ public class CenterTelescopeCalc {
 				
 				if (userReply) {
 					// perform telescope move
-					lastMove = deltaAzEl;
+					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
 					statusLogger.log("telescope.cmd.start");
-					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+					dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
 					statusLogger.log("telescope.cmd.end");						
 				} else {
 					break;
@@ -129,9 +128,9 @@ public class CenterTelescopeCalc {
 				
 				if (userReply) {
 					// perform telescope move
-					lastMove = deltaAzEl;
+					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
 					statusLogger.log("telescope.cmd.start");
-					dcsMgmt.commandTelescopeDeltas(deltaAzEl.asDoubleArray());
+					dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
 					statusLogger.log("telescope.cmd.end");						
 				} else {
 					break; // if user doesn't want to move telescope, no point in re-taking frame
@@ -161,8 +160,6 @@ public class CenterTelescopeCalc {
 			// go back and re-take frame
 
 		}
-
-		return new CenterTelescopeCalcResult(centroidOffsetsResult, deltaAzEl);
 		
 	}
 

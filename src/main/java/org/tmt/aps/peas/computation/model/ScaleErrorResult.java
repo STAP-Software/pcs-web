@@ -1,11 +1,11 @@
 package org.tmt.aps.peas.computation.model;
 
-public class ScaleError {
+public class ScaleErrorResult {
 
 	float scaleError;
 	float slopeError;
 	
-	public ScaleError(float scaleError, float slopeError) {
+	public ScaleErrorResult(float scaleError, float slopeError) {
 		this.scaleError = scaleError;
 		this.slopeError = slopeError;
 	}

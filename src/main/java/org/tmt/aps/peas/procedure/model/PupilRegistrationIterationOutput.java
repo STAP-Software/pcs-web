@@ -2,13 +2,22 @@ package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 
 //TODO - display i/fs need to change
 public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 
 	private boolean telescopeMoved;
 	private FloatPoint deltaAzEl;
+	
+	private FloatPoint translationFromRefBeam = new FloatPoint(0.0f,0.0f);
+	private float rotationFromRefBeam;
+	private float scaleChangeFromRefBeam;
 	
 	private FloatPoint[] ccdCentroidOffsets;
 	private FloatPoint[] cartesianCentroidOffsets;
@@ -183,6 +192,120 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 	public void setFineMirrorDeltas(Point fineMirrorDeltas) {
 		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
+	public FloatPoint getTranslationFromRefBeam() {
+		return translationFromRefBeam;
+	}
+	public void setTranslationFromRefBeam(FloatPoint translationFromRefBeam) {
+		this.translationFromRefBeam = translationFromRefBeam;
+	}
+	public float getRotationFromRefBeam() {
+		return rotationFromRefBeam;
+	}
+	public void setRotationFromRefBeam(float rotationFromRefBeam) {
+		this.rotationFromRefBeam = rotationFromRefBeam;
+	}
+	public float getScaleChangeFromRefBeam() {
+		return scaleChangeFromRefBeam;
+	}
+	public void setScaleChangeFromRefBeam(float scaleChangeFromRefBeam) {
+		this.scaleChangeFromRefBeam = scaleChangeFromRefBeam;
+	}
 	
 	
+	// convienience routines to populate
+	// TODO: eventually these will supercede the above definitions
+	CenterTelescopeCalcResult centerTelescopeCalcResult;
+	CentroidOffsetsResult centroidOffsetsResult;
+	CentroidStatsResult centroidStatsResult;
+	ScaleErrorResult scaleErrorResult;
+	PupilRegErrorResult pupilRegErrorResult;
+	CalcPrCommandsResult calcPrCommandsResult;
+	
+	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
+		return centerTelescopeCalcResult;
+	}
+	public void setCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		this.centerTelescopeCalcResult = centerTelescopeCalcResult;
+	}
+	public CentroidOffsetsResult getCentroidOffsetsResult() {
+		return centroidOffsetsResult;
+	}
+	public void setCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		this.centroidOffsetsResult = centroidOffsetsResult;
+	}
+	public CentroidStatsResult getCentroidStatsResult() {
+		return centroidStatsResult;
+	}
+	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		this.centroidStatsResult = centroidStatsResult;
+	}
+	public ScaleErrorResult getScaleErrorResult() {
+		return scaleErrorResult;
+	}
+	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
+		this.scaleErrorResult = scaleErrorResult;
+	}	
+	public PupilRegErrorResult getPupilRegErrorResult() {
+		return pupilRegErrorResult;
+	}
+	public void setPupilRegErrorResult(PupilRegErrorResult pupilRegErrorResult) {
+		this.pupilRegErrorResult = pupilRegErrorResult;
+	}	
+	public CalcPrCommandsResult getCalcPrCommandsResult() {
+		return calcPrCommandsResult;
+	}
+	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
+		this.calcPrCommandsResult = calcPrCommandsResult;
+	}
+	
+	
+	// TODO: eventually these will be eliminated
+	public void addCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
+	}
+	
+	public void addCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
+		setCcdCentroidOffsets(centroidOffsetsResult.getCcdCentroidOffsets().toArray(new FloatPoint[0]));
+		setCartesianCentroidOffsets(centroidOffsetsResult.getCartesianCentroidOffsets().toArray(new FloatPoint[0]));
+		
+		setRotationFromRefBeam(centroidOffsetsResult.getImageRotation());
+		setScaleChangeFromRefBeam(centroidOffsetsResult.getImageScale());
+		setTranslationFromRefBeam(centroidOffsetsResult.getImageTranslation());
+	}
+	
+	public void addCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
+		
+		setMaxSpotNum(centroidStatsResult.getMaxSpotNum());
+		setMaxOffset(centroidStatsResult.getMaxOffset());
+		setRmsOffset(centroidStatsResult.getRmsOffset());
+
+		setEnclosedEnergy50(centroidStatsResult.getEnclosedEnergy50());
+		setEnclosedEnergy80(centroidStatsResult.getEnclosedEnergy80());
+	}
+	
+	public void addScaleErrorResult(ScaleErrorResult scaleErrorResult) {
+		
+		setScaleError(scaleErrorResult.getScaleError());
+		setSlopeError(scaleErrorResult.getSlopeError());
+	}
+
+	public void addPupilRegErrorResult(PupilRegErrorResult pupilRegErrorResult) {
+		
+		setRegErrorX(pupilRegErrorResult.getRegErrorX());
+		setRegErrorY(pupilRegErrorResult.getRegErrorY());
+		setRegErrorPhi(pupilRegErrorResult.getRegErrorPhi());
+		setRegErrorApproxX(pupilRegErrorResult.getRegErrorApproxX());
+		setRegErrorApproxY(pupilRegErrorResult.getRegErrorApproxY());
+		setRegErrorApproxPhi(pupilRegErrorResult.getRegErrorApproxPhi());
+		setRegScaleError(pupilRegErrorResult.getRegScaleError());
+	}
+
+	public void addCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
+		setCoarseMirrorCommands(calcPrCommandsResult.getCoarseMirrorCommands());
+		setFineMirrorCommands(calcPrCommandsResult.getFineMirrorCommands());
+		setCoarseMirrorDeltas(calcPrCommandsResult.getCoarseMirrorDeltas());
+		setFineMirrorDeltas(calcPrCommandsResult.getFineMirrorDeltas());
+		setOffloaded(calcPrCommandsResult.isOffloaded());
+	}
+
 }

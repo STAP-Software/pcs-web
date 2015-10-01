@@ -27,7 +27,7 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleError;
+import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
@@ -50,6 +50,7 @@ import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
+@Deprecated
 public class ComputationLibrarySimulator implements ComputationLibrary {
 
 	Logger logger = Logger.getLogger(this.getClass());
@@ -214,9 +215,9 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public ScaleError passiveTiltScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) {
+	public ScaleErrorResult passiveTiltScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) {
 		// TODO Auto-generated method stub
-		return new ScaleError(1.1f, 2.2f);
+		return new ScaleErrorResult(1.1f, 2.2f);
 	}
 
 	@Override
@@ -274,7 +275,7 @@ public class ComputationLibrarySimulator implements ComputationLibrary {
 	}
 
 	@Override
-	public ScaleError fineScreenScaleError(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes,
+	public ScaleErrorResult fineScreenScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes,
 			int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		// TODO Auto-generated method stub
 		return null;

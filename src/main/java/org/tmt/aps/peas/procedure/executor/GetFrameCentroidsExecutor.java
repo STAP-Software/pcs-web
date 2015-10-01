@@ -18,14 +18,13 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.computation.business.ComputationContext;
 import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
-import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -39,7 +38,6 @@ import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
-import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -67,7 +65,7 @@ public class GetFrameCentroidsExecutor {
 	@EJB
 	private SubimageDefCache subimageDefCache;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 
 	private List<String> logMessages;
 
@@ -79,7 +77,7 @@ public class GetFrameCentroidsExecutor {
 		this.logMessages = logMessages;
 	}
 
-	ComputationLibrary computationLibrary;
+	//ComputationLibrary computationLibrary;
 	ProcedureCcdFrame procedureCcdFrame = null;
 	CentroidMap centroidMap = null;
 	FIConfig fiConfig = null;
@@ -103,7 +101,7 @@ public class GetFrameCentroidsExecutor {
 
 		procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 
-		computationLibrary = computationContext.getComputationLibrary();
+		//computationLibrary = computationContext.getComputationLibrary();
 
 		// CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
 
@@ -321,7 +319,7 @@ public class GetFrameCentroidsExecutor {
 
 		try {
 
-			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
+			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 	
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
