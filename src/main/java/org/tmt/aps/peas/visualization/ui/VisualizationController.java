@@ -228,7 +228,7 @@ public class VisualizationController implements Serializable {
 	public float getMaxOffset() {
 		if (graphicDisplayMgmt.getCentroidOffsetsDisplayValues() == null) return 0.0f;
 		
-		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getMaxOffset();
+		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidStatsResult().getMaxOffset();
 	}
 	
 	public float getOffsetScale() {

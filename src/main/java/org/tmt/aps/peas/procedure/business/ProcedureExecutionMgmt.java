@@ -320,7 +320,7 @@ public class ProcedureExecutionMgmt {
 
 			try {
 				// set up for immediate viewing
-				procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId()));
+				procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
 
 				logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
 

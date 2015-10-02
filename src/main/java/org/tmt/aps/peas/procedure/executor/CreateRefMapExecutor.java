@@ -18,7 +18,6 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;

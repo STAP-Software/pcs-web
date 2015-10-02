@@ -22,7 +22,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
-import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -40,6 +40,7 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
+import org.tmt.aps.peas.procedure.model.FineScreenIterationOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -171,6 +172,9 @@ public class CenterTelescopeExecutor {
 			
 			procedureExecutionState.setPercentComplete(20);
 			
+			// setup procedure output logging
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);			
+			
 			statusLogger.log("frame.get");
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), 
@@ -200,13 +204,13 @@ public class CenterTelescopeExecutor {
 			
 			// get marking data from the frame display
 			FloatPoint guess = frameDisplayMgmt.getMarkList().get(0);
-			procedureOutput.setCentroidGuess(guess);
+			
 			statusLogger.log("frame.mark_guess", guess);
 			
 			// call find cent with the guess
-			Subimage subimage = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfigInterior(), Constants.SPOT_TYPE_INTERIOR);
-			FloatPoint centroid = subimage.getCentroid();
-			procedureOutput.setCentroid(centroid);
+			FindCentResult findCentResult = computationLibrary.findCent(ccdFrame.getCorrectedFrame(), guess, procedure.getProcedureConfigSet().getFindCentConfigInterior(), Constants.SPOT_TYPE_INTERIOR);
+			FloatPoint centroid = findCentResult.getSubimage().getCentroid();
+			
 			
 			procedureExecutionState.setPercentComplete(80);
 			
@@ -220,7 +224,6 @@ public class CenterTelescopeExecutor {
 			// get Az, El deltas
 			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
 			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, mask.getSecPerPixel());
-			procedureOutput.setDeltaAzEl(centerTelescopeCalcResult.getDeltaAzEl());
 			
 			procedureExecutionState.setPercentComplete(90);
 			
@@ -228,11 +231,11 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
 			
 			String text = MessageGenerator.generateMessage("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
-			boolean cmdTelescope = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
-			procedureOutput.setCmdTelescope(cmdTelescope);
+			boolean telescopeMoved = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
+			procedureOutput.getProcedureDecisionLog().setTelescopeMoved(telescopeMoved);
 			
 			// depending on what user answers, either command telescope or quit
-			if (cmdTelescope) {
+			if (telescopeMoved) {
 				statusLogger.log("telescope.cmd.start");
 				dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
 				statusLogger.log("telescope.cmd.end");

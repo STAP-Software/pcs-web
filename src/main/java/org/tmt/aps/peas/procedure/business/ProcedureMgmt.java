@@ -50,7 +50,7 @@ public class ProcedureMgmt {
 		Procedure procedure = query.getSingleResult();
 		
 		try {
-			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedureId);
+			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
 			procedure.setProcedureOutput(procedureOutput);
 			
 			// procedure frame data 

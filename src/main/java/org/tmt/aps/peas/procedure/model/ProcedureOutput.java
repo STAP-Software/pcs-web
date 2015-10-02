@@ -15,6 +15,8 @@ public class ProcedureOutput implements ProcedureOutputable {
 
 	List<ProcedureOutputValue> procedureOutputList;
 
+	ProcedureDecisionLog procedureDecisionLog = new ProcedureDecisionLog();
+	
 	public Long getProcedureId() {
 		return procedureId;
 	}
@@ -58,11 +60,19 @@ public class ProcedureOutput implements ProcedureOutputable {
 	
 	// subclasses will override this
 	public int getM1SnapNumberAfter() {
-		return -1;
+		return procedureDecisionLog.getM1SnapNumberAfter();
 	}
 
 	public String getM1SnapNumberAfterDisplayText() {
 		return getM1SnapNumberAfter() == -1 ? "None" : "" + getM1SnapNumberAfter();
+	}
+
+	public ProcedureDecisionLog getProcedureDecisionLog() {
+		return procedureDecisionLog;
+	}
+
+	public void setProcedureDecisionLog(ProcedureDecisionLog procedureDecisionLog) {
+		this.procedureDecisionLog = procedureDecisionLog;
 	}
 	
 }

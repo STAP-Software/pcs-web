@@ -10,6 +10,7 @@ public class PupilRegErrorResult {
 	private float regErrorApproxPhi; // phi rotation error using approx calc (r)
 	private float regScaleError; // scale error
 	
+	public PupilRegErrorResult() {};
 	
 	public PupilRegErrorResult(float regErrorX, float regErrorY, float regErrorPhi, float regErrorApproxX, 
 			float regErrorApproxY, float regErrorApproxPhi, float regScaleError) { 
@@ -45,7 +46,7 @@ public class PupilRegErrorResult {
 	public float getRegErrorApproxX() {
 		return regErrorApproxX;
 	}
-	public void setRegErrorAppoxX(float regErrorApproxX) {
+	public void setRegErrorApproxX(float regErrorApproxX) {
 		this.regErrorApproxX = regErrorApproxX;
 	}
 	public float getRegErrorApproxY() {

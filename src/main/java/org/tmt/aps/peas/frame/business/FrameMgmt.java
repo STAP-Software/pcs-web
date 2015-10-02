@@ -27,8 +27,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
-import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -46,7 +45,6 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
-import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
@@ -85,7 +83,7 @@ public class FrameMgmt {
 	@EJB
 	CameraMgmt cameraMgmt;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	ExtInfConfigState extInfConfigState;
 
@@ -279,7 +277,6 @@ public class FrameMgmt {
 				
 				
 				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
-					ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 					//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
 					swapFrame = computationLibrary.removeBadPixels(swapFrame, badPixelList);
 				}

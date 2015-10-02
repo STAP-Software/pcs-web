@@ -35,29 +35,6 @@ public class FindCentroidsResult {
 		}
 	}
 	
-	/*
-	public static FindCentroidsResult createFromCentroidList(List<FloatPoint> centroidList) {
-		
-		FindCentroidsResult result = new FindCentroidsResult();
-		
-		List<Subimage> subimageList = new ArrayList<Subimage>();
-		
-		for (int i = 0; i< centroidList.size(); i++) {
-			// TODO: merge in real subimageDef
-			Subimage subimage = new Subimage(null, centroidList.get(i), 0.0f, 0.0f, 0);
-			subimageList.add(subimage);
-		}
-		result.setSubimageList(subimageList);
-		
-		return result;
-	}
-	
-	private void setSubimageList(List<Subimage> subimageList) {
-		this.subimageList = subimageList;
-	}
-
-	*/
-	
 	
 	
 	public FindCentroidsResult(List<Subimage> subimageList) {

@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.computation.business;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,6 +33,7 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
@@ -97,7 +99,8 @@ public class ComputationLibraryImpl {
 		return c[0];
 	}
 
-	public Subimage findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
+	@Computation
+	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCent"));
 
@@ -120,10 +123,11 @@ public class ComputationLibraryImpl {
 		
 		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], 0);
 		
+		FindCentResult findCentResult = new FindCentResult(guess, subimage);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "findCent"));
 
-		return subimage;
+		return findCentResult;
 	}
 
 
@@ -495,14 +499,14 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public CentroidStatsResult calculateCentroidStats(List<FloatPoint> centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
+	public CentroidStatsResult calculateCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
 
 		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
 		RetVal retVal = new RetVal();
 
-		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
 
 		// spots that can be used (found without errors and should be used for analysis)
 		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
@@ -522,14 +526,14 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public ScaleErrorResult passiveTiltScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
+	public ScaleErrorResult passiveTiltScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "passiveTiltScaleError"));
 
 		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
 		RetVal retVal = new RetVal();
 
-		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
 
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpot);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpot);
@@ -549,14 +553,14 @@ public class ComputationLibraryImpl {
 	
 	
 	@Computation
-	public ScaleErrorResult fineScreenScaleErrorResult(List<FloatPoint> centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
+	public ScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
 
 		JfineScreenScaleError jfineScreenScaleError = new JfineScreenScaleError();
 		RetVal retVal = new RetVal();
 
-		float[][] offsets = FloatPointListEncoder.convertToNby2Array(centroidOffsets);
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
 
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpots);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpots);
@@ -578,7 +582,7 @@ public class ComputationLibraryImpl {
 	}
 
 	
-	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, List<FloatPoint> centroidOffsets)
+	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, FloatPoint[] centroidOffsets)
 			throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "ttOffsetsToActs"));
@@ -589,13 +593,13 @@ public class ComputationLibraryImpl {
 		float[] x_act_pos = FloatPointListEncoder.extractXArray(actuatorPositions);
 		float[] y_act_pos = FloatPointListEncoder.extractYArray(actuatorPositions);
 
-		float[] x_offsets = FloatPointListEncoder.extractXArray(centroidOffsets);
-		float[] y_offsets = FloatPointListEncoder.extractYArray(centroidOffsets);
+		float[] x_offsets = FloatPointListEncoder.extractXArray(Arrays.asList(centroidOffsets));
+		float[] y_offsets = FloatPointListEncoder.extractYArray(Arrays.asList(centroidOffsets));
 
 		// output arrays
 		float[] desired_act_deltas = new float[actuatorPositions.size()];
-		float[] x_offsets_out = new float[centroidOffsets.size()];
-		float[] y_offsets_out = new float[centroidOffsets.size()];
+		float[] x_offsets_out = new float[centroidOffsets.length];
+		float[] y_offsets_out = new float[centroidOffsets.length];
 
 		Object output[] = jttOffsetsToActs.jttOffsetsToActs(retVal, x_act_pos, y_act_pos, imageScale, x_offsets, y_offsets, x_offsets_out,
 				y_offsets_out, desired_act_deltas);
@@ -847,7 +851,7 @@ public class ComputationLibraryImpl {
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
 		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
-		List<FloatPoint> centroidOffsets = centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes);
+		List<FloatPoint> centroidOffsets = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
 		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsets);
 		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsets);
 		

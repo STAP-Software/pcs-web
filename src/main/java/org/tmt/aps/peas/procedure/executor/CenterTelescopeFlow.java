@@ -9,7 +9,6 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.cdi.Abortable;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;

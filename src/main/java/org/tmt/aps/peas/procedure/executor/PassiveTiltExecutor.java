@@ -245,7 +245,7 @@ public class PassiveTiltExecutor {
 			computationLibrary.passiveTiltScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
 					centerSpots);
 
-			pio.setTelescopeMoved(false);
+			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 			
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
@@ -276,7 +276,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
 			
-			// TODO: all the following calculations should be moved out of the executor and folded into one
+			
 			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
 			
 			// fill the procedure output
@@ -306,7 +306,7 @@ public class PassiveTiltExecutor {
 					
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
-					procedureOutput.setM1SnapNumberAfter(snapNum);
+					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
 					
 				} catch (Exception e) {
 					statusLogger.log("pt.m1_act_cmd_failed");
@@ -316,7 +316,7 @@ public class PassiveTiltExecutor {
 			}
 			
 			// TODO: eventually replace this with an framework solution
-			procedureOutput.setM1CmdsSent(commandsSent);
+			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				

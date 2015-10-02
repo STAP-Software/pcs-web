@@ -37,8 +37,8 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -78,7 +78,7 @@ public class FrameController implements Serializable {
 	@EJB
 	CameraDefMgmt cameraDefMgmt;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 
 	private TreeNode sessionRoot;
 	private TreeNode typeRoot;
@@ -537,14 +537,12 @@ public class FrameController implements Serializable {
 		// then set the search radius for hand marking
 		findCentConfig.setIrad(searchRadius);
 
-		ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-
 		float[][] frame = ccdFrame.getCorrectedFrame();
 
 		try {
 
-			subimage = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
-
+			FindCentResult findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			subimage = findCentResult.getSubimage();
 			
 			if (!subimage.isGoodCentroid()) {
 				throw new Exception("No good centroid found");

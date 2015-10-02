@@ -25,6 +25,9 @@ public class CalcPrCommandsResult {
 		this.fineMirrorDeltas = fineMirrorDeltas;
 		this.offloaded = offloaded;
 	}
+	
+	public CalcPrCommandsResult() {};
+	
 
 	public boolean hasCoarseMirrorCommands() {
 		
@@ -54,6 +57,26 @@ public class CalcPrCommandsResult {
 
 	public boolean isOffloaded() {
 		return offloaded;
+	}
+
+	public void setCoarseMirrorCommands(Point coarseMirrorCommands) {
+		this.coarseMirrorCommands = coarseMirrorCommands;
+	}
+
+	public void setFineMirrorCommands(Point fineMirrorCommands) {
+		this.fineMirrorCommands = fineMirrorCommands;
+	}
+
+	public void setOffloaded(boolean offloaded) {
+		this.offloaded = offloaded;
+	}
+
+	public void setCoarseMirrorDeltas(Point coarseMirrorDeltas) {
+		this.coarseMirrorDeltas = coarseMirrorDeltas;
+	}
+
+	public void setFineMirrorDeltas(Point fineMirrorDeltas) {
+		this.fineMirrorDeltas = fineMirrorDeltas;
 	}
 
 }

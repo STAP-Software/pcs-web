@@ -36,6 +36,9 @@ public class ProcedureType {
 	@Column(nullable=false, length=100)
 	private String procedureTypeName;
 	
+	@Column(nullable=false, length=100)
+	private String procedureOutputClassName;
+	
 	@Column(nullable=false, length=10)
 	private String procedureTypeCd;
 	
@@ -60,6 +63,14 @@ public class ProcedureType {
 	public void setProcedureTypeCd(String procedureTypeCd) {
 		this.procedureTypeCd = procedureTypeCd;
 	}
+	
+	public String getProcedureOutputClassName() {
+		return procedureOutputClassName;
+	}
+	public void setProcedureOutputClassName(String procedureOutputClassName) {
+		this.procedureOutputClassName = procedureOutputClassName;
+	}
+	
 	
 	public boolean isCreateRefMap() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);

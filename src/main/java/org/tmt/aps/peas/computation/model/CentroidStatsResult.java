@@ -15,6 +15,8 @@ public class CentroidStatsResult {
 		this.enclosedEnergy80 = enclosedEnergy80;
 		this.enclosedEnergy50 = enclosedEnergy50;
 	}
+	
+	public CentroidStatsResult() {};
 
 	public int getMaxSpotNum() {
 		return maxSpotNum;

@@ -9,7 +9,10 @@ public class CenterTelescopeCalcResult {
 	public CenterTelescopeCalcResult(FloatPoint deltaAzEl) {
 		this.deltaAzEl = deltaAzEl;
 	}
-
+	
+	public CenterTelescopeCalcResult() {};
+	 
+	
 	public FloatPoint getDeltaAzEl() {
 		return deltaAzEl;
 	}

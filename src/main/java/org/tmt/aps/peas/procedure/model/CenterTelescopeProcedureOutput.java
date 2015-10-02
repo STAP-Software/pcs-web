@@ -1,40 +1,29 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 
 public class CenterTelescopeProcedureOutput extends ProcedureOutput {
 
-	private FloatPoint centroidGuess;
-	private FloatPoint centroid;
-	private FloatPoint deltaAzEl;
-	private boolean cmdTelescope;
+	
+	CenterTelescopeCalcResult centerTelescopeCalcResult;
+	FindCentResult findCentResult;
 	
 	
-	public FloatPoint getCentroidGuess() {
-		return centroidGuess;
+	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
+		return centerTelescopeCalcResult;
 	}
-	public void setCentroidGuess(FloatPoint centroidGuess) {
-		this.centroidGuess = centroidGuess;
+	public void setCenterTelescopeCalcResult(CenterTelescopeCalcResult centerTelescopeCalcResult) {
+		this.centerTelescopeCalcResult = centerTelescopeCalcResult;
 	}
-	public FloatPoint getCentroid() {
-		return centroid;
+	public FindCentResult getFindCentResult() {
+		return findCentResult;
 	}
-	public void setCentroid(FloatPoint centroid) {
-		this.centroid = centroid;
-	}
-	public FloatPoint getDeltaAzEl() {
-		return deltaAzEl;
-	}
-	public void setDeltaAzEl(FloatPoint deltaAzEl) {
-		this.deltaAzEl = deltaAzEl;
-	}
-	public boolean isCmdTelescope() {
-		return cmdTelescope;
-	}
-	public void setCmdTelescope(boolean cmdTelescope) {
-		this.cmdTelescope = cmdTelescope;
+	public void setFindCentResult(FindCentResult findCentResult) {
+		this.findCentResult = findCentResult;
 	}
 	
+
 	
 	
 }

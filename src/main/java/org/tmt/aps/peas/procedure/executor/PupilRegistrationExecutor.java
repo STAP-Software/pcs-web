@@ -15,22 +15,18 @@ import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
-import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -47,7 +43,6 @@ import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
-import org.tmt.aps.peas.procedure.model.PassiveTiltIterationOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.procedure.model.PupilRegistrationIterationOutput;
@@ -234,7 +229,7 @@ public class PupilRegistrationExecutor {
 			}
 			
 			// TODO: handle with framework
-			pio.setTelescopeMoved(false);
+			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 			procedureExecutionState.setPercentComplete(70);
 			

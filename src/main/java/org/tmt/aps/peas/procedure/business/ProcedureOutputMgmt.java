@@ -6,9 +6,12 @@
 package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.TreeSet;
 
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -26,6 +29,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
+import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
@@ -45,39 +49,57 @@ public class ProcedureOutputMgmt {
 	public ProcedureOutputable createProcedureOutput(ProcedureOutputable procedureOutput, Long procedureId) throws Exception {
 
 		// generate all the ProcedureOutputValues for this procedureOutput
-		// get all field methods from the class
+		
+		// 1. get all the calc result and decision log class fields possible
+		List<String> outputClassNames = getOutputFieldClassNames();
+		
 		Class poClass = procedureOutput.getClass();
+		Method[] poMethods = poClass.getMethods();
 
-		Method[] methods = poClass.getMethods();
+		for (Method poMethod : poMethods) {
 
-		// get the fieldId from the metadata
-		Map<String, ProcedureOutputField> outputFieldMap = getOuputFieldMapForClass(poClass.getSimpleName());
+			// test that this is an official calc result getter method
+			if (!testMethodName(poMethod.getName(), outputClassNames)) continue;
+							
+			// get the calcResult object
+			Object calcResult = poMethod.invoke(procedureOutput, new Object[0]);
 
-		// loop over all getter methods
-		for (Method method : methods) {
-			if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
-
-				String fieldName = deriveFieldNameFromGetter(method.getName());
-
-				ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
-
-				if (procedureOutputField != null) {
-
-					logger.debug("fieldName = " + fieldName);
-
-					// construct a new ProcedureOutputValue
-					ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
-					procedureOutputValue.setProcedureId(procedureId);
-					procedureOutputValue.setProcedureOutputField(procedureOutputField);
-					procedureOutputValue.setIteration(procedureOutput.getIteration());
-
-					// encode the field data for store
-					String data = encodeObjectFieldValue(procedureOutput, method, procedureOutputField);
-
-					procedureOutputValue.setData(data);
-
-					logger.info(MessageGenerator.generateMessage("record.create", "procedureOutputValue"));
-					em.persist(procedureOutputValue);
+			if (calcResult == null) continue;
+			
+			// get all field methods from the calc result class
+			Class calcClass = calcResult.getClass();
+	
+			Method[] methods = calcResult.getClass().getMethods();
+	
+			// get the fieldId from the metadata
+			Map<String, ProcedureOutputField> outputFieldMap = getOuputFieldMapForClass(calcResult.getClass().getSimpleName());
+	
+			// loop over all getter methods
+			for (Method method : methods) {
+				if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
+	
+					String fieldName = deriveFieldNameFromGetter(method.getName());
+	
+					ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
+	
+					if (procedureOutputField != null) {
+	
+						logger.debug("fieldName = " + fieldName);
+	
+						// construct a new ProcedureOutputValue
+						ProcedureOutputValue procedureOutputValue = new ProcedureOutputValue();
+						procedureOutputValue.setProcedureId(procedureId);
+						procedureOutputValue.setProcedureOutputField(procedureOutputField);
+						procedureOutputValue.setIteration(procedureOutput.getIteration());
+	
+						// encode the field data for store
+						String data = encodeObjectFieldValue(calcResult, method, procedureOutputField);
+	
+						procedureOutputValue.setData(data);
+	
+						logger.info(MessageGenerator.generateMessage("record.create", "procedureOutputValue"));
+						em.persist(procedureOutputValue);
+					}
 				}
 			}
 		}
@@ -86,13 +108,30 @@ public class ProcedureOutputMgmt {
 
 		return procedureOutput;
 	}
+	
+	
 
-	public ProcedureOutput findProcedureOutput(Long procedureId) throws Exception {
+	
+
+			
+	private boolean testMethodName(String methodName, List<String> candidates) {
+		if (methodName.startsWith("get")) {
+			for (String candidate : candidates) {
+				if (methodName.equals("get" + candidate)) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+			
+	public ProcedureOutput findProcedureOutput(Procedure procedure) throws Exception {
 
 		// fill out a list of ProcedureOutputValues
 
 		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputValuesForProcedure", ProcedureOutputValue.class);
-		query.setParameter("procedureId", procedureId);
+		query.setParameter("procedureId", procedure.getProcedureId());
+		query.setParameter("procedureTypeId", procedure.getProcedureType().getProcedureTypeId());
 
 		List<ProcedureOutputValue> procedureOutputList = query.getResultList();
 
@@ -100,23 +139,48 @@ public class ProcedureOutputMgmt {
 			return new ProcedureOutput();
 		}
 
-		String fullClassName = "org.tmt.aps.peas.procedure.model." + procedureOutputList.get(0).getProcedureOutputField().getClassName();
+		String poClassName = procedure.getProcedureType().getProcedureOutputClassName();
+				
+		String fullPoClassName = "org.tmt.aps.peas.procedure.model." + poClassName;
 
-		Object classInstance = Class.forName(fullClassName).newInstance();
-		ProcedureOutput procedureOutput = (ProcedureOutput) classInstance;
+		Object poClassInstance = Class.forName(fullPoClassName).newInstance();
+		ProcedureOutput procedureOutput = (ProcedureOutput) poClassInstance;
 		procedureOutput.setProcedureOutputList(procedureOutputList);
 
 		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
-			decodeAndSetObjectFieldValue(classInstance, procedureOutputValue.getProcedureOutputField(), procedureOutputValue.getData());
+			
+			// here, check for null and create object as necessary
+			String className = procedureOutputValue.getProcedureOutputField().getClassName();
+			// get the calc result object from the procedure output.  Create if necessary
+			
+			Method calcResultGetMethod = poClassInstance.getClass().getMethod("get" + className, new Class[0]);
+			
+			Object calcResult = calcResultGetMethod.invoke(poClassInstance, new Object[0]);
+			
+			if (calcResult == null) {
+				// create a new one and apply setter in procedureOutput 
+				String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
+				calcResult = Class.forName(fullClassName).newInstance();
+				// apply setter method
+				Class[] paramTypes = {calcResult.getClass()};
+				Method setterMethod = poClassInstance.getClass().getMethod("set" + className, paramTypes);
+				Object[] params = {calcResult};
+				setterMethod.invoke(poClassInstance, params);
+			}
+			
+			decodeAndSetObjectFieldValue(calcResult, procedureOutputValue.getProcedureOutputField(), procedureOutputValue.getData());
 			logger.debug("procedureOutput = " + procedureOutputValue.getProcedureOutputField().getFieldName());
 		}
 		logger.debug("Done");
 
+		
+		
 		// find procedure iteration outputs
 		Integer iteration = 0;
 		while (true) {
 			query = em.createNamedQuery("findOutputValuesForProcedureIteration", ProcedureOutputValue.class);
-			query.setParameter("procedureId", procedureId);
+			query.setParameter("procedureId", procedure.getProcedureId());
+			query.setParameter("procedureTypeId", procedure.getProcedureType().getProcedureTypeId());
 			query.setParameter("iteration", iteration);
 
 			List<ProcedureOutputValue> procedureIterationOutputList = query.getResultList();
@@ -125,16 +189,40 @@ public class ProcedureOutputMgmt {
 				break;
 			}
 
-			fullClassName = "org.tmt.aps.peas.procedure.model."
-					+ procedureIterationOutputList.get(0).getProcedureOutputField().getClassName();
+			// generate the iteration output class name: replace 'Procedure' with 'Iteration'
+			String poItClassName = procedure.getProcedureType().getProcedureOutputClassName().replace("Procedure", "Iteration");
+			
+			
+			String fullPoItClassName = "org.tmt.aps.peas.procedure.model." + poItClassName;
 
-			classInstance = Class.forName(fullClassName).newInstance();
-			ProcedureIterationOutput pio = (ProcedureIterationOutput) classInstance;
+			Object poItClassInstance = Class.forName(fullPoItClassName).newInstance();
+
+			ProcedureIterationOutput pio = (ProcedureIterationOutput) poItClassInstance;
 			pio.setProcedureIterationOutputList(procedureIterationOutputList);
 			pio.setIteration(iteration++);
 
 			for (ProcedureOutputValue procedureOutputValue : procedureIterationOutputList) {
-				decodeAndSetObjectFieldValue(classInstance, procedureOutputValue.getProcedureOutputField(), procedureOutputValue.getData());
+				
+				// here, check for null and create object as necessary
+				String className = procedureOutputValue.getProcedureOutputField().getClassName();
+				// get the calc result object from the procedure output.  Create if necessary
+				
+				Method calcResultGetMethod = poItClassInstance.getClass().getMethod("get" + className, new Class[0]);
+				
+				Object calcResult = calcResultGetMethod.invoke(poItClassInstance, new Object[0]);
+				
+				if (calcResult == null) {
+					// create a new one and apply setter in procedureOutput 
+					String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
+					calcResult = Class.forName(fullClassName).newInstance();
+					// apply setter method
+					Class[] paramTypes = {calcResult.getClass()};
+					Method setterMethod = poItClassInstance.getClass().getMethod("set" + className, paramTypes);
+					Object[] params = {calcResult};
+					setterMethod.invoke(poItClassInstance, params);
+				}
+				
+				decodeAndSetObjectFieldValue(calcResult, procedureOutputValue.getProcedureOutputField(), procedureOutputValue.getData());
 			}
 
 			procedureOutput.addIteration(pio);
@@ -142,6 +230,20 @@ public class ProcedureOutputMgmt {
 		}
 
 		return procedureOutput;
+	}
+	
+	// returns a list of class names used in procedure output field table
+	private List<String> getOutputFieldClassNames() {
+		TypedQuery<ProcedureOutputField> query = em.createNamedQuery("findAllOutputFields", ProcedureOutputField.class);
+
+		List<ProcedureOutputField> fieldList = query.getResultList();
+
+		Set<String> result = new TreeSet<String>();
+		for (ProcedureOutputField field : fieldList) {
+			result.add(field.getClassName());
+		}
+		
+		return new ArrayList<String>(result);
 	}
 
 	// returns a map of field names to field Ids for procedureOutputFields

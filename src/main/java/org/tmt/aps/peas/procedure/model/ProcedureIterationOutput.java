@@ -9,6 +9,8 @@ public abstract class ProcedureIterationOutput implements ProcedureOutputable {
 	Integer iteration;
 
 	List<ProcedureOutputValue> procedureIterationOutputList;
+	
+	ProcedureIterationDecisionLog procedureIterationDecisionLog = new ProcedureIterationDecisionLog();
 
 	public Long getProcedureId() {
 		return procedureId;
@@ -34,4 +36,13 @@ public abstract class ProcedureIterationOutput implements ProcedureOutputable {
 		this.procedureIterationOutputList = procedureIterationOutputList;
 	}
 
+	public ProcedureIterationDecisionLog getProcedureIterationDecisionLog() {
+		return procedureIterationDecisionLog;
+	}
+
+	public void setProcedureIterationDecisionLog(ProcedureIterationDecisionLog procedureIterationDecisionLog) {
+		this.procedureIterationDecisionLog = procedureIterationDecisionLog;
+	}
+
+	
 }

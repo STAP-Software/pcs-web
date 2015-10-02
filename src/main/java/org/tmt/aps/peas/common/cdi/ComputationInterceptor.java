@@ -13,6 +13,7 @@ import javax.interceptor.AroundInvoke;
 import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
+import org.apache.log4j.Logger;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 
 @Interceptor
@@ -20,6 +21,8 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 public class ComputationInterceptor implements Serializable {
 
 	private static final long serialVersionUID = 5885028293442969007L;
+	
+	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
@@ -29,19 +32,18 @@ public class ComputationInterceptor implements Serializable {
 		
 		Object result = ctx.proceed();
 		
-		// log the result to the current output target
-		Object outputTarget = procedureExecutionState.getCurrentOutputTarget();
-		String methodName = "add" + result.getClass().getSimpleName();
-		Class<?>[] parameters = new Class[1];
-		parameters[0] = result.getClass();
-		Method method = outputTarget.getClass().getMethod(methodName, parameters);
-		method.invoke(outputTarget, result);
-	
-		// TODO: this will eventually supercede the above "add" method
-		String setMethodName = "set" + result.getClass().getSimpleName();
-		Method setMethod = outputTarget.getClass().getMethod(setMethodName, parameters);
-		setMethod.invoke(outputTarget, result);
+		try {
+			// log the result to the current output target
+			Object outputTarget = procedureExecutionState.getCurrentOutputTarget();		
+			Class<?>[] parameters = new Class[1];
+			parameters[0] = result.getClass();	
+			String setMethodName = "set" + result.getClass().getSimpleName();
+			Method setMethod = outputTarget.getClass().getMethod(setMethodName, parameters);
+			setMethod.invoke(outputTarget, result);
 
+		} catch (Throwable th) {
+			logger.error(th);
+		}
 		return result;
 	}
 	

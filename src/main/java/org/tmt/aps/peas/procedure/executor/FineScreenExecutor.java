@@ -19,19 +19,12 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
-import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
-import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -259,7 +252,7 @@ public class FineScreenExecutor {
 					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 			
 			// TODO: this may eventually be handled in a different structure
-			pio.setTelescopeMoved(false);
+			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 			/*****************************************************/
 			/*             Display Centroid Offsets              */

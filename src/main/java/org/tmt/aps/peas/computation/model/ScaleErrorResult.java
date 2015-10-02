@@ -5,6 +5,8 @@ public class ScaleErrorResult {
 	float scaleError;
 	float slopeError;
 	
+	public ScaleErrorResult() {};
+	
 	public ScaleErrorResult(float scaleError, float slopeError) {
 		this.scaleError = scaleError;
 		this.slopeError = slopeError;

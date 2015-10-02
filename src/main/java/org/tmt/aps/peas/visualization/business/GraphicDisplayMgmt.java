@@ -136,10 +136,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
 		
 		// encode centroid offsets
-		List<FloatPoint> centroidOffsets = Arrays.asList(getCentroidOffsetsDisplayValues().getCartesianCentroidOffsets());
-		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(centroidOffsets));
-		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(centroidOffsets));
-		
+		FloatPoint[] centroidOffsets = getCentroidOffsetsDisplayValues().getCentroidOffsetsResult().getCartesianCentroidOffsets();
+		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(Arrays.asList(centroidOffsets)));
+		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
 	}
 
 
@@ -155,9 +154,9 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setAndEncodeActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 		
-		String actDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+		String actDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 		setActuatorDeltas(actDeltas);
-		String actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getM1ActuatorCmds());
+		String actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 		setActDeltaHeats(actDeltaHeats);
 		
 	}

@@ -40,8 +40,8 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.computation.business.ComputationContext;
-import org.tmt.aps.peas.computation.business.ComputationLibrary;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -127,7 +127,7 @@ public class ProcedureController implements Serializable {
 	@EJB
 	ProcedureExecutionMgmt procedureExecutionMgmt;
 	@EJB
-	private ComputationContext computationContext;
+	private ComputationLibraryImpl computationLibrary;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -810,11 +810,10 @@ public class ProcedureController implements Serializable {
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
 
-			ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
-
 			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
 
-			subimage = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			FindCentResult findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
+			subimage = findCentResult.getSubimage();
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}

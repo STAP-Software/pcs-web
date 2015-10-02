@@ -17,6 +17,7 @@ public class CalcDesiredActCommandsResult {
 		this.desiredActDeltasRms = desiredActDeltasRms;
 	}
 
+	public CalcDesiredActCommandsResult() {};
 
 	public float[][] getPistonActs() {
 		return pistonActs;

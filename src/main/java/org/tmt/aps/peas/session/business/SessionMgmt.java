@@ -54,7 +54,7 @@ public class SessionMgmt {
 		
 		for (Procedure procedure : session.getProcedureList()) {
 			try {
-				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure.getProcedureId());
+				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
 				procedure.setProcedureOutput(procedureOutput);
 				
 				// get the frame list shallow for the summary list

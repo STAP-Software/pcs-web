@@ -25,6 +25,9 @@ public class CalcM2M1Result {
 			this.tipTiltErrorMulitplier = tipTiltErrorMulitplier;
 			this.m1OffsetsCorrectedForM2 = m1OffsetsCorrectedForM2;
 	}
+	
+	public CalcM2M1Result() {};
+	
 
 	public float getM2Piston() {
 		return m2Piston;

@@ -28,7 +28,8 @@ public class FIResult {
 	float fracFilledBoxes;
 	int nSolution;
 
-
+	public FIResult() {};
+	
 	public FIResult(int numSpots, float[][] frame) {
 		xiRst = new float[numSpots]; 
 		yiRst = new float[numSpots];

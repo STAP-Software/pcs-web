@@ -5,12 +5,16 @@
  */
 package org.tmt.aps.peas.procedure.model;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import org.tmt.aps.peas.session.model.FieldDescriptor;
@@ -18,7 +22,9 @@ import org.tmt.aps.peas.session.model.FieldDescriptor;
 @Entity
 @Table(name = "ProcedureOutputField")
 @NamedQueries({
-	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className ORDER BY p.displayOrder")
+	@NamedQuery(name = "findAllOutputFieldsForClass", query = "SELECT p from ProcedureOutputField p where p.className = :className"),
+	@NamedQuery(name = "findAllOutputFields", query = "SELECT p from ProcedureOutputField p")
+
 })
 public class ProcedureOutputField implements FieldDescriptor {
 	
@@ -34,10 +40,11 @@ public class ProcedureOutputField implements FieldDescriptor {
 	String units;
 	String description;
 	String displayLabel;
-	String displayOrder;
 	String displayFormat;
 	
-	
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "procedureOutputField")
+	List<ProcedureOutputFieldDisplay> procedureOutputFieldDisplay;
+
 	
 	public Long getProcedureOutputFieldId() {
 		return procedureOutputFieldId;
@@ -111,14 +118,6 @@ public class ProcedureOutputField implements FieldDescriptor {
 		this.displayLabel = displayLabel;
 	}
 	
-	public String getDisplayOrder() {
-		return displayOrder;
-	}
-
-	public void setDisplayOrder(String displayOrder) {
-		this.displayOrder = displayOrder;
-	}
-
 	public String getDisplayFormat() {
 		return displayFormat;
 	}
@@ -138,5 +137,15 @@ public class ProcedureOutputField implements FieldDescriptor {
 	public boolean isScalar() {
 		return dimension1 == 0;
 	}
+
+	public List<ProcedureOutputFieldDisplay> getProcedureOutputFieldDisplay() {
+		return procedureOutputFieldDisplay;
+	}
+
+	public void setProcedureOutputFieldDisplay(List<ProcedureOutputFieldDisplay> procedureOutputFieldDisplay) {
+		this.procedureOutputFieldDisplay = procedureOutputFieldDisplay;
+	}
 	
+
+
 }

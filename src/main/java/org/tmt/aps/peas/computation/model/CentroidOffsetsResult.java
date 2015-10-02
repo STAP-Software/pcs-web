@@ -12,42 +12,43 @@ public class CentroidOffsetsResult {
 	FloatPoint imageTranslation;
 	float imageScale;
 	float imageRotation;
-	private List<FloatPoint> ccdCentroidOffsets;
-	private List<FloatPoint> cartesianCentroidOffsets;
+	private FloatPoint[] ccdCentroidOffsets;
+	private FloatPoint[] cartesianCentroidOffsets;
 
 	public CentroidOffsetsResult(float[][] ccdOffsetsArray, float[][] cartesianOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation) {
 		
-		this.ccdCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(ccdOffsetsArray);
-		this.cartesianCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(cartesianOffsetsArray);
+		this.ccdCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(ccdOffsetsArray).toArray(new FloatPoint[0]);
+		this.cartesianCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(cartesianOffsetsArray).toArray(new FloatPoint[0]);
 		this.imageTranslation = imageTranslation;
 		this.imageScale = imageScale;
 		this.imageRotation = imageRotation;
 	}
 
+	public CentroidOffsetsResult() {};
 
-	public List<FloatPoint> getCcdCentroidOffsets() {
+	public FloatPoint[] getCcdCentroidOffsets() {
 		return ccdCentroidOffsets;
 	}
 
-	public void setCcdCentroidOffsets(List<FloatPoint> ccdCentroidOffsets) {
+	public void setCcdCentroidOffsets(FloatPoint[] ccdCentroidOffsets) {
 		this.ccdCentroidOffsets = ccdCentroidOffsets;
 	}
 
-	public List<FloatPoint> getCartesianCentroidOffsets() {
+	public FloatPoint[] getCartesianCentroidOffsets() {
 		return cartesianCentroidOffsets;
 	}
 
-	public List<FloatPoint> getCartesianInteriorCentroidOffsets(int[] nspotTypes) {
+	public FloatPoint[] getCartesianInteriorCentroidOffsets(int[] nspotTypes) {
 		List<FloatPoint> result = new ArrayList<FloatPoint>();
-		for (int i=0; i<cartesianCentroidOffsets.size(); i++) {
+		for (int i=0; i<cartesianCentroidOffsets.length; i++) {
 			if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
-				result.add(cartesianCentroidOffsets.get(i));
+				result.add(cartesianCentroidOffsets[i]);
 			}
 		}
-		return result;
+		return result.toArray(new FloatPoint[0]);
 	}
 
-	public void setCartesianCentroidOffsets(List<FloatPoint> cartesianCentroidOffsets) {
+	public void setCartesianCentroidOffsets(FloatPoint[] cartesianCentroidOffsets) {
 		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
 	}
 

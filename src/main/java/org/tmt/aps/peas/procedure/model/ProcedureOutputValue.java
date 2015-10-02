@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.Utils;
@@ -23,9 +24,20 @@ import org.tmt.aps.peas.common.Utils;
 @Table(name = "ProcedureOutputValue")
 @NamedQueries({
 		@NamedQuery(name = "findOutputValuesForProcedure", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-				+ "where p.procedureId = :procedureId AND p.iteration is null ORDER BY f.displayOrder "),
+				+ "INNER JOIN f.procedureOutputFieldDisplay fd INNER JOIN fd.procedureType pt "
+				+ "where p.procedureId = :procedureId "
+				+ "AND p.iteration is null "
+				+ "AND pt.procedureTypeId = :procedureTypeId "
+				+ "AND fd.isIteration = false "
+				+ "ORDER BY fd.displayOrder "),
 		@NamedQuery(name = "findOutputValuesForProcedureIteration", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-				+ "where p.procedureId = :procedureId AND p.iteration = :iteration ORDER BY f.displayOrder ") })
+				+ "INNER JOIN f.procedureOutputFieldDisplay fd INNER JOIN fd.procedureType pt "
+				+ "where p.procedureId = :procedureId "
+				+ "AND p.iteration = :iteration "
+				+ "AND pt.procedureTypeId = :procedureTypeId "
+				+ "AND fd.isIteration = true "
+				+ "ORDER BY fd.displayOrder ") })
+
 public class ProcedureOutputValue {
 
 	@Id
@@ -42,6 +54,7 @@ public class ProcedureOutputValue {
 	@JoinColumn(name = "procedureOutputFieldId", nullable = false, updatable = false)
 	ProcedureOutputField procedureOutputField;
 
+	
 	public Long getProcedureOutputValueId() {
 		return procedureOutputValueId;
 	}
@@ -85,6 +98,7 @@ public class ProcedureOutputValue {
 	public String getDataFormatted() {
 		return Utils.reformatData(data, procedureOutputField);
 	}
+
 
 
 

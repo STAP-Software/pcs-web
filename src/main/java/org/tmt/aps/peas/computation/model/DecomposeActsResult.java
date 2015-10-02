@@ -10,6 +10,8 @@ public class DecomposeActsResult {
 		this.pistonActs = pistonActs;
 	}
 	
+	public DecomposeActsResult() {};
+	
 	public float[][] getTipTiltActs() {
 		return tipTiltActs;
 	}
