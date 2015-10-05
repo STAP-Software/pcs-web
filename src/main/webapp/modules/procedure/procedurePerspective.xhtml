@@ -78,7 +78,7 @@
 									<h:outputLabel value="Number of Trials" />
 								</p:column>   
 								<p:column styleClass="btmsFormInputColumn">
-									<p:inputMask mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
+									<p:inputMask id="iterationCount" mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
 										size="2" disabled="#{procedureController.procedure.procedureState gt 1}" />
 								</p:column>
 							</p:row>
@@ -114,6 +114,10 @@
 							<h:outputLabel value="Procedure #" />
 							<h:panelGroup>
 							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
+							<p:spacer height="1px" width="15px"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
+							<h:outputLabel value="Iteration "  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
+							<p:spacer height="1px" width="15px"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
+							<h:outputText value="#{procedureExecutionState.currentIteration}"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}" />
 							<p:spacer height="1px" width="15px"/>
 							<!-- 
 							<p:commandLink ajax="true" update=":procedureLogForm" oncomplete="procedureLogDialog.show();" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
@@ -187,6 +191,9 @@
 
 							<p:panelGrid columns="1" style="padding:0; margin:auto; width: 200px; text-align:center">
 								<h:outputText value="Loaded Frames from File:" rendered="#{not empty procedureController.selectedFitsFiles}" />
+							</p:panelGrid>
+							
+							<p:panelGrid columns="1" style="padding:0; margin:auto; width: 400px; text-align:center">
 								<h:outputText style="text-align:center" value="No CCD Images" rendered="#{empty procedureController.selectedFitsFiles}" />
 								<ul>
 									<ui:repeat value="#{procedureController.selectedFitsFiles}" var="fitsFile">
@@ -194,6 +201,7 @@
 									</ui:repeat>
 								</ul>
 							</p:panelGrid>
+							
 						</p:panelGrid>
 
 					</p:panelGrid>

@@ -43,11 +43,13 @@ public class ProcedureOutput implements ProcedureOutputable {
 		return procedureIterationOutputList;
 	}
 
-
 	public void setProcedureIterationOutputList(List<ProcedureIterationOutput> procedureIterationOutputList) {
 		this.procedureIterationOutputList = procedureIterationOutputList;
 	}
 
+	public int getIterationCount() {
+		return procedureIterationOutputList == null ? 0 : procedureIterationOutputList.size() + 1;
+	}
 
 	public List<ProcedureOutputValue> getProcedureOutputList() {
 		return procedureOutputList;

@@ -135,7 +135,6 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
 
-		
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now

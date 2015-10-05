@@ -88,6 +88,11 @@ public class CenterTelescopeSubflow {
 			AutoCenterTelCheckResult aResult = computationLibrary.autoCenterTelescopeCheck(autoCenterTelConfig, centerTelescopeCalcResult.getDeltaAzEl(), lastMove);
 			// log what result was found
 			statusLogger.log(aResult.getReasonKey(), aResult.getReasonArgs());
+			
+			
+			if (procedureConfig.isFrameFromFile()) {
+				break; // we will not center telescope if frame from file
+			}
 
 			if (aResult.getRecenterTelescope().isNo() || procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_NO) {
 				break; // leave the loop if nothing to do

@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.procedure.business;
 
 import javax.ejb.Singleton;
+import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.cdi.Abortable;
@@ -14,6 +15,7 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 
 @Singleton
+@Named
 public class ProcedureExecutionState {
 
 	Logger logger = Logger.getLogger(this.getClass());
@@ -22,6 +24,8 @@ public class ProcedureExecutionState {
 	private Procedure pendingSubProcedure;
 	private boolean subProcedureStartRequested;
 	private boolean subProcedureEndRequested;
+	
+	private int currentIteration;
 	
 	private boolean executionStatus;
 	private boolean abortRequested;
@@ -38,6 +42,7 @@ public class ProcedureExecutionState {
 		procedureException = null;
 		abortRequested = false;
 		onCompletePerformed = false;
+		currentIteration = 0;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -150,5 +155,16 @@ public class ProcedureExecutionState {
 		this.currentOutputTarget = currentOutputTarget;
 	}
 
+	public int getCurrentIteration() {
+		return currentIteration;
+	}
+
+	public void setCurrentIteration(int currentIteration) {
+		this.currentIteration = currentIteration;
+	}
+
+	public void incrementIteration() {
+		currentIteration++;
+	}
 
 }

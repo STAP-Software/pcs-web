@@ -104,8 +104,7 @@ public class GetFrameCentroidsExecutor {
 
 		// CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
 
-		// FIXME: this is not the correct procedure name, also should say "sub-procedure start"
-		statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+		statusLogger.log("subprocedure.start", "Get Frame Centroids");
 
 		procedureCcdFrame = null;
 		centroidMap = null;
@@ -113,7 +112,7 @@ public class GetFrameCentroidsExecutor {
 		findCentroidsResult = null;
 
 		// initialize frame number
-		frameNumber = procedureConfig.isFrameFromFile() ? 0 : procedure.getProcedureCcdFrameCount();
+		frameNumber = procedure.getProcedureCcdFrameCount();
 
 
 		takeFrameAndFindCentroids();

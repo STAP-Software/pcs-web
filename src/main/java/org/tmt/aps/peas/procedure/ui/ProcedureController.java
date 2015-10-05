@@ -373,17 +373,21 @@ public class ProcedureController implements Serializable {
 	public void doLoadFitsFile() {
 		try {
 
-			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(selectedFitsFiles.get(0).getFileName());
-
-			// set the frame source stored with the file
-			procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(loadedFitsFile.getFrameLightSource());
-
-			// if a png file for display exists, read it in. Otherwise create it.
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
-
-			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
+			for (FitsFilename fitsFilename : selectedFitsFiles) {
+				CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
+	
+				// set the frame source stored with the file
+				procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(loadedFitsFile.getFrameLightSource());
+	
+				// if a png file for display exists, read it in. Otherwise create it.
+				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
+	
+				FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
+				FacesContext.getCurrentInstance().addMessage(null, msg);
+			}
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setNumberOfTrials(selectedFitsFiles.size());
+			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}

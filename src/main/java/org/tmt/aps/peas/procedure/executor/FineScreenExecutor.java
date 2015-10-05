@@ -202,170 +202,158 @@ public class FineScreenExecutor {
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			
-			/*
-			 *  First we will only have one iteration and one calculation method
-			 *  
-			 */ 
-			         
-
-
-	//DO I = 1, NUMBER_TRIALS
-	//
-    //       WRITE(CI, FMT='(I2)') I
-    //       WRITE(CNT, FMT='(I2)') NUMBER_TRIALS
-    //       TEXT = 'Fine Screen, Loop '//CI//' of '//CNT
-	//
-    //       CALL FUPDATE_WORK_MESSAGE(TEXT, LEN(TEXT))
-           
-		for (int i=0; i<2; i++) {
-
-			// setup the iteration output as the output target
-			FineScreenIterationOutput pio = new FineScreenIterationOutput();
-			procedureExecutionState.setCurrentOutputTarget(pio);
-			procedureOutput.addIteration(pio);
-
-			/*****************************************************/
-			/*          centerTelescope                          */
-			/*****************************************************/	
-			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
-
-			procedureExecutionState.setPercentComplete(20);
-
-			/*****************************************************/
-			/*              calculateCentroidStats               */
-			/*****************************************************/
-
-			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
-			FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			
-			computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
-
-			/*****************************************************/
-			/*              fineScreenScaleError                 */
-			/*****************************************************/
-			
-			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
-			
-			computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
-			
-			// TODO: this may eventually be handled in a different structure
-			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
-
-			/*****************************************************/
-			/*             Display Centroid Offsets              */
-			/*****************************************************/
-			graphicDisplayMgmt.displayCentroidOffsets(pio);
-
-			
-			
-			// TODO: call pupil_registration for fine screen, and center the pupil
-			
-          
-			// TODO: if calc option is Ray Trace:
-						
-			CalcM2M1Result calcM2M1Result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
-					subimageDefList.getUseForM2InteriorSpotFlags(),
-					procedure.getProcedureConfigSet().getCalcM2M1Config(),
-					constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
-					subimageDefList.getNspotTypes(),
-					constantsCache.getTelescopeConstants());
-			
-			System.out.println();
-			
-		}
-
-		// TODO: fill the output - many of these are copied from the one iteration (true for PT)
-		// procedureOutput.addFineScreenIterationOutput(pio);
-
-			
-
-		// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
-		/*****************************************************/
-		/*                  ttOffsetsToActs                  */
-		/*****************************************************/
-		
-		/*
-		
-		List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
-		// lpz = local piston zeroed on a segment
-		// TODO: the result here should be a TtOffsetsToActsResult object
-		float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-				centroidOffsetsResult.getCartesianCentroidOffsets());
-
-		// Decompose the calculated actuators into pure tip/tilt and pure piston.
-		// This code is to ensure that the pistons are indeed zero prior to proceding.
-		/*****************************************************/
-		/*                  decomposeActs                    */
-		/*****************************************************/
-		/*
-		DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
-
-
-		/*****************************************************/
-		/*                  optimalPistons                   */
-		/*****************************************************/
-		/*
-		float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
-		
-		// TODO: all the following calculations should be moved out of the executor and folded into one
-		CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
-		
-		// fill the procedure output
-		procedureOutput.addPassiveTiltIterationOutput(pio);
-
-
-		// display the pistonDeltas
-		if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
-			graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
-		}
-
-		// display RMS piston deltas to user in dialog
-		String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
-		boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
-
-		// command ACS
-		boolean commandsSent = false;
-		if (commandAcs) {
-
-			try {
-				// send out the commands
-				acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
-
-				statusLogger.log("pt.m1_act_cmd_success");
-				logger.info("doSendActDeltaCommands: success");
-				commandsSent = true;
+         
+			for (int i=0; i<procedureConfig.getNumberOfTrials(); i++) {
 				
-				// take and store a snapshot
-				int snapNum = acsMgmt.commandTakeSnap();
-				procedureOutput.setM1SnapNumberAfter(snapNum);
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getNumberOfTrials());
 				
-			} catch (Exception e) {
-				statusLogger.log("pt.m1_act_cmd_failed");
-				logger.error(MessageGenerator.generateMessage("command.error"), e);
+				procedureExecutionState.incrementIteration();
+	
+				// setup the iteration output as the output target
+				FineScreenIterationOutput pio = new FineScreenIterationOutput();
+				procedureExecutionState.setCurrentOutputTarget(pio);
+				procedureOutput.addIteration(pio);
+	
+				/*****************************************************/
+				/*          centerTelescope                          */
+				/*****************************************************/	
+				centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+	
+				procedureExecutionState.setPercentComplete(20);
+	
+				/*****************************************************/
+				/*              calculateCentroidStats               */
+				/*****************************************************/
+	
+				CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
+				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+				
+				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+	
+				/*****************************************************/
+				/*              fineScreenScaleError                 */
+				/*****************************************************/
+				
+				List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+				
+				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
+						centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				
+				// TODO: this may eventually be handled in a different structure
+				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
+	
+				/*****************************************************/
+				/*             Display Centroid Offsets              */
+				/*****************************************************/
+				graphicDisplayMgmt.displayCentroidOffsets(pio);
+	
+				
+				
+				// TODO: call pupil_registration for fine screen, and center the pupil
+				
+	          
+				// TODO: if calc option is Ray Trace:
+							
+				CalcM2M1Result calcM2M1Result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
+						subimageDefList.getUseForM2InteriorSpotFlags(),
+						procedure.getProcedureConfigSet().getCalcM2M1Config(),
+						constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+						subimageDefList.getNspotTypes(),
+						constantsCache.getTelescopeConstants());
+							
 			}
-
-		}
-		
-		
-		// TODO: eventually replace this with an framework solution
-		procedureOutput.setM1CmdsSent(commandsSent);
-		*/
-		
-		if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
-			// turn off reference beams - need to wait for response				
-			Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
-			procedureExecutionState.setPercentComplete(90);
-	        Utils.waitForComplete(refBeamFuture);
-        	statusLogger.log("camera.cmd.complete");
-		}
-
-		statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
-
-		procedureExecutionState.setPercentComplete(100);
+	
+			// TODO: fill the output - many of these are copied from the one iteration (true for PT)
+			// procedureOutput.addFineScreenIterationOutput(pio);
+	
+				
+	
+			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
+			/*****************************************************/
+			/*                  ttOffsetsToActs                  */
+			/*****************************************************/
 			
+			/*
+			
+			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
+			// lpz = local piston zeroed on a segment
+			// TODO: the result here should be a TtOffsetsToActsResult object
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
+					centroidOffsetsResult.getCartesianCentroidOffsets());
+	
+			// Decompose the calculated actuators into pure tip/tilt and pure piston.
+			// This code is to ensure that the pistons are indeed zero prior to proceding.
+			/*****************************************************/
+			/*                  decomposeActs                    */
+			/*****************************************************/
+			/*
+			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
+	
+	
+			/*****************************************************/
+			/*                  optimalPistons                   */
+			/*****************************************************/
+			/*
+			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
+			
+			// TODO: all the following calculations should be moved out of the executor and folded into one
+			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
+			
+			// fill the procedure output
+			procedureOutput.addPassiveTiltIterationOutput(pio);
+	
+	
+			// display the pistonDeltas
+			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
+				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
+			}
+	
+			// display RMS piston deltas to user in dialog
+			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
+			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
+	
+			// command ACS
+			boolean commandsSent = false;
+			if (commandAcs) {
+	
+				try {
+					// send out the commands
+					acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
+	
+					statusLogger.log("pt.m1_act_cmd_success");
+					logger.info("doSendActDeltaCommands: success");
+					commandsSent = true;
+					
+					// take and store a snapshot
+					int snapNum = acsMgmt.commandTakeSnap();
+					procedureOutput.setM1SnapNumberAfter(snapNum);
+					
+				} catch (Exception e) {
+					statusLogger.log("pt.m1_act_cmd_failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), e);
+				}
+	
+			}
+			
+			
+			// TODO: eventually replace this with an framework solution
+			procedureOutput.setM1CmdsSent(commandsSent);
+			*/
+			
+			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+				// turn off reference beams - need to wait for response				
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+				procedureExecutionState.setPercentComplete(90);
+		        Utils.waitForComplete(refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete");
+			}
+	
+			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
+	
+			procedureExecutionState.setPercentComplete(100);
+				
 		} catch (Throwable e) {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
