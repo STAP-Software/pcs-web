@@ -20,9 +20,9 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
 @Singleton
 @Startup
-public class ReadyCamera {
+public class ReadyCameraSubflow {
 
-	static Logger logger = Logger.getLogger(ReadyCamera.class);
+	static Logger logger = Logger.getLogger(ReadyCameraSubflow.class);
 	
 
 	@EJB

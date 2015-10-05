@@ -74,7 +74,7 @@ public class CreateRefMapExecutor {
 	@EJB
 	private CentroidMapMgmt refBeamMapMgmt;
 	@EJB
-	private ReadyCamera readyCamera;
+	private ReadyCameraSubflow readyCameraSubflow;
 	@EJB	
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
@@ -131,7 +131,7 @@ public class CreateRefMapExecutor {
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
-			readyCamera.execute(procedure);
+			readyCameraSubflow.execute(procedure);
 
 			procedureExecutionState.setPercentComplete(25);
 			

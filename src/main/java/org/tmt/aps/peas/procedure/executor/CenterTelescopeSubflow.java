@@ -28,9 +28,9 @@ import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
-public class CenterTelescopeFlow {
+public class CenterTelescopeSubflow {
 
-	static Logger logger = Logger.getLogger(CenterTelescopeFlow.class);
+	static Logger logger = Logger.getLogger(CenterTelescopeSubflow.class);
 	
 	@EJB
 	private UserPromptMgmt userPromptMgmt;

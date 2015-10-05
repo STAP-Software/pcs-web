@@ -70,7 +70,7 @@ public class FineScreenExecutor {
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
-	private ReadyCamera readyCamera;
+	private ReadyCameraSubflow readyCameraSubflow;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -86,7 +86,7 @@ public class FineScreenExecutor {
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 	@EJB
-	private CenterTelescopeFlow centerTelescopeFlow;
+	private CenterTelescopeSubflow centerTelescopeSubflow;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
@@ -194,7 +194,7 @@ public class FineScreenExecutor {
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
-			readyCamera.execute(procedure);
+			readyCameraSubflow.execute(procedure);
 			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
@@ -227,7 +227,7 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*          centerTelescope                          */
 			/*****************************************************/	
-			centerTelescopeFlow.centerTelescope(procedure, currentSession);
+			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
 			procedureExecutionState.setPercentComplete(20);
 

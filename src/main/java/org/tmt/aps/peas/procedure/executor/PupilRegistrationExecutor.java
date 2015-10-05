@@ -83,9 +83,9 @@ public class PupilRegistrationExecutor {
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
-	private CenterTelescopeFlow centerTelescopeFlow;
+	private CenterTelescopeSubflow centerTelescopeSubflow;
 	@EJB
-	private ReadyCamera readyCamera;
+	private ReadyCameraSubflow readyCameraSubflow;
 	@EJB
 	PhysicalModel physicalModel;
 	@EJB
@@ -173,7 +173,7 @@ public class PupilRegistrationExecutor {
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
-			readyCamera.execute(procedure);
+			readyCameraSubflow.execute(procedure);
 
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
@@ -194,7 +194,7 @@ public class PupilRegistrationExecutor {
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			centerTelescopeFlow.centerTelescope(procedure, currentSession);
+			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
 			procedureExecutionState.setPercentComplete(30);
 

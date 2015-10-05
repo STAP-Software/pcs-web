@@ -72,7 +72,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
-	private ReadyCamera readyCamera;
+	private ReadyCameraSubflow readyCameraSubflow;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
@@ -90,7 +90,7 @@ public class PassiveTiltExecutor {
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 	@EJB
-	private CenterTelescopeFlow centerTelescopeFlow;
+	private CenterTelescopeSubflow centerTelescopeSubflow;
 	@EJB
 	private CentroidMapMgmt centroidMapMgmt;
 	@EJB
@@ -199,7 +199,7 @@ public class PassiveTiltExecutor {
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
-			readyCamera.execute(procedure);
+			readyCameraSubflow.execute(procedure);
 			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
@@ -218,7 +218,7 @@ public class PassiveTiltExecutor {
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			centerTelescopeFlow.centerTelescope(procedure, currentSession);
+			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 			
 			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
 			
