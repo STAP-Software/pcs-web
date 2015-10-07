@@ -5,6 +5,7 @@ import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
@@ -15,7 +16,7 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	ScaleErrorResult scaleErrorResult;
+	PassiveTiltScaleErrorResult passiveTiltScaleErrorResult;
 	DecomposeActsResult decomposeActsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	
@@ -37,12 +38,6 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return scaleErrorResult;
-	}
-	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
-		this.scaleErrorResult = scaleErrorResult;
-	}	
 	public DecomposeActsResult getDecomposeActsResult() {
 		return decomposeActsResult;
 	}
@@ -56,12 +51,22 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
 	}
 	
+	public PassiveTiltScaleErrorResult getPassiveTiltScaleErrorResult() {
+		return passiveTiltScaleErrorResult;
+	}
+	public ScaleErrorResult getScaleErrorResult() {
+		return passiveTiltScaleErrorResult;
+	}
+
+	public void setPassiveTiltScaleErrorResult(PassiveTiltScaleErrorResult passiveTiltScaleErrorResult) {
+		this.passiveTiltScaleErrorResult = passiveTiltScaleErrorResult;
+	}
 	public void addPassiveTiltIterationOutput(PassiveTiltIterationOutput pio) {
 		
 		setCenterTelescopeCalcResult(pio.getCenterTelescopeCalcResult());
 		setCentroidOffsetsResult(pio.getCentroidOffsetsResult());
 		setCentroidStatsResult(pio.getCentroidStatsResult());
-		setScaleErrorResult(pio.getScaleErrorResult());
+		setPassiveTiltScaleErrorResult(pio.getPassiveTiltScaleErrorResult());
 		setDecomposeActsResult(pio.getDecomposeActsResult());
 		setCalcDesiredActCommandsResult(pio.getCalcDesiredActCommandsResult());
 

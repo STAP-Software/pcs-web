@@ -35,6 +35,9 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
+import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
+import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
@@ -49,6 +52,7 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
@@ -526,7 +530,41 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public ScaleErrorResult passiveTiltScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
+	public PseudoTipTiltCentroidStatsResult calculatePseudoCentroidStats(FloatPoint[] centroidOffsetsPixels, int[] nspotTypes) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
+
+		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
+		RetVal retVal = new RetVal();
+
+		
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsetsPixels));
+
+		// spots that can be used (found without errors and should be used for analysis)
+		int [] good_spots = new int[nspotTypes.length];
+		for (int i=0; i<nspotTypes.length; i++) {
+			good_spots[i] = 1;
+		}
+
+		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots, nspotTypes);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Centroid Offset Stats Calculation Error");
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateCentroidStats"));
+
+		// store fi_param values
+		return new PseudoTipTiltCentroidStatsResult((Integer) output[0], (Float) output[1], (Float) output[2], (Float) output[3], (Float) output[4]);
+
+	}
+	
+
+
+
+	@Computation
+	public PassiveTiltScaleErrorResult passiveTiltScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "passiveTiltScaleError"));
 
@@ -548,12 +586,12 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
 
 		// store fi_param values
-		return new ScaleErrorResult((Float) output[0], (Float) output[1]);
+		return new PassiveTiltScaleErrorResult((Float) output[0], (Float) output[1]);
 	}
 	
 	
 	@Computation
-	public ScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
+	public FineScreenScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
 
@@ -578,7 +616,7 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
 
 		// store fi_param values
-		return new ScaleErrorResult((Float) output[0], (Float) output[1]);
+		return new FineScreenScaleErrorResult((Float) output[0], (Float) output[1]);
 	}
 
 	
@@ -839,7 +877,7 @@ public class ComputationLibraryImpl {
 
 	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
-			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants) throws Exception {
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
 
@@ -851,9 +889,19 @@ public class ComputationLibraryImpl {
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
 		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
-		List<FloatPoint> centroidOffsets = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
-		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsets);
-		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsets);
+		
+		List<FloatPoint> centroidOffsetsPixels = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
+		
+		// convert offsets from pixels to arcsec
+		List<FloatPoint> centroidOffsetsArcsecs = new ArrayList<FloatPoint>();
+		for (FloatPoint pixelOffset : centroidOffsetsPixels) {
+		
+			FloatPoint arcsecOffset = new FloatPoint(pixelOffset.x * secPerPixel, pixelOffset.y * secPerPixel);
+			centroidOffsetsArcsecs.add(arcsecOffset);
+		}
+		
+		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsetsArcsecs);
+		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsetsArcsecs);
 		
 		int[] validSubimages = findCentroidsResult.getFoundInteriorSubimageFlags(nspotTypes);
 
@@ -884,8 +932,16 @@ public class ComputationLibraryImpl {
 		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
 		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 		
+		// convert corrected offsets from arcsec to pixels
+		List<FloatPoint> m1OffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
+		for (FloatPoint arcsecOffset : m1OffsetsCorrectedForM2) {
+		
+			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
+			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
+		}
+		
 		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
-				 m1OffsetsCorrectedForM2);
+				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]));
 
 
 		// End of code for findCent unit testing

@@ -1,12 +1,11 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
+import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
@@ -15,7 +14,7 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	ScaleErrorResult scaleErrorResult;
+	PassiveTiltScaleErrorResult passiveTiltScaleErrorResult;
 	DecomposeActsResult decomposeActsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	
@@ -37,12 +36,6 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return scaleErrorResult;
-	}
-	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
-		this.scaleErrorResult = scaleErrorResult;
-	}	
 	public DecomposeActsResult getDecomposeActsResult() {
 		return decomposeActsResult;
 	}
@@ -55,7 +48,16 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
 		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
 	}
+	public PassiveTiltScaleErrorResult getPassiveTiltScaleErrorResult() {
+		return passiveTiltScaleErrorResult;
+	}
+	public void setPassiveTiltScaleErrorResult(PassiveTiltScaleErrorResult passiveTiltScaleErrorResult) {
+		this.passiveTiltScaleErrorResult = passiveTiltScaleErrorResult;
+	}
 	
+	public PassiveTiltScaleErrorResult getScaleErrorResult() {
+		return passiveTiltScaleErrorResult;
+	}
 
 	
 }

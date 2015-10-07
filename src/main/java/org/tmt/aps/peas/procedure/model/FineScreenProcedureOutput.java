@@ -1,12 +1,12 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
+import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
@@ -17,7 +17,8 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Centro
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	ScaleErrorResult scaleErrorResult;
+	FineScreenScaleErrorResult FineScreenScaleErrorResult;
+	PassiveTiltScaleErrorResult PassiveTiltScaleErrorResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	CalcM2M1Result calcM2M1Result;
 
@@ -40,12 +41,24 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Centro
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return scaleErrorResult;
+	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
+		return FineScreenScaleErrorResult;
 	}
-	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
-		this.scaleErrorResult = scaleErrorResult;
-	}	
+	public void setFineScreenScaleErrorResult(FineScreenScaleErrorResult fineScreenScaleErrorResult) {
+		FineScreenScaleErrorResult = fineScreenScaleErrorResult;
+	}
+	public PassiveTiltScaleErrorResult getPassiveTiltScaleErrorResult() {
+		return PassiveTiltScaleErrorResult;
+	}
+	public void setPassiveTiltScaleErrorResult(PassiveTiltScaleErrorResult passiveTiltScaleErrorResult) {
+		PassiveTiltScaleErrorResult = passiveTiltScaleErrorResult;
+	}
+	
+	public ScaleErrorResult getScaleErrorResult() {
+		return FineScreenScaleErrorResult;
+	}
+	
+	
 	public CalcDesiredActCommandsResult getCalcDesiredActCommandsResult() {
 		return calcDesiredActCommandsResult;
 	}
@@ -64,7 +77,8 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Centro
 		setCenterTelescopeCalcResult(pio.getCenterTelescopeCalcResult());
 		setCentroidOffsetsResult(pio.getCentroidOffsetsResult());
 		setCentroidStatsResult(pio.getCentroidStatsResult());
-		setScaleErrorResult(pio.getScaleErrorResult());
+		setPassiveTiltScaleErrorResult(pio.getPassiveTiltScaleErrorResult());
+		setFineScreenScaleErrorResult(pio.getFineScreenScaleErrorResult());
 		setCalcM2M1Result(pio.getCalcM2M1Result());
 		setCalcDesiredActCommandsResult(pio.getCalcDesiredActCommandsResult());
 

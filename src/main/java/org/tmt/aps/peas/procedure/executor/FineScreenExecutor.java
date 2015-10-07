@@ -22,8 +22,10 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -37,6 +39,7 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -250,7 +253,6 @@ public class FineScreenExecutor {
 				graphicDisplayMgmt.displayCentroidOffsets(pio);
 	
 				
-				
 				// TODO: call pupil_registration for fine screen, and center the pupil
 				
 	          
@@ -261,49 +263,48 @@ public class FineScreenExecutor {
 						procedure.getProcedureConfigSet().getCalcM2M1Config(),
 						constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
 						subimageDefList.getNspotTypes(),
-						constantsCache.getTelescopeConstants());
-							
-			}
-	
-			// TODO: fill the output - many of these are copied from the one iteration (true for PT)
-			// procedureOutput.addFineScreenIterationOutput(pio);
-	
+						constantsCache.getTelescopeConstants(), procedureConfig.getPupilMask().getSecPerPixel());
+					
+								
+				// calc centroid stats for passive tilt
 				
+				SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
+				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), subimageDefListPt.getNspotTypes());
+
+				// calc scale error for passive tilt
+				computationLibrary.passiveTiltScaleErrorResult(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), centerSpots);
 	
-			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
-			/*****************************************************/
-			/*                  ttOffsetsToActs                  */
-			/*****************************************************/
+				// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
+				/*****************************************************/
+				/*                  ttOffsetsToActs                  */
+				/*****************************************************/
+				
+				List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
+				// lpz = local piston zeroed on a segment
+				// TODO: the result here should be a TtOffsetsToActsResult object
+				float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
+						calcM2M1Result.getM1OffsetsCorrectedForM2Pixels());
+		
+				// Decompose the calculated actuators into pure tip/tilt and pure piston.
+				// This code is to ensure that the pistons are indeed zero prior to proceding.
+				/*****************************************************/
+				/*                  decomposeActs                    */
+				/*****************************************************/
+				
+				DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
+				
+				/*****************************************************/
+				/*                  optimalPistons                   */
+				/*****************************************************/
+				
+				float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();				
+				computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
+
+			}
+
+			
 			
 			/*
-			
-			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
-			// lpz = local piston zeroed on a segment
-			// TODO: the result here should be a TtOffsetsToActsResult object
-			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					centroidOffsetsResult.getCartesianCentroidOffsets());
-	
-			// Decompose the calculated actuators into pure tip/tilt and pure piston.
-			// This code is to ensure that the pistons are indeed zero prior to proceding.
-			/*****************************************************/
-			/*                  decomposeActs                    */
-			/*****************************************************/
-			/*
-			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
-	
-	
-			/*****************************************************/
-			/*                  optimalPistons                   */
-			/*****************************************************/
-			/*
-			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
-			
-			// TODO: all the following calculations should be moved out of the executor and folded into one
-			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
-			
-			// fill the procedure output
-			procedureOutput.addPassiveTiltIterationOutput(pio);
-	
 	
 			// display the pistonDeltas
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {

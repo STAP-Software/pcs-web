@@ -1,22 +1,20 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
 // TODO - display i/fs need to change
-public class PupilRegistrationProcedureOutput extends ProcedureOutput implements CentroidOffsetsDisplayValues {
+public class PupilRegistrationProcedureOutput extends ProcedureOutput {
 	
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	ScaleErrorResult scaleErrorResult;
+	FineScreenScaleErrorResult FineScreenScaleErrorResult;
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
 	
@@ -38,12 +36,6 @@ public class PupilRegistrationProcedureOutput extends ProcedureOutput implements
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return scaleErrorResult;
-	}
-	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
-		this.scaleErrorResult = scaleErrorResult;
-	}	
 	public PupilRegErrorResult getPupilRegErrorResult() {
 		return pupilRegErrorResult;
 	}
@@ -58,12 +50,18 @@ public class PupilRegistrationProcedureOutput extends ProcedureOutput implements
 	}
 	
 
+	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
+		return FineScreenScaleErrorResult;
+	}
+	public void setFineScreenScaleErrorResult(FineScreenScaleErrorResult fineScreenScaleErrorResult) {
+		FineScreenScaleErrorResult = fineScreenScaleErrorResult;
+	}
 	public void addPupilRegistrationIterationOutput(PupilRegistrationIterationOutput pio) {
 		
 		setCenterTelescopeCalcResult(pio.getCenterTelescopeCalcResult());
 		setCentroidOffsetsResult(pio.getCentroidOffsetsResult());
 		setCentroidStatsResult(pio.getCentroidStatsResult());
-		setScaleErrorResult(pio.getScaleErrorResult());
+		setFineScreenScaleErrorResult(pio.getFineScreenScaleErrorResult());
 		
 		setPupilRegErrorResult(pio.getPupilRegErrorResult());
 		setCalcPrCommandsResult(pio.getCalcPrCommandsResult());

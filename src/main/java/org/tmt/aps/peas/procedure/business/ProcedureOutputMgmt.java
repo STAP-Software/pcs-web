@@ -366,38 +366,39 @@ public class ProcedureOutputMgmt {
 		Method method = null;
 
 		// easy cases first
+				
 		if (fieldDescriptor.isScalar()) {
 
 			switch (fieldDescriptor.getDataType()) {
 
 			case Constant.DATA_TYPE_INT:
 				Integer intValue = new Integer(value);
-				method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), int.class);
+				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), int.class);
 				method.invoke(classInstance, intValue);
 				break;
 
 			case Constant.DATA_TYPE_FLOAT:
 				Float floatValue = new Float(value);
-				method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), float.class);
+				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), float.class);
 				method.invoke(classInstance, floatValue);
 				break;
 
 			case Constant.DATA_TYPE_DOUBLE:
 				Double doubleValue = new Double(value);
-				method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), double.class);
+				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), double.class);
 				method.invoke(classInstance, doubleValue);
 				break;
 
 			case Constant.DATA_TYPE_BOOLEAN:
 				Boolean booleanValue = new Boolean(value);
-				method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), boolean.class);
+				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), boolean.class);
 				method.invoke(classInstance, booleanValue);
 				break;
 
 			case Constant.DATA_TYPE_FLOAT_POINT:
 				FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(value).toArray(new FloatPoint[] {});
 				FloatPoint floatPointValue = floatPointArray[0];
-				method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), FloatPoint.class);
+				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), FloatPoint.class);
 				method.invoke(classInstance, (Object) floatPointValue);
 				break;
 
@@ -420,7 +421,7 @@ public class ProcedureOutputMgmt {
 						primitiveIntArray[i] = intArray[i];
 					}
 
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), int[].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), int[].class);
 					method.invoke(classInstance, (Object) primitiveIntArray);
 					break;
 
@@ -430,19 +431,19 @@ public class ProcedureOutputMgmt {
 					for (int i = 0; i < floatArray.length; i++) {
 						primitiveFloatArray[i] = floatArray[i];
 					}
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), float[].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), float[].class);
 					method.invoke(classInstance, (Object) primitiveFloatArray);
 					break;
 
 				case Constant.DATA_TYPE_INT_POINT:
 					Point pointArray[] = PointListEncoder.decodeList(value).toArray(new Point[] {});
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), Point[].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), Point[].class);
 					method.invoke(classInstance, (Object) pointArray);
 					break;
 
 				case Constant.DATA_TYPE_FLOAT_POINT:
 					FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(value).toArray(new FloatPoint[] {});
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), FloatPoint[].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), FloatPoint[].class);
 					method.invoke(classInstance, (Object) floatPointArray);
 					break;
 
@@ -469,7 +470,7 @@ public class ProcedureOutputMgmt {
 						}
 					}
 
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), int[][].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), int[][].class);
 					method.invoke(classInstance, (Object) int2dArray);
 
 					break;
@@ -487,7 +488,7 @@ public class ProcedureOutputMgmt {
 						}
 					}
 
-					method = classInstance.getClass().getDeclaredMethod("set" + fieldDescriptor.getFieldName(), float[][].class);
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), float[][].class);
 					method.invoke(classInstance, (Object) float2dArray);
 					break;
 

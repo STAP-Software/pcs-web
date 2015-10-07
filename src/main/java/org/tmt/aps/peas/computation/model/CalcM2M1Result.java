@@ -12,11 +12,12 @@ public class CalcM2M1Result {
 	float centroidResidual;
 	float pistonErrorMultiplier;
 	FloatPoint tipTiltErrorMulitplier;
-	List<FloatPoint> m1OffsetsCorrectedForM2;
+	FloatPoint[] m1OffsetsCorrectedForM2;
+	FloatPoint[] m1OffsetsCorrectedForM2Pixels;
 	
 	
 	public CalcM2M1Result(float m2Piston, FloatPoint m2TipTilt, float centroidResidual, float pistonErrorMultiplier, FloatPoint tipTiltErrorMulitplier,
-			List<FloatPoint> m1OffsetsCorrectedForM2) {
+			FloatPoint[] m1OffsetsCorrectedForM2, FloatPoint[] m1OffsetsCorrectedForM2Pixels) {
 
 			this.m2Piston = m2Piston;
 			this.m2TipTilt = m2TipTilt;
@@ -24,6 +25,7 @@ public class CalcM2M1Result {
 			this.pistonErrorMultiplier = pistonErrorMultiplier;
 			this.tipTiltErrorMulitplier = tipTiltErrorMulitplier;
 			this.m1OffsetsCorrectedForM2 = m1OffsetsCorrectedForM2;
+			this.m1OffsetsCorrectedForM2Pixels = m1OffsetsCorrectedForM2Pixels;
 	}
 	
 	public CalcM2M1Result() {};
@@ -59,11 +61,21 @@ public class CalcM2M1Result {
 	public void setTipTiltErrorMulitplier(FloatPoint tipTiltErrorMulitplier) {
 		this.tipTiltErrorMulitplier = tipTiltErrorMulitplier;
 	}
-	public List<FloatPoint> getM1OffsetsCorrectedForM2() {
+
+	public FloatPoint[] getM1OffsetsCorrectedForM2() {
 		return m1OffsetsCorrectedForM2;
 	}
-	public void setM1OffsetsCorrectedForM2(List<FloatPoint> m1OffsetsCorrectedForM2) {
+
+	public void setM1OffsetsCorrectedForM2(FloatPoint[] m1OffsetsCorrectedForM2) {
 		this.m1OffsetsCorrectedForM2 = m1OffsetsCorrectedForM2;
+	}
+
+	public FloatPoint[] getM1OffsetsCorrectedForM2Pixels() {
+		return m1OffsetsCorrectedForM2Pixels;
+	}
+
+	public void setM1OffsetsCorrectedForM2Pixels(FloatPoint[] m1OffsetsCorrectedForM2Pixels) {
+		this.m1OffsetsCorrectedForM2Pixels = m1OffsetsCorrectedForM2Pixels;
 	}
 	
 	

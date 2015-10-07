@@ -4,17 +4,16 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
-import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
 
-public class PupilRegistrationIterationOutput extends ProcedureIterationOutput implements CentroidOffsetsDisplayValues {
+public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	ScaleErrorResult scaleErrorResult;
+	FineScreenScaleErrorResult fineScreenScaleErrorResult;
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
 	
@@ -36,12 +35,6 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput i
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return scaleErrorResult;
-	}
-	public void setScaleErrorResult(ScaleErrorResult scaleErrorResult) {
-		this.scaleErrorResult = scaleErrorResult;
-	}	
 	public PupilRegErrorResult getPupilRegErrorResult() {
 		return pupilRegErrorResult;
 	}
@@ -53,6 +46,12 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput i
 	}
 	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
 		this.calcPrCommandsResult = calcPrCommandsResult;
+	}
+	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
+		return fineScreenScaleErrorResult;
+	}
+	public void setFineScreenScaleErrorResult(FineScreenScaleErrorResult fineScreenScaleErrorResult) {
+		this.fineScreenScaleErrorResult = fineScreenScaleErrorResult;
 	}
 	
 	
