@@ -19,10 +19,12 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
@@ -250,8 +252,10 @@ public class FineScreenExecutor {
 				/*****************************************************/
 				/*             Display Centroid Offsets              */
 				/*****************************************************/
-				graphicDisplayMgmt.displayCentroidOffsets(pio);
-	
+				
+				if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
+					graphicDisplayMgmt.displayCentroidOffsets(pio);
+				}
 				
 				// TODO: call pupil_registration for fine screen, and center the pupil
 				
@@ -266,12 +270,12 @@ public class FineScreenExecutor {
 						constantsCache.getTelescopeConstants(), procedureConfig.getPupilMask().getSecPerPixel());
 					
 								
-				// calc centroid stats for passive tilt
+				// calc centroid stats for pseudo pt 
 				
 				SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
 				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), subimageDefListPt.getNspotTypes());
 
-				// calc scale error for passive tilt
+				// calc scale error for pseudo pt 
 				computationLibrary.passiveTiltScaleErrorResult(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), centerSpots);
 	
 				// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
@@ -301,27 +305,167 @@ public class FineScreenExecutor {
 				computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
 
 			}
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
+
+			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
+			
+			// TODO: move this code into M2PttErrorMeanStd()
+			Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
+			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTilt", FloatPoint.class).toArray(new FloatPoint[0]);
+			
+			float meanM2PistonError = JavaComputations.getMean(m2PistonErrors);
+			FloatPoint meanM2TipTiltError = JavaComputations.getMean(m2TipTiltErrors);
+			
+			float stdM2PistonError = JavaComputations.getStd(m2PistonErrors);
+			FloatPoint stdM2TipTiltError = JavaComputations.getStd(m2TipTiltErrors);
+
+			// output mean and std of ptt
+			statusLogger.log("calc.m2pttmeanstd", 
+					meanM2PistonError * Constants.METERS_TO_UM, stdM2PistonError * Constants.METERS_TO_UM, 
+					meanM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, 
+					meanM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
+
+			/*****************************************************/
+			/*             Calculate M2Actuators                 */
+			/*****************************************************/
+
+			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(meanM2PistonError, meanM2TipTiltError, constantsCache.getTelescopeConstants().getM2ActuatorRadius(), 
+					constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());			
+
+			statusLogger.log("calc.m2actuators", m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
+
+
+			// prepare to command secondary
+			boolean sendM2Command = procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_ACT_DELTAS_YES;
+			if (procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_M2_ACT_DELTAS_PROMPT) {
+				
+				// Display to user and ask if they want to command
+				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd", 
+						meanM2PistonError * Constants.METERS_TO_UM, stdM2PistonError * Constants.METERS_TO_UM, 
+						meanM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, 
+						meanM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
+				
+				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
+				
+				sendM2Command = userPromptMgmt.displayYesNoDialog(m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
+			}
+			
+			/*****************************************************/
+			/*                   Command M2                      */
+			/*****************************************************/
+			
+			boolean dcsCommandsSent = false;
+			if (sendM2Command) {
+	
+				try {
+					// send out the commands
+					dcsMgmt.commandSecondaryDeltasInUm(m2ActResult.getDeltaSecondardyActCmds());
+	
+					statusLogger.log("fs.m2_act_cmd_success");
+					logger.info("commandSecondaryDeltasInUm: success");
+					dcsCommandsSent = true;
+										
+				} catch (Exception e) {
+					statusLogger.log("fs.m2_act_cmd_failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), e);
+				}
+	
+			}
+			
+			/*****************************************************/
+			/*      Calculate Average Seg Tip/Tilts              */
+			/*****************************************************/
+			FloatPoint[][] m1SegmentTipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2Pixels", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			
+			// transpose array for easier mean calculating
+			FloatPoint[][] transposedArray = JavaComputations.transpose2dArray(m1SegmentTipTiltErrors);
+			
+			// loop over all segments
+			FloatPoint[] segmentMeanTipTiltErrors = new FloatPoint[transposedArray.length];
+			for (int i=0; i<transposedArray.length; i++) {
+				segmentMeanTipTiltErrors[i] = JavaComputations.getMean(transposedArray[i]);	
+			}
+				
+			// calc centroid stats for pseudo pt 
+			
+			SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
+			computationLibrary.calculatePseudoCentroidStats(segmentMeanTipTiltErrors, subimageDefListPt.getNspotTypes());
+
+			// calc scale error for pseudo pt 
+			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+			computationLibrary.passiveTiltScaleErrorResult(segmentMeanTipTiltErrors, centerSpots);
 
 			
+			// TODO: display centroid offsets
+			// Display the average centroid offsets - this is probably not needed since we only do one trial
+			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgCentroidOffsets()) {
+				
+				// TODO: the average centroid offsets is a different display from centroid offsets and requires different inputs
+				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
+				//graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
+			}
+
 			
-			/*
+			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
+			/*****************************************************/
+			/*                  ttOffsetsToActs                  */
+			/*****************************************************/
+			
+			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
+			// lpz = local piston zeroed on a segment
+			// TODO: the result here should be a TtOffsetsToActsResult object
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
+					segmentMeanTipTiltErrors);
 	
+			// Decompose the calculated actuators into pure tip/tilt and pure piston.
+			// This code is to ensure that the pistons are indeed zero prior to proceding.
+			/*****************************************************/
+			/*                  decomposeActs                    */
+			/*****************************************************/
+			
+			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
+			
+			/*****************************************************/
+			/*                  optimalPistons                   */
+			/*****************************************************/
+			
+			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();				
+			computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
+
+			
 			// display the pistonDeltas
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
-	
-			// display RMS piston deltas to user in dialog
-			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
-			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
+			
+			// calculate std of iteration desired act delta rms
+			Float[] desiredActDeltaRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasRms", Float.class).toArray(new Float[0]);
+			
+			float desiredActDeltasRmsStd = JavaComputations.getStd(desiredActDeltaRmsIterations);
+			
+			statusLogger.log("calc.desiredm1cmds", procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), desiredActDeltasRmsStd);
+
+			
+			// prepare to command primary
+			boolean sendM1Command = procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_YES;
+			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
+				
+				// Display to user and ask if they want to command				
+				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), desiredActDeltasRmsStd);
+				
+				sendM1Command = userPromptMgmt.displayYesNoDialog(actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
+			}
+
 	
 			// command ACS
 			boolean commandsSent = false;
-			if (commandAcs) {
+			if (sendM1Command) {
 	
 				try {
 					// send out the commands
-					acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
+					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 	
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
@@ -329,7 +473,7 @@ public class FineScreenExecutor {
 					
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
-					procedureOutput.setM1SnapNumberAfter(snapNum);
+					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
 					
 				} catch (Exception e) {
 					statusLogger.log("pt.m1_act_cmd_failed");
@@ -337,11 +481,10 @@ public class FineScreenExecutor {
 				}
 	
 			}
-			
-			
+					
 			// TODO: eventually replace this with an framework solution
-			procedureOutput.setM1CmdsSent(commandsSent);
-			*/
+			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
+		
 			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				

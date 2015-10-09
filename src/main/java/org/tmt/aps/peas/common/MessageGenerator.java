@@ -14,11 +14,13 @@ public class MessageGenerator {
 		return MessageFormat.format(pattern, args);
 	}
 	
+	/*
 	public static String generateMessage(String key, Object[] args) {
 		
 		String pattern = ResourceBundle.getBundle("messages").getString(key);
 		return MessageFormat.format(pattern, args);	
 	}
+	
 	
 	public static String generateMessage(String key, Object val1) {
 		
@@ -46,16 +48,12 @@ public class MessageGenerator {
 		args[2] = val3;
 		return MessageFormat.format(pattern, args);	
 	}
+	*/
 	
-	public static String generateMessage(String key, Object val1, Object val2, Object val3, Object val4) {
+	public static String generateMessage(String key, Object ... vals) {
 		
 		String pattern = ResourceBundle.getBundle("messages").getString(key);
-		Object[] args = new Object[4];
-		args[0] = val1;
-		args[1] = val2;
-		args[2] = val3;
-		args[3] = val4;
-		return MessageFormat.format(pattern, args);	
+		return MessageFormat.format(pattern, vals);	
 	}
 	
 	public static String generateMessage(String key, Point p) {

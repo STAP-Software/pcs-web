@@ -1,11 +1,14 @@
 package org.tmt.aps.peas.computation.java;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 import java.util.Date;
 
+import org.apache.commons.math3.stat.StatUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.TriState;
@@ -186,7 +189,94 @@ public class JavaComputations {
 		
 		return median;
 	}
+	
+	public static double[] convertToDoubleArray(Float[] input) {
+		double[] output = new double[input.length];
+	    int i=0;
+	    for (Float f : input) {
+	        output[i] = f.floatValue();
+	        i++;
+	    }
+	    return output;
+	}
+	
+	public static double[] convertToDoubleArray(float[] input) {
+		double[] output = new double[input.length];
+	    int i=0;
+	    for (Float f : input) {
+	        output[i] = f.floatValue();
+	        i++;
+	    }
+	    return output;
+	}
 
+	public static float getMean(double[] inputs) {
+		
+		return (float)StatUtils.mean(inputs);
+	}
+
+	
+	public static float getMean(Float[] inputs) {
+		
+		return (float)StatUtils.mean(convertToDoubleArray(inputs));
+	}
+
+	public static FloatPoint getMean(FloatPoint[] inputs) {
+		
+		float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(inputs));
+		float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(inputs));
+		
+		float xMean = (float)StatUtils.mean(convertToDoubleArray(xArray));
+		float yMean = (float)StatUtils.mean(convertToDoubleArray(yArray));
+		
+		return new FloatPoint(xMean, yMean);
+	}
+
+	public static float getStd(double[] inputs) {
+		float mean = getMean(inputs);
+		float sum = 0.0f;
+		for(double input : inputs) {
+			sum += (input - mean) * (input - mean);
+		}
+		return inputs.length < 2 ? 0.0f : (float)Math.sqrt(sum / (inputs.length - 1));
+	}
+	
+	public static float getStd(Float[] inputs) {
+		double[] array = convertToDoubleArray(inputs);
+		
+		return (float)getStd(array);
+	}
+
+	
+	public static FloatPoint getStd(FloatPoint[] inputs) {
+		double[] xArray = convertToDoubleArray(FloatPointListEncoder.extractXArray(Arrays.asList(inputs)));
+		double[] yArray = convertToDoubleArray(FloatPointListEncoder.extractYArray(Arrays.asList(inputs)));
+		
+		float xStd = getStd(xArray);
+		float yStd = getStd(yArray);
+		
+		return new FloatPoint(xStd, yStd);
+	}
+	
+		
+	public static <T> T[][] transpose2dArray(T[][] matrix)
+	{
+		int idx1 = matrix.length;
+		int idx2 = matrix[0].length;
+		Class<T> arrayType = (Class<T>) matrix[0][0].getClass();
+		
+	    T[][] transpose = (T[][]) Array.newInstance(arrayType, idx2, idx1);
+	    for (int x = 0; x < idx2; x++)
+	    {
+	        for (int y = 0; y < idx1; y++)
+	        {
+	            transpose[x][y] = matrix[y][x];
+	        }
+	    }
+	    return transpose;
+	}
+
+	
 	public static CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
 					throws Exception {
@@ -429,5 +519,6 @@ public class JavaComputations {
 
 		return new Point(relativeXTiltCmd, relativeYTiltCmd);
 	}
+
 
 }

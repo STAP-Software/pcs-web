@@ -1,9 +1,8 @@
 package org.tmt.aps.peas.procedure.model;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.apache.commons.beanutils.BeanUtils;
 
 
 public class ProcedureOutput implements ProcedureOutputable {
@@ -76,5 +75,33 @@ public class ProcedureOutput implements ProcedureOutputable {
 	public void setProcedureDecisionLog(ProcedureDecisionLog procedureDecisionLog) {
 		this.procedureDecisionLog = procedureDecisionLog;
 	}
+	
+	public <T> List<T> getIterationValuesFor(String classname, String fieldname, Class<T> resultClass) throws Exception {
+		
+		// get the calcResult object
+		List<T> resultList = new ArrayList<T>();
+		
+		
+		for (ProcedureIterationOutput pio : procedureIterationOutputList) {
+		
+			Class pioClass = pio.getClass();
+			
+			Method calcGetterMethod = pioClass.getMethod("get" + classname, new Class[0]);
+			
+			Object calcResult = calcGetterMethod.invoke(pio, new Object[0]);
+	
+			Class calcClass = calcResult.getClass();
+			
+			Method fieldGetterMethod = calcClass.getMethod("get" + fieldname, new Class[0]);
+			
+			Object fieldValue = fieldGetterMethod.invoke(calcResult, new Object[0]);
+			
+			resultList.add(resultClass.cast(fieldValue));
+					
+		}
+		
+		return resultList;
+	}
+
 	
 }

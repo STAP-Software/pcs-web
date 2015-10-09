@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.statusLog.business;
 
+import java.util.Collection;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Lock;
@@ -58,11 +60,12 @@ public class StatusLogger {
 		procedureStatusLog.addEntry(message);
 	}
 	
+	/*
 	public void log(String key, Object[] arg1) {
 		String message = MessageGenerator.generateMessage(key, arg1);
 		procedureStatusLog.addEntry(message);
 	}
-	
+	/*
 	public void log(String key, Object arg1) {
 		String message = MessageGenerator.generateMessage(key, arg1);
 		procedureStatusLog.addEntry(message);
@@ -80,6 +83,12 @@ public class StatusLogger {
 
 	public void log(String key, Object arg1, Object arg2, Object arg3, Object arg4) {
 		String message = MessageGenerator.generateMessage(key, arg1, arg2, arg3, arg4);
+		procedureStatusLog.addEntry(message);
+	}
+	*/
+	public void log(String key, Object ... args) {
+				
+		String message = MessageGenerator.generateMessage(key, args);
 		procedureStatusLog.addEntry(message);
 	}
 	

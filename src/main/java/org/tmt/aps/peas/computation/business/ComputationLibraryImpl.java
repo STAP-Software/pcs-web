@@ -26,6 +26,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
@@ -63,6 +64,7 @@ import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
+import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
@@ -974,6 +976,39 @@ public class ComputationLibraryImpl {
 		float desiredActDeltasRms = calcRms(desiredActDeltas);
 		
 		return new CalcDesiredActCommandsResult(pistonActs, pistonActsRms, desiredActDeltas, desiredActDeltasRms);
+	}
+
+	@Computation
+	public CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPtt(float meanM2PistonError, FloatPoint meanM2TipTiltError,
+			float m2ActuatorRadius, float m2TtCorrectionFactor) throws Exception {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2ActuatorsFromPtt"));
+
+		Jm2ActuatorsFromPtt jm2ActuatorsFromPtt = new Jm2ActuatorsFromPtt();
+		RetVal retVal = new RetVal();
+
+		
+		float[] m2ActDeltas = new float[3];
+		
+		Object[] result = jm2ActuatorsFromPtt.jm2ActuatorsFromPtt(retVal, meanM2TipTiltError.x, meanM2TipTiltError.y, meanM2PistonError * 1000.0f, 
+				m2ActuatorRadius, m2TtCorrectionFactor, m2ActDeltas);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("calcM2ActuatorsFromPtt calcuation error");
+		}
+
+				
+		CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult = new CalcM2ActuatorsFromPttResult(m2ActDeltas);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcM2ActuatorsFromPtt"));
+
+		return calcM2ActuatorsFromPttResult;
+
+	
 	}
 
 	

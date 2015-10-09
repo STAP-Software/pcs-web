@@ -44,6 +44,10 @@ public class Constants {
 	public static final int AUTO_SEND_ACT_DELTAS_NO = 2;
 	public static final int AUTO_SEND_ACT_DELTAS_PROMPT = 3;
 
+	public static final int AUTO_SEND_M2_ACT_DELTAS_YES = 1;
+	public static final int AUTO_SEND_M2_ACT_DELTAS_NO = 2;
+	public static final int AUTO_SEND_M2_ACT_DELTAS_PROMPT = 3;
+
 	public static final int AUTO_TAKE_REF_MAPS_YES = 1;
 	public static final int AUTO_TAKE_REF_MAPS_NO = 2;
 	public static final int AUTO_TAKE_REF_MAPS_PROMPT = 3;
@@ -77,10 +81,11 @@ public class Constants {
 	public static final int FIND_CENT_STATUS_NOT_PERFORMED = -1;
 	
 	
-	
 	public static final int CALC_M2_METHOD_RAY_TRACE = 1;
 	public static final int CALC_M2_METHOD_ZERNIKE = 2;
 	
-	
-	
+	public static final float METERS_TO_MM = 1000.0f;
+	public static final float METERS_TO_UM = 1000000.0f;
+	public static final float RADIANS_TO_ARCSEC = 206265.0f;
+	public static final float MICRONS_TO_MM = 1.0f/1000.0f;
 }

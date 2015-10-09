@@ -1,5 +1,8 @@
 package org.tmt.aps.peas.procedure.model;
 
+import java.lang.reflect.Method;
+import java.util.Map;
+
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
@@ -83,6 +86,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Centro
 		setCalcDesiredActCommandsResult(pio.getCalcDesiredActCommandsResult());
 
 	}
+	
 
 	
 }

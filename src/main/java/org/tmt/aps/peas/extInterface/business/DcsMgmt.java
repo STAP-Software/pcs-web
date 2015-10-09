@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.extinf.StarInfo;
 
 @Stateless
@@ -51,7 +52,16 @@ public class DcsMgmt {
 		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
 	}
 	
-	
+	// input in microns, sends in mm
+	public void commandSecondaryDeltasInUm(float[] secondaryDeltasUm) throws Exception {
+		double[] secondaryDeltas = new double[3];
+		
+		for (int i=0; i< secondaryDeltas.length; i++) {
+			secondaryDeltas[i] = secondaryDeltasUm[i] * Constants.MICRONS_TO_MM;
+		}
+		
+		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
+	}
 	
 	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
