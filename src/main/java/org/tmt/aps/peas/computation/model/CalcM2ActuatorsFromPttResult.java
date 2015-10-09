@@ -8,6 +8,9 @@ public class CalcM2ActuatorsFromPttResult {
 	public CalcM2ActuatorsFromPttResult(float[] deltaSecondardyActCmds) {
 		this.deltaSecondardyActCmds = deltaSecondardyActCmds;
 	}
+	
+	public CalcM2ActuatorsFromPttResult() {
+	}
 
 	public float[] getDeltaSecondardyActCmds() {
 		return deltaSecondardyActCmds;

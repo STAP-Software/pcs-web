@@ -187,21 +187,21 @@ public class Utils {
 			case Constant.DATA_TYPE_INT:
 				Integer intArray[] = IntegerListEncoder.decodeList(value).toArray(new Integer[] {});
 				for (int i = 0; i < intArray.length; i++) {
-					buf.append((i + 1) + "  " + intArray[i] + "\n");
+					buf.append((i + 1) + "&nbsp;&nbsp;&nbsp;" + intArray[i] + "\n");
 				}
 				break;
 
 			case Constant.DATA_TYPE_FLOAT:
 				Float floatArray[] = FloatListEncoder.decodeList(value).toArray(new Float[] {});
 				for (int i = 0; i < floatArray.length; i++) {
-					buf.append((i + 1) + "  " + floatArray[i] + "\n");
+					buf.append((i + 1) + "&nbsp;&nbsp;&nbsp;" + floatArray[i] + "\n");
 				}
 				break;
 
 			case Constant.DATA_TYPE_INT_POINT:
 				Point pointArray[] = PointListEncoder.decodeList(value).toArray(new Point[] {});
 				for (int i = 0; i < pointArray.length; i++) {
-					buf.append((i + 1) + "      " + pointArray[i].x + "      " + pointArray[i].y + "\n");
+					buf.append((i + 1) + "&nbsp;&nbsp;&nbsp;" + pointArray[i].x + "      " + pointArray[i].y + "\n");
 				}
 				break;
 
