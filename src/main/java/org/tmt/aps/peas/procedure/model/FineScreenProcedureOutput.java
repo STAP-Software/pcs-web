@@ -1,8 +1,11 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
+import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
@@ -20,7 +23,10 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Actuat
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	CalcM2M1Result calcM2M1Result;
 	CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult;
-
+	CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult;
+	CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult;
+	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
+	
 	
 	public CentroidOffsetsResult getCentroidOffsetsResult() {
 		return centroidOffsetsResult;
@@ -70,6 +76,26 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements Actuat
 	public void setCalcM2ActuatorsFromPttResult(CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult) {
 		this.calcM2ActuatorsFromPttResult = calcM2ActuatorsFromPttResult;
 	}
+	public CalcDesiredActDeltasRmsStdResult getCalcDesiredActDeltasRmsStdResult() {
+		return calcDesiredActDeltasRmsStdResult;
+	}
+	public void setCalcDesiredActDeltasRmsStdResult(CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult) {
+		this.calcDesiredActDeltasRmsStdResult = calcDesiredActDeltasRmsStdResult;
+	}
+	public CalcM2PttErrorsMeanStdResult getCalcM2PttErrorsMeanStdResult() {
+		return calcM2PttErrorsMeanStdResult;
+	}
+	public void setCalcM2PttErrorsMeanStdResult(CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult) {
+		this.calcM2PttErrorsMeanStdResult = calcM2PttErrorsMeanStdResult;
+	}
+	public CalcSegmentMeanTipTiltsResult getCalcSegmentMeanTipTiltsResult() {
+		return calcSegmentMeanTipTiltsResult;
+	}
+	public void setCalcSegmentMeanTipTiltsResult(CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult) {
+		this.calcSegmentMeanTipTiltsResult = calcSegmentMeanTipTiltsResult;
+	}
+	
+	
 	
 	/*
 	public void addFineScreenIterationOutput(FineScreenIterationOutput pio) {

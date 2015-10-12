@@ -3,6 +3,7 @@ package org.tmt.aps.peas.procedure.model;
 public class ProcedureDecisionLog {
 
 	private boolean m1CmdsSent;
+	private boolean m2CmdsSent;
 	
 	private int m1SnapNumberAfter = -1;
 
@@ -14,6 +15,14 @@ public class ProcedureDecisionLog {
 
 	public void setM1CmdsSent(boolean m1CmdsSent) {
 		this.m1CmdsSent = m1CmdsSent;
+	}
+
+	public boolean isM2CmdsSent() {
+		return m2CmdsSent;
+	}
+
+	public void setM2CmdsSent(boolean m2CmdsSent) {
+		this.m2CmdsSent = m2CmdsSent;
 	}
 
 	public int getM1SnapNumberAfter() {

@@ -24,8 +24,11 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
+import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
@@ -315,23 +318,21 @@ public class FineScreenExecutor {
 			Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
 			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTilt", FloatPoint.class).toArray(new FloatPoint[0]);
 			
-			float meanM2PistonError = JavaComputations.getMean(m2PistonErrors);
-			FloatPoint meanM2TipTiltError = JavaComputations.getMean(m2TipTiltErrors);
 			
-			float stdM2PistonError = JavaComputations.getStd(m2PistonErrors);
-			FloatPoint stdM2TipTiltError = JavaComputations.getStd(m2TipTiltErrors);
+			CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult = computationLibrary.calcM2PttErrorsMeanStd(m2PistonErrors, m2TipTiltErrors);
+			
 
 			// output mean and std of ptt
 			statusLogger.log("calc.m2pttmeanstd", 
-					meanM2PistonError * Constants.METERS_TO_UM, stdM2PistonError * Constants.METERS_TO_UM, 
-					meanM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, 
-					meanM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
+					calcM2PttErrorsMeanStdResult.getMeanM2PistonError() * Constants.METERS_TO_UM, calcM2PttErrorsMeanStdResult.getStdM2PistonError() * Constants.METERS_TO_UM, 
+					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, 
+					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC); 
 
 			/*****************************************************/
 			/*             Calculate M2Actuators                 */
 			/*****************************************************/
 
-			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(meanM2PistonError, meanM2TipTiltError, constantsCache.getTelescopeConstants().getM2ActuatorRadius(), 
+			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanStdResult.getMeanM2PistonError(), calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius(), 
 					constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());			
 
 			statusLogger.log("calc.m2actuators", m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
@@ -343,9 +344,9 @@ public class FineScreenExecutor {
 				
 				// Display to user and ask if they want to command
 				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd", 
-						meanM2PistonError * Constants.METERS_TO_UM, stdM2PistonError * Constants.METERS_TO_UM, 
-						meanM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, 
-						meanM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
+						calcM2PttErrorsMeanStdResult.getMeanM2PistonError() * Constants.METERS_TO_UM, calcM2PttErrorsMeanStdResult.getStdM2PistonError() * Constants.METERS_TO_UM, 
+						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, 
+						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC); 
 				
 				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 				
@@ -374,28 +375,24 @@ public class FineScreenExecutor {
 	
 			}
 			
+			// TODO: eventually replace this with an framework solution
+			procedureOutput.getProcedureDecisionLog().setM2CmdsSent(dcsCommandsSent);
+
+			
 			/*****************************************************/
 			/*      Calculate Average Seg Tip/Tilts              */
 			/*****************************************************/
 			FloatPoint[][] m1SegmentTipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2Pixels", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrors);
 			
-			// transpose array for easier mean calculating
-			FloatPoint[][] transposedArray = JavaComputations.transpose2dArray(m1SegmentTipTiltErrors);
-			
-			// loop over all segments
-			FloatPoint[] segmentMeanTipTiltErrors = new FloatPoint[transposedArray.length];
-			for (int i=0; i<transposedArray.length; i++) {
-				segmentMeanTipTiltErrors[i] = JavaComputations.getMean(transposedArray[i]);	
-			}
-				
 			// calc centroid stats for pseudo pt 
 			
 			SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
-			computationLibrary.calculatePseudoCentroidStats(segmentMeanTipTiltErrors, subimageDefListPt.getNspotTypes());
+			computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
 
 			// calc scale error for pseudo pt 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
-			computationLibrary.passiveTiltScaleErrorResult(segmentMeanTipTiltErrors, centerSpots);
+			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), centerSpots);
 
 			
 			// TODO: display centroid offsets
@@ -417,7 +414,7 @@ public class FineScreenExecutor {
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					segmentMeanTipTiltErrors);
+					calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors());
 	
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -443,9 +440,10 @@ public class FineScreenExecutor {
 			// calculate std of iteration desired act delta rms
 			Float[] desiredActDeltaRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasRms", Float.class).toArray(new Float[0]);
 			
-			float desiredActDeltasRmsStd = JavaComputations.getStd(desiredActDeltaRmsIterations);
+			CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations);
 			
-			statusLogger.log("calc.desiredm1cmds", procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), desiredActDeltasRmsStd);
+			
+			statusLogger.log("calc.desiredm1cmds", procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd());
 
 			
 			// prepare to command primary
@@ -453,7 +451,7 @@ public class FineScreenExecutor {
 			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
 				
 				// Display to user and ask if they want to command				
-				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), desiredActDeltasRmsStd);
+				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd());
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog(actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
 			}

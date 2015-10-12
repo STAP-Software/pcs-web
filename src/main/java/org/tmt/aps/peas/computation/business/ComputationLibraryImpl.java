@@ -26,9 +26,12 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -40,7 +43,6 @@ import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -53,7 +55,6 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
-import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
@@ -1009,6 +1010,55 @@ public class ComputationLibraryImpl {
 		return calcM2ActuatorsFromPttResult;
 
 	
+	}
+
+	@Computation
+	public CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStd(Float[] desiredActDeltaRmsIterations) {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcDesiredActDeltasRmsStd"));
+
+		float desiredActDeltasRmsStd = JavaComputations.getStd(desiredActDeltaRmsIterations);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcDesiredActDeltasRmsStd"));
+
+		return new CalcDesiredActDeltasRmsStdResult(desiredActDeltasRmsStd);
+	}
+
+	@Computation
+	public CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStd(Float[] m2PistonErrors, FloatPoint[] m2TipTiltErrors) {
+
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2PttErrorsMeanStd"));
+
+		float meanM2PistonError = JavaComputations.getMean(m2PistonErrors);
+		FloatPoint meanM2TipTiltError = JavaComputations.getMean(m2TipTiltErrors);
+		
+		float stdM2PistonError = JavaComputations.getStd(m2PistonErrors);
+		FloatPoint stdM2TipTiltError = JavaComputations.getStd(m2TipTiltErrors);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcM2PttErrorsMeanStd"));
+
+		return new CalcM2PttErrorsMeanStdResult(meanM2PistonError, meanM2TipTiltError, stdM2PistonError, stdM2TipTiltError);
+		
+		
+	}
+
+	@Computation
+	public CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTilts(FloatPoint[][] m1SegmentTipTiltErrors) {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2PttErrorsMeanStd"));
+		// transpose array for easier mean calculating
+		FloatPoint[][] transposedArray = JavaComputations.transpose2dArray(m1SegmentTipTiltErrors);
+		
+		// loop over all segments
+		FloatPoint[] segmentMeanTipTiltErrors = new FloatPoint[transposedArray.length];
+		for (int i=0; i<transposedArray.length; i++) {
+			segmentMeanTipTiltErrors[i] = JavaComputations.getMean(transposedArray[i]);	
+		}
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcM2PttErrorsMeanStd"));
+		
+		return new CalcSegmentMeanTipTiltsResult(segmentMeanTipTiltErrors);
 	}
 
 	
