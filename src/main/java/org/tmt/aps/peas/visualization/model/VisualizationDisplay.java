@@ -74,6 +74,10 @@ public class VisualizationDisplay extends UserPrompt {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_CENTROID_OFFSETS;
 	}
 	
+	public boolean isDisplayTypeAvgCentroidOffsets() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_AVG_CENTROID_OFFSETS;
+	}
+	
 	public boolean isDisplayTypeActuatorDeltas() {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_ACTUATOR_DELTAS;
 	}

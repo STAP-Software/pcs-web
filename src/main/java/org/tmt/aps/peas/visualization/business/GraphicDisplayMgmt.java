@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.visualization.model.AvgCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -39,10 +40,14 @@ public class GraphicDisplayMgmt implements Serializable {
 	String centroidYs;
 	String centroidOffsetXs;
 	String centroidOffsetYs;
+	String avgCentroidOffsetXs;
+	String avgCentroidOffsetYs;
 	
 
 	CentroidOffsetsDisplayValues centroidOffsetsDisplayValues;
 	ActuatorDeltasDisplayValues actuatorDeltasDisplayValues;
+	AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues;
+	
 	String actDeltaHeats;
 
 	String centroidNbrs;
@@ -84,6 +89,22 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setCentroidOffsetYs(String centroidOffsetYs) {
 		this.centroidOffsetYs = centroidOffsetYs;
+	}
+
+	public String getAvgCentroidOffsetXs() {
+		return avgCentroidOffsetXs;
+	}
+
+	public void setAvgCentroidOffsetXs(String avgCentroidOffsetXs) {
+		this.avgCentroidOffsetXs = avgCentroidOffsetXs;
+	}
+
+	public String getAvgCentroidOffsetYs() {
+		return avgCentroidOffsetYs;
+	}
+
+	public void setAvgCentroidOffsetYs(String avgCentroidOffsetYs) {
+		this.avgCentroidOffsetYs = avgCentroidOffsetYs;
 	}
 
 	public String getCentroidNbrs() {
@@ -142,6 +163,26 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 
+	@Lock(LockType.READ)
+	public AvgCentroidOffsetsDisplayValues getAvgCentroidOffsetsDisplayValues() {
+		return avgCentroidOffsetsDisplayValues;
+	}
+
+	public void setAvgCentroidOffsetsDisplayValues(AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues) {
+		this.avgCentroidOffsetsDisplayValues = avgCentroidOffsetsDisplayValues;
+	}
+	
+	public void setAndEncodeAvgCentroidOffsetsDisplayValues(AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues) {
+		
+		this.avgCentroidOffsetsDisplayValues = avgCentroidOffsetsDisplayValues;
+		
+		// encode centroid offsets
+		FloatPoint[] centroidOffsets = getAvgCentroidOffsetsDisplayValues().getAvgCentroidOffsets();
+		setAvgCentroidOffsetXs(FloatPointListEncoder.encodeXList(Arrays.asList(centroidOffsets)));
+		setAvgCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
+	}
+
+	
 	@Lock(LockType.READ)
 	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
 		return actuatorDeltasDisplayValues;
@@ -210,6 +251,20 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();	
 
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayCentroidOffsets"));
+	}
+	
+	public void displayAvgCentroidOffsets(AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues) {
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayAvgCentroidOffsets"));
+		// set the offset display values, this also encodes
+		setAndEncodeAvgCentroidOffsetsDisplayValues(avgCentroidOffsetsDisplayValues);
+					
+		// set the pending display and wait for return
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_AVG_CENTROID_OFFSETS);
+		
+		waitForReturnState();	
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayAvgCentroidOffsets"));
 	}
 	
 	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {

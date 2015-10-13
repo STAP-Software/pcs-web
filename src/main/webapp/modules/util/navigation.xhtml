@@ -68,7 +68,7 @@
 						</p:submenu>
 						</c:forEach>
 					
-						<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":offsetsForm" oncomplete="centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
+						<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":avgOffsetsForm" oncomplete="runDrawAvgOffsets(); avgCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
 						
 					</p:submenu>

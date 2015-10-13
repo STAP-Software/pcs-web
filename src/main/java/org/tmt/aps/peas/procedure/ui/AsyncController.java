@@ -147,6 +147,7 @@ public class AsyncController implements Serializable {
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			
 			requestContext.update("offsetsForm");
+			requestContext.update("avgOffsetsForm");
 			requestContext.update("spotsForm");
 			requestContext.update("actDeltasForm");
 			
@@ -156,6 +157,9 @@ public class AsyncController implements Serializable {
 			}
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
 				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+			}
+			if (visualizationDisplay.isDisplayTypeAvgCentroidOffsets()) {
+				requestContext.execute("runDrawAvgOffsets(); avgCentroidOffsetDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
 				requestContext.execute("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");

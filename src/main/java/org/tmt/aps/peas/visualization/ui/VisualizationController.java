@@ -33,6 +33,7 @@ import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.VisualizationDisplayMgmt;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
+import org.tmt.aps.peas.visualization.model.AvgCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -102,7 +103,8 @@ public class VisualizationController implements Serializable {
 
 	public String getCentDefXs() {
 		// determine which procedure type we are in
-		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope()) {
+		// TODO: we are deciding that AvgCentroidOffset displays always use 36.  We may need to generalize this
+		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null && !currentDisplay.isDisplayTypeAvgCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
@@ -114,7 +116,7 @@ public class VisualizationController implements Serializable {
 
 	public String getCentDefYs() {
 		// determine which procedure type we are in
-		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope()) {
+		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null  && !currentDisplay.isDisplayTypeAvgCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
@@ -213,6 +215,20 @@ public class VisualizationController implements Serializable {
 	public void setCentroidOffsetYs(String centroidYs) {
 	}
 
+	public String getAvgCentroidOffsetXs() {
+		return graphicDisplayMgmt.getAvgCentroidOffsetXs();
+	}
+
+	public void setAvgCentroidOffsetXs(String centroidXs) {
+	}
+
+	public String getAvgCentroidOffsetYs() {
+		return graphicDisplayMgmt.getAvgCentroidOffsetYs();
+	}
+
+	public void setAvgCentroidOffsetYs(String centroidYs) {
+	}
+
 	public String getCentroidNbrs() {
 		return graphicDisplayMgmt.getCentroidNbrs();
 	}
@@ -231,6 +247,16 @@ public class VisualizationController implements Serializable {
 		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidStatsResult().getMaxOffset();
 	}
 	
+	public void setMaxAvgOffset(float maxOffset) {
+		// TODO:
+	}
+	
+	public float getMaxAvgOffset() {
+		if (graphicDisplayMgmt.getAvgCentroidOffsetsDisplayValues() == null) return 0.0f;
+		
+		return graphicDisplayMgmt.getAvgCentroidOffsetsDisplayValues().getAvgCentroidStatsResult().getMaxOffset();
+	}
+	
 	public float getOffsetScale() {
 		return offsetScale;
 	}
@@ -244,6 +270,12 @@ public class VisualizationController implements Serializable {
 	}
 
 	public void setCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {}
+
+	public AvgCentroidOffsetsDisplayValues getAvgCentroidOffsetsDisplayValues() {
+		return graphicDisplayMgmt.getAvgCentroidOffsetsDisplayValues();
+	}
+
+	public void setAvgCentroidOffsetsDisplayValues(AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues) {}
 
 	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
 		return graphicDisplayMgmt.getActuatorDeltasDisplayValues();
@@ -305,6 +337,11 @@ public class VisualizationController implements Serializable {
 		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
+	public void updateAvgCentroidOffsetDisplayListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawAvgCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
+	}
+
 	public void updateActDeltaDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
@@ -323,6 +360,7 @@ public class VisualizationController implements Serializable {
 			graphicDisplayMgmt.setAndEncodeCentroidMap(centroidMap);
 			
 		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROIDS);
 	}
 
 	
@@ -331,17 +369,24 @@ public class VisualizationController implements Serializable {
 
 		ProcedureIterationOutput procedureIterationOutput = procedureController.getProcedure().getProcedureOutput().getProcedureIterationOutputList().get(iteration);
 
-		// TODO: add logic for other procedures as they arrive
 		if (procedureIterationOutput instanceof CentroidOffsetsDisplayValues) {
 
 			graphicDisplayMgmt.setAndEncodeCentroidOffsetsDisplayValues((CentroidOffsetsDisplayValues) procedureIterationOutput);
 		}
-		
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);		
 	}
 	
 
 	public void doPopulateAvgCentroidOffsetDisplay() {
-		// TODO: implement
+		offsetScale = 100.0f; // initialize at 100%
+
+		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
+
+		if (procedureOutput instanceof AvgCentroidOffsetsDisplayValues) {
+
+			graphicDisplayMgmt.setAndEncodeAvgCentroidOffsetsDisplayValues((AvgCentroidOffsetsDisplayValues) procedureOutput);
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_AVG_CENTROID_OFFSETS);		
 	}
 
 	public void doPopulateActuatorDeltaDisplay() {
@@ -355,6 +400,7 @@ public class VisualizationController implements Serializable {
 			graphicDisplayMgmt.setAndEncodeActuatorDeltasDisplayValues(ptpo);
 			
 		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);		
 
 	}
 

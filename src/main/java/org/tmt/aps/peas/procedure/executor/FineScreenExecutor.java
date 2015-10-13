@@ -395,13 +395,12 @@ public class FineScreenExecutor {
 			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), centerSpots);
 
 			
-			// TODO: display centroid offsets
-			// Display the average centroid offsets - this is probably not needed since we only do one trial
+			// Display the average centroid offsets 
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgCentroidOffsets()) {
 				
-				// TODO: the average centroid offsets is a different display from centroid offsets and requires different inputs
+				// average centroid offsets is a different display from centroid offsets and requires different inputs
 				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
-				//graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
+				graphicDisplayMgmt.displayAvgCentroidOffsets(procedureOutput);
 			}
 
 			
