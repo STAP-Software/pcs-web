@@ -215,6 +215,10 @@ public class Procedure {
 	public void setStarName(String starName) {
 		this.starName = starName;
 	}
+	
+	public String getStarNameFormatted() {
+		return starName != null && starName.trim().length() > 0 ? starName : "N/A";
+	}
 
 	public String getStarSpType() {
 		return starSpType;

@@ -7,6 +7,9 @@
 var sideLen = 77
 var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
+var resizing = false;   
+
+           
 function runDrawAvgOffsets() {
 
 	var c = document.getElementById("avgOffsetsCanvas");
@@ -16,7 +19,43 @@ function runDrawAvgOffsets() {
 	ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawAvgCentroidOffsets(true,true)", 10);
+	
+
+	$(avgCentroidOffsetDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("resizeHandler()", 1000);
+		}
+	})
+	   
 }
+
+function resizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("avgCentroidOffsetDialog"); 
+	var available = d.offsetWidth - 300 - 100;
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("avgOffsetsCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	drawAvgCentroidOffsets(true, true);
+	
+	resizing = false;
+
+}
+
+
 
 function drawAvgCentroidOffsets(drawSegments,drawSegNums) {
     
@@ -194,16 +233,17 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			
  			<h:inputHidden id="maxOffset" value="#{visualizationController.maxAvgOffset}" />
     			
-    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
      		
-     		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
     		
-    			<canvas id="avgOffsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<canvas id="avgOffsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
     		
-    		</p:panelGrid>
     		
-    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
-			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+    		
+    		
+    		
+ 			<p:panel id="horizontal" header="Stats" toggleable="true" toggleOrientation="horizontal" style="max-width:330px">			
+ 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 
 				<!-- TODO: ASK Mitch if we need these -->
@@ -259,12 +299,13 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
             		<p:ajax event="slideEnd" listener="#{visualizationController.updateAvgCentroidOffsetDisplayListener}" />
         		</p:slider>
     		</p:panelGrid>
-    		</p:panelGrid>    		
+    		
+    		</p:panel>
     		
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl :errorGrowl"
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="avgCentroidOffsetDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 
