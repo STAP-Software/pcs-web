@@ -9,6 +9,7 @@ var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
 var resizing = false;   
 
+var avgCentOffScope = {drawSegments: true, drawSegNums: true};
            
 function runDrawAvgOffsets() {
 
@@ -24,19 +25,21 @@ function runDrawAvgOffsets() {
 	$(avgCentroidOffsetDisplayDialog.jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
-			window.setTimeout("resizeHandler()", 1000);
+			window.setTimeout("avgCentroidOffsetsResizeHandler()", 1000);
 		}
 	})
 	   
 }
 
-function resizeHandler() {
+function avgCentroidOffsetsResizeHandler() {
 	
 	var baseScale = 0.61;
 	var baseCanvasSize = 600.0;
 	
 	var d = document.getElementById("avgCentroidOffsetDialog"); 
-	var available = d.offsetWidth - 300 - 100;
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableHeight = d.offsetHeight - 70;
+	var available = Math.min(availableWidth, availableHeight);
 	
 	var scale = baseScale * available / baseCanvasSize;
 	
@@ -49,7 +52,7 @@ function resizeHandler() {
 	ctx.scale(scale, scale);
 
 	//alert("resizing")
-	drawAvgCentroidOffsets(true, true);
+	drawAvgCentroidOffsets(avgCentOffScope.drawSegments, avgCentOffScope.drawSegNums);
 	
 	resizing = false;
 
@@ -57,8 +60,12 @@ function resizeHandler() {
 
 
 
-function drawAvgCentroidOffsets(drawSegments,drawSegNums) {
+function drawAvgCentroidOffsets(drawSegments, drawSegNums) {
     
+	avgCentOffScope.drawSegNums = drawSegNums;
+	avgCentOffScope.drawSegments = drawSegments;
+
+	
 	var c = document.getElementById("avgOffsetsCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
@@ -241,8 +248,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		
     		
-    		
- 			<p:panel id="horizontal" header="Stats" toggleable="true" toggleOrientation="horizontal" style="max-width:330px">			
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >			
  			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 
@@ -300,7 +306,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
         		</p:slider>
     		</p:panelGrid>
     		
-    		</p:panel>
+    		</p:panelGrid>
     		
     		
     		</p:panelGrid>

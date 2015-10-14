@@ -7,6 +7,11 @@
 var sideLen = 77
 var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
+var resizing = false;   
+
+var centOffScope = {drawSegments: true, drawSegNums: true};
+
+
 function runDrawOffsets() {
 
 	var c = document.getElementById("offsetsCanvas");
@@ -16,10 +21,49 @@ function runDrawOffsets() {
 	ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawCentroidOffsets(true,true)", 10);
+	
+	$(centroidOffsetDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("centroidOffsetsResizeHandler()", 1000);
+		}
+	})
+	
 }
+
+function centroidOffsetsResizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("centroidOffsetDialog"); 
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableHeight = d.offsetHeight - 70;
+	var available = Math.min(availableWidth, availableHeight);
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("offsetsCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	drawCentroidOffsets(centOffScope.drawSegments, centOffScope.drawSegNums);
+	
+	resizing = false;
+
+}
+
 
 function drawCentroidOffsets(drawSegments,drawSegNums) {
     
+	centOffScope.drawSegNums = drawSegNums;
+	centOffScope.drawSegments = drawSegments;
+	
 	var c = document.getElementById("offsetsCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
@@ -189,19 +233,17 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			
  			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
     			
-    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
      		
-     		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
     		
-    			<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
     		
-    		</p:panelGrid>
     		
-    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 
-				<p:spacer height="30"/><p:spacer height="30"/>
+				<p:spacer height="15"/><p:spacer height="15"/>
 				<h:outputLabel value="Translation from Ref (pixels) (x,y)" />
 				<h:outputText value="#{visualizationController.centroidOffsetsDisplayValues.centroidOffsetsResult.imageTranslation.x}, #{visualizationController.centroidOffsetsDisplayValues.centroidOffsetsResult.imageTranslation.y}" style="position:relative; top:2px" />
 				<h:outputLabel value="Rotation from Ref (rad)" />
@@ -224,11 +266,11 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<h:outputText value="#{visualizationController.centroidOffsetsDisplayValues.centroidStatsResult.maxSpotNum}" style="position:relative; top:2px" rendered="#{procedureController.procedure.procedureType.passiveTilt}"/>
 				
 			
-				<p:spacer height="15"/><p:spacer height="15"/>
+				<p:spacer height="10"/><p:spacer height="10"/>
 				<h:outputLabel value="Arcsec/pixel" />
 				<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" />
 				
-				<p:spacer height="120"/><p:spacer height="120"/>
+				<p:spacer height="30"/><p:spacer height="30"/>
 				<h:outputLabel value="Show Segments" />
      			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
     				<p:ajax update="@this" listener="#{visualizationController.updateCentroidOffsetDisplayListener}" />
@@ -256,7 +298,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl :errorGrowl"
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 

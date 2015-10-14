@@ -10,6 +10,9 @@ var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
 var a = sideLen
 var b = a * Math.sqrt(3) / 2;
 
+var actDeltaScope = {drawSegments: true, drawSegNums: true, drawActVals: true, drawHeat: true, drawHeatCircles: false};
+
+
 function runDrawActDeltas() {
 
 	var c = document.getElementById("actDeltasCanvas");
@@ -25,10 +28,53 @@ function runDrawActDeltas() {
 
 	
 	window.setTimeout("drawActDeltas(true,true,true,true,false)", 10);
+	
+	$(actuatorDeltasDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("actuatorDeltasResizeHandler()", 1000);
+		}
+	})
 }
 
+
+function actuatorDeltasResizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("actDeltasDialog"); 
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableHeight = d.offsetHeight - 70;
+	var available = Math.min(availableWidth, availableHeight);
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("actDeltasCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	
+	drawActDeltas(actDeltaScope.drawSegments, actDeltaScope.drawSegNums, actDeltaScope.drawActVals, actDeltaScope.drawHeat, actDeltaScope.drawHeatCircles);
+	
+	resizing = false;
+
+}
 function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCircles) {
     
+	
+	actDeltaScope.drawSegments = drawSegments; 
+	actDeltaScope.drawSegNums = drawSegNums;
+	actDeltaScope.drawActVals = drawActVals;
+	actDeltaScope.drawHeat = drawHeat;
+	actDeltaScope.drawHeatCircles = drawHeatCircles;
+	
+	
 	var c = document.getElementById("actDeltasCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
@@ -381,12 +427,10 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     			
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder">
      		
-     		<p:panelGrid id="canvasGrid" columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
     		
-    			<canvas id="actDeltasCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<canvas id="actDeltasCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
     		
-    		</p:panelGrid>
-    		
+     		
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
@@ -436,7 +480,7 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" style="float:right" update=":growl :errorGrowl"
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 

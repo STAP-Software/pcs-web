@@ -153,7 +153,7 @@ public class AsyncController implements Serializable {
 			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
-				requestContext.execute("drawSpots(); centroidsDisplayDialog.show()");
+				requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
 				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");

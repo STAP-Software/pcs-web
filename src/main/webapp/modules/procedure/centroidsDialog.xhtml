@@ -4,14 +4,60 @@
 <script type="text/javascript">  
 //<![CDATA[
 
-
+var resizing = false;  
+    
     
 function runDrawSpots() {
 	
+	var c = document.getElementById("spotCanvas");
+	var ctx = c.getContext("2d");
+
+ 	ctx.translate(-35,-25);
+ 	ctx.scale(0.49, 0.49);
+	
 	window.setTimeout("drawSpots()", 10);
+	
+	$(centroidsDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("centroidsResizeHandler()", 1000);
+		}
+	})
 }
 
+function centroidsResizeHandler() {
+	
+	var baseScale = 0.49;
+	var baseCanvasSize = 450.0;
+	
+	var d = document.getElementById("centroidsDialog"); 
+	var availableWidth = d.offsetWidth - 80;
+	var availableHeight = d.offsetHeight - 80;
+	var available = Math.min(availableWidth, availableHeight);
+	
+	var changeFromBase = available / baseCanvasSize;
+	
+	var scale = baseScale * changeFromBase;
+	
+	var c = document.getElementById("spotCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+ 	ctx.translate(-35 * changeFromBase, -25 * changeFromBase);
+	ctx.scale(scale, scale);
+
+	alert("resizing")
+	drawSpots();
+	
+	resizing = false;
+
+}
+
+
 function drawSpots() {
+		
 	var c = document.getElementById("spotCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,c.width, c.height);
@@ -23,8 +69,6 @@ function drawSpots() {
 	var yField = document.getElementById('spotsForm:centroidYs').value;
  	var yArray = yField.split(','); 
     
- 	ctx.translate(-25,-10);
- 	ctx.scale(0.5, 0.5);
  	
  	var fontSize;
  	if (xArray.length > 1000) {
@@ -62,8 +106,7 @@ function drawSpots() {
    		<br/>
  		<br/>   		
    		
-   		<f:facet name="footer">
-   		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}">
+   		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}" styleClass="dialogbutton">
 
 		
     	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" style="float:right" update=":growl :errorGrowl"
@@ -74,10 +117,9 @@ function drawSpots() {
     	<h:outputText escape="false" value="#{visualizationController.currentDisplay.message}" style="white-space:pre-wrap; text-align: right; position:relative; margin-right:30px; top:8px; color: #444444" />
     	
     	</h:panelGroup>
-    	</f:facet>
     	
  	   	<h:panelGroup rendered="#{empty visualizationController.currentDisplay.message}">
-    	<p:commandButton id="button3" value="Close" style="float:right" update=":growl :errorGrowl"
+    	<p:commandButton id="button3" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
     	
     	</h:panelGroup>
