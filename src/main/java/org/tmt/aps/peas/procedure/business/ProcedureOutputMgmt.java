@@ -136,7 +136,7 @@ public class ProcedureOutputMgmt {
 		List<ProcedureOutputValue> procedureOutputList = query.getResultList();
 
 		if (procedureOutputList.isEmpty()) {
-			return new ProcedureOutput();
+			return null;
 		}
 
 		String poClassName = procedure.getProcedureType().getProcedureOutputClassName();

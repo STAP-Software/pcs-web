@@ -98,6 +98,8 @@ public class PupilRegistrationExecutor {
 	private SubimageDefCache subimageDefCache;
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
+	@EJB
+	private PupilRegistrationSubflow pupilRegistrationSubflow;
 
 	private List<String> logMessages;
 
@@ -233,121 +235,15 @@ public class PupilRegistrationExecutor {
 
 			procedureExecutionState.setPercentComplete(70);
 			
-			/*****************************************************/
-			/*            calcPupilRegErrorDefaults              */
-			/*****************************************************/
-					
-			PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
-				procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
-				procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
-				procedureConfig.getPupilMaskType().getNumSpots(), 
-				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotPerp(),
-				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotParallel(),
-				constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotTheta(),
-				constantsCache.getPrimaryMirrorConstants().getaHex(), 
-				procedureConfig.getPupilMask().getSpotDiamPeripheral(), 
-				subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
-				
 			
-				// log values 
-				statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
-						new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
-	
-				procedureExecutionState.setPercentComplete(80);
+			/**********************************************/
+			/*        PupilRegistration Subflow           */
+			/**********************************************/			
+			pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 
-				
-			/*****************************************************/
-			/*           determine fine/coarse PR Commands       */
-			/*****************************************************/
-			
-			// logic that given automode preferences and (potentially) user input to determine if commands are to be sent, 
-			// what the commands are and which mechanisms to move.
-			
-			// prompt user with registration error values
-			FloatPoint regErrorMm = new FloatPoint(pupilRegErrorResult.getRegErrorX() * 1000.0f, pupilRegErrorResult.getRegErrorY() * 1000.0f);
-				
-			String text = MessageGenerator.generateMessage("calc.pupil_reg_error", regErrorMm.x, regErrorMm.y);
-				
-			boolean centerPupil = false;
-			if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_PROMPT) {
-				// ask the user
-				
-				// include the PR error result in the dialog
-				centerPupil = userPromptMgmt.displayYesNoDialog(text + "\n\nSend commands to correct pupil registration errors?");
-				
-			} else if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES) {
-				
-				// only move if error more than centerPupilThresh
-				float centerPupilThresh = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getCenterPupilThresh();
-				if (Math.abs(regErrorMm.x) > centerPupilThresh || Math.abs(regErrorMm.y) > centerPupilThresh) {
-				
-					centerPupil = procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES;
-				}
-			} 
-			
-			int desiredCenterPupilMech = 0;
-			if (centerPupil) {
-				if (procedureConfig.getAutoCenterPupilMechanism() == Constants.AUTO_CENTER_PUPIL_MECH_PROMPT) {
-					
-					String[] choices = {"Fine", "Coarse", "AutoDetermine"};
-					int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
-					
-					desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
-							choices, values);
-								
-				} else {
-					desiredCenterPupilMech = procedureConfig.getAutoCenterPupilMechanism();
-				}					
-			}
-
-			procedureExecutionState.setPercentComplete(85);
-
-			CoarseTiltMirror coarseMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
-			FineTiltMirror fineMirror = physicalModel.getInstrument().getCamera().getFineTiltMirror();
-
-			// need to know current positions which is available in the coarse and fine mirror objects
-			CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
-					procedure.getProcedureConfigSet().getPupilRegErrorConfig(), fineMirror, coarseMirror);
-
-			
 			// fill the procedure output
 			procedureOutput.addPupilRegistrationIterationOutput(pio);
-
-			
-			procedureExecutionState.setPercentComplete(90);
-			
-			/*****************************************************/
-			/*         move fine, coarse, both, or none          */
-			/*****************************************************/
-			
-			if (calcPrCommandsResult.isOffloaded()) {
-				statusLogger.log("calc.pupil_reg.cmd_offloaded");
-			}
-			
-			Future<Point> coarseMirrorCommandFuture = null;
-			Future<Point> fineMirrorCommandFuture = null;
-			
-			if (calcPrCommandsResult.hasCoarseMirrorCommands()) {
-				// always command the coarse mirror to setup values at the start of all procedures
-				coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(calcPrCommandsResult.getCoarseMirrorCommands());
 				
-				statusLogger.log("camera.cmd.coarse_mirror_deltas", calcPrCommandsResult.getCoarseMirrorDeltas().x, calcPrCommandsResult.getCoarseMirrorDeltas().y);
-				statusLogger.log("camera.cmd.coarse_mirror", calcPrCommandsResult.getCoarseMirrorCommands().x, calcPrCommandsResult.getCoarseMirrorCommands().y);
-
-			} 
-			if (calcPrCommandsResult.hasFineMirrorCommands()) {
-				fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(calcPrCommandsResult.getFineMirrorCommands());
-				statusLogger.log("camera.cmd.fine_mirror_deltas", calcPrCommandsResult.getFineMirrorDeltas().x, calcPrCommandsResult.getFineMirrorDeltas().y);
-				statusLogger.log("camera.cmd.fine_mirror", calcPrCommandsResult.getFineMirrorCommands().x, calcPrCommandsResult.getFineMirrorCommands().y);
-			}
-			
-			Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
-			
-			if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
-				statusLogger.log("camera.cmd.complete");
-			}
-			
-								
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 
 			procedureExecutionState.setPercentComplete(100);

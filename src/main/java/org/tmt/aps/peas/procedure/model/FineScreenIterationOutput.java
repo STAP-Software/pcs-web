@@ -2,12 +2,14 @@ package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
+import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
@@ -23,6 +25,10 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	CalcM2M1Result calcM2M1Result;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	PseudoTipTiltCentroidStatsResult pseudoTipTiltCentroidStatsResult;
+	
+	PupilRegErrorResult pupilRegErrorResult;
+	CalcPrCommandsResult calcPrCommandsResult;
+	
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -78,5 +84,19 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	public void setPseudoTipTiltCentroidStatsResult(PseudoTipTiltCentroidStatsResult pseudoTipTiltCentroidStatsResult) {
 		this.pseudoTipTiltCentroidStatsResult = pseudoTipTiltCentroidStatsResult;
 	}
+	public PupilRegErrorResult getPupilRegErrorResult() {
+		return pupilRegErrorResult;
+	}
+	public void setPupilRegErrorResult(PupilRegErrorResult pupilRegErrorResult) {
+		this.pupilRegErrorResult = pupilRegErrorResult;
+	}
+	public CalcPrCommandsResult getCalcPrCommandsResult() {
+		return calcPrCommandsResult;
+	}
+	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
+		this.calcPrCommandsResult = calcPrCommandsResult;
+	}
+	
+	
 	
 }

@@ -103,7 +103,10 @@ public class FineScreenExecutor {
 	private SubimageDefCache subimageDefCache;
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
+	@EJB
+	private PupilRegistrationSubflow pupilRegistrationSubflow;
 
+	
 	private List<String> logMessages;
 
 	public List<String> getLogMessages() {
@@ -260,7 +263,11 @@ public class FineScreenExecutor {
 					graphicDisplayMgmt.displayCentroidOffsets(pio);
 				}
 				
-				// TODO: call pupil_registration for fine screen, and center the pupil
+				// call pupil_registration for fine screen, and center the pupil
+				/**********************************************/
+				/*        PupilRegistration Subflow           */
+				/**********************************************/			
+				pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 				
 	          
 				// TODO: if calc option is Ray Trace:
