@@ -150,26 +150,66 @@
 								
 								</p:panelGrid>
  								
+ 								
 								<p:panelGrid columns="2" 
 									styleClass="pcsFormNoBorder" style="width:300px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.passiveTilt}">
 
 									<f:facet name="header">
                     					#{procedure.procedureType.procedureTypeName} 
                 					</f:facet>
-<!--	
+
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
-									<h:outputText value="nan" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+								
+								</p:panelGrid>
 	
+	
+								<p:panelGrid columns="2" 
+									styleClass="pcsFormNoBorder" style="width:300px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.fineScreen}">
+	
+									<f:facet name="header">
+	                   					#{procedure.procedureType.procedureTypeName} 
+	               					</f:facet>
+
+<!--	
+
+RMS of M1 commands w/ stdev?
+RMS of M1 commands FM only w/ stdev?
+RMS of M1 commands no FM w/ Stddev
+
+ -->
+
 									<h:outputLabel value="Secondary Theta X (arcsec)" />
-									<h:outputText value="0.56" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px"/>
 	
 									<h:outputLabel value="Secondary Theta Y (arcsec)" />
-									<h:outputText value="3.2" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2TipTiltErrorArcsec.y}" style="position:relative; top:2px"/>
 	
-									<h:outputLabel value="Secondary Focus (units??)" />
-									<h:outputText value="6.65" style="position:relative; top:2px"/>
+									<h:outputLabel value="Secondary Focus (microns)" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2PistonErrorUm}" style="position:relative; top:2px"/>
 
+									<h:outputLabel value="M1 Cmds RMS (nm)" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+									
+									<h:outputLabel value="M1 Cmds RMS - Focus Mode Only (nm)" />
+									<h:outputText value="TBD" style="position:relative; top:2px"/>
+
+									<h:outputLabel value="M1 Cmds RMS - No Focus Mode (nm)" />
+									<h:outputText value="TBD" style="position:relative; top:2px"/>
+
+							</p:panelGrid>
+
+							<p:panelGrid columns="2" 
+								styleClass="pcsFormNoBorder" style="width:300px"
+								columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.phasing}">
+
+								<f:facet name="header">
+                   					#{procedure.procedureType.procedureTypeName} 
+               					</f:facet>
+
+<!--  
 									<h:outputLabel value="Phasing Piston RMS (units??)" />
 									<h:outputText value="6.36" style="position:relative; top:2px"/>
 	

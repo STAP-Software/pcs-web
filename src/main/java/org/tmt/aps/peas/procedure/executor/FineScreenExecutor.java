@@ -331,9 +331,9 @@ public class FineScreenExecutor {
 
 			// output mean and std of ptt
 			statusLogger.log("calc.m2pttmeanstd", 
-					calcM2PttErrorsMeanStdResult.getMeanM2PistonError() * Constants.METERS_TO_UM, calcM2PttErrorsMeanStdResult.getStdM2PistonError() * Constants.METERS_TO_UM, 
-					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, 
-					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC); 
+					calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
+					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
+					calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
 
 			/*****************************************************/
 			/*             Calculate M2Actuators                 */
@@ -351,9 +351,9 @@ public class FineScreenExecutor {
 				
 				// Display to user and ask if they want to command
 				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd", 
-						calcM2PttErrorsMeanStdResult.getMeanM2PistonError() * Constants.METERS_TO_UM, calcM2PttErrorsMeanStdResult.getStdM2PistonError() * Constants.METERS_TO_UM, 
-						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().x * Constants.RADIANS_TO_ARCSEC, 
-						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC, calcM2PttErrorsMeanStdResult.getStdM2TipTiltError().y * Constants.RADIANS_TO_ARCSEC); 
+						calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
+						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
+						calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
 				
 				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 				

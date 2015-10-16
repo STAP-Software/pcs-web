@@ -333,5 +333,27 @@ public class Procedure {
 	}
 	
 
+	public PassiveTiltProcedureOutput getPassiveTiltProcedureOutput() {
+		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
+			return (PassiveTiltProcedureOutput)procedureOutput;
+		} else {
+			return new PassiveTiltProcedureOutput();
+		}
+	}
 
+	public FineScreenProcedureOutput getFineScreenProcedureOutput() {
+		if (procedureOutput instanceof FineScreenProcedureOutput) {
+			return (FineScreenProcedureOutput)procedureOutput;
+		} else {
+			return new FineScreenProcedureOutput();
+		}
+	}
+	
+	public PhasingProcedureOutput getPhasingProcedureOutput() {
+		if (procedureOutput instanceof PhasingProcedureOutput) {
+			return (PhasingProcedureOutput)procedureOutput;
+		} else {
+			return new PhasingProcedureOutput();
+		}
+	}
 }
