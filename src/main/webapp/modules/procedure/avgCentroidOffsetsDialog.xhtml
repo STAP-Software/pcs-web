@@ -313,6 +313,8 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		<br/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="avgCentroidOffsetDisplayDialog.hide()" />
+			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="avgCentroidOffsetDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 
 

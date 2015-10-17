@@ -20,6 +20,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgCentroidOffsetsDisplayValues;
@@ -209,6 +210,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		setCentroidYs(FloatPointListEncoder.encodeYList(centroids));
 	}
 	
+	@Abortable
 	public void displaySubimageCentroids(CentroidMap centroidMap) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySubimageCentroids"));
@@ -224,6 +226,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 
+	@Abortable
 	public boolean displaySubimageCentroids(CentroidMap centroidMap, int type, String message) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySubimageCentroids"));
@@ -239,6 +242,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false; 
 	}
 
+	@Abortable
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayCentroidOffsets"));
@@ -253,6 +257,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayCentroidOffsets"));
 	}
 	
+	@Abortable
 	public void displayAvgCentroidOffsets(AvgCentroidOffsetsDisplayValues avgCentroidOffsetsDisplayValues) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayAvgCentroidOffsets"));
@@ -267,6 +272,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayAvgCentroidOffsets"));
 	}
 	
+	@Abortable
 	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayActuatorDeltas"));

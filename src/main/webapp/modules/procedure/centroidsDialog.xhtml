@@ -124,6 +124,10 @@ function drawSpots() {
     	
     	</h:panelGroup>
  				
+ 		<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidsDisplayDialog.hide()" />
+ 				
+ 		
 		</p:panelGrid>
    		</h:form>
 	</p:dialog> 

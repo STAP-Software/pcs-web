@@ -31,7 +31,13 @@ public class AbortInterceptor implements Serializable {
 			throw new AbortProcedureException("The procedure has been aborted by the operator.");
 		}
 		
-		return ctx.proceed();
+		Object result = ctx.proceed();
+
+		if (procedureExecutionState.getAbortRequested()) {
+			throw new AbortProcedureException("The procedure has been aborted by the operator.");
+		}
+		
+		return result;
 		
 	}
 	

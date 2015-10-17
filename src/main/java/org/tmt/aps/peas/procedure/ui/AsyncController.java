@@ -345,6 +345,12 @@ public class AsyncController implements Serializable {
 		}
 	}
 	
+	public void doCloseGraphicsDisplayAbort() {
+		procedureExecutionState.setAbortRequested(true);
+		graphicDisplayMgmt.setReturnState(1);
+	}
+
+	
 	public void doCloseUserPrompt1() {
 		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton1Value());
 	}
@@ -355,6 +361,11 @@ public class AsyncController implements Serializable {
 
 	public void doCloseUserPrompt3() {
 		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton3Value());
+	}
+
+	public void doCloseUserPromptAbort() {
+		procedureExecutionState.setAbortRequested(true);
+		userPromptMgmt.setReturnState(-1);
 	}
 
 

@@ -482,6 +482,9 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		<br/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
+					
+			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
     		</h:form>
 		</p:dialog> 
 

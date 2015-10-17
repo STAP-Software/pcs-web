@@ -844,6 +844,15 @@ public class ProcedureController implements Serializable {
 		requestContext.execute("instructionDialog.hide()");
 	}
 
+	public void doAbortFromHandMarking() {
+		frameDisplayMgmt.setPendingMarkAction(false);
+
+		frameMarkingMode = false;
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("instructionDialog.hide()");
+		procedureExecutionState.setAbortRequested(true);
+	}
+	
 	public void doResetMarking() {
 		setFrameCentroidXs(null);
 		setFrameCentroidYs(null);

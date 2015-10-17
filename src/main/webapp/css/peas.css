@@ -329,3 +329,9 @@ div.btmsBreadcrumb ul li a.ui-icon {
     right: 15px !important;
 }
 
+.dialogbuttonleft {
+    position: absolute !important;
+    bottom: 15px !important;
+    left: 15px !important;
+}
+
