@@ -18,6 +18,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
@@ -30,6 +31,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.FandIException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
@@ -65,6 +67,8 @@ public class GetFrameCentroidsExecutor {
 	private SubimageDefCache subimageDefCache;
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
+	@EJB
+	private ProcedureExecutionState procedureExecutionState;
 
 	private List<String> logMessages;
 
@@ -406,7 +410,7 @@ public class GetFrameCentroidsExecutor {
 		return centroidMap;
 	}
 
-	private FIResult handMark(Procedure procedure, FIConfig fiConfig) {
+	private FIResult handMark(Procedure procedure, FIConfig fiConfig) throws AbortProcedureException {
 
 		List<FloatPoint> handMarked = null;
 		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
@@ -429,6 +433,10 @@ public class GetFrameCentroidsExecutor {
 			// get marking data from the frame display
 			handMarked = frameDisplayMgmt.getMarkList();
 
+			if (procedureExecutionState.getAbortRequested()) {
+				throw new AbortProcedureException("User Aborted Procedure");
+			}
+			
 			if (handMarked.size() == 36) {
 				break;
 			} else {

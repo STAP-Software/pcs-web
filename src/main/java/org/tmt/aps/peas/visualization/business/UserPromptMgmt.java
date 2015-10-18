@@ -7,6 +7,7 @@ package org.tmt.aps.peas.visualization.business;
 
 import java.io.Serializable;
 
+import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -14,12 +15,17 @@ import javax.ejb.Singleton;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.cdi.Abortable;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Lock(LockType.READ)
 public class UserPromptMgmt implements Serializable {
 
+	@EJB
+	ProcedureExecutionState procedureExecutionState;
+	
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private UserPrompt pendingPrompt;
@@ -51,6 +57,7 @@ public class UserPromptMgmt implements Serializable {
 		this.returnState = returnState;
 	}
 
+	@Abortable
 	public void displayInfoDialog(String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayInfoDialog"));
@@ -64,6 +71,7 @@ public class UserPromptMgmt implements Serializable {
 		
 	}
 	
+	@Abortable
 	public boolean displayYesNoDialog(String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayYesNoDialog"));
@@ -78,6 +86,7 @@ public class UserPromptMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false;
 	}
 	
+	@Abortable
 	public int displayFlowControlTriFlowDialog(String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayFlowControlTriFlowDialog"));
@@ -92,6 +101,7 @@ public class UserPromptMgmt implements Serializable {
 		return returnState.intValue();
 	}
 	
+	@Abortable
 	public int displayFlowControlBiFlowDialog(String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayFlowControlBiFlowDialog"));
@@ -106,6 +116,7 @@ public class UserPromptMgmt implements Serializable {
 		return returnState.intValue();
 	}
 	
+	@Abortable
 	public int displayGenericMultiChoiceDialog(String text, String[] choicesText, int[] choicesValues) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayGenericThreeChoiceDialog"));
