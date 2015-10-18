@@ -992,7 +992,7 @@ public class ComputationLibraryImpl {
 		float[] m2ActDeltas = new float[3];
 		
 		Object[] result = jm2ActuatorsFromPtt.jm2ActuatorsFromPtt(retVal, meanM2TipTiltError.x, meanM2TipTiltError.y, meanM2PistonError * 1000.0f, 
-				m2ActuatorRadius, m2TtCorrectionFactor, m2ActDeltas);
+				m2ActuatorRadius * 1000.0f, m2TtCorrectionFactor, m2ActDeltas);
 
 		
 		if (retVal.getCode() > 0) {
