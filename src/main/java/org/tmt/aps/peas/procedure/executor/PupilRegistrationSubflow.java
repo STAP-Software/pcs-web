@@ -155,24 +155,30 @@ public class PupilRegistrationSubflow {
 		Future<Point> coarseMirrorCommandFuture = null;
 		Future<Point> fineMirrorCommandFuture = null;
 		
-		if (calcPrCommandsResult.hasCoarseMirrorCommands()) {
-			// always command the coarse mirror to setup values at the start of all procedures
-			coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(calcPrCommandsResult.getCoarseMirrorCommands());
+		
+		// if frame from file, do not send commands
+		if (!procedureConfig.isFrameFromFile()) {
+		
+			if (calcPrCommandsResult.hasCoarseMirrorCommands()) {
+				// always command the coarse mirror to setup values at the start of all procedures
+				coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(calcPrCommandsResult.getCoarseMirrorCommands());
+				
+				statusLogger.log("camera.cmd.coarse_mirror_deltas", calcPrCommandsResult.getCoarseMirrorDeltas().x, calcPrCommandsResult.getCoarseMirrorDeltas().y);
+				statusLogger.log("camera.cmd.coarse_mirror", calcPrCommandsResult.getCoarseMirrorCommands().x, calcPrCommandsResult.getCoarseMirrorCommands().y);
+	
+			} 
+			if (calcPrCommandsResult.hasFineMirrorCommands()) {
+				fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(calcPrCommandsResult.getFineMirrorCommands());
+				statusLogger.log("camera.cmd.fine_mirror_deltas", calcPrCommandsResult.getFineMirrorDeltas().x, calcPrCommandsResult.getFineMirrorDeltas().y);
+				statusLogger.log("camera.cmd.fine_mirror", calcPrCommandsResult.getFineMirrorCommands().x, calcPrCommandsResult.getFineMirrorCommands().y);
+			}
 			
-			statusLogger.log("camera.cmd.coarse_mirror_deltas", calcPrCommandsResult.getCoarseMirrorDeltas().x, calcPrCommandsResult.getCoarseMirrorDeltas().y);
-			statusLogger.log("camera.cmd.coarse_mirror", calcPrCommandsResult.getCoarseMirrorCommands().x, calcPrCommandsResult.getCoarseMirrorCommands().y);
-
-		} 
-		if (calcPrCommandsResult.hasFineMirrorCommands()) {
-			fineMirrorCommandFuture = cameraMgmt.commandFineTiltMirror(calcPrCommandsResult.getFineMirrorCommands());
-			statusLogger.log("camera.cmd.fine_mirror_deltas", calcPrCommandsResult.getFineMirrorDeltas().x, calcPrCommandsResult.getFineMirrorDeltas().y);
-			statusLogger.log("camera.cmd.fine_mirror", calcPrCommandsResult.getFineMirrorCommands().x, calcPrCommandsResult.getFineMirrorCommands().y);
-		}
+			Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
+			
+			if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
+				statusLogger.log("camera.cmd.complete");
+			}
 		
-		Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
-		
-		if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
-			statusLogger.log("camera.cmd.complete");
 		}
 		
 		
