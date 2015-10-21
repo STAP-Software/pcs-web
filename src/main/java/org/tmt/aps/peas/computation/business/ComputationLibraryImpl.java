@@ -58,6 +58,7 @@ import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
+import org.tmt.aps.peas.lang.interop.JcalculateFocusModeVector;
 import org.tmt.aps.peas.lang.interop.JcalculateM2M1RayTrace;
 import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
@@ -671,7 +672,7 @@ public class ComputationLibraryImpl {
 		JdecomposeActs jdecomposeActs = new JdecomposeActs();
 		RetVal retVal = new RetVal();
 
-		float[] actPos = flatten2dArray(actuatorPositions);
+		float[] actPos = JavaComputations.flatten2dArray(actuatorPositions, 1);
 
 		// output arrays
 		float[] act_tt = new float[actPos.length];
@@ -686,8 +687,8 @@ public class ComputationLibraryImpl {
 		}
 
 		// store _param values
-		float[][] tipTiltActs = expandTo2dArray(act_tt, 3);
-		float[][] pistonActs = expandTo2dArray(act_p, 3);
+		float[][] tipTiltActs = JavaComputations.expandTo2dArray(act_tt, 3);
+		float[][] pistonActs = JavaComputations.expandTo2dArray(act_p, 3);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "decomposeActs"));
 
@@ -703,7 +704,7 @@ public class ComputationLibraryImpl {
 		JoptimalPistons joptimalPistons = new JoptimalPistons();
 		RetVal retVal = new RetVal();
 
-		float[] ttActs = flatten2dArray(tipTiltActs);
+		float[] ttActs = JavaComputations.flatten2dArray(tipTiltActs, 1);
 		float[] testArray = new float[controlMatrix.length];
 
 		// output arrays
@@ -718,7 +719,7 @@ public class ComputationLibraryImpl {
 		}
 
 		// store _param values
-		float[][] pistonActs = expandTo2dArray(act_p, 3);
+		float[][] pistonActs = JavaComputations.expandTo2dArray(act_p, 3);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "optimalPistons"));
 
@@ -760,27 +761,7 @@ public class ComputationLibraryImpl {
 	}
 	
 
-	// private convenience methods
-	private float[] flatten2dArray(float[][] input) {
-		float[] result = new float[input.length * input[0].length];
-		for (int i=0; i<input.length; i++) {
-			for (int j=0; j<input[i].length; j++) {
-				result[i * input[i].length + j] = input[i][j];
-			}
-		}
-		return result;
-	}
-	
-	private float[][] expandTo2dArray(float[] input, int minorIndexSize) {
-		float[][] result = new float[input.length/minorIndexSize][minorIndexSize];
-		for (int i = 0; i<input.length/minorIndexSize; i++) {
-			for (int j=0; j < minorIndexSize; j++) {
-				result[i][j] = input[i*minorIndexSize + j]; 
-			}
-		}
-		return result;
-	}
-	
+
 	private int[] goodCentroidsFound(int[] missingSpotFlags, int[] findCentStatusList) {
 		int[] found = new int[findCentStatusList.length];
 
@@ -976,9 +957,52 @@ public class ComputationLibraryImpl {
 		// calculate RMS of the actuator cmds
 		float desiredActDeltasRms = calcRms(desiredActDeltas);
 		
-		return new CalcDesiredActCommandsResult(pistonActs, pistonActsRms, desiredActDeltas, desiredActDeltasRms);
+		
+		// TODO: add calc for focus mode and non-focus mode components
+		float[] focusModeVector = calculateFocusModeVector(controlMatrix);
+		
+		// TODO: Calculate dot-product
+		// RMS of the focus mode component of the actuator commands
+		float[] desiredActDeltasFlattened= JavaComputations.flatten2dArray(desiredActDeltas, 1);
+		float desiredActDeltasFmRms = JavaComputations.getDotProdRms(desiredActDeltasFlattened, focusModeVector);
+		
+		float desiredActDeltasNoFmRms = (float)Math.sqrt(desiredActDeltasRms * desiredActDeltasRms - desiredActDeltasFmRms * desiredActDeltasFmRms);
+		
+		return new CalcDesiredActCommandsResult(pistonActs, pistonActsRms, desiredActDeltas, desiredActDeltasRms, desiredActDeltasFmRms, desiredActDeltasNoFmRms);
 	}
 
+
+	 
+	
+	public float[] calculateFocusModeVector(float[][] controlMatrix) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateFocusModeVector"));
+
+		
+		float[] focusModeVector = new float[controlMatrix[0].length];
+		
+		
+		JcalculateFocusModeVector jcalculateFocusModeVector = new JcalculateFocusModeVector();
+		RetVal retVal = new RetVal();
+
+		
+		
+		Object[] result = jcalculateFocusModeVector.jcalculateFocusModeVector(retVal, controlMatrix, focusModeVector);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("calculateFocusModeVector error");
+		}
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateFocusModeVector"));
+
+		return focusModeVector;
+	
+	}
+
+	
+	
 	@Computation
 	public CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPtt(float meanM2PistonError, FloatPoint meanM2TipTiltError,
 			float m2ActuatorRadius, float m2TtCorrectionFactor) throws Exception {
@@ -1013,15 +1037,18 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStd(Float[] desiredActDeltaRmsIterations) {
+	public CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStd(Float[] desiredActDeltaRmsIterations, Float[] desiredActDeltaFmRmsIterations, 
+			Float[] desiredActDeltaNoFmRmsIterations) {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcDesiredActDeltasRmsStd"));
 
 		float desiredActDeltasRmsStd = JavaComputations.getStd(desiredActDeltaRmsIterations);
+		float desiredActDeltasFmRmsStd = JavaComputations.getStd(desiredActDeltaFmRmsIterations);
+		float desiredActDeltasNoFmRmsStd = JavaComputations.getStd(desiredActDeltaNoFmRmsIterations);
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcDesiredActDeltasRmsStd"));
 
-		return new CalcDesiredActDeltasRmsStdResult(desiredActDeltasRmsStd);
+		return new CalcDesiredActDeltasRmsStdResult(desiredActDeltasRmsStd, desiredActDeltasFmRmsStd, desiredActDeltasNoFmRmsStd);
 	}
 
 	@Computation

@@ -434,7 +434,7 @@ public class FineScreenExecutor {
 			/*                  optimalPistons                   */
 			/*****************************************************/
 			
-			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();				
+			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();	
 			computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
 
 			
@@ -443,10 +443,14 @@ public class FineScreenExecutor {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
 			
-			// calculate std of iteration desired act delta rms
+			// calculate std of iteration desired act delta rms. focus mode and non-focus mode rms
 			Float[] desiredActDeltaRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasRms", Float.class).toArray(new Float[0]);
+			Float[] desiredActDeltaFmRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasFmRms", Float.class).toArray(new Float[0]);
+			Float[] desiredActDeltaNoFmRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasNoFmRms", Float.class).toArray(new Float[0]);
 			
-			CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations);
+			
+			// add focus mode, and non-focus mode values to this
+			CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations, desiredActDeltaFmRmsIterations, desiredActDeltaNoFmRmsIterations);
 			
 			
 			statusLogger.log("calc.desiredm1cmds", procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd());

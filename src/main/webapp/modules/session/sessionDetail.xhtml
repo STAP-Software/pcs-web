@@ -173,13 +173,6 @@
 	                   					#{procedure.procedureType.procedureTypeName} 
 	               					</f:facet>
 
-<!--	
-
-RMS of M1 commands w/ stdev?
-RMS of M1 commands FM only w/ stdev?
-RMS of M1 commands no FM w/ Stddev
-
- -->
 
 									<h:outputLabel value="Secondary Theta X (arcsec)" />
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px"/>
@@ -191,14 +184,25 @@ RMS of M1 commands no FM w/ Stddev
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2PistonErrorUm}" style="position:relative; top:2px"/>
 
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
+									<h:panelGroup>
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+									<h:outputText value=" +- " style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsStdResult.desiredActDeltasRmsStd}" style="position:relative; top:2px"/>
+									</h:panelGroup>
 									
 									<h:outputLabel value="M1 Cmds RMS - Focus Mode Only (nm)" />
-									<h:outputText value="TBD" style="position:relative; top:2px"/>
-
+									<h:panelGroup>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasFmRms}" style="position:relative; top:2px"/>
+									<h:outputText value=" +- " style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsStdResult.desiredActDeltasFmRmsStd}" style="position:relative; top:2px"/>
+									</h:panelGroup>
+									
 									<h:outputLabel value="M1 Cmds RMS - No Focus Mode (nm)" />
-									<h:outputText value="TBD" style="position:relative; top:2px"/>
-
+									<h:panelGroup>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasNoFmRms}" style="position:relative; top:2px"/>
+									<h:outputText value=" +- " style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsStdResult.desiredActDeltasNoFmRmsStd}" style="position:relative; top:2px"/>
+									</h:panelGroup>
 							</p:panelGrid>
 
 							<p:panelGrid columns="2" 

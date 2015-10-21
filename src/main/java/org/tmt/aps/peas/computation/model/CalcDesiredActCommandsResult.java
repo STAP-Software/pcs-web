@@ -7,14 +7,20 @@ public class CalcDesiredActCommandsResult {
 	float pistonActsRms;
 	float[][] desiredActDeltas;
 	float desiredActDeltasRms;
+	float desiredActDeltasFmRms;
+	float desiredActDeltasNoFmRms;
 	
 	
-	public CalcDesiredActCommandsResult(float[][] pistonActs, float pistonActsRms, float[][] desiredActDeltas, float desiredActDeltasRms) {
+	public CalcDesiredActCommandsResult(float[][] pistonActs, float pistonActsRms, float[][] desiredActDeltas, float desiredActDeltasRms, float desiredActDeltasFmRms,
+	float desiredActDeltasNoFmRms) {
 
 		this.pistonActs = pistonActs;
 		this.pistonActsRms = pistonActsRms;
 		this.desiredActDeltas = desiredActDeltas;
 		this.desiredActDeltasRms = desiredActDeltasRms;
+		this.desiredActDeltasFmRms = desiredActDeltasFmRms;
+		this.desiredActDeltasNoFmRms = desiredActDeltasNoFmRms;
+
 	}
 
 	public CalcDesiredActCommandsResult() {};
@@ -56,6 +62,22 @@ public class CalcDesiredActCommandsResult {
 
 	public void setDesiredActDeltasRms(float desiredActDeltasRms) {
 		this.desiredActDeltasRms = desiredActDeltasRms;
+	}
+
+	public float getDesiredActDeltasFmRms() {
+		return desiredActDeltasFmRms;
+	}
+
+	public void setDesiredActDeltasFmRms(float desiredActDeltasFmRms) {
+		this.desiredActDeltasFmRms = desiredActDeltasFmRms;
+	}
+
+	public float getDesiredActDeltasNoFmRms() {
+		return desiredActDeltasNoFmRms;
+	}
+
+	public void setDesiredActDeltasNoFmRms(float desiredActDeltasNoFmRms) {
+		this.desiredActDeltasNoFmRms = desiredActDeltasNoFmRms;
 	}
 
 

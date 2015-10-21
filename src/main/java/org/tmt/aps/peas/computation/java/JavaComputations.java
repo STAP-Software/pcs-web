@@ -258,6 +258,52 @@ public class JavaComputations {
 		return new FloatPoint(xStd, yStd);
 	}
 	
+	public static float[] flatten2dArray(float[][] input, int fastIndex) {
+		float[] result = new float[input.length * input[0].length];
+		int k = 0;
+		if (fastIndex == 0) {
+			for (int i=0; i<input[0].length; i++) {
+				for (int j=0; j<input.length; j++) {
+					result[k++] = input[j][i];
+				}
+			}
+		} else {
+			for (int i=0; i<input.length; i++) {
+				for (int j=0; j<input[0].length; j++) {
+					result[k++] = input[i][j];
+				}
+			}			
+		}
+		return result;
+	}
+	
+	public static float[][] expandTo2dArray(float[] input, int minorIndexSize) {
+		float[][] result = new float[input.length/minorIndexSize][minorIndexSize];
+		for (int i = 0; i<input.length/minorIndexSize; i++) {
+			for (int j=0; j < minorIndexSize; j++) {
+				result[i][j] = input[i*minorIndexSize + j]; 
+			}
+		}
+		return result;
+	}
+	
+	
+	
+	public static float getDotProdRms(float[] testVector, float template[]) {
+		// rms of test vector dotted with the template vector
+		
+		// take the dot product
+		float sumTestTemplate = 0;
+		float sumTemplateTemplate = 0;
+		for (int i=0; i< testVector.length; i++) {
+			sumTestTemplate += testVector[i] * template[i];
+			sumTemplateTemplate += template[i] * template[i];
+		}
+		
+		float rms = (float)(sumTestTemplate / (Math.sqrt(sumTemplateTemplate) * Math.sqrt((double)testVector.length)));
+		
+		return rms;
+	}
 		
 	public static <T> T[][] transpose2dArray(T[][] matrix)
 	{
