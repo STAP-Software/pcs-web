@@ -453,7 +453,13 @@ public class FineScreenExecutor {
 			CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations, desiredActDeltaFmRmsIterations, desiredActDeltaNoFmRmsIterations);
 			
 			
-			statusLogger.log("calc.desiredm1cmds", procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd());
+			statusLogger.log("calc.desiredm1cmds", 
+					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
+					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
+					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
+					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
+					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
+					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
 
 			
 			// prepare to command primary
@@ -461,7 +467,13 @@ public class FineScreenExecutor {
 			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
 				
 				// Display to user and ask if they want to command				
-				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd());
+				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",
+						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
+						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
+						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
+						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
+						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
+						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog(actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
 			}
