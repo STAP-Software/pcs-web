@@ -236,6 +236,11 @@ public class Procedure {
 		this.starVmag = starVmag;
 	}
 
+	public String getStarVmagFormatted() {
+		return starVmag != null && starVmag.trim().length() > 0 ? starVmag : "N/A";
+	}
+
+	
 	public String getComments() {
 		return comments;
 	}

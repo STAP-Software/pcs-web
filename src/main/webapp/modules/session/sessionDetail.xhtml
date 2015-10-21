@@ -134,6 +134,9 @@
 									<h:outputLabel value="Star Name" />
 									<h:outputText value="#{procedure.starNameFormatted}" style="position:relative; top:2px" />
 									
+									<h:outputLabel value="Star Mag" />
+									<h:outputText value="#{procedure.starVmag}" style="position:relative; top:2px" />
+									
 									<h:outputLabel value="Coarse Mirror (x, y) (um)" style="position:relative; top:4px"/>
 									<h:panelGroup style="position:relative; top:8px">
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
@@ -161,6 +164,9 @@
 
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
 									<h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+
+									<h:outputLabel value="M1 Commands Sent" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 								
 								</p:panelGrid>
 	
@@ -183,6 +189,10 @@
 									<h:outputLabel value="Secondary Focus (microns)" />
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanStdResult.meanM2PistonErrorUm}" style="position:relative; top:2px"/>
 
+									<h:outputLabel value="Secondary Commands Sent" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m2CmdsSent}" style="position:relative; top:2px"/>
+
+
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
 									<h:panelGroup>
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
@@ -203,6 +213,11 @@
 									<h:outputText value=" +- " style="position:relative; top:2px"/>
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsStdResult.desiredActDeltasNoFmRmsStd}" style="position:relative; top:2px"/>
 									</h:panelGroup>
+
+									<h:outputLabel value="M1 Commands Sent" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
+
+
 							</p:panelGrid>
 
 							<p:panelGrid columns="2" 
