@@ -250,7 +250,7 @@ public class PassiveTiltExecutor {
 			
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
 			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
-				graphicDisplayMgmt.displayCentroidOffsets(procedureOutput);
+				graphicDisplayMgmt.displayCentroidOffsets(pio);
 			}
 
 			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
