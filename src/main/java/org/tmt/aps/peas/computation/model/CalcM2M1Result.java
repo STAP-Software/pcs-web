@@ -9,6 +9,7 @@ public class CalcM2M1Result {
 	
 	float m2Piston;
 	FloatPoint m2TipTilt;
+	FloatPoint m2TipTiltTelescopeCoords;
 	float centroidResidual;
 	float pistonErrorMultiplier;
 	FloatPoint tipTiltErrorMulitplier;
@@ -16,11 +17,12 @@ public class CalcM2M1Result {
 	FloatPoint[] m1OffsetsCorrectedForM2Pixels;
 	
 	
-	public CalcM2M1Result(float m2Piston, FloatPoint m2TipTilt, float centroidResidual, float pistonErrorMultiplier, FloatPoint tipTiltErrorMulitplier,
+	public CalcM2M1Result(float m2Piston, FloatPoint m2TipTilt, FloatPoint m2TipTiltTelescopeCoords, float centroidResidual, float pistonErrorMultiplier, FloatPoint tipTiltErrorMulitplier,
 			FloatPoint[] m1OffsetsCorrectedForM2, FloatPoint[] m1OffsetsCorrectedForM2Pixels) {
 
 			this.m2Piston = m2Piston;
 			this.m2TipTilt = m2TipTilt;
+			this.m2TipTiltTelescopeCoords = m2TipTiltTelescopeCoords;
 			this.centroidResidual = centroidResidual;
 			this.pistonErrorMultiplier = pistonErrorMultiplier;
 			this.tipTiltErrorMulitplier = tipTiltErrorMulitplier;
@@ -43,6 +45,15 @@ public class CalcM2M1Result {
 	public void setM2TipTilt(FloatPoint m2TipTilt) {
 		this.m2TipTilt = m2TipTilt;
 	}
+	
+	public FloatPoint getM2TipTiltTelescopeCoords() {
+		return m2TipTiltTelescopeCoords;
+	}
+
+	public void setM2TipTiltTelescopeCoords(FloatPoint m2TipTiltTelescopeCoords) {
+		this.m2TipTiltTelescopeCoords = m2TipTiltTelescopeCoords;
+	}
+
 	public float getCentroidResidual() {
 		return centroidResidual;
 	}

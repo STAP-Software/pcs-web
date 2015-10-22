@@ -280,7 +280,8 @@ public class FineScreenExecutor {
 						procedure.getProcedureConfigSet().getCalcM2M1Config(),
 						constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
 						subimageDefList.getNspotTypes(),
-						constantsCache.getTelescopeConstants(), procedureConfig.getPupilMask().getSecPerPixel());
+						constantsCache.getTelescopeConstants(), procedureConfig.getPupilMask().getSecPerPixel(),
+						constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
 					
 								
 				// calc centroid stats for pseudo pt 
@@ -377,7 +378,7 @@ public class FineScreenExecutor {
 			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
 			
 			Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
-			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTilt", FloatPoint.class).toArray(new FloatPoint[0]);
+			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTiltTelescopeCoords", FloatPoint.class).toArray(new FloatPoint[0]);
 						
 			CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult = computationLibrary.calcM2PttErrorsMeanStd(m2PistonErrors, m2TipTiltErrors);
 			
@@ -391,8 +392,7 @@ public class FineScreenExecutor {
 			/*             Calculate M2Actuators                 */
 			/*****************************************************/
 
-			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanStdResult.getMeanM2PistonError(), calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius(), 
-					constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());			
+			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanStdResult.getMeanM2PistonError(), calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius());			
 
 			statusLogger.log("calc.m2actuators", m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 

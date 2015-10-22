@@ -885,7 +885,8 @@ public class ComputationLibraryImpl {
 
 	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
-			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel) throws Exception {
+			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
+			float m2TtCorrectionFactor) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
 
@@ -917,6 +918,7 @@ public class ComputationLibraryImpl {
 		float[][] yLensletLocations = FloatPointListEncoder.extractYfrom2dFloatPoint(fineScreenSpotCoords);
 		
 		float[] m2TipTiltArr = new float[2];
+		float[] m2TipTiltArrTelescopeCoords = new float[2];
 		
 		float[] m1OffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
 		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
@@ -924,7 +926,7 @@ public class ComputationLibraryImpl {
 		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
 				calcM2M1Config.getM2PistonUnitPertibation(), calcM2M1Config.getM2TTUnitPertibation(), xLensletLocations, yLensletLocations, 
 				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
-				telescopeConstants.getM1CurvatureRadius(), m2TipTiltArr, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+				telescopeConstants.getM1CurvatureRadius(), m2TtCorrectionFactor, m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 
 		
 		if (retVal.getCode() > 0) {
@@ -938,6 +940,7 @@ public class ComputationLibraryImpl {
 		float pistonErrorMultiplier = (Float)result[2];
 		FloatPoint tipTiltErrorMulitplier = new FloatPoint((Float)result[3], (Float)result[4]);
 		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
+		FloatPoint m2TipTiltTelescopeCoords = new FloatPoint(m2TipTiltArrTelescopeCoords[0], m2TipTiltArrTelescopeCoords[1]);
 		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 		
 		// convert corrected offsets from arcsec to pixels
@@ -947,8 +950,8 @@ public class ComputationLibraryImpl {
 			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
 			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
 		}
-		
-		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
+				
+		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
 				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]));
 
 
@@ -1029,7 +1032,7 @@ public class ComputationLibraryImpl {
 	
 	@Computation
 	public CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPtt(float meanM2PistonError, FloatPoint meanM2TipTiltError,
-			float m2ActuatorRadius, float m2TtCorrectionFactor) throws Exception {
+			float m2ActuatorRadius) throws Exception {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2ActuatorsFromPtt"));
 
@@ -1040,7 +1043,7 @@ public class ComputationLibraryImpl {
 		float[] m2ActDeltas = new float[3];
 		
 		Object[] result = jm2ActuatorsFromPtt.jm2ActuatorsFromPtt(retVal, meanM2TipTiltError.x, meanM2TipTiltError.y, meanM2PistonError * 1000.0f, 
-				m2ActuatorRadius * 1000.0f, m2TtCorrectionFactor, m2ActDeltas);
+				m2ActuatorRadius * 1000.0f, m2ActDeltas);
 
 		
 		if (retVal.getCode() > 0) {
