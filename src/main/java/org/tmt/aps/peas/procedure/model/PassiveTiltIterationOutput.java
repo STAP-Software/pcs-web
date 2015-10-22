@@ -5,6 +5,7 @@ import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
@@ -17,6 +18,7 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	PassiveTiltScaleErrorResult passiveTiltScaleErrorResult;
 	DecomposeActsResult decomposeActsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
+	FindCentroidsResult findCentroidsResult;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -57,6 +59,12 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 	
 	public PassiveTiltScaleErrorResult getScaleErrorResult() {
 		return passiveTiltScaleErrorResult;
+	}
+	public FindCentroidsResult getFindCentroidsResult() {
+		return findCentroidsResult;
+	}
+	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
+		this.findCentroidsResult = findCentroidsResult;
 	}
 
 	

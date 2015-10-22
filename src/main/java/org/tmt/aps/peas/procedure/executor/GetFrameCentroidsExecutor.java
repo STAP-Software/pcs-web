@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -280,7 +281,7 @@ public class GetFrameCentroidsExecutor {
 	public CentroidMap buildCentroidMap(FindCentroidsResult findCentroidsResult, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
 		CentroidMap centroidMap = new CentroidMap();
-		String centroidMapData = FloatPointListEncoder.encodeList(findCentroidsResult.getCentroidList());
+		String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(findCentroidsResult.getCentroidList()));
 		centroidMap.setCentroidMapData(centroidMapData);
 		
 		centroidMap.setFindCentroidsResult(findCentroidsResult);
@@ -342,7 +343,7 @@ public class GetFrameCentroidsExecutor {
 				procedureCcdFrame.setCentroidMap(centroidMap);
 
 				// display the marked frame
-				frameDisplayMgmt.setMarking(findCentroidsResult.getCentroidList());
+				frameDisplayMgmt.setMarking(Arrays.asList(findCentroidsResult.getCentroidList()));
 							
 				frameDisplayMgmt.displayMarkedFrame();
 				

@@ -9,6 +9,7 @@ import java.io.ByteArrayInputStream;
 import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -887,10 +888,10 @@ public class ProcedureController implements Serializable {
 			
 			procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
 			
-			List<FloatPoint> centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+			FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
 			
-			float[] xArray = FloatPointListEncoder.extractXArray(centroids);
-			float[] yArray = FloatPointListEncoder.extractYArray(centroids);
+			float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
+			float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
 			
 			String centroidXs = FloatListEncoder.encodeList(xArray);
 			String centroidYs = FloatListEncoder.encodeList(yArray);

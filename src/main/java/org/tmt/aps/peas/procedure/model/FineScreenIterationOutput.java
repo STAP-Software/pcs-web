@@ -6,6 +6,7 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
@@ -28,6 +29,7 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
+	FindCentroidsResult findCentroidsResult;
 	
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
@@ -95,6 +97,12 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	}
 	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
 		this.calcPrCommandsResult = calcPrCommandsResult;
+	}
+	public FindCentroidsResult getFindCentroidsResult() {
+		return findCentroidsResult;
+	}
+	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
+		this.findCentroidsResult = findCentroidsResult;
 	}
 	
 	

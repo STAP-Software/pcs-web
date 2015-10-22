@@ -141,6 +141,7 @@ public class ComputationLibraryImpl {
 
 
 	// findCentStatus is also a property of a spot, to be used by calcs after this.
+	@Computation
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
@@ -460,7 +461,7 @@ public class ComputationLibraryImpl {
 
 	
 	@Computation
-	public CentroidOffsetsResult calculateCentroidOffsets(List<FloatPoint> centroids, List<FloatPoint> refMapCentroids,
+	public CentroidOffsetsResult calculateCentroidOffsets(FloatPoint[] centroids, FloatPoint[] refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidOffsets"));
@@ -470,10 +471,10 @@ public class ComputationLibraryImpl {
 
 		float[] fiParams = new float[6];
 
-		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(refMapCentroids);
-		float[][] centroid = FloatPointListEncoder.convertToNby2Array(centroids);
+		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(Arrays.asList(refMapCentroids));
+		float[][] centroid = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroids));
 
-		int numSpots = centroids.size();
+		int numSpots = centroids.length;
 
 		// spots that can be used (found without errors and should be used for analysis)
 		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);

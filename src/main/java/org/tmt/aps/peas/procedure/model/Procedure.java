@@ -334,13 +334,6 @@ public class Procedure {
 		this.percentComplete = percentComplete;
 	}
 	
-	public FindCentroidsResult[] getFindCentroidsResults() {
-		List<FindCentroidsResult> result = new ArrayList<FindCentroidsResult>();
-		for (ProcedureCcdFrame procedureCcdFrame : procedureCcdFrameList) {
-			result.add(procedureCcdFrame.getCentroidMap().getFindCentroidsResult());
-		}
-		return result.toArray(new FindCentroidsResult[0]);
-	}
 
 	public PassiveTiltProcedureOutput getPassiveTiltProcedureOutput() {
 		if (procedureOutput instanceof PassiveTiltProcedureOutput) {

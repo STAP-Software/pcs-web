@@ -324,13 +324,7 @@ public class FineScreenExecutor {
 			/****************************************************/
 			
 			// this needs to be an average over all frames
-			
-			// TODO: findCentroidsResult also needs to be in procedure iteration output.  If auto loaded with @Computation tag, then only the most recent frame centroids will be stored for an iteration
-			FindCentroidsResult[] findCentroidsResults = procedure.getFindCentroidsResults();
-			int[][] findCentStatusIterations = new int[findCentroidsResults.length][findCentroidsResults[0].getFindCentStatusList().length];
-			for (int i=0; i<findCentroidsResults.length; i++) {
-				findCentStatusIterations[i] = findCentroidsResults[i].getFindCentStatusList();
-			}
+			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
 			
 			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
 
