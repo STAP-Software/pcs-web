@@ -203,6 +203,12 @@ public class AsyncController implements Serializable {
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:framePanel");
 			requestContext.update("frameHiddenForm");
+			
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {}
+
+			
 			requestContext.execute("drawFrame()");
 			
 			if (frameDisplayMgmt.getFrameInstructions() != null) {
@@ -245,6 +251,9 @@ public class AsyncController implements Serializable {
 	private void checkSubProcedureEnd() {
 
 		if (procedureExecutionState.isSubProcedureEndRequested()) {
+	
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+
 			
 			// we captured it, so reset it for next time, if any
 			procedureExecutionState.resetSubProcedureEndRequested();
@@ -260,11 +269,9 @@ public class AsyncController implements Serializable {
 			breadcrumbMenuBean.removeLast();
 
 			
-			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:miscPanel");
 			requestContext.update("procedureDetailForm:controlPanel");
 			requestContext.update("breadcrumbForm");
-			requestContext.update("procedureDetailForm:framePanel");
 
 		}
 	}

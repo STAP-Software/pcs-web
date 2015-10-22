@@ -644,11 +644,15 @@ public class ProcedureController implements Serializable {
 			}
 			
 			// TODO: this needs to account for multiple frames someday.
-			selectedFrame = procedure.getProcedureCcdFrameList().get(0);
+			if (procedure.getProcedureCcdFrameList() != null && !procedure.getProcedureCcdFrameList().isEmpty()) {
+			
+				selectedFrame = procedure.getProcedureCcdFrameList().get(0);
 
-			// set up display of camera state values for first frame
-			loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
+				// set up display of camera state values for first frame
+				loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
 
+			}
+			
 			// set up visualization displays
 			visualizationController.initVisualizationDisplays(procedure.getProcedureType().getProcedureTypeId());
 
