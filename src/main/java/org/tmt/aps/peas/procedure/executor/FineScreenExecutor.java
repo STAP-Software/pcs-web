@@ -212,9 +212,13 @@ public class FineScreenExecutor {
 
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
-			
+			int readyCameraTime = 10;
+			int trialsTime = 70;
          
 			for (int i=0; i<procedureConfig.getNumberOfTrials(); i++) {
+				
+				int trialTimeDelta = (trialsTime/procedureConfig.getNumberOfTrials())*i + readyCameraTime;
+				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
 				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getNumberOfTrials());
 				
@@ -232,7 +236,6 @@ public class FineScreenExecutor {
 
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				
-				procedureExecutionState.setPercentComplete(20);
 	
 				/*****************************************************/
 				/*              calculateCentroidStats               */
@@ -316,6 +319,9 @@ public class FineScreenExecutor {
 
 			} // end of iteration loop
 			
+			
+			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
+
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			
@@ -366,6 +372,9 @@ public class FineScreenExecutor {
 			
 				graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
 			}
+
+			procedureExecutionState.setPercentComplete(85);
+
 			
 			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
 			
@@ -403,7 +412,9 @@ public class FineScreenExecutor {
 				
 				sendM2Command = userPromptMgmt.displayYesNoDialog(m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
 			}
-			
+
+			procedureExecutionState.setPercentComplete(90);
+
 			/*****************************************************/
 			/*                   Command M2                      */
 			/*****************************************************/
@@ -452,6 +463,8 @@ public class FineScreenExecutor {
 				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
 				graphicDisplayMgmt.displayAvgPtCentroidOffsets(procedureOutput);
 			}
+
+			procedureExecutionState.setPercentComplete(95);
 
 			
 			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
@@ -503,6 +516,8 @@ public class FineScreenExecutor {
 					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
 					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
 					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
+
+			procedureExecutionState.setPercentComplete(98);
 
 			
 			// prepare to command primary
