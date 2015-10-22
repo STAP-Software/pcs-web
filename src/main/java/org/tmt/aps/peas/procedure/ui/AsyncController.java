@@ -264,6 +264,8 @@ public class AsyncController implements Serializable {
 			requestContext.update("procedureDetailForm:miscPanel");
 			requestContext.update("procedureDetailForm:controlPanel");
 			requestContext.update("breadcrumbForm");
+			requestContext.update("procedureDetailForm:framePanel");
+
 		}
 	}
 
@@ -309,6 +311,7 @@ public class AsyncController implements Serializable {
 			}
 			// display frame
 			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("procedureDetailForm:framePanel");
 			requestContext.execute("drawFrame()");
 
 			// update the breadcrumb to associate the current session as the first link
