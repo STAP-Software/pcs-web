@@ -225,8 +225,11 @@ public class PupilRegistrationExecutor {
 						
 			if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
 			
+				// spots that can be used (found without errors and should be used for analysis)
+				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+
 				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+					centerSpots, subimageDefList.getNspotTypes(), good_spots);
 
 			}
 			

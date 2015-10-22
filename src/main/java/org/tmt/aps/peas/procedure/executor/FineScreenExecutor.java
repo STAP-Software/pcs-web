@@ -249,8 +249,11 @@ public class FineScreenExecutor {
 				
 				List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 				
+				// spots that can be used (found without errors and should be used for analysis)
+				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				
 				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-						centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+						centerSpots, subimageDefList.getNspotTypes(), good_spots);
 				
 				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
@@ -318,20 +321,10 @@ public class FineScreenExecutor {
 			
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
-
-			/*****************************************************/
-			/*             calcAvgCentroidOffsets                */
-			/*****************************************************/
-
-			// we can average the centroid offsets, but cannot average the status list
-			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
-			computationLibrary.calcAvgCentroidOffsets(offsetsIterations);
 			
-			/*****************************************************/
-			/*              calculateCentroidStats - avg FS      */
-			/*****************************************************/
-
-			CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
+			/****************************************************/
+			/*             calc average good spots              */
+			/****************************************************/
 			
 			// this needs to be an average over all frames
 			FindCentroidsResult[] findCentroidsResults = procedure.getFindCentroidsResults();
@@ -341,6 +334,20 @@ public class FineScreenExecutor {
 			}
 			
 			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
+
+			/*****************************************************/
+			/*             calcAvgCentroidOffsets                */
+			/*****************************************************/
+
+			// we can average the centroid offsets, but cannot average the status list
+			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
+			computationLibrary.calcAvgCentroidOffsets(offsetsIterations, goodSpots);
+			
+			/*****************************************************/
+			/*              calculateCentroidStats - avg FS      */
+			/*****************************************************/
+
+			CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
 			
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 			
@@ -354,7 +361,7 @@ public class FineScreenExecutor {
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
 			computationLibrary.fineScreenScaleErrorResult(avgCentroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), goodSpots);
+					centerSpots, subimageDefList.getNspotTypes(), goodSpots);
 			
 			
 			/*****************************************************/
@@ -366,19 +373,14 @@ public class FineScreenExecutor {
 			
 				graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
 			}
-
 			
-
 			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
 			
-			// TODO: move this code into M2PttErrorMeanStd()
 			Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
 			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTilt", FloatPoint.class).toArray(new FloatPoint[0]);
-			
-			
+						
 			CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult = computationLibrary.calcM2PttErrorsMeanStd(m2PistonErrors, m2TipTiltErrors);
 			
-
 			// output mean and std of ptt
 			statusLogger.log("calc.m2pttmeanstd", 
 					calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 

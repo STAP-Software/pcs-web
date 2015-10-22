@@ -622,7 +622,7 @@ public class ComputationLibraryImpl {
 	
 	
 	@Computation
-	public FineScreenScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws Exception {
+	public FineScreenScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] good_spots) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
 
@@ -634,9 +634,6 @@ public class ComputationLibraryImpl {
 		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpots);
 		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpots);
 		
-		// spots that can be used (found without errors and should be used for analysis)
-		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
-
 		Object output[] = jfineScreenScaleError.jfineScreenScaleError(retVal, good_spots, offsets, x_ref_def, y_ref_def);
 
 		if (retVal.getCode() > 0) {
@@ -789,7 +786,7 @@ public class ComputationLibraryImpl {
 	
 
 
-	private int[] goodCentroidsFound(int[] missingSpotFlags, int[] findCentStatusList) {
+	public int[] goodCentroidsFound(int[] missingSpotFlags, int[] findCentStatusList) {
 		int[] found = new int[findCentStatusList.length];
 
 		for (int i=0; i<found.length; i++) {
@@ -1116,7 +1113,7 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public CentroidOffsetsResult calcAvgCentroidOffsets(CentroidOffsetsResult[] offsetsIterations) {
+	public CentroidOffsetsResult calcAvgCentroidOffsets(CentroidOffsetsResult[] offsetsIterations, int[] goodSpots) {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcAvgCentroidOffsets"));
 		
@@ -1139,9 +1136,11 @@ public class ComputationLibraryImpl {
 					avgCcdCentroidOffsets[j] = new FloatPoint();
 					avgCartesianCentroidOffsets[j] = new FloatPoint();
 				} 
-				avgCcdCentroidOffsets[j] = avgCcdCentroidOffsets[j].add(offsetsIterations[i].getCcdCentroidOffsets()[j].quot(iterations));
-				avgCartesianCentroidOffsets[j] = avgCartesianCentroidOffsets[j].add(offsetsIterations[i].getCartesianCentroidOffsets()[j].quot(iterations));
-			
+				// don't calc average for a bad spot (display should show a zero offset for these)
+				if (goodSpots[j] == 1) {
+					avgCcdCentroidOffsets[j] = avgCcdCentroidOffsets[j].add(offsetsIterations[i].getCcdCentroidOffsets()[j].quot(iterations));
+					avgCartesianCentroidOffsets[j] = avgCartesianCentroidOffsets[j].add(offsetsIterations[i].getCartesianCentroidOffsets()[j].quot(iterations));
+				}
 			}
 		}
 		
