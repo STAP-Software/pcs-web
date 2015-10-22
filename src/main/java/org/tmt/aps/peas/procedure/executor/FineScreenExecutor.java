@@ -104,7 +104,7 @@ public class FineScreenExecutor {
 	@EJB
 	private CreateRefMapExecutor createRefMapExecutor;
 	@EJB
-	private PupilRegistrationSubflow pupilRegistrationSubflow;
+	private PupilRegistrationLoopSubflow pupilRegistrationLoopSubflow;
 
 	
 	private List<String> logMessages;
@@ -225,11 +225,13 @@ public class FineScreenExecutor {
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
 	
-				/*****************************************************/
-				/*          centerTelescope                          */
-				/*****************************************************/	
-				centerTelescopeSubflow.centerTelescope(procedure, currentSession);
-	
+				/**********************************************/
+				/*        PupilRegistration Subflow           */
+				/**********************************************/			
+				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
+
+				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				
 				procedureExecutionState.setPercentComplete(20);
 	
 				/*****************************************************/
@@ -237,7 +239,6 @@ public class FineScreenExecutor {
 				/*****************************************************/
 	
 				CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
-				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
 				
 				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
@@ -266,11 +267,6 @@ public class FineScreenExecutor {
 					graphicDisplayMgmt.displayCentroidOffsets(pio);
 				}
 				
-				// call pupil_registration for fine screen, and center the pupil
-				/**********************************************/
-				/*        PupilRegistration Subflow           */
-				/**********************************************/			
-				pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 				
 	          
 				// TODO: if calc option is Ray Trace:
@@ -328,6 +324,8 @@ public class FineScreenExecutor {
 			/****************************************************/
 			
 			// this needs to be an average over all frames
+			
+			// TODO: findCentroidsResult also needs to be in procedure iteration output.  If auto loaded with @Computation tag, then only the most recent frame centroids will be stored for an iteration
 			FindCentroidsResult[] findCentroidsResults = procedure.getFindCentroidsResults();
 			int[][] findCentStatusIterations = new int[findCentroidsResults.length][findCentroidsResults[0].getFindCentStatusList().length];
 			for (int i=0; i<findCentroidsResults.length; i++) {

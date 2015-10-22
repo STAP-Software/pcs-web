@@ -56,7 +56,7 @@ public class PupilRegistrationSubflow {
 
 
 	@Abortable
-	public void execute(Procedure procedure, FindCentroidsResult findCentroidsResult) throws Throwable {
+	public boolean execute(Procedure procedure, FindCentroidsResult findCentroidsResult) throws Throwable {
 		
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
@@ -155,7 +155,7 @@ public class PupilRegistrationSubflow {
 		Future<Point> coarseMirrorCommandFuture = null;
 		Future<Point> fineMirrorCommandFuture = null;
 		
-		
+		boolean commandsSent = false;
 		// if frame from file, do not send commands
 		if (!procedureConfig.isFrameFromFile()) {
 		
@@ -177,11 +177,19 @@ public class PupilRegistrationSubflow {
 			
 			if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
 				statusLogger.log("camera.cmd.complete");
+				commandsSent = true;
 			}
 		
 		}
 		
+		// return false if we need to take a new frame
+		// if the error was > thresh (10 mm)and a move was performed, then return false
+		float frameOkThreshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
+		if ((Math.abs(regErrorMm.x) > frameOkThreshold || Math.abs(regErrorMm.y) > frameOkThreshold) && commandsSent) {
+			return false; // retake the frame
+		}
 		
+		return true;
 		
 		
 	}
