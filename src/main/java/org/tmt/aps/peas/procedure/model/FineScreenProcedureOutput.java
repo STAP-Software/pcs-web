@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
@@ -14,10 +15,11 @@ import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
-import org.tmt.aps.peas.visualization.model.AvgCentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 
 
-public class FineScreenProcedureOutput extends ProcedureOutput implements AvgCentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
+public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtCentroidOffsetsDisplayValues, AvgFsCentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 	
 	CentroidOffsetsResult centroidOffsetsResult;
 	PseudoTipTiltCentroidStatsResult pseudoTipTiltCentroidStatsResult;
@@ -29,6 +31,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgCen
 	CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult;
 	CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult;
 	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
+	AvgCentroidStatsResult avgCentroidStatsResult;
 	
 	
 	public CentroidOffsetsResult getCentroidOffsetsResult() {
@@ -42,6 +45,12 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgCen
 	}
 	public void setPseudoTipTiltCentroidStatsResult(PseudoTipTiltCentroidStatsResult pseudoTipTiltCentroidStatsResult) {
 		this.pseudoTipTiltCentroidStatsResult = pseudoTipTiltCentroidStatsResult;
+	}
+	public AvgCentroidStatsResult getAvgCentroidStatsResult() {
+		return avgCentroidStatsResult;
+	}
+	public void setAvgCentroidStatsResult(AvgCentroidStatsResult avgCentroidStatsResult) {
+		this.avgCentroidStatsResult = avgCentroidStatsResult;
 	}
 	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
 		return fineScreenScaleErrorResult;
@@ -100,17 +109,30 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgCen
 	
 	
 	
-	//  AvgCentroidOffsetsDisplayValues interface
-	public FloatPoint[] getAvgCentroidOffsets() {
+	//  AvgPtCentroidOffsetsDisplayValues interface
+	public FloatPoint[] getAvgPtCentroidOffsets() {
 		return calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors();
 	}
 	
-	public CentroidStatsResult getAvgCentroidStatsResult() {
+	public CentroidStatsResult getAvgPtCentroidStatsResult() {
 		return pseudoTipTiltCentroidStatsResult;
 	}
 	
-	public ScaleErrorResult getAvgScaleErrorResult() {
+	public ScaleErrorResult getAvgPtScaleErrorResult() {
 		return passiveTiltScaleErrorResult;
+	}
+	
+	//  AvgFsCentroidOffsetsDisplayValues interface
+	public FloatPoint[] getAvgFsCentroidOffsets() {
+		return centroidOffsetsResult.getCartesianCentroidOffsets();
+	}
+	
+	public CentroidStatsResult getAvgFsCentroidStatsResult() {
+		return avgCentroidStatsResult;
+	}
+	
+	public ScaleErrorResult getAvgFsScaleErrorResult() {
+		return fineScreenScaleErrorResult;
 	}
 	
 	/*

@@ -81,7 +81,14 @@ public class FloatPoint {
 	public FloatPoint subtract(FloatPoint other) {
 		return new FloatPoint(this.x - other.x, this.y - other.y);
 	}
+	public FloatPoint add(FloatPoint other) {
+		return new FloatPoint(this.x + other.x, this.y + other.y);
+	}
 	
+	public FloatPoint quot(double other) {
+		return new FloatPoint((float)(this.x / other), (float)(this.y / other));
+	}
+
 	
 	/**
      * Returns a string representation of this point and its location

@@ -50,7 +50,8 @@ public class GlobalConfig {
 	
 	private boolean autoDisplayCentroids;
 	private boolean autoDisplayCentroidOffsets;
-	private boolean autoDisplayAvgCentroidOffsets;
+	private boolean autoDisplayAvgPtCentroidOffsets;
+	private boolean autoDisplayAvgFsCentroidOffsets;
 	private boolean autoDisplayActuatorDeltas;
 	private boolean autoDisplayProcedureDataLog;
 
@@ -153,12 +154,20 @@ public class GlobalConfig {
 		this.autoDisplayCentroidOffsets = autoDisplayCentroidOffsets;
 	}
 
-	public boolean isAutoDisplayAvgCentroidOffsets() {
-		return autoDisplayAvgCentroidOffsets;
+	public boolean isAutoDisplayAvgPtCentroidOffsets() {
+		return autoDisplayAvgPtCentroidOffsets;
 	}
 
-	public void setAutoDisplayAvgCentroidOffsets(boolean autoDisplayAvgCentroidOffsets) {
-		this.autoDisplayAvgCentroidOffsets = autoDisplayAvgCentroidOffsets;
+	public void setAutoDisplayAvgPtCentroidOffsets(boolean autoDisplayAvgPtCentroidOffsets) {
+		this.autoDisplayAvgPtCentroidOffsets = autoDisplayAvgPtCentroidOffsets;
+	}
+
+	public boolean isAutoDisplayAvgFsCentroidOffsets() {
+		return autoDisplayAvgFsCentroidOffsets;
+	}
+
+	public void setAutoDisplayAvgFsCentroidOffsets(boolean autoDisplayAvgFsCentroidOffsets) {
+		this.autoDisplayAvgFsCentroidOffsets = autoDisplayAvgFsCentroidOffsets;
 	}
 
 	public boolean isAutoDisplayActuatorDeltas() {

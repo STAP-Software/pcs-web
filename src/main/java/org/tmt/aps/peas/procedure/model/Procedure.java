@@ -28,10 +28,7 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.config.model.FIConfig;
-import org.tmt.aps.peas.config.model.FindCentConfig;
-import org.tmt.aps.peas.config.model.GlobalConfig;
-import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -337,6 +334,13 @@ public class Procedure {
 		this.percentComplete = percentComplete;
 	}
 	
+	public FindCentroidsResult[] getFindCentroidsResults() {
+		List<FindCentroidsResult> result = new ArrayList<FindCentroidsResult>();
+		for (ProcedureCcdFrame procedureCcdFrame : procedureCcdFrameList) {
+			result.add(procedureCcdFrame.getCentroidMap().getFindCentroidsResult());
+		}
+		return result.toArray(new FindCentroidsResult[0]);
+	}
 
 	public PassiveTiltProcedureOutput getPassiveTiltProcedureOutput() {
 		if (procedureOutput instanceof PassiveTiltProcedureOutput) {

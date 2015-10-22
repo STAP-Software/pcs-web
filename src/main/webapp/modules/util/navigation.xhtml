@@ -68,8 +68,9 @@
 						</p:submenu>
 						</c:forEach>
 					
-						<p:menuitem value="Avg. Centroid Offsets" action="#{visualizationController.doPopulateAvgCentroidOffsetDisplay}" update=":avgOffsetsForm" oncomplete="runDrawAvgOffsets(); avgCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgCentroidOffsetDisplayEnabled}"/>
-						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
+						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgPtCentroidOffsetDisplayEnabled}"/>
+						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgFsCentroidOffsetDisplayEnabled}"/>						
+ 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
 						
 					</p:submenu>
 					

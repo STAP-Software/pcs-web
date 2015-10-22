@@ -25,6 +25,7 @@ import org.tmt.aps.peas.common.cdi.Computation;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
+import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
@@ -564,6 +565,32 @@ public class ComputationLibraryImpl {
 
 	}
 	
+	@Computation
+	public AvgCentroidStatsResult calculateAvgCentroidStats(FloatPoint[] avgCentroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] goodSpots) throws ComputationException {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcAvgCentroidStats"));
+
+		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
+		RetVal retVal = new RetVal();
+
+		
+		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(avgCentroidOffsets));
+
+
+		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, goodSpots, nspotTypes);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("Centroid Offset Stats Calculation Error");
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgCentroidStats"));
+
+		// store fi_param values
+		return new AvgCentroidStatsResult((Integer) output[0], (Float) output[1], (Float) output[2], (Float) output[3], (Float) output[4]);
+
+	}
+	
 
 
 
@@ -1088,6 +1115,62 @@ public class ComputationLibraryImpl {
 		return new CalcSegmentMeanTipTiltsResult(segmentMeanTipTiltErrors);
 	}
 
+	@Computation
+	public CentroidOffsetsResult calcAvgCentroidOffsets(CentroidOffsetsResult[] offsetsIterations) {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcAvgCentroidOffsets"));
+		
+		FloatPoint avgImageTranslation = new FloatPoint();
+		float avgImageScale = 0.0f;
+		float avgImageRotation = 0.0f;
+		FloatPoint[] avgCcdCentroidOffsets = new FloatPoint[offsetsIterations[0].getCartesianCentroidOffsets().length];
+		FloatPoint[] avgCartesianCentroidOffsets = new FloatPoint[offsetsIterations[0].getCartesianCentroidOffsets().length];
+
+		double iterations = offsetsIterations.length;
+
+		
+		for (int i=0; i<offsetsIterations.length; i++) {
+			avgImageTranslation = avgImageTranslation.add(offsetsIterations[i].getImageTranslation().quot(iterations));
+			avgImageScale += offsetsIterations[i].getImageScale()/iterations;
+			avgImageRotation += offsetsIterations[i].getImageRotation()/iterations;
+			for (int j=0; j<avgCcdCentroidOffsets.length; j++) {
+				if (i==0) {
+					// initialize
+					avgCcdCentroidOffsets[j] = new FloatPoint();
+					avgCartesianCentroidOffsets[j] = new FloatPoint();
+				} 
+				avgCcdCentroidOffsets[j] = avgCcdCentroidOffsets[j].add(offsetsIterations[i].getCcdCentroidOffsets()[j].quot(iterations));
+				avgCartesianCentroidOffsets[j] = avgCartesianCentroidOffsets[j].add(offsetsIterations[i].getCartesianCentroidOffsets()[j].quot(iterations));
+			
+			}
+		}
+		
+		CentroidOffsetsResult avgCentroidOffsets = new CentroidOffsetsResult( avgImageTranslation,  avgImageScale,  avgImageRotation, 
+			 avgCcdCentroidOffsets, avgCartesianCentroidOffsets);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgCentroidOffsets"));
+		
+		return avgCentroidOffsets;
+
+		
+	}
+
+	public int[] calculateAvgFindCentStatus(int[][] findCentStatusIterations) {
+		
+		// for now, a spot is good only if it was good every time
+		int[] avgFindCentStatus = new int[findCentStatusIterations[0].length];
+			for (int j=0; j<findCentStatusIterations[0].length; j++) {
+				boolean status = true;
+				for (int i=0; i<findCentStatusIterations.length; i++) {
+				
+				// if all iterations are success, then it is a good spot, otherwise not
+				 if (findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_SUCCESS ) status = false;
+			}
+			avgFindCentStatus[j] =	status ? 1: 0;
+		}
+		
+		return avgFindCentStatus;
+	}
 	
 	
 }

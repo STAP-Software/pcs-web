@@ -76,6 +76,26 @@ public class ProcedureOutput implements ProcedureOutputable {
 		this.procedureDecisionLog = procedureDecisionLog;
 	}
 	
+	public <T> List<T> getIterationResultObjectFor(String resultFieldName, Class<T> resultClass) throws Exception {
+		
+		// get the calcResult object
+		List<T> resultList = new ArrayList<T>();
+		
+		
+		for (ProcedureIterationOutput pio : procedureIterationOutputList) {
+		
+			Class pioClass = pio.getClass();
+			
+			Method calcGetterMethod = pioClass.getMethod("get" + resultFieldName, new Class[0]);
+			
+			Object calcResult = calcGetterMethod.invoke(pio, new Object[0]);
+	
+			resultList.add(resultClass.cast(calcResult));		
+		}
+		
+		return resultList;
+	}
+	
 	public <T> List<T> getIterationValuesFor(String classname, String fieldname, Class<T> resultClass) throws Exception {
 		
 		// get the calcResult object

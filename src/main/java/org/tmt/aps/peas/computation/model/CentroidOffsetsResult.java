@@ -24,6 +24,18 @@ public class CentroidOffsetsResult {
 		this.imageRotation = imageRotation;
 	}
 
+	public CentroidOffsetsResult(FloatPoint imageTranslation, float imageScale, float imageRotation, 
+			FloatPoint[] ccdCentroidOffsets, FloatPoint[] cartesianCentroidOffsets) {
+
+		this.ccdCentroidOffsets = ccdCentroidOffsets;
+		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
+		this.imageTranslation = imageTranslation;
+		this.imageScale = imageScale;
+		this.imageRotation = imageRotation;
+
+	}
+
+	
 	public CentroidOffsetsResult() {};
 
 	public FloatPoint[] getCcdCentroidOffsets() {

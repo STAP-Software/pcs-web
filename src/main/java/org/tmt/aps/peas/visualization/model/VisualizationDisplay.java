@@ -25,8 +25,9 @@ public class VisualizationDisplay extends UserPrompt {
 
 	public static final int DISPLAY_TYPE_CENTROIDS = 1;
 	public static final int DISPLAY_TYPE_CENTROID_OFFSETS = 2;
-	public static final int DISPLAY_TYPE_AVG_CENTROID_OFFSETS = 3;
-	public static final int DISPLAY_TYPE_ACTUATOR_DELTAS = 4;
+	public static final int DISPLAY_TYPE_AVG_PT_CENTROID_OFFSETS = 3;
+	public static final int DISPLAY_TYPE_AVG_FS_CENTROID_OFFSETS = 4;
+	public static final int DISPLAY_TYPE_ACTUATOR_DELTAS = 5;
 
 	
 	@Id
@@ -74,8 +75,12 @@ public class VisualizationDisplay extends UserPrompt {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_CENTROID_OFFSETS;
 	}
 	
-	public boolean isDisplayTypeAvgCentroidOffsets() {
-		return visualizationDisplayId.intValue() == DISPLAY_TYPE_AVG_CENTROID_OFFSETS;
+	public boolean isDisplayTypeAvgPtCentroidOffsets() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_AVG_PT_CENTROID_OFFSETS;
+	}
+	
+	public boolean isDisplayTypeAvgFsCentroidOffsets() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_AVG_FS_CENTROID_OFFSETS;
 	}
 	
 	public boolean isDisplayTypeActuatorDeltas() {

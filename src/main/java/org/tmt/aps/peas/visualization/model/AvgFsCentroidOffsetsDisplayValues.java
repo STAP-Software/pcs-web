@@ -4,12 +4,12 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 
-public interface AvgCentroidOffsetsDisplayValues {
+public interface AvgFsCentroidOffsetsDisplayValues {
 
-	ScaleErrorResult getAvgScaleErrorResult();
+	ScaleErrorResult getAvgFsScaleErrorResult();
 	
-	public FloatPoint[] getAvgCentroidOffsets();
+	public FloatPoint[] getAvgFsCentroidOffsets();
 	
-	public CentroidStatsResult getAvgCentroidStatsResult();
+	public CentroidStatsResult getAvgFsCentroidStatsResult();
 
 }

@@ -314,10 +314,60 @@ public class FineScreenExecutor {
 				float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();				
 				computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
 
-			}
+			} // end of iteration loop
 			
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
+
+			/*****************************************************/
+			/*             calcAvgCentroidOffsets                */
+			/*****************************************************/
+
+			// we can average the centroid offsets, but cannot average the status list
+			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
+			computationLibrary.calcAvgCentroidOffsets(offsetsIterations);
+			
+			/*****************************************************/
+			/*              calculateCentroidStats - avg FS      */
+			/*****************************************************/
+
+			CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
+			
+			// this needs to be an average over all frames
+			FindCentroidsResult[] findCentroidsResults = procedure.getFindCentroidsResults();
+			int[][] findCentStatusIterations = new int[findCentroidsResults.length][findCentroidsResults[0].getFindCentStatusList().length];
+			for (int i=0; i<findCentroidsResults.length; i++) {
+				findCentStatusIterations[i] = findCentroidsResults[i].getFindCentStatusList();
+			}
+			
+			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
+			
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			
+			computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+					subimageDefList.getMissingSpotFlags(), goodSpots);
+
+			/*****************************************************/
+			/*              fineScreenScaleError - Avg           */
+			/*****************************************************/
+			
+			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+			
+			computationLibrary.fineScreenScaleErrorResult(avgCentroidOffsetsResult.getCcdCentroidOffsets(),
+					centerSpots, subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), goodSpots);
+			
+			
+			/*****************************************************/
+			/*          Display Avg FS Centroid Offsets          */
+			/*****************************************************/
+			
+			// Display the average centroid offsets 
+			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgFsCentroidOffsets()) {
+			
+				graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
+			}
+
+			
 
 			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
 			
@@ -398,16 +448,15 @@ public class FineScreenExecutor {
 			computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
 
 			// calc scale error for pseudo pt 
-			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), centerSpots);
 
 			
 			// Display the average centroid offsets 
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgCentroidOffsets()) {
+			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgPtCentroidOffsets()) {
 				
 				// average centroid offsets is a different display from centroid offsets and requires different inputs
 				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
-				graphicDisplayMgmt.displayAvgCentroidOffsets(procedureOutput);
+				graphicDisplayMgmt.displayAvgPtCentroidOffsets(procedureOutput);
 			}
 
 			
