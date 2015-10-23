@@ -242,7 +242,10 @@
 								
 							</f:facet>
 						
+							<!-- 
 							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
+							 -->
+							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;right:10px" />
 						
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 							<p:spacer height="1px"/>
@@ -340,7 +343,7 @@
 });	
 
     var mousePos;
-    
+      
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
 		canvas.addEventListener("mousedown", doMouseDown, false);
