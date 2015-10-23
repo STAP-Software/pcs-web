@@ -129,13 +129,13 @@ public class ProcedureOutputMgmt {
 
 		// fill out a list of ProcedureOutputValues
 
-		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputValuesForProcedure", ProcedureOutputValue.class);
+		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputDisplayValuesForProcedure", ProcedureOutputValue.class);
 		query.setParameter("procedureId", procedure.getProcedureId());
 		query.setParameter("procedureTypeId", procedure.getProcedureType().getProcedureTypeId());
 
-		List<ProcedureOutputValue> procedureOutputList = query.getResultList();
+		List<ProcedureOutputValue> procedureOutputDisplayList = query.getResultList();
 
-		if (procedureOutputList.isEmpty()) {
+		if (procedureOutputDisplayList.isEmpty()) {
 			return null;
 		}
 
@@ -145,8 +145,17 @@ public class ProcedureOutputMgmt {
 
 		Object poClassInstance = Class.forName(fullPoClassName).newInstance();
 		ProcedureOutput procedureOutput = (ProcedureOutput) poClassInstance;
-		procedureOutput.setProcedureOutputList(procedureOutputList);
+		procedureOutput.setProcedureOutputList(procedureOutputDisplayList);
 
+		
+		// reconstitute the procedureOutput object tree
+		
+		TypedQuery<ProcedureOutputValue> query2 = em.createNamedQuery("findAllOutputValuesForProcedure", ProcedureOutputValue.class);
+		query2.setParameter("procedureId", procedure.getProcedureId());
+		List<ProcedureOutputValue> procedureOutputList = query2.getResultList();
+		
+		
+		
 		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
 			
 			// here, check for null and create object as necessary
@@ -178,14 +187,14 @@ public class ProcedureOutputMgmt {
 		// find procedure iteration outputs
 		Integer iteration = 0;
 		while (true) {
-			query = em.createNamedQuery("findOutputValuesForProcedureIteration", ProcedureOutputValue.class);
+			query = em.createNamedQuery("findOutputDisplayValuesForProcedureIteration", ProcedureOutputValue.class);
 			query.setParameter("procedureId", procedure.getProcedureId());
 			query.setParameter("procedureTypeId", procedure.getProcedureType().getProcedureTypeId());
 			query.setParameter("iteration", iteration);
 
-			List<ProcedureOutputValue> procedureIterationOutputList = query.getResultList();
+			List<ProcedureOutputValue> procedureIterationOutputDisplayList = query.getResultList();
 
-			if (procedureIterationOutputList.isEmpty()) {
+			if (procedureIterationOutputDisplayList.isEmpty()) {
 				break;
 			}
 
@@ -198,10 +207,18 @@ public class ProcedureOutputMgmt {
 			Object poItClassInstance = Class.forName(fullPoItClassName).newInstance();
 
 			ProcedureIterationOutput pio = (ProcedureIterationOutput) poItClassInstance;
-			pio.setProcedureIterationOutputList(procedureIterationOutputList);
+			pio.setProcedureIterationOutputList(procedureIterationOutputDisplayList);
 			pio.setIteration(iteration++);
+			
+			
+			// reconstitute the procedureIterationOutput object tree - we don't need all the fields, so don't load them at this time
+			
+			//query2 = em.createNamedQuery("findAllOutputDisplayValuesForProcedureIteration", ProcedureOutputValue.class);
+			//query2.setParameter("procedureId", procedure.getProcedureId());
+			//List<ProcedureOutputValue> procedureIterationOutputList = query2.getResultList();
 
-			for (ProcedureOutputValue procedureOutputValue : procedureIterationOutputList) {
+
+			for (ProcedureOutputValue procedureOutputValue : procedureIterationOutputDisplayList) {
 				
 				// here, check for null and create object as necessary
 				String className = procedureOutputValue.getProcedureOutputField().getClassName();

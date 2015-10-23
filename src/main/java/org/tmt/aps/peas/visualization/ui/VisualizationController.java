@@ -446,11 +446,11 @@ public class VisualizationController implements Serializable {
 		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
 
-		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
+		if (procedureOutput instanceof ActuatorDeltasDisplayValues) {
 
-			PassiveTiltProcedureOutput ptpo = (PassiveTiltProcedureOutput) procedureOutput;
+			ActuatorDeltasDisplayValues addv = (ActuatorDeltasDisplayValues) procedureOutput;
 			
-			graphicDisplayMgmt.setAndEncodeActuatorDeltasDisplayValues(ptpo);
+			graphicDisplayMgmt.setAndEncodeActuatorDeltasDisplayValues(addv);
 			
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);		
