@@ -316,16 +316,21 @@ public class AsyncController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
 				RequestContext.getCurrentInstance().update("procedureDetailForm");
 			}
+			
 			// display frame
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:framePanel");
 			
 			try {
-				Thread.sleep(1000);
+				Thread.sleep(500);
 			} catch (InterruptedException e) {}
 
-			
 			requestContext.execute("drawFrame()");
+
+			try {
+				Thread.sleep(500);
+			} catch (InterruptedException e) {}
+
 
 			// update the breadcrumb to associate the current session as the first link
 			Session session = sessionController.getCurrentSession();
