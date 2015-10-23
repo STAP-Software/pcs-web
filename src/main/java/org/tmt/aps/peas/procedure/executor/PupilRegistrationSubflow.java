@@ -140,10 +140,7 @@ public class PupilRegistrationSubflow {
 		CalcPrCommandsResult calcPrCommandsResult = computationLibrary.calcPrCommands(centerPupil, desiredCenterPupilMech, pupilRegErrorResult, 
 				procedure.getProcedureConfigSet().getPupilRegErrorConfig(), fineMirror, coarseMirror);
 
-		
-		
-		procedureExecutionState.setPercentComplete(90);
-		
+				
 		/*****************************************************/
 		/*         move fine, coarse, both, or none          */
 		/*****************************************************/

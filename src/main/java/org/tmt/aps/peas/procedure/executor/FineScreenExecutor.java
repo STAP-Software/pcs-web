@@ -567,7 +567,7 @@ public class FineScreenExecutor {
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
-				procedureExecutionState.setPercentComplete(90);
+				procedureExecutionState.setPercentComplete(99);
 		        Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete");
 			}
