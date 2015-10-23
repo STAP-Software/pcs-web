@@ -362,12 +362,12 @@
 
 	
 	function drawFrame() {
-		window.setTimeout("drawFrame2(false)", 100);
+		window.setTimeout("drawFrame2(false)", 500);
 	}
 		
 	function markFrame() {
 		
-		window.setTimeout("drawFrame2(true)", 100);
+		window.setTimeout("drawFrame2(true)", 500);
 	}
 	
 	function drawFrame2(mark) {
@@ -385,7 +385,9 @@
 	}
 		
 	function markFrame2(c, ctx, img) {
-				
+		
+		console.log("about to mark frame")
+		
 		var xField = document.getElementById('frameHiddenForm:centroidXs').value;
 	 	var xArray = xField.split(','); 
 		var yField = document.getElementById('frameHiddenForm:centroidYs').value;
@@ -402,7 +404,9 @@
 			for (var i = 0; i < xArray.length; i++) {
 				
 				if (xArray[i] != 0.0 && yArray[i] != 0.0) {
-				
+
+					console.log("marking")
+
 					ctx.beginPath();
 					// divide by 2 when frame is displayed 512x512
 					ctx.arc(xArray[i]/2,yArray[i]/2,spotRad/2,0,2*Math.PI);
