@@ -359,12 +359,12 @@
 
 	
 	function drawFrame() {
-		window.setTimeout("drawFrame2(false)", 500);
+		window.setTimeout("drawFrame2(false)", 100);
 	}
 		
 	function markFrame() {
 		
-		window.setTimeout("drawFrame2(true)", 500);
+		window.setTimeout("drawFrame2(true)", 100);
 	}
 	
 	function drawFrame2(mark) {
@@ -395,7 +395,7 @@
 		ctx.font = "12px Arial";
 	 	ctx.fillStyle = "red";
 
-		console.log("about to loop: " + xField )
+		//console.log("about to loop: " + xField )
 
 		
 	 	if (xField != null && xField.length > 0) {
@@ -404,7 +404,7 @@
 				
 				if (xArray[i] != 0.0 && yArray[i] != 0.0) {
 
-					console.log("marking")
+					//console.log("marking")
 
 					ctx.beginPath();
 					// divide by 2 when frame is displayed 512x512

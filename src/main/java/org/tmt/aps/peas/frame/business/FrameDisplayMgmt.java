@@ -73,6 +73,7 @@ public class FrameDisplayMgmt implements Serializable {
 		pendingDisplay = true;
 		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
 		this.frameInstructionImageName = "";
+		this.frameNumber = 0;
 	}
 	
 	public void displayFrame(String frameInstructions, String imageName) {
