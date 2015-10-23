@@ -403,12 +403,12 @@ public class FineScreenExecutor {
 			if (procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_M2_ACT_DELTAS_PROMPT) {
 				
 				// Display to user and ask if they want to command
-				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd", 
+				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd.html", 
 						-calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
 						-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
 						-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
 				
-				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
+				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators.html",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 				
 				sendM2Command = userPromptMgmt.displayYesNoDialog(m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
 			}
@@ -525,7 +525,7 @@ public class FineScreenExecutor {
 			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
 				
 				// Display to user and ask if they want to command				
-				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds",
+				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds.html",
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
 						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
