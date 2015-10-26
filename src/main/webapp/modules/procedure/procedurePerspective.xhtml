@@ -340,6 +340,7 @@
 });	
 
     var mousePos;
+    var moving = false;
       
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
@@ -347,6 +348,13 @@
 		canvas.addEventListener('mousemove', doMouseMove, false);
 
 	}
+	
+	function removeCanvasEvents() {
+		var canvas = document.getElementById("frameCanvas");
+		canvas.removeEventListener("mousedown",doMouseDown);
+		canvas.removeEventListener("mousemove",doMouseMove);
+	}
+	
 	
 	function doMouseDown(event) {  		
 		
@@ -359,16 +367,18 @@
 
 	
 	function drawFrame() {
-		window.setTimeout("drawFrame2(false)", 100);
+		window.setTimeout("drawFrame2(false)", 500);
 	}
 		
 	function markFrame() {
 		
-		window.setTimeout("drawFrame2(true)", 100);
+		window.setTimeout("drawFrame2(true)", 500);
 	}
 	
 	function drawFrame2(mark) {
+		removeCanvasEvents();
 		var c = document.getElementById("frameCanvas");
+
 		var ctx = c.getContext("2d");
 		
 		var img = document.getElementById("procedureDetailForm:frameImage");
@@ -379,6 +389,8 @@
 		
 		if (mark)
 			markFrame2(c, ctx, img);
+		
+		initCanvasEvents();
 	}
 		
 	function markFrame2(c, ctx, img) {
@@ -418,7 +430,7 @@
 				}
 			}
 		}
-		initCanvasEvents();
+		
 	}
 	
 	function scrollStatusLog() {
@@ -443,16 +455,27 @@
  	}
 
 	function doMouseMove(event) {
-  		var canvas = document.getElementById("frameCanvas");
+	
+ 		var canvas = document.getElementById("frameCanvas");
   		mousePos = getMousePos(canvas, event);
-  		
-  		// convert 512 to 1024
+
+		if (!moving) {
+			moving = true;
+			window.setTimeout("mouseMoveHandler()", 300);
+		}
+   	}
+		
+	function mouseMoveHandler() {
+		
+ 		// convert 512 to 1024
   		mousePos.x = mousePos.x * 2;
   		mousePos.y = mousePos.y * 2;
   		
  		// call javascript function that is defined in <p:remote>
  		frameValue([{name: 'mouse_x', value: mousePos.x}, {name: 'mouse_y', value: mousePos.y}]);
-  	}
+
+ 		moving = false;
+	}
 	
 	function writeMessage(infoCanvas, message) {
         var context = infoCanvas.getContext('2d');

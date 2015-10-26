@@ -748,6 +748,10 @@ public class ProcedureController implements Serializable {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
+		
+		
+		// load centroid values
+		
 	}
 
 	public void intTimeChangeListener(AjaxBehaviorEvent event) {
@@ -890,9 +894,8 @@ public class ProcedureController implements Serializable {
 		if (setting) {
 			// get the marking and set it
 			
-			procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
-			
-			FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+			FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();
+			//FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
 			
 			float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
 			float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
@@ -905,6 +908,7 @@ public class ProcedureController implements Serializable {
 			
 			// display the frame unmarked
 			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("frameHiddenForm");
 			requestContext.execute("markFrame()");
 
 			
@@ -915,6 +919,7 @@ public class ProcedureController implements Serializable {
 			
 			// display the frame unmarked
 			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("frameHiddenForm");
 			requestContext.execute("drawFrame()");
 
 

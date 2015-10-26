@@ -275,6 +275,7 @@ public class ProcedureExecutionMgmt {
 					try {
 
 						loadedFitsFile = frameMgmt.loadFitsFrame(filename);
+						procedureCcdFrame.getCcdFrame().setRawFrame(loadedFitsFile.getRawFrame());
 
 					} catch (Exception e) {
 						logger.error(MessageGenerator.generateMessage("generic.error"), e);
