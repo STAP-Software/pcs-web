@@ -84,8 +84,6 @@ public class PupilRegistrationSubflow {
 			statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
 					new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
 
-			procedureExecutionState.setPercentComplete(80);
-
 			
 		/*****************************************************/
 		/*           determine fine/coarse PR Commands       */
@@ -131,7 +129,6 @@ public class PupilRegistrationSubflow {
 			}					
 		}
 
-		procedureExecutionState.setPercentComplete(85);
 
 		CoarseTiltMirror coarseMirror = physicalModel.getInstrument().getCamera().getCoarseTiltMirror();
 		FineTiltMirror fineMirror = physicalModel.getInstrument().getCamera().getFineTiltMirror();

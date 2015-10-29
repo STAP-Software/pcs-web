@@ -116,4 +116,8 @@ public class PupilMaskType {
 		return false;
 	}
 
+	public boolean isPupilMaskTypeNone() {
+		return !(isPupilMaskTypeSufs() || isPupilMaskTypePt() || isPupilMaskTypePh() || isPupilMaskTypeFs());
+	}
+
 }

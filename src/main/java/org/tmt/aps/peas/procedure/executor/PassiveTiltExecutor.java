@@ -199,7 +199,9 @@ public class PassiveTiltExecutor {
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
+			procedureExecutionState.setPercentComplete(10);
 			readyCameraSubflow.execute(procedure);
+			procedureExecutionState.setPercentComplete(20);
 			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
@@ -219,10 +221,11 @@ public class PassiveTiltExecutor {
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
 			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			procedureExecutionState.setPercentComplete(50);
 			
 			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
 			
-			procedureExecutionState.setPercentComplete(80);
+			procedureExecutionState.setPercentComplete(70);
 
 			/*****************************************************/
 			/*              calculateCentroidStats               */
@@ -270,6 +273,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
 
+			procedureExecutionState.setPercentComplete(80);
 
 			/*****************************************************/
 			/*                  optimalPistons                   */
@@ -291,6 +295,8 @@ public class PassiveTiltExecutor {
 			// display RMS piston deltas to user in dialog
 			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
 			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
+
+			procedureExecutionState.setPercentComplete(90);
 
 			// command ACS
 			boolean commandsSent = false;

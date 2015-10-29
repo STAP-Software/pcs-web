@@ -236,6 +236,8 @@ public class FrameMgmt {
 				ccdFrame = loadFitsFrame("K1_10AUG06_RB_041_01.FTS");
 			} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
 				ccdFrame = loadFitsFrame("K1_10AUG06_RB_018_01.FTS");
+			} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeNone()) {
+				ccdFrame = loadFitsFrame("K1_01JUL07_CT_036_00.FTS");
 			}
 			byte[] falseColorPng = loadPng(ccdFrame, true);
 			ccdFrame.setFalseColorPng(falseColorPng);
