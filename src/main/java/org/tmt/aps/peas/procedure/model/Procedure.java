@@ -224,6 +224,11 @@ public class Procedure {
 	public void setStarSpType(String starSpType) {
 		this.starSpType = starSpType;
 	}
+	
+	public String getStarSpTypeFormatted() {
+		return starSpType != null && starSpType.trim().length() > 0 ? starSpType : "N/A";
+	}
+
 
 	public String getStarVmag() {
 		return starVmag;

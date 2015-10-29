@@ -140,11 +140,11 @@ public class ProcedureExecutionMgmt {
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
 
-			try {
+			//try {
 				frameSimulator.init(selectedFitsFiles);
-			} catch (Exception e) {
-				logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			}
+			//} catch (Exception e) {
+			//	logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			//}
 
 		} else {
 			// get the star info from the DCS interface

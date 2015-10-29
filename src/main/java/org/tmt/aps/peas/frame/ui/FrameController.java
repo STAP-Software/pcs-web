@@ -382,6 +382,7 @@ public class FrameController implements Serializable {
 
 	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
 
+		try {
 		ccdFrame = new CcdFrame();
 		ccdFrame.setRawFrame(rawFrame);
 
@@ -390,6 +391,11 @@ public class FrameController implements Serializable {
 		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
 
 		allowFrameSave = true;
+		
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
 	}
 
 	public void doHandMark() {
