@@ -26,24 +26,25 @@ public class UserPrompt {
 	String button1Text;
 	String button2Text;
 	String button3Text;
+	String header;
 	
 	int button1Value;
 	int button2Value;
 	int button3Value;
 	
 	int buttonCount;
+		
 	
-
-	
-	
-	public UserPrompt() {
+	public UserPrompt(String header) {
 		this.promptType = PROMPT_TYPE_INFO;
 		this.message = "";
+		this.header = header;
 	}
 	
-	public UserPrompt(int type, String message) {
+	public UserPrompt(String header, int type, String message) {
 		this.promptType = type;	
 		this.message = message;
+		this.header = header;
 		
 		if (type == PROMPT_TYPE_INFO) {
 			buttonCount = 1;
@@ -79,7 +80,7 @@ public class UserPrompt {
 		
 	}
 	
-	public UserPrompt(int type, String message, String[] buttonTexts, int[] buttonValues) {
+	public UserPrompt(String header, int type, String message, String[] buttonTexts, int[] buttonValues) {
 		this.promptType = type;	
 		this.message = message;
 	
@@ -171,6 +172,14 @@ public class UserPrompt {
 
 	public void setButton3Value(int button3Value) {
 		this.button3Value = button3Value;
+	}
+
+	public String getHeader() {
+		return header;
+	}
+
+	public void setHeader(String header) {
+		this.header = header;
 	}
 	
 	

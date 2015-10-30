@@ -123,6 +123,7 @@ public class AsyncController implements Serializable {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + procedureController.getCurrentPrompt().getMessage());
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			
+			requestContext.update("promptDialog"); 
 			requestContext.update("promptDialogForm"); 
 			requestContext.execute("userPromptDialog.show()");
 			

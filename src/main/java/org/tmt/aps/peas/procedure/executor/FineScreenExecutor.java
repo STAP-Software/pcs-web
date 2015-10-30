@@ -167,7 +167,7 @@ public class FineScreenExecutor {
 
 						if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
 							// prompt user
-							autoTakeRefMap = userPromptMgmt.displayYesNoDialog(e.getText() + "\nTake new Ref Map?");
+							autoTakeRefMap = userPromptMgmt.displayYesNoDialog("New Ref Map Needed", e.getText() + "\nTake new Ref Map?");
 
 						} else {
 							autoTakeRefMap = true;
@@ -410,7 +410,7 @@ public class FineScreenExecutor {
 				
 				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators.html",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 				
-				sendM2Command = userPromptMgmt.displayYesNoDialog(m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
+				sendM2Command = userPromptMgmt.displayYesNoDialog("Secondary Mirror Command", m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
 			}
 
 			procedureExecutionState.setPercentComplete(90);
@@ -533,7 +533,7 @@ public class FineScreenExecutor {
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
 						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
 				
-				sendM1Command = userPromptMgmt.displayYesNoDialog(actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
+				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
 			}
 
 	

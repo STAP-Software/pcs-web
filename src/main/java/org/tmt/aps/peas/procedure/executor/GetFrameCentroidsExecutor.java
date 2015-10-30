@@ -220,7 +220,7 @@ public class GetFrameCentroidsExecutor {
 		// user interaction
 		statusLogger.log("procedure.exception", text);
 
-		int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
+		int response = userPromptMgmt.displayFlowControlTriFlowDialog("Procedure Exception", text);
 
 		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 			throw new AbortProcedureException("User Aborted Test");
@@ -248,7 +248,7 @@ public class GetFrameCentroidsExecutor {
 		// user interaction
 		statusLogger.log("procedure.exception", text);
 
-		int response = userPromptMgmt.displayFlowControlTriFlowDialog(text);
+		int response = userPromptMgmt.displayFlowControlTriFlowDialog("Procedure Exception", text);
 
 		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 			throw new AbortProcedureException("User Aborted Test");
@@ -398,7 +398,7 @@ public class GetFrameCentroidsExecutor {
 			// if a create reg map and gaussian find_cent had to fall back, inform the user to make an entry in the night log
 			if (centroidMap.getFindCentroidsResult().containsGaussianCmFallbackCentroids() && procedure.getProcedureType().isCreateRefMap()) {
 				String text = MessageGenerator.generateMessage("find_cent.gaussian_fallback_to_cm");
-				userPromptMgmt.displayInfoDialog(text);
+				userPromptMgmt.displayInfoDialog("Find Cent Gaussian Calc Failed", text);
 			}
 			
 			
@@ -442,7 +442,7 @@ public class GetFrameCentroidsExecutor {
 				break;
 			} else {
 				// TODO: put in resource bundle
-				userPromptMgmt.displayInfoDialog("You did not mark the correct number of spots");
+				userPromptMgmt.displayInfoDialog("Frame Marking Error", "You did not mark the correct number of spots");
 
 			}
 		}

@@ -162,7 +162,7 @@ public class PassiveTiltExecutor {
 
 						if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
 							// prompt user
-							autoTakeRefMap = userPromptMgmt.displayYesNoDialog(e.getText() + "\nTake new Ref Map?");
+							autoTakeRefMap = userPromptMgmt.displayYesNoDialog("Need Ref Map Needed", e.getText() + "\nTake new Ref Map?");
 
 						} else {
 							autoTakeRefMap = true;
@@ -294,7 +294,7 @@ public class PassiveTiltExecutor {
 
 			// display RMS piston deltas to user in dialog
 			String text = MessageGenerator.generateMessage("pt.m1_act_cmds_rms", calcDesiredActCommandsResult.getDesiredActDeltasRms());
-			boolean commandAcs = userPromptMgmt.displayYesNoDialog(text + "\nCommand Primary Mirror?");
+			boolean commandAcs = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", text + "\nCommand Primary Mirror?");
 
 			procedureExecutionState.setPercentComplete(90);
 

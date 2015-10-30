@@ -58,12 +58,12 @@ public class UserPromptMgmt implements Serializable {
 	}
 
 	@Abortable
-	public void displayInfoDialog(String text) {
+	public void displayInfoDialog(String header, String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayInfoDialog"));
 
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_INFO, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_INFO, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
 		
@@ -72,12 +72,12 @@ public class UserPromptMgmt implements Serializable {
 	}
 	
 	@Abortable
-	public boolean displayYesNoDialog(String text) {
+	public boolean displayYesNoDialog(String header, String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayYesNoDialog"));
 		
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_YES_NO, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
 		
@@ -87,12 +87,12 @@ public class UserPromptMgmt implements Serializable {
 	}
 	
 	@Abortable
-	public int displayFlowControlTriFlowDialog(String text) {
+	public int displayFlowControlTriFlowDialog(String header, String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayFlowControlTriFlowDialog"));
 
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_FLOW_CONTROL_TRIFLOW, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
 		
@@ -102,12 +102,12 @@ public class UserPromptMgmt implements Serializable {
 	}
 	
 	@Abortable
-	public int displayFlowControlBiFlowDialog(String text) {
+	public int displayFlowControlBiFlowDialog(String header, String text) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayFlowControlBiFlowDialog"));
 		
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_FLOW_CONTROL_BIFLOW, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_FLOW_CONTROL_BIFLOW, text.replace("\n", "<br/>"));
 		
 		waitForReturnState();
 		
@@ -117,12 +117,12 @@ public class UserPromptMgmt implements Serializable {
 	}
 	
 	@Abortable
-	public int displayGenericMultiChoiceDialog(String text, String[] choicesText, int[] choicesValues) {
+	public int displayGenericMultiChoiceDialog(String header, String text, String[] choicesText, int[] choicesValues) {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayGenericThreeChoiceDialog"));
 		
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_GENERIC_MULTI_CHOICE, text.replace("\n", "<br/>"), choicesText, choicesValues); 
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_GENERIC_MULTI_CHOICE, text.replace("\n", "<br/>"), choicesText, choicesValues); 
 		
 		waitForReturnState();
 		

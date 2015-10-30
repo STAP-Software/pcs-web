@@ -231,7 +231,7 @@ public class CenterTelescopeExecutor {
 			statusLogger.log("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
 			
 			String text = MessageGenerator.generateMessage("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());
-			boolean telescopeMoved = userPromptMgmt.displayYesNoDialog(text + "\nCommand Telescope?");
+			boolean telescopeMoved = userPromptMgmt.displayYesNoDialog("Command Telescope?", text + "\nCommand Telescope?");
 			procedureOutput.getProcedureDecisionLog().setTelescopeMoved(telescopeMoved);
 			
 			// depending on what user answers, either command telescope or quit

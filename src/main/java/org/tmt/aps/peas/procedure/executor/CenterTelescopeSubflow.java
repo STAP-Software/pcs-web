@@ -112,7 +112,7 @@ public class CenterTelescopeSubflow {
 			if (aResult.getRecenterTelescope().isPrompt()) {
 				
 				// ask user if they want to center the telescope
-				userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+				userReply = userPromptMgmt.displayYesNoDialog("Move Telescope", MessageGenerator.generateMessage(aResult.getReasonKey(),
 						aResult.getReasonArgs()) + "\nMove Telescope?");
 				
 				if (userReply) {
@@ -127,7 +127,7 @@ public class CenterTelescopeSubflow {
 				
 			} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
 				// ask user if they want to center the telescope
-				userReply = userPromptMgmt.displayYesNoDialog(MessageGenerator.generateMessage(aResult.getReasonKey(),
+				userReply = userPromptMgmt.displayYesNoDialog("Move Telescope", MessageGenerator.generateMessage(aResult.getReasonKey(),
 						aResult.getReasonArgs()) + "\nMove Telescope?");
 				
 				if (userReply) {
@@ -150,7 +150,7 @@ public class CenterTelescopeSubflow {
 			if (aResult.getRetakeFrame().isPrompt()) {
 
 				// ask user if they want to re-take the frame
-				int reply = userPromptMgmt.displayFlowControlTriFlowDialog("Frame needs to be retaken.  Press: 'Retry' to re-take frame, 'Continue' to continue procedure with this frame, 'Abort' to abort test now.");
+				int reply = userPromptMgmt.displayFlowControlTriFlowDialog("Retake Frame", "Frame needs to be retaken.  Press: 'Retry' to re-take frame, 'Continue' to continue procedure with this frame, 'Abort' to abort test now.");
 			
 				if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 					

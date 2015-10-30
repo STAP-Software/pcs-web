@@ -102,7 +102,7 @@ public class PupilRegistrationSubflow {
 			// ask the user
 			
 			// include the PR error result in the dialog
-			centerPupil = userPromptMgmt.displayYesNoDialog(text + "\n\nSend commands to correct pupil registration errors?");
+			centerPupil = userPromptMgmt.displayYesNoDialog("Send Pupil Reg Commands", text + "\n\nSend commands to correct pupil registration errors?");
 			
 		} else if (procedureConfig.getAutoCenterPupil() == Constants.AUTO_CENTER_PUPIL_YES) {
 			
@@ -121,7 +121,7 @@ public class PupilRegistrationSubflow {
 				String[] choices = {"Fine", "Coarse", "AutoDetermine"};
 				int[] values = {Constants.AUTO_CENTER_PUPIL_MECH_FINE, Constants.AUTO_CENTER_PUPIL_MECH_COARSE, Constants.AUTO_CENTER_PUPIL_MECH_AUTO};
 				
-				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog(text + "\n\nChoose mechanism to center pupil:", 
+				desiredCenterPupilMech = userPromptMgmt.displayGenericMultiChoiceDialog("Pupil Reg Cmd Mechanism", text + "\n\nChoose mechanism to center pupil:", 
 						choices, values);
 							
 			} else {

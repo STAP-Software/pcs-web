@@ -168,7 +168,7 @@ public class ProcedureController implements Serializable {
 	@PostConstruct
 	private void init() throws Exception {
 
-		currentPrompt = new UserPrompt(UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
+		currentPrompt = new UserPrompt("Default Text", UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
 
 		// set up the instrument to be associated with each frame to display archived state
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
