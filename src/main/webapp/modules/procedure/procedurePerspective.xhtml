@@ -142,8 +142,8 @@
 
 						<p:spacer height="10px" width="40px" />
 						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}">
-							<p:commandButton id="startButton" value="Start" icon="ui-icon-play" actionListener="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
-								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm"
+							<p:commandButton id="startButton" value="Start" icon="ui-icon-play" action="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
+								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm :errorGrowl"
 								disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
 							<p:spacer width="30px" />
 							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
@@ -505,6 +505,7 @@
     
     drawFrame();
 
+    		
 	//]]>
 	
 </script>

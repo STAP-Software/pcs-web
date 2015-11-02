@@ -542,7 +542,7 @@ public class ProcedureController implements Serializable {
 				&& procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getWavelength() == 611.0) {
 
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage("Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!"));
+					new FacesMessage(FacesMessage.SEVERITY_WARN, "Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!", ""));
 
 		}
 		// reset marking mode in case of hiccup in previous procedure
@@ -555,10 +555,11 @@ public class ProcedureController implements Serializable {
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			FacesContext.getCurrentInstance().addMessage(null,
-					new FacesMessage("Error Initializing Procedure, check log files for details"));
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Initializing Procedure, check log files for details", ""));
 			
 			return;
 		}
+		
 
 		// kick off asynchronous procedure
 		// DO NOT CALL WITHIN a try/catch - will not get called due to the fact that the Tx cannot be rolled back
@@ -578,6 +579,12 @@ public class ProcedureController implements Serializable {
 
 		logger.debug("doExecuteProcedure::after executor call");
 
+	}
+	
+	public void doTest() {
+		
+		FacesContext.getCurrentInstance().addMessage(null,
+				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Initializing Procedure, check log files for details", ""));
 	}
 
 	public void doOnLoad() {
