@@ -227,18 +227,30 @@ public class FrameMgmt {
 		if (ccdSimulator) {
 			// here we make a better frame than the external package simulator can
 			// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
-			// TODO: This needs to be improved to get a frame from file given the procedure type
-			// TODO: the filename should be part of the peas.properties
+			// TODO: This needs to be improved to get a frame from file given the procedure type			
 			
-			if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
-				ccdFrame = loadFitsFrame("K1_10AUG06_RB_004_01.FTS");
-			} else if (procedureConfig.getPupilMaskType().isPupilMaskTypePh()) {
-				ccdFrame = loadFitsFrame("K1_10AUG06_RB_041_01.FTS");
-			} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
-				ccdFrame = loadFitsFrame("K1_10AUG06_RB_018_01.FTS");
-			} else if (procedureConfig.getPupilMaskType().isPupilMaskTypeNone()) {
-				ccdFrame = loadFitsFrame("K1_01JUL07_CT_036_00.FTS");
+			switch (procedureConfig.getPupilMaskType().getPupilMaskTypeId().intValue()) {
+			
+			case Constants.PUPIL_MASK_PASSIVE_TILT: 
+				ccdFrame = loadFitsFrame(peasProperties.getProp("org.tmt.aps.peas.frame_simulator_pt"));
+				break;
+			case Constants.PUPIL_MASK_FINE_SCREEN:
+				ccdFrame = loadFitsFrame(peasProperties.getProp("org.tmt.aps.peas.frame_simulator_fs"));
+				break;
+			case Constants.PUPIL_MASK_PHASING:
+				ccdFrame = loadFitsFrame(peasProperties.getProp("org.tmt.aps.peas.frame_simulator_ph"));
+				break;
+			case Constants.PUPIL_MASK_SUFS:
+				ccdFrame = loadFitsFrame(peasProperties.getProp("org.tmt.aps.peas.frame_simulator_sufs"));
+				break;
+			default: 
+				// none
+				ccdFrame = loadFitsFrame(peasProperties.getProp("org.tmt.aps.peas.frame_simulator_ct"));
+				break;
+			
 			}
+							
+			
 			byte[] falseColorPng = loadPng(ccdFrame, true);
 			ccdFrame.setFalseColorPng(falseColorPng);
 			
