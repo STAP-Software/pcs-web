@@ -299,14 +299,14 @@ public class FineScreenExecutor {
 					calcM2M1Result = computationLibrary.calculateM2M1Analytical(findCentroidsResult, 
 							centroidOffsetsResult, 
 							subimageDefList.getUseForM2InteriorSpotFlags(),
-							calcM2M1Config.getM2PistonUnitPertibation(), 
-							calcM2M1Config.getM2TTUnitPertibation(),
 							constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
 							subimageDefList.getNspotTypes(),
 							constantsCache.getTelescopeConstants(), 
 							procedureConfig.getPupilMask().getSecPerPixel(),
-							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
-					
+							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor(),
+							constantsCache.getPrimaryMirrorConstants().getaHex(),
+							calcM2M1Config.getAnalyticalCalcStartSeg(),
+							calcM2M1Config.getAnalyticalCalcEndSeg());
 					
 				}
 								

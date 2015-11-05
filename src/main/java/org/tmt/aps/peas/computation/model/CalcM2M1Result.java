@@ -16,7 +16,20 @@ public class CalcM2M1Result {
 	FloatPoint[] m1OffsetsCorrectedForM2;
 	FloatPoint[] m1OffsetsCorrectedForM2Pixels;
 	
-	
+
+	public CalcM2M1Result(float m2Piston, FloatPoint m2TipTilt, FloatPoint m2TipTiltTelescopeCoords, float centroidResidual,
+			FloatPoint[] m1OffsetsCorrectedForM2, FloatPoint[] m1OffsetsCorrectedForM2Pixels) {
+
+			this.m2Piston = m2Piston;
+			this.m2TipTilt = m2TipTilt;
+			this.m2TipTiltTelescopeCoords = m2TipTiltTelescopeCoords;
+			this.centroidResidual = centroidResidual;
+			this.pistonErrorMultiplier = 0.0f;
+			this.tipTiltErrorMulitplier = new FloatPoint();
+			this.m1OffsetsCorrectedForM2 = m1OffsetsCorrectedForM2;
+			this.m1OffsetsCorrectedForM2Pixels = m1OffsetsCorrectedForM2Pixels;
+	}
+
 	public CalcM2M1Result(float m2Piston, FloatPoint m2TipTilt, FloatPoint m2TipTiltTelescopeCoords, float centroidResidual, float pistonErrorMultiplier, FloatPoint tipTiltErrorMulitplier,
 			FloatPoint[] m1OffsetsCorrectedForM2, FloatPoint[] m1OffsetsCorrectedForM2Pixels) {
 
