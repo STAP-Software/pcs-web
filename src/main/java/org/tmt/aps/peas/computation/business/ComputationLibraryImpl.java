@@ -886,7 +886,7 @@ public class ComputationLibraryImpl {
 
 	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
-			CalcM2M1Config calcM2M1Config, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
+			float m2PistonUnitPertibation, float m2TTUnitPertibation, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
 			float m2TtCorrectionFactor) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
@@ -925,7 +925,7 @@ public class ComputationLibraryImpl {
 		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
 		
 		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
-				calcM2M1Config.getM2PistonUnitPertibation(), calcM2M1Config.getM2TTUnitPertibation(), xLensletLocations, yLensletLocations, 
+				m2PistonUnitPertibation, m2TTUnitPertibation, xLensletLocations, yLensletLocations, 
 				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
 				telescopeConstants.getM1CurvatureRadius(), m2TtCorrectionFactor, m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 
@@ -958,6 +958,85 @@ public class ComputationLibraryImpl {
 
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateM2M1RayTrace"));
+
+		return calcM2M1Result;
+	
+	}
+	
+	@Computation
+	public CalcM2M1Result calculateM2M1Analytical(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
+			float m2PistonUnitPertibation, float m2TTUnitPertibation, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
+			float m2TtCorrectionFactor) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1Analytical"));
+
+		JcalculateM2M1RayTrace jcalculateM2M1RayTrace = new JcalculateM2M1RayTrace();
+		RetVal retVal = new RetVal();
+
+		// logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
+
+		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+
+		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
+		
+		List<FloatPoint> centroidOffsetsPixels = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
+		
+		// convert offsets from pixels to arcsec
+		List<FloatPoint> centroidOffsetsArcsecs = new ArrayList<FloatPoint>();
+		for (FloatPoint pixelOffset : centroidOffsetsPixels) {
+		
+			FloatPoint arcsecOffset = new FloatPoint(pixelOffset.x * secPerPixel, pixelOffset.y * secPerPixel);
+			centroidOffsetsArcsecs.add(arcsecOffset);
+		}
+		
+		float[] offsetsX = FloatPointListEncoder.extractXArray(centroidOffsetsArcsecs);
+		float[] offsetsY = FloatPointListEncoder.extractYArray(centroidOffsetsArcsecs);
+		
+		int[] validSubimages = findCentroidsResult.getFoundInteriorSubimageFlags(nspotTypes);
+
+		float[][] xLensletLocations = FloatPointListEncoder.extractXfrom2dFloatPoint(fineScreenSpotCoords);
+		float[][] yLensletLocations = FloatPointListEncoder.extractYfrom2dFloatPoint(fineScreenSpotCoords);
+		
+		float[] m2TipTiltArr = new float[2];
+		float[] m2TipTiltArrTelescopeCoords = new float[2];
+		
+		float[] m1OffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
+		
+		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
+				m2PistonUnitPertibation, m2TTUnitPertibation, xLensletLocations, yLensletLocations, 
+				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
+				telescopeConstants.getM1CurvatureRadius(), m2TtCorrectionFactor, m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("calculateM2M1Analytical calcuation error");
+		}
+
+		
+		float m2Piston = (Float)result[0];
+		float centroidResidual = (Float)result[1];
+		float pistonErrorMultiplier = (Float)result[2];
+		FloatPoint tipTiltErrorMulitplier = new FloatPoint((Float)result[3], (Float)result[4]);
+		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
+		FloatPoint m2TipTiltTelescopeCoords = new FloatPoint(m2TipTiltArrTelescopeCoords[0], m2TipTiltArrTelescopeCoords[1]);
+		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+		
+		// convert corrected offsets from arcsec to pixels
+		List<FloatPoint> m1OffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
+		for (FloatPoint arcsecOffset : m1OffsetsCorrectedForM2) {
+		
+			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
+			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
+		}
+				
+		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
+				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]));
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateM2M1Analytical"));
 
 		return calcM2M1Result;
 	

@@ -12,6 +12,7 @@ public class TelescopeConstants {
 	float m2ActuatorRadius;
 	float m2TtCorrectionFactor;
 	int numberOfSegments;
+	float m1OuterDiameter;
 	
 	
 	public float getBackFocalDistance() {
@@ -50,9 +51,12 @@ public class TelescopeConstants {
 	public void setM2TtCorrectionFactor(float m2TtCorrectionFactor) {
 		this.m2TtCorrectionFactor = m2TtCorrectionFactor;
 	}
-
-	
-	
+	public float getM1OuterDiameter() {
+		return m1OuterDiameter;
+	}
+	public void setM1OuterDiameter(float m1OuterDiameter) {
+		this.m1OuterDiameter = m1OuterDiameter;
+	}
 	public int getNumberOfSegments() {
 		return numberOfSegments;
 	}
@@ -69,6 +73,7 @@ public class TelescopeConstants {
 		buf.append("\nm2ActuatorRadius = " + m2ActuatorRadius);
 		buf.append("\nm2TtCorrectionFactor = " + m2TtCorrectionFactor);
 		buf.append("\nnumberOfSegments = " + numberOfSegments);
+		buf.append("\nm1OuterDiameter = " + m1OuterDiameter);
 
 		buf.append("\n");
 		return buf.toString();

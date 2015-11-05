@@ -34,8 +34,12 @@ public class CalcM2M1Config {
 	private int calcMethod; // Ray Trace vs Zernike (TODO: add to UI)
 	private float m2TTUnitPertibation; // arcsec
 	private float m2PistonUnitPertibation; // microns
-
 	
+	// Analytical
+	private int analyticalCalcStartSeg; // start segment for analytical calc
+	private int analyticalCalcEndSeg; // end segment for analytical calc
+
+
 	
 	public CalcM2M1Config() {
 		
@@ -85,6 +89,26 @@ public class CalcM2M1Config {
 	public void setM2PistonUnitPertibation(float m2PistonUnitPertibation) {
 		this.m2PistonUnitPertibation = m2PistonUnitPertibation;
 	}
+
+	public int getAnalyticalCalcStartSeg() {
+		return analyticalCalcStartSeg;
+	}
+
+
+	public void setAnalyticalCalcStartSeg(int analyticalCalcStartSeg) {
+		this.analyticalCalcStartSeg = analyticalCalcStartSeg;
+	}
+
+
+	public int getAnalyticalCalcEndSeg() {
+		return analyticalCalcEndSeg;
+	}
+
+
+	public void setAnalyticalCalcEndSeg(int analyticalCalcEndSeg) {
+		this.analyticalCalcEndSeg = analyticalCalcEndSeg;
+	}
+
 
 	public boolean isCalcMethodRayTrace() {
 		return calcMethod == Constants.CALC_M2_METHOD_RAY_TRACE;

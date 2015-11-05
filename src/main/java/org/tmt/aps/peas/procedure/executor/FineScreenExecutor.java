@@ -23,7 +23,6 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
@@ -35,6 +34,7 @@ import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
+import org.tmt.aps.peas.config.model.CalcM2M1Config;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
@@ -270,18 +270,45 @@ public class FineScreenExecutor {
 					graphicDisplayMgmt.displayCentroidOffsets(pio);
 				}
 				
+				CalcM2M1Config calcM2M1Config = procedure.getProcedureConfigSet().getCalcM2M1Config();
+				CalcM2M1Result calcM2M1Result = null;
 				
-	          
-				// TODO: if calc option is Ray Trace:
+				if (calcM2M1Config.isCalcMethodRayTrace()) {
+				
+					/*****************************************************/
+					/*           Calculate M2 M1 Ray Trace               */
+					/*****************************************************/
 							
-				CalcM2M1Result calcM2M1Result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, centroidOffsetsResult, 
-						subimageDefList.getUseForM2InteriorSpotFlags(),
-						procedure.getProcedureConfigSet().getCalcM2M1Config(),
-						constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
-						subimageDefList.getNspotTypes(),
-						constantsCache.getTelescopeConstants(), procedureConfig.getPupilMask().getSecPerPixel(),
-						constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
+					calcM2M1Result = computationLibrary.calculateM2M1RayTrace(findCentroidsResult, 
+							centroidOffsetsResult, 
+							subimageDefList.getUseForM2InteriorSpotFlags(),
+							calcM2M1Config.getM2PistonUnitPertibation(), 
+							calcM2M1Config.getM2TTUnitPertibation(),
+							constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+							subimageDefList.getNspotTypes(),
+							constantsCache.getTelescopeConstants(), 
+							procedureConfig.getPupilMask().getSecPerPixel(),
+							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
 					
+				} else {
+					
+					/*****************************************************/
+					/*           Calculate M2 M1 Analytical              */
+					/*****************************************************/
+
+					calcM2M1Result = computationLibrary.calculateM2M1Analytical(findCentroidsResult, 
+							centroidOffsetsResult, 
+							subimageDefList.getUseForM2InteriorSpotFlags(),
+							calcM2M1Config.getM2PistonUnitPertibation(), 
+							calcM2M1Config.getM2TTUnitPertibation(),
+							constantsCache.getPrimaryMirrorConstants().getFineScreenSpotCoords(), 
+							subimageDefList.getNspotTypes(),
+							constantsCache.getTelescopeConstants(), 
+							procedureConfig.getPupilMask().getSecPerPixel(),
+							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
+					
+					
+				}
 								
 				// calc centroid stats for pseudo pt 
 				
