@@ -26,7 +26,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
-import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
 import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
@@ -403,24 +403,24 @@ public class FineScreenExecutor {
 			procedureExecutionState.setPercentComplete(85);
 
 			
-			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
+			// Calc mean and eom for M2 Piston/Tip/Tilt Error over all iterations
 			
 			Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
 			FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTiltTelescopeCoords", FloatPoint.class).toArray(new FloatPoint[0]);
 						
-			CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult = computationLibrary.calcM2PttErrorsMeanStd(m2PistonErrors, m2TipTiltErrors);
+			CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEomResult = computationLibrary.calcM2PttErrorsMeanEom(m2PistonErrors, m2TipTiltErrors);
 			
-			// output mean and std of ptt
-			statusLogger.log("calc.m2pttmeanstd", 
-					-calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
-					-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
-					-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
+			// output mean and eom of ptt
+			statusLogger.log("calc.m2pttmeaneom", 
+					-calcM2PttErrorsMeanEomResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanEomResult.getEomM2PistonErrorUm(), 
+					-calcM2PttErrorsMeanEomResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanEomResult.getEomM2TipTiltErrorArcsec().x, 
+					-calcM2PttErrorsMeanEomResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanEomResult.getEomM2TipTiltErrorArcsec().y); 
 
 			/*****************************************************/
 			/*             Calculate M2Actuators                 */
 			/*****************************************************/
 
-			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanStdResult.getMeanM2PistonError(), calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius());			
+			CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanEomResult.getMeanM2PistonError(), calcM2PttErrorsMeanEomResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius());			
 
 			statusLogger.log("calc.m2actuators", m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 
@@ -430,14 +430,14 @@ public class FineScreenExecutor {
 			if (procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_M2_ACT_DELTAS_PROMPT) {
 				
 				// Display to user and ask if they want to command
-				String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd.html", 
-						-calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
-						-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
-						-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
+				String m2pttMeanEomText = MessageGenerator.generateMessage("calc.m2pttmeaneom.html", 
+						-calcM2PttErrorsMeanEomResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanEomResult.getEomM2PistonErrorUm(), 
+						-calcM2PttErrorsMeanEomResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanEomResult.getEomM2TipTiltErrorArcsec().x, 
+						-calcM2PttErrorsMeanEomResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanEomResult.getEomM2TipTiltErrorArcsec().y); 
 				
 				String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators.html",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
 				
-				sendM2Command = userPromptMgmt.displayYesNoDialog("Secondary Mirror Command", m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
+				sendM2Command = userPromptMgmt.displayYesNoDialog("Secondary Mirror Command", m2pttMeanEomText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
 			}
 
 			procedureExecutionState.setPercentComplete(90);

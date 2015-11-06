@@ -30,7 +30,7 @@ import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
-import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
@@ -1160,20 +1160,20 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStd(Float[] m2PistonErrors, FloatPoint[] m2TipTiltErrors) {
+	public CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEom(Float[] m2PistonErrors, FloatPoint[] m2TipTiltErrors) {
 
 
-		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2PttErrorsMeanStd"));
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcM2PttErrorsMeanEom"));
 
 		float meanM2PistonError = JavaComputations.getMean(m2PistonErrors);
 		FloatPoint meanM2TipTiltError = JavaComputations.getMean(m2TipTiltErrors);
 		
-		float stdM2PistonError = JavaComputations.getStd(m2PistonErrors);
-		FloatPoint stdM2TipTiltError = JavaComputations.getStd(m2TipTiltErrors);
+		float eomM2PistonError = JavaComputations.getEom(m2PistonErrors);
+		FloatPoint eomM2TipTiltError = JavaComputations.getEom(m2TipTiltErrors);
 
-		logger.info(MessageGenerator.generateMessage("computation.success", "calcM2PttErrorsMeanStd"));
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcM2PttErrorsMeanEom"));
 
-		return new CalcM2PttErrorsMeanStdResult(meanM2PistonError, meanM2TipTiltError, stdM2PistonError, stdM2TipTiltError);
+		return new CalcM2PttErrorsMeanEomResult(meanM2PistonError, meanM2TipTiltError, eomM2PistonError, eomM2TipTiltError);
 		
 		
 	}

@@ -6,7 +6,7 @@ import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
-import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanStdResult;
+import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
 import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
@@ -29,7 +29,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	CalcM2M1Result calcM2M1Result;
 	CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult;
 	CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult;
-	CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult;
+	CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEomResult;
 	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
 	AvgCentroidStatsResult avgCentroidStatsResult;
 	
@@ -94,11 +94,12 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	public void setCalcDesiredActDeltasRmsStdResult(CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult) {
 		this.calcDesiredActDeltasRmsStdResult = calcDesiredActDeltasRmsStdResult;
 	}
-	public CalcM2PttErrorsMeanStdResult getCalcM2PttErrorsMeanStdResult() {
-		return calcM2PttErrorsMeanStdResult;
+	
+	public CalcM2PttErrorsMeanEomResult getCalcM2PttErrorsMeanEomResult() {
+		return calcM2PttErrorsMeanEomResult;
 	}
-	public void setCalcM2PttErrorsMeanStdResult(CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult) {
-		this.calcM2PttErrorsMeanStdResult = calcM2PttErrorsMeanStdResult;
+	public void setCalcM2PttErrorsMeanEomResult(CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEomResult) {
+		this.calcM2PttErrorsMeanEomResult = calcM2PttErrorsMeanEomResult;
 	}
 	public CalcSegmentMeanTipTiltsResult getCalcSegmentMeanTipTiltsResult() {
 		return calcSegmentMeanTipTiltsResult;

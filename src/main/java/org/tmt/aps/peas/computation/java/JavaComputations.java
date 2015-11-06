@@ -241,10 +241,22 @@ public class JavaComputations {
 		return inputs.length < 2 ? 0.0f : (float)Math.sqrt(sum / (inputs.length - 1));
 	}
 	
+	public static float getEom(double[] inputs) {
+		
+		double std = getStd(inputs);
+		return inputs.length < 1 ? 0.0f : (float) (std/Math.sqrt(inputs.length));
+	}
+	
 	public static float getStd(Float[] inputs) {
 		double[] array = convertToDoubleArray(inputs);
 		
 		return (float)getStd(array);
+	}
+	
+	public static float getEom(Float[] inputs) {
+		double[] array = convertToDoubleArray(inputs);
+		
+		return (float)getEom(array);
 	}
 
 	
@@ -256,6 +268,16 @@ public class JavaComputations {
 		float yStd = getStd(yArray);
 		
 		return new FloatPoint(xStd, yStd);
+	}
+	
+	public static FloatPoint getEom(FloatPoint[] inputs) {
+		double[] xArray = convertToDoubleArray(FloatPointListEncoder.extractXArray(Arrays.asList(inputs)));
+		double[] yArray = convertToDoubleArray(FloatPointListEncoder.extractYArray(Arrays.asList(inputs)));
+		
+		float xEom = getEom(xArray);
+		float yEom = getEom(yArray);
+		
+		return new FloatPoint(xEom, yEom);
 	}
 	
 	public static float[] flatten2dArray(float[][] input, int fastIndex) {

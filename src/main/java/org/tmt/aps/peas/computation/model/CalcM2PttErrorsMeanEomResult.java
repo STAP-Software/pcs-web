@@ -3,22 +3,22 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 
-public class CalcM2PttErrorsMeanStdResult {
+public class CalcM2PttErrorsMeanEomResult {
 
 	float meanM2PistonError;
 	FloatPoint meanM2TipTiltError;
 	
-	float stdM2PistonError;
-	FloatPoint stdM2TipTiltError;
+	float eomM2PistonError;
+	FloatPoint eomM2TipTiltError;
 	
-	public CalcM2PttErrorsMeanStdResult(float meanM2PistonError, FloatPoint meanM2TipTiltError, float stdM2PistonError, FloatPoint stdM2TipTiltError) {
+	public CalcM2PttErrorsMeanEomResult(float meanM2PistonError, FloatPoint meanM2TipTiltError, float eomM2PistonError, FloatPoint eomM2TipTiltError) {
 		this.meanM2PistonError = meanM2PistonError;
 		this.meanM2TipTiltError = meanM2TipTiltError;
-		this.stdM2PistonError = stdM2PistonError; 
-		this.stdM2TipTiltError = stdM2TipTiltError;
+		this.eomM2PistonError = eomM2PistonError; 
+		this.eomM2TipTiltError = eomM2TipTiltError;
 	}
 	
-	public CalcM2PttErrorsMeanStdResult() {}
+	public CalcM2PttErrorsMeanEomResult() {}
 
 	public float getMeanM2PistonError() {
 		return meanM2PistonError;
@@ -36,20 +36,20 @@ public class CalcM2PttErrorsMeanStdResult {
 		this.meanM2TipTiltError = meanM2TipTiltError;
 	}
 
-	public float getStdM2PistonError() {
-		return stdM2PistonError;
+	public float getEomM2PistonError() {
+		return eomM2PistonError;
 	}
 
-	public void setStdM2PistonError(float stdM2PistonError) {
-		this.stdM2PistonError = stdM2PistonError;
+	public void setEomM2PistonError(float eomM2PistonError) {
+		this.eomM2PistonError = eomM2PistonError;
 	}
 
-	public FloatPoint getStdM2TipTiltError() {
-		return stdM2TipTiltError;
+	public FloatPoint getEomM2TipTiltError() {
+		return eomM2TipTiltError;
 	}
 
-	public void setStdM2TipTiltError(FloatPoint stdM2TipTiltError) {
-		this.stdM2TipTiltError = stdM2TipTiltError;
+	public void setEomM2TipTiltError(FloatPoint eomM2TipTiltError) {
+		this.eomM2TipTiltError = eomM2TipTiltError;
 	}
 	
 	
@@ -72,20 +72,20 @@ public class CalcM2PttErrorsMeanStdResult {
 		this.meanM2TipTiltError = new FloatPoint(meanM2TipTiltErrorArcsec.x / Constants.RADIANS_TO_ARCSEC, meanM2TipTiltErrorArcsec.y / Constants.RADIANS_TO_ARCSEC);
 	}
 
-	public float getStdM2PistonErrorUm() {
-		return stdM2PistonError  * Constants.METERS_TO_UM;
+	public float getEomM2PistonErrorUm() {
+		return eomM2PistonError  * Constants.METERS_TO_UM;
 	}
 
-	public void setStdM2PistonErrorUm(float stdM2PistonErrorUm) {
-		this.stdM2PistonError = stdM2PistonErrorUm / Constants.METERS_TO_UM;
+	public void setEomM2PistonErrorUm(float eomM2PistonErrorUm) {
+		this.eomM2PistonError = eomM2PistonErrorUm / Constants.METERS_TO_UM;
 	}
 
-	public FloatPoint getStdM2TipTiltErrorArcsec() {
-		return new FloatPoint(stdM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, stdM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
+	public FloatPoint getEomM2TipTiltErrorArcsec() {
+		return new FloatPoint(eomM2TipTiltError.x * Constants.RADIANS_TO_ARCSEC, eomM2TipTiltError.y * Constants.RADIANS_TO_ARCSEC);
 	}
 
-	public void setStdM2TipTiltErrorArcsec(FloatPoint stdM2TipTiltErrorArcsec) {
-		this.stdM2TipTiltError = new FloatPoint(stdM2TipTiltErrorArcsec.x / Constants.RADIANS_TO_ARCSEC, stdM2TipTiltErrorArcsec.y / Constants.RADIANS_TO_ARCSEC);
+	public void setEomM2TipTiltErrorArcsec(FloatPoint eomM2TipTiltErrorArcsec) {
+		this.eomM2TipTiltError = new FloatPoint(eomM2TipTiltErrorArcsec.x / Constants.RADIANS_TO_ARCSEC, eomM2TipTiltErrorArcsec.y / Constants.RADIANS_TO_ARCSEC);
 	}
 	
 	
