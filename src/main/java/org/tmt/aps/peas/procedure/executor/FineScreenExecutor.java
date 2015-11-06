@@ -23,7 +23,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsEomResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
@@ -533,16 +533,16 @@ public class FineScreenExecutor {
 			
 			
 			// add focus mode, and non-focus mode values to this
-			CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations, desiredActDeltaFmRmsIterations, desiredActDeltaNoFmRmsIterations);
+			CalcDesiredActDeltasRmsEomResult calcDesiredActDeltasRmsEomResult = computationLibrary.calcDesiredActDeltasRmsEom(desiredActDeltaRmsIterations, desiredActDeltaFmRmsIterations, desiredActDeltaNoFmRmsIterations);
 			
 			
 			statusLogger.log("calc.desiredm1cmds", 
 					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
-					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
+					calcDesiredActDeltasRmsEomResult.getDesiredActDeltasRmsEom(),
 					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
-					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
+					calcDesiredActDeltasRmsEomResult.getDesiredActDeltasNoFmRmsEom(),
 					procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
-					calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
+					calcDesiredActDeltasRmsEomResult.getDesiredActDeltasFmRmsEom());
 
 			procedureExecutionState.setPercentComplete(98);
 
@@ -554,11 +554,11 @@ public class FineScreenExecutor {
 				// Display to user and ask if they want to command				
 				String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds.html",
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
-						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
+						calcDesiredActDeltasRmsEomResult.getDesiredActDeltasRmsEom(),
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
-						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
+						calcDesiredActDeltasRmsEomResult.getDesiredActDeltasNoFmRmsEom(),
 						procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
-						calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
+						calcDesiredActDeltasRmsEomResult.getDesiredActDeltasFmRmsEom());
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
 			}

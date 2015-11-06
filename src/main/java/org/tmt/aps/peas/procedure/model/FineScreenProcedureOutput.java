@@ -3,7 +3,7 @@ package org.tmt.aps.peas.procedure.model;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
-import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsEomResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
@@ -28,7 +28,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	CalcM2M1Result calcM2M1Result;
 	CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult;
-	CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult;
+	CalcDesiredActDeltasRmsEomResult calcDesiredActDeltasRmsEomResult;
 	CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEomResult;
 	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
 	AvgCentroidStatsResult avgCentroidStatsResult;
@@ -88,11 +88,11 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	public void setCalcM2ActuatorsFromPttResult(CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPttResult) {
 		this.calcM2ActuatorsFromPttResult = calcM2ActuatorsFromPttResult;
 	}
-	public CalcDesiredActDeltasRmsStdResult getCalcDesiredActDeltasRmsStdResult() {
-		return calcDesiredActDeltasRmsStdResult;
+	public CalcDesiredActDeltasRmsEomResult getCalcDesiredActDeltasRmsEomResult() {
+		return calcDesiredActDeltasRmsEomResult;
 	}
-	public void setCalcDesiredActDeltasRmsStdResult(CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult) {
-		this.calcDesiredActDeltasRmsStdResult = calcDesiredActDeltasRmsStdResult;
+	public void setCalcDesiredActDeltasRmsEomResult(CalcDesiredActDeltasRmsEomResult calcDesiredActDeltasRmsEomResult) {
+		this.calcDesiredActDeltasRmsEomResult = calcDesiredActDeltasRmsEomResult;
 	}
 	
 	public CalcM2PttErrorsMeanEomResult getCalcM2PttErrorsMeanEomResult() {

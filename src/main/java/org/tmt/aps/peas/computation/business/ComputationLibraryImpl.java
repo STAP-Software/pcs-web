@@ -27,7 +27,7 @@ import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
-import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsStdResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsEomResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
 import org.tmt.aps.peas.computation.model.CalcM2M1Result;
 import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
@@ -1145,18 +1145,18 @@ public class ComputationLibraryImpl {
 	}
 
 	@Computation
-	public CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStd(Float[] desiredActDeltaRmsIterations, Float[] desiredActDeltaFmRmsIterations, 
+	public CalcDesiredActDeltasRmsEomResult calcDesiredActDeltasRmsEom(Float[] desiredActDeltaRmsIterations, Float[] desiredActDeltaFmRmsIterations, 
 			Float[] desiredActDeltaNoFmRmsIterations) {
 
-		logger.info(MessageGenerator.generateMessage("computation.start", "calcDesiredActDeltasRmsStd"));
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcDesiredActDeltasRmsEom"));
 
-		float desiredActDeltasRmsStd = JavaComputations.getStd(desiredActDeltaRmsIterations);
-		float desiredActDeltasFmRmsStd = JavaComputations.getStd(desiredActDeltaFmRmsIterations);
-		float desiredActDeltasNoFmRmsStd = JavaComputations.getStd(desiredActDeltaNoFmRmsIterations);
+		float desiredActDeltasRmsEom = JavaComputations.getEom(desiredActDeltaRmsIterations);
+		float desiredActDeltasFmRmsEom = JavaComputations.getEom(desiredActDeltaFmRmsIterations);
+		float desiredActDeltasNoFmRmsEom = JavaComputations.getEom(desiredActDeltaNoFmRmsIterations);
 
-		logger.info(MessageGenerator.generateMessage("computation.success", "calcDesiredActDeltasRmsStd"));
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcDesiredActDeltasRmsEom"));
 
-		return new CalcDesiredActDeltasRmsStdResult(desiredActDeltasRmsStd, desiredActDeltasFmRmsStd, desiredActDeltasNoFmRmsStd);
+		return new CalcDesiredActDeltasRmsEomResult(desiredActDeltasRmsEom, desiredActDeltasFmRmsEom, desiredActDeltasNoFmRmsEom);
 	}
 
 	@Computation
