@@ -21,6 +21,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
@@ -65,6 +66,8 @@ public class SessionController implements Serializable {
 	Instrument instrument;
 
 	boolean advancedViewMode;
+	int advancedView = Constants.ADVANCED_VIEW_ENGINEERING;
+	String advancedViewModeLabel = "Engineering Mode";
 	boolean extInfSimulationMode = true;
 	
 	String password;
@@ -153,6 +156,22 @@ public class SessionController implements Serializable {
 
 	public void setAdvancedViewMode(boolean advancedViewMode) {
 		this.advancedViewMode = advancedViewMode;
+	}
+	
+	public boolean isEngineeringView() {
+		return advancedViewMode;
+	}
+	
+	public boolean isAdministrationView() {
+		return advancedViewMode && advancedView == Constants.ADVANCED_VIEW_ADMINISTRATION;
+	}
+
+	public String getAdvancedViewModeLabel() {
+		return advancedViewModeLabel;
+	}
+
+	public void setAdvancedViewModeLabel(String advancedViewModeLabel) {
+		this.advancedViewModeLabel = advancedViewModeLabel;
 	}
 
 	public boolean isExtInfSimulationMode() {
@@ -312,8 +331,15 @@ public class SessionController implements Serializable {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 
 
-		if (!password.equals("ekinrez")) {
-			advancedViewMode = false;
+		if (password.equals("ekinrez")) {
+			advancedViewMode = true;
+			advancedView = Constants.ADVANCED_VIEW_ADMINISTRATION;
+			advancedViewModeLabel = "Administration Mode";
+			requestContext.update("menuForm");
+		} else {
+			advancedViewMode = true;
+			advancedView = Constants.ADVANCED_VIEW_ENGINEERING;
+			advancedViewModeLabel = "Engineering Mode";
 			requestContext.update("menuForm");
 		}
 		requestContext.update("procedureDetailForm");

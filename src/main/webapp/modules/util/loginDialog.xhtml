@@ -1,19 +1,38 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
   
-		<p:dialog id="loginDlg" header="Expert Login" widgetVar="loginDialog" closable="false" modal="true" resizable="false">  
+		<p:dialog id="loginDlg" header="Engineering/Administration Login" widgetVar="loginDialog" closable="false" modal="true" resizable="false">  
     		<h:form> 
 
                     <p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn"> 
   
-  						<p:spacer height="10px"/>
-  						<p:spacer height="10px"/>
+  						<p:row colspan="2">
+  						<br/>
+  						<br/>
+  						<br/>
+  						<br/>
+  						<br/>
+  						<br/>
+  						</p:row>
+  						
+  						<p:row colspan="2">
+  						<h:outputText value="Enter password for Administration Mode, "/>
+  						<br/>
+  						<h:outputText value = "or leave blank to enter Engineering Mode" />
+  						</p:row>
+  						
+   						<p:row colspan="2">
+  						<br/>
+  						</p:row>
   
+  						<p:row>
                         <h:outputLabel for="password" value="Password:" /> 
                         <p:password  value="#{sessionController.password}" id="password" label="password" /> 
+  						</p:row>
 
-  						<p:spacer height="10px"/>
-  						<p:spacer height="10px"/>
+   						<p:row colspan="2">
+  						<br/>
+  						</p:row>
 
                         <f:facet name="footer"> 
                             <p:commandButton id="loginButton" value="Login" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
