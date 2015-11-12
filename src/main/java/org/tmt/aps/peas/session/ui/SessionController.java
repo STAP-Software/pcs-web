@@ -13,6 +13,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -20,6 +21,7 @@ import javax.inject.Named;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
+import org.tmt.aps.peas.ApplicationScopeBean;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
@@ -54,6 +56,8 @@ public class SessionController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
+	@Inject
+	private ApplicationScopeBean applicationScopeBean;
 
 	Session currentSession;
 	Session currentSessionPersisted; // the session that is completed and stored
@@ -291,6 +295,13 @@ public class SessionController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			return null;
 		}
+	}
+	
+	public void doZapSession() {
+		
+		applicationScopeBean.setPersistentSession(null);
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session successfully Zapped", ""));
+
 	}
 
 	public void addNewProcedure(Procedure procedure) {
