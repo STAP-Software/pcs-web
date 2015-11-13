@@ -59,30 +59,7 @@
 
 				<p:spacer height="10px" />
 
-				<p:fieldset legend="Procedure Display Preferences" toggleable="true" toggleSpeed="500">
 
-					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-						<p:spacer height="5px" />
-						<p:spacer height="5px" />
-
-						<h:outputLabel value="Auto Display Centroids" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayCentroids}" />
-						<h:outputLabel value="Auto Display Centroid Offsets" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayCentroidOffsets}" />
-						<h:outputLabel value="Auto Display Avg. Pseudo PT Centroid Offsets" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayAvgPtCentroidOffsets}" />
-						<h:outputLabel value="Auto Display Avg. FS Centroid Offsets" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayAvgFsCentroidOffsets}" />
-						<h:outputLabel value="Auto Display Actuator Deltas" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayActuatorDeltas}" />
-						<h:outputLabel value="Auto Display Procedure Data Log" />
-						<p:selectBooleanCheckbox value="#{globalConfigController.globalConfigDefaults.autoDisplayProcedureDataLog}" />
-
-
-					</p:panelGrid>
-
-				</p:fieldset>
 
 
 				<f:facet name="footer">

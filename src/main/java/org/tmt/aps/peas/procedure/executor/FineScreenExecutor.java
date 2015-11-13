@@ -266,7 +266,7 @@ public class FineScreenExecutor {
 				/*             Display Centroid Offsets              */
 				/*****************************************************/
 				
-				if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
+				if (procedureConfig.isAutoDisplayCentroidOffsets()) {
 					graphicDisplayMgmt.displayCentroidOffsets(pio);
 				}
 				
@@ -288,7 +288,8 @@ public class FineScreenExecutor {
 							subimageDefList.getNspotTypes(),
 							constantsCache.getTelescopeConstants(), 
 							procedureConfig.getPupilMask().getSecPerPixel(),
-							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor());
+							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor(),
+							procedureConfig.getPupilMaskType());
 					
 				} else {
 					
@@ -306,17 +307,18 @@ public class FineScreenExecutor {
 							constantsCache.getTelescopeConstants().getM2TtCorrectionFactor(),
 							constantsCache.getPrimaryMirrorConstants().getaHex(),
 							calcM2M1Config.getAnalyticalCalcStartSeg(),
-							calcM2M1Config.getAnalyticalCalcEndSeg());
+							calcM2M1Config.getAnalyticalCalcEndSeg(), 
+							procedureConfig.getPupilMaskType());
 					
 				}
 								
 				// calc centroid stats for pseudo pt 
 				
 				SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
-				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), subimageDefListPt.getNspotTypes());
+				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCcd(), subimageDefListPt.getNspotTypes());
 
 				// calc scale error for pseudo pt 
-				computationLibrary.passiveTiltScaleErrorResult(calcM2M1Result.getM1OffsetsCorrectedForM2Pixels(), centerSpots);
+				computationLibrary.passiveTiltScaleErrorResult(calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCcd(), centerSpots);
 	
 				// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
 				/*****************************************************/
@@ -327,7 +329,7 @@ public class FineScreenExecutor {
 				// lpz = local piston zeroed on a segment
 				// TODO: the result here should be a TtOffsetsToActsResult object
 				float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-						calcM2M1Result.getM1OffsetsCorrectedForM2Pixels());
+						calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCartesian());
 		
 				// Decompose the calculated actuators into pure tip/tilt and pure piston.
 				// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -395,7 +397,7 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			
 			// Display the average centroid offsets 
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgFsCentroidOffsets()) {
+			if (procedureConfig.isAutoDisplayAvgFsCentroidOffsets()) {
 			
 				graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
 			}
@@ -471,20 +473,24 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*      Calculate Average Seg Tip/Tilts              */
 			/*****************************************************/
-			FloatPoint[][] m1SegmentTipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2Pixels", FloatPoint[].class).toArray(new FloatPoint[0][0]);
-			CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrors);
+			FloatPoint[][] m1SegmentTipTiltErrorsCcd = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2PixelsCcd", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			FloatPoint[][] m1SegmentTipTiltErrorsCartesian = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2PixelsCartesian", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			// this value will get overwritten in FineScreenProcedureOutput
+			CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResultCcd = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrorsCcd);
+			// this will overwrite CalcSegmentMeanTipTiltsResult in FineScreenProcedureOutput
+			CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResultCartesian = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrorsCartesian);
 			
 			// calc centroid stats for pseudo pt 
 			
 			SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
-			computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
+			computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResultCcd.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
 
 			// calc scale error for pseudo pt 
-			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), centerSpots);
+			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResultCcd.getSegmentMeanTipTiltErrors(), centerSpots);
 
 			
 			// Display the average centroid offsets 
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgPtCentroidOffsets()) {
+			if (procedureConfig.isAutoDisplayAvgPtCentroidOffsets()) {
 				
 				// average centroid offsets is a different display from centroid offsets and requires different inputs
 				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
@@ -503,7 +509,7 @@ public class FineScreenExecutor {
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors());
+					calcSegmentMeanTipTiltsResultCartesian.getSegmentMeanTipTiltErrors());
 	
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -522,7 +528,7 @@ public class FineScreenExecutor {
 
 			
 			// display the pistonDeltas
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
+			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
 			

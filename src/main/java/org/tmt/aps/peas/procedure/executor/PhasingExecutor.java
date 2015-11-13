@@ -292,7 +292,7 @@ public class PhasingExecutor {
 			/*****************************************************/
 			
 			// Display the average centroid offsets 
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgFsCentroidOffsets()) {
+			if (procedureConfig.isAutoDisplayAvgFsCentroidOffsets()) {
 			
 				//graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
 			}
@@ -381,7 +381,7 @@ public class PhasingExecutor {
 
 			
 			// Display the average centroid offsets 
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayAvgPtCentroidOffsets()) {
+			if (procedureConfig.isAutoDisplayAvgPtCentroidOffsets()) {
 				
 				// average centroid offsets is a different display from centroid offsets and requires different inputs
 				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
@@ -419,7 +419,7 @@ public class PhasingExecutor {
 
 			
 			// display the pistonDeltas
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
+			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				//graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
 			

@@ -887,7 +887,7 @@ public class ComputationLibraryImpl {
 	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
 			float m2PistonUnitPertibation, float m2TTUnitPertibation, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
-			float m2TtCorrectionFactor) throws Exception {
+			float m2TtCorrectionFactor, PupilMaskType pupilMaskType) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1RayTrace"));
 
@@ -951,9 +951,18 @@ public class ComputationLibraryImpl {
 			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
 			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
 		}
+		
+		FloatPoint[] m1OffsetsPixelsCartesian = m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
+		FloatPoint[] m1OffsetsPixelsCcd = new FloatPoint[m1OffsetsPixelsCartesian.length];
+		
+		// convert cartesian to ccd offsets
+		for (int i=0; i<m1OffsetsPixelsCartesian.length; i++) {
+			m1OffsetsPixelsCcd[i] = new FloatPoint(m1OffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1OffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
+		}
+
 				
 		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
-				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]));
+				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsPixelsCartesian, m1OffsetsPixelsCcd);
 
 
 		// End of code for findCent unit testing
@@ -966,7 +975,7 @@ public class ComputationLibraryImpl {
 	@Computation
 	public CalcM2M1Result calculateM2M1Analytical(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
 			FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel, float m2TtCorrectionFactor,
-			float aHex, int startSegNum, int endSegNum) throws Exception {
+			float aHex, int startSegNum, int endSegNum, PupilMaskType pupilMaskType) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateM2M1Analytical"));
 
@@ -1032,8 +1041,18 @@ public class ComputationLibraryImpl {
 			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
 		}
 				
+		FloatPoint[] m1OffsetsPixelsCartesian = m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
+		FloatPoint[] m1OffsetsPixelsCcd = new FloatPoint[m1OffsetsPixelsCartesian.length];
+		
+		// convert cartesian to ccd offsets
+		for (int i=0; i<m1OffsetsPixelsCartesian.length; i++) {
+			m1OffsetsPixelsCcd[i] = new FloatPoint(m1OffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1OffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
+		}
+
+
+		
 		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual,
-				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]));
+				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsPixelsCartesian, m1OffsetsPixelsCcd);
 
 
 		// End of code for findCent unit testing

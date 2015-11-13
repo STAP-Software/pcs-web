@@ -252,7 +252,7 @@ public class PassiveTiltExecutor {
 
 			
 			// Display the average centroid offsets - this is probably not needed since we only do one trial
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayCentroidOffsets()) {
+			if (procedureConfig.isAutoDisplayCentroidOffsets()) {
 				graphicDisplayMgmt.displayCentroidOffsets(pio);
 			}
 
@@ -288,7 +288,7 @@ public class PassiveTiltExecutor {
 
 
 			// display the pistonDeltas
-			if (procedure.getProcedureConfigSet().getGlobalConfig().isAutoDisplayActuatorDeltas()) {
+			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
 

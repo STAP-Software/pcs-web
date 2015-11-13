@@ -29,6 +29,30 @@
 			
 			<p:spacer height="10px" />
 			
+			<p:fieldset legend="Procedure Display Preferences" rendered="#{not procedureController.procedure.procedureType.centerTelescope}" >
+
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+					<p:spacer height="5px" />
+					<p:spacer height="5px" />
+
+					<h:outputLabel value="Auto Display Centroids" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroids}" />
+					<h:outputLabel value="Auto Display Centroid Offsets" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
+					<h:outputLabel value="Auto Display Avg. Pseudo PT Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgPtCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}" />
+					<h:outputLabel value="Auto Display Avg. FS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgFsCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
+					<h:outputLabel value="Auto Display Actuator Deltas" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
+
+				</p:panelGrid>
+
+			</p:fieldset>
+
+			<p:spacer height="10px" />
+			
 			<p:fieldset legend="General Workflow Preferences" rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">

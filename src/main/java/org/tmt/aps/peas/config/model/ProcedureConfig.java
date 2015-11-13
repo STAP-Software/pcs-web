@@ -81,6 +81,13 @@ public class ProcedureConfig {
 	@Column(name="autoTakeRefBeamFlg")
 	private int autoTakeRefBeam;
 	
+	private boolean autoDisplayCentroids;
+	private boolean autoDisplayCentroidOffsets;
+	private boolean autoDisplayAvgPtCentroidOffsets;
+	private boolean autoDisplayAvgFsCentroidOffsets;
+	private boolean autoDisplayActuatorDeltas;
+	
+	
 	@Column(nullable=false, length=255)
 	String intTimeSelectOptions;
 	
@@ -302,6 +309,46 @@ public class ProcedureConfig {
 
 	public void setPupilMaskType(PupilMaskType pupilMaskType) {
 		this.pupilMaskType = pupilMaskType;
+	}
+
+	public boolean isAutoDisplayCentroids() {
+		return autoDisplayCentroids;
+	}
+
+	public void setAutoDisplayCentroids(boolean autoDisplayCentroids) {
+		this.autoDisplayCentroids = autoDisplayCentroids;
+	}
+
+	public boolean isAutoDisplayCentroidOffsets() {
+		return autoDisplayCentroidOffsets;
+	}
+
+	public void setAutoDisplayCentroidOffsets(boolean autoDisplayCentroidOffsets) {
+		this.autoDisplayCentroidOffsets = autoDisplayCentroidOffsets;
+	}
+
+	public boolean isAutoDisplayAvgPtCentroidOffsets() {
+		return autoDisplayAvgPtCentroidOffsets;
+	}
+
+	public void setAutoDisplayAvgPtCentroidOffsets(boolean autoDisplayAvgPtCentroidOffsets) {
+		this.autoDisplayAvgPtCentroidOffsets = autoDisplayAvgPtCentroidOffsets;
+	}
+
+	public boolean isAutoDisplayAvgFsCentroidOffsets() {
+		return autoDisplayAvgFsCentroidOffsets;
+	}
+
+	public void setAutoDisplayAvgFsCentroidOffsets(boolean autoDisplayAvgFsCentroidOffsets) {
+		this.autoDisplayAvgFsCentroidOffsets = autoDisplayAvgFsCentroidOffsets;
+	}
+
+	public boolean isAutoDisplayActuatorDeltas() {
+		return autoDisplayActuatorDeltas;
+	}
+
+	public void setAutoDisplayActuatorDeltas(boolean autoDisplayActuatorDeltas) {
+		this.autoDisplayActuatorDeltas = autoDisplayActuatorDeltas;
 	}
 
 	public boolean isFrameFromFile() {
