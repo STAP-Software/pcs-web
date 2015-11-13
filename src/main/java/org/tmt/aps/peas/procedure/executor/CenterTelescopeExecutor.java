@@ -143,7 +143,7 @@ public class CenterTelescopeExecutor {
 					procedure.getProcedureNumber(), 
 					0, 0, procedureConfig.getIntegrationTime(), 
 					physicalModel.getInstrument().getCcd().getAllHotPixelRects(), 
-					procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
+					procedureConfig.isRemoveBadPixels());
 			
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 			

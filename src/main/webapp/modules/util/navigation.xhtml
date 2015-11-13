@@ -56,7 +56,7 @@
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{breadcrumbMenuBean.inProcedure}">
 						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
-						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}" />
+						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.engineeringView}" />
 					</p:submenu>
 					
 					<p:submenu label="Procedure Displays" icon="ui-icon-image" rendered="#{breadcrumbMenuBean.inProcedure}" >

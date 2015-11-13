@@ -43,10 +43,7 @@ public class GlobalConfig {
 	int fineMirrorX;
 	int fineMirrorY;
 
-	boolean removeBadPixels;
 
-	// TODO: should be in advanced SUFS
-	int autoPointTelescope;
 	
 
 
@@ -97,23 +94,6 @@ public class GlobalConfig {
 
 	public void setFineMirrorY(int fineMirrorY) {
 		this.fineMirrorY = fineMirrorY;
-	}
-
-	public boolean isRemoveBadPixels() {
-		return removeBadPixels;
-	}
-
-	public void setRemoveBadPixels(boolean removeBadPixels) {
-		this.removeBadPixels = removeBadPixels;
-	}
-
-
-	public int getAutoPointTelescope() {
-		return autoPointTelescope;
-	}
-
-	public void setAutoPointTelescope(int autoPointTelescope) {
-		this.autoPointTelescope = autoPointTelescope;
 	}
 
 	public Long getGlobalConfigId() {

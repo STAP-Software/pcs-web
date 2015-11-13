@@ -133,7 +133,7 @@ public class GetFrameCentroidsExecutor {
 
 		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(),
 				0, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(),
-				procedure.getProcedureConfigSet().getGlobalConfig().isRemoveBadPixels());
+				procedureConfig.isRemoveBadPixels());
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
 		// tell the async controller to update the frame

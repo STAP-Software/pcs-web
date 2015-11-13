@@ -38,6 +38,9 @@
 						rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
 					<f:selectItems value="#{sessionController.instrument.camera.orderedReferenceBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
 					</p:selectOneMenu>
+					
+					<h:outputLabel value="Remove Bad Pixels" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.removeBadPixels}" />
 
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />

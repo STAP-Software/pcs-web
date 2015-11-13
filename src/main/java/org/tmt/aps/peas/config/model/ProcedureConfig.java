@@ -87,6 +87,10 @@ public class ProcedureConfig {
 	private boolean autoDisplayAvgFsCentroidOffsets;
 	private boolean autoDisplayActuatorDeltas;
 	
+	boolean removeBadPixels;
+	
+	int autoPointTelescopeSufsGroup;
+
 	
 	@Column(nullable=false, length=255)
 	String intTimeSelectOptions;
@@ -349,6 +353,22 @@ public class ProcedureConfig {
 
 	public void setAutoDisplayActuatorDeltas(boolean autoDisplayActuatorDeltas) {
 		this.autoDisplayActuatorDeltas = autoDisplayActuatorDeltas;
+	}
+
+	public boolean isRemoveBadPixels() {
+		return removeBadPixels;
+	}
+
+	public void setRemoveBadPixels(boolean removeBadPixels) {
+		this.removeBadPixels = removeBadPixels;
+	}
+
+	public int getAutoPointTelescopeSufsGroup() {
+		return autoPointTelescopeSufsGroup;
+	}
+
+	public void setAutoPointTelescopeSufsGroup(int autoPointTelescopeSufsGroup) {
+		this.autoPointTelescopeSufsGroup = autoPointTelescopeSufsGroup;
 	}
 
 	public boolean isFrameFromFile() {
