@@ -1266,7 +1266,10 @@ public class ComputationLibraryImpl {
 				for (int i=0; i<findCentStatusIterations.length; i++) {
 				
 				// if all iterations are success, then it is a good spot, otherwise not
-				 if (findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_SUCCESS ) status = false;
+				 if (findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_SUCCESS && 
+						 findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X &&
+						 findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y
+						 ) status = false;
 			}
 			avgFindCentStatus[j] =	status ? 1: 0;
 		}
