@@ -64,7 +64,7 @@ public class ProcedureConfig {
 	private Integer ufsSegment;
 	private Integer sufsGroup;
 	
-	private Integer calculationOptions; // nullable
+	private Integer coarsePhasingOption; // nullable
 
 
 	@Column(name="imageScaleRotationRemoval")
@@ -234,12 +234,12 @@ public class ProcedureConfig {
 		this.updateDate = updateDate;
 	}
 
-	public Integer getCalculationOptions() {
-		return calculationOptions;
+	public Integer getCoarsePhasingOption() {
+		return coarsePhasingOption;
 	}
 
-	public void setCalculationOptions(Integer calculationOptions) {
-		this.calculationOptions = calculationOptions;
+	public void setCoarsePhasingOption(Integer coarsePhasingOption) {
+		this.coarsePhasingOption = coarsePhasingOption;
 	}
 
 	public boolean isDefaultFlg() {

@@ -57,7 +57,10 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -133,6 +136,9 @@ public class ProcedureController implements Serializable {
 	ProcedureExecutionMgmt procedureExecutionMgmt;
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
+	@EJB
+	private PhysicalModel physicalModel;
+
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -809,6 +815,59 @@ public class ProcedureController implements Serializable {
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 
 	}
+	
+	
+	public void coarsePhasingOptionSelectListener() throws Exception {
+
+		// determine new filter
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+		int option = procedureConfig.getCoarsePhasingOption();
+		
+		Long defaultFilterTypeId = null;
+		
+		switch (option) {
+		case 30:
+			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_611;
+			break;
+		case 100:
+			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_870;
+			break;
+		case 300:
+			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_852;
+			break;
+		case 1000:
+			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_891;
+			break;
+		}
+		
+
+		Filter defaultFilter = cameraDefMgmt.getFilterByFilterTypeAndWheel(defaultFilterTypeId,
+				physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
+
+		procedureConfig.setFilter(defaultFilter);
+		
+		
+		// changing filter also changes the int time
+		// TODO: should we do this?
+		//PHASING_INT_TIME(FILT_POS_611) = ZPHASING_INT_TIME611
+		//PHASING_INT_TIME(FILT_POS_618) = ZPHASING_INT_TIME618
+		//PHASING_INT_TIME(FILT_POS_651) = ZPHASING_INT_TIME651
+		//PHASING_INT_TIME(FILT_POS_891) = ZPHASING_INT_TIME891
+		//PHASING_INT_TIME(FILT_POS_852) = ZPHASING_INT_TIME852
+		//PHASING_INT_TIME(FILT_POS_870) = ZPHASING_INT_TIME870
+		
+
+		
+		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+
+			// change int time and selected ref beam settings in procedure config
+			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		}
+		
+	}
+
 	
 	// ====================================================================================== //
 	// Frame Displays //

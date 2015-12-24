@@ -207,7 +207,28 @@ public class PhasingExecutor {
 
 			int readyCameraTime = 10;
 			int trialsTime = 70;
-         
+        			
+			
+			// calculate templates on the fly
+			/// MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(); 
+						
+		
+			/// MAXSTEP = (ZPHASING_COARSE_STEPS - 1)/2.0
+		
+			// one filter, one integration time
+		
+			// User will choose Phasing 30, 300, 1000 and only one filter, int time.
+			// default number of steps - all = 11
+			// set of default int times depending on phasing test and/or filter.
+					
+						
+
+ 			/**********************************************/
+			/// send colorstep 1 to ACS prior to loop
+			/**********************************************/
+		
+							
+			// TODO: this should be number of steps, not trials
 			for (int i=0; i<procedureConfig.getNumberOfTrials(); i++) {
 				
 				int trialTimeDelta = (trialsTime/procedureConfig.getNumberOfTrials())*i + readyCameraTime;
@@ -221,26 +242,34 @@ public class PhasingExecutor {
 				FineScreenIterationOutput pio = new FineScreenIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
+				
+				/**********************************************/
+				/*        wait for ACS to be done			  */
+				/**********************************************/
+				// TODO
 	
 				/**********************************************/
 				/*        PupilRegistration Subflow           */
-				/**********************************************/			
+				/**********************************************/
+				// TODO: may need to change this for performance reasons
+				// TODO: if we fail and need to retake frame, then this should be here
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
-
+				// TODO: if user aborts from pupilreg, restore mirror
+				
+				/**********************************************/
+				/*        send next colorstep to ACS 		  */
+				/**********************************************/				
+				// TODO: send next colorstep to ACS
+						
+				
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				
-	
-				/*****************************************************/
-				/*              calculateCentroidStats               */
-				/*****************************************************/
-	
-				CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
-				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+				/**********************************************/
+				/// BbAnalyzeFrame
+				/**********************************************/		
+			    ///BbAnalyzeFrame BbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame() //(converted routine)
+				// TODO: does bbAnalyzeFrame do what CALL CALC_CROSS_CORR() does?
 				
-				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
-	
-		
 			} // end of iteration loop
 			
 			
@@ -248,201 +277,35 @@ public class PhasingExecutor {
 
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
+		
+		                                                                                
+			/**********************************************/
+			/// BbAnalyzeSequence
+			/**********************************************/
+		    ///BbAnalyzeSequence BbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence() //(converted routine)
+		
+		    statusLogger.log("Phasing Algorithm Complete");
+		
+		
+		    ///CALL DISPLAY_PISTON_ERROR 
+		    
+		    ///CALL DISPLAY_PISTON_RESID
+		    
+		    statusLogger.log("Calculating Piston Demand...");
+		
+		    ///CALL DISPLAY_PH_PISTON_DELTAS()
+		           
+			///SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_PREDICTED,DUMMY,DUMMY,1,1)
+		
+		
 			
-			/****************************************************/
-			/*             calc average good spots              */
-			/****************************************************/
-			
-			// this needs to be an average over all frames
-			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
-			
-			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
-
-			/*****************************************************/
-			/*             calcAvgCentroidOffsets                */
-			/*****************************************************/
-
-			// we can average the centroid offsets, but cannot average the status list
-			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
-			computationLibrary.calcAvgCentroidOffsets(offsetsIterations, goodSpots);
-			
-			/*****************************************************/
-			/*              calculateCentroidStats - avg FS      */
-			/*****************************************************/
-
-			//CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
-			
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-			
-			//computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-			//		subimageDefList.getMissingSpotFlags(), goodSpots);
-
-			/*****************************************************/
-			/*              fineScreenScaleError - Avg           */
-			/*****************************************************/
-			
-			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
-			
-			//computationLibrary.fineScreenScaleErrorResult(avgCentroidOffsetsResult.getCcdCentroidOffsets(),
-			//		centerSpots, subimageDefList.getNspotTypes(), goodSpots);
-			
-			
-			/*****************************************************/
-			/*          Display Avg FS Centroid Offsets          */
-			/*****************************************************/
-			
-			// Display the average centroid offsets 
-			if (procedureConfig.isAutoDisplayAvgFsCentroidOffsets()) {
-			
-				//graphicDisplayMgmt.displayAvgFsCentroidOffsets(procedureOutput);
-			}
-
-			procedureExecutionState.setPercentComplete(85);
-
-			
-			// Calc mean and std for M2 Piston/Tip/Tilt Error over all iterations
-			
-			//Float[] m2PistonErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2Piston", Float.class).toArray(new Float[0]);
-			//FloatPoint[] m2TipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M2TipTiltTelescopeCoords", FloatPoint.class).toArray(new FloatPoint[0]);
-						
-			//CalcM2PttErrorsMeanStdResult calcM2PttErrorsMeanStdResult = computationLibrary.calcM2PttErrorsMeanStd(m2PistonErrors, m2TipTiltErrors);
-			
-			// output mean and std of ptt
-			//statusLogger.log("calc.m2pttmeanstd", 
-			//		-calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
-			//		-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
-			//		-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
-
-			/*****************************************************/
-			/*             Calculate M2Actuators                 */
-			/*****************************************************/
-
-			//CalcM2ActuatorsFromPttResult m2ActResult = computationLibrary.calcM2ActuatorsFromPtt(calcM2PttErrorsMeanStdResult.getMeanM2PistonError(), calcM2PttErrorsMeanStdResult.getMeanM2TipTiltError(), constantsCache.getTelescopeConstants().getM2ActuatorRadius());			
-
-			//statusLogger.log("calc.m2actuators", m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
-
-
-			// prepare to command secondary
-			boolean sendM2Command = procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_ACT_DELTAS_YES;
-			if (procedureConfig.getAutoCommandSecondary() == Constants.AUTO_SEND_M2_ACT_DELTAS_PROMPT) {
-				
-				// Display to user and ask if they want to command
-				//String m2pttMeanStdText = MessageGenerator.generateMessage("calc.m2pttmeanstd.html", 
-				//		-calcM2PttErrorsMeanStdResult.getMeanM2PistonErrorUm(), calcM2PttErrorsMeanStdResult.getStdM2PistonErrorUm(), 
-				//		-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().x, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().x, 
-				//		-calcM2PttErrorsMeanStdResult.getMeanM2TipTiltErrorArcsec().y, calcM2PttErrorsMeanStdResult.getStdM2TipTiltErrorArcsec().y); 
-				
-				//String m2ActDeltaText = MessageGenerator.generateMessage("calc.m2actuators.html",m2ActResult.getDeltaSecondardyActCmds()[0], m2ActResult.getDeltaSecondardyActCmds()[1], m2ActResult.getDeltaSecondardyActCmds()[2]);
-				
-				//sendM2Command = userPromptMgmt.displayYesNoDialog("Secondary Mirror Command", m2pttMeanStdText + "\n\n" + m2ActDeltaText + "\n\n\nCommand Secondary Mirror?");
-			}
-
-			procedureExecutionState.setPercentComplete(90);
-
-			/*****************************************************/
-			/*                   Command M2                      */
-			/*****************************************************/
-			
-			boolean dcsCommandsSent = false;
-			if (sendM2Command) {
-	
-				try {
-					// send out the commands
-					//dcsMgmt.commandSecondaryDeltasInUm(m2ActResult.getDeltaSecondardyActCmds());
-	
-					statusLogger.log("fs.m2_act_cmd_success");
-					logger.info("commandSecondaryDeltasInUm: success");
-					dcsCommandsSent = true;
-										
-				} catch (Exception e) {
-					statusLogger.log("fs.m2_act_cmd_failed");
-					logger.error(MessageGenerator.generateMessage("command.error"), e);
-				}
-	
-			}
-			
-			// TODO: eventually replace this with an framework solution
-			procedureOutput.getProcedureDecisionLog().setM2CmdsSent(dcsCommandsSent);
-
-			
-			/*****************************************************/
-			/*      Calculate Average Seg Tip/Tilts              */
-			/*****************************************************/
-			//FloatPoint[][] m1SegmentTipTiltErrors = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2Pixels", FloatPoint[].class).toArray(new FloatPoint[0][0]);
-			//CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrors);
-			
-			// calc centroid stats for pseudo pt 
-			
-			SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
-			//computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
-
-			// calc scale error for pseudo pt 
-			//computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors(), centerSpots);
-
-			
-			// Display the average centroid offsets 
-			if (procedureConfig.isAutoDisplayAvgPtCentroidOffsets()) {
-				
-				// average centroid offsets is a different display from centroid offsets and requires different inputs
-				// PSEUDO passive tilt.  The display itself will have different text, inputs, etc.
-				//graphicDisplayMgmt.displayAvgPtCentroidOffsets(procedureOutput);
-			}
-
-			procedureExecutionState.setPercentComplete(95);
-
-			
-			// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
-			/*****************************************************/
-			/*                  ttOffsetsToActs                  */
-			/*****************************************************/
-			
-			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
-			// lpz = local piston zeroed on a segment
-			// TODO: the result here should be a TtOffsetsToActsResult object
-			//float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-			//		calcSegmentMeanTipTiltsResult.getSegmentMeanTipTiltErrors());
-	
-			// Decompose the calculated actuators into pure tip/tilt and pure piston.
-			// This code is to ensure that the pistons are indeed zero prior to proceding.
-			/*****************************************************/
-			/*                  decomposeActs                    */
-			/*****************************************************/
-			
-			//DecomposeActsResult decomposeActResult = computationLibrary.decomposeActs(lpzActDeltas);
-			
-			/*****************************************************/
-			/*                  optimalPistons                   */
-			/*****************************************************/
-			
-			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();	
-			//computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());			
-
-			
-			// display the pistonDeltas
-			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
-				//graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
-			}
-			
-			// calculate std of iteration desired act delta rms. focus mode and non-focus mode rms
-			//Float[] desiredActDeltaRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasRms", Float.class).toArray(new Float[0]);
-			//Float[] desiredActDeltaFmRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasFmRms", Float.class).toArray(new Float[0]);
-			//Float[] desiredActDeltaNoFmRmsIterations = procedureOutput.getIterationValuesFor("CalcDesiredActCommandsResult", "DesiredActDeltasNoFmRms", Float.class).toArray(new Float[0]);
-			
-			
-			// add focus mode, and non-focus mode values to this
-			//CalcDesiredActDeltasRmsStdResult calcDesiredActDeltasRmsStdResult = computationLibrary.calcDesiredActDeltasRmsStd(desiredActDeltaRmsIterations, desiredActDeltaFmRmsIterations, desiredActDeltaNoFmRmsIterations);
-			
-			
-			//statusLogger.log("calc.desiredm1cmds", 
-			//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
-			//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
-			//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
-			//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
-			//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
-			//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
-
 			procedureExecutionState.setPercentComplete(98);
 
+			
+			/**********************************************/
+			/// wait for ACS final colorstep cmds to complete
+			/**********************************************/
+			// TODO: wait for ACS final colorstep to complete
 			
 			// prepare to command primary
 			boolean sendM1Command = procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_YES;
@@ -460,6 +323,10 @@ public class PhasingExecutor {
 				//sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
 			}
 
+			
+			// TODO: make sure logic in PRIMARY_PISTON is captured here
+			///PRIMARY_PISTON(PCALC)
+			
 	
 			// command ACS
 			boolean commandsSent = false;
@@ -501,6 +368,24 @@ public class PhasingExecutor {
 			procedureExecutionState.setPercentComplete(100);
 				
 		} catch (Throwable e) {
+			
+			
+			/// attempt to put ACS state back to where it was when we began.
+			/// only do this if we were actually commanding ACS in the first place
+			
+			/// On success:
+			String txt1 = "Phasing gracefully aborted.\n The primary mirror has been successfully restored to its" + 
+					"\nconfiguration at the start of this phasing run.";
+		
+			///CALL FWARN_DIALOG(txt)
+		
+			/// On failure: 
+			                              
+			String txt2 = "Phasing Algorithm Error!!!\nPhasing Test Aborted.\nWARNING!  THE PRIMARY MIRROR HAS BEEN LEFT IN AN UNDETERMINED STATE." +
+					"\nRESTORE THE LAST ACS SNAPSHOT BEFORE CONTINUING.";
+		    statusLogger.log(txt2);
+		    ///CALL FWARN_DIALOG(txt)
+			
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 		/*
@@ -510,5 +395,14 @@ public class PhasingExecutor {
 		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
+	
+	
+	// TODO: RESTORE_MIRROR is a subroutine we need to have here
+	public void restoreMirror() {
+		
+	}
+	
+	
+	
 
 }
