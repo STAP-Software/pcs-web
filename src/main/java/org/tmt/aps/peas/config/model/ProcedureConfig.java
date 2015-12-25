@@ -64,7 +64,9 @@ public class ProcedureConfig {
 	private Integer ufsSegment;
 	private Integer sufsGroup;
 	
-	private Integer coarsePhasingOption; // nullable
+	private Integer coarsePhasingOption; 
+	private Integer phasingSteps; 
+	private Integer phasingStepSize; 
 
 
 	@Column(name="imageScaleRotationRemoval")
@@ -86,6 +88,8 @@ public class ProcedureConfig {
 	private boolean autoDisplayAvgPtCentroidOffsets;
 	private boolean autoDisplayAvgFsCentroidOffsets;
 	private boolean autoDisplayActuatorDeltas;
+	private boolean autoDisplayPistons;
+	private boolean autoDisplayResiduals;
 	
 	boolean removeBadPixels;
 	
@@ -242,6 +246,22 @@ public class ProcedureConfig {
 		this.coarsePhasingOption = coarsePhasingOption;
 	}
 
+	public Integer getPhasingSteps() {
+		return phasingSteps;
+	}
+
+	public void setPhasingSteps(Integer phasingSteps) {
+		this.phasingSteps = phasingSteps;
+	}
+
+	public Integer getPhasingStepSize() {
+		return phasingStepSize;
+	}
+
+	public void setPhasingStepSize(Integer phasingStepSize) {
+		this.phasingStepSize = phasingStepSize;
+	}
+
 	public boolean isDefaultFlg() {
 		return defaultFlg;
 	}
@@ -353,6 +373,22 @@ public class ProcedureConfig {
 
 	public void setAutoDisplayActuatorDeltas(boolean autoDisplayActuatorDeltas) {
 		this.autoDisplayActuatorDeltas = autoDisplayActuatorDeltas;
+	}
+
+	public boolean isAutoDisplayPistons() {
+		return autoDisplayPistons;
+	}
+
+	public void setAutoDisplayPistons(boolean autoDisplayPistons) {
+		this.autoDisplayPistons = autoDisplayPistons;
+	}
+
+	public boolean isAutoDisplayResiduals() {
+		return autoDisplayResiduals;
+	}
+
+	public void setAutoDisplayResiduals(boolean autoDisplayResiduals) {
+		this.autoDisplayResiduals = autoDisplayResiduals;
 	}
 
 	public boolean isRemoveBadPixels() {

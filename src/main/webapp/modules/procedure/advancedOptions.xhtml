@@ -138,6 +138,19 @@
   
 				</p:panelGrid>
 				</p:fieldset>
+				
+				
+				<p:fieldset legend="Phasing Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{procedureController.procedure.procedureType.phasing}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="Number of Phasing Steps" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingSteps}" />
+					<h:outputLabel value="Phasing Step Size" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingStepSize}" />
+  
+				</p:panelGrid>
+				</p:fieldset>
 
 
 				</p:panelGrid>
