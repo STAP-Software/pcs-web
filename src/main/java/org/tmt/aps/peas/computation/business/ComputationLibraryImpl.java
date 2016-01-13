@@ -1277,6 +1277,18 @@ public class ComputationLibraryImpl {
 		return avgFindCentStatus;
 	}
 	
+	public float[][][][] makeTemplate() {
+		
+		/*
+		 * -output array is a 4 dim, array with the following size allocations:
+! This is a 4-dim array which should be pre-allocated as follows:
+! dim-1/2: X,Y should nominally be 2*irad+1
+! dim-3: number of templates to calculate
+! dim-4: 3 for the three edge angles
+		 */
+		
+		return null;
+	}
 	
 }
 

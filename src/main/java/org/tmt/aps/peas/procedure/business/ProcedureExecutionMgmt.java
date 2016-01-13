@@ -16,7 +16,6 @@ import javax.ejb.EJBTransactionRolledbackException;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -55,6 +54,7 @@ import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -126,12 +126,13 @@ public class ProcedureExecutionMgmt {
 		procedureConfig.setFilterType(procedureConfig.getFilter().getFilterType());
 		
 		PupilMaskType pupilMaskType = procedureConfig.getPupilMaskType();
+		FilterType filterType = procedureConfig.getFilterType();
 
 		logger.info("performProcedureStartup 2");
 
 		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_INTERIOR);
-		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR);
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		

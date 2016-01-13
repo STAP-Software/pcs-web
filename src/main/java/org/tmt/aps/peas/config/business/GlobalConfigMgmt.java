@@ -65,10 +65,11 @@ public class GlobalConfigMgmt {
 
 	}
 
-	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, int spotType) {
+	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, Long filterTypeId, int spotType) {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+		query.setParameter("filterTypeId", filterTypeId);
 		query.setParameter("spotType", spotType);
 				
 		query.setMaxResults(1);

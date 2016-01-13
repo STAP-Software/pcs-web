@@ -91,4 +91,7 @@ public class Constants {
 	
 	public static final int ADVANCED_VIEW_ENGINEERING = 1;
 	public static final int ADVANCED_VIEW_ADMINISTRATION = 2;
+	
+	public static final int TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT = 1;
+	public static final int TEMPLATE_CENTROID_CALC_METHOD_IDEAL = 2;
 }

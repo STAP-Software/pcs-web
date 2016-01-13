@@ -40,6 +40,7 @@ public class PupilMask {
 
 	private float spotDiamInterior;
 	private float spotDiamPeripheral;
+	private float crossHairDiam;
 
 	private float radPerPixel;
 	private float secPerPixel;
@@ -120,6 +121,14 @@ public class PupilMask {
 
 	public void setSpotDiamPeripheral(float spotDiamPeripheral) {
 		this.spotDiamPeripheral = spotDiamPeripheral;
+	}
+
+	public float getCrossHairDiam() {
+		return crossHairDiam;
+	}
+
+	public void setCrossHairDiam(float crossHairDiam) {
+		this.crossHairDiam = crossHairDiam;
 	}
 
 	public float getRadPerPixel() {

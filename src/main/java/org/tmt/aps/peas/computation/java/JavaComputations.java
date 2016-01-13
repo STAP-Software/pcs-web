@@ -588,5 +588,19 @@ public class JavaComputations {
 		return new Point(relativeXTiltCmd, relativeYTiltCmd);
 	}
 
-
+	
+	public static float[][] generatePhasingInteractionMatrix(int nedges, int nsegments, int[] plusPiston, int[] minusPiston) {
+		
+		float[][] matrix = new float[nedges][nsegments];
+		
+		for (int i=0; i<nedges; i++) {
+			int jp = plusPiston[i];
+			int jn = minusPiston[i];
+			
+			matrix[i][jp] = 1.0f;
+			matrix[i][jn] = -1.0f;
+		}
+		
+		return matrix;
+	}
 }
