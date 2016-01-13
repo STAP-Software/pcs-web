@@ -13,14 +13,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "FindCentConfigDefaults")
 @PrimaryKeyJoinColumn(name="findCentConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and p.filterTypeId = :filterTypeId and o.spotType = :spotType" )
+	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfigDefaults o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.filterType f "
+			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and f.filterTypeId = :filterTypeId and o.spotType = :spotType" )
 })
 public class FindCentConfigDefaults extends FindCentConfig {
 
@@ -31,7 +32,7 @@ public class FindCentConfigDefaults extends FindCentConfig {
 	
 	@ManyToOne
 	@JoinColumn(name = "filterTypeId")
-	private PupilMaskType filterType;
+	private FilterType filterType;
 
 	int spotType;
 	

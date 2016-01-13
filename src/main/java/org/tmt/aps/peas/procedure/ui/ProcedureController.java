@@ -44,6 +44,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
@@ -138,6 +139,8 @@ public class ProcedureController implements Serializable {
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	private PhysicalModel physicalModel;
+	@EJB
+	private ConstantsCache constantsCache;
 
 
 	@Inject
@@ -424,6 +427,10 @@ public class ProcedureController implements Serializable {
 				return false;
 			}
 		}
+		if (procedure.getProcedureType().isPhasing() && procedure.getProcedureConfigSet().getProcedureConfig().getCoarsePhasingOption() == 0) {
+			return false;
+		}
+		
 		return true;
 	}
 
@@ -824,19 +831,25 @@ public class ProcedureController implements Serializable {
 		int option = procedureConfig.getCoarsePhasingOption();
 		
 		Long defaultFilterTypeId = null;
+		float phasingStepSize = 0.0f;
+		
 		
 		switch (option) {
 		case 30:
 			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_611;
+			phasingStepSize = constantsCache.getPhasingConstants().getStepSize30();
 			break;
 		case 100:
 			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_870;
+			phasingStepSize = constantsCache.getPhasingConstants().getStepSize100();
 			break;
 		case 300:
 			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_852;
+			phasingStepSize = constantsCache.getPhasingConstants().getStepSize300();
 			break;
 		case 1000:
 			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_891;
+			phasingStepSize = constantsCache.getPhasingConstants().getStepSize1000();
 			break;
 		}
 		
@@ -845,7 +858,7 @@ public class ProcedureController implements Serializable {
 				physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
 
 		procedureConfig.setFilter(defaultFilter);
-		
+		procedureConfig.setPhasingStepSize(phasingStepSize);
 		
 		// changing filter also changes the int time
 		// TODO: should we do this?

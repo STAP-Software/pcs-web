@@ -66,7 +66,7 @@ public class ProcedureConfig {
 	
 	private Integer coarsePhasingOption; 
 	private Integer phasingSteps; 
-	private Integer phasingStepSize; 
+	private Float phasingStepSize; 
 
 
 	@Column(name="imageScaleRotationRemoval")
@@ -254,11 +254,11 @@ public class ProcedureConfig {
 		this.phasingSteps = phasingSteps;
 	}
 
-	public Integer getPhasingStepSize() {
+	public Float getPhasingStepSize() {
 		return phasingStepSize;
 	}
 
-	public void setPhasingStepSize(Integer phasingStepSize) {
+	public void setPhasingStepSize(Float phasingStepSize) {
 		this.phasingStepSize = phasingStepSize;
 	}
 
