@@ -26,6 +26,7 @@ import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Singleton
@@ -52,6 +53,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	ActuatorDeltasDisplayValues actuatorDeltasDisplayValues;
 	AvgPtCentroidOffsetsDisplayValues avgPtCentroidOffsetsDisplayValues;
 	AvgFsCentroidOffsetsDisplayValues avgFsCentroidOffsetsDisplayValues;
+	EdgeHeightsDisplayValues edgeHeightsDisplayValues;
 	
 	String actDeltaHeats;
 
@@ -223,6 +225,18 @@ public class GraphicDisplayMgmt implements Serializable {
 		setAvgFsCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
 	}
 
+	public EdgeHeightsDisplayValues getEdgeHeightsDisplayValues() {
+		return edgeHeightsDisplayValues;
+	}
+
+	public void setEdgeHeightsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
+		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
+	}
+
+	public void setAndEncodeEdgeHeightsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
+		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
+	}
+
 	
 	@Lock(LockType.READ)
 	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
@@ -342,6 +356,20 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 
+	public void displayEdgeHeights(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayEdgeHeights"));
+
+		setAndEncodeEdgeHeightsDisplayValues(edgeHeightsDisplayValues);
+				
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);
+		
+		waitForReturnState();
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayEdgeHeights"));
+		
+	}
+	
 	private void waitForReturnState() {
 		
 		returnState = null;
@@ -455,4 +483,6 @@ public class GraphicDisplayMgmt implements Serializable {
 		return "#" + String.format("%02X", rVal) + String.format("%02X", gVal) + String.format("%02X", bVal);
 		
 	}
+
+
 }

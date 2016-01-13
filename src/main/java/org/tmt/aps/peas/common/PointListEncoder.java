@@ -45,6 +45,36 @@ public class PointListEncoder {
 		return buf.toString();
 	}
 	
+	
+	public static String encodeXList(List<Point> pointList) {
+		StringBuffer buf = new StringBuffer();
+		if (pointList == null) return null;
+		for (Point point : pointList) {
+			buf.append(point.x + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+
+	}
+	
+	public static String encodeYList(List<Point> pointList) {
+		StringBuffer buf = new StringBuffer();
+		if (pointList == null) return null;
+		for (Point point : pointList) {
+			buf.append(point.y + ",");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+
+	}
+	
+	
+	
+	
 	public static List<Point> removePoint(List<Point> pointList, Point point) {
 		
 		for (Iterator<Point> it = pointList.iterator(); it.hasNext(); ) {

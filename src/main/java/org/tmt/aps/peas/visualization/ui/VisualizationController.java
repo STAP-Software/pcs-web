@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.visualization.ui;
 
 import java.io.Serializable;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -18,12 +19,14 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -36,6 +39,7 @@ import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Named
@@ -73,6 +77,7 @@ public class VisualizationController implements Serializable {
 	boolean avgPtCentroidOffsetDisplayEnabled;
 	boolean avgFsCentroidOffsetDisplayEnabled;
 	boolean actuatorDeltaDisplayEnabled;
+	boolean edgeHeightsDisplayEnabled;
 
 	String act1Pos;
 	
@@ -100,6 +105,22 @@ public class VisualizationController implements Serializable {
 		// determine which procedure type we are in
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
 		return subimageDefList.getInteriorCentroidYsAsString();
+	}
+
+	public String getEdgeXs() {
+		// determine which procedure type we are in
+		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
+		return PointListEncoder.encodeXList(nEdges);
+	}
+	public String getEdgeYs() {
+		// determine which procedure type we are in
+		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
+		return PointListEncoder.encodeYList(nEdges);
+	}
+
+	public String getEdgeNormAngles() {
+		int[] edgeNormAngles = constantsCache.getPrimaryMirrorConstants().getNormAngle();
+		return IntegerListEncoder.encodeList(edgeNormAngles);
 	}
 
 
@@ -130,6 +151,9 @@ public class VisualizationController implements Serializable {
 
 	public void setCentDefXs(String str) {}
 	public void setCentDefYs(String str) {}
+	public void setEdgeXs(String str) {}
+	public void setEdgeYs(String str) {}
+	public void setEdgeNormAngles(String str) {}
 	public void setSegCentDefXs(String str) {}
 	public void setSegCentDefYs(String str) {}
 
@@ -191,6 +215,14 @@ public class VisualizationController implements Serializable {
 
 	public boolean isActuatorDeltaDisplayEnabled() {
 		return actuatorDeltaDisplayEnabled;
+	}
+
+	public boolean isEdgeHeightsDisplayEnabled() {
+		return edgeHeightsDisplayEnabled;
+	}
+
+	public void setEdgeHeightsDisplayEnabled(boolean edgeHeightsDisplayEnabled) {
+		this.edgeHeightsDisplayEnabled = edgeHeightsDisplayEnabled;
 	}
 
 	public String getCentroidXs() {
@@ -315,6 +347,12 @@ public class VisualizationController implements Serializable {
 	
 	public void setActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues values) {}
 	
+	public EdgeHeightsDisplayValues getEdgeHeightsDisplayValues() {
+		return graphicDisplayMgmt.getEdgeHeightsDisplayValues();
+	}
+	
+	public void setEdgeHeightsDisplayValues(EdgeHeightsDisplayValues values) {}
+	
 	public String getAct1Pos() {
 		return act1Pos;
 	}
@@ -343,6 +381,7 @@ public class VisualizationController implements Serializable {
 		avgPtCentroidOffsetDisplayEnabled = false;
 		avgFsCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
+		edgeHeightsDisplayEnabled = false;
 
 		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
 
@@ -363,6 +402,9 @@ public class VisualizationController implements Serializable {
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
 				actuatorDeltaDisplayEnabled = true;
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS:
+				edgeHeightsDisplayEnabled = true;
 				break;
 			}
 		}
@@ -386,6 +428,11 @@ public class VisualizationController implements Serializable {
 	public void updateActDeltaDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
+	}
+
+	public void updateEdgeHeightsDisplayListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	public void doPopulateCentroidDisplay(int iteration) {

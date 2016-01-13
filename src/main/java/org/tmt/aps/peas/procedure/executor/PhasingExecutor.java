@@ -209,6 +209,13 @@ public class PhasingExecutor {
 			int trialsTime = 70;
         			
 			
+			// TEST ONLY
+			if (procedureConfig.isAutoDisplayResiduals()) {
+				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
+			}
+
+			
+			
 			// calculate templates on the fly
 			/// MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(); 
 						
@@ -253,7 +260,7 @@ public class PhasingExecutor {
 				/**********************************************/
 				// TODO: may need to change this for performance reasons
 				// TODO: if we fail and need to retake frame, then this should be here
-				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
+				// pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
 				// TODO: if user aborts from pupilreg, restore mirror
 				
 				/**********************************************/
@@ -262,7 +269,7 @@ public class PhasingExecutor {
 				// TODO: send next colorstep to ACS
 						
 				
-				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				// FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				
 				/**********************************************/
 				/// BbAnalyzeFrame
