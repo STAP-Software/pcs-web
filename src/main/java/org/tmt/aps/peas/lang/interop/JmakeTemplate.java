@@ -13,8 +13,28 @@ public class JmakeTemplate
 		int template_c_len3 = template_c[0][0].length;
 		int template_c_len4 = template_c[0][0][0].length;
 		float[] template_c_collapse = new float[template_c_len1 * template_c_len2 * template_c_len3 * template_c_len4];
+		// collapse array to one dimension
+		for (int i=0; i<template_c_len1; i++) { 
+			for (int j=0; j<template_c_len2; j++) { 
+			for (int k=0; k<template_c_len3; k++) { 
+			for (int l=0; l<template_c_len4; l++) { 
+				template_c_collapse[i*template_c_len2 * template_c_len3 * template_c_len4 + j * template_c_len3 * template_c_len4 + k * template_c_len4 + l] = template_c[i][j][k][l]; 
+			} 
+			} 
+			} 
+		} 
 		// Call native method
 		makeTemplate(retVal, nbins,ntemp_size_fft,itermax,imargin,ngauss,nspot_type,irad_cent,ncent,sec_per_pix,xlambda0,hw_microns,r_microns,template_c_collapse,template_c_len1,template_c_len2,template_c_len3,template_c_len4);
+		// expand array to four dimensions
+		for (int i=0; i<template_c_len1; i++) { 
+			for (int j=0; j<template_c_len2; j++) { 
+			for (int k=0; k<template_c_len3; k++) { 
+			for (int l=0; l<template_c_len4; l++) { 
+				template_c[i][j][k][l] = template_c_collapse[i*template_c_len2 * template_c_len3 *template_c_len4 +j * template_c_len3 *  template_c_len4 +  k * template_c_len4 +   l];
+			} 
+			} 
+			} 
+		} 
 		// Assign output variables
 		Object[] out = new Object[0];
 		return out;

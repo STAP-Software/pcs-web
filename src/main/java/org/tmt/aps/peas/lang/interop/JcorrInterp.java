@@ -28,12 +28,28 @@ public class JcorrInterp
 				x_collapse[i*x_len2 + j] = x[i][j]; 
 			} 
 		} 
+		// collapse array to one dimension
+		for (int i=0; i<z_len1; i++) { 
+			for (int j=0; j<z_len2; j++) { 
+			for (int k=0; j<z_len3; k++) { 
+				z_collapse[i*z_len2 * z_len3 + j * z_len3 + k] = z[i][j][k]; 
+			} 
+			} 
+		} 
 		// Call native method
 		corrInterp(retVal, x_collapse,x_len1,x_len2,z_collapse,z_len1,z_len2,z_len3,best_index_outArray,cmax_outArray,cmin_outArray,a_fit_outArray,b_fit_outArray,phi_fit_outArray,chisq_f_outArray);
 		// expand array to two dimensions
 		for (int i=0; i<x_len1; i++) { 
 			for (int j=0; j<x_len2; j++) { 
 				x[i][j] = x_collapse[i*x_len2 + j];
+			} 
+		} 
+		// expand array to three dimensions
+		for (int i=0; i<z_len1; i++) { 
+			for (int j=0; j<z_len2; j++) { 
+			for (int k=0; k<z_len3; k++) { 
+				z[i][j][k] = z_collapse[i*z_len2 * z_len3 +j * z_len3 +   k];
+			} 
 			} 
 		} 
 		// Assign output variables

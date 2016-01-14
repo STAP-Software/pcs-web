@@ -27,12 +27,32 @@ public class JbbAnalyzeFrame
 				frame_collapse[i*frame_len2 + j] = frame[i][j]; 
 			} 
 		} 
+		// collapse array to one dimension
+		for (int i=0; i<template_c_len1; i++) { 
+			for (int j=0; j<template_c_len2; j++) { 
+			for (int k=0; k<template_c_len3; k++) { 
+			for (int l=0; l<template_c_len4; l++) { 
+				template_c_collapse[i*template_c_len2 * template_c_len3 * template_c_len4 + j * template_c_len3 * template_c_len4 + k * template_c_len4 + l] = template_c[i][j][k][l]; 
+			} 
+			} 
+			} 
+		} 
 		// Call native method
 		bbAnalyzeFrame(retVal, frame_collapse,frame_len1,frame_len2,xCent,xCent_len1,yCent,yCent_len1,validSubimages,validSubimages_len1,edge_angle,edge_angle_len1,template_c_collapse,template_c_len1,template_c_len2,template_c_len3,template_c_len4,coherence_out,coherence_out_len1);
 		// expand array to two dimensions
 		for (int i=0; i<frame_len1; i++) { 
 			for (int j=0; j<frame_len2; j++) { 
 				frame[i][j] = frame_collapse[i*frame_len2 + j];
+			} 
+		} 
+		// expand array to four dimensions
+		for (int i=0; i<template_c_len1; i++) { 
+			for (int j=0; j<template_c_len2; j++) { 
+			for (int k=0; k<template_c_len3; k++) { 
+			for (int l=0; l<template_c_len4; l++) { 
+				template_c[i][j][k][l] = template_c_collapse[i*template_c_len2 * template_c_len3 *template_c_len4 +j * template_c_len3 *  template_c_len4 +  k * template_c_len4 +   l];
+			} 
+			} 
 			} 
 		} 
 		// Assign output variables
