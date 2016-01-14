@@ -6,11 +6,13 @@
 package org.tmt.aps.peas.frame.business;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 
+import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -32,6 +34,12 @@ public class FrameSimulator {
 	
 	public void init(List<FitsFilename> fitsFilenameList) throws Exception {
 		frameList = new ArrayList<CcdFrame>();
+		
+		// reorder filename list according to fits filename numbering
+		Collections.sort(fitsFilenameList, new BeanComparator("phasingStep"));
+		Collections.sort(fitsFilenameList, new BeanComparator("iteration"));
+		
+		
 		for (FitsFilename fitsFilename : fitsFilenameList) {
 			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
 			

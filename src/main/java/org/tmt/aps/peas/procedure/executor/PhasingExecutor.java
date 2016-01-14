@@ -190,7 +190,6 @@ public class PhasingExecutor {
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			
-			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 						
 			/**********************************************/
 			/*                 Ready Camera               */
@@ -294,14 +293,14 @@ public class PhasingExecutor {
 			/**********************************************/
 		    ///BbAnalyzeSequence BbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence() //(converted routine)
 		
-		    statusLogger.log("Phasing Algorithm Complete");
+		    statusLogger.log("procedure.cph.algorithm_complete");
 		
 		
 		    ///CALL DISPLAY_PISTON_ERROR 
 		    
 		    ///CALL DISPLAY_PISTON_RESID
 		    
-		    statusLogger.log("Calculating Piston Demand...");
+		    statusLogger.log("procedure.cph_calc_piston");
 		
 		    ///CALL DISPLAY_PH_PISTON_DELTAS()
 		           
