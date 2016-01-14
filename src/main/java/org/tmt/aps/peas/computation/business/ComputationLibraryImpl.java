@@ -26,6 +26,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsEomResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
@@ -41,6 +42,7 @@ import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
+import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
@@ -54,8 +56,11 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
+import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.lang.interop.JbbAnalyzeFrame;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
 import org.tmt.aps.peas.lang.interop.JcalculateFocusModeVector;
@@ -68,6 +73,7 @@ import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
 import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
+import org.tmt.aps.peas.lang.interop.JmakeTemplate;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
@@ -1277,17 +1283,86 @@ public class ComputationLibraryImpl {
 		return avgFindCentStatus;
 	}
 	
-	public float[][][][] makeTemplate() {
+	@Computation
+	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, PupilMask pupilMask, Filter filter) throws Exception {
 		
 		/*
 		 * -output array is a 4 dim, array with the following size allocations:
-! This is a 4-dim array which should be pre-allocated as follows:
-! dim-1/2: X,Y should nominally be 2*irad+1
-! dim-3: number of templates to calculate
-! dim-4: 3 for the three edge angles
+		 * This is a 4-dim array which should be pre-allocated as follows:
+		 * dim-1/2: X,Y should nominally be 2*irad+1
+		 * dim-3: number of templates to calculate
+		 * dim-4: 3 for the three edge angles
 		 */
 		
-		return null;
+		logger.info(MessageGenerator.generateMessage("computation.start", "makeTemplate"));
+
+		JmakeTemplate jmakeTemplate = new JmakeTemplate();
+		RetVal retVal = new RetVal();
+
+		int dim1 = findCentConfig.getIrad() * 2 + 1;
+		float[][][][] templateArray = new float[dim1][dim1][phasingTemplateCount][3];
+
+		
+		Object[] result = jmakeTemplate.jmakeTemplate(retVal, phasingSubimageFftSize, phasingSubimageFftSize, findCentConfig.getItermax(), findCentConfig.getImargin(), findCentConfig.getNgauss(), 
+				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, pupilMask.getSecPerPixel(), filter.getWavelength() * Constants.NM_TO_MICRONS, 
+				pupilMask.getCrossHairDiam() * Constants.METERS_TO_UM,
+				pupilMask.getSpotDiamInterior() * Constants.METERS_TO_UM/2.0f, templateArray);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("makeTemplate calcuation error");
+		}
+
+				
+		MakeTemplateResult makeTemplateResult = new MakeTemplateResult(templateArray);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "makeTemplate"));
+
+		return makeTemplateResult;
+		
+	}
+	
+	@Computation
+	public BbAnalyzeFrameResult bbAnalyzeFrame(float[][] frame, FindCentroidsResult findCentroidsResult, int[] edgeAngle, float[][][][] templateArray, int numberOfSegments) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "bbAnalyzeFrame"));
+
+		JbbAnalyzeFrame jbbAnalyzeFrame = new JbbAnalyzeFrame();
+		RetVal retVal = new RetVal();
+
+		int edgeCount = edgeAngle.length;
+		
+		List<FloatPoint> centroidList = Arrays.asList(findCentroidsResult.getCentroidList());
+		List<FloatPoint> edgeCentroidList = centroidList.subList(numberOfSegments, numberOfSegments+edgeCount);
+		
+		float[] centroidsX = FloatPointListEncoder.extractXArray(edgeCentroidList);
+		float[] centroidsY = FloatPointListEncoder.extractYArray(edgeCentroidList);
+		
+		int[] foundCentroids = findCentroidsResult.getFoundSubimageFlags();
+		int[] foundEdgeCentroids = Arrays.copyOfRange(foundCentroids, numberOfSegments, numberOfSegments+edgeCount);
+
+		float[] coherenceArray = new float[edgeCount];
+		
+		Object[] result = jbbAnalyzeFrame.jbbAnalyzeFrame(retVal, frame, centroidsX, centroidsY, foundEdgeCentroids, edgeAngle, templateArray, coherenceArray);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("bbAnalyzeFrame calcuation error");
+		}
+
+				
+		BbAnalyzeFrameResult bbAnalyzeFrameResult = new BbAnalyzeFrameResult(coherenceArray);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "bbAnalyzeFrame"));
+
+		return bbAnalyzeFrameResult;
+		
 	}
 	
 }

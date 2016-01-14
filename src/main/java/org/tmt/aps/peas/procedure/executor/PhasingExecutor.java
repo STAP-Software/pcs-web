@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -18,14 +17,13 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -37,11 +35,10 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
-import org.tmt.aps.peas.procedure.model.FineScreenIterationOutput;
+import org.tmt.aps.peas.procedure.model.PhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.PhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -214,10 +211,13 @@ public class PhasingExecutor {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
 
-			
-			
 			// calculate templates on the fly
-			/// MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(); 
+			MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
+					constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
+					constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
+					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
+					procedureConfig.getPupilMask(), procedureConfig.getFilter());
+					
 						
 		
 			/// MAXSTEP = (ZPHASING_COARSE_STEPS - 1)/2.0
@@ -235,18 +235,17 @@ public class PhasingExecutor {
 			/**********************************************/
 		
 							
-			// TODO: this should be number of steps, not trials
-			for (int i=0; i<procedureConfig.getNumberOfTrials(); i++) {
+			for (int i=0; i<procedureConfig.getPhasingSteps(); i++) {
 				
-				int trialTimeDelta = (trialsTime/procedureConfig.getNumberOfTrials())*i + readyCameraTime;
+				int trialTimeDelta = (trialsTime/procedureConfig.getPhasingSteps())*i + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
-				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getNumberOfTrials());
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
 	
 				// setup the iteration output as the output target
-				FineScreenIterationOutput pio = new FineScreenIterationOutput();
+				PhasingIterationOutput pio = new PhasingIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
 				
@@ -260,7 +259,7 @@ public class PhasingExecutor {
 				/**********************************************/
 				// TODO: may need to change this for performance reasons
 				// TODO: if we fail and need to retake frame, then this should be here
-				// pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
+				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
 				// TODO: if user aborts from pupilreg, restore mirror
 				
 				/**********************************************/
@@ -269,13 +268,17 @@ public class PhasingExecutor {
 				// TODO: send next colorstep to ACS
 						
 				
-				// FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				
 				/**********************************************/
 				/// BbAnalyzeFrame
 				/**********************************************/		
-			    ///BbAnalyzeFrame BbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame() //(converted routine)
-				// TODO: does bbAnalyzeFrame do what CALL CALC_CROSS_CORR() does?
+			    BbAnalyzeFrameResult BbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
+			    		procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame(),
+			    		findCentroidsResult, 
+			    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
+			    		makeTemplateResult.getTemplateArray(), constantsCache.getTelescopeConstants().getNumberOfSegments());
+			    
 				
 			} // end of iteration loop
 			
