@@ -836,7 +836,7 @@ public class ProcedureController implements Serializable {
 		
 		switch (option) {
 		case 30:
-			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_611;
+			defaultFilterTypeId = FilterType.FILTER_TYPE_ID_NONE;
 			phasingStepSize = constantsCache.getPhasingConstants().getStepSize30();
 			break;
 		case 100:
