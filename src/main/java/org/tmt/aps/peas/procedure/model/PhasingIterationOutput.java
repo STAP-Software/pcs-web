@@ -49,6 +49,12 @@ public class PhasingIterationOutput extends ProcedureIterationOutput  {
 	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
 		this.findCentroidsResult = findCentroidsResult;
 	}
+	public BbAnalyzeFrameResult getBbAnalyzeFrameResult() {
+		return bbAnalyzeFrameResult;
+	}
+	public void setBbAnalyzeFrameResult(BbAnalyzeFrameResult bbAnalyzeFrameResult) {
+		this.bbAnalyzeFrameResult = bbAnalyzeFrameResult;
+	}
 	
 	
 	

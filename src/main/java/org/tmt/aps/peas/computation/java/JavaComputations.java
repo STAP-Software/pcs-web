@@ -597,8 +597,8 @@ public class JavaComputations {
 			int jp = plusPiston[i];
 			int jn = minusPiston[i];
 			
-			matrix[i][jp] = 1.0f;
-			matrix[i][jn] = -1.0f;
+			matrix[i][jp-1] = 1.0f;
+			matrix[i][jn-1] = -1.0f;
 		}
 		
 		return matrix;

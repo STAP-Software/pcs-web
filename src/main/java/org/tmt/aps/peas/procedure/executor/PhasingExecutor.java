@@ -22,8 +22,10 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -204,11 +206,6 @@ public class PhasingExecutor {
 			int readyCameraTime = 10;
 			int trialsTime = 70;
         			
-			
-			// TEST ONLY
-			if (procedureConfig.isAutoDisplayResiduals()) {
-				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
-			}
 
 			// calculate templates on the fly
 			MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
@@ -286,16 +283,47 @@ public class PhasingExecutor {
 
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
-		
+			/****************************************************/
+			/*    calc union good spots over all steps          */
+			/****************************************************/
+			
+			// this needs to be an average over all frames
+			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
+			
+			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
+
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
+			float[][] coherenceArraySet = procedureOutput.getIterationValuesFor("BbAnalyzeFrameResult", "CoherenceArray", float[].class).toArray(new float[0][0]);
+
 		                                                                                
 			/**********************************************/
 			/// BbAnalyzeSequence
 			/**********************************************/
-		    ///BbAnalyzeSequence BbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence() //(converted routine)
+		    BbAnalyzeSequenceResult bbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence(
+		    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
+		    		constantsCache.getPrimaryMirrorConstants().getEdgeColor(),
+		    		coherenceArraySet, 
+		    		procedureConfig.getPhasingStepSize(), 
+		    		constantsCache.getTelescopeConstants().getNumberOfSegments(), 
+		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
+		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
+		    		constantsCache.getPhasingConstants().getRingModeCorrectionFactor(),
+		    		procedureConfig.getFilter(),
+ 					constantsCache.getPhasingConstants().getBbPhasingFracInterval(),
+ 					constantsCache.getPhasingConstants().getRingMode(),
+					procedureConfig.getPhasingSteps(), 
+		    		subimageDefList.useForAnalysis(), goodSpots);
 		
 		    statusLogger.log("procedure.cph.algorithm_complete");
 		
 		
+			// TEST ONLY
+			if (procedureConfig.isAutoDisplayResiduals()) {
+				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
+			}
+
+		    
 		    ///CALL DISPLAY_PISTON_ERROR 
 		    
 		    ///CALL DISPLAY_PISTON_RESID
@@ -383,15 +411,13 @@ public class PhasingExecutor {
 			/// only do this if we were actually commanding ACS in the first place
 			
 			/// On success:
-			String txt1 = "Phasing gracefully aborted.\n The primary mirror has been successfully restored to its" + 
-					"\nconfiguration at the start of this phasing run.";
+			String txt1 = "procedure.cph.abort_recovered";
 		
 			///CALL FWARN_DIALOG(txt)
 		
 			/// On failure: 
 			                              
-			String txt2 = "Phasing Algorithm Error!!!\nPhasing Test Aborted.\nWARNING!  THE PRIMARY MIRROR HAS BEEN LEFT IN AN UNDETERMINED STATE." +
-					"\nRESTORE THE LAST ACS SNAPSHOT BEFORE CONTINUING.";
+			String txt2 = "procedure.cph.abort_not_recovered";
 		    statusLogger.log(txt2);
 		    ///CALL FWARN_DIALOG(txt)
 			

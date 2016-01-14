@@ -27,6 +27,7 @@ import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActDeltasRmsEomResult;
 import org.tmt.aps.peas.computation.model.CalcM2ActuatorsFromPttResult;
@@ -61,6 +62,7 @@ import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.lang.interop.JbbAnalyzeFrame;
+import org.tmt.aps.peas.lang.interop.JbbAnalyzeSequence;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidOffsets;
 import org.tmt.aps.peas.lang.interop.JcalculateCentroidStats;
 import org.tmt.aps.peas.lang.interop.JcalculateFocusModeVector;
@@ -1362,6 +1364,68 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "bbAnalyzeFrame"));
 
 		return bbAnalyzeFrameResult;
+		
+	}
+	
+	@Computation
+	public BbAnalyzeSequenceResult bbAnalyzeSequence(int[] edgeAngle, int[] edgeColor, float[][] coherenceArraySet, float stepSize, int numSegments, 
+			int[] plusPiston, int[] minusPiston, float ringModeCorrectionFactor, Filter filter, float bbPhasingFracInterval,
+			float[] ringMode, int numSteps, int[] useForAnalysis, int[] goodSpots) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "jbbAnalyzeSequence"));
+
+		int numEdges = edgeAngle.length;
+		
+		JbbAnalyzeSequence jbbAnalyzeSequence = new JbbAnalyzeSequence();
+		RetVal retVal = new RetVal();
+
+		// generate coherenceTable
+		float[][] coherenceTable = new float[numEdges][numSteps];
+		for (int i=0; i<numEdges; i++) {
+			for (int j=0; j<numSteps; j++) {
+				coherenceTable[i][j] = coherenceArraySet[j][i];
+			}
+		}
+		
+		
+		
+		float sigmaMicrons = filter.getCoherenceLength();
+
+		// rowFlagIn is whether the edge can be used
+		int[] rowFlagIn = new int[numEdges];
+		for (int i=0; i<numEdges; i++) {
+			rowFlagIn[i] = useForAnalysis[i+numSegments] & goodSpots[i+numSegments];
+		}
+		
+		float[][] asca = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
+		
+		
+		float[] stepCorr = new float[numEdges];
+		
+		float[] actCalc = new float[numSegments];
+		
+		float[] resid = new float[numEdges];
+		
+		int[] rowFlagOut = new int[numEdges];
+		
+		
+		Object[] result = jbbAnalyzeSequence.jbbAnalyzeSequence(retVal, coherenceTable, sigmaMicrons, stepSize, bbPhasingFracInterval, asca, edgeAngle, edgeColor, 
+				rowFlagIn, ringMode, ringModeCorrectionFactor, stepCorr, actCalc, resid, rowFlagOut);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("bbAnalyzeFrame calcuation error");
+		}
+
+				
+		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagOut);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "jbbAnalyzeSequence"));
+
+		return bbAnalyzeSequenceResult;
 		
 	}
 	
