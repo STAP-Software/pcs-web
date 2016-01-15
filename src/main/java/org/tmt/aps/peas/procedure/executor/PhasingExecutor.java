@@ -24,6 +24,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -269,7 +270,7 @@ public class PhasingExecutor {
 				/**********************************************/
 				/// BbAnalyzeFrame
 				/**********************************************/		
-			    BbAnalyzeFrameResult BbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
+			    BbAnalyzeFrameResult bbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
 			    		procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame(),
 			    		findCentroidsResult, 
 			    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
@@ -324,20 +325,29 @@ public class PhasingExecutor {
 			}
 
 		    
-		    ///CALL DISPLAY_PISTON_ERROR 
+		    ///CALL DISPLAY_PISTON_ERROR - edge heights (stepCorr) + rowFlagOut (for missing edges)
+			// display # spots used in calc (good spots), max error, and rms error (i.e. edge hieights)
 		    
-		    ///CALL DISPLAY_PISTON_RESID
+		    ///CALL DISPLAY_PISTON_RESID - same display, different data (Resid) + rowFlagOut (for missing edges)
+			// display # spots used in calc (good spots), max error, and rms error 
+			
 		    
 		    statusLogger.log("procedure.cph_calc_piston");
 		
-		    ///CALL DISPLAY_PH_PISTON_DELTAS()
-		           
+		    
+		    /**********************************************/
+			/// FixPistons
+			/**********************************************/		
+		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
+		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
+		    		bbAnalyzeSequenceResult.getActCalc());
+		    
+		    
+		    // TODO: calculate statistics and put into database (just like fine screen did?)
 			///SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_PREDICTED,DUMMY,DUMMY,1,1)
 		
 		
-			
 			procedureExecutionState.setPercentComplete(98);
-
 			
 			/**********************************************/
 			/// wait for ACS final colorstep cmds to complete
@@ -437,6 +447,73 @@ public class PhasingExecutor {
 		
 	}
 	
+	public void tempCalcPhasingStats() {
+		
+		/*
+		
+		OK = SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_predicted, 
+			     +    0.0,0.0,OPTION,0)
+
+
+			c        count = 0.0
+			c        p_rms = 0.0
+
+			c        do i = 1,36
+			c           if(pcalc(i).ne.0.0) then
+			c              p_rms = p_rms + pcalc(i)**2
+			c              count = count + 1
+			c           endif
+			c        enddo
+			c        if (count.ne.0) then
+			c           p_rms = sqrt(p_rms/count)
+			c        else
+			c           p_rms = 0.0
+			c        end if
+
+
+			C Calculate the residual to the fit:
+
+			c        COUNT = 0.0
+			c        RESID_TO_FIT = 0.0
+
+			c	DO I = 1,84
+			c	   IF ((USABLE_CONSTRAINTS(I)).AND.
+			c     +          (COARSE_SCREEN_SPOTS(I+36).EQ.1)) THEN	
+			c	       RESID_TO_FIT = RESID_TO_FIT + STEP_NEW(I)**2
+			c	       COUNT = COUNT + 1
+			c	   ENDIF
+			c	ENDDO
+
+			c	RESID_TO_FIT = SQRT(RESID_TO_FIT/COUNT)
+
+			C  Write the values 
+
+			c        text = '                                        '
+			c        call disp_write(text)
+
+			c        t1 = 'The RMS piston error is xxx.xxx microns.'
+			c        write(unit=t1(25:31), fmt = '(f7.3)') p_rms
+			c        call disp_write(t1)
+
+			c        t4 = 'Terrace mode component = xxx.xxx microns.'
+			c        write(unit=t4(26:32), fmt = '(f7.3)') terrace_mode_rms
+			c        call disp_write(t4)
+
+			c        text = '                                        '
+			c        call disp_write(text)
+
+			c        t2 = 'Residual to the fit   = xxx.xxx microns.'
+			c        write(unit=t2(25:31), fmt = '(f7.3)') resid_to_fit
+			c        call disp_write(t2)
+			c        t3 = ' [based on xxx edges]'
+			c        write(unit=t3(12:14), fmt = '(i3)') count
+			c        call disp_write(t3)
+			c        text = '                                        '
+			c        call disp_write(text)
+
+			c        ZPHASING_RMS_ERRORS = T1//NL//T4//NL//T2//NL//T3//null
+		*/
+	}
 	
 	
 

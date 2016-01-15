@@ -43,6 +43,7 @@ import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
+import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
@@ -74,6 +75,7 @@ import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
+import org.tmt.aps.peas.lang.interop.JfixPistons;
 import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
 import org.tmt.aps.peas.lang.interop.JmakeTemplate;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
@@ -1426,6 +1428,46 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "jbbAnalyzeSequence"));
 
 		return bbAnalyzeSequenceResult;
+		
+	}
+	
+	
+	@Computation
+	public FixPistonsResult fixPistons(FloatPoint[] actuatorPositions, float[] actCalc) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "fixPistons"));
+
+		JfixPistons jfixPistons = new JfixPistons();
+		RetVal retVal = new RetVal();
+
+		float[] pistonRaw = actCalc;
+		
+		float[] actuatorPositionsX = FloatPointListEncoder.extractXArray(Arrays.asList(actuatorPositions));
+		float[] actuatorPositionsY = FloatPointListEncoder.extractYArray(Arrays.asList(actuatorPositions));
+
+		float[] actRaw = new float[actuatorPositions.length];
+		float[] actFixed = new float[actuatorPositions.length];
+		
+		
+		Object[] result = jfixPistons.jfixPistons(retVal, pistonRaw, actuatorPositionsX, actuatorPositionsY, actRaw, actFixed);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("fixPistons calcuation error");
+		}
+
+		
+		float actRms = ((Float) result[0]);
+
+		
+		FixPistonsResult fixPistonsResult = new FixPistonsResult(actRaw, actFixed, actRms);
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "fixPistons"));
+
+		return fixPistonsResult;
 		
 	}
 	
