@@ -344,6 +344,29 @@ public class JavaComputations {
 	    return transpose;
 	}
 
+	public static float calcMax(float[] input, int[] useValue) {
+		// sum absolute values of inputs for which useValue = 1
+		float max = 0.0f;
+		for (int i=0; i<input.length; i++) {
+			max = Math.max(max, Math.abs(input[i] * useValue[i]));
+		}
+		return max;
+	}
+	
+	public static float calcRss(float[] input, int[] useValue) {
+		// sum absolute values of inputs for which useValue = 1
+		// sqrt( ( sum of a^2 over all elements)/n). for which useValue = 1
+		float sumOfSquares = 0.0f;
+		int count = 0;
+		for (int i=0; i<input.length; i++) {
+			sumOfSquares += (input[i] * useValue[i]) * (input[i] * useValue[i]);
+			count += useValue[i];
+		}
+		return (float)Math.sqrt(sumOfSquares/count);
+		
+	}
+	
+	
 	
 	public static CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)

@@ -5,16 +5,18 @@ public class BbAnalyzeSequenceResult {
 	float[] stepCorr;
 	float[] actCalc;
 	float[] resid;
+	int[] rowFlagIn;
 	int[] rowFlagOut;
 
 	public BbAnalyzeSequenceResult() {
 		
 	}
 	
-	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagOut) {
+	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut) {
 		this.stepCorr = stepCorr;
 		this.actCalc = actCalc;
 		this.resid = resid;
+		this.rowFlagIn = rowFlagIn;
 		this.rowFlagOut = rowFlagOut;
 	}
 
@@ -40,6 +42,14 @@ public class BbAnalyzeSequenceResult {
 
 	public void setResid(float[] resid) {
 		this.resid = resid;
+	}
+
+	public int[] getRowFlagIn() {
+		return rowFlagIn;
+	}
+
+	public void setRowFlagIn(int[] rowFlagIn) {
+		this.rowFlagIn = rowFlagIn;
 	}
 
 	public int[] getRowFlagOut() {

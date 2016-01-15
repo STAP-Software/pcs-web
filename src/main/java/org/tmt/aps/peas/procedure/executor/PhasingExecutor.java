@@ -26,6 +26,7 @@ import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -341,18 +342,40 @@ public class PhasingExecutor {
 		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
 		    		bbAnalyzeSequenceResult.getActCalc());
+
+		    /**********************************************/
+			/// CalculatePhasingStats
+			/**********************************************/		
+		    PhasingStatsResult phasingStatsResult = computationLibrary.calculatePhasingStats(
+		    		bbAnalyzeSequenceResult.getRowFlagIn(), 
+		    		bbAnalyzeSequenceResult.getRowFlagOut(), 
+		    		bbAnalyzeSequenceResult.getStepCorr(),
+		    		bbAnalyzeSequenceResult.getResid());
 		    
 		    
 		    // TODO: calculate statistics and put into database (just like fine screen did?)
 			///SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_PREDICTED,DUMMY,DUMMY,1,1)
 		
-		
+		    
+		    /*
+			 * 3. In the display where we send command/ask the user we want:
+			 * The RMS Piston error is: X
+			 * The RSS Residual to the fit is: Y
+			 * Based on Z good Edges
+			 * 
+			 *  X is fixPistonsResult.actRms
+			 *  Y is phasingStatsResult.residualEdgeErrorRss
+			 *  Z is phasingStatsResult.goodEdgeCount
+			*/
+		    
+		    
 			procedureExecutionState.setPercentComplete(98);
 			
 			/**********************************************/
 			/// wait for ACS final colorstep cmds to complete
 			/**********************************************/
 			// TODO: wait for ACS final colorstep to complete
+			
 			
 			// prepare to command primary
 			boolean sendM1Command = procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_YES;

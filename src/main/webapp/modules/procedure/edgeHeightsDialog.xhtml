@@ -244,7 +244,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 </script>   
 
 
-		<p:dialog id="edgeHeightsDialog" header="Edge Heights" widgetVar="edgeHeightsDisplayDialog" closable="false" >  
+		<p:dialog id="edgeHeightsDialog" header="Measured Edge Heights" widgetVar="edgeHeightsDisplayDialog" closable="false" >  
      		<h:form id="edgeHeightsForm">
 
     		<h:inputHidden id="centroidOffsetXs" value="#{visualizationController.centroidOffsetXs}" />
@@ -271,6 +271,26 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 
 
 				<!-- 
+				
+		/*
+		 * 
+		 * 1. In the “measured edge” display’s I think we want:
+		 * -number of good edges (phasingStatsResult.goodEdgeCount)
+		 * -max error: (phasingStatsResult.edgeErrorMax)
+		 * -RSS edge error: (phasingStatsResult.edgeErrorRss)
+		 * 
+		 * 2. In the “residual edge” display’s I think we want:
+		 * -number of good edges (phasingStatsResult.goodEdgeCount)
+		 * -max error: (phasingStatsResult.residualEdgeErrorMax)
+		 * -RSS edge residuals: (phasingStatsResult.residualEdgeErrorRss)
+		 * 
+		 *  
+		 */
+
+				
+				
+				
+				
 				<p:spacer height="15"/><p:spacer height="15"/>
 				<h:outputLabel value="Translation from Ref (pixels) (x,y)" />
 				<h:outputText value="#{visualizationController.centroidOffsetsDisplayValues.centroidOffsetsResult.imageTranslation.x}, #{visualizationController.centroidOffsetsDisplayValues.centroidOffsetsResult.imageTranslation.y}" style="position:relative; top:2px" />

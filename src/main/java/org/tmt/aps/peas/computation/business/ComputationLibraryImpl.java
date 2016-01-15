@@ -46,6 +46,7 @@ import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
+import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
@@ -1421,7 +1422,7 @@ public class ComputationLibraryImpl {
 		}
 
 				
-		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagOut);
+		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut);
 
 
 		// End of code for findCent unit testing
@@ -1468,6 +1469,42 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "fixPistons"));
 
 		return fixPistonsResult;
+		
+	}
+	
+	@Computation
+	public PhasingStatsResult calculatePhasingStats(int[] rowFlagIn, int[] rowFlagOut, float[] stepCorr, float[] stepResid) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculatePhasingStats"));
+
+		
+		int goodEdgeCount = 0;
+
+		// calculate goodEdgeCount
+		int[] rowUsed = new int[rowFlagIn.length];
+		// row used might be the same as rowFlagOut
+		for (int i=0; i<rowFlagIn.length; i++) {
+			rowUsed[i] = rowFlagIn[i] & rowFlagOut[i];
+			goodEdgeCount += rowUsed[i];
+		}
+		
+		// maximum of the absolute value of step_corr
+		float edgeErrorMax = JavaComputations.calcMax(stepCorr, rowUsed); 
+		// RSS of stepCorr
+		float edgeErrorRss = JavaComputations.calcRss(stepCorr, rowUsed);  
+		
+		//  maximum of the absolute value of step_resid
+		float residualEdgeErrorMax = JavaComputations.calcMax(stepResid, rowUsed);
+		// RSS of step_resid
+		float residualEdgeErrorRss = JavaComputations.calcRss(stepResid, rowUsed); 
+		
+		
+		PhasingStatsResult phasingStatsResult = new PhasingStatsResult(goodEdgeCount, edgeErrorMax, edgeErrorRss, residualEdgeErrorMax, residualEdgeErrorRss);
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculatePhasingStats"));
+
+		return phasingStatsResult;
 		
 	}
 	
