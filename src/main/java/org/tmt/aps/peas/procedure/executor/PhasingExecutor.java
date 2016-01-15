@@ -217,7 +217,6 @@ public class PhasingExecutor {
 					procedureConfig.getPupilMask(), procedureConfig.getFilter());
 					
 						
-		
 			/// MAXSTEP = (ZPHASING_COARSE_STEPS - 1)/2.0
 		
 			// one filter, one integration time
@@ -280,6 +279,7 @@ public class PhasingExecutor {
 				
 			} // end of iteration loop
 			
+		    // TODO: send last colorstep to M1 (do not wait here)
 			
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
@@ -300,7 +300,7 @@ public class PhasingExecutor {
 
 		                                                                                
 			/**********************************************/
-			/// BbAnalyzeSequence
+			/*            BbAnalyzeSequence               */
 			/**********************************************/
 		    BbAnalyzeSequenceResult bbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence(
 		    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
@@ -317,34 +317,19 @@ public class PhasingExecutor {
 					procedureConfig.getPhasingSteps(), 
 		    		subimageDefList.useForAnalysis(), goodSpots);
 		
-		    statusLogger.log("procedure.cph.algorithm_complete");
-		
-		
-			// TEST ONLY
-			if (procedureConfig.isAutoDisplayResiduals()) {
-				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
-			}
-
-		    
-		    ///CALL DISPLAY_PISTON_ERROR - edge heights (stepCorr) + rowFlagOut (for missing edges)
-			// display # spots used in calc (good spots), max error, and rms error (i.e. edge hieights)
-		    
-		    ///CALL DISPLAY_PISTON_RESID - same display, different data (Resid) + rowFlagOut (for missing edges)
-			// display # spots used in calc (good spots), max error, and rms error 
-			
 		    
 		    statusLogger.log("procedure.cph_calc_piston");
 		
 		    
 		    /**********************************************/
-			/// FixPistons
+			/*                FixPistons                  */
 			/**********************************************/		
 		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
 		    		bbAnalyzeSequenceResult.getActCalc());
 
 		    /**********************************************/
-			/// CalculatePhasingStats
+			/*          CalculatePhasingStats             */
 			/**********************************************/		
 		    PhasingStatsResult phasingStatsResult = computationLibrary.calculatePhasingStats(
 		    		bbAnalyzeSequenceResult.getRowFlagIn(), 
@@ -353,21 +338,31 @@ public class PhasingExecutor {
 		    		bbAnalyzeSequenceResult.getResid());
 		    
 		    
-		    // TODO: calculate statistics and put into database (just like fine screen did?)
-			///SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_PREDICTED,DUMMY,DUMMY,1,1)
-		
-		    
-		    /*
-			 * 3. In the display where we send command/ask the user we want:
-			 * The RMS Piston error is: X
-			 * The RSS Residual to the fit is: Y
-			 * Based on Z good Edges
-			 * 
-			 *  X is fixPistonsResult.actRms
-			 *  Y is phasingStatsResult.residualEdgeErrorRss
-			 *  Z is phasingStatsResult.goodEdgeCount
-			*/
-		    
+		    /**********************************************/
+			/*      Display Measured Edge Heights         */
+			/**********************************************/		
+			
+		    ///CALL DISPLAY_PISTON_ERROR - edge heights (stepCorr) + rowFlagOut (for missing edges)
+			// display # spots used in calc (good spots), max error, and rms error (i.e. edge hieights)
+
+		    // TODO: autoDisplay is residuals, we need one for edge heights
+		    if (procedureConfig.isAutoDisplayResiduals()) {
+				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
+			}
+
+		    /**********************************************/
+			/*      Display Residual Edge Heights         */
+			/**********************************************/		
+			
+		    ///CALL DISPLAY_PISTON_RESID - same display, different data (Resid) + rowFlagOut (for missing edges)
+			// display # spots used in calc (good spots), max error, and rms error 
+
+		    if (procedureConfig.isAutoDisplayResiduals()) {
+				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
+			}
+
+		    statusLogger.log("procedure.cph.algorithm_complete");
+
 		    
 			procedureExecutionState.setPercentComplete(98);
 			
@@ -376,21 +371,24 @@ public class PhasingExecutor {
 			/**********************************************/
 			// TODO: wait for ACS final colorstep to complete
 			
+
+		    statusLogger.log("calc.phasing_summary",
+					procedureOutput.getFixPistonsResult().getActRms(), 
+					procedureOutput.getPhasingStatsResult().getEdgeErrorRss(), 
+					procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
+
 			
 			// prepare to command primary
 			boolean sendM1Command = procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_YES;
 			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
-				
+								
 				// Display to user and ask if they want to command				
-				//String actDeltaRmsText = MessageGenerator.generateMessage("calc.desiredm1cmds.html",
-				//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasRms(), 
-				//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasRmsStd(),
-				//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasNoFmRms(),
-				//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasNoFmRmsStd(),
-				//		procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltasFmRms(),
-				//		calcDesiredActDeltasRmsStdResult.getDesiredActDeltasFmRmsStd());
+				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
+						procedureOutput.getFixPistonsResult().getActRms(), 
+						procedureOutput.getPhasingStatsResult().getEdgeErrorRss(), 
+						procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
 				
-				//sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", actDeltaRmsText  + "\n\n\nCommand Primary Mirror?");
+				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", phasingSummaryText  + "\n\n\nCommand Primary Mirror?");
 			}
 
 			
@@ -439,34 +437,31 @@ public class PhasingExecutor {
 				
 		} catch (Throwable e) {
 			
-			
-			/// attempt to put ACS state back to where it was when we began.
-			/// only do this if we were actually commanding ACS in the first place
-			
-			/// On success:
-			String txt1 = "procedure.cph.abort_recovered";
-		
-			///CALL FWARN_DIALOG(txt)
-		
-			/// On failure: 
-			                              
-			String txt2 = "procedure.cph.abort_not_recovered";
-		    statusLogger.log(txt2);
-		    ///CALL FWARN_DIALOG(txt)
+			try {
+				/// attempt to put ACS state back to where it was when we began.
+				/// only do this if we were actually commanding ACS in the first place
+				restoreMirror();
+				
+				String txt1 = "procedure.cph.abort_recovered";
+				
+
+			} catch (Exception e1) {
+				String txt2 = "procedure.cph.abort_not_recovered";
+			    statusLogger.log(txt2);
+
+			    // TODO: put up a warning dialog with the non-recovered text
+
+			}
 			
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
-		/*
-		 * getProcStats();
-		 */
-
 		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
 	
 	// TODO: RESTORE_MIRROR is a subroutine we need to have here
-	public void restoreMirror() {
+	public void restoreMirror() throws Exception {
 		
 	}
 	
