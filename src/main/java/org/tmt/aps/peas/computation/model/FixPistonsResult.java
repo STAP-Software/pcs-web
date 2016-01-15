@@ -42,9 +42,4 @@ public class FixPistonsResult {
 		this.actRms = actRms;
 	}
 	
- 
-
-
-
-	
 }

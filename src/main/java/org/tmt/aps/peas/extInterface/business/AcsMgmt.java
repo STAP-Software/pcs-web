@@ -80,5 +80,23 @@ public class AcsMgmt {
 		commandActuatorDelta(actDeltaCmds);
 
 	}
+	
+	public void commandActuatorDeltas(float[] actDeltas) throws Exception {
+		
+		// interface requires that we use indexes 1-108
+		
+		double[] actDeltaCmds = new double[109];
+
+		for (int i = 0; i < 108; i++) {
+			actDeltaCmds[1 + i] = actDeltas[i];
+		}
+		logger.info("doSendActDeltaCommands: actDeltaCmds = ");
+		for (int i=0; i<109; i++) {
+			logger.info(actDeltaCmds[i]);
+		}
+
+		commandActuatorDelta(actDeltaCmds);
+
+	}
 
 }

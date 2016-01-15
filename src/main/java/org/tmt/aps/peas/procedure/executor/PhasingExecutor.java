@@ -402,7 +402,7 @@ public class PhasingExecutor {
 	
 				try {
 					// send out the commands
-					//acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+					acsMgmt.commandActuatorDeltas(procedureOutput.getFixPistonsResult().getActFixed());
 	
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
@@ -435,6 +435,7 @@ public class PhasingExecutor {
 	
 			procedureExecutionState.setPercentComplete(100);
 				
+			
 		} catch (Throwable e) {
 			
 			try {
@@ -442,16 +443,19 @@ public class PhasingExecutor {
 				/// only do this if we were actually commanding ACS in the first place
 				restoreMirror();
 				
-				String txt1 = "procedure.cph.abort_recovered";
+				statusLogger.log("procedure.cph.abort_recovered");
 				
+				// put up a warning dialog with the non-recovered text
+			    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"));
 
 			} catch (Exception e1) {
-				String txt2 = "procedure.cph.abort_not_recovered";
-			    statusLogger.log(txt2);
+				
+			    statusLogger.log("procedure.cph.abort_not_recovered");
 
-			    // TODO: put up a warning dialog with the non-recovered text
+			    // put up a warning dialog with the non-recovered text
+			    userPromptMgmt.displayInfoDialog("WARNING", MessageGenerator.generateMessage("procedure.cph.abort_not_recovered"));
 
-			}
+			} 
 			
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
@@ -465,73 +469,7 @@ public class PhasingExecutor {
 		
 	}
 	
-	public void tempCalcPhasingStats() {
-		
-		/*
-		
-		OK = SHOW_PHASING_STATS_ASK_TO_PHASE(PCALC,STEP_predicted, 
-			     +    0.0,0.0,OPTION,0)
 
-
-			c        count = 0.0
-			c        p_rms = 0.0
-
-			c        do i = 1,36
-			c           if(pcalc(i).ne.0.0) then
-			c              p_rms = p_rms + pcalc(i)**2
-			c              count = count + 1
-			c           endif
-			c        enddo
-			c        if (count.ne.0) then
-			c           p_rms = sqrt(p_rms/count)
-			c        else
-			c           p_rms = 0.0
-			c        end if
-
-
-			C Calculate the residual to the fit:
-
-			c        COUNT = 0.0
-			c        RESID_TO_FIT = 0.0
-
-			c	DO I = 1,84
-			c	   IF ((USABLE_CONSTRAINTS(I)).AND.
-			c     +          (COARSE_SCREEN_SPOTS(I+36).EQ.1)) THEN	
-			c	       RESID_TO_FIT = RESID_TO_FIT + STEP_NEW(I)**2
-			c	       COUNT = COUNT + 1
-			c	   ENDIF
-			c	ENDDO
-
-			c	RESID_TO_FIT = SQRT(RESID_TO_FIT/COUNT)
-
-			C  Write the values 
-
-			c        text = '                                        '
-			c        call disp_write(text)
-
-			c        t1 = 'The RMS piston error is xxx.xxx microns.'
-			c        write(unit=t1(25:31), fmt = '(f7.3)') p_rms
-			c        call disp_write(t1)
-
-			c        t4 = 'Terrace mode component = xxx.xxx microns.'
-			c        write(unit=t4(26:32), fmt = '(f7.3)') terrace_mode_rms
-			c        call disp_write(t4)
-
-			c        text = '                                        '
-			c        call disp_write(text)
-
-			c        t2 = 'Residual to the fit   = xxx.xxx microns.'
-			c        write(unit=t2(25:31), fmt = '(f7.3)') resid_to_fit
-			c        call disp_write(t2)
-			c        t3 = ' [based on xxx edges]'
-			c        write(unit=t3(12:14), fmt = '(i3)') count
-			c        call disp_write(t3)
-			c        text = '                                        '
-			c        call disp_write(text)
-
-			c        ZPHASING_RMS_ERRORS = T1//NL//T4//NL//T2//NL//T3//null
-		*/
-	}
 	
 	
 
