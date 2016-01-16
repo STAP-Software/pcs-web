@@ -23,6 +23,8 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
+import org.tmt.aps.peas.computation.model.ColorStepResult;
+import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
@@ -216,6 +218,9 @@ public class PhasingExecutor {
 					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
 					procedureConfig.getPupilMask(), procedureConfig.getFilter());
 					
+			// TODO: verify correct units for phasingStepSize input... these will need to match the actuator step values
+			// TODO: log to database in procedure output
+			ColorStepResult colorStepResult = computationLibrary.colorStep(procedureConfig.getPhasingSteps(), procedureConfig.getPhasingStepSize());
 						
 			/// MAXSTEP = (ZPHASING_COARSE_STEPS - 1)/2.0
 		
@@ -247,9 +252,22 @@ public class PhasingExecutor {
 				procedureOutput.addIteration(pio);
 				
 				/**********************************************/
+				/* Send ACS colorstep commands                */
+				/**********************************************/
+				// TODO: call in best place for efficiency
+				// TODO: add to procedureIterationOutput
+				ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
+						colorStepResult.getColorSteps()[i],
+						constantsCache.getPrimaryMirrorConstants().getnColor());
+				
+				// TODO: we need to be able to call asynchronously and wait for result.
+				acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				
+				
+				/**********************************************/
 				/*        wait for ACS to be done			  */
 				/**********************************************/
-				// TODO
+				// TODO - only needed if we call acs asynchonously
 	
 				/**********************************************/
 				/*        PupilRegistration Subflow           */
@@ -279,8 +297,14 @@ public class PhasingExecutor {
 				
 			} // end of iteration loop
 			
-		    // TODO: send last colorstep to M1 (do not wait here)
-			
+		    // TODO: send last colorstep to M1 (do not wait here) - at first we do, then later try async
+			// TODO: we could log this to procedureOutput rather than iteration, but that feels like a hack
+			ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
+					colorStepResult.getColorSteps()[procedureConfig.getPhasingSteps()],
+					constantsCache.getPrimaryMirrorConstants().getnColor());
+
+			acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
@@ -396,10 +420,6 @@ public class PhasingExecutor {
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", phasingSummaryText  + "\n\n\nCommand Primary Mirror?");
 			}
-
-			
-			// TODO: make sure logic in PRIMARY_PISTON is captured here
-			///PRIMARY_PISTON(PCALC)
 			
 	
 			// command ACS

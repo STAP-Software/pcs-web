@@ -38,6 +38,8 @@ import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.ColorStepResult;
+import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
@@ -71,6 +73,8 @@ import org.tmt.aps.peas.lang.interop.JcalculateFocusModeVector;
 import org.tmt.aps.peas.lang.interop.JcalculateM2M1Analytical;
 import org.tmt.aps.peas.lang.interop.JcalculateM2M1RayTrace;
 import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
+import org.tmt.aps.peas.lang.interop.JcolorStep;
+import org.tmt.aps.peas.lang.interop.JcolorStepToActuators;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
@@ -1502,6 +1506,60 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculatePhasingStats"));
 
 		return phasingStatsResult;
+		
+	}
+	
+	@Computation
+	public ColorStepResult colorStep(int stepCount, float stepSize) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "colorStep"));
+
+		JcolorStep jcolorStep = new JcolorStep();
+		RetVal retVal = new RetVal();
+
+		float[][] colorSteps = new float[stepCount+1][3];
+		
+		Object[] result = jcolorStep.jcolorStep(retVal, stepCount, stepSize, colorSteps);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("colorStep calcuation error");
+		}
+
+		ColorStepResult colorStepResult = new ColorStepResult(colorSteps);
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "colorStep"));
+
+		return colorStepResult;
+		
+	}
+	
+	@Computation
+	public ColorStepToActuatorsResult colorStepToActuators(float[] colors, int[] segmentColors) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "colorStepToActuators"));
+
+		JcolorStepToActuators jcolorStepToActuators = new JcolorStepToActuators();
+		RetVal retVal = new RetVal();
+
+		float[] m1ActuatorDeltas = new float[segmentColors.length*3];
+	
+		Object[] result = jcolorStepToActuators.jcolorStepToActuators(retVal, colors, segmentColors, m1ActuatorDeltas);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("jcolorStepToActuators calcuation error");
+		}
+
+		ColorStepToActuatorsResult colorStepToActuatorsResult = new ColorStepToActuatorsResult(m1ActuatorDeltas);
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "colorStepToActuators"));
+
+		return colorStepToActuatorsResult;
 		
 	}
 	
