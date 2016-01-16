@@ -59,7 +59,7 @@ public class ProcedureOutputMgmt {
 		for (Method poMethod : poMethods) {
 
 			// test that this is an official calc result getter method
-			if (!testMethodName(poMethod.getName(), outputClassNames)) continue;
+			if (!testMethodName(poClass, poMethod.getName(), outputClassNames)) continue;
 							
 			// get the calcResult object
 			Object calcResult = poMethod.invoke(procedureOutput, new Object[0]);
@@ -77,7 +77,7 @@ public class ProcedureOutputMgmt {
 			// loop over all getter methods
 			for (Method method : methods) {
 				if (method.getName().startsWith("get") || method.getName().startsWith("is")) {
-	
+					
 					String fieldName = deriveFieldNameFromGetter(method.getName());
 	
 					ProcedureOutputField procedureOutputField = outputFieldMap.get(fieldName);
@@ -114,10 +114,10 @@ public class ProcedureOutputMgmt {
 	
 
 			
-	private boolean testMethodName(String methodName, List<String> candidates) {
+	private boolean testMethodName(Class poClass, String methodName, List<String> candidates) {
 		if (methodName.startsWith("get")) {
 			for (String candidate : candidates) {
-				if (methodName.equals("get" + candidate)) {
+				if (methodName.equals("get" + candidate)) {					
 					return true;
 				}
 			}

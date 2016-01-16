@@ -108,7 +108,14 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 		this.calcSegmentMeanTipTiltsResult = calcSegmentMeanTipTiltsResult;
 	}
 	
-	
+	// actuator deltas display values
+
+	public float[][] getDesiredActDeltas() {
+		return calcDesiredActCommandsResult.getDesiredActDeltas();
+	}
+	public float getDesiredActDeltasRms() {
+		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
+	}
 	
 	//  AvgPtCentroidOffsetsDisplayValues interface
 	public FloatPoint[] getAvgPtCentroidOffsets() {

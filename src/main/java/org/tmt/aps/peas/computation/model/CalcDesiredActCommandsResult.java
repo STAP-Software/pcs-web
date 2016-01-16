@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
+import org.tmt.aps.peas.Constants;
+
 public class CalcDesiredActCommandsResult {
 
 	
@@ -21,6 +23,23 @@ public class CalcDesiredActCommandsResult {
 		this.desiredActDeltasFmRms = desiredActDeltasFmRms;
 		this.desiredActDeltasNoFmRms = desiredActDeltasNoFmRms;
 
+	}
+
+	public CalcDesiredActCommandsResult(FixPistonsResult fixPistonsResult) {
+
+		if (fixPistonsResult != null && fixPistonsResult.getActFixed() != null) {
+			this.pistonActs = new float[0][0];
+			this.pistonActsRms = 0.0f;
+			this.desiredActDeltas = new float[36][3];
+			for (int i=0; i<36; i++) {
+				this.desiredActDeltas[i][0] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3];  
+				this.desiredActDeltas[i][1] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 1];  
+				this.desiredActDeltas[i][2] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 2];  
+			}
+			this.desiredActDeltasRms = fixPistonsResult.getActRms();
+			this.desiredActDeltasFmRms = 0.0f;
+			this.desiredActDeltasNoFmRms = 0.0f;
+		}
 	}
 
 	public CalcDesiredActCommandsResult() {};

@@ -1458,12 +1458,9 @@ public class ComputationLibraryImpl {
 			throw new ComputationException("fixPistons calcuation error");
 		}
 
-		
 		float actRms = ((Float) result[0]);
 
-		
 		FixPistonsResult fixPistonsResult = new FixPistonsResult(actRaw, actFixed, actRms);
-
 
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "fixPistons"));

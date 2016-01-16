@@ -250,9 +250,9 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setAndEncodeActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 		
-		String actDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+		String actDeltas = FloatListEncoder.encodeList(actuatorDeltasDisplayValues.getDesiredActDeltas());
 		setActuatorDeltas(actDeltas);
-		String actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+		String actDeltaHeats = heatMap(actuatorDeltasDisplayValues.getDesiredActDeltas());
 		setActDeltaHeats(actDeltaHeats);
 		
 	}

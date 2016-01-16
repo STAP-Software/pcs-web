@@ -361,6 +361,12 @@ public class PhasingExecutor {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
 
+		    
+			// display the pistonDeltas
+			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
+				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
+			}
+
 		    statusLogger.log("procedure.cph.algorithm_complete");
 
 		    

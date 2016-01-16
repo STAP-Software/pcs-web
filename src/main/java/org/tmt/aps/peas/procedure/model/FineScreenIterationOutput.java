@@ -105,6 +105,15 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 		this.findCentroidsResult = findCentroidsResult;
 	}
 	
+	// actuator deltas display values
+
+	public float[][] getDesiredActDeltas() {
+		return calcDesiredActCommandsResult.getDesiredActDeltas();
+	}
+	public float getDesiredActDeltasRms() {
+		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
+	}
+	
 	
 	
 }

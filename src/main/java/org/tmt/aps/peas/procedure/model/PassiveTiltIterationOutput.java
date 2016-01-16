@@ -67,5 +67,13 @@ public class PassiveTiltIterationOutput extends ProcedureIterationOutput impleme
 		this.findCentroidsResult = findCentroidsResult;
 	}
 
+	// actuator deltas display values
+
+	public float[][] getDesiredActDeltas() {
+		return calcDesiredActCommandsResult.getDesiredActDeltas();
+	}
+	public float getDesiredActDeltasRms() {
+		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
+	}
 	
 }

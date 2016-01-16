@@ -89,6 +89,7 @@ public class Constants {
 	public static final float RADIANS_TO_ARCSEC = 206265.0f;
 	public static final float MICRONS_TO_MM = 1.0f/1000.0f;
 	public static final float NM_TO_MICRONS = 1.0f/1000.0f;
+	public static final float MICRONS_TO_NM = 1000.0f;
 	
 	public static final int ADVANCED_VIEW_ENGINEERING = 1;
 	public static final int ADVANCED_VIEW_ADMINISTRATION = 2;

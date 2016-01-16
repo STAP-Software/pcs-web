@@ -72,4 +72,12 @@ public class PassiveTiltProcedureOutput extends ProcedureOutput implements Centr
 
 	}
 	
+	// actuator deltas display values
+
+	public float[][] getDesiredActDeltas() {
+		return calcDesiredActCommandsResult.getDesiredActDeltas();
+	}
+	public float getDesiredActDeltasRms() {
+		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
+	}
 }
