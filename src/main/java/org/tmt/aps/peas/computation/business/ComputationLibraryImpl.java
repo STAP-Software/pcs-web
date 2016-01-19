@@ -140,7 +140,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("No good centroid could be found");
+			throw new ComputationException("No good centroid could be found. " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
@@ -223,7 +223,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("No good centroid could be found");
+			throw new ComputationException("No good centroid could be found.  "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		
@@ -320,7 +320,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Bad Pixel remove error");
+			throw new ComputationException("Bad Pixel remove error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
@@ -375,7 +375,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Unknown Find and Identify Error");
+			throw new ComputationException("Unknown Find and Identify Error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		// store fi_param values
@@ -506,7 +506,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Centroid Offsets Calculation Error");
+			throw new ComputationException("Centroid Offsets Calculation Error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 		
 		// convert to cartesian offsets
@@ -540,7 +540,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Centroid Offset Stats Calculation Error");
+			throw new ComputationException("Centroid Offset Stats Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateCentroidStats"));
@@ -571,7 +571,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Centroid Offset Stats Calculation Error");
+			throw new ComputationException("Centroid Offset Stats Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateCentroidStats"));
@@ -597,7 +597,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Centroid Offset Stats Calculation Error");
+			throw new ComputationException("Centroid Offset Stats Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgCentroidStats"));
@@ -627,7 +627,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Passive Tilt Scale Error Calculation Error");
+			throw new ComputationException("Passive Tilt Scale Error Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
@@ -654,7 +654,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Fine Screen Scale Error Calculation Error");
+			throw new ComputationException("Fine Screen Scale Error Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
@@ -688,7 +688,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Tip/Tilt Offsets to Actuator Calculation Error");
+			throw new ComputationException("Tip/Tilt Offsets to Actuator Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		// store fi_param values
@@ -723,7 +723,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Decompose Actuators Calculation Error");
+			throw new ComputationException("Decompose Actuators Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		// store _param values
@@ -755,7 +755,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("Optimal Pistons Calculation Error");
+			throw new ComputationException("Optimal Pistons Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		// store _param values
@@ -786,7 +786,7 @@ public class ComputationLibraryImpl {
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode());
+			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode() + ".  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 		
 		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult((Float) output[0], (Float) output[1], (Float) output[2], 
@@ -947,7 +947,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("M2 ray trace calcuation error");
+			throw new ComputationException("M2 ray trace calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		
@@ -1036,7 +1036,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("calculateM2M1Analytical calcuation error");
+			throw new ComputationException("calculateM2M1Analytical calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		
@@ -1134,7 +1134,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("calculateFocusModeVector error");
+			throw new ComputationException("calculateFocusModeVector error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateFocusModeVector"));
@@ -1163,7 +1163,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("calcM2ActuatorsFromPtt calcuation error");
+			throw new ComputationException("calcM2ActuatorsFromPtt calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 				
@@ -1320,7 +1320,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("makeTemplate calcuation error");
+			throw new ComputationException("makeTemplate calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 				
@@ -1360,7 +1360,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("bbAnalyzeFrame calcuation error");
+			throw new ComputationException("bbAnalyzeFrame calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 				
@@ -1422,7 +1422,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("bbAnalyzeFrame calcuation error");
+			throw new ComputationException("bbAnalyzeSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 				
@@ -1459,7 +1459,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("fixPistons calcuation error");
+			throw new ComputationException("fixPistons calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		float actRms = ((Float) result[0]);
@@ -1521,10 +1521,9 @@ public class ComputationLibraryImpl {
 		
 		Object[] result = jcolorStep.jcolorStep(retVal, stepCount, stepSize, colorSteps);
 
-		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("colorStep calcuation error");
+			throw new ComputationException("colorStep calcuation error. " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		ColorStepResult colorStepResult = new ColorStepResult(colorSteps);
@@ -1551,7 +1550,7 @@ public class ComputationLibraryImpl {
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
-			throw new ComputationException("jcolorStepToActuators calcuation error");
+			throw new ComputationException("colorStepToActuators calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
 		ColorStepToActuatorsResult colorStepToActuatorsResult = new ColorStepToActuatorsResult(m1ActuatorDeltas);
