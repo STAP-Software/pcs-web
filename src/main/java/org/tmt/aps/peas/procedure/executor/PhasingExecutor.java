@@ -360,8 +360,7 @@ public class PhasingExecutor {
 		    ///CALL DISPLAY_PISTON_ERROR - edge heights (stepCorr) + rowFlagOut (for missing edges)
 			// display # spots used in calc (good spots), max error, and rms error (i.e. edge hieights)
 
-		    // TODO: autoDisplay is residuals, we need one for edge heights
-		    if (procedureConfig.isAutoDisplayResiduals()) {
+		    if (procedureConfig.isAutoDisplayEdgeHeights()) {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
 

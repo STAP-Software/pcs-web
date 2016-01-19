@@ -281,6 +281,30 @@ public class VisualizationController implements Serializable {
 	public void setAvgFsCentroidOffsetYs(String centroidYs) {
 	}
 
+	public String getEdgeHeights() {
+		return graphicDisplayMgmt.getEdgeHeights();
+	}
+	
+	public void setEdgeHeights(String edgeHeights) {
+		
+	}
+	
+	public String getRowFlagIn() {
+		return graphicDisplayMgmt.getRowFlagIn();
+	}
+	
+	public void setRowFlagIn(String rowFlagIn) {
+		
+	}
+	
+	public String getRowFlagOut() {
+		return graphicDisplayMgmt.getRowFlagOut();
+	}
+	
+	public void setRowFlagOut(String rowFlagOut) {
+		
+	}
+	
 	public String getCentroidNbrs() {
 		return graphicDisplayMgmt.getCentroidNbrs();
 	}
@@ -501,6 +525,21 @@ public class VisualizationController implements Serializable {
 			
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS);		
+
+	}
+	
+	public void doPopulateEdgeHeightsDisplay() {
+		
+		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
+
+		if (procedureOutput instanceof EdgeHeightsDisplayValues) {
+
+			EdgeHeightsDisplayValues ehdv = (EdgeHeightsDisplayValues) procedureOutput;
+			
+			graphicDisplayMgmt.setAndEncodeEdgeHeightsDisplayValues(ehdv);
+			
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);		
 
 	}
 

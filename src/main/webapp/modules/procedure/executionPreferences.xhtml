@@ -48,6 +48,8 @@
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
 					<h:outputLabel value="Auto Display Pistons" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayPistons}" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<h:outputLabel value="Auto Display Edge Heights" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<h:outputLabel value="Auto Display Residuals" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" rendered="#{procedureController.procedure.procedureType.phasing}" />
 

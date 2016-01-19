@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
@@ -59,6 +60,9 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	String centroidNbrs;
 	String actuatorDeltas;
+	String edgeHeights;
+	String rowFlagIn;
+	String rowFlagOut;
 
 
 	public int getWaitingForSecs() {
@@ -144,6 +148,30 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setActDeltaHeats(String actDeltaHeats) {
 		this.actDeltaHeats = actDeltaHeats;
+	}
+
+	public String getEdgeHeights() {
+		return edgeHeights;
+	}
+
+	public void setEdgeHeights(String edgeHeights) {
+		this.edgeHeights = edgeHeights;
+	}
+
+	public String getRowFlagIn() {
+		return rowFlagIn;
+	}
+
+	public void setRowFlagIn(String rowFlagIn) {
+		this.rowFlagIn = rowFlagIn;
+	}
+
+	public String getRowFlagOut() {
+		return rowFlagOut;
+	}
+
+	public void setRowFlagOut(String rowFlagOut) {
+		this.rowFlagOut = rowFlagOut;
 	}
 
 	@Lock(LockType.READ)
@@ -235,6 +263,13 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setAndEncodeEdgeHeightsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
+		
+		String edgeHeights = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr());
+		setEdgeHeights(edgeHeights);
+		
+		rowFlagIn = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagIn());
+		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
+
 	}
 
 	

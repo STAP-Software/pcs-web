@@ -71,6 +71,7 @@
 						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgPtCentroidOffsetDisplayEnabled}"/>
 						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgFsCentroidOffsetDisplayEnabled}"/>						
  						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
+ 						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" disabled="#{not visualizationController.edgeHeightsDisplayEnabled}"/>
 						
 					</p:submenu>
 					
