@@ -2,6 +2,8 @@ package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.ColorStepResult;
+import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
@@ -12,7 +14,9 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 	BbAnalyzeSequenceResult bbAnalyzeSequenceResult;
 	FixPistonsResult fixPistonsResult;
 	PhasingStatsResult phasingStatsResult;
-	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
+	CalcDesiredActCommandsResult calcDesiredActCommandsResult = new CalcDesiredActCommandsResult();
+	ColorStepResult colorStepResult;
+	ColorStepToActuatorsResult colorStepToActuatorsResult;
 
 	public BbAnalyzeSequenceResult getBbAnalyzeSequenceResult() {
 		return bbAnalyzeSequenceResult;
@@ -39,7 +43,34 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 		this.phasingStatsResult = phasingStatsResult;
 	}
 
+	
+	public CalcDesiredActCommandsResult getCalcDesiredActCommandsResult() {
+		return calcDesiredActCommandsResult;
+	}
+
+	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
+		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
+	}
+
+	public ColorStepResult getColorStepResult() {
+		return colorStepResult;
+	}
+
+	public void setColorStepResult(ColorStepResult colorStepResult) {
+		this.colorStepResult = colorStepResult;
+	}
+
+	public ColorStepToActuatorsResult getColorStepToActuatorsResult() {
+		return colorStepToActuatorsResult;
+	}
+
+	public void setColorStepToActuatorsResult(ColorStepToActuatorsResult colorStepToActuatorsResult) {
+		this.colorStepToActuatorsResult = colorStepToActuatorsResult;
+	}
+	
 	// actuator deltas display values
+
+
 
 	public float[][] getDesiredActDeltas() {
 		return calcDesiredActCommandsResult.getDesiredActDeltas();

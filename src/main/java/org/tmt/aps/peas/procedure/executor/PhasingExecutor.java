@@ -202,6 +202,8 @@ public class PhasingExecutor {
 			/**********************************************/			
 			readyCameraSubflow.execute(procedure);
 			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
@@ -296,7 +298,9 @@ public class PhasingExecutor {
 			    
 				
 			} // end of iteration loop
-			
+	
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
 		    // TODO: send last colorstep to M1 (do not wait here) - at first we do, then later try async
 			// TODO: we could log this to procedureOutput rather than iteration, but that feels like a hack
 			ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
@@ -307,7 +311,6 @@ public class PhasingExecutor {
 
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
-			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			/****************************************************/
 			/*    calc union good spots over all steps          */

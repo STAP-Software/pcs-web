@@ -4,6 +4,7 @@ import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
@@ -17,6 +18,7 @@ public class PhasingIterationOutput extends ProcedureIterationOutput  {
 	FindCentroidsResult findCentroidsResult;
 	
 	BbAnalyzeFrameResult bbAnalyzeFrameResult;
+	ColorStepToActuatorsResult colorStepToActuatorsResult;
 	
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
@@ -54,6 +56,12 @@ public class PhasingIterationOutput extends ProcedureIterationOutput  {
 	}
 	public void setBbAnalyzeFrameResult(BbAnalyzeFrameResult bbAnalyzeFrameResult) {
 		this.bbAnalyzeFrameResult = bbAnalyzeFrameResult;
+	}
+	public ColorStepToActuatorsResult getColorStepToActuatorsResult() {
+		return colorStepToActuatorsResult;
+	}
+	public void setColorStepToActuatorsResult(ColorStepToActuatorsResult colorStepToActuatorsResult) {
+		this.colorStepToActuatorsResult = colorStepToActuatorsResult;
 	}
 	
 	
