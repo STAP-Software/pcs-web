@@ -236,7 +236,13 @@ public class FitsFilename {
 		
 	}
 	
-	
+	public boolean isInSamePhasingSequence(FitsFilename candidate) {
+		return candidate.getTelescope() == getTelescope() &&	
+			candidate.getDate().equals(getDate()) &&
+			candidate.getProcedureNumber().equals(getProcedureNumber()) &&
+			candidate.getProcedureTypeCd().equals(getProcedureTypeCd()) &&
+			candidate.getIteration() == getIteration();
+	}
 	
 
 	@Override

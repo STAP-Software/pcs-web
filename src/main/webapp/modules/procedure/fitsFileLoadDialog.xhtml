@@ -6,10 +6,17 @@
 		<p:dialog id="fitsFileLoadDlg" header="FITS File Loader" widgetVar="fitsFileLoadDialog">
 
 			<h:form id="fitsFileLoadForm">
+			
+				<p:panelGrid columns="1" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				<h:outputText value="Select ccd frames to execute a procedure with." />
+				<h:outputText value="Selecting a single phasing frame will load all frames from that sequence." />
+				</p:panelGrid>
+				
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />
+					
 
 					<h:outputLabel value="Select a File" />
         			<p:selectManyMenu value="#{procedureController.selectedFitsFiles}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" showCheckbox="true">  

@@ -387,6 +387,19 @@ public class ProcedureController implements Serializable {
 	public void doLoadFitsFile() {
 		try {
 
+			// if this is a phasing procedure, then the entire set of fits files should be in the selected list
+			List<FitsFilename> newList = new ArrayList<FitsFilename>();
+			
+			if (procedure.getProcedureType().isPhasing() && !selectedFitsFiles.isEmpty()) {
+				FitsFilename selected = selectedFitsFiles.get(0);
+				for (FitsFilename candidate : availableFitsFiles) {
+					if (selected.isInSamePhasingSequence(candidate)) {
+						newList.add(candidate);
+					}
+				}
+				selectedFitsFiles = newList;
+			}
+			
 			for (FitsFilename fitsFilename : selectedFitsFiles) {
 				CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
 	
@@ -396,9 +409,10 @@ public class ProcedureController implements Serializable {
 				// if a png file for display exists, read it in. Otherwise create it.
 				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 	
-				FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
-				FacesContext.getCurrentInstance().addMessage(null, msg);
 			}
+			FacesMessage msg = new FacesMessage("FITS Frame(s) uploaded successfully");
+			FacesContext.getCurrentInstance().addMessage(null, msg);
+
 			
 			procedure.getProcedureConfigSet().getProcedureConfig().setNumberOfTrials(selectedFitsFiles.size());
 			
