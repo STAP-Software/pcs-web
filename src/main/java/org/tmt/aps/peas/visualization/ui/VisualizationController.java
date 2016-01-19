@@ -78,6 +78,7 @@ public class VisualizationController implements Serializable {
 	boolean avgFsCentroidOffsetDisplayEnabled;
 	boolean actuatorDeltaDisplayEnabled;
 	boolean edgeHeightsDisplayEnabled;
+	boolean edgeResidualsDisplayEnabled;
 
 	String act1Pos;
 	
@@ -225,6 +226,14 @@ public class VisualizationController implements Serializable {
 		this.edgeHeightsDisplayEnabled = edgeHeightsDisplayEnabled;
 	}
 
+	public boolean isEdgeResidualsDisplayEnabled() {
+		return edgeResidualsDisplayEnabled;
+	}
+
+	public void setEdgeResidualsDisplayEnabled(boolean edgeResidualsDisplayEnabled) {
+		this.edgeResidualsDisplayEnabled = edgeResidualsDisplayEnabled;
+	}
+
 	public String getCentroidXs() {
 		return graphicDisplayMgmt.getCentroidXs();
 	}
@@ -286,6 +295,14 @@ public class VisualizationController implements Serializable {
 	}
 	
 	public void setEdgeHeights(String edgeHeights) {
+		
+	}
+	
+	public String getEdgeResiduals() {
+		return graphicDisplayMgmt.getEdgeResiduals();
+	}
+	
+	public void setEdgeResiduals(String edgeResiduals) {
 		
 	}
 	
@@ -430,6 +447,9 @@ public class VisualizationController implements Serializable {
 			case VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS:
 				edgeHeightsDisplayEnabled = true;
 				break;
+			case VisualizationDisplay.DISPLAY_TYPE_EDGE_RESIDUALS:
+				edgeResidualsDisplayEnabled = true;
+				break;
 			}
 		}
 	}
@@ -457,6 +477,11 @@ public class VisualizationController implements Serializable {
 	public void updateEdgeHeightsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ")");
+	}
+
+	public void updateEdgeResidualsDisplayListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	public void doPopulateCentroidDisplay(int iteration) {
@@ -540,6 +565,21 @@ public class VisualizationController implements Serializable {
 			
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);		
+
+	}
+	
+	public void doPopulateEdgeResidualsDisplay() {
+		
+		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
+
+		if (procedureOutput instanceof EdgeHeightsDisplayValues) {
+
+			EdgeHeightsDisplayValues ehdv = (EdgeHeightsDisplayValues) procedureOutput;
+			
+			graphicDisplayMgmt.setAndEncodeEdgeResidualsDisplayValues(ehdv);
+			
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_RESIDUALS);		
 
 	}
 

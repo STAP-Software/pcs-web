@@ -351,15 +351,10 @@ public class PhasingExecutor {
 		    		bbAnalyzeSequenceResult.getRowFlagOut(), 
 		    		bbAnalyzeSequenceResult.getStepCorr(),
 		    		bbAnalyzeSequenceResult.getResid());
-		    
-		    
+		      
 		    /**********************************************/
 			/*      Display Measured Edge Heights         */
 			/**********************************************/		
-			
-		    ///CALL DISPLAY_PISTON_ERROR - edge heights (stepCorr) + rowFlagOut (for missing edges)
-			// display # spots used in calc (good spots), max error, and rms error (i.e. edge hieights)
-
 		    if (procedureConfig.isAutoDisplayEdgeHeights()) {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
@@ -367,16 +362,13 @@ public class PhasingExecutor {
 		    /**********************************************/
 			/*      Display Residual Edge Heights         */
 			/**********************************************/		
-			
-		    ///CALL DISPLAY_PISTON_RESID - same display, different data (Resid) + rowFlagOut (for missing edges)
-			// display # spots used in calc (good spots), max error, and rms error 
-
 		    if (procedureConfig.isAutoDisplayResiduals()) {
-				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
+				graphicDisplayMgmt.displayEdgeResiduals(procedureOutput);
 			}
 
-		    
-			// display the pistonDeltas
+		    /**********************************************/
+			/*          Display Piston Deltas             */
+			/**********************************************/		
 			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}

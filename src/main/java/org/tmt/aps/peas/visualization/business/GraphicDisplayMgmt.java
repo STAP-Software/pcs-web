@@ -61,6 +61,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	String centroidNbrs;
 	String actuatorDeltas;
 	String edgeHeights;
+	String edgeResiduals;
 	String rowFlagIn;
 	String rowFlagOut;
 
@@ -156,6 +157,14 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setEdgeHeights(String edgeHeights) {
 		this.edgeHeights = edgeHeights;
+	}
+
+	public String getEdgeResiduals() {
+		return edgeResiduals;
+	}
+
+	public void setEdgeResiduals(String edgeResiduals) {
+		this.edgeResiduals = edgeResiduals;
 	}
 
 	public String getRowFlagIn() {
@@ -266,6 +275,17 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 		String edgeHeights = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr());
 		setEdgeHeights(edgeHeights);
+		
+		rowFlagIn = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagIn());
+		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
+
+	}
+
+	public void setAndEncodeEdgeResidualsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
+		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
+		
+		String resids = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getResid());
+		setEdgeResiduals(resids);
 		
 		rowFlagIn = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagIn());
 		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
@@ -402,6 +422,20 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayEdgeHeights"));
+		
+	}
+	
+	public void displayEdgeResiduals(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayEdgeResiduals"));
+
+		setAndEncodeEdgeResidualsDisplayValues(edgeHeightsDisplayValues);
+				
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_RESIDUALS);
+		
+		waitForReturnState();
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayEdgeResiduals"));
 		
 	}
 	

@@ -29,6 +29,7 @@ public class VisualizationDisplay extends UserPrompt {
 	public static final int DISPLAY_TYPE_AVG_FS_CENTROID_OFFSETS = 4;
 	public static final int DISPLAY_TYPE_ACTUATOR_DELTAS = 5;
 	public static final int DISPLAY_TYPE_EDGE_HEIGHTS = 6;
+	public static final int DISPLAY_TYPE_EDGE_RESIDUALS = 7;
 
 	
 	@Id
@@ -91,6 +92,10 @@ public class VisualizationDisplay extends UserPrompt {
 	
 	public boolean isDisplayTypeEdgeHeights() {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_EDGE_HEIGHTS;
+	}
+
+	public boolean isDisplayTypeEdgeResiduals() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_EDGE_RESIDUALS;
 	}
 	
 }

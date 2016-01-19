@@ -1,0 +1,378 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+
+var sideLen = 77
+var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
+           
+var resizing = false;   
+
+var edgeResidualsScope = {drawSegments: true, drawSegNums: true};
+
+
+function runDrawEdgeResiduals() {
+
+	var c = document.getElementById("edgeResidualsCanvas");
+	var ctx = c.getContext("2d");
+
+	ctx.translate(-25,-10);
+	ctx.scale(0.61, 0.61);
+
+	window.setTimeout("drawEdgeResiduals(true,true)", 10);
+	
+	$(edgeResidualsDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("edgeResidualsResizeHandler()", 1000);
+		}
+	})
+	
+}
+
+function edgeResidualsResizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("edgeResidualsDialog"); 
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableResidual = d.offsetResidual - 70;
+	var available = Math.min(availableWidth, availableResidual);
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("edgeResidualsCanvas");
+	c.width=available;
+	c.Residual=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	drawEdgeResiduals(edgeResidualsScope.drawSegments, edgeResidualsScope.drawSegNums);
+	
+	resizing = false;
+
+}
+
+
+function drawEdgeResiduals(drawSegments,drawSegNums) {
+    
+	edgeResidualsScope.drawSegNums = drawSegNums;
+	edgeResidualsScope.drawSegments = drawSegments;
+	
+	var c = document.getElementById("edgeResidualsCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,1000,1000);
+
+
+	// display coordinates - hex centers
+	var xField1 = document.getElementById('edgeResidualsForm:segCentDefXs').value;
+ 	var xHexCenterArray = xField1.split(','); 
+ 	
+	var yField1 = document.getElementById('edgeResidualsForm:segCentDefYs').value;
+ 	var yHexCenterArray = yField1.split(','); 
+ 	
+ 	// display coordinates - ideal centroid positions
+	var xField2 = document.getElementById('edgeResidualsForm:edgeXs').value;
+ 	var xEdgeArray = xField2.split(','); 
+ 	
+	var yField2 = document.getElementById('edgeResidualsForm:edgeYs').value;
+ 	var yEdgeArray = yField2.split(','); 
+   
+ 	// display coordinates - edge angles
+ 	var field3 = document.getElementById('edgeResidualsForm:edgeNormAngles').value;
+ 	var edgeNormAngles = field3.split(',');
+ 	
+ 	// edge Residuals
+ 	var field4 = document.getElementById('edgeResidualsForm:edgeResiduals').value;
+ 	var edgeResiduals = field4.split(',');
+ 	
+ 	var field5 = document.getElementById('edgeResidualsForm:rowFlagIn').value;
+ 	var rowFlagIn = field5.split(',');
+ 	
+ 	var field6 = document.getElementById('edgeResidualsForm:rowFlagOut').value;
+ 	var rowFlagOut = field6.split(',');
+ 	
+	var offsetScale = parseFloat(document.getElementById('edgeResidualsForm:scaleSlider').value);
+ 	 
+	// calculate max length of all offsets
+	var maxLen = document.getElementById('edgeResidualsForm:maxError').value;
+	
+	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
+	// the max length will then be the length of the hexRadius
+	var scaleFactor = hexRadius / maxLen;  
+	
+	for (var i = 0; i < xHexCenterArray.length; i++) {
+		
+		var x = parseFloat(xHexCenterArray[i])
+		var y = parseFloat(yHexCenterArray[i])
+								
+		drawHex(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
+	}
+	
+	
+	
+	for (var i = 0; i < 84; i++) {
+		
+		var a = sideLen * 3.0 / 4.0;
+		var b = sideLen * Math.sqrt(3.0) / 4.0;
+		// The x-coordinates are in units of 0.75a, where a is the hexagon side (eg, 900 mm).  The y-coordinates are in units of sqrt(3)/4 times a
+		
+		var centerX = 512;
+		var centerY = 512;
+		
+		var x = centerX + parseFloat(xEdgeArray[i]) * a;
+		var y = centerY + parseFloat(yEdgeArray[i]) * b;
+		
+				
+		// if rowFlagIn, rowFlagOut are 1, then draw a line, otherwise a circle
+		
+		if (rowFlagIn[i] == 0) {
+			// draw a circle with no interior
+			ctx.beginPath();
+			ctx.strokeStyle = 'black';
+			ctx.arc(x, y, 10, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = 'white';
+		    ctx.fill();
+			
+		} else if (rowFlagOut[i] == 0 ){
+			// draw a circle with black interior
+			ctx.beginPath();
+			ctx.strokeStyle = 'black';
+			ctx.arc(x, y, 10, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = 'black';
+		    ctx.fill();
+
+		} else {
+			// draw the edge Residual line
+		
+			var edgeResidual = (parseFloat(edgeResiduals[i]) * scaleFactor * offsetScale / 100.0)
+			
+			var edgeAngle = (parseFloat(edgeNormAngles[i])) * 2 * Math.PI / 360.0
+			
+			var dx = x + (Math.cos(edgeAngle) * edgeResidual)
+			var dy = y + (Math.sin(edgeAngle) * edgeResidual)
+					
+			ctx.beginPath();
+			ctx.strokeStyle = 'red';
+		    ctx.moveTo(x, y);
+		    ctx.lineTo(dx, dy);
+		    ctx.stroke();
+			
+		    
+			ctx.beginPath();
+			ctx.strokeStyle = 'black';
+			ctx.arc(x, y, 5, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = 'white';
+		    ctx.fill();
+		    
+		}
+
+	}
+	
+	// max len is the value assigned to a side in the key
+
+	// add the key
+	
+	ctx.beginPath();
+	ctx.strokeStyle = 'red';
+    ctx.moveTo(850, 950);
+    ctx.lineTo(850 + sideLen, 950);
+    ctx.stroke();
+   
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();
+    
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850 + sideLen, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();   
+    
+	ctx.fillStyle = 'black';
+	ctx.font="18px Arial";
+	
+	ctx.fillText((sideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " microns", 844, 940);
+	
+	
+	// add the legend
+	
+	var cl = document.getElementById("edgeResidualsLegendCanvas");
+	var ctxl = cl.getContext("2d");
+
+	// draw a circle with white interior
+	ctxl.beginPath();
+	ctxl.strokeStyle = 'black';
+	ctxl.arc(15, 60, 5, 0, 2*Math.PI);
+	ctxl.closePath();
+	ctxl.stroke();
+	ctxl.fillStyle = 'white';
+    ctxl.fill();
+	
+	// draw a circle with black interior
+	ctxl.beginPath();
+	ctxl.strokeStyle = 'black';
+	ctxl.arc(15, 100, 5, 0, 2*Math.PI);
+	ctxl.closePath();
+	ctxl.stroke();
+	ctxl.fillStyle = 'black';
+    ctxl.fill();
+
+	ctxl.fillStyle = 'grey';
+	ctxl.font="12px Arial";
+	
+	ctxl.fillText("Edge ignored due to tower", 35, 65);
+	ctxl.fillText("Measurement ignored", 35, 105);
+
+	ctxl.fillText("Line points from edge", 10, 150);
+	ctxl.fillText("to lower segment", 10, 165);
+	
+}
+
+function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
+	// draw a hexgon of side sideLen centered on position x, y
+	
+	var a = sideLen
+	var b = a * Math.sqrt(3) / 2;
+
+	// 0 is the left side of hex, b + a/2 is the x center
+	// 0 is the top of the hex, 
+	
+	
+	//       (a/2, 0)
+	//          ______________
+	//         /
+	//        /
+	//       /
+	//      /
+	//     /
+	//    (0,b)
+	
+	// the box is centered at a, b so we subtract these to get the center
+	
+	if (drawSegment) {
+		ctx.beginPath();
+		ctx.strokeStyle = '#888888';
+    	ctx.moveTo(x-a,y)	
+		ctx.lineTo(x-a/2,y-b)
+    	ctx.lineTo(x+a/2,y-b)
+    	ctx.lineTo(x+a,y)
+    	ctx.lineTo(x+a/2,y+b)
+    	ctx.lineTo(x-a/2,y+b)
+		ctx.closePath();
+		ctx.stroke();
+	
+		ctx.fillStyle = "#e8f0f8";
+		ctx.fill();
+	}
+	
+	if (drawSegNum) {
+		ctx.fillStyle = '#888888';
+		ctx.font="18px Arial";
+		ctx.fillText(number, x-a + b/2, y + b/2);
+	}
+}
+
+
+//]]>  
+</script>   
+
+
+		<p:dialog id="edgeResidualsDialog" header="Edge Residuals" widgetVar="edgeResidualsDisplayDialog" closable="false" >  
+     		<h:form id="edgeResidualsForm">
+
+    		<h:inputHidden id="edgeResiduals" value="#{visualizationController.edgeResiduals}" />
+    		<h:inputHidden id="maxError" value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" />
+    		<h:inputHidden id="rowFlagIn" value="#{visualizationController.rowFlagIn}" />
+    		<h:inputHidden id="rowFlagOut" value="#{visualizationController.rowFlagOut}" />
+
+     		<h:inputHidden id="edgeXs" value="#{visualizationController.edgeXs}" />
+			<h:inputHidden id="edgeYs" value="#{visualizationController.edgeYs}" />
+			
+			<h:inputHidden id="edgeNormAngles" value="#{visualizationController.edgeNormAngles}" />
+			
+     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentDefXs}" />
+			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentDefYs}" />
+			
+ 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
+    			
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+     		
+    		
+    		<canvas id="edgeResidualsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
+			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+				
+				 
+				<!-- residual edge stats -->
+				<p:spacer Residual="15"/><p:spacer Residual="15"/>
+				<h:outputLabel value="Number of good edges" />
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
+				<h:outputLabel value="Max residual error (microns)" />
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" style="position:relative; top:2px" >
+					<f:convertNumber pattern="#0.00" />
+				</h:outputText>
+				<h:outputLabel value="RSS residual edge error" />
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px" >
+					<f:convertNumber pattern="#0.00" />
+				</h:outputText>
+				 			
+				<p:spacer Residual="30"/><p:spacer Residual="30"/>
+				<h:outputLabel value="Show Segments" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateEdgeResidualsDisplayListener}" />
+    			</p:selectBooleanButton>
+				<p:spacer Residual="1"/><p:spacer Residual="1"/>
+				<h:outputLabel value="Show Segment Numberings" />
+     			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateEdgeResidualsDisplayListener}" />
+    			</p:selectBooleanButton>
+    			
+    			<p:spacer Residual="10"/><p:spacer Residual="10"/>
+    			
+    		</p:panelGrid>
+    		<p:panelGrid columns="1" style="margin-bottom: 10px; width:100%">
+  
+  				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
+        		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
+        		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
+            		<p:ajax event="slideEnd" listener="#{visualizationController.updateEdgeResidualsDisplayListener}" />
+        		</p:slider>
+    		</p:panelGrid>
+    		
+    		<canvas id="edgeResidualsLegendCanvas" width="200px" height="200px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		</p:panelGrid>    		
+    		
+    		
+    		</p:panelGrid>
+    		<br/>
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="edgeResidualsDisplayDialog.hide()" />
+			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="edgeResidualsDisplayDialog.hide()" />
+     		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>
