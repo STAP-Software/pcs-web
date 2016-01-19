@@ -221,17 +221,7 @@ public class PhasingExecutor {
 					procedureConfig.getPupilMask(), procedureConfig.getFilter());
 					
 			// TODO: verify correct units for phasingStepSize input... these will need to match the actuator step values
-			// TODO: log to database in procedure output
 			ColorStepResult colorStepResult = computationLibrary.colorStep(procedureConfig.getPhasingSteps(), procedureConfig.getPhasingStepSize());
-						
-			/// MAXSTEP = (ZPHASING_COARSE_STEPS - 1)/2.0
-		
-			// one filter, one integration time
-		
-			// User will choose Phasing 30, 300, 1000 and only one filter, int time.
-			// default number of steps - all = 11
-			// set of default int times depending on phasing test and/or filter.
-					
 						
 
  			/**********************************************/
@@ -257,7 +247,6 @@ public class PhasingExecutor {
 				/* Send ACS colorstep commands                */
 				/**********************************************/
 				// TODO: call in best place for efficiency
-				// TODO: add to procedureIterationOutput
 				ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
 						colorStepResult.getColorSteps()[i],
 						constantsCache.getPrimaryMirrorConstants().getnColor());
@@ -302,7 +291,6 @@ public class PhasingExecutor {
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 		    // TODO: send last colorstep to M1 (do not wait here) - at first we do, then later try async
-			// TODO: we could log this to procedureOutput rather than iteration, but that feels like a hack
 			ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
 					colorStepResult.getColorSteps()[procedureConfig.getPhasingSteps()],
 					constantsCache.getPrimaryMirrorConstants().getnColor());

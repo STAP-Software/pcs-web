@@ -221,42 +221,35 @@
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 
 
-							</p:panelGrid>
-
-							<p:panelGrid columns="2" 
-								styleClass="pcsFormNoBorder" style="width:300px"
-								columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.phasing}">
-
+								</p:panelGrid>
+	
+								<p:panelGrid columns="2" 
+									styleClass="pcsFormNoBorder" style="width:300px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.phasing}">
+	
 								<f:facet name="header">
                    					#{procedure.procedureType.procedureTypeName} 
                					</f:facet>
 
-<!--  
-
-
-		 *  In terms of row expanstion values I would think just
-		 *  -Number of good edges  (phasingStatsResult.goodEdgeCount)
-		 *  -RMS Piston error (fixPistonsResult.actRms)
-		 *  -RSS Edge error (phasingStatsResult.edgeErrorRss)
-		 *  -RSS edge residual error (phasingStatsResult.residualEdgeErrorRss)
-
-
-									<h:outputLabel value="Phasing Piston RMS (units??)" />
-									<h:outputText value="6.36" style="position:relative; top:2px"/>
+									<h:outputLabel value="RMS Piston Error (microns)" />
+									<h:outputText value="#{procedure.phasingProcedureOutput.fixPistonsResult.actRms}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
 	
-									<h:outputLabel value="Phasing Residuals (units??)" />
-									<h:outputText value="8.88" style="position:relative; top:2px"/>
+									<h:outputLabel value="RSS Edge Error (microns)" />
+									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
+
+									<h:outputLabel value="RSS Edge Residual Error (microns)" />
+									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.00" />
+									</h:outputText>
 	
 									<h:outputLabel value="Number of Phasing Edges" />
-									<h:outputText value="83" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
 	
-									<h:outputLabel value="RMS of M1 commands FM only (units??)" />
-									<h:outputText value="0" style="position:relative; top:2px"/>
-	
-									<h:outputLabel value="RMS of M1 commands no FM (units??)" />
-									<h:outputText value="0" style="position:relative; top:2px"/>
--->
-							</p:panelGrid>
+								</p:panelGrid>
 
 							</p:panelGrid>
 
