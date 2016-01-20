@@ -235,6 +235,8 @@ public class FitsFilename {
 		return buf.toString();
 		
 	}
+
+	
 	
 	public boolean isInSamePhasingSequence(FitsFilename candidate) {
 		return candidate.getTelescope() == getTelescope() &&	

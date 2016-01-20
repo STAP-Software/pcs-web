@@ -207,8 +207,7 @@ public class PhasingExecutor {
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			statusLogger.log("procedure.using_curr_frame");
-			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
-
+			
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			int readyCameraTime = 10;
@@ -260,8 +259,11 @@ public class PhasingExecutor {
 						colorStepResult.getColorSteps()[i],
 						constantsCache.getPrimaryMirrorConstants().getnColor());
 				
+				statusLogger.log("phasing.colorstep_cmds");
+				
 				// TODO: we need to be able to call asynchronously and wait for result.
 				acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				
 				
 				
 				/**********************************************/
