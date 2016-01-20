@@ -330,11 +330,11 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
 				<h:outputLabel value="Max residual error (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.00" />
+					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
 				<h:outputLabel value="RSS residual edge error" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.00" />
+					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
 				 			
 				<p:spacer Residual="30"/><p:spacer Residual="30"/>
