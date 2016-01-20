@@ -6,6 +6,7 @@ public class ProcedureDecisionLog {
 	private boolean m2CmdsSent;
 	
 	private int m1SnapNumberAfter = -1;
+	private int m1SnapNumberBefore = -1;
 
 	private boolean telescopeMoved;
 	
@@ -31,6 +32,14 @@ public class ProcedureDecisionLog {
 
 	public void setM1SnapNumberAfter(int m1SnapNumberAfter) {
 		this.m1SnapNumberAfter = m1SnapNumberAfter;
+	}
+
+	public int getM1SnapNumberBefore() {
+		return m1SnapNumberBefore;
+	}
+
+	public void setM1SnapNumberBefore(int m1SnapNumberBefore) {
+		this.m1SnapNumberBefore = m1SnapNumberBefore;
 	}
 
 	public boolean isTelescopeMoved() {

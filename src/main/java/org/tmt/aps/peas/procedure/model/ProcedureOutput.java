@@ -64,6 +64,10 @@ public class ProcedureOutput implements ProcedureOutputable {
 		return procedureDecisionLog.getM1SnapNumberAfter();
 	}
 
+	public int getM1SnapNumberBefore() {
+		return procedureDecisionLog.getM1SnapNumberBefore();
+	}
+
 	public String getM1SnapNumberAfterDisplayText() {
 		return getM1SnapNumberAfter() == -1 ? "None" : "" + getM1SnapNumberAfter();
 	}

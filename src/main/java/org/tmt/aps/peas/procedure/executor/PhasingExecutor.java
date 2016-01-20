@@ -225,9 +225,13 @@ public class PhasingExecutor {
 			/**********************************************/
 			/*           Set up colorsteps                */
 			/**********************************************/
-			// TODO: verify correct units for phasingStepSize input... these will need to match the actuator step values
 			ColorStepResult colorStepResult = computationLibrary.colorStep(procedureConfig.getPhasingSteps(), procedureConfig.getPhasingStepSize());
 						
+			
+			// take and store a snapshot
+			int snapNumBefore = acsMgmt.commandTakeSnap();
+			procedureOutput.getProcedureDecisionLog().setM1SnapNumberBefore(snapNumBefore);
+
 
  			/**********************************************/
 			/// send colorstep 1 to ACS prior to loop
@@ -456,17 +460,26 @@ public class PhasingExecutor {
 			
 		} catch (Throwable e) {
 			
+			// we are aborted, reset the request flag
+			procedureExecutionState.setAbortRequested(false);
+			
 			try {
 				/// attempt to put ACS state back to where it was when we began.
-				/// only do this if we were actually commanding ACS in the first place
-				restoreMirror();
 				
-				statusLogger.log("procedure.cph.abort_recovered");
+				if (procedure.getPhasingProcedureOutput().getM1SnapNumberBefore() != -1) {
+					
+					acsMgmt.commandLoadSnap(procedure.getPhasingProcedureOutput().getM1SnapNumberBefore());
 				
-				// put up a warning dialog with the non-recovered text
-			    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"));
+					statusLogger.log("procedure.cph.abort_recovered");
+					
+					// put up a warning dialog with the non-recovered text
+				    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"));
+			    
+				} 
 
 			} catch (Exception e1) {
+				
+				e1.printStackTrace();
 				
 			    statusLogger.log("procedure.cph.abort_not_recovered");
 
@@ -481,11 +494,6 @@ public class PhasingExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
-	
-	// TODO: RESTORE_MIRROR is a subroutine we need to have here
-	public void restoreMirror() throws Exception {
-		
-	}
 	
 
 	
