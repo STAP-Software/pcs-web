@@ -25,21 +25,6 @@ public class CalcDesiredActCommandsResult {
 
 	}
 
-	public CalcDesiredActCommandsResult(FixPistonsResult fixPistonsResult) {
-
-		this.pistonActs = new float[36][3];
-		this.desiredActDeltas = new float[36][3];
-
-		if (fixPistonsResult != null && fixPistonsResult.getActFixed() != null) {
-			for (int i=0; i<36; i++) {
-				this.desiredActDeltas[i][0] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3];  
-				this.desiredActDeltas[i][1] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 1];  
-				this.desiredActDeltas[i][2] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 2];  
-			}
-		}
-		this.desiredActDeltasRms = fixPistonsResult.getActRms();
-	}
-
 	public CalcDesiredActCommandsResult() {
 		
 		this.pistonActs = new float[36][3];

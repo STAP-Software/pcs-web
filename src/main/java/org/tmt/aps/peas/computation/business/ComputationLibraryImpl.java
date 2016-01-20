@@ -1474,6 +1474,30 @@ public class ComputationLibraryImpl {
 	}
 	
 	@Computation
+	public CalcDesiredActCommandsResult fixPistonsToDesiredActs(FixPistonsResult fixPistonsResult) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "fixPistonsToDesiredActs"));
+
+		float[][] pistonActs = new float[36][3];
+		float[][] desiredActDeltas = new float[36][3];
+
+		if (fixPistonsResult != null && fixPistonsResult.getActFixed() != null) {
+			for (int i=0; i<36; i++) {
+				desiredActDeltas[i][0] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3];  
+				desiredActDeltas[i][1] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 1];  
+				desiredActDeltas[i][2] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 2];  
+			}
+		}
+		float desiredActDeltasRms = Constants.MICRONS_TO_NM * fixPistonsResult.getActRms();
+
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "fixPistonsToDesiredActs"));
+
+		return new CalcDesiredActCommandsResult(pistonActs, 0.0f, desiredActDeltas, desiredActDeltasRms,  0.0f, 0.0f);
+	}
+	
+	@Computation
 	public PhasingStatsResult calculatePhasingStats(int[] rowFlagIn, int[] rowFlagOut, float[] stepCorr, float[] stepResid) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculatePhasingStats"));
@@ -1510,16 +1534,18 @@ public class ComputationLibraryImpl {
 	}
 	
 	@Computation
-	public ColorStepResult colorStep(int stepCount, float stepSize) throws Exception {
+	public ColorStepResult colorStep(int stepCount, float stepSizeMicrons) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "colorStep"));
 
 		JcolorStep jcolorStep = new JcolorStep();
 		RetVal retVal = new RetVal();
 
+		float stepSizeNm = stepSizeMicrons * Constants.MICRONS_TO_NM;
+		
 		float[][] colorSteps = new float[stepCount+1][3];
 		
-		Object[] result = jcolorStep.jcolorStep(retVal, stepCount, stepSize, colorSteps);
+		Object[] result = jcolorStep.jcolorStep(retVal, stepCount, stepSizeNm, colorSteps);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);

@@ -19,10 +19,12 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.cdi.Computation;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
@@ -220,6 +222,9 @@ public class PhasingExecutor {
 					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
 					procedureConfig.getPupilMask(), procedureConfig.getFilter());
 					
+			/**********************************************/
+			/*           Set up colorsteps                */
+			/**********************************************/
 			// TODO: verify correct units for phasingStepSize input... these will need to match the actuator step values
 			ColorStepResult colorStepResult = computationLibrary.colorStep(procedureConfig.getPhasingSteps(), procedureConfig.getPhasingStepSize());
 						
@@ -346,12 +351,17 @@ public class PhasingExecutor {
 		    /**********************************************/
 			/*          CalculatePhasingStats             */
 			/**********************************************/		
-		    PhasingStatsResult phasingStatsResult = computationLibrary.calculatePhasingStats(
+		    computationLibrary.calculatePhasingStats(
 		    		bbAnalyzeSequenceResult.getRowFlagIn(), 
 		    		bbAnalyzeSequenceResult.getRowFlagOut(), 
 		    		bbAnalyzeSequenceResult.getStepCorr(),
 		    		bbAnalyzeSequenceResult.getResid());
 		      
+		    /**********************************************/
+			/*       CalculateDesiredActCommands          */
+			/**********************************************/		
+		    computationLibrary.fixPistonsToDesiredActs(fixPistonsResult);
+
 		    /**********************************************/
 			/*      Display Measured Edge Heights         */
 			/**********************************************/		
@@ -410,7 +420,7 @@ public class PhasingExecutor {
 	
 				try {
 					// send out the commands
-					acsMgmt.commandActuatorDeltas(procedureOutput.getFixPistonsResult().getActFixed());
+					acsMgmt.commandActuatorDeltas(procedureOutput.getDesiredActDeltas());
 	
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");

@@ -14,7 +14,7 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 	BbAnalyzeSequenceResult bbAnalyzeSequenceResult;
 	FixPistonsResult fixPistonsResult;
 	PhasingStatsResult phasingStatsResult;
-	CalcDesiredActCommandsResult calcDesiredActCommandsResult = new CalcDesiredActCommandsResult();
+	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	ColorStepResult colorStepResult;
 	ColorStepToActuatorsResult colorStepToActuatorsResult;
 
@@ -32,7 +32,6 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 
 	public void setFixPistonsResult(FixPistonsResult fixPistonsResult) {
 		this.fixPistonsResult = fixPistonsResult;
-		calcDesiredActCommandsResult = new CalcDesiredActCommandsResult(fixPistonsResult);
 	}
 
 	public PhasingStatsResult getPhasingStatsResult() {
