@@ -8,16 +8,24 @@ public class BbAnalyzeSequenceResult {
 	int[] rowFlagIn;
 	int[] rowFlagOut;
 
+	int  constrainedSegmentCount;
+	float segmentPistonRms; 
+	
+	
+
+	
 	public BbAnalyzeSequenceResult() {
 		
 	}
 	
-	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut) {
+	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut, int constrainedSegmentCount, float segmentPistonRms) {
 		this.stepCorr = stepCorr;
 		this.actCalc = actCalc;
 		this.resid = resid;
 		this.rowFlagIn = rowFlagIn;
 		this.rowFlagOut = rowFlagOut;
+		this.constrainedSegmentCount = constrainedSegmentCount;
+		this.segmentPistonRms = segmentPistonRms;
 	}
 
 	public float[] getStepCorr() {
@@ -58,6 +66,22 @@ public class BbAnalyzeSequenceResult {
 
 	public void setRowFlagOut(int[] rowFlagOut) {
 		this.rowFlagOut = rowFlagOut;
+	}
+
+	public int getConstrainedSegmentCount() {
+		return constrainedSegmentCount;
+	}
+
+	public void setConstrainedSegmentCount(int constrainedSegmentCount) {
+		this.constrainedSegmentCount = constrainedSegmentCount;
+	}
+
+	public float getSegmentPistonRms() {
+		return segmentPistonRms;
+	}
+
+	public void setSegmentPistonRms(float segmentPistonRms) {
+		this.segmentPistonRms = segmentPistonRms;
 	}
 
 

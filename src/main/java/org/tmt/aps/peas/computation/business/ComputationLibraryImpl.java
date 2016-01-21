@@ -1425,8 +1425,10 @@ public class ComputationLibraryImpl {
 			throw new ComputationException("bbAnalyzeSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
-				
-		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut);
+		int  constrainedSegmentCount = (Integer)result[0];
+		float segmentPistonRms = (Float)result[1]; 
+
+		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut, constrainedSegmentCount, segmentPistonRms);
 
 
 		// End of code for findCent unit testing

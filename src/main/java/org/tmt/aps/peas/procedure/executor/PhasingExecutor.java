@@ -344,6 +344,13 @@ public class PhasingExecutor {
 		    		subimageDefList.useForAnalysis(), goodSpots);
 		
 		    
+		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
+		    	
+			    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", MessageGenerator.generateMessage("phasing.constrained_warning", 
+			    		bbAnalyzeSequenceResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments()));
+		    	
+		    }
+		    
 		    statusLogger.log("procedure.cph_calc_piston");
 		
 		    
