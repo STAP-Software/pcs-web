@@ -352,6 +352,7 @@ public class FrameMgmt {
 		procedureCcdFrame.setNewFrameFlg(false); // frame from file
 		procedureCcdFrame.setProcedureFrameNumber(frameNumber);
 		procedureCcdFrame.setProcedureIterationNumber(iteration);
+		procedureCcdFrame.setProcedure(procedure);
 		if (procedureType.isPhasing()) {
 			procedureCcdFrame.setProcedureIterationNumber(1); // FIXME: Normal Phasing implementation will require this be generalized
 			procedureCcdFrame.setPhasingStepNumber(iteration+1);
