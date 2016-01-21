@@ -362,7 +362,8 @@ public class JavaComputations {
 			sumOfSquares += (input[i] * useValue[i]) * (input[i] * useValue[i]);
 			count += useValue[i];
 		}
-		return (float)Math.sqrt(sumOfSquares/count);
+		
+		return (count == 0) ? 0.0f :(float)Math.sqrt(sumOfSquares/count);
 		
 	}
 	
