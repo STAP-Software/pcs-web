@@ -136,10 +136,15 @@ public class FrameMgmt {
 		saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
-		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
-		em.persist(ccdFrame);
+		//logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
+		//em.persist(ccdFrame);
 
-		associateCcdFrame(procedureCcdFrame);
+		//associateCcdFrame(procedureCcdFrame);
+		
+		// create the png
+		byte[] falseColorPng = loadPng(ccdFrame, true);
+		ccdFrame.setFalseColorPng(falseColorPng);
+
 	}
 
 	// manual Ccd frame save
@@ -326,9 +331,6 @@ public class FrameMgmt {
 			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 			
-			// generate filename and store into the FITS file
-			saveCcdFrame(ccdFrame, telescope.getTelescopeId(), instrument.getInstrumentId(), 
-					procedureType.getProcedureTypeCd(), procedureNumber);			
 		}
 
 		return ccdFrame;
@@ -354,6 +356,12 @@ public class FrameMgmt {
 			procedureCcdFrame.setProcedureIterationNumber(1); // FIXME: Normal Phasing implementation will require this be generalized
 			procedureCcdFrame.setPhasingStepNumber(iteration+1);
 		}
+		
+		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			// generate filename and store into the FITS file
+			saveCcdFrame(procedureCcdFrame);			
+		}
+
 
 		// add it to the procedure
 		procedure.addProcedureCcdFrame(procedureCcdFrame);
