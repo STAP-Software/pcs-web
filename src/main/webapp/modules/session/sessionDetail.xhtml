@@ -231,16 +231,11 @@
                    					#{procedure.procedureType.procedureTypeName} 
                					</f:facet>
 
-									<h:outputLabel value="RMS Piston Error (microns)" />
-									<h:outputText value="#{procedure.phasingProcedureOutput.fixPistonsResult.actRms}" style="position:relative; top:2px">
+									<h:outputLabel value="Segment Piston RMS (microns)" />
+									<h:outputText value="#{procedure.phasingProcedureOutput.bbAnalyzeSequenceResult.segmentPistonRms}" style="position:relative; top:2px">
 										<f:convertNumber pattern="#0.00" />
 									</h:outputText>
 	
-									<h:outputLabel value="RSS Edge Error (microns)" />
-									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.00" />
-									</h:outputText>
-
 									<h:outputLabel value="RSS Edge Residual Error (microns)" />
 									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
 										<f:convertNumber pattern="#0.00" />
@@ -248,6 +243,9 @@
 	
 									<h:outputLabel value="Number of Phasing Edges" />
 									<h:outputText value="#{procedure.phasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
+
+									<h:outputLabel value="M1 Commands Sent" />
+									<h:outputText value="#{procedure.phasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 	
 								</p:panelGrid>
 

@@ -194,7 +194,7 @@ public class Utils {
 			case Constant.DATA_TYPE_FLOAT:
 				Float floatArray[] = FloatListEncoder.decodeList(value).toArray(new Float[] {});
 				for (int i = 0; i < floatArray.length; i++) {
-					buf.append((i + 1) + "&nbsp;&nbsp;&nbsp;" + floatArray[i] + "\n");
+					buf.append((i + 1) + "&nbsp;&nbsp;&nbsp;" + MessageFormat.format(format, floatArray[i]) + "\n");
 				}
 				break;
 

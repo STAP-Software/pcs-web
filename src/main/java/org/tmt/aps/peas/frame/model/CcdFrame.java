@@ -59,6 +59,7 @@ public class CcdFrame {
 	private float telescopeAz;
 	private float telescopeEl;
 
+	private float intTime;
 	
 	@Transient
 	protected int noOfAxes;
@@ -219,6 +220,14 @@ public class CcdFrame {
 		telescopeAzEl[1] = telescopeEl;
 
 		return telescopeAzEl;
+	}
+
+	public float getIntTime() {
+		return intTime;
+	}
+
+	public void setIntTime(float intTime) {
+		this.intTime = intTime;
 	}
 
 	public void setCorrectedFrame(float[][] correctedFrame) {

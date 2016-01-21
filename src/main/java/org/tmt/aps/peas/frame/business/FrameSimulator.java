@@ -60,6 +60,7 @@ public class FrameSimulator {
 		ccdFrame.setCameraState(cameraState);
 		Instrument instrument = physicalModel.getInstrument();
 		ccdFrame.setInstrumentId(instrument.getInstrumentId());
+		ccdFrame.setIntTime(0.0f);
 
 		
 		return ccdFrame;

@@ -280,7 +280,8 @@ public class FrameMgmt {
 			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
 			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
-
+			
+			ccdFrame.setIntTime((float)exposureTime);
 
 		} else {
 		
@@ -331,6 +332,8 @@ public class FrameMgmt {
 			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 			
+			ccdFrame.setIntTime((float)exposureTime);
+
 		}
 
 		return ccdFrame;
