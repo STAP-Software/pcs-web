@@ -306,11 +306,11 @@ public class VisualizationController implements Serializable {
 		
 	}
 	
-	public String getRowFlagIn() {
-		return graphicDisplayMgmt.getRowFlagIn();
+	public String getUseForAnalysis() {
+		return graphicDisplayMgmt.getUseForAnalysis();
 	}
 	
-	public void setRowFlagIn(String rowFlagIn) {
+	public void setUseForAnalysis(String useForAnalysis) {
 		
 	}
 	

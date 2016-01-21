@@ -91,8 +91,8 @@ function drawEdgeHeights(drawSegments,drawSegNums) {
  	var field4 = document.getElementById('edgeHeightsForm:edgeHeights').value;
  	var edgeHeights = field4.split(',');
  	
- 	var field5 = document.getElementById('edgeHeightsForm:rowFlagIn').value;
- 	var rowFlagIn = field5.split(',');
+ 	var field5 = document.getElementById('edgeHeightsForm:useForAnalysis').value;
+ 	var useForAnalysis = field5.split(',');
  	
  	var field6 = document.getElementById('edgeHeightsForm:rowFlagOut').value;
  	var rowFlagOut = field6.split(',');
@@ -111,7 +111,7 @@ function drawEdgeHeights(drawSegments,drawSegNums) {
 		var x = parseFloat(xHexCenterArray[i])
 		var y = parseFloat(yHexCenterArray[i])
 								
-		drawHex(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
+		drawHexCentered(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
 	}
 	
 	
@@ -129,9 +129,9 @@ function drawEdgeHeights(drawSegments,drawSegNums) {
 		var y = centerY + parseFloat(yEdgeArray[i]) * b;
 		
 				
-		// if rowFlagIn, rowFlagOut are 1, then draw a line, otherwise a circle
+		// if useForAnalysis, rowFlagOut are 1, then draw a line, otherwise a circle
 		
-		if (rowFlagIn[i] == 0) {
+		if (useForAnalysis[i] == 0) {
 			// draw a circle with no interior
 			ctx.beginPath();
 			ctx.strokeStyle = 'black';
@@ -239,7 +239,7 @@ function drawEdgeHeights(drawSegments,drawSegNums) {
 	ctxl.fillStyle = 'grey';
 	ctxl.font="12px Arial";
 	
-	ctxl.fillText("Edge ignored due to tower", 35, 65);
+	ctxl.fillText("Pre-excluded edges", 35, 65);
 	ctxl.fillText("Measurement ignored", 35, 105);
 
 	ctxl.fillText("Line points from edge", 10, 150);
@@ -247,7 +247,7 @@ function drawEdgeHeights(drawSegments,drawSegNums) {
 	
 }
 
-function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
+function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 	// draw a hexgon of side sideLen centered on position x, y
 	
 	var a = sideLen
@@ -287,7 +287,8 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 	if (drawSegNum) {
 		ctx.fillStyle = '#888888';
 		ctx.font="18px Arial";
-		ctx.fillText(number, x-a + b/2, y + b/2);
+		var offsetX = (number < 10) ? x - 5 : x - 10;
+		ctx.fillText(number, offsetX, y + 10);
 	}
 }
 
@@ -301,7 +302,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 
     		<h:inputHidden id="edgeHeights" value="#{visualizationController.edgeHeights}" />
     		<h:inputHidden id="maxError" value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" />
-    		<h:inputHidden id="rowFlagIn" value="#{visualizationController.rowFlagIn}" />
+    		<h:inputHidden id="useForAnalysis" value="#{visualizationController.useForAnalysis}" />
     		<h:inputHidden id="rowFlagOut" value="#{visualizationController.rowFlagOut}" />
 
      		<h:inputHidden id="edgeXs" value="#{visualizationController.edgeXs}" />
@@ -332,7 +333,7 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
-				<h:outputLabel value="RSS edge error" />
+				<h:outputLabel value="RSS edge error (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>

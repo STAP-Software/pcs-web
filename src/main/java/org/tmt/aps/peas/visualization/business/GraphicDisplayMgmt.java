@@ -10,6 +10,7 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
+import javax.ejb.EJB;
 import javax.ejb.Lock;
 import javax.ejb.LockType;
 import javax.ejb.Singleton;
@@ -22,6 +23,10 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
@@ -36,6 +41,11 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
+	@EJB
+	SubimageDefCache subimageDefCache;
+	@EJB
+	ConstantsCache constantsCache;
+	
 	private VisualizationDisplay pendingDisplay;
 	private Integer returnState;
 	private int waitingForSecs;
@@ -62,7 +72,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	String actuatorDeltas;
 	String edgeHeights;
 	String edgeResiduals;
-	String rowFlagIn;
+	String useForAnalysis;
 	String rowFlagOut;
 
 
@@ -167,12 +177,12 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.edgeResiduals = edgeResiduals;
 	}
 
-	public String getRowFlagIn() {
-		return rowFlagIn;
+	public String getUseForAnalysis() {
+		return useForAnalysis;
 	}
 
-	public void setRowFlagIn(String rowFlagIn) {
-		this.rowFlagIn = rowFlagIn;
+	public void setUseForAnalysis(String useForAnalysis) {
+		this.useForAnalysis = useForAnalysis;
 	}
 
 	public String getRowFlagOut() {
@@ -276,7 +286,17 @@ public class GraphicDisplayMgmt implements Serializable {
 		String edgeHeights = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr());
 		setEdgeHeights(edgeHeights);
 		
-		rowFlagIn = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagIn());
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( PupilMaskType.PUPIL_MASK_TYPE_ID_160);
+		
+		int numEdges = edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr().length;
+		int numSegments = constantsCache.getTelescopeConstants().getNumberOfSegments();
+		int[] useEdgeForAnalysis = new int[numEdges];
+		for (int i=0; i<numEdges; i++) {
+			useEdgeForAnalysis[i] = subimageDefList.useForAnalysis()[i+numSegments];
+		}
+
+		
+		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
 		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
 
 	}
@@ -287,7 +307,16 @@ public class GraphicDisplayMgmt implements Serializable {
 		String resids = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getResid());
 		setEdgeResiduals(resids);
 		
-		rowFlagIn = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagIn());
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( PupilMaskType.PUPIL_MASK_TYPE_ID_160);
+		
+		int numEdges = edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getResid().length;
+		int numSegments = constantsCache.getTelescopeConstants().getNumberOfSegments();
+		int[] useEdgeForAnalysis = new int[numEdges];
+		for (int i=0; i<numEdges; i++) {
+			useEdgeForAnalysis[i] = subimageDefList.useForAnalysis()[i+numSegments];
+		}
+
+		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
 		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
 
 	}
