@@ -357,14 +357,15 @@ public class FrameMgmt {
 			procedureCcdFrame.setPhasingStepNumber(iteration+1);
 		}
 		
+		// add it to the procedure
+		procedure.addProcedureCcdFrame(procedureCcdFrame);
+
 		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			// generate filename and store into the FITS file
 			saveCcdFrame(procedureCcdFrame);			
 		}
 
 
-		// add it to the procedure
-		procedure.addProcedureCcdFrame(procedureCcdFrame);
 
 		return procedureCcdFrame;
 	}
