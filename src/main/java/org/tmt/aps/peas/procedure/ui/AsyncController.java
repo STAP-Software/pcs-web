@@ -133,8 +133,17 @@ public class AsyncController implements Serializable {
 	}
 	
 	private void checkVisualizationDisplays() {
+		
+		if (getAbortRequested()) {
+			// just in case a new display got called after an abort, we don't want to display it
+			doCloseGraphicsDisplay();
+			graphicDisplayMgmt.setPendingDisplay(null);
+		}
+		
 		// ask graphic display manager for any pending displays
 		VisualizationDisplay visualizationDisplay = graphicDisplayMgmt.getPendingDisplay();
+
+		
 		if (visualizationDisplay != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
 			
