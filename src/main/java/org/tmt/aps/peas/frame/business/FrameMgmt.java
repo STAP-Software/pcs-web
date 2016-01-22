@@ -41,6 +41,7 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -454,8 +455,8 @@ public class FrameMgmt {
 	public CcdFrame loadFitsFrame(Fits fitsFile, String fitsFilename) throws Exception {
 
 		BasicHDU[] bhdus = fitsFile.read();
-		CcdFrame fb = new CcdFrame();
-		fb.setFitsFilename(fitsFilename);
+		CcdFrame ccdFrame = new CcdFrame();
+		ccdFrame.setFitsFilename(fitsFilename);
 
 		if (bhdus != null) {
 
@@ -483,13 +484,13 @@ public class FrameMgmt {
 
 				int bpix = (int) imhdu.getBitPix();
 
-				fb.setBitPix(bpix);
+				ccdFrame.setBitPix(bpix);
 
-				fb.setNoOfAxes(imhdu.getHeader().getIntValue("NAXIS"));
+				ccdFrame.setNoOfAxes(imhdu.getHeader().getIntValue("NAXIS"));
 
-				fb.setAxes1(axes[1]);
+				ccdFrame.setAxes1(axes[1]);
 
-				fb.setAxes2(axes[0]);
+				ccdFrame.setAxes2(axes[0]);
 
 				short[][] rawFrame = new short[shortArray[0].length][shortArray.length];
 
@@ -499,7 +500,30 @@ public class FrameMgmt {
 					}
 				}
 
-				fb.setRawFrame(rawFrame);
+				ccdFrame.setRawFrame(rawFrame);
+				
+				// get pupilMask
+				String mask = imhdu.getHeader().getStringValue("MASK");
+				
+				// TODO: we need metadata store that we can access for pupilmasktype so that Cd to MaskType mapping can be accessed.
+				// for now, hardcode it
+				
+				PupilMaskType headerPupilMaskType = null;
+				if (mask.equals("PT") || mask.equals("036")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+				} else if (mask.equals("FS") || mask.equals("508")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_508);
+				} else if (mask.equals("PH") || mask.equals("CPH") || mask.equals("160")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_160);
+				} else if (mask.equals("UFS")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_UFS);
+				} else {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS);
+				}
+				
+				ccdFrame.setHeaderPupilMaskType(headerPupilMaskType);
+				
+				System.out.println("MASK = " + mask);
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
@@ -509,7 +533,7 @@ public class FrameMgmt {
 			}
 
 		}
-		return fb;
+		return ccdFrame;
 	}
 
 	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {

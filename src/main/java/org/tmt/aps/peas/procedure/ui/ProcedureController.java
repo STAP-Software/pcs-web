@@ -404,8 +404,22 @@ public class ProcedureController implements Serializable {
 				CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
 	
 				// set the frame source stored with the file
-				procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(loadedFitsFile.getFrameLightSource());
+				ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+				procedureConfig.setLightSource(loadedFitsFile.getFrameLightSource());
 	
+				 
+				// set the mask type stored with the file
+				if (procedure.getProcedureType().isCreateRefMap()) {
+					procedureConfig.setPupilMaskType(loadedFitsFile.getHeaderPupilMaskType());
+					
+					// get the default mask, if it is installed on the wheel
+					PupilMask defaultMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedureConfig.getPupilMaskType().getPupilMaskTypeId(),
+							physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+			
+					procedureConfig.setPupilMask(defaultMask);
+
+				}
+				
 				// if a png file for display exists, read it in. Otherwise create it.
 				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 	

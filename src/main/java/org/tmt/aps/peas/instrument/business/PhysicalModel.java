@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.instrument.business;
 
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
@@ -13,7 +15,9 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
@@ -34,6 +38,10 @@ public class PhysicalModel {
 	private Instrument instrument;	
 	private Telescope telescope;
 
+	// metadata
+	private List<PupilMaskType> pupilMaskTypeList;
+	private List<FilterType> filterTypeList;
+
 	@PostConstruct
 	public void init() throws Exception {
 		
@@ -45,6 +53,9 @@ public class PhysicalModel {
 		instrument = cameraDefMgmt.findInstrument(instrumentId);	
 		Long telescopeId = new Long(peasProperties.getProp("org.tmt.aps.peas.telescopeId"));
 		telescope = telescopeMgmt.findTelescope(telescopeId);	
+		
+		filterTypeList = cameraDefMgmt.findAllFilterTypes();
+		pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
 	}
 
 	public Instrument getInstrument() {
@@ -63,7 +74,14 @@ public class PhysicalModel {
 		this.telescope = telescope;
 	}
 
-
+	public PupilMaskType getPupilMaskTypeById(Long pupilMaskTypeId) {
+		for (PupilMaskType pupilMaskType : pupilMaskTypeList) {
+			if (pupilMaskType.getPupilMaskTypeId().equals(pupilMaskTypeId)) {
+				return pupilMaskType;
+			}
+		}
+		return null;
+	}
 
 
 	

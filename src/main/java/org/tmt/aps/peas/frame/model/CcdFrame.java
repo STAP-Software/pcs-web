@@ -7,7 +7,6 @@ package org.tmt.aps.peas.frame.model;
 
 import java.util.Date;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -25,6 +24,7 @@ import javax.persistence.Transient;
 
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
 @Table(name = "CcdFrame")
@@ -272,4 +272,16 @@ public class CcdFrame {
 		return (cameraState.getRefBeamPos() > 0) ? ProcedureConfig.LIGHT_SOURCE_LED : ProcedureConfig.LIGHT_SOURCE_STAR;
 	}
 
+	@Transient
+	PupilMaskType headerPupilMaskType;
+
+	public PupilMaskType getHeaderPupilMaskType() {
+		return headerPupilMaskType;
+	}
+
+	public void setHeaderPupilMaskType(PupilMaskType headerPupilMaskType) {
+		this.headerPupilMaskType = headerPupilMaskType;
+	}
+	
+	
 }

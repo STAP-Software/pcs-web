@@ -174,7 +174,7 @@ public class CameraDefMgmt {
 		}
 
 	}
-
+	
 	public Filter getFilterByFilterTypeAndWheel(Long filterTypeId, Long filterWheelId) {
 		// get the pupil mask of the defined type that is currently on the wheel
 		try {
