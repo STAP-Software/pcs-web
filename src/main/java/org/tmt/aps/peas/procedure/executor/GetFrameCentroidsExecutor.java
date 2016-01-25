@@ -349,6 +349,11 @@ public class GetFrameCentroidsExecutor {
 							
 				frameDisplayMgmt.displayMarkedFrame();
 				
+				if (procedureConfig.isAutoDisplayCentroids()) {
+					graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
+				}
+
+				
 				// display warning if subimageIntensityThreshold is not reached
 				if (centroidMap.getMedianPeakIntensity() < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
 						procedureConfig.isAutoDisplaySubimageIntensityWarning()) {
