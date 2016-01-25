@@ -37,6 +37,7 @@ public class FindCentConfig {
 	private int imargin;
 	private int ngauss;
 	private int itermax;
+	private float subimageIntensityThreshold;
 
 	
 	public FindCentConfig() {
@@ -94,6 +95,14 @@ public class FindCentConfig {
 
 	public void setItermax(int itermax) {
 		this.itermax = itermax;
+	}
+
+	public float getSubimageIntensityThreshold() {
+		return subimageIntensityThreshold;
+	}
+
+	public void setSubimageIntensityThreshold(float subimageIntensityThreshold) {
+		this.subimageIntensityThreshold = subimageIntensityThreshold;
 	}
 
 	public String toString() {

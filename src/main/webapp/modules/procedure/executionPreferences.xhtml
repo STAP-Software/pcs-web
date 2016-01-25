@@ -52,6 +52,8 @@
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<h:outputLabel value="Auto Display Residuals" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<h:outputLabel value="Display Subimage Intensity Warning" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplaySubimageIntensityWarning}" />
 
 				</p:panelGrid>
 

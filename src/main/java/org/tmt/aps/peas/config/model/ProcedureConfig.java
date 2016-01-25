@@ -91,6 +91,7 @@ public class ProcedureConfig {
 	private boolean autoDisplayPistons;
 	private boolean autoDisplayEdgeHeights;
 	private boolean autoDisplayResiduals;
+	private boolean autoDisplaySubimageIntensityWarning;
 	
 	boolean removeBadPixels;
 	
@@ -398,6 +399,14 @@ public class ProcedureConfig {
 
 	public void setAutoDisplayResiduals(boolean autoDisplayResiduals) {
 		this.autoDisplayResiduals = autoDisplayResiduals;
+	}
+
+	public boolean isAutoDisplaySubimageIntensityWarning() {
+		return autoDisplaySubimageIntensityWarning;
+	}
+
+	public void setAutoDisplaySubimageIntensityWarning(boolean autoDisplaySubimageIntensityWarning) {
+		this.autoDisplaySubimageIntensityWarning = autoDisplaySubimageIntensityWarning;
 	}
 
 	public boolean isRemoveBadPixels() {

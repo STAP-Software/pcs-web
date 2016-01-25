@@ -349,6 +349,13 @@ public class GetFrameCentroidsExecutor {
 							
 				frameDisplayMgmt.displayMarkedFrame();
 				
+				// display warning if subimageIntensityThreshold is not reached
+				if (centroidMap.getMedianPeakIntensity() < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
+						procedureConfig.isAutoDisplaySubimageIntensityWarning()) {
+					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_intensity_warning", centroidMap.getMedianPeakIntensity(), 
+							procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold());
+					userPromptMgmt.displayInfoDialog("Subimage Intensity Warning", warningMessage);
+				}
 				// test for fracFilledThresh failed because of findCent			
 				int expectedSpotCount = procedure.getProcedureType().isCreateRefMap() ? 
 						procedureConfig.getPupilMask().getPupilMaskType().getNumSpots() :

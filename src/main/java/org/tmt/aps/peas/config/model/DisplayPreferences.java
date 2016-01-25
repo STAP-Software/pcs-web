@@ -10,8 +10,7 @@ public class DisplayPreferences {
 	private boolean autoDisplayCentroids;
 	private boolean autoDisplayCentroidOffsets;
 	private boolean autoDisplayAvgCentroidOffsets;
-	private boolean autoDisplayActuatorDeltas;
-	private boolean autoDisplayProcedureDataLog;
+	private boolean autoDisplayActuatorDeltas;;
 
 	public boolean isAutoDisplayCentroids() {
 		return autoDisplayCentroids;
@@ -45,12 +44,5 @@ public class DisplayPreferences {
 		this.autoDisplayActuatorDeltas = autoDisplayActuatorDeltas;
 	}
 
-	public boolean isAutoDisplayProcedureDataLog() {
-		return autoDisplayProcedureDataLog;
-	}
-
-	public void setAutoDisplayProcedureDataLog(boolean autoDisplayProcedureDataLog) {
-		this.autoDisplayProcedureDataLog = autoDisplayProcedureDataLog;
-	}
 
 }
