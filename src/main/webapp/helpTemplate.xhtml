@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:p="http://primefaces.org/ui">
+
+<f:view contentType="text/html">
+	<h:head>
+		<f:facet name="first">
+			<meta http-equiv="X-UA-Compatible" content="EmulateIE8" />
+			<meta content='text/html; charset=UTF-8' http-equiv="Content-Type" />
+			<title>Phasing Camera Help Pages</title>
+		</f:facet>
+  
+		<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/peas.css" />
+
+<style type="text/css">
+
+#svgbasics { width: 700px; height: 700px; border: 1px solid #484; }
+</style>
+
+<h:outputScript library="primefaces" name="jquery/jquery.js"/>
+<h:outputScript library="js" name="jquery-1.7.2.js" />
+    
+	</h:head>
+
+
+	<h:body>
+		<!--  workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF -->
+		<f:event type="javax.faces.event.PreRenderViewEvent"
+			listener="#{applicationScopeBean.preRenderView}" />
+
+
+
+		<p:layout fullPage="true">
+
+			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
+					
+				<h:form id="topForm">
+				<h:panelGroup style="float:left">
+
+				<h:outputText value="Phasing Camera System Help Pages" style="position: relative; top:14px; margin:40px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				
+				</h:panelGroup>
+				</h:form>
+
+			</p:layoutUnit>
+
+
+			<p:layoutUnit id="center" position="center">
+
+				<ui:insert name="content" />
+
+			</p:layoutUnit>
+
+		</p:layout>
+
+	</h:body>
+
+</f:view>
+</html>

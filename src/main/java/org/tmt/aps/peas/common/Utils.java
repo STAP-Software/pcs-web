@@ -245,13 +245,23 @@ public class Utils {
 			case Constant.DATA_TYPE_FLOAT:
 				Float floatArray[] = FloatListEncoder.decodeList(value).toArray(new Float[] {});
 
+				
+				int dim1 = fieldDescriptor.getDimension1();
+				int dim2 = fieldDescriptor.getDimension2();
+				if (fieldDescriptor.getDimension1()*fieldDescriptor.getDimension2() != floatArray.length) {
+					// a hack for the case where # of elements is less than field descriptor dim1 * dim2
+					// in this case, dim1 is replaced with actual value, given dim2 is constant (which will work for ColorSteps)
+					dim1 = floatArray.length / dim2;
+				}
+				
+				
 				// flat array now needs to be read into 2-d array
 				int fk = 0;
-				for (int fi = 0; fi < fieldDescriptor.getDimension1(); fi++) {
+				for (int fi = 0; fi < dim1; fi++) {
 					buf.append("<tr>");
 					buf.append("<td>" + (fi + 1) + "</td>");
 
-					for (int fj = 0; fj < fieldDescriptor.getDimension2(); fj++) {
+					for (int fj = 0; fj < dim2; fj++) {
 						
 						String sresult =  MessageFormat.format(format, floatArray[fk++].floatValue());
 						if (sresult.contains("E") && !sresult.contains("E-")) { //don't blast a negative sign

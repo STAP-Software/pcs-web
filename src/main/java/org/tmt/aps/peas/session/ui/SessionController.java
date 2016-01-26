@@ -194,6 +194,9 @@ public class SessionController implements Serializable {
 		this.password = password;
 	}
 
+	public String getHelpUrl() throws Exception {
+		return peasProperties.getProp("org.tmt.aps.peas.helpUrl");
+	}
 
 	public ExtInfConnectConfig getExtInfConnectConfig() {
 		return extInfConfigState.getExtInfConnectConfig();

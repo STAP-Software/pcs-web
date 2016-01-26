@@ -495,12 +495,22 @@ public class ProcedureOutputMgmt {
 				case Constant.DATA_TYPE_FLOAT:
 					Float floatArray[] = FloatListEncoder.decodeList(value).toArray(new Float[] {});
 
-					float float2dArray[][] = new float[fieldDescriptor.getDimension1()][fieldDescriptor.getDimension2()];
+					
+					int dim1 = fieldDescriptor.getDimension1();
+					int dim2 = fieldDescriptor.getDimension2();
+					if (fieldDescriptor.getDimension1()*fieldDescriptor.getDimension2() != floatArray.length) {
+						// a hack for the case where # of elements is less than field descriptor dim1 * dim2
+						// in this case, dim1 is replaced with actual value, given dim2 is constant (which will work for ColorSteps)
+						dim1 = floatArray.length / dim2;
+					}
+					
+					
+					float float2dArray[][] = new float[dim1][dim2];
 
 					// flat array now needs to be read into 2-d array
 					int fk = 0;
-					for (int fi = 0; fi < fieldDescriptor.getDimension1(); fi++) {
-						for (int fj = 0; fj < fieldDescriptor.getDimension2(); fj++) {
+					for (int fi = 0; fi < dim1; fi++) {
+						for (int fj = 0; fj < dim2; fj++) {
 							float2dArray[fi][fj] = floatArray[fk++].floatValue();
 						}
 					}

@@ -3,6 +3,7 @@
   
 			<h:form id="menuForm">
 			
+				<h:inputHidden id="helpUrl" value="#{sessionController.helpUrl}" />
 			
 				<p:menubar>
 				
@@ -84,8 +85,7 @@
 
 				 	<p:submenu label="Help" icon="ui-icon-help">
 						<p:menuitem value="About..."  onclick="helpAboutDialog.show();" />
-						<p:menuitem value="Page Help"  onclick="helpDialog.show();" />
-						<p:menuitem value="Documentation"  action="#{helpController.doViewDocumentation}" />
+						<p:menuitem value="Documentation"  onclick="openHelpWindow();" />
 					</p:submenu>
 					
 					<f:facet name="options">            			
@@ -103,4 +103,25 @@
 			</h:form>
 			
 			
+			
+<script>
+
+//<![CDATA[
+    		
+    
+       
+	function openHelpWindow() {
+		var helpUrl = document.getElementById('menuForm:helpUrl').value;
+
+		window.open(helpUrl, 'Help', 'dependent=yes, menubar=no, toolbar=no'); 
+		return false;
+
+	}
+	
+//]]> 
+	
+</script>
+			
 </ui:composition>
+
+
