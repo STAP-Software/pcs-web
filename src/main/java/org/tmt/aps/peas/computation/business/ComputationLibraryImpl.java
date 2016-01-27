@@ -1354,8 +1354,9 @@ public class ComputationLibraryImpl {
 		int[] foundEdgeCentroids = Arrays.copyOfRange(foundCentroids, numberOfSegments, numberOfSegments+edgeCount);
 
 		float[] coherenceArray = new float[edgeCount];
+		float[] bestCorrelationIndex = new float[edgeCount];
 		
-		Object[] result = jbbAnalyzeFrame.jbbAnalyzeFrame(retVal, frame, centroidsX, centroidsY, foundEdgeCentroids, edgeAngle, templateArray, coherenceArray);
+		Object[] result = jbbAnalyzeFrame.jbbAnalyzeFrame(retVal, frame, centroidsX, centroidsY, foundEdgeCentroids, edgeAngle, templateArray, coherenceArray, bestCorrelationIndex);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1364,7 +1365,7 @@ public class ComputationLibraryImpl {
 		}
 
 				
-		BbAnalyzeFrameResult bbAnalyzeFrameResult = new BbAnalyzeFrameResult(coherenceArray);
+		BbAnalyzeFrameResult bbAnalyzeFrameResult = new BbAnalyzeFrameResult(coherenceArray, bestCorrelationIndex);
 
 
 		// End of code for findCent unit testing

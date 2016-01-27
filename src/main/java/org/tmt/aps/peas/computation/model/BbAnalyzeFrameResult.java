@@ -3,13 +3,15 @@ package org.tmt.aps.peas.computation.model;
 public class BbAnalyzeFrameResult {
 
 	private float[] coherenceArray;
+	private float[] bestCorrelationIndex;
 
 	public BbAnalyzeFrameResult() {
 		
 	}
 	
-	public BbAnalyzeFrameResult(float[] coherenceArray) {
+	public BbAnalyzeFrameResult(float[] coherenceArray, float[] bestCorrelationIndex) {
 		this.coherenceArray = coherenceArray;
+		this.bestCorrelationIndex = bestCorrelationIndex;
 	}
 
 	public float[] getCoherenceArray() {
@@ -20,6 +22,15 @@ public class BbAnalyzeFrameResult {
 		this.coherenceArray = coherenceArray;
 	}
 
+	public float[] getBestCorrelationIndex() {
+		return bestCorrelationIndex;
+	}
+
+	public void setBestCorrelationIndex(float[] bestCorrelationIndex) {
+		this.bestCorrelationIndex = bestCorrelationIndex;
+	}
+
+	
 
 
 	
