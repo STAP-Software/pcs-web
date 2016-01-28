@@ -35,7 +35,7 @@ import javax.persistence.TemporalType;
 			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
 			+ "AND rb.filterTypeId = :filterTypeId "
 			+ "and rb.refBeamDefMapFlg = false "
-			+ "ORDER BY rb.createDate desc, p.executionStartTime asc "),
+			+ "ORDER BY rb.createDate desc, p.executionEndTime asc "),
 	@NamedQuery(name = "findCurrentSufsRefBeamMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
 			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
