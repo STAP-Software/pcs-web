@@ -409,7 +409,7 @@ public class PhasingExecutor {
 
 		    statusLogger.log("calc.phasing_summary",
 					procedureOutput.getFixPistonsResult().getActRms(), 
-					procedureOutput.getPhasingStatsResult().getEdgeErrorRss(), 
+					procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
 					procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
 
 			
@@ -420,7 +420,7 @@ public class PhasingExecutor {
 				// Display to user and ask if they want to command				
 				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
 						procedureOutput.getFixPistonsResult().getActRms(), 
-						procedureOutput.getPhasingStatsResult().getEdgeErrorRss(), 
+						procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
 						procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", phasingSummaryText  + "\n\n\nCommand Primary Mirror?");
