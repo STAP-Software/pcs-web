@@ -277,7 +277,9 @@
 									<h:outputLabel value="Median Peak Intensity:" />
 								</p:column>
 								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-									<h:outputText value="#{procedureController.procedure.latestProcedureCcdFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" />
+										<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
+									</h:outputText>
 								</p:column>
 							</p:row>
 							</p:panelGrid>
