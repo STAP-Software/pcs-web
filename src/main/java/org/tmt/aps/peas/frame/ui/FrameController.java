@@ -11,10 +11,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -46,6 +44,7 @@ import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
+import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.MarkedSubimage;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -220,99 +219,15 @@ public class FrameController implements Serializable {
 
 		long start = System.currentTimeMillis();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
-
 		// dummy for session root
 		sessionRoot = new DefaultTreeNode(new FrameTreeElement("Sessions", "-"), null);
 		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
 
-		// search folder for fits files
-
-		Map<Integer, Map<Date, List<FitsFilename>>> telescope2Fits = new HashMap<Integer, Map<Date, List<FitsFilename>>>();
-
-		type2Fits = new HashMap<String, List<FitsFilename>>();
-
 		try {
 
-			List<FitsFilename> fitsFileList = frameMgmt.findAllFitsFiles();
+			String firstFilename = reloadFits();
 
-			for (FitsFilename fitsFile : fitsFileList) {
-
-				try {
-					Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
-					if (telescopeFitsMap == null) {
-						telescopeFitsMap = new TreeMap<Date, List<FitsFilename>>();
-						telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
-					}
-
-					// logger.debug("map get filename = " + fitsFile.getFileName());
-					// logger.debug("map get dateString = " + fitsFile.getDate());
-
-					List<FitsFilename> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
-					if (dateFitsList == null) {
-						dateFitsList = new ArrayList<FitsFilename>();
-						telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
-					}
-					dateFitsList.add(fitsFile);
-
-					List<FitsFilename> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
-					if (typeFitsList == null) {
-						typeFitsList = new ArrayList<FitsFilename>();
-						type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
-					}
-					typeFitsList.add(fitsFile);
-
-				} catch (Exception e) {
-					logger.error(MessageGenerator.generateMessage("generic.error"), e);
-				}
-			}
-
-			for (Integer telescope : telescope2Fits.keySet()) {
-
-				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(telescope);
-
-				TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
-
-				for (Date date : telescopeFitsMap.keySet()) {
-					List<FitsFilename> dateFitsList = telescopeFitsMap.get(date);
-					TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
-
-					// TODO: order dateFitsList by procedure number
-					Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
-					for (FitsFilename fitsFile : dateFitsList) {
-						TreeNode sessionNode00 = new DefaultTreeNode("picture",
-								new FrameTreeElement(
-										fitsFile.getProcedureNumber() + ": " + fitsFile.getProcedureName() + ": " + fitsFile.getFileName(),
-										fitsFile.getFileName()),
-								dateNode);
-					}
-
-				}
-
-			}
-
-			String firstFilename = null;
-
-			for (String type : type2Fits.keySet()) {
-
-				List<FitsFilename> typeFitsList = type2Fits.get(type);
-
-				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
-
-				// TODO: order dateFitsList by procedure number
-				Collections.sort(typeFitsList, new BeanComparator("telescope"));
-				for (FitsFilename fitsFile : typeFitsList) {
-					TreeNode sessionNode00 = new DefaultTreeNode("picture",
-							new FrameTreeElement(fitsFile.getFileName(), fitsFile.getFileName()), typeNode);
-
-					if (firstFilename == null) {
-						firstFilename = fitsFile.getFileName();
-					}
-				}
-
-			}
-
-			// TODO: load up first frame
+			// load up first frame
 			ccdFrame = frameMgmt.loadFitsFrame(firstFilename);
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
@@ -331,6 +246,67 @@ public class FrameController implements Serializable {
 		logger.info("Frame Tree loaded in " + (end - start) + " ms");
 	}
 
+	public String reloadFits() {
+			
+		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
+
+		try {
+			FitsFilesMaps fitsFilesMaps = frameMgmt.generateFitsFilesMaps();
+			
+			this.type2Fits = fitsFilesMaps.getType2Fits();
+			Map<Integer, Map<Date, List<FitsFilename>>> telescope2Fits = fitsFilesMaps.getTelescope2Fits();
+			
+			for (Integer telescope : telescope2Fits.keySet()) {
+	
+				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(telescope);
+	
+				TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
+	
+				for (Date date : telescopeFitsMap.keySet()) {
+					List<FitsFilename> dateFitsList = telescopeFitsMap.get(date);
+					TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
+	
+					// TODO: order dateFitsList by procedure number
+					Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
+					for (FitsFilename fitsFile : dateFitsList) {
+						TreeNode sessionNode00 = new DefaultTreeNode("picture",
+								new FrameTreeElement(
+										fitsFile.getProcedureNumber() + ": " + fitsFile.getProcedureName() + ": " + fitsFile.getFileName(),
+										fitsFile.getFileName()),
+								dateNode);
+					}
+				}
+			}
+	
+			String firstFilename = null;
+	
+			for (String type : type2Fits.keySet()) {
+	
+				List<FitsFilename> typeFitsList = type2Fits.get(type);
+	
+				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
+	
+				// TODO: order dateFitsList by procedure number
+				Collections.sort(typeFitsList, new BeanComparator("telescope"));
+				for (FitsFilename fitsFile : typeFitsList) {
+					TreeNode sessionNode00 = new DefaultTreeNode("picture",
+							new FrameTreeElement(fitsFile.getFileName(), fitsFile.getFileName()), typeNode);
+	
+					if (firstFilename == null) {
+						firstFilename = fitsFile.getFileName();
+					}
+				}
+			}
+			return firstFilename;
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+		
+		
+	}
+	
+	
 	public void onNodeSelect(NodeSelectEvent event) {
 
 		try {

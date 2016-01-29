@@ -10,7 +10,10 @@ import java.io.FileFilter;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
 
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
@@ -34,6 +37,7 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
+import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
@@ -615,6 +619,50 @@ public class FrameMgmt {
 			}
 			return falseColorPng;
 		}
+	}
+
+	public FitsFilesMaps generateFitsFilesMaps() throws Exception {
+
+		// search folder for fits files
+		Map<Integer, Map<Date, List<FitsFilename>>> telescope2Fits = new HashMap<Integer, Map<Date, List<FitsFilename>>>();
+
+		Map<String, List<FitsFilename>> type2Fits = new HashMap<String, List<FitsFilename>>();
+
+		
+		List<FitsFilename> fitsFileList = findAllFitsFiles();
+
+		for (FitsFilename fitsFile : fitsFileList) {
+
+			try {
+				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
+				if (telescopeFitsMap == null) {
+					telescopeFitsMap = new TreeMap<Date, List<FitsFilename>>();
+					telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
+				}
+
+				// logger.debug("map get filename = " + fitsFile.getFileName());
+				// logger.debug("map get dateString = " + fitsFile.getDate());
+
+				List<FitsFilename> dateFitsList = telescopeFitsMap.get(fitsFile.getDate());
+				if (dateFitsList == null) {
+					dateFitsList = new ArrayList<FitsFilename>();
+					telescopeFitsMap.put(fitsFile.getDate(), dateFitsList);
+				}
+				dateFitsList.add(fitsFile);
+
+				List<FitsFilename> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
+				if (typeFitsList == null) {
+					typeFitsList = new ArrayList<FitsFilename>();
+					type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
+				}
+				typeFitsList.add(fitsFile);					
+
+			} catch (Exception e) {
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			}
+		}
+		
+		return new FitsFilesMaps(telescope2Fits, type2Fits);
 	}
 
 

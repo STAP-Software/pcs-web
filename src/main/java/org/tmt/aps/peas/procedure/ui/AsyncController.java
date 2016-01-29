@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -52,6 +53,8 @@ public class AsyncController implements Serializable {
 	ProcedureExecutionState procedureExecutionState;
 	@Inject
 	SessionController sessionController;
+	@Inject
+	FrameController frameController;
 	@Inject
 	StatusLogController statusLogController;
 	@Inject
@@ -323,6 +326,9 @@ public class AsyncController implements Serializable {
 			CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
 			procedureController.loadCameraState(cameraState);
 			statusLogController.refreshProcedureStatusLog();
+			
+			// update the fits frames to be available to the rest of the application
+			frameController.reloadFits();
 			
 			if (procedureExecutionState.getProcedureException() == null) {
 				// put up completion notice if there was no exception
