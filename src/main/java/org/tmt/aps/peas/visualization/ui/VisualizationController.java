@@ -490,7 +490,7 @@ public class VisualizationController implements Serializable {
 
 	public void updateEdgeResidualsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ")");
+		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ", " + showEdgeNums  + ")");
 	}
 
 	public void doPopulateCentroidDisplay(int iteration) {

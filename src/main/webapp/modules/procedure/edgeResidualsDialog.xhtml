@@ -9,7 +9,7 @@ var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
 var resizing = false;   
 
-var edgeResidualsScope = {drawSegments: true, drawSegNums: true};
+var edgeResidualsScope = {drawSegments: true, drawSegNums: true, drawEdgeNums: true};
 
 
 function runDrawEdgeResiduals() {
@@ -20,7 +20,7 @@ function runDrawEdgeResiduals() {
 	ctx.translate(-25,-10);
 	ctx.scale(0.61, 0.61);
 
-	window.setTimeout("drawEdgeResiduals(true,true)", 10);
+	window.setTimeout("drawEdgeResiduals(true,true, true)", 10);
 	
 	$(edgeResidualsDisplayDialog.jqId).bind('resize', function(){
 		if (!resizing) {
@@ -52,17 +52,18 @@ function edgeResidualsResizeHandler() {
 	ctx.scale(scale, scale);
 
 	//alert("resizing")
-	drawEdgeResiduals(edgeResidualsScope.drawSegments, edgeResidualsScope.drawSegNums);
+	drawEdgeResiduals(edgeResidualsScope.drawSegments, edgeResidualsScope.drawSegNums, edgeResidualsScope.drawEdgeNums);
 	
 	resizing = false;
 
 }
 
 
-function drawEdgeResiduals(drawSegments,drawSegNums) {
+function drawEdgeResiduals(drawSegments,drawSegNums, drawEdgeNums) {
     
 	edgeResidualsScope.drawSegNums = drawSegNums;
 	edgeResidualsScope.drawSegments = drawSegments;
+	edgeHeightsScope.drawEdgeNums = drawEdgeNums;
 	
 	var c = document.getElementById("edgeResidualsCanvas");
 	var ctx = c.getContext("2d");
@@ -177,7 +178,21 @@ function drawEdgeResiduals(drawSegments,drawSegNums) {
 		    ctx.fill();
 		    
 		}
+		
+	    if (drawEdgeNums) {
+	    	
+			var yEdgeHeightTextOffset = 8;
 
+			// text a little higher up when circle is larger
+			if ((useForAnalysis[i] == 0) || (rowFlagOut[i] == 0 )) {
+				yEdgeHeightTextOffset = 12;
+			}
+	    	
+			ctx.fillStyle = '#888888';
+			ctx.font="14px Arial";
+			var offsetX = (i+1 < 10) ? x - 4 : x - 10;
+			ctx.fillText(i+1, offsetX, y - yEdgeHeightTextOffset);		    	
+	    }
 	}
 	
 	// max len is the value assigned to a side in the key
@@ -345,6 +360,11 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<p:spacer Residual="1"/><p:spacer Residual="1"/>
 				<h:outputLabel value="Show Segment Numberings" />
      			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
+    				<p:ajax update="@this" listener="#{visualizationController.updateEdgeResidualsDisplayListener}" />
+    			</p:selectBooleanButton>
+				<p:spacer height="1"/><p:spacer height="1"/>
+				<h:outputLabel value="Show Edge Numberings" />
+     			<p:selectBooleanButton value="#{visualizationController.showEdgeNums}" onLabel="On" offLabel="Off" >
     				<p:ajax update="@this" listener="#{visualizationController.updateEdgeResidualsDisplayListener}" />
     			</p:selectBooleanButton>
     			
