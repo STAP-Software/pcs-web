@@ -66,6 +66,7 @@ public class VisualizationController implements Serializable {
 
 	boolean showSegments = true;
 	boolean showSegNums = true;
+	boolean showEdgeNums = true;
 	boolean showHeat = true;
 	boolean showHeatCircles = false;
 	boolean showActVals = true;
@@ -172,6 +173,14 @@ public class VisualizationController implements Serializable {
 
 	public void setShowSegNums(boolean showSegNums) {
 		this.showSegNums = showSegNums;
+	}
+	
+	public boolean isShowEdgeNums() {
+		return showEdgeNums;
+	}
+
+	public void setShowEdgeNums(boolean showEdgeNums) {
+		this.showEdgeNums = showEdgeNums;
 	}
 
 	public boolean isShowHeat() {
@@ -476,7 +485,7 @@ public class VisualizationController implements Serializable {
 
 	public void updateEdgeHeightsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ")");
+		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
 	}
 
 	public void updateEdgeResidualsDisplayListener() {
