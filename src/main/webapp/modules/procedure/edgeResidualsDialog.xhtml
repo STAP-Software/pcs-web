@@ -311,7 +311,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 </script>   
 
 
-		<p:dialog id="edgeResidualsDialog" header="Edge Residuals" widgetVar="edgeResidualsDisplayDialog" closable="false" >  
+		<p:dialog id="edgeResidualsDialog" header="Residual Edge Heights" widgetVar="edgeResidualsDisplayDialog" closable="false" >  
      		<h:form id="edgeResidualsForm">
 
     		<h:inputHidden id="edgeResiduals" value="#{visualizationController.edgeResiduals}" />
@@ -343,11 +343,11 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<p:spacer Residual="15"/><p:spacer Residual="15"/>
 				<h:outputLabel value="Number of good edges" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
-				<h:outputLabel value="Max residual error (microns)" />
+				<h:outputLabel value="Max residual edge height (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
-				<h:outputLabel value="RSS residual edge error (microns)" />
+				<h:outputLabel value="RSS residual edge height (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>

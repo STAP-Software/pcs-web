@@ -344,11 +344,11 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<p:spacer height="15"/><p:spacer height="15"/>
 				<h:outputLabel value="Number of good edges" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
-				<h:outputLabel value="Max error (microns)" />
+				<h:outputLabel value="Max measured edge height (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
-				<h:outputLabel value="RSS edge error (microns)" />
+				<h:outputLabel value="RSS measured edge heights (microns)" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px" >
 					<f:convertNumber pattern="#0.000" />
 				</h:outputText>
