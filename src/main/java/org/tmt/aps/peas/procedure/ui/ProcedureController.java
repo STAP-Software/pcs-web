@@ -450,14 +450,31 @@ public class ProcedureController implements Serializable {
 
 	// start button enable logic
 	public boolean isStartEnabled() {
+		
+		// if frame source is file, a file needs to be selected
 		if (procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource() == ProcedureConfig.FRAME_SOURCE_FILE) {
 			if (selectedFitsFiles == null || selectedFitsFiles.size() == 0) {
 				return false;
 			}
 		}
+		// if a coarse phasing procedure, then the coarse phasing option needs to be set
 		if (procedure.getProcedureType().isPhasing() && procedure.getProcedureConfigSet().getProcedureConfig().getCoarsePhasingOption() == 0) {
 			return false;
 		}
+		
+		// if a pupil registration procedure and a phasing mask is selected, then the coarse phasing option needs to be set
+		if (procedure.getProcedureType().isPupilRegistration() &&
+				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypePh()) {
+			
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			int option = procedureConfig.getCoarsePhasingOption();			
+			
+			if (option != 30 && option != 100 && option != 300 && option != 1000) {
+			
+				return false;
+			}
+		}
+
 		
 		return true;
 	}
@@ -815,6 +832,9 @@ public class ProcedureController implements Serializable {
 
 	public void pupilMaskSelectListener() throws Exception {
 
+		// pupil mask has changed, but we need to change the pupil mask type
+		procedure.getProcedureConfigSet().getProcedureConfig().setPupilMaskType(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType());
+		
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// change int time and selected ref beam settings in procedure config
@@ -829,6 +849,10 @@ public class ProcedureController implements Serializable {
 
 	public void filterSelectListener() {
 
+		// filter has changed, but we need to change the filter type
+		procedure.getProcedureConfigSet().getProcedureConfig().setFilterType(procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType());
+
+		
 		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
 
 			// change int time and selected ref beam settings in procedure config

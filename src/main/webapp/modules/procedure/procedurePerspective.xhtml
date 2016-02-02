@@ -53,12 +53,14 @@
 									<p:selectOneMenu id="pupilMaskSelect" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue=""/> 
 										<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
-										<p:ajax update=":advancedForm intTime" listener="#{procedureController.pupilMaskSelectListener}" />
+										<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.pupilMaskSelectListener}" />
 									</p:selectOneMenu>
 								</p:column>
 							</p:row>
 
-							<p:row rendered="#{procedureController.procedure.procedureType.phasing}">
+							<p:row rendered="#{procedureController.procedure.procedureType.phasing or 
+								(procedureController.procedure.procedureType.pupilRegistration and 
+								procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.pupilMaskType.pupilMaskTypeId == 2)}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Coarse Phasing Option" />
 								</p:column>
