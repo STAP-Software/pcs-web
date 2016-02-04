@@ -38,6 +38,8 @@ public class HelpController implements Serializable {
 
 	@PostConstruct
 	private void init() {
+		
+		// read in and parse the contents file
 
 		helpContentRoot = new DefaultTreeNode("Root", null);
 
@@ -96,29 +98,13 @@ public class HelpController implements Serializable {
 	}
 
 	// returns the content of the current page
-	public String getCurrentPageOrig() {
-
-		try {
-			String propertiesPath = System.getProperty("org.tmt.aps.peas.peasPropertiesPath");
-
-			File file = new File(propertiesPath + File.separator + "help" + File.separator + "git-scm.com.htm");
-
-			String contents = FileUtils.readFileToString(file);
-
-			return contents;
-
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return "Content Load Error";
-		}
-
-	}
-
 	public String getCurrentPage() {
 
+		System.out.println("GOT TO CURRENT PAGE");
 		return "/pcs-web/help/content/git-scm.com.htm";
 
 	}
+	
 
 	public String doViewDocumentation() {
 
