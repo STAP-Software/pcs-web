@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.help.ui;
 
 import java.io.File;
+import java.io.FileReader;
 import java.io.Serializable;
 
 import javax.annotation.PostConstruct;
@@ -14,13 +15,14 @@ import javax.enterprise.context.SessionScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
 import org.primefaces.model.DefaultTreeNode;
 import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.common.MessageGenerator;
 
 @Named
 @SessionScoped
@@ -35,57 +37,61 @@ public class HelpController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 	private TreeNode helpContentRoot;
+	
+	private String currentPage = "/pcs-web/help/content/git-scm.com.htm";
 
 	@PostConstruct
 	private void init() {
 		
-		// read in and parse the contents file
-
+		
 		helpContentRoot = new DefaultTreeNode("Root", null);
 
-		TreeNode node0 = new DefaultTreeNode("folder", "Session Viewing", helpContentRoot);
-		TreeNode node1 = new DefaultTreeNode("folder", "Standard Procedures", helpContentRoot);
-		TreeNode node2 = new DefaultTreeNode("folder", "Special Procedures", helpContentRoot);
-		TreeNode node3 = new DefaultTreeNode("folder", "Manual Tools", helpContentRoot);
-		TreeNode node4 = new DefaultTreeNode("folder", "Frame Tools", helpContentRoot);
-		TreeNode node5 = new DefaultTreeNode("folder", "External Interfaces ", helpContentRoot);
-		TreeNode node6 = new DefaultTreeNode("folder", "Configuration", helpContentRoot);
-
-		new DefaultTreeNode("link", new HelpPageLink("Sessions History", "doNothing();"), node0);
-		new DefaultTreeNode("link", new HelpPageLink("Session View", "doNothing();"), node0);
-
-		new DefaultTreeNode("link", new HelpPageLink("The Procedure Perspective", "doNothing()"), node1);
-		new DefaultTreeNode("link", new HelpPageLink("Passive Tilt", "doNothing()"), node1);
-		new DefaultTreeNode("link", new HelpPageLink("Phasing", "doNothing()"), node1);
-		new DefaultTreeNode("link", new HelpPageLink("Fine Screen", "doNothing()"), node1);
-		new DefaultTreeNode("link", new HelpPageLink("SUFS", "doNothing()"), node1);
-
-		new DefaultTreeNode("link", new HelpPageLink("Pupil Registration", "doNothing()"), node2);
-		new DefaultTreeNode("link", new HelpPageLink("Create Reference Map", "doNothing()"), node2);
-		new DefaultTreeNode("link", new HelpPageLink("Center Telescope", "doNothing()"), node2);
-
-		new DefaultTreeNode("link", new HelpPageLink("Camera Manual Operation", "doNothing()"), node3);
 		
-		new DefaultTreeNode("link", new HelpPageLink("The Frame Perspective", "doNothing()"), node4);
-		new DefaultTreeNode("link", new HelpPageLink("CCD Manual Operation", "doNothing()"), node4);
-		new DefaultTreeNode("link", new HelpPageLink("Camera Manual Operation", "doNothing()"), node4);
-		new DefaultTreeNode("link", new HelpPageLink("Frame Tools", "doNothing()"), node4);
+		// read in and parse the contents file
+		try {
+			
+			String propertiesPath = System.getProperty("org.tmt.aps.peas.peasPropertiesPath");
 
-		new DefaultTreeNode("link", new HelpPageLink("ACS Manual Interface", "doNothing()"), node5);
-		new DefaultTreeNode("link", new HelpPageLink("DCS Manual Interface", "doNothing()"), node5);
-		
-		new DefaultTreeNode("link", new HelpPageLink("Overview", "doNothing()"), node6);
-		new DefaultTreeNode("link", new HelpPageLink("Spots Configuration", "doNothing()"), node6);
-		new DefaultTreeNode("link", new HelpPageLink("Instrument Configuration", "doNothing()"), node6);
+			File file = new File(propertiesPath + File.separator + "help" + File.separator + "content" + File.separator + "contents.json");
+
+			// read the json file
+			FileReader reader = new FileReader(file.getAbsolutePath());
+
+			JSONParser jsonParser = new JSONParser();
+			JSONObject jsonObject = (JSONObject) jsonParser.parse(reader);
 
 
-		node0.setExpanded(true);
-		node1.setExpanded(true);
-		node2.setExpanded(true);
-		node3.setExpanded(true);
-		node4.setExpanded(true);
-		node5.setExpanded(true);
-		node6.setExpanded(true);
+			// get an array from the JSON object
+			JSONArray contents = (JSONArray) jsonObject.get("contents");
+			
+			// take the elements of the json array
+			for (int i=0; i<contents.size(); i++) {
+				JSONObject sectionObj = (JSONObject)contents.get(i);
+				
+				String sectionName = (String)sectionObj.get("sectionName");
+				
+				TreeNode treeNode = new DefaultTreeNode("folder", sectionName, helpContentRoot);
+				
+				
+				JSONArray subsectionsObj = (JSONArray)sectionObj.get("subsections");
+				
+				for (int j=0; j<subsectionsObj.size(); j++) {
+
+					JSONObject subsectionObj = (JSONObject)subsectionsObj.get(j);
+					
+					String subsectionName = (String)subsectionObj.get("sectionName");
+					String subsectionLink = (String)subsectionObj.get("contentFilename");
+
+					new DefaultTreeNode("link", new HelpPageLink(subsectionName, subsectionLink), treeNode);
+
+				}
+				
+				treeNode.setExpanded(true);
+			}
+
+		} catch (Exception ex) {
+			ex.printStackTrace();
+		}
 
 	}
 
@@ -100,8 +106,7 @@ public class HelpController implements Serializable {
 	// returns the content of the current page
 	public String getCurrentPage() {
 
-		System.out.println("GOT TO CURRENT PAGE");
-		return "/pcs-web/help/content/git-scm.com.htm";
+		return currentPage;
 
 	}
 	
@@ -113,8 +118,9 @@ public class HelpController implements Serializable {
 
 	}
 
-	public void doUpdatePage() {
-
+	public void doUpdatePage(String newPage) {
+		// set the current page
+		this.currentPage = "/pcs-web/help/content/" + newPage;
 	}
 
 }

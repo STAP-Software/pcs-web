@@ -3,13 +3,13 @@ package org.tmt.aps.peas.help.ui;
 public class HelpPageLink {
 
 	private String name;
-	private String onclick;
+	private String link;
 
 	
-	public HelpPageLink(String name, String onclick) {
+	public HelpPageLink(String name, String link) {
 		this.name = name;
 
-		this.onclick = onclick;
+		this.link = link;
 	}
 	
 	public String getName() {
@@ -18,11 +18,13 @@ public class HelpPageLink {
 	public void setName(String name) {
 		this.name = name;
 	}
-	public String getOnclick() {
-		return onclick;
+
+	public String getLink() {
+		return link;
 	}
-	public void setOnclick(String onclick) {
-		this.onclick = onclick;
+
+	public void setLink(String link) {
+		this.link = link;
 	}
 	
 }

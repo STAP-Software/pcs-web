@@ -24,7 +24,7 @@
 							<h:outputText style="font-weight:bold" value="#{node}" />
 						</p:treeNode>
 						<p:treeNode icon="ui-icon-document" type="link">
-							<p:commandLink value="#{node.name}" action="#{helpController.doUpdatePage}" update=":documentationForm" oncomplete="#{node.onclick}" />
+							<p:commandLink value="#{node.name}" action="#{helpController.doUpdatePage(node.link)}" update=":documentationForm" />
 						</p:treeNode>
 					</p:tree>
 
