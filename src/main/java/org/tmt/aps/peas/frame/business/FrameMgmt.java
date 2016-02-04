@@ -138,7 +138,7 @@ public class FrameMgmt {
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 		ccdFrame.setInstrumentId(procedureCcdFrame.getProcedure().getInstrument().getInstrumentId());
-		saveFitsFrame(ccdFrame);
+		boolean overwritten = saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
 		//logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
@@ -146,32 +146,10 @@ public class FrameMgmt {
 
 		//associateCcdFrame(procedureCcdFrame);
 		
-		// create the png
-		byte[] falseColorPng = loadPng(ccdFrame, true);
+		// create the png.  This will overwrite any previously generated png file with the same FITS name prefix
+		byte[] falseColorPng = generatePng(ccdFrame, true);
 		ccdFrame.setFalseColorPng(falseColorPng);
 
-	}
-
-	// manual Ccd frame save
-	// FITS file name TBD
-	public void saveCcdFrame(CcdFrame ccdFrame, Long telescopeId, Long instrumentId, String procedureTypeCd, String procedureNumber) throws Exception {
-		
-		String newName = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, 0).generateFileName();
-
-		
-		// determine 'iteration' number if multiple frames of this mask taken today
-		int iterationNumber = findMatchingFitsFiles(newName.substring(0, newName.length()-8) + "*").size();
-		
-		FitsFilename fitsFilename = new FitsFilename(telescopeId, procedureTypeCd, procedureNumber, iterationNumber);
-
-		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
-		ccdFrame.setInstrumentId(instrumentId);
-		saveFitsFrame(ccdFrame);
-
-		// create the png
-		byte[] falseColorPng = loadPng(ccdFrame, true);
-		ccdFrame.setFalseColorPng(falseColorPng);
-		
 	}
 
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
@@ -540,13 +518,15 @@ public class FrameMgmt {
 		return ccdFrame;
 	}
 
-	public void saveFitsFrame(CcdFrame ccdFrame) throws Exception {
+	public boolean saveFitsFrame(CcdFrame ccdFrame) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 
 		logger.debug("ccdFrame = " + ccdFrame);
 		String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
 
+		boolean overwrite = new File(path).exists();
+		
 		// First create a null FITS object.
 		Fits myFits = new Fits();
 
@@ -595,9 +575,10 @@ public class FrameMgmt {
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
 		myFits.write(o);
 		
-
+		return overwrite;
 	}
 
+	// TODO: clean up loadPng usage.  This method should never write to a file. Those methods that call this and really need to write to file should use generatePng()
 	public byte[] loadPng(CcdFrame ccdFrame, boolean writeToFile) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -619,6 +600,27 @@ public class FrameMgmt {
 			}
 			return falseColorPng;
 		}
+	}
+	
+	
+	public byte[] generatePng(CcdFrame ccdFrame, boolean writeToFile) throws Exception {
+		
+		FalseColorProcessor falseColorer = new FalseColorProcessor();
+		byte[] falseColorPng = falseColorer.createImage(ccdFrame.getRawFrame());
+
+		if (writeToFile) {
+		
+			String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
+			String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
+	
+			path = path.substring(0, path.length() - 3) + "png";
+	
+			File pngFile = new File(path);
+
+			FileUtils.writeByteArrayToFile(pngFile, falseColorPng);
+		}
+		return falseColorPng;
+
 	}
 
 	public FitsFilesMaps generateFitsFilesMaps() throws Exception {
