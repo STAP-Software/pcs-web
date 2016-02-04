@@ -1486,9 +1486,10 @@ public class ComputationLibraryImpl {
 
 		if (fixPistonsResult != null && fixPistonsResult.getActFixed() != null) {
 			for (int i=0; i<36; i++) {
-				desiredActDeltas[i][0] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3];  
-				desiredActDeltas[i][1] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 1];  
-				desiredActDeltas[i][2] = Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 2];  
+				// multiply by -1.0 to turn measured errors into commands
+				desiredActDeltas[i][0] = -Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3];  
+				desiredActDeltas[i][1] = -Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 1];  
+				desiredActDeltas[i][2] = -Constants.MICRONS_TO_NM * fixPistonsResult.getActFixed()[i*3 + 2];  
 			}
 		}
 		float desiredActDeltasRms = Constants.MICRONS_TO_NM * fixPistonsResult.getActRms();
