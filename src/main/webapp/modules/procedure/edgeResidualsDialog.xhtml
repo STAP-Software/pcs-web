@@ -127,7 +127,7 @@ function drawEdgeResiduals(drawSegments,drawSegNums, drawEdgeNums) {
 		var centerY = 512;
 		
 		var x = centerX + parseFloat(xEdgeArray[i]) * a;
-		var y = centerY + parseFloat(yEdgeArray[i]) * b;
+		var y = centerY - parseFloat(yEdgeArray[i]) * b;
 		
 				
 		// if useForAnalysis, rowFlagOut are 1, then draw a line, otherwise a circle
@@ -160,7 +160,7 @@ function drawEdgeResiduals(drawSegments,drawSegNums, drawEdgeNums) {
 			var edgeAngle = (parseFloat(edgeNormAngles[i])) * 2 * Math.PI / 360.0
 			
 			var dx = x + (Math.cos(edgeAngle) * edgeResidual)
-			var dy = y + (Math.sin(edgeAngle) * edgeResidual)
+			var dy = y - (Math.sin(edgeAngle) * edgeResidual)
 					
 			ctx.beginPath();
 			ctx.strokeStyle = 'red';

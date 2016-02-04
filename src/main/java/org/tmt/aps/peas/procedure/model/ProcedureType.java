@@ -27,7 +27,7 @@ public class ProcedureType {
 	public static final Long PROCEDURE_TYPE_ID_SUFS = new Long(5);
 	public static final Long PROCEDURE_TYPE_ID_PUPIL_REGISTRATION = new Long(6);
 	public static final Long PROCEDURE_TYPE_ID_CENTER_TELESCOPE = new Long(7);
-	public static final Long PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP = new Long(8);
+	public static final Long PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP = new Long(8);  // if this changes, RefBeamMap JPA Named query needs to change too
 	public static final Long PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP = new Long(9);
 	
 	@Id
