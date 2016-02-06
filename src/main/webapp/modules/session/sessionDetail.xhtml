@@ -87,8 +87,8 @@
 							<h:outputText value="#{procedure.testNumber}" />
 						</p:column>
 						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
-							<h:outputText
-								value="#{procedure.procedureType.procedureTypeName}" />
+							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
+							<h:outputText value=" #{procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" rendered="#{procedure.procedureType.phasing}" />
 						</p:column>
 						<!-- 
 						<p:column headerText="Frames">
