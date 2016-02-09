@@ -5,12 +5,15 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.concurrent.Future;
+
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.computation.java.JavaComputations;
 import org.tmt.aps.peas.extinf.StarInfo;
 
 @Stateless
@@ -50,6 +53,18 @@ public class DcsMgmt {
 		logger.debug("commandTelescopeDeltas:: deltaAz = " + deltaAz + ", deltaEl = " + deltaEl);
 		
 		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
+	}
+	
+	@Asynchronous
+	public Future<Integer> commandTelescopeDeltasAsync(double[] telescopeDeltas) throws Exception {
+		
+		double deltaAz = telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180);
+		double deltaEl = -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180);
+		logger.debug("commandTelescopeDeltas:: deltaAz = " + deltaAz + ", deltaEl = " + deltaEl);
+	
+		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
+			
+		return new AsyncResult<Integer>(1);
 	}
 	
 	// input in microns, sends in mm

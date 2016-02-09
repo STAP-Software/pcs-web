@@ -1,30 +1,22 @@
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.concurrent.Future;
+
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
-import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
-import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
-import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
-import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
-import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
-import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
-import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -56,7 +48,7 @@ public class PupilRegistrationLoopSubflow {
 
 		while (true) {
 
-			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 			
 			/**********************************************/
 			/*        PupilRegistration Subflow           */
@@ -65,6 +57,12 @@ public class PupilRegistrationLoopSubflow {
 
 			boolean frameOk = pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 
+			
+			// if we are waiting on DCS, here is where we must be completed.  This allows parallelism between possible camera commands to fix pupil reg
+			// and DCS moves to center the camera
+			Utils.waitForComplete(dcsFuture);
+			
+			
 			if (frameOk) break;
 			
 		}

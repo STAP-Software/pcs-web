@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.concurrent.Future;
+
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
@@ -47,7 +49,7 @@ public class CenterTelescopeSubflow {
 
 
 	@Abortable
-	public void centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
+	public Future<Integer> centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		
 		//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
@@ -58,6 +60,7 @@ public class CenterTelescopeSubflow {
 
 		FloatPoint lastMove = null;
 		
+		Future<Integer> future = null;
 		
 		while (true) {
 
@@ -98,54 +101,22 @@ public class CenterTelescopeSubflow {
 				break; // leave the loop if nothing to do
 			}
 
+			boolean moveTelescope = false;
+			
 			if (aResult.getRecenterTelescope().isYes() && procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_YES) {
-
-				// perform telescope move
-				lastMove = centerTelescopeCalcResult.getDeltaAzEl();
-				statusLogger.log("telescope.cmd.start");
-				dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
-				statusLogger.log("telescope.cmd.end");
+				moveTelescope = true;
 			}
 
 			// prompt user if required by settings or required due to abnormal result
-			boolean userReply = false;
-			if (aResult.getRecenterTelescope().isPrompt()) {
+			if (aResult.getRecenterTelescope().isPrompt() || procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
 				
 				// ask user if they want to center the telescope
-				userReply = userPromptMgmt.displayYesNoDialog("Move Telescope", MessageGenerator.generateMessage(aResult.getReasonKey(),
+				moveTelescope = userPromptMgmt.displayYesNoDialog("Move Telescope", MessageGenerator.generateMessage(aResult.getReasonKey(),
 						aResult.getReasonArgs()) + "\nMove Telescope?");
 				
-				if (userReply) {
-					// perform telescope move
-					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
-					statusLogger.log("telescope.cmd.start");
-					dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
-					statusLogger.log("telescope.cmd.end");						
-				} else {
-					break;
-				}
-				
-			} else if (procedureConfig.getAutoCenterTelescope() == Constants.AUTO_CENTER_TELESCOPE_PROMPT) {
-				// ask user if they want to center the telescope
-				userReply = userPromptMgmt.displayYesNoDialog("Move Telescope", MessageGenerator.generateMessage(aResult.getReasonKey(),
-						aResult.getReasonArgs()) + "\nMove Telescope?");
-				
-				if (userReply) {
-					// perform telescope move
-					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
-					statusLogger.log("telescope.cmd.start");
-					dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
-					statusLogger.log("telescope.cmd.end");						
-				} else {
-					break; // if user doesn't want to move telescope, no point in re-taking frame
-				}
-				
 			}
-
-
-			if (aResult.getRetakeFrame().isNo()) {
-				break;
-			}
+	
+			boolean retakeFrame = false;
 
 			if (aResult.getRetakeFrame().isPrompt()) {
 
@@ -156,15 +127,41 @@ public class CenterTelescopeSubflow {
 					
 					// TODO: put in logic here (throw user abort exception?
 					
-				} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
-					break; // continue on
+				} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+					retakeFrame = true;
 				}
 			}
 
+			
+			if (moveTelescope) {
+				
+				if (retakeFrame) {
+					// perform telescope move SYNCHRONOUS
+					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
+					statusLogger.log("telescope.cmd.start");
+					dcsMgmt.commandTelescopeDeltas(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
+					statusLogger.log("telescope.cmd.end");
+				} else {
+					// perform telescope move ASYNCHRONOUS, and wait elsewhere (new case for waiting on a procedure step from a subprocedure to complete)
+					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
+					statusLogger.log("telescope.cmd.start");
+					future = dcsMgmt.commandTelescopeDeltasAsync(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
+					statusLogger.log("telescope.cmd.end");
+					break;
+				}
+			} else {
+				
+				if (!retakeFrame) {
+					// the odd case where we don't move the telescope but retake the frame
+					break;
+				}
+			}
+			
+			
 			// go back and re-take frame
 
 		}
-		
+		return future;
 	}
 
 }

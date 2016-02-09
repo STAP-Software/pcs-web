@@ -196,7 +196,7 @@ public class PupilRegistrationExecutor {
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
 			procedureExecutionState.setPercentComplete(30);
 
@@ -244,6 +244,13 @@ public class PupilRegistrationExecutor {
 			/**********************************************/			
 			pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 
+			
+			/**********************************************/
+			/*        Wait for DCS to complete            */
+			/**********************************************/			
+			Utils.waitForComplete(dcsFuture);
+			
+			
 			// fill the procedure output
 			procedureOutput.addPupilRegistrationIterationOutput(pio);
 				

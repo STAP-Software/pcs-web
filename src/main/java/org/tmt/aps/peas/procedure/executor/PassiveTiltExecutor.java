@@ -220,7 +220,7 @@ public class PassiveTiltExecutor {
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 			procedureExecutionState.setPercentComplete(50);
 			
 			CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
@@ -324,6 +324,11 @@ public class PassiveTiltExecutor {
 			// TODO: eventually replace this with an framework solution
 			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 
+			/*****************************************************/
+			/*                  Wait for DCS                     */
+			/*****************************************************/
+			Utils.waitForComplete(dcsFuture);
+			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
