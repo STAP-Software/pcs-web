@@ -224,7 +224,20 @@ public class FitsFilename {
 		} else {
 			buf.append(procedureTypeCd + "_");
 		}
-		buf.append(String.format("%s", procedureNumber) + "_");
+		
+		// parse out the subprocedure suffix
+		int decimalIndex = procedureNumber.indexOf(".");
+		String subprocedureNum = null;
+		int procedureNum = 0;
+		if (decimalIndex > 0) {
+			subprocedureNum = procedureNumber.substring(decimalIndex+1);
+			procedureNum = new Integer(procedureNumber.substring(0, decimalIndex));
+			buf.append(String.format("%03d", procedureNum) + "." + subprocedureNum + "_");
+		} else {
+			procedureNum = new Integer(procedureNumber);
+			buf.append(String.format("%03d", procedureNum) + "_");
+		}
+		
 		if (procedureTypeCd.startsWith("CPH")) {
 			buf.append(iteration);			
 			buf.append((char)(phasingStep + 'A' - 1));
