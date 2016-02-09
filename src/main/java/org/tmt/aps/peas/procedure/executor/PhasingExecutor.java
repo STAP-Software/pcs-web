@@ -265,7 +265,6 @@ public class PhasingExecutor {
 				acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
 				
 				
-				
 				/**********************************************/
 				/*        wait for ACS to be done			  */
 				/**********************************************/
@@ -277,7 +276,6 @@ public class PhasingExecutor {
 				// TODO: may need to change this for performance reasons
 				// TODO: if we fail and need to retake frame, then this should be here
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
-				// TODO: if user aborts from pupilreg, restore mirror
 				
 				/**********************************************/
 				/*        send next colorstep to ACS 		  */

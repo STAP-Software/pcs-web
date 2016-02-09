@@ -7,11 +7,8 @@ import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
-import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.computation.model.ScaleErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
@@ -21,8 +18,6 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	FineScreenScaleErrorResult FineScreenScaleErrorResult;
-	PassiveTiltScaleErrorResult PassiveTiltScaleErrorResult;
 	CalcM2M1Result calcM2M1Result;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	PseudoTipTiltCentroidStatsResult pseudoTipTiltCentroidStatsResult;
@@ -50,23 +45,6 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	public void setCentroidStatsResult(CentroidStatsResult centroidStatsResult) {
 		this.centroidStatsResult = centroidStatsResult;
 	}
-	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
-		return FineScreenScaleErrorResult;
-	}
-	public void setFineScreenScaleErrorResult(FineScreenScaleErrorResult fineScreenScaleErrorResult) {
-		FineScreenScaleErrorResult = fineScreenScaleErrorResult;
-	}
-	public PassiveTiltScaleErrorResult getPassiveTiltScaleErrorResult() {
-		return PassiveTiltScaleErrorResult;
-	}
-	public void setPassiveTiltScaleErrorResult(PassiveTiltScaleErrorResult passiveTiltScaleErrorResult) {
-		PassiveTiltScaleErrorResult = passiveTiltScaleErrorResult;
-	}
-	public ScaleErrorResult getScaleErrorResult() {
-		return FineScreenScaleErrorResult;
-	}
-	
-	
 	
 	public CalcM2M1Result getCalcM2M1Result() {
 		return calcM2M1Result;

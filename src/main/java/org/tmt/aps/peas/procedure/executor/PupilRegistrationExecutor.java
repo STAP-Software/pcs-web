@@ -228,9 +228,6 @@ public class PupilRegistrationExecutor {
 				// spots that can be used (found without errors and should be used for analysis)
 				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
-				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots, subimageDefList.getNspotTypes(), good_spots);
-
 			}
 			
 			// TODO: handle with framework

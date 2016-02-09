@@ -44,10 +44,8 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
-import org.tmt.aps.peas.computation.model.PassiveTiltScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
@@ -79,12 +77,10 @@ import org.tmt.aps.peas.lang.interop.JdecomposeActs;
 import org.tmt.aps.peas.lang.interop.JfindAndIdentify;
 import org.tmt.aps.peas.lang.interop.JfindCent;
 import org.tmt.aps.peas.lang.interop.JfindCentroids;
-import org.tmt.aps.peas.lang.interop.JfineScreenScaleError;
 import org.tmt.aps.peas.lang.interop.JfixPistons;
 import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
 import org.tmt.aps.peas.lang.interop.JmakeTemplate;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
-import org.tmt.aps.peas.lang.interop.JpassiveTiltScaleError;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
@@ -610,58 +606,6 @@ public class ComputationLibraryImpl {
 
 
 
-	@Computation
-	public PassiveTiltScaleErrorResult passiveTiltScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpot) throws ComputationException {
-
-		logger.info(MessageGenerator.generateMessage("computation.start", "passiveTiltScaleError"));
-
-		JpassiveTiltScaleError jpassiveTiltScaleError = new JpassiveTiltScaleError();
-		RetVal retVal = new RetVal();
-
-		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
-
-		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpot);
-		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpot);
-
-		Object output[] = jpassiveTiltScaleError.jpassiveTiltScaleError(retVal, offsets, x_ref_def, y_ref_def);
-
-		if (retVal.getCode() > 0) {
-			statusLogger.log(retVal);
-			throw new ComputationException("Passive Tilt Scale Error Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
-		}
-
-		logger.info(MessageGenerator.generateMessage("computation.success", "passiveTiltScaleError"));
-
-		// store fi_param values
-		return new PassiveTiltScaleErrorResult((Float) output[0], (Float) output[1]);
-	}
-	
-	
-	@Computation
-	public FineScreenScaleErrorResult fineScreenScaleErrorResult(FloatPoint[] centroidOffsets, List<FloatPoint> centerSpots, int[] nspotTypes, int[] good_spots) throws Exception {
-		
-		logger.info(MessageGenerator.generateMessage("computation.start", "fineScreenScaleError"));
-
-		JfineScreenScaleError jfineScreenScaleError = new JfineScreenScaleError();
-		RetVal retVal = new RetVal();
-
-		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
-
-		float[] x_ref_def = FloatPointListEncoder.extractXArray(centerSpots);
-		float[] y_ref_def = FloatPointListEncoder.extractYArray(centerSpots);
-		
-		Object output[] = jfineScreenScaleError.jfineScreenScaleError(retVal, good_spots, offsets, x_ref_def, y_ref_def);
-
-		if (retVal.getCode() > 0) {
-			statusLogger.log(retVal);
-			throw new ComputationException("Fine Screen Scale Error Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
-		}
-
-		logger.info(MessageGenerator.generateMessage("computation.success", "fineScreenScaleError"));
-
-		// store fi_param values
-		return new FineScreenScaleErrorResult((Float) output[0], (Float) output[1]);
-	}
 
 	
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, FloatPoint[] centroidOffsets)

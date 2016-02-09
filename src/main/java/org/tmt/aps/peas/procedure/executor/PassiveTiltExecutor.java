@@ -245,9 +245,6 @@ public class PassiveTiltExecutor {
 			//need to get centerSpots 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
-			computationLibrary.passiveTiltScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots);
-
 			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 			

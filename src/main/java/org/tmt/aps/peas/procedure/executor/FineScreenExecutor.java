@@ -256,8 +256,6 @@ public class FineScreenExecutor {
 				// spots that can be used (found without errors and should be used for analysis)
 				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
-				computationLibrary.fineScreenScaleErrorResult(centroidOffsetsResult.getCcdCentroidOffsets(),
-						centerSpots, subimageDefList.getNspotTypes(), good_spots);
 				
 				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
@@ -317,8 +315,6 @@ public class FineScreenExecutor {
 				SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
 				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCcd(), subimageDefListPt.getNspotTypes());
 
-				// calc scale error for pseudo pt 
-				computationLibrary.passiveTiltScaleErrorResult(calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCcd(), centerSpots);
 	
 				// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
 				/*****************************************************/
@@ -387,10 +383,7 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
-			
-			computationLibrary.fineScreenScaleErrorResult(avgCentroidOffsetsResult.getCcdCentroidOffsets(),
-					centerSpots, subimageDefList.getNspotTypes(), goodSpots);
-			
+						
 			
 			/*****************************************************/
 			/*          Display Avg FS Centroid Offsets          */
@@ -484,9 +477,6 @@ public class FineScreenExecutor {
 			
 			SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
 			computationLibrary.calculatePseudoCentroidStats(calcSegmentMeanTipTiltsResultCcd.getSegmentMeanTipTiltErrors(), subimageDefListPt.getNspotTypes());
-
-			// calc scale error for pseudo pt 
-			computationLibrary.passiveTiltScaleErrorResult(calcSegmentMeanTipTiltsResultCcd.getSegmentMeanTipTiltErrors(), centerSpots);
 
 			
 			// Display the average centroid offsets 

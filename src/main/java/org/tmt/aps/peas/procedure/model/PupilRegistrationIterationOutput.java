@@ -4,7 +4,6 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.computation.model.FineScreenScaleErrorResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
 
@@ -13,7 +12,6 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;
-	FineScreenScaleErrorResult fineScreenScaleErrorResult;
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
 	
@@ -46,14 +44,7 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 	}
 	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
 		this.calcPrCommandsResult = calcPrCommandsResult;
-	}
-	public FineScreenScaleErrorResult getFineScreenScaleErrorResult() {
-		return fineScreenScaleErrorResult;
-	}
-	public void setFineScreenScaleErrorResult(FineScreenScaleErrorResult fineScreenScaleErrorResult) {
-		this.fineScreenScaleErrorResult = fineScreenScaleErrorResult;
-	}
-	
+	}	
 	
 
 
