@@ -43,12 +43,15 @@ public class AcsMgmt {
 		extInfFactory.getAcsCommand().loadSnap(snapNumber);
 	}
 
-	public void commandActuatorDelta(double[] actDeltas) throws Exception {
+	public long commandActuatorDelta(double[] actDeltas) throws Exception {
+		long start = System.currentTimeMillis();
 		extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
+		long end = System.currentTimeMillis();
+		return end - start;
 	}
 	
 	// Convenience routine 
-	public void commandActuatorDeltas(Float[][] actDeltas) throws Exception {
+	public long commandActuatorDeltas(Float[][] actDeltas) throws Exception {
 		float[][] myFloat = new float[actDeltas.length][actDeltas[0].length];
 		for (int i=0; i<actDeltas.length; i++) {
 
@@ -56,11 +59,13 @@ public class AcsMgmt {
 				myFloat[i][j] = actDeltas[i][j];
 			}
 		}
-		commandActuatorDeltas(myFloat);
+		long deltaMs = commandActuatorDeltas(myFloat);
+		
+		return deltaMs;
 	}
 	
 	
-	public void commandActuatorDeltas(float[][] actDeltas) throws Exception {
+	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
 		
 		// interface requires that we use indexes 1-108
 
@@ -77,11 +82,12 @@ public class AcsMgmt {
 			logger.info(actDeltaCmds[i]);
 		}
 
-		commandActuatorDelta(actDeltaCmds);
+		long deltaMs = commandActuatorDelta(actDeltaCmds);
 
+		return deltaMs;
 	}
 	
-	public void commandActuatorDeltas(float[] actDeltas) throws Exception {
+	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
 		
 		// interface requires that we use indexes 1-108
 		
@@ -95,8 +101,9 @@ public class AcsMgmt {
 			logger.info(actDeltaCmds[i]);
 		}
 
-		commandActuatorDelta(actDeltaCmds);
+		long deltaMs = commandActuatorDelta(actDeltaCmds);
 
+		return deltaMs;
 	}
 
 }

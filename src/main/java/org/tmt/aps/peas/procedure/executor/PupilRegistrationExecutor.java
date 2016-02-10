@@ -217,7 +217,7 @@ public class PupilRegistrationExecutor {
 			procedureExecutionState.setPercentComplete(50);
 
 			/*****************************************************/
-			/*              passiveTiltScaleError                */
+			/*                                                   */
 			/*****************************************************/
 			
 			//need to get centerSpots 

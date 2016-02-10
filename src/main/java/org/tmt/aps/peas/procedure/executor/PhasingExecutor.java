@@ -259,10 +259,11 @@ public class PhasingExecutor {
 						colorStepResult.getColorSteps()[i],
 						constantsCache.getPrimaryMirrorConstants().getnColor());
 				
-				statusLogger.log("phasing.colorstep_cmds");
+				statusLogger.log("acs.colorstep_cmds");
 				
 				// TODO: we need to be able to call asynchronously and wait for result.
-				acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
 				
 				/**********************************************/
@@ -304,8 +305,14 @@ public class PhasingExecutor {
 					colorStepResult.getColorSteps()[procedureConfig.getPhasingSteps()],
 					constantsCache.getPrimaryMirrorConstants().getnColor());
 
-			acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+			
+			statusLogger.log("acs.colorstep_cmds");
+			
+			// TODO: we need to be able to call asynchronously and wait for result.
+			long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());;	
+			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 
+			
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
 

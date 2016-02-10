@@ -24,6 +24,7 @@ public class Utils {
 
 			boolean allDone = true;
 			for (Future f : futures) {
+				
 				if (f == null) continue;
 				if (!f.isDone()) {
 					allDone = false;
