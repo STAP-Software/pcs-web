@@ -149,6 +149,12 @@ public class ExtInfFactory {
 		}
 	}
 
+	public void resetAll() {
+		acs = null;
+		dcsRsk = null;
+		camAsync = null;
+		ccd = null;
+	}
 
 
 	private AcsCommand getAcsCommandRemote(int telescopeId) {

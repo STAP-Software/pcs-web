@@ -28,6 +28,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -53,6 +54,8 @@ public class SessionController implements Serializable {
 	PeasProperties peasProperties;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	ExtInfFactory extInfFactory;
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -392,6 +395,8 @@ public class SessionController implements Serializable {
 			extInfSimulationMode = true;
 			// turn off all the ext interfaces
 			getExtInfConnectConfig().reset();
+			// reset all connections
+			extInfFactory.resetAll();
 		}
 		
 		requestContext.update("extInfMode");
