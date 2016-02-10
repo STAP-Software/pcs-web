@@ -60,7 +60,8 @@ public class PupilRegistrationLoopSubflow {
 			
 			// if we are waiting on DCS, here is where we must be completed.  This allows parallelism between possible camera commands to fix pupil reg
 			// and DCS moves to center the camera
-			Utils.waitForComplete(dcsFuture);
+			long waitPeriodMs = Utils.waitForComplete(dcsFuture);
+			statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
 			
 			
 			if (frameOk) break;

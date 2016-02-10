@@ -208,8 +208,8 @@ public class CenterTelescopeExecutor {
 				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
 				procedureExecutionState.setPercentComplete(90);
-		        Utils.waitForComplete(refBeamFuture);
-	        	statusLogger.log("camera.cmd.complete");
+		        long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
 
 			procedureExecutionState.setPercentComplete(95);

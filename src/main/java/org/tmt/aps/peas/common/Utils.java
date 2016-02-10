@@ -15,17 +15,19 @@ public class Utils {
 
 	static Logger logger = Logger.getLogger(Utils.class);
 
-	public static void waitForComplete(Future... futures) throws Exception {
+	public static long waitForComplete(Future... futures) throws Exception {
 
 		// if a future is null, then ignore it
-		
-		
+
+		long startTime = System.currentTimeMillis();
+
 		while (true) {
 
 			boolean allDone = true;
 			for (Future f : futures) {
-				
-				if (f == null) continue;
+
+				if (f == null)
+					continue;
 				if (!f.isDone()) {
 					allDone = false;
 				}
@@ -41,9 +43,12 @@ public class Utils {
 			}
 		}
 
+		long endTime = System.currentTimeMillis();
+		
 		try {
 			for (Future f : futures) {
-				if (f == null) continue;
+				if (f == null)
+					continue;
 				logger.info("Testing Future: " + f);
 				f.get();
 			}
@@ -54,6 +59,8 @@ public class Utils {
 			e.printStackTrace();
 			throw new Exception(e.getCause());
 		}
+		
+		return endTime - startTime;
 
 	}
 
@@ -64,7 +71,7 @@ public class Utils {
 		}
 		return output;
 	}
-	
+
 	public static String createExceptionMessage(Throwable e) {
 		StringBuffer buf = new StringBuffer();
 
@@ -74,7 +81,7 @@ public class Utils {
 	}
 
 	public static void waitFor(long msec) {
-		
+
 		try {
 			Thread.sleep(msec);
 		} catch (InterruptedException e) {
@@ -82,12 +89,11 @@ public class Utils {
 		}
 	}
 
-	
 	// recursively get all exception messages from exception and nested causes
 	private static void addExceptionMessage(Throwable e, StringBuffer buf) {
 
 		buf.append("  \n" + e.getClass().getName() + ": " + e.getMessage());
-		
+
 		if (e.getCause() != null) {
 			buf.append(", caused by: ");
 			addExceptionMessage(e.getCause(), buf);
@@ -99,15 +105,18 @@ public class Utils {
 	}
 
 	public static FacesMessage recordUpdateFailedMessage(Throwable e) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("crud.failure"), Utils.createExceptionMessage(e) + "\nCheck logs for details");
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("crud.failure"),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
 	public static FacesMessage genericErrorMessage(Throwable e) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"), Utils.createExceptionMessage(e) + "\nCheck logs for details");
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
 	public static FacesMessage genericErrorMessage(Throwable e, String message) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error.w_arg", message), Utils.createExceptionMessage(e) + "\nCheck logs for details");
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error.w_arg", message),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
 	public static FacesMessage commandSuccessfulMessage() {
@@ -118,12 +127,14 @@ public class Utils {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success", commandedName), "");
 	}
 
-	public static FacesMessage commandFailedMessage(CommandFailureException e) {	
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()), Utils.createExceptionMessage(e));
+	public static FacesMessage commandFailedMessage(CommandFailureException e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()),
+				Utils.createExceptionMessage(e));
 	}
 
-	public static FacesMessage commandFailedMessage(CommandFailureException e, String message) {	
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()) + "\n" + message, Utils.createExceptionMessage(e));
+	public static FacesMessage commandFailedMessage(CommandFailureException e, String message) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR,
+				MessageGenerator.generateMessage("command.failure", e.getFailureCode()) + "\n" + message, Utils.createExceptionMessage(e));
 	}
 
 	public static FacesMessage procedureSuccessfulMessage(String procedureType) {
@@ -131,22 +142,20 @@ public class Utils {
 	}
 
 	public static FacesMessage procedureFailedMessage(Throwable e) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"), Utils.createExceptionMessage(e) + "\nCheck logs for details");
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
-	
-	
 	public static String reformatData(String value, FieldDescriptor fieldDescriptor) {
 
 		if (value == null || value.trim().length() == 0 || value.equals("null")) {
 			return "null";
 		}
-		
+
 		String format = "{0,number," + fieldDescriptor.getDisplayFormat() + "}";
 
-		
 		if (fieldDescriptor.isScalar()) {
-			
+
 			switch (fieldDescriptor.getDataType()) {
 
 			case Constant.DATA_TYPE_INT:
@@ -168,15 +177,15 @@ public class Utils {
 				Point intPointArray[] = PointListEncoder.decodeList(value).toArray(new Point[] {});
 				Point intPointValue = intPointArray[0];
 				return MessageFormat.format(format, intPointValue.x) + ", " + MessageFormat.format(format, intPointValue.y);
-			
+
 			case Constant.DATA_TYPE_FLOAT_POINT:
 				FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(value).toArray(new FloatPoint[] {});
 				FloatPoint floatPointValue = floatPointArray[0];
 				return MessageFormat.format(format, floatPointValue.x) + ", " + MessageFormat.format(format, floatPointValue.y);
 			}
-			
+
 		}
-		
+
 		StringBuffer buf = new StringBuffer();
 
 		buf.append("<table>");
@@ -246,16 +255,14 @@ public class Utils {
 			case Constant.DATA_TYPE_FLOAT:
 				Float floatArray[] = FloatListEncoder.decodeList(value).toArray(new Float[] {});
 
-				
 				int dim1 = fieldDescriptor.getDimension1();
 				int dim2 = fieldDescriptor.getDimension2();
-				if (fieldDescriptor.getDimension1()*fieldDescriptor.getDimension2() != floatArray.length) {
+				if (fieldDescriptor.getDimension1() * fieldDescriptor.getDimension2() != floatArray.length) {
 					// a hack for the case where # of elements is less than field descriptor dim1 * dim2
 					// in this case, dim1 is replaced with actual value, given dim2 is constant (which will work for ColorSteps)
 					dim1 = floatArray.length / dim2;
 				}
-				
-				
+
 				// flat array now needs to be read into 2-d array
 				int fk = 0;
 				for (int fi = 0; fi < dim1; fi++) {
@@ -263,12 +270,12 @@ public class Utils {
 					buf.append("<td>" + (fi + 1) + "</td>");
 
 					for (int fj = 0; fj < dim2; fj++) {
-						
-						String sresult =  MessageFormat.format(format, floatArray[fk++].floatValue());
-						if (sresult.contains("E") && !sresult.contains("E-")) { //don't blast a negative sign
+
+						String sresult = MessageFormat.format(format, floatArray[fk++].floatValue());
+						if (sresult.contains("E") && !sresult.contains("E-")) { // don't blast a negative sign
 							sresult = sresult.replace("E", "E+");
 						}
-						buf.append("<td style=\"text-align:right\">" + sresult  + "</td>");
+						buf.append("<td style=\"text-align:right\">" + sresult + "</td>");
 						buf.append("<td>&nbsp;</td>");
 					}
 					buf.append("</tr>");

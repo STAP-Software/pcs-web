@@ -245,8 +245,8 @@ public class PupilRegistrationExecutor {
 			/**********************************************/
 			/*        Wait for DCS to complete            */
 			/**********************************************/			
-			Utils.waitForComplete(dcsFuture);
-			
+			long waitPeriodMs = Utils.waitForComplete(dcsFuture);
+			statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
 			
 			// fill the procedure output
 			procedureOutput.addPupilRegistrationIterationOutput(pio);
