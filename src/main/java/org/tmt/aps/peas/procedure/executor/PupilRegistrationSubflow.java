@@ -167,10 +167,11 @@ public class PupilRegistrationSubflow {
 				statusLogger.log("camera.cmd.fine_mirror", calcPrCommandsResult.getFineMirrorCommands().x, calcPrCommandsResult.getFineMirrorCommands().y);
 			}
 			
-			Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
+			long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
 			
 			if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
-				statusLogger.log("camera.cmd.complete");
+
+				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 				commandsSent = true;
 			}
 		

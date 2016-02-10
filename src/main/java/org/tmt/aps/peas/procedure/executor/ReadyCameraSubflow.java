@@ -102,9 +102,9 @@ public class ReadyCameraSubflow {
 			}
 
 			// wait for all commands to complete
-			Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
+			long waitPeriodMs = Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
 					coarseMirrorCommandFuture, fineMirrorCommandFuture);
-			statusLogger.log("camera.cmd.complete");
+			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 
 		}
 
