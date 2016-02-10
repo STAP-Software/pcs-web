@@ -2,6 +2,7 @@ package org.tmt.aps.peas.extInterface.business;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
@@ -20,6 +21,9 @@ public class AcsCommandSimulator implements AcsCommand {
 			throws CommunicationException, TimeoutException, 
 			CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "setActuDeltas::SIMULATOR"));
+		
+		Utils.waitFor(1100);
+		
 		logger.info(MessageGenerator.generateMessage("command.success", "setActuDeltas::SIMULATOR"));
 
 	}
