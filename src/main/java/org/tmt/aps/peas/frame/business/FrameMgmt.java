@@ -35,6 +35,7 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
+import org.tmt.aps.peas.extinf.TimeoutException;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.FitsFilesMaps;
@@ -47,11 +48,15 @@ import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
+import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 import nom.tam.fits.BasicHDU;
 import nom.tam.fits.Data;
@@ -91,6 +96,10 @@ public class FrameMgmt {
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	StatusLogger statusLogger;
+	@EJB
+	UserPromptMgmt userPromptMgmt;
 
 
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
@@ -204,7 +213,30 @@ public class FrameMgmt {
 		//int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
 		// TODO: write a JIRA bug that this was a workaround for
 		
-		cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
+		
+			
+			
+		try {
+			
+			cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
+		
+		} catch (TimeoutException e) {
+			
+			// FIXME: UI code should not be outside of an executor, this needs to be redesigned for APS
+			
+			String text = MessageGenerator.generateMessage("ccd.shutter_timeout");
+			
+			statusLogger.log("ccd.shutter_timeout");
+
+			String[] choices = {"Continue", "Abort Test"};
+			int[] values = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+
+			int response = userPromptMgmt.displayGenericMultiChoiceDialog("CCD Shutter Timeout", text, choices, values);
+
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+				throw new AbortProcedureException("User Aborted Test");
+			} 
+		}
 		
 		Thread.sleep(1000);
 		

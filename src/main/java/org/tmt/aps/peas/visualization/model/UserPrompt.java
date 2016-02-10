@@ -83,6 +83,7 @@ public class UserPrompt {
 	public UserPrompt(String header, int type, String message, String[] buttonTexts, int[] buttonValues) {
 		this.promptType = type;	
 		this.message = message;
+		this.header = header;
 	
 		buttonCount = buttonTexts.length;
 
