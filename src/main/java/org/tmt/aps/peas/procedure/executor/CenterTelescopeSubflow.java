@@ -130,6 +130,8 @@ public class CenterTelescopeSubflow {
 				} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
 					retakeFrame = true;
 				}
+			} else if (aResult.getRetakeFrame().isYes()) {
+				retakeFrame = true;
 			}
 
 			
@@ -146,7 +148,6 @@ public class CenterTelescopeSubflow {
 					lastMove = centerTelescopeCalcResult.getDeltaAzEl();
 					statusLogger.log("telescope.cmd.start");
 					future = dcsMgmt.commandTelescopeDeltasAsync(centerTelescopeCalcResult.getDeltaAzEl().asDoubleArray());
-					statusLogger.log("telescope.cmd.end");
 					break;
 				}
 			} else {
