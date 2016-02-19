@@ -39,6 +39,13 @@ public class VersionTool {
 			System.out.println("\n");
 		}
 		
+		// if args[0] == "-v"
+		// return current version
+		if (args[0].equals("-v")) {
+			System.out.println(versionDirs[0].getName());
+		}
+		
+		
 		// if args[0] == "-i"
 		// return an incremented number
 		if (args[0].equals("-i")) {
