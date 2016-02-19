@@ -20,7 +20,6 @@ public class VersionTool {
 		
 		File dir = new File(path);
 		FileFilter filter = new DirFileFilter();
-		System.out.println("dir is: " + dir.isDirectory());
 		File[] versionDirs = dir.listFiles(filter);
 		
 		Arrays.sort(versionDirs, new Comparator<File>(){
@@ -32,10 +31,12 @@ public class VersionTool {
 		// if args[0] == "-l"
 		// list them
 		if (args[0].equals("-l")) {
+			System.out.println("\n");
 			for (File versionDir : versionDirs) {
 				Date date = new Date(versionDir.lastModified());
 				System.out.println("version: " + versionDir.getName() + "   " + sdf.format(date));
 			}
+			System.out.println("\n");
 		}
 		
 		// if args[0] == "-i"
