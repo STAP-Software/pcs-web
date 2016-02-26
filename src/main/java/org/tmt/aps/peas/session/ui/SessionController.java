@@ -32,8 +32,10 @@ import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.ExtInfConnectConfig;
+import org.tmt.aps.peas.session.model.FieldMetaData;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -56,6 +58,8 @@ public class SessionController implements Serializable {
 	ExtInfConfigState extInfConfigState;
 	@EJB
 	ExtInfFactory extInfFactory;
+
+
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -407,4 +411,6 @@ public class SessionController implements Serializable {
 		//return false;
 		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
 	}
+	
+
 }

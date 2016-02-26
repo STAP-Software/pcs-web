@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -16,7 +16,8 @@
 					<h:outputText value="Filter Information" />
 				</f:facet>
 
-				<h:outputLabel value="Filter Name" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','FilterName')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 				<p:inputText value="#{filterController.filter.filterName}" />
 
 				<h:outputLabel value="Filter Type" />
@@ -24,16 +25,20 @@
 					<f:selectItems value="#{filterController.filterTypeList}" var="type" itemLabel="#{type.filterTypeName}" itemValue="#{type}" />
 				</p:selectOneMenu>
 				
-				<h:outputLabel value="Wavelength" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','WaveLength')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{filterController.filter.wavelength}" />
 
-				<h:outputLabel value="Bandwidth" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','Bandwidth')}" />
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{filterController.filter.bandwidth}" />
 
-				<h:outputLabel value="Coherence Length" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','CoherenceLength')}" />
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{filterController.filter.coherenceLength}" />
 
-				<h:outputLabel value="Min Coherence Limit" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','MinCoherenceLimit')}" />
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{filterController.filter.minCoherenceLimit}" />
 
 

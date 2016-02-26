@@ -249,6 +249,17 @@ public class ProcedureOutputMgmt {
 		return procedureOutput;
 	}
 	
+	
+	// returns a map of output fields
+	public List<ProcedureOutputField> findAllProcedureOutputFields() {
+		TypedQuery<ProcedureOutputField> query = em.createNamedQuery("findAllOutputFields", ProcedureOutputField.class);
+
+		List<ProcedureOutputField> fieldList = query.getResultList();
+		
+		return fieldList;
+	}
+
+	
 	// returns a list of class names used in procedure output field table
 	private List<String> getOutputFieldClassNames() {
 		TypedQuery<ProcedureOutputField> query = em.createNamedQuery("findAllOutputFields", ProcedureOutputField.class);

@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <script type="text/javascript">  
 //<![CDATA[
@@ -339,20 +339,29 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+				<c:set var="procedureOutput" value="#{visualizationController.edgeHeightsDisplayValues}" />
 				
 				<!-- measure edge stats -->
 				<p:spacer height="15"/><p:spacer height="15"/>
-				<h:outputLabel value="Number of good edges" />
-				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
-				<h:outputLabel value="Max measured edge height (microns)" />
+				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />				
+				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorMax')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.000" />
-				</h:outputText>
-				<h:outputLabel value="RSS measured edge heights (microns)" />
-				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.000" />
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
 				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorRss')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px" >
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				</h:outputText>
+								
 				 
 				<!-- residual edge stats -->
 				<!--

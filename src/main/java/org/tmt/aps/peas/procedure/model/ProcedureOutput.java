@@ -2,7 +2,9 @@ package org.tmt.aps.peas.procedure.model;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 public class ProcedureOutput implements ProcedureOutputable {
@@ -13,6 +15,8 @@ public class ProcedureOutput implements ProcedureOutputable {
 	List<ProcedureIterationOutput> procedureIterationOutputList = new ArrayList<ProcedureIterationOutput>();
 
 	List<ProcedureOutputValue> procedureOutputList;
+	
+	Map<String, ProcedureOutputValue> procedureOutputValueMap;
 
 	ProcedureDecisionLog procedureDecisionLog = new ProcedureDecisionLog();
 	
@@ -58,6 +62,19 @@ public class ProcedureOutput implements ProcedureOutputable {
 	public void setProcedureOutputList(List<ProcedureOutputValue> procedureOutputList) {
 		this.procedureOutputList = procedureOutputList;
 	}
+	
+	public ProcedureOutputValue getProcedureOutputValue(String name) {
+		// a method to return the ProcedureOutputValue object given its name
+		if (procedureOutputValueMap == null) {
+			procedureOutputValueMap = new HashMap<String, ProcedureOutputValue>();
+			// populate it
+			for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
+				procedureOutputValueMap.put(procedureOutputValue.getProcedureOutputField().getFieldName(), procedureOutputValue);
+			}
+		}
+		return procedureOutputValueMap.get(name);
+	}
+	
 	
 	// subclasses will override this
 	public int getM1SnapNumberAfter() {
