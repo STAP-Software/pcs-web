@@ -1,0 +1,352 @@
+/**
+ * @author Scott Michaels
+ * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * All Rights Reserved.
+ */
+package org.tmt.aps.peas.procedure.executor;
+
+import java.util.Arrays;
+import java.util.Date;
+import java.util.List;
+import java.util.concurrent.Future;
+
+import javax.annotation.PostConstruct;
+import javax.ejb.Asynchronous;
+import javax.ejb.EJB;
+import javax.ejb.Singleton;
+import javax.ejb.Startup;
+
+import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.SubimageDefCache;
+import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extInterface.business.AcsMgmt;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.business.ImageProcessor;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
+import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureType;
+import org.tmt.aps.peas.procedure.model.SufsIterationOutput;
+import org.tmt.aps.peas.procedure.model.SufsProcedureOutput;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
+import org.tmt.aps.peas.session.model.Session;
+import org.tmt.aps.peas.statusLog.business.StatusLogger;
+import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
+import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+
+@Singleton
+@Startup
+public class SufsExecutor {
+
+	Logger logger = Logger.getLogger(this.getClass());
+
+	@EJB
+	private CameraMgmt cameraMgmt;
+	@EJB
+	private AcsMgmt acsMgmt;
+	@EJB
+	private DcsMgmt dcsMgmt;
+	@EJB
+	private FrameMgmt frameMgmt;
+	@EJB
+	private ImageProcessor imageProcessor;
+	@EJB
+	private GraphicDisplayMgmt graphicDisplayMgmt;
+	@EJB
+	private ReadyCameraSubflow readyCameraSubflow;
+	@EJB
+	private UserPromptMgmt userPromptMgmt;
+	@EJB
+	private StatusLogger statusLogger;
+	@EJB
+	private ProcedureExecutionMgmt procedureExecutionMgmt;
+	@EJB
+	private ProcedureExecutionState procedureExecutionState;
+	@EJB
+	private ComputationLibraryImpl computationLibrary;
+	@EJB
+	PhysicalModel physicalModel;
+	@EJB
+	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
+	@EJB
+	private CenterTelescopeSubflow centerTelescopeSubflow;
+	@EJB
+	private CentroidMapMgmt centroidMapMgmt;
+	@EJB
+	private ConstantsCache constantsCache;
+	@EJB
+	private SubimageDefCache subimageDefCache;
+	@EJB
+	private CreateRefMapExecutor createRefMapExecutor;
+	@EJB
+	private PupilRegistrationLoopSubflow pupilRegistrationLoopSubflow;
+
+	
+	private List<String> logMessages;
+
+	public List<String> getLogMessages() {
+		return logMessages;
+	}
+
+	public void setLogMessages(List<String> logMessages) {
+		this.logMessages = logMessages;
+	}
+
+	@PostConstruct
+	void init() {
+		logger.debug("SufsTiltExecutor::PostConstruct::");
+	}
+
+	@Asynchronous
+	public Future<?> testMethod() {
+		logger.debug("SufsTiltExecutor::testMethod::");
+		return null;
+	}
+
+	@Asynchronous
+	public void executeProcedure(Procedure procedure, Session currentSession) {
+
+		logger.info("SUFS Executor::executeProcedure::");
+
+		try {
+
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
+
+			SufsProcedureOutput procedureOutput = (SufsProcedureOutput) procedure.getProcedureOutput();
+
+			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+			statusLogger.log("camera.not_init");
+
+			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
+					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
+							.getFilterTypeId(), -1);
+
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
+
+				boolean autoTakeRefMap = false;
+				if (currentRefMap == null) {
+					autoTakeRefMap = true;
+				} else if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_NO) {
+					autoTakeRefMap = false;
+				} else {
+
+					try {
+						
+						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
+
+					} catch (AutoRefMapCheckException e) {
+
+						statusLogger.log(e.getKey(), e.getArg1(), e.getArg2());
+
+						if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
+							// prompt user
+							autoTakeRefMap = userPromptMgmt.displayYesNoDialog("New Ref Map Needed", e.getText() + "\nTake new Ref Map?");
+
+						} else {
+							autoTakeRefMap = true;
+						}
+					}
+				}
+
+				if (autoTakeRefMap) {
+
+					CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
+					Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
+							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession, 
+							procedure.getTestNumber(), po);
+
+					procedureExecutionMgmt.performProcedureStartup(subProcedure, null);
+
+					procedureExecutionState.setPendingSubProcedure(subProcedure);
+
+					// execute the subprocedure
+					createRefMapExecutor.executeSynchronousProcedure(subProcedure, currentSession);
+
+					currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), procedureConfig
+							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
+							.getFilterTypeId(), -1);
+
+				}
+			}
+
+			procedure.setRefBeamMap(currentRefMap);
+
+			logger.debug("light source 1 = " + procedureConfig.getLightSource());
+			
+			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
+						
+			/**********************************************/
+			/*                 Ready Camera               */
+			/**********************************************/			
+			readyCameraSubflow.execute(procedure);
+			
+			statusLogger.log("procedure.using_curr_frame");
+			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
+
+			logger.debug("light source 2 = " + procedureConfig.getLightSource());
+
+			int readyCameraTime = 10;
+			int trialsTime = 70;
+         
+			for (int i=0; i<procedureConfig.getNumberOfTrials(); i++) {
+				
+				int trialTimeDelta = (trialsTime/procedureConfig.getNumberOfTrials())*i + readyCameraTime;
+				procedureExecutionState.setPercentComplete(trialTimeDelta);
+				
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getNumberOfTrials());
+				
+				procedureExecutionState.incrementIteration();
+	
+				// setup the iteration output as the output target
+				SufsIterationOutput pio = new SufsIterationOutput();
+				procedureExecutionState.setCurrentOutputTarget(pio);
+				procedureOutput.addIteration(pio);
+	
+				/*****************************************************/
+				/*          centerTelescopeCalc subflow              */
+				/*****************************************************/
+				Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+				
+				CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
+
+				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				
+	
+				/*****************************************************/
+				/*              calculateCentroidStats               */
+				/*****************************************************/
+	
+				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+				
+				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+					
+				List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+				
+				// spots that can be used (found without errors and should be used for analysis)
+				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				
+				
+				// TODO: this may eventually be handled in a different structure
+				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
+	
+				/*****************************************************/
+				/*             Display Centroid Offsets              */
+				/*****************************************************/
+				
+				if (procedureConfig.isAutoDisplayCentroidOffsets()) {
+					graphicDisplayMgmt.displayCentroidOffsets(pio);
+				}
+				
+				/*****************************************************/
+				/*             Calc TBD                              */
+				/*****************************************************/
+					
+				
+				
+				
+				/*****************************************************/
+				/*                  Wait for DCS                     */
+				/*****************************************************/
+				long dcsWaitPeriodMs = Utils.waitForComplete(dcsFuture);
+				statusLogger.log("dcs.cmd_completed", dcsWaitPeriodMs/1000.0);
+
+
+			} // end of iteration loop
+			
+			
+			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
+
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
+			
+			/****************************************************/
+			/*             calc average good spots              */
+			/****************************************************/
+			
+			// this needs to be an average over all frames
+			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
+			
+			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
+
+			/*****************************************************/
+			/*             calcAvgCentroidOffsets                */
+			/*****************************************************/
+
+			// we can average the centroid offsets, but cannot average the status list
+			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
+			computationLibrary.calcAvgCentroidOffsets(offsetsIterations, goodSpots);
+			
+			/*****************************************************/
+			/*              calculateCentroidStats - avg SUFS    */
+			/*****************************************************/
+
+			CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
+			
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			
+			computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+					subimageDefList.getMissingSpotFlags(), goodSpots);
+
+			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+									
+			/*****************************************************/
+			/*          Display Avg SUFS Centroid Offsets        */
+			/*****************************************************/
+			
+			// Display the average centroid offsets 
+			//if (procedureConfig.isAutoDisplayAvgSufsCentroidOffsets()) {
+			//
+			//	graphicDisplayMgmt.displayAvgSufsCentroidOffsets(procedureOutput);
+			//}
+
+			procedureExecutionState.setPercentComplete(85);
+
+			
+			/*****************************************************/
+			/*             Other Calcs TBD                       */
+			/*****************************************************/
+
+		
+
+			
+			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+				// turn off reference beams - need to wait for response				
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+				procedureExecutionState.setPercentComplete(99);
+				long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
+	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+			}
+	
+			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
+	
+			procedureExecutionState.setPercentComplete(100);
+				
+		} catch (Throwable e) {
+			procedureExecutionMgmt.handleProcedureException(procedure, e);
+		}
+
+
+		
+		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
+	}
+
+}

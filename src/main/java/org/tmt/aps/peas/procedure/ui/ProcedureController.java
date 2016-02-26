@@ -74,6 +74,7 @@ import org.tmt.aps.peas.procedure.executor.FineScreenExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
 import org.tmt.aps.peas.procedure.executor.PhasingExecutor;
 import org.tmt.aps.peas.procedure.executor.PupilRegistrationExecutor;
+import org.tmt.aps.peas.procedure.executor.SufsExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.FineScreenProcedureOutput;
@@ -83,6 +84,7 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.procedure.model.PupilRegistrationProcedureOutput;
+import org.tmt.aps.peas.procedure.model.SufsProcedureOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
@@ -107,6 +109,8 @@ public class ProcedureController implements Serializable {
 	FineScreenExecutor fineScreenExecutor;
 	@EJB
 	PhasingExecutor phasingExecutor;
+	@EJB
+	SufsExecutor sufsExecutor;
 	@EJB
 	PupilRegistrationExecutor pupilRegistrationExecutor;
 	@EJB
@@ -497,7 +501,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public String doNewSufs() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS, null);
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS, new SufsProcedureOutput());
 	}
 
 	public String doNewPupilRegistration() {
@@ -634,6 +638,8 @@ public class ProcedureController implements Serializable {
 			fineScreenExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPhasing()) {
 			phasingExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedure.getProcedureType().isSufs()) {
+			sufsExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPupilRegistration()) {
 			pupilRegistrationExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isCenterTelescope()) {
