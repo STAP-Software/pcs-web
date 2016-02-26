@@ -93,6 +93,7 @@ public class MissingSpotsController implements Serializable {
 			pupilMaskType = pupilMaskTypeList.get(0);
 			spotListType = 1;
 			sufsGroupList = cameraDefMgmt.findSufsGroups();
+			sufsGroup = sufsGroupList.get(0);
 						
 
 		} catch (Exception e) {
@@ -107,8 +108,11 @@ public class MissingSpotsController implements Serializable {
 		logger.debug("Number of Spots = " + pupilMaskType.getNumSpots());
 
 		// read in current values from the cache
-		subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId()).getListOfSubimageDefs();
-		
+		if (pupilMaskType.isPupilMaskTypeSufs()) {
+			subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber()).getListOfSubimageDefs();			
+		} else {
+			subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId()).getListOfSubimageDefs();
+		}
 
 		// generate centroid numbers, x and y positions
 		StringBuffer numBuf = new StringBuffer();

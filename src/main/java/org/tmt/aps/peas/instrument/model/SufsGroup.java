@@ -32,10 +32,6 @@ public class SufsGroup {
 	float telPosAz;
 	float telPosEl;
 	int defaultRefBeamNum;
-	
-	@ManyToOne
-	@JoinColumn (name="pupilMaskId")
-	private PupilMask pupilMask;
 
 	
 	public Long getSufsGroupId() {
@@ -102,15 +98,6 @@ public class SufsGroup {
 	public void setDefaultRefBeamNum(int defaultRefBeamNum) {
 		this.defaultRefBeamNum = defaultRefBeamNum;
 	}
-
-	public PupilMask getPupilMask() {
-		return pupilMask;
-	}
-
-	public void setPupilMask(PupilMask pupilMask) {
-		this.pupilMask = pupilMask;
-	}
-
 	
 	public boolean isNewRecord() {
 		return sufsGroupId == null;

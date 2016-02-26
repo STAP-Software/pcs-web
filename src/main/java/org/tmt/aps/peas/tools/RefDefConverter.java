@@ -16,7 +16,7 @@ public class RefDefConverter {
 		// TODO Auto-generated method stub
 
 		// open and read a file
-		File file = new File("c:\\workspace\\pcs-fortran-work\\pcs_data\\refbeams\\defs\\REF_DEF_TABLE_160.dat");
+		File file = new File("/home/smichaels/git/pcs-fortran-work/pcs_data/refbeams/defs/REF_DEF_TABLE_SUFS_NEW.DAT");
 		BufferedReader reader = null;
 
 		try {
@@ -28,22 +28,18 @@ public class RefDefConverter {
 		    while ((text = reader.readLine()) != null) { 
 		    	// read in values one at a time
 		    	String[] strValues = text.trim().split("\\s+");
-		    	values.addAll(Arrays.asList(strValues));
+		    	values.add(strValues[1]);
+		    	values.add(strValues[2]);
 		    }
 		    
-		    // Now create two lists
-		    values.size();
-		    List<String> listX = values.subList(0, values.size()/2);
-		    List<String> listY = values.subList(values.size()/2, values.size());
 		    
 		    
-		    for (int i=0; i<160; i+=6) {
-		    	System.out.print("'" + listX.get(i) + "," + listY.get(i) + ", ");
-		    	System.out.print(listX.get(i+1) + "," + listY.get(i+1) + ", ");
-		    	System.out.print(listX.get(i+2) + "," + listY.get(i+2) + ", ");
-		    	System.out.print(listX.get(i+3) + "," + listY.get(i+3) + ", ");
-		    	System.out.print(listX.get(i+4) + "," + listY.get(i+4) + ", ");
-		    	System.out.print(listX.get(i+5) + "," + listY.get(i+5) + ", ' ||\n");
+		    for (int i=0; i<1809*2; i+=2) {
+		    	System.out.print(values.get(i) + "," + values.get(i+1) + ", ");
+		    	
+		    	if ((i-10)%12 == 0) {
+		    		System.out.print(" ' ||\n'");
+		    	}
 		    }
 		    
 		

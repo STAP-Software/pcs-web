@@ -82,7 +82,7 @@ public class FitsFilename {
 
 			this.fileName = fitsFileName;
 			
-			StringTokenizer st = new StringTokenizer(fitsFileName, "_");
+			StringTokenizer st = new StringTokenizer(fileName, "_");
 
 			String telescopeStr = st.nextToken();
 			telescope = new Integer(telescopeStr.substring(1));

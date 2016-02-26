@@ -79,8 +79,8 @@ public class SufsGroupController implements Serializable {
 		Set<SufsGroup> sufsGroupSet = new HashSet<SufsGroup>(sufsGroupList);
 
 		// update physical model on the fly
-		physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().setSufsGroupSet(sufsGroupSet);
-		Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
+		//physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().setSufsGroupSet(sufsGroupSet);
+		//Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}
 
 	public void validate(ComponentSystemEvent event) {
@@ -151,7 +151,6 @@ public class SufsGroupController implements Serializable {
 	public String doNewSufsGroup() {
 
 		sufsGroup = new SufsGroup();
-		sufsGroup.setPupilMask(physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask());
 
 		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
 

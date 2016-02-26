@@ -53,10 +53,6 @@ public class PupilMask {
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
 	private PupilMaskType pupilMaskType;
-
-	@OneToMany (mappedBy="pupilMask")
-	private Set<SufsGroup> sufsGroupSet;
-
 	
 
 	public Long getPupilMaskId() {
@@ -153,14 +149,6 @@ public class PupilMask {
 
 	public void setPcsFocusToAcs(float pcsFocusToAcs) {
 		this.pcsFocusToAcs = pcsFocusToAcs;
-	}
-
-	public Set<SufsGroup> getSufsGroupSet() {
-		return sufsGroupSet;
-	}
-
-	public void setSufsGroupSet(Set<SufsGroup> sufsGroupSet) {
-		this.sufsGroupSet = sufsGroupSet;
 	}
 
 	

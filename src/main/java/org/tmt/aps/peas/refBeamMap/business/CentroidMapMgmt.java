@@ -94,12 +94,18 @@ public class CentroidMapMgmt {
 	}
 
 	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId) {
+		return getSubimageDefList(telescopeId, pupilMaskTypeId, null);
+	}
+	
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer sufsGroupNumber) {
 
+		RefBeamMap refBeamMap = null;
+				
 		TypedQuery<RefBeamMap> query = em.createNamedQuery("findRefBeamDefMap", RefBeamMap.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
-
+	
 		query.setMaxResults(1);
-		RefBeamMap refBeamMap = query.getSingleResult();
+		refBeamMap = query.getSingleResult();
 
 		// decode String into transient FloatPoint values
 		List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
@@ -117,9 +123,18 @@ public class CentroidMapMgmt {
 		}
 
 		// merge this list with the spotType and missingSpotType lists
-		MissingSpotList missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, telescopeId, pupilMaskTypeId);
-		MissingSpotList missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId);
+		MissingSpotList missingSpotListFandI = null;
+		MissingSpotList missingSpotListAnalysis = null;
+		if (sufsGroupNumber == null) {
+		
+			missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, telescopeId, pupilMaskTypeId);
+			missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId);
 
+		} else {
+			missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, telescopeId, pupilMaskTypeId, sufsGroupNumber);
+			missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId, sufsGroupNumber);			
+		}
+		
 		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListAnalysisDecoded) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS);

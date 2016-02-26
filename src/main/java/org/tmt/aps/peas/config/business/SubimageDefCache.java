@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.SubimageDef;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 
 @Singleton
@@ -36,6 +37,7 @@ public class SubimageDefCache {
 	PeasProperties peasProperties;
 		
 	private Map<Long, SubimageDefList> subimageDefMap;
+	private Map<Integer, SubimageDefList> sufsSubimageDefMap;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -57,15 +59,39 @@ public class SubimageDefCache {
 		
 		}
 		
+		sufsSubimageDefMap = new HashMap<Integer, SubimageDefList>();
+		
+		for (int i=0; i<7; i++) {
+			
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, i);
+			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
+							
+			sufsSubimageDefMap.put(new Integer(i), subimageDefList);
+			
+		}
+		
 		// TODO: any change to missing spot type in UI needs to just call init() after DB is updated to refresh the cache
 		
 	}
 	
 	public SubimageDefList getSubimageDefList(Long pupilMaskTypeId) {
+		return getSubimageDefList(pupilMaskTypeId, null);
+	}
+	
+	public SubimageDefList getSubimageDefList(Long pupilMaskTypeId, Integer sufsGroup) {
 		
-		SubimageDefList subimageDefList = subimageDefMap.get(pupilMaskTypeId);
+		if (sufsGroup == null) {
+			SubimageDefList subimageDefList = subimageDefMap.get(pupilMaskTypeId);
 		
-		return subimageDefList;
+			return subimageDefList;
+		
+		} else {
+			
+			SubimageDefList subimageDefList = sufsSubimageDefMap.get(sufsGroup);
+			
+			return subimageDefList;
+			
+		}
 	}
 	
 }
