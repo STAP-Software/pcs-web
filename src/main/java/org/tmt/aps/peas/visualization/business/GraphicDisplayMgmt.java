@@ -89,7 +89,6 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 	public String getCentroidYs() {
-		logger.debug(">>>>> getting <<<<< : " + centroidYs);
 		return centroidYs;
 	}
 

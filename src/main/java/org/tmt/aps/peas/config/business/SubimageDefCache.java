@@ -70,6 +70,9 @@ public class SubimageDefCache {
 			
 		}
 		
+		// add the first one for the reference beam map, which does not require an SUFS group
+		subimageDefMap.put(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, sufsSubimageDefMap.get(0));
+		
 		// TODO: any change to missing spot type in UI needs to just call init() after DB is updated to refresh the cache
 		
 	}
@@ -79,6 +82,7 @@ public class SubimageDefCache {
 	}
 	
 	public SubimageDefList getSubimageDefList(Long pupilMaskTypeId, Integer sufsGroup) {
+		
 		
 		if (sufsGroup == null) {
 			SubimageDefList subimageDefList = subimageDefMap.get(pupilMaskTypeId);

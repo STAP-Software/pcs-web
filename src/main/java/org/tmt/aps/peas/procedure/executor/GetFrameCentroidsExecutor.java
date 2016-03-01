@@ -153,7 +153,12 @@ public class GetFrameCentroidsExecutor {
 
 		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 
-		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		SubimageDefList subimageDefList = null;
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+			subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
+		} else {
+			subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());			
+		}
 		
 		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
 				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), procedure.getProcedureType().isCreateRefMap());
@@ -331,7 +336,12 @@ public class GetFrameCentroidsExecutor {
 			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			SubimageDefList subimageDefList = null;
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+				subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
+			} else {
+				subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());			
+			}
 
 			centroidMap = null;
 			try {

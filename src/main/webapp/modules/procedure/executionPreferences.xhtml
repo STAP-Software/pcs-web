@@ -38,8 +38,8 @@
 
 					<h:outputLabel value="Auto Display Centroids" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroids}" />
-					<h:outputLabel value="Auto Display Centroid Offsets" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}"/>
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
+					<h:outputLabel value="Auto Display Centroid Offsets" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.sufs}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.sufs}" />
 					<h:outputLabel value="Auto Display Avg. Pseudo PT Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgPtCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}" />
 					<h:outputLabel value="Auto Display Avg. FS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>

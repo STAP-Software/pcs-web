@@ -101,6 +101,24 @@
 								</p:column>
 							</p:row>
 
+							<p:row rendered="#{procedureController.procedure.procedureType.sufs}">
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Segment Group Number" />
+								</p:column>   
+								<p:column styleClass="btmsFormInputColumn">
+									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
+									disabled="#{procedureController.procedure.procedureState gt 1}" >
+										<f:selectItem itemValue="1" itemLabel="1: North" /> 
+										<f:selectItem itemValue="2" itemLabel="2: West (Top)" /> 
+										<f:selectItem itemValue="3" itemLabel="3: West (Bottom)" /> 
+										<f:selectItem itemValue="4" itemLabel="4: South" /> 
+										<f:selectItem itemValue="5" itemLabel="5: East (Bottom)" /> 
+										<f:selectItem itemValue="6" itemLabel="6: East (Top)" /> 
+									</p:selectOneMenu>
+									
+								</p:column>
+							</p:row>
+
 							<p:row rendered="#{sessionController.engineeringView}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Frame Source" />

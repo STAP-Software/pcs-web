@@ -132,7 +132,8 @@ public class VisualizationController implements Serializable {
 		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
 			return subimageDefList.getInteriorCentroidXsAsString();
 		}
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
@@ -144,7 +145,8 @@ public class VisualizationController implements Serializable {
 		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null  && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
+			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
 			return subimageDefList.getInteriorCentroidYsAsString();
 		}
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
@@ -344,7 +346,8 @@ public class VisualizationController implements Serializable {
 	}
 	
 	public float getMaxOffset() {
-		if (graphicDisplayMgmt.getCentroidOffsetsDisplayValues() == null) return 0.0f;
+		if (graphicDisplayMgmt.getCentroidOffsetsDisplayValues() == null || 
+				graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidStatsResult() == null) return 0.0f;
 		
 		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues().getCentroidStatsResult().getMaxOffset();
 	}

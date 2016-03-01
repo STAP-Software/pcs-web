@@ -234,15 +234,16 @@ public class SufsExecutor {
 				/*              calculateCentroidStats               */
 				/*****************************************************/
 	
-				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+						procedureConfig.getSufsGroup());
 				
 				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 					
-				List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+				//List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 				
 				// spots that can be used (found without errors and should be used for analysis)
-				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				//int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
 				
 				// TODO: this may eventually be handled in a different structure
@@ -301,7 +302,7 @@ public class SufsExecutor {
 
 			CentroidOffsetsResult avgCentroidOffsetsResult= procedureOutput.getCentroidOffsetsResult();
 			
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 			
 			computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 					subimageDefList.getMissingSpotFlags(), goodSpots);

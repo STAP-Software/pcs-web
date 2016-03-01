@@ -75,7 +75,8 @@ public class CenterTelescopeSubflow {
 			/*****************************************************/
 
 			FindCentroidsResult findCentroidsResult = procedureCcdFrame.getCentroidMap().getFindCentroidsResult();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			Integer sufsGroup = procedureConfig.getSufsGroup();
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), sufsGroup);
 											
 			centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
 					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), 

@@ -445,7 +445,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public boolean getRenderNumTrials() {
-		return procedure.getProcedureType().isFineScreen();
+		return procedure.getProcedureType().isFineScreen() || procedure.getProcedureType().isSufs();
 	}
 
 	public boolean getRenderFrameInstructions() {

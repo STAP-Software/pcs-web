@@ -60,8 +60,9 @@ public class PupilRegistrationSubflow {
 		
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
+		Integer sufsGroup = procedureConfig.getSufsGroup();
 
-		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), sufsGroup);
 
 		
 		/*****************************************************/
