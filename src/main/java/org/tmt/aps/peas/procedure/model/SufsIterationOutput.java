@@ -4,16 +4,19 @@ import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 
-public class SufsIterationOutput extends ProcedureIterationOutput implements CentroidOffsetsDisplayValues {
+public class SufsIterationOutput extends ProcedureIterationOutput implements SufsCentroidOffsetsDisplayValues {
 
 
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
 	CentroidOffsetsResult centroidOffsetsResult;
 	CentroidStatsResult centroidStatsResult;;
 	FindCentroidsResult findCentroidsResult;
-	
+	SufsSegmentOffsetsResult sufsSegmentOffsetsResult;
+	SufsCentroidStatsResult sufsCentroidStatsResult;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -41,6 +44,25 @@ public class SufsIterationOutput extends ProcedureIterationOutput implements Cen
 	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
 		this.findCentroidsResult = findCentroidsResult;
 	}
+	
+	
+	
+	public SufsSegmentOffsetsResult getSufsSegmentOffsetsResult() {
+		return sufsSegmentOffsetsResult;
+	}
+	public void setSufsSegmentOffsetsResult(SufsSegmentOffsetsResult sufsSegmentOffsetsResult) {
+		this.sufsSegmentOffsetsResult = sufsSegmentOffsetsResult;
+	}
+	
+	public SufsCentroidStatsResult getSufsCentroidStatsResult() {
+		return sufsCentroidStatsResult;
+	}
+	public void setSufsCentroidStatsResult(SufsCentroidStatsResult sufsCentroidStatsResult) {
+		this.sufsCentroidStatsResult = sufsCentroidStatsResult;
+	}
+	
+
+	
 	
 	
 }

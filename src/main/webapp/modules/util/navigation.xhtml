@@ -66,6 +66,7 @@
 						<p:submenu label="Iteration #{loop.index+1}" >
 							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not visualizationController.centroidDisplayEnabled}"/>
 							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
+							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
 						</p:submenu>
 						</c:forEach>
 					

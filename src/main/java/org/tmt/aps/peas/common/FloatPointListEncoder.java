@@ -45,6 +45,10 @@ public class FloatPointListEncoder {
 		return buf.toString();
 	}
 	
+	public static String encodeXList(FloatPoint[] pointArray) {
+		return encodeXList(Arrays.asList(pointArray));
+	}
+	
 	public static String encodeXList(List<FloatPoint> pointList) {
 		StringBuffer buf = new StringBuffer();
 		if (pointList == null) return null;
@@ -56,6 +60,10 @@ public class FloatPointListEncoder {
 		}
 		return buf.toString();
 
+	}
+	
+	public static String encodeYList(FloatPoint[] pointArray) {
+		return encodeYList(Arrays.asList(pointArray));
 	}
 	
 	public static String encodeYList(List<FloatPoint> pointList) {

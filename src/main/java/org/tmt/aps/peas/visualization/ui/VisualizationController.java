@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
@@ -40,6 +41,7 @@ import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
+import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Named
@@ -129,28 +131,39 @@ public class VisualizationController implements Serializable {
 	public String getCentDefXs() {
 		// determine which procedure type we are in
 		// TODO: we are deciding that AvgCentroidOffset displays always use 36.  We may need to generalize this
-		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
+		
+		if (procedureController.getProcedure() != null && procedureController.getProcedure().getProcedureType().isSufs()) {
+			FloatPoint[] coords = constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates();
+			return FloatPointListEncoder.encodeXList(coords);
+			
+		} else if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
 			return subimageDefList.getInteriorCentroidXsAsString();
+		} else {
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+			return subimageDefList.getInteriorCentroidXsAsString(); // default
 		}
-		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-		return subimageDefList.getInteriorCentroidXsAsString(); // default
 	}
-
 	public String getCentDefYs() {
+		
 		// determine which procedure type we are in
-		if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null  && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
+		if (procedureController.getProcedure() != null && procedureController.getProcedure().getProcedureType().isSufs()) {
+			FloatPoint[] coords = constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates();
+			return FloatPointListEncoder.encodeYList(coords);
+			
+		} else if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null  && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
 			return subimageDefList.getInteriorCentroidYsAsString();
+		} else {
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+			return subimageDefList.getInteriorCentroidYsAsString(); // default
 		}
-		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
-		return subimageDefList.getInteriorCentroidYsAsString(); // default
 	}
 
 	public void setCentDefXs(String str) {}
@@ -495,6 +508,12 @@ public class VisualizationController implements Serializable {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ", " + showEdgeNums  + ")");
 	}
+	
+	public void updateSufsCentroidOffsetDisplayListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawSufsCentroidOffsets()");
+	}
+
 
 	public void doPopulateCentroidDisplay(int iteration) {
 
@@ -550,6 +569,20 @@ public class VisualizationController implements Serializable {
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_AVG_FS_CENTROID_OFFSETS);		
 	}
 
+
+	public void doPopulateSufsCentroidOffsetDisplay(int iteration) {
+		offsetScale = 100.0f; // initialize at 100%
+
+		ProcedureIterationOutput procedureIterationOutput = procedureController.getProcedure().getProcedureOutput().getProcedureIterationOutputList().get(iteration);
+
+		if (procedureIterationOutput instanceof SufsCentroidOffsetsDisplayValues) {
+
+			graphicDisplayMgmt.setAndEncodeSufsOffsetsDisplayValues((SufsCentroidOffsetsDisplayValues) procedureIterationOutput);
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);		
+	}
+
+	
 	public void doPopulateActuatorDeltaDisplay() {
 		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();

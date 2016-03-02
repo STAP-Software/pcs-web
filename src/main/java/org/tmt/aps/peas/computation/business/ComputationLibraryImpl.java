@@ -50,6 +50,8 @@ import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
+import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -475,6 +477,13 @@ public class ComputationLibraryImpl {
 	public CentroidOffsetsResult calculateCentroidOffsets(FloatPoint[] centroids, FloatPoint[] refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
+		return calcCentroidOffsets(centroids, refMapCentroids,
+				centroidOffsetsConfig, pupilMaskType, nspotTypes, missingSpotFlags, findCentStatusList);
+		
+	}
+	
+	private CentroidOffsetsResult calcCentroidOffsets(FloatPoint[] centroids, FloatPoint[] refMapCentroids,
+			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidOffsets"));
 
 		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
@@ -1535,6 +1544,98 @@ public class ComputationLibraryImpl {
 		return colorStepToActuatorsResult;
 		
 	}
+	
+	
+	public SufsSegmentCentroidsResult generateSufsSegmentCentroids (FindCentroidsResult findCentroidsResult, int[][] sufsGroupSegmentToMask) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentCentroidOffsets"));
+
+		FindCentroidsResult[] findSegmentCentroidsResult = new FindCentroidsResult[7];
+		FloatPoint[] segmentCentroidList = new FloatPoint[169];
+		float[] segmentIntensities = new float[169];
+		float[] segmentPeaks = new float[169];
+		int[] findCentStatuses = new int[169];
+		
+		// loop over each SUFS group segment
+		for (int i=0; i<7; i++) {
+			// loop over all spots
+			for (int j=0; j<169; j++) {
+				// convert numbering
+				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[sufsGroupSegmentToMask[j][i]];
+				segmentIntensities[j] = findCentroidsResult.getIntensityList()[sufsGroupSegmentToMask[j][i]];
+				segmentPeaks[j] = findCentroidsResult.getPeakList()[sufsGroupSegmentToMask[j][i]];
+				findCentStatuses[j] = findCentroidsResult.getFindCentStatusList()[sufsGroupSegmentToMask[j][i]];
+			}
+			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, findCentStatuses);
+
+		}
+
+		SufsSegmentCentroidsResult result = new SufsSegmentCentroidsResult(findSegmentCentroidsResult);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "generateSufsSegmentCentroidOffsets"));
+
+		return result;
+		
+	}
+	
+	public int[][] generateSufsSegmentInts (int[] input, int[][] sufsGroupSegmentToMask) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentInts"));
+
+		int[][] output = new int[7][169];
+		
+		// loop over each SUFS group segment
+		for (int i=0; i<7; i++) {
+			// loop over all spots
+			for (int j=0; j<169; j++) {
+				// convert numbering
+				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
+			}
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "generateSufsSegmentInts"));
+
+		return output;
+		
+	}
+	
+	
+	
+	@Computation
+	public SufsSegmentOffsetsResult calculateSufsCentroidOffsets(FindCentroidsResult findCentroidsResult, FindCentroidsResult refMapCentroidsResult, 
+			CentroidOffsetsConfig centroidOffsetsConfig, 
+			PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
+
+		
+		SufsSegmentCentroidsResult sufsSegmentCentroidsResult = generateSufsSegmentCentroids(findCentroidsResult, sufsGroupSegmentToMask);
+		SufsSegmentCentroidsResult sufsRefBeamSegmentCentroidsResult = generateSufsSegmentCentroids(refMapCentroidsResult, sufsGroupSegmentToMask);
+		int[][] segNspotTypes = generateSufsSegmentInts(nspotTypes, sufsGroupSegmentToMask);
+		int[][] segMissingSpotFlags = generateSufsSegmentInts(missingSpotFlags, sufsGroupSegmentToMask);
+		
+		CentroidOffsetsResult[] centroidOffsetsResult = new CentroidOffsetsResult[7];
+		
+		for (int groupSegment=0; groupSegment<7; groupSegment++) {
+		
+			FindCentroidsResult groupSegmentCentroidsResult = sufsSegmentCentroidsResult.getSegmentCentroidResultList()[groupSegment];
+			FindCentroidsResult refBeamGroupSegmentCentroidsResult = sufsRefBeamSegmentCentroidsResult.getSegmentCentroidResultList()[groupSegment];
+					
+			centroidOffsetsResult[groupSegment] = calcCentroidOffsets(groupSegmentCentroidsResult.getCentroidList(),
+					refBeamGroupSegmentCentroidsResult.getCentroidList(), 
+					centroidOffsetsConfig, pupilMaskType, 
+					segNspotTypes[groupSegment], 
+					segMissingSpotFlags[groupSegment], 
+					groupSegmentCentroidsResult.getFindCentStatusList());
+
+		
+		}
+
+		
+		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult);
+		
+		return result;
+		
+	}
+	
 	
 }
 

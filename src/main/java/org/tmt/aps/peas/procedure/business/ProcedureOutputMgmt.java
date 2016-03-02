@@ -376,12 +376,28 @@ public class ProcedureOutputMgmt {
 					}
 					break;
 
+					
+				case Constant.DATA_TYPE_FLOAT_POINT:
+					FloatPoint[][] objArray = (FloatPoint[][]) method.invoke(object, args);
+					if (objArray != null) {
+						for (FloatPoint[] element : objArray) {
+							for (FloatPoint subelement : element) {
+								buf.append("" + subelement + ", ");
+							}
+						}
+					} else {
+						buf.append(", ");
+					}
+					break;
+
 				}
 			}
 
 		}
 
-		buf.delete(buf.length() - 2, buf.length());
+		if (buf.length() > 1) {
+			buf.delete(buf.length() - 2, buf.length());
+		}
 		return buf.toString();
 
 	}
@@ -528,6 +544,35 @@ public class ProcedureOutputMgmt {
 
 					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), float[][].class);
 					method.invoke(classInstance, (Object) float2dArray);
+					break;
+
+					
+					
+				case Constant.DATA_TYPE_FLOAT_POINT:
+					FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(value).toArray(new FloatPoint[] {});
+					
+					
+					
+					int d1 = fieldDescriptor.getDimension1();
+					int d2 = fieldDescriptor.getDimension2();
+					if (fieldDescriptor.getDimension1()*fieldDescriptor.getDimension2() != floatPointArray.length) {
+						// a hack for the case where # of elements is less than field descriptor dim1 * dim2
+						// in this case, dim1 is replaced with actual value, given dim2 is constant (which will work for ColorSteps)
+						d1 = floatPointArray.length / d2;
+					}
+					
+					FloatPoint fp2dArray[][] = new FloatPoint[d1][d2];
+
+					// flat array now needs to be read into 2-d array
+					int fpk = 0;
+					for (int fi = 0; fi < d1; fi++) {
+						for (int fj = 0; fj < d2; fj++) {
+							fp2dArray[fi][fj] = floatPointArray[fpk++];
+						}
+					}
+
+					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), FloatPoint[][].class);
+					method.invoke(classInstance, (Object) fp2dArray);
 					break;
 
 				}

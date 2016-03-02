@@ -166,6 +166,7 @@ public class AsyncController implements Serializable {
 			requestContext.update("actDeltasForm");
 			requestContext.update("edgeHeightsForm");
 			requestContext.update("edgeResidualsForm");
+			requestContext.update("sufsOffsetsForm");
 			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
@@ -188,6 +189,9 @@ public class AsyncController implements Serializable {
 			}
 			if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
 				requestContext.execute("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
+			}
+			if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
+				requestContext.execute("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
 			}
 			
 			graphicDisplayMgmt.setPendingDisplay(null);

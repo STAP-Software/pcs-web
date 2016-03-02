@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
+import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -33,6 +34,7 @@ import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
+import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
 @Singleton
@@ -231,6 +233,21 @@ public class GraphicDisplayMgmt implements Serializable {
 		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
 	}
 
+	public void setAndEncodeSufsOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsOffsetsDisplayValues) {
+		
+		FloatPoint[][] segmentOffsetsArray = sufsOffsetsDisplayValues.getSufsSegmentOffsetsResult().getCartesianCentroidOffsets();
+		
+		// TODO: figure out what this does, and fix
+		//this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
+
+
+		// encode centroid offsets
+		// FIXME - for now, do just one
+		FloatPoint[] centroidOffsets = segmentOffsetsArray[0];
+		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(Arrays.asList(centroidOffsets)));
+		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
+	}
+
 
 	@Lock(LockType.READ)
 	public AvgPtCentroidOffsetsDisplayValues getAvgPtCentroidOffsetsDisplayValues() {
@@ -392,6 +409,21 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();	
 
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayCentroidOffsets"));
+	}
+	
+	@Abortable
+	public void displaySufsCentroidOffsets(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues) {
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySufsCentroidOffsets"));
+		// set the offset display values, this also encodes
+		setAndEncodeSufsOffsetsDisplayValues(sufsCentroidOffsetsDisplayValues);
+					
+		// set the pending display and wait for return
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);
+		
+		waitForReturnState();	
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySufsCentroidOffsets"));
 	}
 	
 	@Abortable

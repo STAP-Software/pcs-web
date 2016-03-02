@@ -1,0 +1,246 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+<script type="text/javascript">  
+//<![CDATA[
+
+var sideLen = 300
+var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
+           
+var resizing = false;   
+
+           
+function runDrawSufsOffsets() {
+
+	var c = document.getElementById("sufsOffsetsCanvas");
+	var ctx = c.getContext("2d");
+
+	ctx.translate(300,300);
+	ctx.scale(0.61, 0.61);
+
+	window.setTimeout("drawSufsCentroidOffsets(true,true)", 10);
+	
+
+	$(sufsCentroidOffsetDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("sufsCentroidOffsetsResizeHandler()", 1000);
+		}
+	})
+	   
+}
+
+function sufsCentroidOffsetsResizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("sufsCentroidOffsetDialog"); 
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableHeight = d.offsetHeight - 70;
+	var available = Math.min(availableWidth, availableHeight);
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("sufsOffsetsCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	drawSufsCentroidOffsets();
+	
+	resizing = false;
+
+}
+
+
+
+function drawSufsCentroidOffsets() {
+    
+	
+	var c = document.getElementById("sufsOffsetsCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,1000,1000);
+	
+	//alert("c = " + c)
+
+ 	
+ 	// display coordinates - ideal centroid positions
+	var xField2 = document.getElementById('sufsOffsetsForm:centDefXs').value;
+ 	var xCentroidArray = xField2.split(','); 
+ 	
+	var yField2 = document.getElementById('sufsOffsetsForm:centDefYs').value;
+ 	var yCentroidArray = yField2.split(','); 
+   
+ 	// display coordiantes - centroid offsets
+	var xField3 = document.getElementById('sufsOffsetsForm:centroidOffsetXs').value;
+ 	var xOffsetArray = xField3.split(','); 
+ 	
+	var yField3 = document.getElementById('sufsOffsetsForm:centroidOffsetYs').value;
+ 	var yOffsetArray = yField3.split(','); 
+   
+	var offsetScale = parseFloat(document.getElementById('sufsOffsetsForm:scaleSlider').value);
+ 	 
+	// calculate max length of all offsets
+	var maxLen = document.getElementById('sufsOffsetsForm:maxOffset').value;
+
+	
+	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
+	
+	// test only
+	maxLen = 1.5;
+
+	
+	var scaleFactor = hexRadius / maxLen  // the max length will then be the length of the hexRadius
+	
+	
+	
+	//console.log("scaleFactor = " + scaleFactor + ", maxLen = " + maxLen)
+	
+	//console.log("xField3 = " + xField3)
+	
+	
+	for (var i = 0; i < xCentroidArray.length; i++) {
+		
+		// test only to get something on the screen
+		var x = parseFloat(xCentroidArray[i]) * 300;
+		var y = parseFloat(yCentroidArray[i]) * 300;
+		
+		var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+			
+		//console.log("xCentroidArray[i] = " + xCentroidArray[i]);
+		console.log("xOffsetArray[i] = " + xOffsetArray[i] + ", dx = " + dx);
+		
+		ctx.beginPath();
+		ctx.strokeStyle = 'red';
+	    ctx.moveTo(x, y);
+	    ctx.lineTo(dx, dy);
+	    ctx.stroke();
+		
+	    
+		ctx.beginPath();
+		ctx.strokeStyle = 'black';
+		ctx.arc(x, y, 5, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.stroke();
+		ctx.fillStyle = 'white';
+	    ctx.fill();
+
+	}
+	
+	// max len is the value assigned to a side in the key
+
+	// add the key
+	
+	ctx.beginPath();
+	ctx.strokeStyle = 'red';
+    ctx.moveTo(850, 950);
+    ctx.lineTo(850 + sideLen, 950);
+    ctx.stroke();
+   
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();
+    
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850 + sideLen, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();   
+    
+	ctx.fillStyle = 'black';
+	ctx.font="18px Arial";
+	
+	
+	
+	ctx.fillText((sideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " pixels", 844, 940);
+	
+}
+
+
+
+//]]>  
+</script>   
+
+		<p:dialog id="sufsCentroidOffsetDialog" header="Avg Pseudo PT Centroid Offsets" widgetVar="sufsCentroidOffsetDisplayDialog" closable="false" >  
+     		<h:form id="sufsOffsetsForm">
+
+    		<h:inputHidden id="centroidOffsetXs" value="#{visualizationController.centroidOffsetXs}" />
+			<h:inputHidden id="centroidOffsetYs" value="#{visualizationController.centroidOffsetYs}" />
+
+     		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
+			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
+						
+ 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
+    			
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+     		
+    		
+    		<canvas id="sufsOffsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		
+    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >			
+ 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+
+				<!-- 
+				 
+				<p:spacer height="15"/><p:spacer height="15"/>
+				<h:outputLabel value="RMS Error (pixels)" />
+				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.rmsOffset}" style="position:relative; top:2px" />
+				<h:outputLabel value="80% Enclosed Energy (pixels)" />
+				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.enclosedEnergy80}" style="position:relative; top:2px" />
+				
+				<h:outputLabel value="Max Centroid Offset (pixels)" />
+				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxOffset}" style="position:relative; top:2px" />
+				
+				<h:outputLabel value="Segment with Max Offset"/>
+				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxSpotNum}" style="position:relative; top:2px" />
+				
+			
+				<p:spacer height="15"/><p:spacer height="15"/>
+				<h:outputLabel value="Arcsec/pixel" />
+				<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" />
+				
+    			
+    			<p:spacer height="10"/><p:spacer height="10"/>
+ 				 -->
+    			
+    			
+    		</p:panelGrid>
+    		<p:panelGrid columns="1" style="margin-bottom: 10px; width:100%">
+  
+  				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
+        		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
+        		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
+            		<p:ajax event="slideEnd" listener="#{visualizationController.updateSufsCentroidOffsetDisplayListener}" />
+        		</p:slider>
+    		</p:panelGrid>
+    		
+    		</p:panelGrid>
+    		
+    		
+    		</p:panelGrid>
+    		<br/>
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" />
+			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>

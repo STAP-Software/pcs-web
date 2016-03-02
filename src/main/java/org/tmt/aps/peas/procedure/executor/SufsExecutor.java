@@ -25,6 +25,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -240,10 +241,18 @@ public class SufsExecutor {
 				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 					
-				//List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
+				/*****************************************************/
+				/*   Divide up offsets to each segment and recalc    */
+				/*****************************************************/
+
+				int[][] sufsGroupSegmentToMask = constantsCache.getSufsConstants().getSufsGroupSegmentToMask();				
 				
-				// spots that can be used (found without errors and should be used for analysis)
-				//int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				SufsSegmentOffsetsResult sufsCentroidOffsets = computationLibrary.calculateSufsCentroidOffsets(findCentroidsResult, 
+						procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult(), 
+						procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType(), 
+						subimageDefList.getNspotTypes(), 
+						subimageDefList.getMissingSpotFlags(), 
+						sufsGroupSegmentToMask);
 				
 				
 				// TODO: this may eventually be handled in a different structure
@@ -254,7 +263,7 @@ public class SufsExecutor {
 				/*****************************************************/
 				
 				if (procedureConfig.isAutoDisplayCentroidOffsets()) {
-					graphicDisplayMgmt.displayCentroidOffsets(pio);
+					graphicDisplayMgmt.displaySufsCentroidOffsets(pio);
 				}
 				
 				/*****************************************************/
@@ -295,6 +304,8 @@ public class SufsExecutor {
 			// we can average the centroid offsets, but cannot average the status list
 			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
 			computationLibrary.calcAvgCentroidOffsets(offsetsIterations, goodSpots);
+			
+
 			
 			/*****************************************************/
 			/*              calculateCentroidStats - avg SUFS    */
