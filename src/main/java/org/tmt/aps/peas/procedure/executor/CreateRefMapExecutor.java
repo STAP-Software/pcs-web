@@ -120,7 +120,7 @@ public class CreateRefMapExecutor {
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
 						
-		    // TODO: Special logic for SUFS                                                    
+		    // TODO: Special logic for SUFS - use last used coarse mirror offsets to move coarse mirror                                                
 			/*
 			IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
 		           REF_SUFS_GROUP = CURRENT_SUFS_GROUP
