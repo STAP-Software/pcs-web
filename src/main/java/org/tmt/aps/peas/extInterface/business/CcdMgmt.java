@@ -45,33 +45,33 @@ public class CcdMgmt {
 	}
 
 	public void setOffset(int channel, double offset) throws Exception {
-		// TODO Auto-generated method stub
+		
 		extInfFactory.getInstrumentCommand().setOffset(channel, offset);
 	}
 
 	public int getImageWidth() throws Exception {
-		// TODO Auto-generated method stub
+		
 		return extInfFactory.getInstrumentCommand().getImageWidth();
 	}
 
 	public int getImageHeight() throws Exception {
-		// TODO Auto-generated method stub
+		
 		return extInfFactory.getInstrumentCommand().getImageHeight();
 	}
 
 	public double getPlateScale() throws Exception {
-		// TODO Auto-generated method stub
+		
 		return extInfFactory.getInstrumentCommand().getPlateScale();
 	}
 
 	public void setBinning(int x, int y) throws Exception {
-		// TODO Auto-generated method stub
+		
 		extInfFactory.getInstrumentCommand().setBinning(x, y);
 	}
 
 	public int[][] getImage(double exposureTime, boolean useShutter) throws Exception,
 			TimeoutException {
-		// TODO Auto-generated method stub
+		
 		
 		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
 		

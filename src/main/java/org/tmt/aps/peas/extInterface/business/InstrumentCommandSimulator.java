@@ -25,26 +25,26 @@ public class InstrumentCommandSimulator implements InstrumentInterface {
 	
 	@Override
 	public int[][] getImage() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
-		// TODO Auto-generated method stub
+		
 		return ccdCommandSimulator.getImage();
 	}
 
 	@Override
 	public void fastWipe() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
-		// TODO Auto-generated method stub
+		
 		ccdCommandSimulator.fastWipe();
 	}
 
 	@Override
 	public void wipeOn() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
-		// TODO Auto-generated method stub
+		
 		ccdCommandSimulator.wipeOn();
 	}
 
 	@Override
 	public CameraQueryResult queryCamera(int deviceCode) throws CommunicationException, TimeoutException, CommandFailureException,
 			RemoteException {
-		// TODO Auto-generated method stub
+		
 		return cameraCommandSimulator.queryCamera(deviceCode);
 	}
 

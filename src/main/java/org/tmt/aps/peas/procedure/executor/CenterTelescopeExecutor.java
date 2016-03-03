@@ -18,7 +18,6 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
@@ -30,17 +29,13 @@ import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
-import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.PupilMask;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
-import org.tmt.aps.peas.procedure.model.FineScreenIterationOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -60,8 +55,6 @@ public class CenterTelescopeExecutor {
 	@EJB
 	private FrameMgmt frameMgmt;
 	@EJB
-	private ImageProcessor imageProcessor;
-	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
 	private FrameDisplayMgmt frameDisplayMgmt;
@@ -75,8 +68,6 @@ public class CenterTelescopeExecutor {
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
-	@EJB
-	private PupilRegistrator pupilRegistrator;
 	@EJB
 	private PhysicalModel physicalModel;
 	@EJB

@@ -6,7 +6,7 @@ import org.tmt.aps.peas.lang.interop.RetVal;
 public class Test {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 		RetVal retVal = new RetVal();
 
 		JfindAndIdentify jfid = new JfindAndIdentify();

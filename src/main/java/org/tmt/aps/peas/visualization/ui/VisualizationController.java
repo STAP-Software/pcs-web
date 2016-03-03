@@ -355,7 +355,7 @@ public class VisualizationController implements Serializable {
 	}
 
 	public void setMaxOffset(float maxOffset) {
-		// TODO:
+		
 	}
 	
 	public float getMaxOffset() {

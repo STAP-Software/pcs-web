@@ -12,8 +12,7 @@ import java.util.Date;
 public class VersionTool {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-
+		
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");
 		
 		String path = args[1];

@@ -24,8 +24,6 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
-import org.tmt.aps.peas.frame.business.PupilRegistrator;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -51,8 +49,7 @@ public class CreateRefMapExecutor {
 	private CameraMgmt cameraMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
-	@EJB
-	private ImageProcessor imageProcessor;
+
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
@@ -67,8 +64,6 @@ public class CreateRefMapExecutor {
 	private ProcedureExecutionState procedureExecutionState;
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
-	@EJB
-	private PupilRegistrator pupilRegistrator;
 	@EJB
 	private PhysicalModel physicalModel;
 	@EJB

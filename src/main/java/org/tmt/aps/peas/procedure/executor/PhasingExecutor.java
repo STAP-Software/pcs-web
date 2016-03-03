@@ -19,18 +19,15 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.common.cdi.Computation;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
-import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
-import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -41,7 +38,6 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -71,8 +67,6 @@ public class PhasingExecutor {
 	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
-	@EJB
-	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB

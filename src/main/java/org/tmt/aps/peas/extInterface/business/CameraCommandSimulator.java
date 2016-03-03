@@ -183,7 +183,6 @@ public class CameraCommandSimulator implements CameraCommand {
 
 	@Override
 	public CameraStatus getCameraStatus() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
-		// TODO Auto-generated method stub
 
 		logger.trace(MessageGenerator.generateMessage("command.start", "getCameraStatus::SIMULATOR"));
 

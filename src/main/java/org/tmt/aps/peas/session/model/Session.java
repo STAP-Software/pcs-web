@@ -137,7 +137,7 @@ public class Session {
 	}
 
 	public boolean isNewRecord() {
-		// TODO Auto-generated method stub
+		
 		return sessionId == null;
 	}
 	

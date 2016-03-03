@@ -35,7 +35,6 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -65,8 +64,6 @@ public class SufsExecutor {
 	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
-	@EJB
-	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB

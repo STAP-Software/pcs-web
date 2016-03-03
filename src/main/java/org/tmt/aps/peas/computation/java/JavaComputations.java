@@ -536,7 +536,7 @@ public class JavaComputations {
 
 */
 	public static Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) {
-		// TODO Auto-generated method stub
+		
 		
 		
 		int relativeXCoarseCmd = Math.round(desiredMotion.x * 1000.0f * oraFactor * leverCoarse.x);

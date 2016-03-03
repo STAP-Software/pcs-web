@@ -86,7 +86,7 @@ public class FilterController implements Serializable {
 	}
 
 	public List<FilterType> getFilterTypeList() {
-		// TODO Auto-generated method stub
+		
 		return filterTypeList;
 	}
 

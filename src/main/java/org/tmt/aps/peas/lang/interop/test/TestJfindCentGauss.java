@@ -9,7 +9,7 @@ import org.tmt.aps.peas.lang.interop.RetVal;
 public class TestJfindCentGauss {
 
 	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+		
 
 		JfindCentGauss jfindCentGauss = new JfindCentGauss();
 		RetVal retVal = new RetVal();

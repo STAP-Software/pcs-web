@@ -16,17 +16,12 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
-import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -36,10 +31,7 @@ import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
-import org.tmt.aps.peas.frame.business.ImageProcessor;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
-import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -68,8 +60,6 @@ public class PupilRegistrationExecutor {
 	private DcsMgmt dcsMgmt;
 	@EJB
 	private FrameMgmt frameMgmt;
-	@EJB
-	private ImageProcessor imageProcessor;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
