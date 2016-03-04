@@ -88,6 +88,10 @@ public class FloatPoint {
 	public FloatPoint quot(double other) {
 		return new FloatPoint((float)(this.x / other), (float)(this.y / other));
 	}
+	
+	public FloatPoint prod(double other) {
+		return new FloatPoint((float)(this.x * other), (float)(this.y * other));
+	}
 
 	
 	/**

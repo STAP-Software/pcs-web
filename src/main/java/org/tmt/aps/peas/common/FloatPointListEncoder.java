@@ -96,6 +96,22 @@ public class FloatPointListEncoder {
 		return pointList;
 	}
 	
+	public static List<FloatPoint> multiplyPoints(FloatPoint[] pointList, float factor) {
+		return multiplyPoints(Arrays.asList(pointList), factor);
+	}
+	
+	public static List<FloatPoint> multiplyPoints(List<FloatPoint> pointList, float factor) {
+		
+		List<FloatPoint> newList = new ArrayList<FloatPoint>();
+		for (FloatPoint floatPoint : pointList ) {
+			newList.add(floatPoint.prod(factor));
+		}
+		return newList;
+	}
+	
+	
+	
+	
 	public static float[] extractXArray(List<FloatPoint> pointList) {
 		
 		if (pointList == null) return null;

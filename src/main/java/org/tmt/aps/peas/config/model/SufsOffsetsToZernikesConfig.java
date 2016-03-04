@@ -79,6 +79,15 @@ public class SufsOffsetsToZernikesConfig {
 		return numberOfZernikes[segmentNumber].intValue();
 	}
 	
+	public int[] getZernikesToCalc(int segmentNumber) {
+		int numZernikes = getNumberOfZernikes(segmentNumber);
+		int[] result = new int[numZernikes];
+		for (int i=0; i<numZernikes; i++) {
+			result[i] = i+1;
+		}
+		return result;
+	}
+	
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
@@ -88,4 +97,6 @@ public class SufsOffsetsToZernikesConfig {
 
 		return buf.toString();
 	}
+
+
 }

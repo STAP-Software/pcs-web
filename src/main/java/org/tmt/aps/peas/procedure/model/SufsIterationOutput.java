@@ -6,6 +6,7 @@ import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 
 public class SufsIterationOutput extends ProcedureIterationOutput implements SufsCentroidOffsetsDisplayValues {
@@ -17,6 +18,7 @@ public class SufsIterationOutput extends ProcedureIterationOutput implements Suf
 	FindCentroidsResult findCentroidsResult;
 	SufsSegmentOffsetsResult sufsSegmentOffsetsResult;
 	SufsCentroidStatsResult sufsCentroidStatsResult;
+	SufsSegmentZernikeResult sufsSegmentZernikeResult;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -59,6 +61,14 @@ public class SufsIterationOutput extends ProcedureIterationOutput implements Suf
 	}
 	public void setSufsCentroidStatsResult(SufsCentroidStatsResult sufsCentroidStatsResult) {
 		this.sufsCentroidStatsResult = sufsCentroidStatsResult;
+	}
+	
+	
+	public SufsSegmentZernikeResult getSufsSegmentZernikeResult() {
+		return sufsSegmentZernikeResult;
+	}
+	public void setSufsSegmentZernikeResult(SufsSegmentZernikeResult sufsSegmentZernikeResult) {
+		this.sufsSegmentZernikeResult = sufsSegmentZernikeResult;
 	}
 	
 

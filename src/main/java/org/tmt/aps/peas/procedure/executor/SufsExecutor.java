@@ -26,10 +26,12 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -253,10 +255,17 @@ public class SufsExecutor {
 				/*****************************************************/
 				/*             Calculate Zenikes from Offsets        */
 				/*****************************************************/
-				
-				//computationLibrary.calculateSufsZernikes();
-				
-				
+				/*
+				computationLibrary.calculateSufsZernikes(
+						constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
+						centroidOffsetsResult.getCcdCentroidOffsets(), 
+						constantsCache.getPrimaryMirrorConstants().getaHex(),
+						subimageDefList.getMissingSpotFlags(), 
+						findCentroidsResult.getFindCentStatusList(),
+						sufsGroupSegmentToMask, 
+						procedure.getProcedureConfigSet().getSufsOffsetsToZernikesConfig(),
+						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup()-1]);
+				*/
 				
 				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);

@@ -52,6 +52,8 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
+import org.tmt.aps.peas.computation.model.SufsZernikeResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -59,6 +61,7 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
@@ -84,6 +87,7 @@ import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
 import org.tmt.aps.peas.lang.interop.JmakeTemplate;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
+import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
 import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
@@ -1599,6 +1603,27 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	public FloatPoint[][] generateSufsSegmentFloatPoints (FloatPoint[] input, int[][] sufsGroupSegmentToMask) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentFloatPoints"));
+
+		FloatPoint[][] output = new FloatPoint[7][169];
+		
+		// loop over each SUFS group segment
+		for (int i=0; i<7; i++) {
+			// loop over all spots
+			for (int j=0; j<169; j++) {
+				// convert numbering
+				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
+			}
+		}
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "generateSufsSegmentFloatPoints"));
+
+		return output;
+		
+	}
+	
 	
 	
 	@Computation
@@ -1625,17 +1650,86 @@ public class ComputationLibraryImpl {
 					segNspotTypes[groupSegment], 
 					segMissingSpotFlags[groupSegment], 
 					groupSegmentCentroidsResult.getFindCentStatusList());
-
-		
 		}
 
-		
 		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult);
 		
 		return result;
 		
 	}
 	
+
+	private SufsZernikeResult calcSufsZernikesOneSeg(FloatPoint[] idealSpots,  
+			FloatPoint[] offsets, float aHex, int[] goodSpots, int[] zernikesToCalc) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcSufsZernikesOneSeg"));
+
+		JsufsOffsetsToZernikes jsufsOffsetsToZernikes = new JsufsOffsetsToZernikes();
+		RetVal retVal = new RetVal();
+
+		List<FloatPoint> idealSpotsInMeters = FloatPointListEncoder.multiplyPoints(idealSpots, aHex);
+		float[] xIdealSpotsInMeters = FloatPointListEncoder.extractXArray(idealSpotsInMeters);
+		float[] yIdealSpotsInMeters = FloatPointListEncoder.extractYArray(idealSpotsInMeters);
+		
+		// TODO: how do we transform this?
+		float[] offsetsInArcseconds = new float[offsets.length];  
+		
+		float[] bestFitZernikes = new float[zernikesToCalc.length];
+		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
+	
+		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
+				offsetsInArcseconds, aHex, goodSpots, zernikesToCalc,
+				bestFitZernikes, theoreticalOffsets);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("sufsOffsetsToZernikes calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+		
+		float whFactor = (Float)result[0];
+		
+
+		// End of code for findCent unit testing
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcSufsZernikesOneSeg"));
+
+		return new SufsZernikeResult(bestFitZernikes, theoreticalOffsets, whFactor);
+		
+	}
+	
+	@Computation
+	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsMaskSpotLocations, FloatPoint[] maskOffsets, float aHex,
+			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, SufsOffsetsToZernikesConfig sufsOffsetsToZernikesConfig,
+			int[] groupSegmentNumbers) throws Exception {
+
+
+		int[] goodSpots = goodCentroidsFound(missingSpots, findCentStatuses);
+		
+		FloatPoint[][] idealSpots = generateSufsSegmentFloatPoints(sufsMaskSpotLocations, sufsGroupSegmentToMask);
+		FloatPoint[][] segmentOffsets = generateSufsSegmentFloatPoints(maskOffsets, sufsGroupSegmentToMask);
+		int[][] segGoodSpots = generateSufsSegmentInts(goodSpots, sufsGroupSegmentToMask);
+		
+		
+		// get the sufsOffsetsToZernikes for each segment
+		
+		
+		SufsZernikeResult[] sufsZernikeResults = new SufsZernikeResult[7];
+		
+		for (int groupSegment=0; groupSegment<7; groupSegment++) {
+			
+			int[] zernikesToCalc = sufsOffsetsToZernikesConfig.getZernikesToCalc(groupSegmentNumbers[groupSegment]);
+							
+			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(idealSpots[groupSegment],  
+				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikesToCalc);
+		
+		}
+
+		SufsSegmentZernikeResult result = new SufsSegmentZernikeResult(sufsZernikeResults);
+		
+		return result;
+		
+	}
+
 	
 }
 
