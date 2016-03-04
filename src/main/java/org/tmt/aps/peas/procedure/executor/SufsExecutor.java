@@ -226,17 +226,10 @@ public class SufsExecutor {
 				CentroidOffsetsResult centroidOffsetsResult= pio.getCentroidOffsetsResult();
 
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
-				
-	
-				/*****************************************************/
-				/*              calculateCentroidStats               */
-				/*****************************************************/
-	
+					
 				SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 						procedureConfig.getSufsGroup());
 				
-				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 					
 				/*****************************************************/
 				/*   Divide up offsets to each segment and recalc    */
@@ -251,6 +244,19 @@ public class SufsExecutor {
 						subimageDefList.getMissingSpotFlags(), 
 						sufsGroupSegmentToMask);
 				
+				/*****************************************************/
+				/*              calculateCentroidStats               */
+				/*****************************************************/
+				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+
+				/*****************************************************/
+				/*             Calculate Zenikes from Offsets        */
+				/*****************************************************/
+				
+				//computationLibrary.calculateSufsZernikes();
+				
+				
 				
 				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
@@ -262,13 +268,6 @@ public class SufsExecutor {
 				if (procedureConfig.isAutoDisplayCentroidOffsets()) {
 					graphicDisplayMgmt.displaySufsCentroidOffsets(pio);
 				}
-				
-				/*****************************************************/
-				/*             Calc TBD                              */
-				/*****************************************************/
-					
-				
-				
 				
 				/*****************************************************/
 				/*                  Wait for DCS                     */

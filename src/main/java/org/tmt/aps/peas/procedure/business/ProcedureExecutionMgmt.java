@@ -42,6 +42,8 @@ import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
+import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
@@ -462,6 +464,10 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		// get SufsOffsetsToZernikesConfigDefaults
+		SufsOffsetsToZernikesConfigDefaults sufsOffsetsToZernikesConfigDefaults = globalConfigMgmt.findSufsOffsetsToZernikesConfig();
+		procedure.getProcedureConfigSet().setSufsOffsetsToZernikesConfig(new SufsOffsetsToZernikesConfig(sufsOffsetsToZernikesConfigDefaults));
+		
 		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();
