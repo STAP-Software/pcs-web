@@ -60,6 +60,7 @@ public class CcdFrame {
 	private float telescopeEl;
 
 	private float intTime;
+	private Integer sufsGroupNumber;
 	
 	@Transient
 	protected int noOfAxes;
@@ -228,6 +229,14 @@ public class CcdFrame {
 
 	public void setIntTime(float intTime) {
 		this.intTime = intTime;
+	}
+
+	public Integer getSufsGroupNumber() {
+		return sufsGroupNumber;
+	}
+
+	public void setSufsGroupNumber(Integer sufsGroupNumber) {
+		this.sufsGroupNumber = sufsGroupNumber;
 	}
 
 	public void setCorrectedFrame(float[][] correctedFrame) {

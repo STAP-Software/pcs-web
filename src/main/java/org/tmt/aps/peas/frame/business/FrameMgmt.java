@@ -297,6 +297,7 @@ public class FrameMgmt {
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 			
 			ccdFrame.setIntTime((float)exposureTime);
+			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
 
 		} else {
 		
@@ -348,6 +349,7 @@ public class FrameMgmt {
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
 			
 			ccdFrame.setIntTime((float)exposureTime);
+			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
 
 		}
 

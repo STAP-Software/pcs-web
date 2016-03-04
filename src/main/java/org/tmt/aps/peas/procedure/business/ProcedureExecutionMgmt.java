@@ -383,7 +383,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
 
 		
-		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask and filter
+		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask, filter and sufsGroup
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
 			
 			// get pupilMask and Filter from the parent
@@ -394,7 +394,11 @@ public class ProcedureExecutionMgmt {
 			Filter refMapFilter = superProcedure.getProcedureConfigSet().getProcedureConfig().getFilter();
 			procedureConfig.setFilter(refMapFilter);
 			procedureConfig.setFilterType(refMapFilter.getFilterType());
-						
+
+			Integer sufsGroupNumber = superProcedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup();
+			procedureConfig.setSufsGroup(sufsGroupNumber);
+
+			
 		} else {
 		
 			// get the default mask, if it is installed on the wheel

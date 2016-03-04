@@ -448,6 +448,10 @@ public class ProcedureController implements Serializable {
 		return procedure.getProcedureType().isFineScreen() || procedure.getProcedureType().isSufs();
 	}
 
+	public boolean getRenderSufsGroup() {
+		return procedure.getProcedureType().isSufs() || (procedure.getProcedureType().isCreateRefMap() && procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs());
+	}
+
 	public boolean getRenderFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions() != null;
 	}
