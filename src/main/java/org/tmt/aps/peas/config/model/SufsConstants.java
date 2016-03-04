@@ -43,7 +43,14 @@ public class SufsConstants {
 		this.sufsGroupToMirror = sufsGroupToMirror;
 	}
 
-
+	public String getSufsGroupToMirrorDisplayString(int sufsGroupNumber) {
+		StringBuffer buf = new StringBuffer();
+		for (int mirrorNumber : sufsGroupToMirror[sufsGroupNumber]) {
+			buf.append(mirrorNumber +", ");
+		}
+		return buf.substring(0, buf.length()-2);
+	}
+	
 
 	public String toString() {
 		

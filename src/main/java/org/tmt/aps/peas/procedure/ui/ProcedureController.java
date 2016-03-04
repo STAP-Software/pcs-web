@@ -22,6 +22,7 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.faces.event.AjaxBehaviorEvent;
 import javax.faces.event.PhaseId;
+import javax.faces.model.SelectItem;
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -181,6 +182,7 @@ public class ProcedureController implements Serializable {
 	List<Procedure> procedureList;
 	List<PupilMask> pupilMaskSelectList;
 	List<PupilMask> prPupilMaskSelectList;
+	List<SelectItem> sufsGroupSelectList;
 	
 	@PostConstruct
 	private void init() throws Exception {
@@ -198,6 +200,13 @@ public class ProcedureController implements Serializable {
 			if (pupilMask.getPupilMaskType().isPupilMaskTypeFs() || pupilMask.getPupilMaskType().isPupilMaskTypePh()) {
 				prPupilMaskSelectList.add(pupilMask);
 			}
+		}
+		
+		sufsGroupSelectList = new ArrayList<SelectItem>();
+		for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
+			String displayString = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroupNumber);
+			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, (sufsGroupNumber+1) + ": " + displayString);
+			sufsGroupSelectList.add(selectItem);
 		}
 
 	}
@@ -335,7 +344,10 @@ public class ProcedureController implements Serializable {
 		}
 	}
 	
-	
+	public List<SelectItem> getSufsGroupSelectList() {
+		return sufsGroupSelectList;
+	}
+
 	public StreamedContent getGraphicImage() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
