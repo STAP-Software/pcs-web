@@ -1,10 +1,10 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <script type="text/javascript">  
 //<![CDATA[
 
-var sideLen = 300
+var sideLen = 100
 var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
 var resizing = false;   
@@ -15,7 +15,7 @@ function runDrawSufsOffsets() {
 	var c = document.getElementById("sufsOffsetsCanvas");
 	var ctx = c.getContext("2d");
 
-	ctx.translate(300,300);
+	ctx.translate(-25,-10);
 	ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawSufsCentroidOffsets(true,true)", 10);
@@ -60,8 +60,7 @@ function sufsCentroidOffsetsResizeHandler() {
 
 
 function drawSufsCentroidOffsets() {
-    
-	
+    	
 	var c = document.getElementById("sufsOffsetsCanvas");
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
@@ -92,7 +91,9 @@ function drawSufsCentroidOffsets() {
 	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
 	
 	// test only
-	maxLen = 10.0;
+	//var maxLen = 10.0;
+
+	var segmentWidth = 1.0;
 
 	
 	var scaleFactor = hexRadius / maxLen  // the max length will then be the length of the hexRadius
@@ -107,8 +108,8 @@ function drawSufsCentroidOffsets() {
 	for (var i = 0; i < xCentroidArray.length; i++) {
 		
 		// test only to get something on the screen
-		var x = parseFloat(xCentroidArray[i]) * 300;
-		var y = parseFloat(yCentroidArray[i]) * 300;
+		var x = (parseFloat(xCentroidArray[i]) + segmentWidth) * 500;
+		var y = (parseFloat(yCentroidArray[i]) + segmentWidth) * 500;
 		
 		var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
 		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
@@ -174,7 +175,7 @@ function drawSufsCentroidOffsets() {
 //]]>  
 </script>   
 
-		<p:dialog id="sufsCentroidOffsetDialog" header="Avg Pseudo PT Centroid Offsets" widgetVar="sufsCentroidOffsetDisplayDialog" closable="false" >  
+		<p:dialog id="sufsCentroidOffsetDialog" header="SUFS Centroid Offsets" widgetVar="sufsCentroidOffsetDisplayDialog" closable="false" >  
      		<h:form id="sufsOffsetsForm">
 
     		<h:inputHidden id="centroidOffsetXs" value="#{visualizationController.centroidOffsetXs}" />
@@ -182,8 +183,8 @@ function drawSufsCentroidOffsets() {
 
      		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
 			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
-						
- 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
+						  
+ 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxSufsOffset}" />
     			
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
      		
@@ -195,29 +196,54 @@ function drawSufsCentroidOffsets() {
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >			
  			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+			<h:outputLabel value="SUFS Group Number" />
+			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}" style="position:relative; top:2px" />
+			<h:outputLabel value="Group Segment Number" />
+			<h:outputText value="#{visualizationController.sufsGroupSegmentNumber+1}" style="position:relative; top:2px" />
+			<h:outputLabel value="Mirror Segment Number" />
+			<h:outputText value="#{constantsCache.sufsConstants.sufsGroupToMirror[procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup-1][visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" />
+		
 
-				<!-- 
-				 
-				<p:spacer height="15"/><p:spacer height="15"/>
-				<h:outputLabel value="RMS Error (pixels)" />
-				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.rmsOffset}" style="position:relative; top:2px" />
-				<h:outputLabel value="80% Enclosed Energy (pixels)" />
-				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.enclosedEnergy80}" style="position:relative; top:2px" />
-				
-				<h:outputLabel value="Max Centroid Offset (pixels)" />
-				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxOffset}" style="position:relative; top:2px" />
-				
-				<h:outputLabel value="Segment with Max Offset"/>
-				<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxSpotNum}" style="position:relative; top:2px" />
-				
+			<p:spacer height="25"/><p:spacer height="25"/>
 			
-				<p:spacer height="15"/><p:spacer height="15"/>
-				<h:outputLabel value="Arcsec/pixel" />
-				<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" />
-				
-    			
-    			<p:spacer height="10"/><p:spacer height="10"/>
- 				 -->
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','RmsOffset')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.rmsOffset[visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','EnclosedEnergy80')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.enclosedEnergy80[visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','MaxOffset')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxOffset[visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+			<h:outputLabel value="Subimage with Max Offset"/>
+			<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxSpotNum[visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" />
+			
+		
+			<p:spacer height="15"/><p:spacer height="15"/>
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','secPerPixel')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+   			
+   			<p:spacer height="10"/><p:spacer height="10"/>
+				 
     			
     			
     		</p:panelGrid>
@@ -228,13 +254,20 @@ function drawSufsCentroidOffsets() {
         		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
             		<p:ajax event="slideEnd" listener="#{visualizationController.updateSufsCentroidOffsetDisplayListener}" />
         		</p:slider>
+        		
+        		<p:spacer height="20"/><p:spacer height="20"/>
+        		
     		</p:panelGrid>
     		
+   		
     		</p:panelGrid>
-    		
-    		
+ 
+   		
     		</p:panelGrid>
     		<br/>
+    		<p:commandButton id="backButton" value="&lt;&lt; Back" styleClass="dialogbuttonBack" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsBack}" oncomplete="runDrawSufsOffsets()" />	
+        	<p:commandButton id="nextButton" value="Next &gt;&gt;" styleClass="dialogbuttonNext" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsNext}" oncomplete="runDrawSufsOffsets()" />	
+    		
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" />
 			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"

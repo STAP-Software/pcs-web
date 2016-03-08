@@ -12,6 +12,7 @@ import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.ejb.Singleton;
 import javax.ejb.Startup;
+import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.PhasingConstants;
@@ -23,6 +24,7 @@ import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 
 @Singleton
 @Startup
+@Named
 public class ConstantsCache {
 
 	Logger logger = Logger.getLogger(this.getClass());

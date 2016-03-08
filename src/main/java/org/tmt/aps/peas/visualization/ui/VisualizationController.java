@@ -86,6 +86,8 @@ public class VisualizationController implements Serializable {
 	String act1Pos;
 	
 	VisualizationDisplay currentDisplay;
+	int sufsGroupSegmentNumber = 0;
+	
 
 	@PostConstruct
 	private void init() {
@@ -381,6 +383,14 @@ public class VisualizationController implements Serializable {
 		return graphicDisplayMgmt.getAvgFsCentroidOffsetsDisplayValues().getAvgFsCentroidStatsResult().getMaxOffset();
 	}
 	
+	public void setMaxSufsOffset(float maxOffset) {}
+
+	public float getMaxSufsOffset() {
+		if (graphicDisplayMgmt.getSufsCentroidOffsetsDisplayValues() == null) return 0.0f;
+		
+		return graphicDisplayMgmt.getSufsCentroidOffsetsDisplayValues().getSufsCentroidStatsResult().getMaxOffset()[sufsGroupSegmentNumber];
+	}
+	
 	public float getOffsetScale() {
 		return offsetScale;
 	}
@@ -406,6 +416,12 @@ public class VisualizationController implements Serializable {
 	}
 
 	public void setAvgFsCentroidOffsetsDisplayValues(AvgFsCentroidOffsetsDisplayValues avgFsCentroidOffsetsDisplayValues) {}
+
+	public SufsCentroidOffsetsDisplayValues getSufsCentroidOffsetsDisplayValues() {
+		return graphicDisplayMgmt.getSufsCentroidOffsetsDisplayValues();
+	}
+
+	public void setSufsCentroidOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues) {}
 
 	public ActuatorDeltasDisplayValues getActuatorDeltasDisplayValues() {
 		return graphicDisplayMgmt.getActuatorDeltasDisplayValues();
@@ -438,6 +454,14 @@ public class VisualizationController implements Serializable {
 	}
 
 	public void setActDeltaHeats(String actDeltaHeats) {
+	}
+
+	public int getSufsGroupSegmentNumber() {
+		return sufsGroupSegmentNumber;
+	}
+
+	public void setSufsGroupSegmentNumber(int sufsGroupSegmentNumber) {
+		this.sufsGroupSegmentNumber = sufsGroupSegmentNumber;
 	}
 
 	public void initVisualizationDisplays(Long procedureTypeId) {
@@ -577,7 +601,7 @@ public class VisualizationController implements Serializable {
 
 		if (procedureIterationOutput instanceof SufsCentroidOffsetsDisplayValues) {
 
-			graphicDisplayMgmt.setAndEncodeSufsOffsetsDisplayValues((SufsCentroidOffsetsDisplayValues) procedureIterationOutput);
+			graphicDisplayMgmt.setAndEncodeSufsOffsetsDisplayValues((SufsCentroidOffsetsDisplayValues) procedureIterationOutput, 0);
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);		
 	}
@@ -628,6 +652,15 @@ public class VisualizationController implements Serializable {
 
 	}
 
+	public void doSufsCentroidOffsetsNext() {
+		sufsGroupSegmentNumber = (sufsGroupSegmentNumber < 6) ? sufsGroupSegmentNumber+1 : 0; 	
+		graphicDisplayMgmt.encodeSufsOffsetsForDisplay(sufsGroupSegmentNumber);
+	}
+	public void doSufsCentroidOffsetsBack() {
+		sufsGroupSegmentNumber = (sufsGroupSegmentNumber >0) ? sufsGroupSegmentNumber-1 : 6; 	
+		graphicDisplayMgmt.encodeSufsOffsetsForDisplay(sufsGroupSegmentNumber);
+	}
+	
 	public VisualizationDisplay getCurrentDisplay() {
 		return currentDisplay;
 	}

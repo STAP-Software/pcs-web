@@ -66,6 +66,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	ActuatorDeltasDisplayValues actuatorDeltasDisplayValues;
 	AvgPtCentroidOffsetsDisplayValues avgPtCentroidOffsetsDisplayValues;
 	AvgFsCentroidOffsetsDisplayValues avgFsCentroidOffsetsDisplayValues;
+	SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues;
 	EdgeHeightsDisplayValues edgeHeightsDisplayValues;
 	
 	String actDeltaHeats;
@@ -144,6 +145,14 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	public void setAvgFsCentroidOffsetYs(String avgFsCentroidOffsetYs) {
 		this.avgFsCentroidOffsetYs = avgFsCentroidOffsetYs;
+	}
+
+	public SufsCentroidOffsetsDisplayValues getSufsCentroidOffsetsDisplayValues() {
+		return sufsCentroidOffsetsDisplayValues;
+	}
+
+	public void setSufsCentroidOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues) {
+		this.sufsCentroidOffsetsDisplayValues = sufsCentroidOffsetsDisplayValues;
 	}
 
 	public String getCentroidNbrs() {
@@ -233,21 +242,23 @@ public class GraphicDisplayMgmt implements Serializable {
 		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
 	}
 
-	public void setAndEncodeSufsOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsOffsetsDisplayValues) {
+	public void setAndEncodeSufsOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues, int groupSegmentNumber) {
 		
-		FloatPoint[][] segmentOffsetsArray = sufsOffsetsDisplayValues.getSufsSegmentOffsetsResult().getCartesianCentroidOffsets();
-		
-		// TODO: figure out what this does, and fix
-		//this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
+		this.sufsCentroidOffsetsDisplayValues = sufsCentroidOffsetsDisplayValues;
 
-
-		// encode centroid offsets
-		// FIXME - for now, do just one
-		FloatPoint[] centroidOffsets = segmentOffsetsArray[0];
-		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(Arrays.asList(centroidOffsets)));
-		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
+		encodeSufsOffsetsForDisplay(0);
 	}
 
+	public void encodeSufsOffsetsForDisplay(int groupSegmentNumber) {
+		
+		FloatPoint[][] segmentOffsetsArray = sufsCentroidOffsetsDisplayValues.getSufsSegmentOffsetsResult().getCartesianCentroidOffsets();
+		// encode centroid offsets
+		
+		FloatPoint[] centroidOffsets = segmentOffsetsArray[groupSegmentNumber];
+		setCentroidOffsetXs(FloatPointListEncoder.encodeXList(Arrays.asList(centroidOffsets)));
+		setCentroidOffsetYs(FloatPointListEncoder.encodeYList(Arrays.asList(centroidOffsets)));
+
+	}
 
 	@Lock(LockType.READ)
 	public AvgPtCentroidOffsetsDisplayValues getAvgPtCentroidOffsetsDisplayValues() {
@@ -416,7 +427,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySufsCentroidOffsets"));
 		// set the offset display values, this also encodes
-		setAndEncodeSufsOffsetsDisplayValues(sufsCentroidOffsetsDisplayValues);
+		setAndEncodeSufsOffsetsDisplayValues(sufsCentroidOffsetsDisplayValues, 0);
 					
 		// set the pending display and wait for return
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);

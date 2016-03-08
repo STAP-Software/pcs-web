@@ -25,6 +25,8 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -249,11 +251,15 @@ public class SufsExecutor {
 				/*****************************************************/
 				/*              calculateCentroidStats               */
 				/*****************************************************/
-				computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+				
+				computationLibrary.calculateSufsCentroidOffsets(sufsCentroidOffsets, findCentroidsResult,  
+						subimageDefList.getNspotTypes(), 
+						subimageDefList.getMissingSpotFlags(), 
+						sufsGroupSegmentToMask);
+				
 
 				/*****************************************************/
-				/*             Calculate Zenikes from Offsets        */
+				/*             Calculate Zernikes from Offsets        */
 				/*****************************************************/
 				/*
 				computationLibrary.calculateSufsZernikes(
@@ -299,16 +305,16 @@ public class SufsExecutor {
 			
 			// this needs to be an average over all frames
 			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
-			
-			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
+			int[] goodSpotsMask = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
 
 			/*****************************************************/
 			/*             calcAvgCentroidOffsets                */
 			/*****************************************************/
 
-			// we can average the centroid offsets, but cannot average the status list
-			CentroidOffsetsResult[] offsetsIterations = procedureOutput.getIterationResultObjectFor("CentroidOffsetsResult", CentroidOffsetsResult.class).toArray(new CentroidOffsetsResult[0]);
-			computationLibrary.calcAvgCentroidOffsets(offsetsIterations, goodSpots);
+			
+			SufsSegmentOffsetsResult[] sufsOffsetsIterations = procedureOutput.getIterationResultObjectFor("SufsSegmentOffsetsResult", SufsSegmentOffsetsResult.class).toArray(new SufsSegmentOffsetsResult[0]);
+			computationLibrary.calcAvgSufsCentroidOffsets(sufsOffsetsIterations, goodSpotsMask, constantsCache.getSufsConstants().getSufsGroupSegmentToMask());
+			
 			
 
 			
@@ -320,8 +326,8 @@ public class SufsExecutor {
 			
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 			
-			computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
-					subimageDefList.getMissingSpotFlags(), goodSpots);
+			//computationLibrary.calculateAvgCentroidStats(avgCentroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
+			//		subimageDefList.getMissingSpotFlags(), goodSpots);
 
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 									
