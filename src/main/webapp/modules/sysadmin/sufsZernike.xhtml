@@ -1,0 +1,122 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+		<h:form id="sufsGroupForm" style="margin:30px">
+
+			<f:event listener="#{sufsGroupController.validate}" type="postValidate" />
+			
+			<h:inputHidden id="sufsGroupId" value="#{sufsGroupController.sufsGroup.sufsGroupId}"/>
+
+			<p:panelGrid columns="6" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Sufs Segment Zernike Order to Calculate" />
+				</f:facet>
+
+				<p:outputLabel value="Segment 1" />
+				<p:inputText id="groupNumber1" value="#{sufsGroupController.segmentZernikes[0]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 13" />
+				<p:inputText id="groupNumber13" value="#{sufsGroupController.segmentZernikes[12]}" required="true" size="2"  maxlength="2" />
+				<p:outputLabel value="Segment 25" />
+				<p:inputText id="groupNumber25" value="#{sufsGroupController.segmentZernikes[24]}" required="true" size="2"  maxlength="2" />
+
+				<p:outputLabel value="Segment 2" />
+				<p:inputText id="groupNumber2" value="#{sufsGroupController.segmentZernikes[1]}" required="true"  size="2"  maxlength="2" />
+				<p:outputLabel value="Segment 14" />
+				<p:inputText id="groupNumber14" value="#{sufsGroupController.segmentZernikes[13]}" required="true" size="2"  maxlength="2" />
+				<p:outputLabel value="Segment 26" />
+				<p:inputText id="groupNumber26" value="#{sufsGroupController.segmentZernikes[25]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 3" />
+				<p:inputText id="groupNumber3" value="#{sufsGroupController.segmentZernikes[2]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 15" />
+				<p:inputText id="groupNumber15" value="#{sufsGroupController.segmentZernikes[14]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 27" />
+				<p:inputText id="groupNumber27" value="#{sufsGroupController.segmentZernikes[26]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 4" />
+				<p:inputText id="groupNumber4" value="#{sufsGroupController.segmentZernikes[3]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 16" />
+				<p:inputText id="groupNumber16" value="#{sufsGroupController.segmentZernikes[15]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 28" />
+				<p:inputText id="groupNumber28" value="#{sufsGroupController.segmentZernikes[27]}" required="true" size="2"  maxlength="2"/>
+
+				<p:outputLabel value="Segment 5" />
+				<p:inputText id="groupNumber5" value="#{sufsGroupController.segmentZernikes[4]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 17" />
+				<p:inputText id="groupNumber17" value="#{sufsGroupController.segmentZernikes[16]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 29" />
+				<p:inputText id="groupNumber29" value="#{sufsGroupController.segmentZernikes[28]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 6" />
+				<p:inputText id="groupNumber6" value="#{sufsGroupController.segmentZernikes[5]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 18" />
+				<p:inputText id="groupNumber18" value="#{sufsGroupController.segmentZernikes[17]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 30" />
+				<p:inputText id="groupNumber30" value="#{sufsGroupController.segmentZernikes[29]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 7" />
+				<p:inputText id="groupNumber7" value="#{sufsGroupController.segmentZernikes[6]}" required="true"  size="2" maxlength="2" />
+				<p:outputLabel value="Segment 19" />
+				<p:inputText id="groupNumber19" value="#{sufsGroupController.segmentZernikes[18]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 31" />
+				<p:inputText id="groupNumber31" value="#{sufsGroupController.segmentZernikes[30]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 8" />
+				<p:inputText id="groupNumber8" value="#{sufsGroupController.segmentZernikes[7]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 20" />
+				<p:inputText id="groupNumber20" value="#{sufsGroupController.segmentZernikes[19]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 32" />
+				<p:inputText id="groupNumber32" value="#{sufsGroupController.segmentZernikes[31]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 9" />
+				<p:inputText id="groupNumber9" value="#{sufsGroupController.segmentZernikes[8]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 21" />
+				<p:inputText id="groupNumber21" value="#{sufsGroupController.segmentZernikes[20]}" required="true"  size="2" maxlength="2"/>
+				<p:outputLabel value="Segment 33" />
+				<p:inputText id="groupNumber33" value="#{sufsGroupController.segmentZernikes[32]}" required="true"  size="2" maxlength="2"/>
+
+				<p:outputLabel value="Segment 10" />
+				<p:inputText id="groupNumber10" value="#{sufsGroupController.segmentZernikes[9]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 22" />
+				<p:inputText id="groupNumber22" value="#{sufsGroupController.segmentZernikes[21]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 34" />
+				<p:inputText id="groupNumber34" value="#{sufsGroupController.segmentZernikes[33]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 11" />
+				<p:inputText id="groupNumber11" value="#{sufsGroupController.segmentZernikes[10]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 23" />
+				<p:inputText id="groupNumber23" value="#{sufsGroupController.segmentZernikes[22]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 35" />
+				<p:inputText id="groupNumber35" value="#{sufsGroupController.segmentZernikes[34]}" required="true" size="2" maxlength="2" />
+
+				<p:outputLabel value="Segment 12" />
+				<p:inputText id="groupNumber12" value="#{sufsGroupController.segmentZernikes[11]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 24" />
+				<p:inputText id="groupNumber24" value="#{sufsGroupController.segmentZernikes[23]}" required="true" size="2" maxlength="2" />
+				<p:outputLabel value="Segment 36" />
+				<p:inputText id="groupNumber36" value="#{sufsGroupController.segmentZernikes[35]}" required="true" size="2" maxlength="2" />
+
+
+				<f:facet name="footer">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
+						action="#{sufsGroupController.doSaveSufsZernikes}" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
+						immediate="true" action="#{sufsGroupController.doCancelSaveSufsZernikes}" />
+				</f:facet>
+			</p:panelGrid>
+
+			<br />
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>
+</html>

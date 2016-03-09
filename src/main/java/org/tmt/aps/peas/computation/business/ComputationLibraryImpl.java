@@ -1668,7 +1668,7 @@ public class ComputationLibraryImpl {
 	}
 	
 	@Computation
-	public SufsCentroidStatsResult calculateSufsCentroidOffsets(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, FindCentroidsResult findCentroidsResult,  
+	public SufsCentroidStatsResult calculateSufsCentroidStats(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, FindCentroidsResult findCentroidsResult,  
 			int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
 
 		SufsSegmentCentroidsResult sufsSegmentCentroidsResult = generateSufsSegmentCentroids(findCentroidsResult, sufsGroupSegmentToMask);
@@ -1740,14 +1740,17 @@ public class ComputationLibraryImpl {
 		float[] xIdealSpotsInMeters = FloatPointListEncoder.extractXArray(idealSpotsInMeters);
 		float[] yIdealSpotsInMeters = FloatPointListEncoder.extractYArray(idealSpotsInMeters);
 		
-		// TODO: how do we transform this?
-		float[] offsetsInArcseconds = new float[offsets.length];  
+		// TODO: convert to arcsecs
+		float[] offsetsInArcseconds = new float[offsets.length]; 
+		float[] offsetsX = FloatPointListEncoder.extractXArray(Arrays.asList(offsets));
+		float[] offsetsY = FloatPointListEncoder.extractYArray(Arrays.asList(offsets));
+		
 		
 		float[] bestFitZernikes = new float[zernikesToCalc.length];
 		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
 	
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
-				offsetsInArcseconds, aHex, goodSpots, zernikesToCalc,
+				offsetsX, offsetsY, aHex, goodSpots, zernikesToCalc,
 				bestFitZernikes, theoreticalOffsets);
 
 		

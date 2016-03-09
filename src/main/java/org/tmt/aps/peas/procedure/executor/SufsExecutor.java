@@ -252,7 +252,7 @@ public class SufsExecutor {
 				/*              calculateCentroidStats               */
 				/*****************************************************/
 				
-				computationLibrary.calculateSufsCentroidOffsets(sufsCentroidOffsets, findCentroidsResult,  
+				computationLibrary.calculateSufsCentroidStats(sufsCentroidOffsets, findCentroidsResult,  
 						subimageDefList.getNspotTypes(), 
 						subimageDefList.getMissingSpotFlags(), 
 						sufsGroupSegmentToMask);
@@ -348,9 +348,7 @@ public class SufsExecutor {
 			/*             Other Calcs TBD                       */
 			/*****************************************************/
 
-		
-
-			
+					
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
@@ -367,8 +365,6 @@ public class SufsExecutor {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 
-
-		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 

@@ -25,6 +25,10 @@ import org.tmt.aps.peas.common.MessageGenerator;
 @Inheritance(strategy=InheritanceType.JOINED)
 public class SufsOffsetsToZernikesConfig {
 
+	
+	// this should be a global type of config, maybe in global config, because when we change the defaults, they stay.
+	// but we need to capture the current values with a procedure.
+	
 	@Transient
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -32,6 +36,8 @@ public class SufsOffsetsToZernikesConfig {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long sufsOffsetsToZernikesConfigId;
 	
+	
+	// TODO: change to zernike order 
 	@Column (name="numberOfZernikes")
 	private String numberOfZernikesEncoded;
 
