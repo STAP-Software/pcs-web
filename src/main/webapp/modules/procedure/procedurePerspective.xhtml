@@ -109,9 +109,39 @@
 									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
 									disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
+										<p:ajax update="configPanel startButton" listener="#{procedureController.sufsGroupChangeListener}" />
 									</p:selectOneMenu>
 									
 								</p:column>
+							</p:row>
+
+							<p:row rendered="#{procedureController.procedure.procedureType.sufs}">
+								
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Sufs Coarse Offsets (microns)" />
+								</p:column>   
+								<p:column styleClass="btmsFormInputColumn">
+									<h:panelGroup>
+									<h:outputLabel value="X: " />
+									<p:inputText id="sufsOffsetX" maxlength="5"  
+										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}"
+										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
+									<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultX})" />
+									</h:panelGroup>
+									<br/>
+									<p:spacer height="5" width="1"/>
+									<br/>
+									<h:panelGroup>
+									<h:outputLabel value="Y: " />
+									<p:inputText id="sufsOffsetY" maxlength="5"  
+										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
+										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
+									<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultY})" />
+									</h:panelGroup>
+									
+								</p:column>
+								
+								
 							</p:row>
 
 							<p:row rendered="#{sessionController.engineeringView}">

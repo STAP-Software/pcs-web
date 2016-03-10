@@ -42,6 +42,8 @@ import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
+import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
 import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -138,6 +140,13 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
+		if (procedure.getProcedureType().isSufs() || (procedure.getProcedureType().isCreateRefMap() && pupilMaskType.isPupilMaskTypeSufs())) {
+			// store the current sufs coarse mirror offsets for this group
+			procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			globalConfigMgmt.updateSufsCoarseOffsetsCurrent(procedure.getInstrument().getInstrumentId(), procedureConfig.getSufsGroup(), 
+					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentX(),
+					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentY());
+		}
 
 		logger.info("performProcedureStartup 3");
 
@@ -464,10 +473,21 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
-		// get SufsOffsetsToZernikesConfigDefaults
-		SufsOffsetsToZernikesConfigDefaults sufsOffsetsToZernikesConfigDefaults = globalConfigMgmt.findSufsOffsetsToZernikesConfig();
-		procedure.getProcedureConfigSet().setSufsOffsetsToZernikesConfig(new SufsOffsetsToZernikesConfig(sufsOffsetsToZernikesConfigDefaults));
 		
+		if (procedureType.isSufs()) {
+		
+			// init group to one
+			procedureConfig.setSufsGroup(1);
+			
+			// get SufsOffsetsToZernikesConfigDefaults
+			SufsOffsetsToZernikesConfigDefaults sufsOffsetsToZernikesConfigDefaults = globalConfigMgmt.findSufsOffsetsToZernikesConfig();
+			procedure.getProcedureConfigSet().setSufsOffsetsToZernikesConfig(new SufsOffsetsToZernikesConfig(sufsOffsetsToZernikesConfigDefaults));
+			
+			// get SufsCoarseOffsetsConfigDefaults
+			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
+					physicalModel.getInstrument().getInstrumentId(), new Long(procedureConfig.getSufsGroup()));
+			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
+		}
 		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();

@@ -21,6 +21,7 @@ import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
@@ -158,6 +159,24 @@ public class GlobalConfigMgmt {
 		return query.getSingleResult();	
 	}
 
-	
+	public SufsCoarseOffsetsConfigDefaults findSufsCoarseOffsetsConfig(Long instrumentId, Long sufsGroupId) {
+		TypedQuery<SufsCoarseOffsetsConfigDefaults> query = em.createNamedQuery("findSufsCoarseOffsetsConfig", SufsCoarseOffsetsConfigDefaults.class);
+		
+		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("sufsGroupId", sufsGroupId);
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+
+	public void updateSufsCoarseOffsetsCurrent(Long instrumentId, int sufsGroupId, int coarseOffsetX, int coarseOffsetY) {
+		
+		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = findSufsCoarseOffsetsConfig(instrumentId, new Long(sufsGroupId));
+		sufsCoarseOffsetsConfigDefaults.setCoarseMirrorOffsetCurrentX(coarseOffsetX);
+		sufsCoarseOffsetsConfigDefaults.setCoarseMirrorOffsetCurrentY(coarseOffsetY);
+		
+		em.merge(sufsCoarseOffsetsConfigDefaults);
+		
+	}
 
 }

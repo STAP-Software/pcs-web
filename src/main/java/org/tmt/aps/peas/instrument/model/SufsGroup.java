@@ -27,10 +27,6 @@ public class SufsGroup {
 	private Long sufsGroupId;
 
 	int groupNumber;
-	float coarseMirrorPosX;
-	float coarseMirrorPosY;
-	float telPosAz;
-	float telPosEl;
 	int defaultRefBeamNum;
 
 	
@@ -50,46 +46,7 @@ public class SufsGroup {
 		this.groupNumber = groupNumber;
 	}
 
-	public float getCoarseMirrorPosX() {
-		return coarseMirrorPosX;
-	}
 
-	public void setCoarseMirrorPosX(float coarseMirrorPosX) {
-		this.coarseMirrorPosX = coarseMirrorPosX;
-	}
-
-	public float getCoarseMirrorPosY() {
-		return coarseMirrorPosY;
-	}
-
-	public void setCoarseMirrorPosY(float coarseMirrorPosY) {
-		this.coarseMirrorPosY = coarseMirrorPosY;
-	}
-
-	public FloatPoint getCoarseMirrorPos() {
-		return new FloatPoint(coarseMirrorPosX, coarseMirrorPosY);
-	}
-
-	public void setCoarseMirrorPos(FloatPoint coarseMirrorPos) {
-		this.coarseMirrorPosX = coarseMirrorPos.getX();
-		this.coarseMirrorPosY = coarseMirrorPos.getY();
-	}
-
-	public float getTelPosAz() {
-		return telPosAz;
-	}
-
-	public void setTelPosAz(float telPosAz) {
-		this.telPosAz = telPosAz;
-	}
-
-	public float getTelPosEl() {
-		return telPosEl;
-	}
-
-	public void setTelPosEl(float telPosEl) {
-		this.telPosEl = telPosEl;
-	}
 
 	public int getDefaultRefBeamNum() {
 		return defaultRefBeamNum;

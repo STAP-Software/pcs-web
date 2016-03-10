@@ -50,6 +50,8 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
+import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -205,7 +207,7 @@ public class ProcedureController implements Serializable {
 		sufsGroupSelectList = new ArrayList<SelectItem>();
 		for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
 			String displayString = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroupNumber);
-			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, (sufsGroupNumber+1) + ": " + displayString);
+			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, (sufsGroupNumber+1) + ":  " + displayString);
 			sufsGroupSelectList.add(selectItem);
 		}
 
@@ -952,6 +954,19 @@ public class ProcedureController implements Serializable {
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
+		
+	}
+	
+	
+	public void sufsGroupChangeListener() throws Exception {
+
+		// determine new group
+		int sufsGroup = procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup();
+		
+		// get SufsCoarseOffsetsConfigDefaults
+		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
+				physicalModel.getInstrument().getInstrumentId(), new Long(sufsGroup));
+		procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 		
 	}
 
