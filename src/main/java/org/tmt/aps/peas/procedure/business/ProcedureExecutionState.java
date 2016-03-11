@@ -131,6 +131,11 @@ public class ProcedureExecutionState {
 		return currentProcedure;
 	}
 
+	// returns true if the current execution context is a subprocedure
+	public boolean isExecutionContextSubProcedure() {
+		return procedureStack != null;
+	}
+	
 	public void requestCompleteProcedure() {
 		if (procedureStack != null) {
 			transferControlFromSubProcedure();

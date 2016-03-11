@@ -132,6 +132,19 @@ public class GlobalConfigMgmt {
 		return refMapConfigDefaults;
 
 	}
+	
+	public ReferenceBeam findReferenceBeamByNumber(int refBeamNum) {
+		
+		// get the reference beam by ref beam number
+		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
+		query2.setParameter("refBeamNum", refBeamNum);
+		
+		query2.setMaxResults(1);
+		
+		ReferenceBeam referenceBeam = query2.getSingleResult();
+		
+		return referenceBeam;
+	}
 
 	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId) {
 		TypedQuery<AutoRefMapConfigDefaults> query = em.createNamedQuery("findAutoByProcedureType", AutoRefMapConfigDefaults.class);

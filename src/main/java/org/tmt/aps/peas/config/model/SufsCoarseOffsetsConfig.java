@@ -19,6 +19,7 @@ import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.common.Point;
 
 @Entity
 @Table(name = "SufsCoarseOffsetsConfig")
@@ -112,6 +113,11 @@ public class SufsCoarseOffsetsConfig {
 		buf.append("\n");
 
 		return buf.toString();
+	}
+
+	public Point getCoarseMirrorOffsetCurrent() {
+		
+		return new Point(coarseMirrorOffsetCurrentX, coarseMirrorOffsetCurrentY);
 	}
 
 

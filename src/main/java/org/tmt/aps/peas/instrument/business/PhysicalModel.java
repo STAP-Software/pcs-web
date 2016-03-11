@@ -5,7 +5,9 @@
  */
 package org.tmt.aps.peas.instrument.business;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
@@ -18,6 +20,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.instrument.model.SufsGroup;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
@@ -41,6 +44,7 @@ public class PhysicalModel {
 	// metadata
 	private List<PupilMaskType> pupilMaskTypeList;
 	private List<FilterType> filterTypeList;
+	private Map<Integer, SufsGroup> sufsGroupMap;
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -56,6 +60,12 @@ public class PhysicalModel {
 		
 		filterTypeList = cameraDefMgmt.findAllFilterTypes();
 		pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();
+		
+		List<SufsGroup> sufsGroups = cameraDefMgmt.findSufsGroups();
+		sufsGroupMap = new HashMap<Integer, SufsGroup>();
+		for (SufsGroup sufsGroup : sufsGroups) {
+			sufsGroupMap.put(sufsGroup.getGroupNumber(), sufsGroup);
+		}		
 	}
 
 	public Instrument getInstrument() {
@@ -83,6 +93,9 @@ public class PhysicalModel {
 		return null;
 	}
 
+	public SufsGroup getSufsGroupByNumber(int sufsGroupNumber) {
+		return sufsGroupMap.get(sufsGroupNumber);
+	}
 
 	
 }

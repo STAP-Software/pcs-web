@@ -19,6 +19,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
@@ -348,12 +349,21 @@ public class SufsExecutor {
 			/*             Other Calcs TBD                       */
 			/*****************************************************/
 
+			// restore coarse mirror to global values
+			Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
+			Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(coarseMirrorDefault);
+			statusLogger.log("camera.cmd.coarse_mirror", coarseMirrorDefault.x, coarseMirrorDefault.y);
+
+			// wait for command to complete
+			long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture);
+			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+
 					
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				
 				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
 				procedureExecutionState.setPercentComplete(99);
-				long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
+				waitPeriodMs = Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
 	

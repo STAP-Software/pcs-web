@@ -17,6 +17,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -115,14 +116,6 @@ public class CreateRefMapExecutor {
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
 						
-		    // TODO: Special logic for SUFS - use last used coarse mirror offsets to move coarse mirror                                                
-			/*
-			IF (ZREFMAP_REF_TYPE.EQ.MASK_MENU_SUFS) THEN
-		           REF_SUFS_GROUP = CURRENT_SUFS_GROUP
-
-			END IF
-			*/
-
 			/**********************************************/
 			/*                 Ready Camera               */
 			/**********************************************/			
@@ -146,9 +139,17 @@ public class CreateRefMapExecutor {
 
 			procedureExecutionState.setPercentComplete(80);
 
-			// TODO: if SUFS, then Home the coarse mirror 
-			// CALL UFS_SEGMENT_SELECT(0)
-			// CALL UFS_SEG_POS_WRITE
+			// if called as a standard procedure (not a subprocedure) then restore the coarse mirror 
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs() && !procedureExecutionState.isExecutionContextSubProcedure()) {
+				// restore coarse mirror to global values
+				Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
+				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(coarseMirrorDefault);
+				statusLogger.log("camera.cmd.coarse_mirror", coarseMirrorDefault.x, coarseMirrorDefault.y);
+	
+				// wait for command to complete
+				long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture);
+				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+			}
 			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				

@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -68,6 +70,7 @@ import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+import org.tmt.aps.peas.instrument.model.SufsGroup;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
@@ -211,6 +214,7 @@ public class ProcedureController implements Serializable {
 			sufsGroupSelectList.add(selectItem);
 		}
 
+		
 	}
 
 	public Procedure getProcedure() {
@@ -859,12 +863,13 @@ public class ProcedureController implements Serializable {
 		// pupil mask has changed, but we need to change the pupil mask type
 		procedure.getProcedureConfigSet().getProcedureConfig().setPupilMaskType(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType());
 		
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+		if (procedure.getProcedureType().isCreateRefMap()) {
 
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+						
 		}
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
@@ -877,7 +882,7 @@ public class ProcedureController implements Serializable {
 		procedure.getProcedureConfigSet().getProcedureConfig().setFilterType(procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType());
 
 		
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+		if (procedure.getProcedureType().isCreateRefMap()) {
 
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
@@ -947,7 +952,7 @@ public class ProcedureController implements Serializable {
 		
 
 		
-		if (procedure.getProcedureType().getProcedureTypeId().equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
+		if (procedure.getProcedureType().isCreateRefMap()) {
 
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
@@ -967,6 +972,15 @@ public class ProcedureController implements Serializable {
 		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
 				physicalModel.getInstrument().getInstrumentId(), new Long(sufsGroup));
 		procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
+		
+		// set the ref beam if a ref map procedure
+		if (procedure.getProcedureType().isCreateRefMap()) {
+		
+			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+		
+		}
 		
 	}
 

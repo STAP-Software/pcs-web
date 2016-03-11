@@ -61,6 +61,7 @@ import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -409,6 +410,15 @@ public class ProcedureExecutionMgmt {
 			Integer sufsGroupNumber = superProcedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup();
 			procedureConfig.setSufsGroup(sufsGroupNumber);
 
+			// use sufs coarse mirror offsets from the super procedure
+			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig = superProcedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(sufsCoarseOffsetsConfig);
+			
+			// use reference beam based on SUFS group of super procedure
+			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroupNumber).getDefaultRefBeamNum();
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+			
 			
 		} else {
 		
@@ -503,7 +513,19 @@ public class ProcedureExecutionMgmt {
 		// Set up default ref beam and int time
 
 		procedure.getProcedureConfigSet().getProcedureConfig().setLightSource(ProcedureConfig.LIGHT_SOURCE_LED);
-		procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+		
+		if (procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs()) {
+			// override the defaults depending on the SUFS group
+			int sufsGroup = procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup(); 
+			// if this is the first time (e.g. sufsGroup == 0) then set to one
+			sufsGroup = (sufsGroup == 0) ? 1 : sufsGroup;
+			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+
+		} else {
+			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+		}
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
 
 		// make the list of possible int times equal to the 'one' we have
