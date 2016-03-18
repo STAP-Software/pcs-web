@@ -13,7 +13,7 @@ public class TelescopeConstants {
 	float m2TtCorrectionFactor;
 	int numberOfSegments;
 	float m1OuterDiameter;
-	
+	float telPerCoarseMotion;
 	
 	public float getBackFocalDistance() {
 		return backFocalDistance;
@@ -63,6 +63,13 @@ public class TelescopeConstants {
 	public void setNumberOfSegments(int numberOfSegments) {
 		this.numberOfSegments = numberOfSegments;
 	}
+	
+	public float getTelPerCoarseMotion() {
+		return telPerCoarseMotion;
+	}
+	public void setTelPerCoarseMotion(float telPerCoarseMotion) {
+		this.telPerCoarseMotion = telPerCoarseMotion;
+	}
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
@@ -74,6 +81,7 @@ public class TelescopeConstants {
 		buf.append("\nm2TtCorrectionFactor = " + m2TtCorrectionFactor);
 		buf.append("\nnumberOfSegments = " + numberOfSegments);
 		buf.append("\nm1OuterDiameter = " + m1OuterDiameter);
+		buf.append("\ntelPerCoarseMotion = " + telPerCoarseMotion);
 
 		buf.append("\n");
 		return buf.toString();

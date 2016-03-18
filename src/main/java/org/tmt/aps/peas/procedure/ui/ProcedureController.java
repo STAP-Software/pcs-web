@@ -210,7 +210,7 @@ public class ProcedureController implements Serializable {
 		sufsGroupSelectList = new ArrayList<SelectItem>();
 		for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
 			String displayString = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroupNumber);
-			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, (sufsGroupNumber+1) + ":  " + displayString);
+			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, " " + (sufsGroupNumber+1) + " : (" + displayString + ")");
 			sufsGroupSelectList.add(selectItem);
 		}
 

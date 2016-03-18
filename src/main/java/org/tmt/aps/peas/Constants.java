@@ -40,6 +40,10 @@ public class Constants {
 	public static final int AUTO_CENTER_PUPIL_MECH_AUTO = 3;
 	public static final int AUTO_CENTER_PUPIL_MECH_PROMPT = 4;
 
+	public static final int AUTO_SUFS_POINT_TEL_YES = 1;
+	public static final int AUTO_SUFS_POINT_TEL_NO = 2;
+	public static final int AUTO_SUFS_POINT_TEL_PROMPT = 3;
+
 	public static final int AUTO_SEND_ACT_DELTAS_YES = 1;
 	public static final int AUTO_SEND_ACT_DELTAS_NO = 2;
 	public static final int AUTO_SEND_ACT_DELTAS_PROMPT = 3;

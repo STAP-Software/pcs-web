@@ -1802,6 +1802,26 @@ public class ComputationLibraryImpl {
 		
 	}
 
+	/*
+	 * Given the X and Y coarse mirror motions that are about to be sent to the instrument, calculate the desired telescope commands
+	 * to keep the telescope centered.  These are calculated as approx using on-sky data.to keep the telescope centered.  
+	 * 
+	 * @param coarseMirrorOffsets 	The x,y motion about to be applied to the coarse mirror in microns
+	 * @param telPerCoarseMotion	Telescope motion (in arcsecs) for a 1 micron coarse mirror move
+	 * 
+	 * @return 						Required telescope motion (az,el) in arcseconds
+	 * 
+	 */
+	public FloatPoint coarseOffsetsToTelMoves(Point coarseMirrorOffsets, float telPerCoarseMotion) {
+
+		float sin30 = 0.5f;
+		float cos30 = 0.866025404f;
+		
+		float az = -1.0f * telPerCoarseMotion * (sin30 * coarseMirrorOffsets.x - cos30 * coarseMirrorOffsets.y);
+		float el = -1.0f * telPerCoarseMotion * (cos30 * coarseMirrorOffsets.x + sin30 * coarseMirrorOffsets.y);
+
+		return new FloatPoint(az, el);
+	}
 	
 }
 

@@ -14,6 +14,7 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.extinf.StarInfo;
 
 @Stateless
@@ -44,7 +45,7 @@ public class DcsMgmt {
 	public double[] queryTelescopePosition() throws Exception {
 		return extInfFactory.getDcsCommand().queryTelPos();
 	}
-
+	
 	// input in arcsec, sends in rads (delte elevation is negated)
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
 		
