@@ -237,7 +237,14 @@ public class CameraManualController implements Serializable {
 				break;
 
 			case 3: // Ref Beam
-				cameraMgmt.commandReferenceBeamState(selectedRefBeam);
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(selectedRefBeam);
+				
+				while (!refBeamFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				refBeamFuture.get();
+				
+				
 				getCamera().setCurrentRefBeam(selectedRefBeam);
 				commandType = "Ref Beam";
 				break;
