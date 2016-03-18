@@ -252,6 +252,7 @@ public class SufsExecutor {
 				if (dcsTelMoveFuture.get() == null) {
 					statusLogger.log("telescope.cmd.end");
 					logger.info("commandTelescopeDeltas: success");
+					telescopeMoved = true;
 					statusLogger.log("dcs.cmd_completed", waitPeriodMsTelMove/1000.0);
 				} else {
 					statusLogger.log("telescope.cmd.failed");
