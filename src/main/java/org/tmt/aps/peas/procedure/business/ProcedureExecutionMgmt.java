@@ -491,7 +491,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
 		
-		if (procedureType.isSufs()) {
+		if (procedureType.isSufs() || (procedureType.isCreateRefMap() && procedureConfig.getPupilMaskType().isPupilMaskTypeSufs())) {
 		
 			// init group to one
 			procedureConfig.setSufsGroup(1);
