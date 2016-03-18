@@ -491,7 +491,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
 		
-		if (procedureType.isSufs() || (procedureType.isCreateRefMap() && procedureConfig.getPupilMaskType().isPupilMaskTypeSufs())) {
+		if (procedureType.isSufs()) {
 		
 			// init group to one
 			procedureConfig.setSufsGroup(1);
@@ -526,9 +526,16 @@ public class ProcedureExecutionMgmt {
 			int sufsGroup = procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup(); 
 			// if this is the first time (e.g. sufsGroup == 0) then set to one
 			sufsGroup = (sufsGroup == 0) ? 1 : sufsGroup;
+			procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(sufsGroup);
+			
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
 			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+			
+			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
+					physicalModel.getInstrument().getInstrumentId(), new Long(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
+			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
+
 
 		} else {
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
