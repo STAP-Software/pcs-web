@@ -124,6 +124,8 @@ public class SufsExecutor {
 
 		logger.info("SUFS Executor::executeProcedure::");
 
+		Future<Exception> dcsTelMoveFuture = null;
+		
 		boolean telescopeMoved = false;
 		try {
 
@@ -150,9 +152,10 @@ public class SufsExecutor {
 				} else {
 
 					try {
-
+						// SUFS coarse mirror position pointing to group
+						Point coarseMirrorPosition = Point.add(globalConfig.getCoarseMirrorDefault(), sufsCoarseOffsetsConfig.getCoarseMirrorOffsetCurrent());
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(),
-								globalConfig.getCoarseMirrorDefault(), globalConfig.getFineMirrorDefault(),
+								coarseMirrorPosition, globalConfig.getFineMirrorDefault(),
 								physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(),
 								currentRefMap);
 
@@ -197,14 +200,11 @@ public class SufsExecutor {
 			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 
 			/**********************************************/
-			/* Ready Camera */
+			/* Move Telescope to compensate for SUFS      */
+			/* group coarse mirror steering               */
 			/**********************************************/
-			readyCameraSubflow.execute(procedure);
-
-			/**********************************************/
-			/* Move Telescope to compensate for SUFS */
-			/* group coarse mirror steering */
-			/**********************************************/
+			
+			// TODO: make DCS call asynchronous and wait after readyCamera
 			// determine telescope moves given coarse offsets
 			FloatPoint telescopeMoveAzEl = computationLibrary.coarseOffsetsToTelMoves(
 					sufsCoarseOffsetsConfig.getCoarseMirrorOffsetCurrent(), constantsCache.getTelescopeConstants().getTelPerCoarseMotion());
@@ -227,28 +227,40 @@ public class SufsExecutor {
 					if (autoPointTelescope) {
 
 						// send commands to DCS
+						statusLogger.log("telescope.desired_move", telescopeMoveAzEl.x, telescopeMoveAzEl.y);
+						statusLogger.log("telescope.cmd.start");
 
-						try {
-							statusLogger.log("telescope.desired_move", telescopeMoveAzEl.x, telescopeMoveAzEl.y);
-							statusLogger.log("telescope.cmd.start");
-
-							// send out the commands
-							dcsMgmt.commandTelescopeDeltas(telescopeMoveAzEl.asDoubleArray());
-
-							statusLogger.log("telescope.cmd.end");
-							logger.info("commandTelescopeDeltas: success");
-							telescopeMoved = true;
-
-						} catch (Exception e) {
-							statusLogger.log("telescope.cmd.failed");
-							logger.error(MessageGenerator.generateMessage("command.error"), e);
-						}
-
+						// send out the commands
+						dcsTelMoveFuture = dcsMgmt.commandTelescopeDeltasAsync(telescopeMoveAzEl.asDoubleArray());
 					}
 
 				}
 			}
 
+			/**********************************************/
+			/* Ready Camera */
+			/**********************************************/
+			readyCameraSubflow.execute(procedure);
+
+
+			/*****************************************************/
+			/* wait for Move Telescope to complete           */
+			/*****************************************************/
+			long waitPeriodMsTelMove = Utils.waitForComplete(dcsTelMoveFuture);
+			if (dcsTelMoveFuture != null) {
+				
+				if (dcsTelMoveFuture.get() == null) {
+					statusLogger.log("telescope.cmd.end");
+					logger.info("commandTelescopeDeltas: success");
+					statusLogger.log("dcs.cmd_completed", waitPeriodMsTelMove/1000.0);
+				} else {
+					statusLogger.log("telescope.cmd.failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), dcsTelMoveFuture.get());
+				}
+			}
+
+			
+			
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
@@ -275,7 +287,7 @@ public class SufsExecutor {
 				/*****************************************************/
 				/* centerTelescopeCalc subflow */
 				/*****************************************************/
-				Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+				Future<Exception> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
 				CentroidOffsetsResult centroidOffsetsResult = pio.getCentroidOffsetsResult();
 
@@ -328,13 +340,40 @@ public class SufsExecutor {
 				/* Wait for DCS */
 				/*****************************************************/
 				long dcsWaitPeriodMs = Utils.waitForComplete(dcsFuture);
-				statusLogger.log("dcs.cmd_completed", dcsWaitPeriodMs / 1000.0);
+				if (dcsFuture != null) {
+					if (dcsFuture.get() == null) {
+						statusLogger.log("dcs.cmd_completed", dcsWaitPeriodMs/1000.0);
+					} else {
+						statusLogger.log("telescope.cmd.failed");
+						logger.error(MessageGenerator.generateMessage("command.error"), dcsFuture.get());
+					}		
+				}
 
 			} // end of iteration loop
 
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+			
+			/*****************************************************/
+			/* Restore Telescope */
+			/*****************************************************/
+
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+
+				// restore telescope
+				if (telescopeMoved) {
+
+					statusLogger.log("telescope.desired_move", -telescopeMoveAzEl.x, -telescopeMoveAzEl.y);
+					statusLogger.log("telescope.cmd.start");
+
+					// send out the negative of the previous commands
+					dcsTelMoveFuture = dcsMgmt.commandTelescopeDeltasAsync(telescopeMoveAzEl.prod(-1.0).asDoubleArray());
+
+				}
+				
+			}
+
 
 			/****************************************************/
 			/* calc average good spots */
@@ -382,43 +421,22 @@ public class SufsExecutor {
 
 			procedureExecutionState.setPercentComplete(85);
 
+
 			/*****************************************************/
-			/* Restore Coarse Mirror and Telescope */
+			/* wait for Restore Telescope to complete           */
 			/*****************************************************/
-
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-
-				// restore coarse mirror to global values
-				Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(coarseMirrorDefault);
-				statusLogger.log("camera.cmd.coarse_mirror", coarseMirrorDefault.x, coarseMirrorDefault.y);
-
-				// restore telescope
-				if (telescopeMoved) {
-
-					statusLogger.log("telescope.desired_move", -telescopeMoveAzEl.x, -telescopeMoveAzEl.y);
-					statusLogger.log("telescope.cmd.start");
-
-					try {
-						// send out the negative of the previous commands
-						dcsMgmt.commandTelescopeDeltas(telescopeMoveAzEl.prod(-1.0).asDoubleArray());
-
-						statusLogger.log("telescope.cmd.end");
-						logger.info("commandTelescopeDeltas: success");
-
-					} catch (Exception e) {
-						statusLogger.log("telescope.cmd.failed");
-						logger.error(MessageGenerator.generateMessage("command.error"), e);
-					}
-
-				}
+			waitPeriodMsTelMove = Utils.waitForComplete(dcsTelMoveFuture);
+			if (dcsTelMoveFuture != null) {
 				
-				// wait for command to complete
-				long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture);
-				statusLogger.log("camera.cmd.complete", waitPeriodMs / 1000.0);
-
+				if (dcsTelMoveFuture.get() == null) {
+					statusLogger.log("telescope.cmd.end");
+					logger.info("commandTelescopeDeltas: success");
+					statusLogger.log("dcs.cmd_completed", waitPeriodMsTelMove/1000.0);
+				} else {
+					statusLogger.log("telescope.cmd.failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), dcsTelMoveFuture.get());
+				}		
 			}
-
 
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response

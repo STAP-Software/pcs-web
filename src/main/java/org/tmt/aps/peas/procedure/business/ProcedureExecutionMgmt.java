@@ -141,9 +141,9 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 		
-		if (procedure.getProcedureType().isSufs() || (procedure.getProcedureType().isCreateRefMap() && pupilMaskType.isPupilMaskTypeSufs())) {
+		if (procedure.getProcedureType().isSufs()) {
 			// store the current sufs coarse mirror offsets for this group
-			procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			
 			globalConfigMgmt.updateSufsCoarseOffsetsCurrent(procedure.getInstrument().getInstrumentId(), procedureConfig.getSufsGroup(), 
 					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentX(),
 					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentY());
@@ -252,7 +252,8 @@ public class ProcedureExecutionMgmt {
 			logger.debug("performProcedureCompletion::persist procedure");
 
 			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
-			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled() && 
+					!physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType().isPupilMaskTypeSufs()) {
 				// create a config defaults object to save back
 				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
 						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
@@ -411,7 +412,8 @@ public class ProcedureExecutionMgmt {
 			procedureConfig.setSufsGroup(sufsGroupNumber);
 
 			// use sufs coarse mirror offsets from the super procedure
-			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig = superProcedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfigSuper = superProcedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig = new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigSuper);
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(sufsCoarseOffsetsConfig);
 			
 			// use reference beam based on SUFS group of super procedure

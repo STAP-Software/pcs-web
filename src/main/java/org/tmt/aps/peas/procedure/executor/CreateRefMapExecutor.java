@@ -139,17 +139,6 @@ public class CreateRefMapExecutor {
 
 			procedureExecutionState.setPercentComplete(80);
 
-			// if called as a standard procedure (not a subprocedure) then restore the coarse mirror 
-			if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs() && !procedureExecutionState.isExecutionContextSubProcedure()) {
-				// restore coarse mirror to global values
-				Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
-				Future<Point> coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(coarseMirrorDefault);
-				statusLogger.log("camera.cmd.coarse_mirror", coarseMirrorDefault.x, coarseMirrorDefault.y);
-	
-				// wait for command to complete
-				long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture);
-				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
-			}
 			
 			if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
 				// turn off reference beams - need to wait for response				

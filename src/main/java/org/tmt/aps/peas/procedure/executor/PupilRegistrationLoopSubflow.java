@@ -7,6 +7,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
@@ -48,7 +49,7 @@ public class PupilRegistrationLoopSubflow {
 
 		while (true) {
 
-			Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			Future<Exception> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 			
 			/**********************************************/
 			/*        PupilRegistration Subflow           */
@@ -61,7 +62,14 @@ public class PupilRegistrationLoopSubflow {
 			// if we are waiting on DCS, here is where we must be completed.  This allows parallelism between possible camera commands to fix pupil reg
 			// and DCS moves to center the camera
 			long waitPeriodMs = Utils.waitForComplete(dcsFuture);
-			statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
+			if (dcsFuture != null) {
+				if (dcsFuture.get() == null) {
+					statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
+				} else {
+					statusLogger.log("telescope.cmd.failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), dcsFuture.get());
+				}		
+			}
 			
 			
 			if (frameOk) break;

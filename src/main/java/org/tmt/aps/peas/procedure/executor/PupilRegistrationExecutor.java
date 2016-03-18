@@ -17,6 +17,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
@@ -186,7 +187,7 @@ public class PupilRegistrationExecutor {
 			
 			// This is not implemented as a standard subprocedure because of the data we need returned.
 			
-			Future<Integer> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
+			Future<Exception> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
 			procedureExecutionState.setPercentComplete(30);
 
@@ -238,7 +239,14 @@ public class PupilRegistrationExecutor {
 			/*        Wait for DCS to complete            */
 			/**********************************************/			
 			long waitPeriodMs = Utils.waitForComplete(dcsFuture);
-			statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
+			if (dcsFuture != null) {
+				if (dcsFuture.get() == null) {
+					statusLogger.log("dcs.cmd_completed", waitPeriodMs/1000.0);
+				} else {
+					statusLogger.log("telescope.cmd.failed");
+					logger.error(MessageGenerator.generateMessage("command.error"), dcsFuture.get());
+				}		
+			}
 			
 			// fill the procedure output
 			procedureOutput.addPupilRegistrationIterationOutput(pio);

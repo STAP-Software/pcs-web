@@ -49,7 +49,7 @@ public class CenterTelescopeSubflow {
 
 
 	@Abortable
-	public Future<Integer> centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
+	public Future<Exception> centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		
 		//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
@@ -60,7 +60,7 @@ public class CenterTelescopeSubflow {
 
 		FloatPoint lastMove = null;
 		
-		Future<Integer> future = null;
+		Future<Exception> future = null;
 		
 		while (true) {
 

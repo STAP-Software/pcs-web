@@ -57,15 +57,22 @@ public class DcsMgmt {
 	}
 	
 	@Asynchronous
-	public Future<Integer> commandTelescopeDeltasAsync(double[] telescopeDeltas) throws Exception {
+	public Future<Exception> commandTelescopeDeltasAsync(double[] telescopeDeltas) {
 		
-		double deltaAz = telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180);
-		double deltaEl = -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180);
-		logger.debug("commandTelescopeDeltas:: deltaAz = " + deltaAz + ", deltaEl = " + deltaEl);
-	
-		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
+		Exception ex = null;
+		
+		try {
+			double deltaAz = telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180);
+			double deltaEl = -telescopeDeltas[1]* Constants.PI/ (60.0 * 60.0 * 180);
+			logger.debug("commandTelescopeDeltas:: deltaAz = " + deltaAz + ", deltaEl = " + deltaEl);
+		
+			extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
+		
+		} catch (Exception e) {
+			ex = e;
+		}
 			
-		return new AsyncResult<Integer>(1);
+		return new AsyncResult<Exception>(ex);
 	}
 	
 	// input in microns, sends in mm
