@@ -14,10 +14,12 @@
 			<h:inputHidden id="centroidXs" value="#{missingSpotsController.centroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{missingSpotsController.centroidYs}" />
 			<h:inputHidden id="missingSpots" value="#{missingSpotsController.missingSpots}" />
+			<h:inputHidden id="showSegNum" value="#{missingSpotsController.showSegmentNumbers}" />
+			<h:inputHidden id="groupSegmentNumbers" value="#{missingSpotsController.groupSegmentNumbers}" />
 
 			<p:panelGrid columns="1" style="margin:10px;padding:0px" styleClass="pcsForm">
 
-				<p:panelGrid id="controlPanel" columns="6" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
+				<p:panelGrid id="controlPanel" columns="8" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
 
 					<h:outputLabel value="Spot List Type" />
 					<p:selectOneMenu id="options" value="#{missingSpotsController.spotListType}" style="top:2px">
@@ -39,8 +41,15 @@
 					<h:panelGroup id="sufsGroupPanel" rendered="#{missingSpotsController.renderSufsGroup}">
 					    <p:selectOneMenu value="#{missingSpotsController.sufsGroup}" converter="#{sufsGroupConverter}">
 							<f:selectItems value="#{missingSpotsController.sufsGroupList}" var="group" itemLabel="#{group.groupNumber}" itemValue="#{group}" />
-							<p:ajax update="maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
+							<p:ajax update="groupSegmentNumbers maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
 						</p:selectOneMenu>
+					</h:panelGroup>
+					
+					<h:outputLabel value="Show Segment Numbers" rendered="#{missingSpotsController.renderSufsGroup}"/>
+					<h:panelGroup id="showSegNumPanel" rendered="#{missingSpotsController.renderSufsGroup}">
+					    <p:selectBooleanCheckbox id="showSegmentNumbers" value="#{missingSpotsController.showSegmentNumbers}" >
+							<p:ajax update="showSegNum maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" oncomplete="runDrawMissingSpots();" />
+       					 </p:selectBooleanCheckbox>
 					</h:panelGroup>
 
 				</p:panelGrid>
@@ -129,6 +138,27 @@ function drawMissingSpots() {
 		}
 		ctx.fillText(numbersArray[i], (xArray[i] * 0.78) - 45, (yArray[i] * 0.78) - 20);	
 	}
+	
+	
+	var numberSegments = document.getElementById('missingSpotsForm:showSegNum').value;
+
+	if (numberSegments=="true") {
+		
+		var gsnField = document.getElementById('missingSpotsForm:groupSegmentNumbers').value;
+		var gsnArray = gsnField.split(','); 		
+
+		ctx.font = "30px Arial";
+		ctx.fillStyle = "black";			
+		ctx.fillText(gsnArray[0], (512 * 0.78) - 55, (512 * 0.78) - 15);	
+		ctx.fillText(gsnArray[1], (512 * 0.78) - 55, (256 * 0.78) - 25);	
+		ctx.fillText(gsnArray[2], (768 * 0.78) - 70, (384 * 0.78) - 20);	
+		ctx.fillText(gsnArray[3], (768 * 0.78) - 70, (640 * 0.78) - 10);	
+		ctx.fillText(gsnArray[4], (512 * 0.78) - 55, (768 * 0.78) - 5);	
+		ctx.fillText(gsnArray[5], (256 * 0.78) - 40, (640 * 0.78) - 10);	
+		ctx.fillText(gsnArray[6], (256 * 0.78) - 40, (384 * 0.78) - 20);	
+
+	}
+	
 	
 }
 

@@ -24,6 +24,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.MissingSpotList;
@@ -52,6 +53,8 @@ public class MissingSpotsController implements Serializable {
 	PeasProperties peasProperties;
 	@EJB
 	TelescopeMgmt telescopeMgmt;
+	@EJB
+	ConstantsCache constantsCache;
 	@Inject
 	SessionController sessionController;
 	
@@ -72,13 +75,16 @@ public class MissingSpotsController implements Serializable {
 	String centroidXs; // for javascript svg display
 	String centroidYs; // for javascript svg display
 	String missingSpots; // for javascript svg display
-
+	String groupSegmentNumbers;
+	
 	private Integer spotListType;
 	private MissingSpotList missingSpotList;
 	private List<PupilMaskType> pupilMaskTypeList;
 	private PupilMaskType pupilMaskType;
 	private SufsGroup sufsGroup;
 	private List<SufsGroup> sufsGroupList;
+	private boolean showSegmentNumbers;
+
 
 	@PostConstruct
 	public void init() {
@@ -220,6 +226,14 @@ public class MissingSpotsController implements Serializable {
 		this.missingSpots = missingSpots;
 	}
 
+	public String getGroupSegmentNumbers() {
+		return groupSegmentNumbers;
+	}
+
+	public void setGroupSegmentNumbers(String groupSegmentNumbers) {
+		this.groupSegmentNumbers = groupSegmentNumbers;
+	}
+
 	public Integer getSpotListType() {
 		return spotListType;
 	}
@@ -268,6 +282,14 @@ public class MissingSpotsController implements Serializable {
 		this.sufsGroupList = sufsGroupList;
 	}
 
+	public boolean isShowSegmentNumbers() {
+		return showSegmentNumbers;
+	}
+
+	public void setShowSegmentNumbers(boolean showSegmentNumbers) {
+		this.showSegmentNumbers = showSegmentNumbers;
+	}
+
 	public boolean getRenderSufsGroup() {
 		return pupilMaskType.isPupilMaskTypeSufs();
 	}
@@ -278,6 +300,11 @@ public class MissingSpotsController implements Serializable {
 			if (pupilMaskType.isPupilMaskTypeSufs()) {
 				logger.debug("SUFS Group = " + sufsGroup);
 				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId(), sufsGroup.getGroupNumber());
+
+				// find the spot numbers for this sufsGroup
+				groupSegmentNumbers = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroup.getGroupNumber()-1);
+			
+			
 			} else {
 				missingSpotList = missingSpotsMgmt.findMissingSpotList(spotListType, telescope.getTelescopeId(), pupilMaskType.getPupilMaskTypeId());
 			}
@@ -290,6 +317,7 @@ public class MissingSpotsController implements Serializable {
 
 	}
 
+	
 	public void spotChangeListener(AjaxBehaviorEvent event) {
 
 		refreshMissingSpots();
