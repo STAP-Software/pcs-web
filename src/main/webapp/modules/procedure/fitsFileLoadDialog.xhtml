@@ -29,7 +29,7 @@
 
 				</p:panelGrid>
 
-				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel:pupilMaskSelect :procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:iterationCount "
+				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel:pupilMaskSelect :procedureDetailForm:controlPanel:groupNum :procedureDetailForm:controlPanel:sufsOffsetXGroup :procedureDetailForm:controlPanel:sufsOffsetYGroup :procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:iterationCount "
 					action="#{procedureController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
 				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
 					action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />

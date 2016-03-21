@@ -444,6 +444,13 @@ public class ProcedureController implements Serializable {
 				
 				// if a png file for display exists, read it in. Otherwise create it.
 				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
+				
+				// if we are SUFS, then we want to update the group number selected
+				if (fitsFilename.getSufsGroup() > 0) {
+					procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(fitsFilename.getSufsGroup());
+					// load other values that depend on the sufsGroup
+					sufsGroupChangeListener();
+				}
 	
 			}
 			FacesMessage msg = new FacesMessage("FITS Frame(s) uploaded successfully");

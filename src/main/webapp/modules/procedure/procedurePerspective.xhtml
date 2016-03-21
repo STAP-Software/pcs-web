@@ -121,7 +121,7 @@
 									<h:outputLabel value="Sufs Coarse Offsets (microns)" />
 								</p:column>   
 								<p:column styleClass="btmsFormInputColumn">
-									<h:panelGroup>
+									<h:panelGroup id="sufsOffsetXGroup">
 									<h:outputLabel value="X: " />
 									<p:inputText id="sufsOffsetX" maxlength="5"  
 										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}"
@@ -131,7 +131,7 @@
 									<br/>
 									<p:spacer height="5" width="1"/>
 									<br/>
-									<h:panelGroup>
+									<h:panelGroup id="sufsOffsetYGroup">
 									<h:outputLabel value="Y: " />
 									<p:inputText id="sufsOffsetY" maxlength="5"  
 										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
