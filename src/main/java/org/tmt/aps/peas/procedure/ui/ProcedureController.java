@@ -557,7 +557,7 @@ public class ProcedureController implements Serializable {
 		} else if (lastProcedureType.isPhasing()) {
 			return doNewPhasing();
 		} else if (lastProcedureType.isSufs()) {
-			return doNewPassiveTilt();
+			return doNewSufs();
 		} else {
 			return null;
 		}
