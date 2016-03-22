@@ -79,7 +79,7 @@ public class SessionController implements Serializable {
 	boolean advancedViewMode;
 	int advancedView = Constants.ADVANCED_VIEW_ENGINEERING;
 	String advancedViewModeLabel = "Engineering Mode";
-	boolean extInfSimulationMode = true;
+	boolean extInfSimulationMode;
 	
 	String password;
 	
@@ -110,6 +110,18 @@ public class SessionController implements Serializable {
 			session = currentSession;
 
 			advancedViewMode = false;
+			
+			
+			// setup external interfaces either in simulation mode or production mode
+			extInfSimulationMode = new Boolean(peasProperties.getProp("org.tmt.aps.peas.extinf.startup_simulation_mode"));
+			
+			if (!extInfSimulationMode) {
+				// if not using simulators, now is the time that we connect up
+				getExtInfConnectConfig().setCameraEnabled(true);
+				getExtInfConnectConfig().setCcdEnabled(true);
+				getExtInfConnectConfig().setAcsEnabled(true);
+				getExtInfConnectConfig().setDcsEnabled(true);
+			}
 			
 
 		} catch (Exception e) {
