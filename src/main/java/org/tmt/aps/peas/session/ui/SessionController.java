@@ -229,7 +229,7 @@ public class SessionController implements Serializable {
 	}
 
 	public String doViewCurrentSession() {
-
+		
 		try {
 			session = sessionMgmt.findSession(currentSession.getSessionId());
 		} catch (Exception e) {

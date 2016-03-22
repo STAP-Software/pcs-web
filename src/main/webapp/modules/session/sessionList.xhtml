@@ -22,7 +22,8 @@
 				<p:column>
 					<p:commandLink value="" styleClass="ui-icon ui-icon-search"
 						style="float:left"
-						action="#{sessionController.doViewSession}" >
+						ajax="true"
+						action="#{sessionController.doViewSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" >
 						<f:setPropertyActionListener target="#{sessionController.session}" value="#{nightSession}" />
 					
 					</p:commandLink>

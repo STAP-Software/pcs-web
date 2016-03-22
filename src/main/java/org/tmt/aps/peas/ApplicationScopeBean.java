@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.config.ui.MissingSpotsController;
 import org.tmt.aps.peas.extInterface.ui.AcsManualController;
@@ -122,6 +123,7 @@ public class ApplicationScopeBean implements Serializable {
 		}
 
 		String facesRedirect = request.getParameter("faces-redirect");
+		String fromBreadcrumb = request.getParameter("from-breadcrumb");
 		
 		logger.debug("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
 		logger.debug("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
@@ -136,7 +138,7 @@ public class ApplicationScopeBean implements Serializable {
 
 		if (path.contains("/modules/session/sessionList.")) {
 			sessionController.doViewSessionList();
-		} else if (path.equals("/modules/session/sessionDetail.xhtml")) {
+		} else if (path.contains("/modules/session/sessionDetail.") && fromBreadcrumb != null) {
 			sessionController.doViewSession();
 		} else if (path.equals("/modules/sysadmin/sufsGroupList.xhtml")) {
 			sufsGroupController.doViewSufsGroupList();

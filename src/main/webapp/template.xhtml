@@ -108,6 +108,10 @@
 
 		</p:layout>
 
+		<p:dialog modal="true" widgetVar="waitDialog" header="Please wait while records are retrieved..." resizable="false" draggable="false" close="false">
+        	<h:graphicImage value="../../images/ajaxloadingbar.gif" />
+		</p:dialog>
+
 		<ui:include src="modules/procedure/centroidOffsetsDialog.xhtml"/>
 		<ui:include src="modules/procedure/avgPtCentroidOffsetsDialog.xhtml"/>
 		<ui:include src="modules/procedure/avgFsCentroidOffsetsDialog.xhtml"/>

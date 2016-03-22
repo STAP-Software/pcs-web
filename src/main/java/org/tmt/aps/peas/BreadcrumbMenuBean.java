@@ -9,7 +9,9 @@ import java.io.Serializable;
 import java.util.List;
 
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.Application;
 import javax.faces.component.UIComponent;
+import javax.faces.context.FacesContext;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
@@ -40,8 +42,8 @@ public class BreadcrumbMenuBean implements Serializable {
 		model = new DefaultMenuModel();
 		MenuItem item = new MenuItem();
 		item.setValue(name);
-		item.setUrl(url);
-		immediateUrl = url;
+		item.setUrl(addBreadcrumbSource(url));
+		immediateUrl = addBreadcrumbSource(url);
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.addMenuItem(item);
 	}
@@ -49,8 +51,8 @@ public class BreadcrumbMenuBean implements Serializable {
 	public void addItem(String name, String url) {
 		MenuItem item = new MenuItem();
 		item.setValue(name);
-		item.setUrl(url);
-		immediateUrl = url;
+		item.setUrl(addBreadcrumbSource(url));
+		immediateUrl = addBreadcrumbSource(url);
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.addMenuItem(item);
 	}
@@ -58,11 +60,20 @@ public class BreadcrumbMenuBean implements Serializable {
 	public void insertFirst(String name, String url) {
 		MenuItem item = new MenuItem();
 		item.setValue(name);
-		item.setUrl(url);
-		immediateUrl = url;
+		item.setUrl(addBreadcrumbSource(url));
+		immediateUrl = addBreadcrumbSource(url);
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.getContents().add(0, item);
 	}
+	
+	private String addBreadcrumbSource(String url) {
+		if (url.contains("?")) {
+			return url + "&from-breadcrumb=true";
+		} else {
+			return url + "?from-breadcrumb=true";
+		}
+	}
+	
 	
 	public void removeTo(String name) {
 

@@ -19,6 +19,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -111,7 +112,8 @@ public class AsyncController implements Serializable {
 		checkSubProcedureEnd();
 		
 		// will execute if on the last time through
-		if (!procedureExecutionState.getExecutionStatus()) {
+		if (!procedureExecutionState.getExecutionStatus() && !isOnCompletePerformed()) {
+			logger.info("CALLING ONCOMPLETE");
 			onComplete();
 		}
 		
@@ -358,6 +360,7 @@ public class AsyncController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
 			setOnCompletePerformed(true);
+			logger.info("ONCOMPLETE COMPLTETED");
 		}
 	}
 
@@ -424,8 +427,5 @@ public class AsyncController implements Serializable {
 		return procedureExecutionState.getPercentComplete();
 	}
 
-
-	
-	
 	
 }

@@ -13,7 +13,7 @@
 						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode}"/>
 					
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="View Current Session" ajax="false" action="#{sessionController.doViewCurrentSession}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.procedureExecuting}"/>
 						<!--  
 						<p:menuitem value="Zap Session" ajax="false" action="#{sessionController.doZapSession}" rendered="#{sessionController.engineeringView}" />
 						-->
