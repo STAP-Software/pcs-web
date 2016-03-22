@@ -49,7 +49,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 			+ "LEFT OUTER JOIN FETCH cf.cameraState INNER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.fiConfig "
 			+ "LEFT OUTER JOIN FETCH pcs.pupilRegErrorConfig LEFT OUTER JOIN FETCH pcs.calcM2M1Config "
 			+ "LEFT OUTER JOIN FETCH pcs.findCentConfigInterior LEFT OUTER JOIN FETCH pcs.findCentConfigPeripheral LEFT OUTER JOIN FETCH pcs.centroidOffsetsConfig LEFT OUTER JOIN FETCH pc.pupilMask "
-			+ "LEFT OUTER JOIN FETCH pc.filter LEFT OUTER JOIN FETCH pc.referenceBeam "
+			+ "LEFT OUTER JOIN FETCH pc.filter LEFT OUTER JOIN FETCH pc.referenceBeam LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig "
 			+ "WHERE p.procedureId = :procedureId" )
 	
 })

@@ -136,6 +136,24 @@ public class FindCentroidsResult {
 		}
 	}
 
+	// generate a list of good peaks (no longer ordered by spot number)
+	public float[] generateGoodPeakList() {
+		float[] peakList = getPeakList();
+		int[] foundSubimages = getFoundSubimageFlags();
+		int goodPeakSize = 0;
+		for (int i=0; i<foundSubimages.length; i++) {
+			goodPeakSize += foundSubimages[i];
+		}
+		float[] result = new float[goodPeakSize];
+		int goodPeakIndex = 0;
+		for (int i=0; i<peakList.length; i++) {
+			if (foundSubimages[i] > 0) {
+				result[goodPeakIndex++] = peakList[i];
+			}
+		}
+		return result;
+	}
+	
 	
 	public int[] getFindCentStatusList() {
 		

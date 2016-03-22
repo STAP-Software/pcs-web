@@ -299,7 +299,8 @@ public class GetFrameCentroidsExecutor {
 		
 		String peakMapData = FloatListEncoder.encodeList(findCentroidsResult.getPeakList());
 		centroidMap.setPeakMapData(peakMapData);
-		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.getPeakList());
+		
+		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.generateGoodPeakList());
 		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
 		
 		String findCentStatusData = IntegerListEncoder.encodeList(findCentroidsResult.getFindCentStatusList());
