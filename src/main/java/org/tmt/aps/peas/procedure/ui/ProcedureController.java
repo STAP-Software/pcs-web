@@ -412,7 +412,11 @@ public class ProcedureController implements Serializable {
 			// if this is a phasing procedure, then the entire set of fits files should be in the selected list
 			List<FitsFilename> newList = new ArrayList<FitsFilename>();
 			
-			if (procedure.getProcedureType().isPhasing() && !selectedFitsFiles.isEmpty()) {
+			if (selectedFitsFiles.isEmpty()) {
+				return;
+			}
+			
+			if (procedure.getProcedureType().isPhasing()) {
 				FitsFilename selected = selectedFitsFiles.get(0);
 				for (FitsFilename candidate : availableFitsFiles) {
 					if (selected.isInSamePhasingSequence(candidate)) {
@@ -445,14 +449,17 @@ public class ProcedureController implements Serializable {
 				// if a png file for display exists, read it in. Otherwise create it.
 				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 				
-				// if we are SUFS, then we want to update the group number selected
-				if (fitsFilename.getSufsGroup() > 0) {
-					procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(fitsFilename.getSufsGroup());
-					// load other values that depend on the sufsGroup
-					sufsGroupChangeListener();
-				}
 	
 			}
+			
+			// if we are SUFS, then we want to update the group number selected
+			if (procedure.getProcedureType().isSufs()) {
+				procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(selectedFitsFiles.get(0).getSufsGroup());
+				// load other values that depend on the sufsGroup
+				sufsGroupChangeListener();
+			}
+			
+			
 			FacesMessage msg = new FacesMessage("FITS Frame(s) uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
 

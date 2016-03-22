@@ -4,8 +4,8 @@
 <script type="text/javascript">  
 //<![CDATA[
 
-var sideLen = 100
-var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
+var sufsSideLen = 100
+var sufsHexRadius = (Math.sqrt(3.0)/2.0) * sufsSideLen
            
 var resizing = false;   
 
@@ -88,7 +88,7 @@ function drawSufsCentroidOffsets() {
 	var maxLen = document.getElementById('sufsOffsetsForm:maxOffset').value;
 
 	
-	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
+	// the max displayed length at 100% offset scale is sqrt(3)/2 * sufsSideLen
 	
 	// test only
 	//var maxLen = 10.0;
@@ -96,7 +96,7 @@ function drawSufsCentroidOffsets() {
 	var segmentWidth = 1.0;
 
 	
-	var scaleFactor = hexRadius / maxLen  // the max length will then be the length of the hexRadius
+	var scaleFactor = sufsHexRadius / maxLen  // the max length will then be the length of the sufsHexRadius
 	
 	
 	
@@ -141,7 +141,7 @@ function drawSufsCentroidOffsets() {
 	ctx.beginPath();
 	ctx.strokeStyle = 'red';
     ctx.moveTo(850, 950);
-    ctx.lineTo(850 + sideLen, 950);
+    ctx.lineTo(850 + sufsSideLen, 950);
     ctx.stroke();
    
 
@@ -155,7 +155,7 @@ function drawSufsCentroidOffsets() {
     
 	ctx.beginPath();
 	ctx.strokeStyle = 'black';
-	ctx.arc(850 + sideLen, 950, 5, 0, 2*Math.PI);
+	ctx.arc(850 + sufsSideLen, 950, 5, 0, 2*Math.PI);
 	ctx.closePath();
 	ctx.stroke();
 	ctx.fillStyle = 'white';
@@ -166,7 +166,7 @@ function drawSufsCentroidOffsets() {
 	
 	
 	
-	ctx.fillText((sideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " pixels", 844, 940);
+	ctx.fillText((sufsSideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " pixels", 844, 940);
 	
 }
 

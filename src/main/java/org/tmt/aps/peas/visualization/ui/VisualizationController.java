@@ -141,8 +141,7 @@ public class VisualizationController implements Serializable {
 		} else if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
-			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
 			return subimageDefList.getInteriorCentroidXsAsString();
 		} else {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
@@ -159,8 +158,7 @@ public class VisualizationController implements Serializable {
 		} else if (procedureController.getProcedure() != null && !procedureController.getProcedure().getProcedureType().isCenterTelescope() && currentDisplay != null  && !currentDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 			
 			PupilMaskType pupilMaskType = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
-			Integer sufsGroup = procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup();
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId(), sufsGroup);
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(pupilMaskType.getPupilMaskTypeId());
 			return subimageDefList.getInteriorCentroidYsAsString();
 		} else {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
