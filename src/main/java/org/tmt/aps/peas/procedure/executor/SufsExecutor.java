@@ -140,7 +140,7 @@ public class SufsExecutor {
 
 			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
-					procedureConfig.getFilter().getFilterType().getFilterTypeId(), -1);
+					procedureConfig.getFilter().getFilterType().getFilterTypeId(), procedureConfig.getSufsGroup());
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
 
