@@ -42,10 +42,18 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 			+ "ORDER BY rb.createDate desc "),
 	@NamedQuery(name = "findCurrentSufsRefBeamMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
+			+ "inner join fetch rb.procedureRefBeamMap prbm "
+			+ "inner join fetch prbm.procedure p "
+			+ "inner join p.procedureType pt "
+			+ "inner join fetch p.procedureCcdFrameList pcfl "
+			+ "inner join fetch pcfl.ccdFrame cf "
+			+ "inner join fetch cf.cameraState "
 			+ "where rb.instrumentId = :instrumentId AND cm.pupilMaskTypeId = :pupilMaskTypeId "
-			+ "AND rb.filterTypeId = :filterTypeId AND rb.sufsGroupNumber = :sufsGroupNumber "
+			+ "AND rb.sufsGroupNumber = :sufsGroupNumber "
+			+ "AND rb.filterTypeId = :filterTypeId "
 			+ "and rb.refBeamDefMapFlg = false "
-			+ "ORDER BY rb.createDate desc"),
+			+ "and pt.procedureTypeId = 8 " 
+			+ "ORDER BY rb.createDate desc "),
 	@NamedQuery(name = "findRefBeamDefMap", query = "SELECT rb from RefBeamMap rb "
 			+ "inner join fetch rb.centroidMap cm "
 			+ "where cm.pupilMaskTypeId = :pupilMaskTypeId "
