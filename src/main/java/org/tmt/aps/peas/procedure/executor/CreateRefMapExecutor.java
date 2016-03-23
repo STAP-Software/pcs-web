@@ -175,6 +175,11 @@ public class CreateRefMapExecutor {
 		
 		refBeamMap.setCentroidMap(centroidMap);
 		refBeamMap.setRefBeamDefMapFlg(false);
+		
+		Integer sufsGroupNumber = procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup();
+		sufsGroupNumber = (sufsGroupNumber > 0) ? sufsGroupNumber : null;
+		
+		refBeamMap.setSufsGroupNumber(sufsGroupNumber);
 
 		return refBeamMap;
 	}
