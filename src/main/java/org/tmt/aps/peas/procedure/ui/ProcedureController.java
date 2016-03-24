@@ -774,6 +774,8 @@ public class ProcedureController implements Serializable {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
 
+			// show frames marked at first
+			doSetMarkedDisplayMode(true);
 			
 			breadcrumbMenuBean.removeTo("Session:");
 
@@ -863,7 +865,8 @@ public class ProcedureController implements Serializable {
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
 		
 		
-		// load centroid values
+		// load centroid values if markedDisplayMode is true
+		doSetMarkedDisplayMode(markedDisplayMode);
 		
 	}
 

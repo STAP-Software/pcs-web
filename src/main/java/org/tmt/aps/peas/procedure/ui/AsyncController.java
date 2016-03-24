@@ -345,7 +345,7 @@ public class AsyncController implements Serializable {
 			// display frame
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			requestContext.update("procedureDetailForm:framePanel");
-			requestContext.execute("drawFrame()");
+			requestContext.execute("markFrame()");
 
 
 			// update the breadcrumb to associate the current session as the first link

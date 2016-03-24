@@ -224,7 +224,7 @@
 
 					</p:tab>
 					<p:tab title="Procedure Event Log">
-						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:406px" mode="native">
+						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:206px" mode="native">
 							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
 
 								<p:column headerText="Time">
@@ -276,7 +276,7 @@
 							<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
 								<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
                       					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />
-           						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel" oncomplete="drawFrame();" />
+           						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel" oncomplete="markFrame();" />
        						</p:selectOneButton>
        						</h:panelGroup>
 							
@@ -566,7 +566,7 @@
       }
 
     
-    drawFrame();
+    markFrame();
 
     		
 	//]]>
