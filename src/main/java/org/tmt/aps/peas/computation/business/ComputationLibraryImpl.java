@@ -62,7 +62,6 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
-import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
@@ -1729,7 +1728,7 @@ public class ComputationLibraryImpl {
 	
 
 	private SufsZernikeResult calcSufsZernikesOneSeg(FloatPoint[] idealSpots,  
-			FloatPoint[] offsets, float aHex, int[] goodSpots, int[] zernikesToCalc) throws Exception {
+			FloatPoint[] offsets, float aHex, int[] goodSpots, int zernikeOrder) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcSufsZernikesOneSeg"));
 
@@ -1746,11 +1745,14 @@ public class ComputationLibraryImpl {
 		float[] offsetsY = FloatPointListEncoder.extractYArray(Arrays.asList(offsets));
 		
 		
-		float[] bestFitZernikes = new float[zernikesToCalc.length];
+		float[] bestFitZernikes = new float[zernikeOrder];
 		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
+		
+		// FIXME: zernikeOrder is an int, the current Fortran implementation wants an array
+		int[] replaceMeWithZernikeOrder = new int[0];
 	
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
-				offsetsX, offsetsY, aHex, goodSpots, zernikesToCalc,
+				offsetsX, offsetsY, aHex, goodSpots, replaceMeWithZernikeOrder,
 				bestFitZernikes, theoreticalOffsets);
 
 		
@@ -1771,7 +1773,7 @@ public class ComputationLibraryImpl {
 	
 	@Computation
 	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsMaskSpotLocations, FloatPoint[] maskOffsets, float aHex,
-			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, SufsOffsetsToZernikesConfig sufsOffsetsToZernikesConfig,
+			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
 
@@ -1787,12 +1789,13 @@ public class ComputationLibraryImpl {
 		
 		SufsZernikeResult[] sufsZernikeResults = new SufsZernikeResult[7];
 		
+		// for each segment in the group
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 			
-			int[] zernikesToCalc = sufsOffsetsToZernikesConfig.getZernikesToCalc(groupSegmentNumbers[groupSegment]);
+			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]];
 							
 			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(idealSpots[groupSegment],  
-				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikesToCalc);
+				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikeOrder);
 		
 		}
 

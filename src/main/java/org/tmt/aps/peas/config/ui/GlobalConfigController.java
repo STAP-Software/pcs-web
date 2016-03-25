@@ -14,10 +14,12 @@ import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
@@ -42,6 +44,19 @@ public class GlobalConfigController implements Serializable {
 	Long telescopeId;
 	Long instrumentId;
 
+	Integer[] sufsZernikeOrderObjectArray;
+	
+	// convenience methods for encoding and decoding
+
+	public Integer[] getSufsZernikeOrderObjectArray() {
+		return sufsZernikeOrderObjectArray;
+	}
+	
+	public void setSufsZernikeOrderObjectArray(Integer[] inputArray) {
+		sufsZernikeOrderObjectArray = inputArray;
+	}
+	
+	
 	public GlobalConfig getGlobalConfigDefaults() {
 		return globalConfigDefaults;
 	}
@@ -98,5 +113,61 @@ public class GlobalConfigController implements Serializable {
 		
 
 	}
+	
+	
+	
+	public String doViewSufsZernikes() {
+		
+		try {
+
+			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+
+			telescopeId = new Long(telescopeIdStr);
+			instrumentId = new Long(instrumentIdStr);
+
+			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);	
+			
+			
+			sufsZernikeOrderObjectArray = IntegerListEncoder.decodeListToObjectArray(globalConfigDefaults.getSufsZernikeOrderListEncoded());
+			
+	
+			breadcrumbMenuBean.addFirstItem("Sufs Segment Zernikes ", "/modules/sysadmin/sufsZernike.xhtml");
+
+		return "/modules/sysadmin/sufsZernike.xhtml?faces-redirect=true";
+		
+		} catch (Exception e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+
+	}
+
+	public void doSaveSufsZernikes() {
+
+		try {
+
+			String sufsZernikeOrderListEncoded = IntegerListEncoder.encodeList(sufsZernikeOrderObjectArray);
+
+			globalConfigDefaults.setSufsZernikeOrderListEncoded(sufsZernikeOrderListEncoded);
+			
+			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
+
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+		}
+
+	}
+
+	public void doCancelSaveSufsZernikes() {
+
+
+	}
+
 
 }

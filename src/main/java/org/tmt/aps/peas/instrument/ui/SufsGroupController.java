@@ -52,7 +52,6 @@ public class SufsGroupController implements Serializable {
 
 	private List<SufsGroup> sufsGroupList;
 	
-	private int[] segmentZernikes;
 
 	@PostConstruct
 	private void init() throws Exception {
@@ -73,14 +72,6 @@ public class SufsGroupController implements Serializable {
 
 	public void setSufsGroupList(List<SufsGroup> sufsGroupList) {
 		this.sufsGroupList = sufsGroupList;
-	}
-
-	public int[] getSegmentZernikes() {
-		return segmentZernikes;
-	}
-
-	public void setSegmentZernikes(int[] segmentZernikes) {
-		this.segmentZernikes = segmentZernikes;
 	}
 
 	public void refreshSufsGroupList() throws Exception {
@@ -213,32 +204,5 @@ public class SufsGroupController implements Serializable {
 
 	}
 	
-	public String doViewSufsZernikes() {
-
-		breadcrumbMenuBean.addFirstItem("Sufs Segment Zernikes " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
-
-		return "/modules/sysadmin/sufsZernike.xhtml?faces-redirect=true";
-	}
-
-	public void doSaveSufsZernikes() {
-
-		try {
-
-
-			//????Mgmt.updateSufsZernikes(sufsZernikes);
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
-		}
-
-	}
-
-	public void doCancelSaveSufsZernikes() {
-
-
-	}
 
 }

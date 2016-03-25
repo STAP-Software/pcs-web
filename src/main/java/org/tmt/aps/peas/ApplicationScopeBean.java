@@ -86,7 +86,7 @@ public class ApplicationScopeBean implements Serializable {
 		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		HttpSession session = null;
 
-		logger.debug("persistent session = " + getPersistentSession());
+		//logger.debug("persistent session = " + getPersistentSession());
 		
 		
 		if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {

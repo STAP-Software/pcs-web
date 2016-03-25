@@ -38,7 +38,7 @@
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
 						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}"/>
-						<p:menuitem value="SUFS Segment Zernikes" action="#{sufsGroupController.doViewSufsZernikes}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>
+						<p:menuitem value="SUFS Segment Zernikes" action="#{globalConfigController.doViewSufsZernikes}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>
 						<p:separator />
 						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}">
 							<p:menuitem value="Manage CCDs" action="#{ccdDefController.doViewCcdList}" />

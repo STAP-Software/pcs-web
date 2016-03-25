@@ -64,10 +64,6 @@ public class ProcedureConfigSet {
 	private GlobalConfig globalConfig;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-	@JoinColumn(name = "sufsOffsetsToZernikesConfigId")
-	private SufsOffsetsToZernikesConfig sufsOffsetsToZernikesConfig;
-	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinColumn(name = "sufsCoarseOffsetsConfigId")
 	private SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig;
 
@@ -158,14 +154,6 @@ public class ProcedureConfigSet {
 
 	public void setCalcM2M1Config(CalcM2M1Config calcM2M1Config) {
 		this.calcM2M1Config = calcM2M1Config;
-	}
-
-	public SufsOffsetsToZernikesConfig getSufsOffsetsToZernikesConfig() {
-		return sufsOffsetsToZernikesConfig;
-	}
-
-	public void setSufsOffsetsToZernikesConfig(SufsOffsetsToZernikesConfig sufsOffsetsToZernikesConfig) {
-		this.sufsOffsetsToZernikesConfig = sufsOffsetsToZernikesConfig;
 	}
 
 	public SufsCoarseOffsetsConfig getSufsCoarseOffsetsConfig() {

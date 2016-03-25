@@ -20,6 +20,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 
@@ -43,6 +44,7 @@ public class GlobalConfig {
 	int fineMirrorX;
 	int fineMirrorY;
 
+	String sufsZernikeOrderListEncoded;
 
 	
 
@@ -104,6 +106,20 @@ public class GlobalConfig {
 		this.globalConfigId = globalConfigId;
 	}
 
+	public String getSufsZernikeOrderListEncoded() {
+		return sufsZernikeOrderListEncoded;
+	}
+
+	public void setSufsZernikeOrderListEncoded(String sufsZernikeOrderListEncoded) {
+		this.sufsZernikeOrderListEncoded = sufsZernikeOrderListEncoded;
+	}
+
+	public int[] getSufsZernikeOrderArray() {
+		return IntegerListEncoder.decodeListToArray(sufsZernikeOrderListEncoded);
+	}
+	
+
+	
 	public Date getUpdateDate() {
 		return updateDate;
 	}

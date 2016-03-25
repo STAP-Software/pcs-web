@@ -44,8 +44,6 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
-import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfig;
-import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
@@ -495,11 +493,7 @@ public class ProcedureExecutionMgmt {
 		
 			// init group to one
 			procedureConfig.setSufsGroup(1);
-			
-			// get SufsOffsetsToZernikesConfigDefaults
-			SufsOffsetsToZernikesConfigDefaults sufsOffsetsToZernikesConfigDefaults = globalConfigMgmt.findSufsOffsetsToZernikesConfig();
-			procedure.getProcedureConfigSet().setSufsOffsetsToZernikesConfig(new SufsOffsetsToZernikesConfig(sufsOffsetsToZernikesConfigDefaults));
-			
+						
 			// get SufsCoarseOffsetsConfigDefaults
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
 					physicalModel.getInstrument().getInstrumentId(), new Long(procedureConfig.getSufsGroup()));

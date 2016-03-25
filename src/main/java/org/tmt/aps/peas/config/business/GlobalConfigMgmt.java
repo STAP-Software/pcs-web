@@ -22,7 +22,6 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
-import org.tmt.aps.peas.config.model.SufsOffsetsToZernikesConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 @Stateless
@@ -158,14 +157,6 @@ public class GlobalConfigMgmt {
 	public AutoCenterTelConfigDefaults findAutoCenterTelConfig(Long procedureTypeId) {
 		TypedQuery<AutoCenterTelConfigDefaults> query = em.createNamedQuery("findAutoCenterTelConfigDefaults", AutoCenterTelConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
-		
-		query.setMaxResults(1);
-		
-		return query.getSingleResult();	
-	}
-
-	public SufsOffsetsToZernikesConfigDefaults findSufsOffsetsToZernikesConfig() {
-		TypedQuery<SufsOffsetsToZernikesConfigDefaults> query = em.createNamedQuery("findSufsOffsetsToZernikesConfig", SufsOffsetsToZernikesConfigDefaults.class);
 		
 		query.setMaxResults(1);
 		
