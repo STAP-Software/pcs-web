@@ -79,9 +79,11 @@ public class VisualizationController implements Serializable {
 	boolean centroidOffsetDisplayEnabled;
 	boolean avgPtCentroidOffsetDisplayEnabled;
 	boolean avgFsCentroidOffsetDisplayEnabled;
+	boolean avgSufsCentroidOffsetDisplayEnabled;
 	boolean actuatorDeltaDisplayEnabled;
 	boolean edgeHeightsDisplayEnabled;
 	boolean edgeResidualsDisplayEnabled;
+	boolean sufsCentroidOffsetDisplayEnabled;
 
 	String act1Pos;
 	
@@ -227,7 +229,7 @@ public class VisualizationController implements Serializable {
 	}
 
 	public boolean isCentroidOffsetDisplayEnabled() {
-		return centroidOffsetDisplayEnabled;
+		return centroidOffsetDisplayEnabled && !sufsCentroidOffsetDisplayEnabled;
 	}
 
 	public boolean isAvgPtCentroidOffsetDisplayEnabled() {
@@ -236,6 +238,10 @@ public class VisualizationController implements Serializable {
 
 	public boolean isAvgFsCentroidOffsetDisplayEnabled() {
 		return avgFsCentroidOffsetDisplayEnabled;
+	}
+
+	public boolean isAvgSufsCentroidOffsetDisplayEnabled() {
+		return avgSufsCentroidOffsetDisplayEnabled;
 	}
 
 	public boolean isActuatorDeltaDisplayEnabled() {
@@ -258,6 +264,11 @@ public class VisualizationController implements Serializable {
 		this.edgeResidualsDisplayEnabled = edgeResidualsDisplayEnabled;
 	}
 
+	public boolean isSufsCentroidOffsetDisplayEnabled() {
+		return sufsCentroidOffsetDisplayEnabled;
+	}
+	
+	
 	public String getCentroidXs() {
 		return graphicDisplayMgmt.getCentroidXs();
 	}
@@ -468,6 +479,7 @@ public class VisualizationController implements Serializable {
 		centroidOffsetDisplayEnabled = false;
 		avgPtCentroidOffsetDisplayEnabled = false;
 		avgFsCentroidOffsetDisplayEnabled = false;
+		avgSufsCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
 		edgeHeightsDisplayEnabled = false;
 
@@ -487,6 +499,10 @@ public class VisualizationController implements Serializable {
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_AVG_FS_CENTROID_OFFSETS:
 				avgFsCentroidOffsetDisplayEnabled = true;
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS:
+				sufsCentroidOffsetDisplayEnabled = true;
+				avgSufsCentroidOffsetDisplayEnabled = true;
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_ACTUATOR_DELTAS:
 				actuatorDeltaDisplayEnabled = true;
@@ -600,6 +616,19 @@ public class VisualizationController implements Serializable {
 		if (procedureIterationOutput instanceof SufsCentroidOffsetsDisplayValues) {
 
 			graphicDisplayMgmt.setAndEncodeSufsOffsetsDisplayValues((SufsCentroidOffsetsDisplayValues) procedureIterationOutput, 0);
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);		
+	}
+
+	
+	public void doPopulateAvgSufsCentroidOffsetDisplay() {
+		offsetScale = 100.0f; // initialize at 100%
+
+		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
+
+		if (procedureOutput instanceof SufsCentroidOffsetsDisplayValues) {
+
+			graphicDisplayMgmt.setAndEncodeSufsOffsetsDisplayValues((SufsCentroidOffsetsDisplayValues) procedureOutput, 0);
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);		
 	}

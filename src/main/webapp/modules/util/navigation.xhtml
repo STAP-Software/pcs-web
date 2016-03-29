@@ -65,17 +65,18 @@
 						
 						<c:forEach var="iterationOutput" items="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" varStatus="loop">
 						<p:submenu label="Iteration #{loop.index+1}" >
-							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" disabled="#{not visualizationController.centroidDisplayEnabled}"/>
-							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
-							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.centroidOffsetDisplayEnabled}"/>
+							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{visualizationController.centroidDisplayEnabled}"/>
+							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" rendered="#{visualizationController.centroidOffsetDisplayEnabled}"/>
+							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.sufsCentroidOffsetDisplayEnabled}"/>
 						</p:submenu>
 						</c:forEach>
 					
-						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgPtCentroidOffsetDisplayEnabled}"/>
-						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" disabled="#{not visualizationController.avgFsCentroidOffsetDisplayEnabled}"/>						
- 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" disabled="#{not visualizationController.actuatorDeltaDisplayEnabled}"/>
- 						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" disabled="#{not visualizationController.edgeHeightsDisplayEnabled}"/>
- 						<p:menuitem value="Edge Residuals" action="#{visualizationController.doPopulateEdgeResidualsDisplay}" update=":edgeResidualsForm" oncomplete="runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()" disabled="#{not visualizationController.edgeResidualsDisplayEnabled}"/>
+						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgPtCentroidOffsetDisplayEnabled}"/>
+						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgFsCentroidOffsetDisplayEnabled}"/>						
+						<p:menuitem value="Avg. SUFS Centroid Offsets" action="#{visualizationController.doPopulateAvgSufsCentroidOffsetDisplay}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgSufsCentroidOffsetDisplayEnabled}"/>						
+ 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" rendered="#{visualizationController.actuatorDeltaDisplayEnabled}"/>
+ 						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" rendered="#{visualizationController.edgeHeightsDisplayEnabled}"/>
+ 						<p:menuitem value="Edge Residuals" action="#{visualizationController.doPopulateEdgeResidualsDisplay}" update=":edgeResidualsForm" oncomplete="runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()" rendered="#{visualizationController.edgeResidualsDisplayEnabled}"/>
 						
 					</p:submenu>
 					
