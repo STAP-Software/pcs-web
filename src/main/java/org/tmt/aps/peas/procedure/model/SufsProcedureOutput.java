@@ -1,40 +1,31 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.computation.model.AvgCentroidStatsResult;
-import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
-import org.tmt.aps.peas.computation.model.CentroidStatsResult;
-import org.tmt.aps.peas.visualization.model.AvgSufsCentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 
 
-public class SufsProcedureOutput extends ProcedureOutput implements AvgSufsCentroidOffsetsDisplayValues {
+public class SufsProcedureOutput extends ProcedureOutput implements SufsCentroidOffsetsDisplayValues {
 	
-	CentroidOffsetsResult centroidOffsetsResult;
-	AvgCentroidStatsResult avgCentroidStatsResult;
+	SufsSegmentOffsetsResult sufsSegmentOffsetsResult;
+	SufsCentroidStatsResult sufsCentroidStatsResult;
 	
 	
-	public CentroidOffsetsResult getCentroidOffsetsResult() {
-		return centroidOffsetsResult;
-	}
-	public void setCentroidOffsetsResult(CentroidOffsetsResult centroidOffsetsResult) {
-		this.centroidOffsetsResult = centroidOffsetsResult;
+	
+	public SufsSegmentOffsetsResult getSufsSegmentOffsetsResult() {
+		return sufsSegmentOffsetsResult;
 	}
 
-	public AvgCentroidStatsResult getAvgCentroidStatsResult() {
-		return avgCentroidStatsResult;
+	public void setSufsSegmentOffsetsResult(SufsSegmentOffsetsResult sufsSegmentOffsetsResult) {
+		this.sufsSegmentOffsetsResult = sufsSegmentOffsetsResult;
 	}
-	public void setAvgCentroidStatsResult(AvgCentroidStatsResult avgCentroidStatsResult) {
-		this.avgCentroidStatsResult = avgCentroidStatsResult;
-	}	
-	
 
-	//  AvgSufsCentroidOffsetsDisplayValues interface
-	public FloatPoint[] getAvgSufsCentroidOffsets() {
-		return centroidOffsetsResult.getCartesianCentroidOffsets();
+	public void setSufsCentroidStatsResult(SufsCentroidStatsResult sufsCentroidStatsResult) {
+		this.sufsCentroidStatsResult = sufsCentroidStatsResult;
 	}
-	
-	public CentroidStatsResult getAvgSufsCentroidStatsResult() {
-		return avgCentroidStatsResult;
+
+	public SufsCentroidStatsResult getSufsCentroidStatsResult() {
+		return sufsCentroidStatsResult;
 	}
 	
 

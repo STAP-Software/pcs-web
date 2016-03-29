@@ -537,7 +537,19 @@ public class ComputationLibraryImpl {
 		return calcCentroidStats(centroidOffsets, nspotTypes, missingSpotFlags, findCentStatusList);
 	}
 	
+	// version with missingSpotFlags and findCentStatusLists passed in
 	private CentroidStatsResult calcCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
+
+
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] goodSpots = goodCentroidsFound(missingSpotFlags, findCentStatusList);
+		
+		return calcCentroidStats(centroidOffsets, nspotTypes, goodSpots);
+
+	}
+
+	// version with goodSpots passed in
+	private CentroidStatsResult calcCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] goodSpots) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
 
@@ -546,11 +558,9 @@ public class ComputationLibraryImpl {
 
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
 
-		// spots that can be used (found without errors and should be used for analysis)
-		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
+		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, goodSpots, nspotTypes);
 
-		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, good_spots, nspotTypes);
-
+		logger.info("Fortran call completed");
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Centroid Offset Stats Calculation Error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
@@ -1639,6 +1649,8 @@ public class ComputationLibraryImpl {
 			CentroidOffsetsConfig centroidOffsetsConfig, 
 			PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
 
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsCentroidOffsets"));
+
 		
 		SufsSegmentCentroidsResult sufsSegmentCentroidsResult = generateSufsSegmentCentroids(findCentroidsResult, sufsGroupSegmentToMask);
 		SufsSegmentCentroidsResult sufsRefBeamSegmentCentroidsResult = generateSufsSegmentCentroids(refMapCentroidsResult, sufsGroupSegmentToMask);
@@ -1662,42 +1674,76 @@ public class ComputationLibraryImpl {
 
 		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult);
 		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsCentroidOffsets"));
+		
 		return result;
 		
 	}
 	
 	@Computation
-	public SufsCentroidStatsResult calculateSufsCentroidStats(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, FindCentroidsResult findCentroidsResult,  
+	public SufsCentroidStatsResult calculateSufsCentroidStats(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, int[] findCentStatusList,  
 			int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
 
-		SufsSegmentCentroidsResult sufsSegmentCentroidsResult = generateSufsSegmentCentroids(findCentroidsResult, sufsGroupSegmentToMask);
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsCentroidStats"));
+
 
 		int[][] segNspotTypes = generateSufsSegmentInts(nspotTypes, sufsGroupSegmentToMask);
 		int[][] segMissingSpotFlags = generateSufsSegmentInts(missingSpotFlags, sufsGroupSegmentToMask);
+		int[][] segFindCentStatusList = generateSufsSegmentInts(findCentStatusList, sufsGroupSegmentToMask);
 		
 		CentroidStatsResult[] centroidStatsResult = new CentroidStatsResult[7];
 		
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 		
-			FindCentroidsResult groupSegmentCentroidsResult = sufsSegmentCentroidsResult.getSegmentCentroidResultList()[groupSegment];
-					
 			CentroidOffsetsResult centroidOffsetsResult = sufsSegmentOffsetsResult.extractCentroidOffsetsResult(groupSegment);
 			 
 			centroidStatsResult[groupSegment] = calcCentroidStats(centroidOffsetsResult.getCartesianCentroidOffsets(), 
-					segNspotTypes[groupSegment], segMissingSpotFlags[groupSegment], groupSegmentCentroidsResult.getFindCentStatusList());
+					segNspotTypes[groupSegment], segMissingSpotFlags[groupSegment], segFindCentStatusList[groupSegment]);
 			
 		}
 
 		SufsCentroidStatsResult result = new SufsCentroidStatsResult(centroidStatsResult);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsCentroidStats"));
+
+		return result;
 		
+	}
+	
+	@Computation
+	public SufsCentroidStatsResult calculateSufsAvgCentroidStats(SufsSegmentOffsetsResult sufsAvgSegmentOffsetsResult, int[] avgGoodSpotMask,  
+			int[] nspotTypes, int[][] sufsGroupSegmentToMask) throws Exception {
+
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsAvgCentroidStats"));
+
+		int[][] segNspotTypes = generateSufsSegmentInts(nspotTypes, sufsGroupSegmentToMask);
+		int[][] segAvgGoodSpotList = generateSufsSegmentInts(avgGoodSpotMask, sufsGroupSegmentToMask);
+		
+		CentroidStatsResult[] centroidStatsResult = new CentroidStatsResult[7];
+		
+		for (int groupSegment=0; groupSegment<7; groupSegment++) {
+							
+			CentroidOffsetsResult centroidOffsetsResult = sufsAvgSegmentOffsetsResult.extractCentroidOffsetsResult(groupSegment);
+			 
+			centroidStatsResult[groupSegment] = calcCentroidStats(centroidOffsetsResult.getCartesianCentroidOffsets(), 
+					segNspotTypes[groupSegment], segAvgGoodSpotList[groupSegment]);
+			
+		}
+	
+		SufsCentroidStatsResult result = new SufsCentroidStatsResult(centroidStatsResult);
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsAvgCentroidStats"));
+
 		return result;
 		
 	}
 	
 	
-	
 	@Computation
 	public SufsSegmentOffsetsResult calcAvgSufsCentroidOffsets(SufsSegmentOffsetsResult[] sufsSegmentOffsetsResultIterations, int[] goodSpotsMask, int[][] sufsGroupSegmentToMask) throws Exception {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calcAvgSufsCentroidOffsets"));
 
 		// we need to reorder this into sufsSegmentOffsetsResultIterations into CentroidOffsetsResult[groupSegment][iteration]
 		
@@ -1722,6 +1768,8 @@ public class ComputationLibraryImpl {
 
 		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(avgCentroidOffsetsResult);
 		
+		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgSufsCentroidOffsets"));
+
 		return result;
 		
 	}
@@ -1776,6 +1824,7 @@ public class ComputationLibraryImpl {
 			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsZernikes"));
 
 		int[] goodSpots = goodCentroidsFound(missingSpots, findCentStatuses);
 		
@@ -1800,7 +1849,9 @@ public class ComputationLibraryImpl {
 		}
 
 		SufsSegmentZernikeResult result = new SufsSegmentZernikeResult(sufsZernikeResults);
-		
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsZernikes"));
+
 		return result;
 		
 	}
