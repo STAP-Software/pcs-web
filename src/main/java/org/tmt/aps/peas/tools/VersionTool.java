@@ -21,7 +21,7 @@ public class VersionTool {
 		FileFilter filter = new DirFileFilter();
 		File[] versionDirs = dir.listFiles(filter);
 		
-		if (versionDirs.length == 0) {
+		if (versionDirs == null || versionDirs.length == 0) {
 			if (args[0].equals("-l")) {
 				System.out.println("No versions are installed");
 			}
