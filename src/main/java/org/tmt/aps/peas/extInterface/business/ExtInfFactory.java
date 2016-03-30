@@ -115,7 +115,7 @@ public class ExtInfFactory {
 		}
 	}
 
-	public DcsCommand getDcsCommand() {
+	public DcsCommand getDcsCommand() throws Exception {
 
 		try {
 
@@ -127,7 +127,7 @@ public class ExtInfFactory {
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return null;
+			throw e;
 		}
 	}
 	
@@ -201,7 +201,7 @@ public class ExtInfFactory {
 		}
 	}
 	
-	private DcsCommand getDcsCommandRemote(int telescopeId) {
+	private DcsCommand getDcsCommandRemote(int telescopeId) throws Exception {
 		try {
 			if (dcsRsk == null) {
 				dcsRsk = new DcsRsk(telescopeId);
@@ -210,7 +210,7 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Dcs Command Exception:: ", e);
-			return null;
+			throw e;
 		}
 	}
 
