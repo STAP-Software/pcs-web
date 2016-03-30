@@ -1797,7 +1797,10 @@ public class ComputationLibraryImpl {
 		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
 		
 		// FIXME: zernikeOrder is an int, the current Fortran implementation wants an array
-		int[] replaceMeWithZernikeOrder = new int[0];
+		int[] replaceMeWithZernikeOrder = new int[15];
+		for (int i=0; i<zernikeOrder; i++) {
+			replaceMeWithZernikeOrder[i] = 1;
+		}
 	
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
 				offsetsX, offsetsY, aHex, goodSpots, replaceMeWithZernikeOrder,
@@ -1820,7 +1823,7 @@ public class ComputationLibraryImpl {
 	}
 	
 	@Computation
-	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsMaskSpotLocations, FloatPoint[] maskOffsets, float aHex,
+	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[] maskOffsets, float aHex,
 			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
@@ -1828,7 +1831,7 @@ public class ComputationLibraryImpl {
 
 		int[] goodSpots = goodCentroidsFound(missingSpots, findCentStatuses);
 		
-		FloatPoint[][] idealSpots = generateSufsSegmentFloatPoints(sufsMaskSpotLocations, sufsGroupSegmentToMask);
+		//FloatPoint[][] idealSpots = generateSufsSegmentFloatPoints(sufsMaskSpotLocations, sufsGroupSegmentToMask);
 		FloatPoint[][] segmentOffsets = generateSufsSegmentFloatPoints(maskOffsets, sufsGroupSegmentToMask);
 		int[][] segGoodSpots = generateSufsSegmentInts(goodSpots, sufsGroupSegmentToMask);
 		
@@ -1843,7 +1846,7 @@ public class ComputationLibraryImpl {
 			
 			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]];
 							
-			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(idealSpots[groupSegment],  
+			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(sufsSegmentIdealSpotLocations,  
 				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikeOrder);
 		
 		}

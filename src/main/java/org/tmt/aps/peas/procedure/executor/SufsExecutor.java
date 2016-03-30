@@ -318,12 +318,13 @@ public class SufsExecutor {
 				/*****************************************************/
 				/*          Calculate Zernikes from Offsets          */
 				/*****************************************************/
+				
 				/*
-				 * computationLibrary.calculateSufsZernikes( constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
-				 * centroidOffsetsResult.getCcdCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
-				 * subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(), sufsGroupSegmentToMask,
-				 * procedure.getProcedureConfigSet().getSufsOffsetsToZernikesConfig(),
-				 * constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup()-1]);
+				computationLibrary.calculateSufsZernikes( constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
+						centroidOffsetsResult.getCcdCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
+						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(), sufsGroupSegmentToMask,
+						procedure.getProcedureConfigSet().getGlobalConfig().getSufsZernikeOrderArray(),
+						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup()-1]);
 				 */
 
 				// TODO: this may eventually be handled in a different structure
@@ -417,16 +418,13 @@ public class SufsExecutor {
 
 			
 			/*****************************************************/
-			/*    Calculate Avg Zernikes from Avg Offsets        */
+			/*    Calculate Avg Zernikes         */
 			/*****************************************************/
-			/*
-			 * computationLibrary.calculateSufsZernikes( constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
-			 * centroidOffsetsResult.getCcdCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
-			 * subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(), sufsGroupSegmentToMask,
-			 * procedure.getProcedureConfigSet().getSufsOffsetsToZernikesConfig(),
-			 * constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup()-1]);
-			 */
-
+			/*****************************************************/
+			/*               calcZernikeStats                    */
+			/*****************************************************/
+			// TODO: implement this (average and error on the mean) for each segment over iterations
+			// this may replace the above...
 			
 			/*****************************************************/
 			/* Display Avg SUFS Centroid Offsets */
