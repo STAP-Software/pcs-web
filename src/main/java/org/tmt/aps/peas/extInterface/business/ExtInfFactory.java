@@ -65,7 +65,7 @@ public class ExtInfFactory {
 
 
 
-	public AcsCommand getAcsCommand() {
+	public AcsCommand getAcsCommand() throws Exception {
 
 		try {
 
@@ -77,13 +77,13 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return null;
+			throw e;
 		}
 	}
 
 	@Lock(LockType.WRITE)
 	@AccessTimeout(value=2000)  // two seconds
-	public CameraCommand getCameraCommand() {
+	public CameraCommand getCameraCommand() throws Exception {
 
 		try {
 
@@ -95,11 +95,11 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return null;
+			throw e;
 		}
 	}
 	
-	public CcdCommand getCcdCommand() {
+	public CcdCommand getCcdCommand() throws Exception {
 
 		try {
 			
@@ -111,7 +111,7 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return null;
+			throw e;
 		}
 	}
 
@@ -131,7 +131,7 @@ public class ExtInfFactory {
 		}
 	}
 	
-	public InstrumentInterface getInstrumentCommand() {
+	public InstrumentInterface getInstrumentCommand() throws Exception {
 
 		try {
 			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
@@ -145,7 +145,7 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			return null;
+			throw e;
 		}
 	}
 
@@ -157,7 +157,7 @@ public class ExtInfFactory {
 	}
 
 
-	private AcsCommand getAcsCommandRemote(int telescopeId) {
+	private AcsCommand getAcsCommandRemote(int telescopeId) throws Exception {
 		try {
 			
 			if (acs == null) {
@@ -167,11 +167,11 @@ public class ExtInfFactory {
 			return acs;
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Acs Command Exception: ", e);
-			return null;
+			throw e;
 		}
 	}
 
-	private CameraCommand getCameraCommandRemote(int telescopeId) {
+	private CameraCommand getCameraCommandRemote(int telescopeId) throws Exception {
 		try {
 			
 			if (camAsync == null) {
@@ -182,13 +182,13 @@ public class ExtInfFactory {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Camera Command Exception:: ", e);
-			return null;
+			throw e;
 		}
 	}
 	
 
 
-	private CcdCommand getCcdCommandRemote(int telescopeId) {
+	private CcdCommand getCcdCommandRemote(int telescopeId) throws Exception {
 		try {
 			if (ccd == null) {
 				ccd = new CCD(telescopeId);
@@ -197,7 +197,7 @@ public class ExtInfFactory {
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Ccd Command Exception:: ", e);
-			return null;
+			throw e;
 		}
 	}
 	
@@ -214,7 +214,7 @@ public class ExtInfFactory {
 		}
 	}
 
-	private InstrumentInterface getInstrumentCommandRemote() {
+	private InstrumentInterface getInstrumentCommandRemote() throws Exception {
 		try {
 			String instrumentExtInfServer = peasProperties.getProp("org.tmt.aps.peas.instrument_ext_inf_server");
 			String instrumentServiceName = peasProperties.getProp("org.tmt.aps.peas.instrument_service_name");
@@ -224,7 +224,7 @@ public class ExtInfFactory {
 			return instCommand;
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
-			return null;
+			throw e;
 		}
 	}
 
