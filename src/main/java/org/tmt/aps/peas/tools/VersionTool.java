@@ -21,6 +21,18 @@ public class VersionTool {
 		FileFilter filter = new DirFileFilter();
 		File[] versionDirs = dir.listFiles(filter);
 		
+		if (versionDirs.length == 0) {
+			if (args[0].equals("-l")) {
+				System.out.println("No versions are installed");
+			}
+			if (args[0].equals("-v")) {
+				System.out.println("No versions are installed");
+			}
+			if (args[0].equals("-i")) {
+				System.out.println("1.0");
+			}
+		} else {
+		
 		Arrays.sort(versionDirs, new Comparator<File>(){
 		    public int compare(File f1, File f2)
 		    {
@@ -53,6 +65,7 @@ public class VersionTool {
 			String minorRelease = latest.substring(latest.indexOf(".")+1);
 			int minorInt = new Integer(minorRelease);
 			System.out.println(majorRelease + "." + (++minorInt));
+		}
 		}
 		
 	}
