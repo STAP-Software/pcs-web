@@ -319,13 +319,13 @@ public class SufsExecutor {
 				/*          Calculate Zernikes from Offsets          */
 				/*****************************************************/
 				
-				/*
+				
 				computationLibrary.calculateSufsZernikes( constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
 						centroidOffsetsResult.getCcdCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
 						subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(), sufsGroupSegmentToMask,
 						procedure.getProcedureConfigSet().getGlobalConfig().getSufsZernikeOrderArray(),
 						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup()-1]);
-				 */
+				 
 
 				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);

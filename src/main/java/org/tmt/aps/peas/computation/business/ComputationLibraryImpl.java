@@ -1567,21 +1567,22 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
 	
 	public SufsSegmentCentroidsResult generateSufsSegmentCentroids (FindCentroidsResult findCentroidsResult, int[][] sufsGroupSegmentToMask) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentCentroidOffsets"));
 
 		FindCentroidsResult[] findSegmentCentroidsResult = new FindCentroidsResult[7];
-		FloatPoint[] segmentCentroidList = new FloatPoint[169];
-		float[] segmentIntensities = new float[169];
-		float[] segmentPeaks = new float[169];
-		int[] findCentStatuses = new int[169];
+		FloatPoint[] segmentCentroidList = new FloatPoint[NUM_SUFS_SEGMENT_SPOTS];
+		float[] segmentIntensities = new float[NUM_SUFS_SEGMENT_SPOTS];
+		float[] segmentPeaks = new float[NUM_SUFS_SEGMENT_SPOTS];
+		int[] findCentStatuses = new int[NUM_SUFS_SEGMENT_SPOTS];
 		
 		// loop over each SUFS group segment
 		for (int i=0; i<7; i++) {
 			// loop over all spots
-			for (int j=0; j<169; j++) {
+			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
 				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[sufsGroupSegmentToMask[j][i]];
 				segmentIntensities[j] = findCentroidsResult.getIntensityList()[sufsGroupSegmentToMask[j][i]];
@@ -1604,12 +1605,12 @@ public class ComputationLibraryImpl {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentInts"));
 
-		int[][] output = new int[7][169];
+		int[][] output = new int[7][NUM_SUFS_SEGMENT_SPOTS];
 		
 		// loop over each SUFS group segment
 		for (int i=0; i<7; i++) {
 			// loop over all spots
-			for (int j=0; j<169; j++) {
+			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
 				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
 			}
@@ -1625,12 +1626,12 @@ public class ComputationLibraryImpl {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentFloatPoints"));
 
-		FloatPoint[][] output = new FloatPoint[7][169];
+		FloatPoint[][] output = new FloatPoint[7][NUM_SUFS_SEGMENT_SPOTS];
 		
 		// loop over each SUFS group segment
 		for (int i=0; i<7; i++) {
 			// loop over all spots
-			for (int j=0; j<169; j++) {
+			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
 				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
 			}
