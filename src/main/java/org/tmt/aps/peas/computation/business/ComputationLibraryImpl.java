@@ -1793,8 +1793,8 @@ public class ComputationLibraryImpl {
 		float[] offsetsX = FloatPointListEncoder.extractXArray(Arrays.asList(offsets));
 		float[] offsetsY = FloatPointListEncoder.extractYArray(Arrays.asList(offsets));
 		
-		
-		float[] bestFitZernikes = new float[zernikeOrder];
+		// FIXME: make a constant for max number of zernikes
+		float[] bestFitZernikes = new float[15];
 		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
 		
 		// FIXME: zernikeOrder is an int, the current Fortran implementation wants an array
