@@ -1799,7 +1799,8 @@ public class ComputationLibraryImpl {
 		
 		// FIXME: make a constant for max number of zernikes
 		float[] bestFitZernikes = new float[15];
-		float[] theoreticalOffsets = new float[offsetsInArcseconds.length];
+		float[] theoreticalOffsetsX = new float[offsetsInArcseconds.length];
+		float[] theoreticalOffsetsY = new float[offsetsInArcseconds.length];
 		
 		// FIXME: zernikeOrder is an int, the current Fortran implementation wants an array
 		int[] replaceMeWithZernikeOrder = new int[15];
@@ -1809,7 +1810,7 @@ public class ComputationLibraryImpl {
 	
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
 				offsetsX, offsetsY, aHex, goodSpots, replaceMeWithZernikeOrder,
-				bestFitZernikes, theoreticalOffsets);
+				bestFitZernikes, theoreticalOffsetsX, theoreticalOffsetsX);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1823,6 +1824,8 @@ public class ComputationLibraryImpl {
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcSufsZernikesOneSeg"));
 
+		List<FloatPoint> theoreticalOffsetList = FloatPointListEncoder.constructFromXandY(theoreticalOffsetsX, theoreticalOffsetsX);
+		FloatPoint[] theoreticalOffsets = theoreticalOffsetList.toArray(new FloatPoint[0]);
 		return new SufsZernikeResult(bestFitZernikes, theoreticalOffsets, whFactor);
 		
 	}

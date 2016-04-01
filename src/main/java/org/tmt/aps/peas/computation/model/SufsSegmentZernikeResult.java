@@ -1,9 +1,11 @@
 package org.tmt.aps.peas.computation.model;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
 public class SufsSegmentZernikeResult {
 	
 	float[][] bestFitZernikes;
-	float[][] theoreticalOffsets;
+	FloatPoint[][] theoreticalOffsets;
 	float[] whFactor;
 	
 	public SufsSegmentZernikeResult() {
@@ -17,15 +19,13 @@ public class SufsSegmentZernikeResult {
 			
 		whFactor = new float[sufsZernikeResults.length];
 		bestFitZernikes = new float[sufsZernikeResults.length][bestFitCount];
-		theoreticalOffsets = new float[sufsZernikeResults.length][theoreticalCount];
+		theoreticalOffsets = new FloatPoint[sufsZernikeResults.length][theoreticalCount];
 		
 		for (int i=0; i<sufsZernikeResults.length; i++) {
 			whFactor[i] = sufsZernikeResults[i].getWhFactor();
 			bestFitZernikes[i] = sufsZernikeResults[i].getBestFitZernikes();
 			theoreticalOffsets[i] = sufsZernikeResults[i].getTheoreticalOffsets();
 		}
-
-		
 	}
 
 	public float[][] getBestFitZernikes() {
@@ -36,11 +36,11 @@ public class SufsSegmentZernikeResult {
 		this.bestFitZernikes = bestFitZernikes;
 	}
 
-	public float[][] getTheoreticalOffsets() {
+	public FloatPoint[][] getTheoreticalOffsets() {
 		return theoreticalOffsets;
 	}
 
-	public void setTheoreticalOffsets(float[][] theoreticalOffsets) {
+	public void setTheoreticalOffsets(FloatPoint[][] theoreticalOffsets) {
 		this.theoreticalOffsets = theoreticalOffsets;
 	}
 

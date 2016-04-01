@@ -1,16 +1,18 @@
 package org.tmt.aps.peas.computation.model;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
 public class SufsZernikeResult {
 	
 	float[] bestFitZernikes;
-	float[] theoreticalOffsets;
+	FloatPoint[] theoreticalOffsets;
 	float whFactor;
 	
 	public SufsZernikeResult() {
 		
 	}
 	
-	public SufsZernikeResult(float[] bestFitZernikes, float[] theoreticalOffsets, float whFactor) {
+	public SufsZernikeResult(float[] bestFitZernikes, FloatPoint[] theoreticalOffsets, float whFactor) {
 		this.bestFitZernikes = bestFitZernikes;
 		this.theoreticalOffsets = theoreticalOffsets;
 		this.whFactor = whFactor;
@@ -24,11 +26,11 @@ public class SufsZernikeResult {
 		this.bestFitZernikes = bestFitZernikes;
 	}
 
-	public float[] getTheoreticalOffsets() {
+	public FloatPoint[] getTheoreticalOffsets() {
 		return theoreticalOffsets;
 	}
 
-	public void setTheoreticalOffsets(float[] theoreticalOffsets) {
+	public void setTheoreticalOffsets(FloatPoint[] theoreticalOffsets) {
 		this.theoreticalOffsets = theoreticalOffsets;
 	}
 
