@@ -154,14 +154,16 @@ public class GetFrameCentroidsExecutor {
 		fiConfig = procedure.getProcedureConfigSet().getFiConfig();
 
 		SubimageDefList subimageDefList = null;
-		if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+		if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs() && !procedure.getProcedureType().isCreateRefMap()) {
 			subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 		} else {
 			subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());			
 		}
 		
+		boolean findAllMaskSpots = procedure.getProcedureType().isCreateRefMap() && !procedureConfig.getPupilMaskType().isPupilMaskTypeSufs();
+		
 		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
-				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), procedure.getProcedureType().isCreateRefMap());
+				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
 
 		logger.info("Find and Identify completed");
 
@@ -338,11 +340,13 @@ public class GetFrameCentroidsExecutor {
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
 			SubimageDefList subimageDefList = null;
-			if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs() && !procedure.getProcedureType().isCreateRefMap()) {
 				subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 			} else {
 				subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());			
 			}
+			
+			boolean findAllMaskSpots = procedure.getProcedureType().isCreateRefMap() && !procedureConfig.getPupilMaskType().isPupilMaskTypeSufs();
 
 			centroidMap = null;
 			try {
@@ -350,7 +354,7 @@ public class GetFrameCentroidsExecutor {
 				findCentroidsResult = computationLibrary.findCentroids(ccdFrame.getCorrectedFrame(), fiResult, 
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(), 
 						procedure.getProcedureConfigSet().getFindCentConfigPeripheral(), 
-						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), procedure.getProcedureType().isCreateRefMap());
+						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	

@@ -159,7 +159,7 @@ public class ComputationLibraryImpl {
 
 	// findCentStatus is also a property of a spot, to be used by calcs after this.
 	@Computation
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean isRefMap) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean findAllMaskSpots) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -207,7 +207,7 @@ public class ComputationLibraryImpl {
 		
 		// if isRefMap, then set all missingSpotFlags to use
 		int[] passedMissingSpotFlags = missingSpotFlags;
-		if (isRefMap) {
+		if (findAllMaskSpots) {
 			passedMissingSpotFlags = new int[missingSpotFlags.length];
 			for (int i=0; i<missingSpotFlags.length; i++) {
 				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
@@ -332,7 +332,7 @@ public class ComputationLibraryImpl {
 	}
 
 	
-	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean isRefMap)
+	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean findAllMaskSpots)
 			throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findAndIdentify"));
@@ -350,7 +350,7 @@ public class ComputationLibraryImpl {
 
 		// if isRefMap, then set all missingSpotFlags to use
 		int[] passedMissingSpotFlags = missingSpotFlags;
-		if (isRefMap) {
+		if (findAllMaskSpots) {
 			passedMissingSpotFlags = new int[missingSpotFlags.length];
 			for (int i=0; i<missingSpotFlags.length; i++) {
 				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
@@ -367,6 +367,10 @@ public class ComputationLibraryImpl {
 
 		// the result object
 		FIResult fiResult = new FIResult(numSpots, frame);
+		
+		logger.info("jfindAndIdentify inputs:  nsp = " + nsp + ", ngp = " + ngp + ", x_ref_def = " + x_ref_def + ", y_ref_def = " + y_ref_def +
+				", fiConfig = " + fiConfig + ", forceRotationDeg = " + forceRotationDeg + ", forceScaleValue = " + forceScaleValue + 
+				", passedMissingSpotFlags = " + passedMissingSpotFlags);
 
 		Object output[] = jfindAndIdentify.jfindAndIdentify(retVal, frame, nsp, ngp, x_ref_def, y_ref_def, fiConfig.getuEst(),
 				fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), fiConfig.getnPeakMinThresh(),

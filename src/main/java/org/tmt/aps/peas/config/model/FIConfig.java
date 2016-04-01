@@ -210,5 +210,33 @@ public class FIConfig {
 	}
 
 
+	public String toString() {
+		
+			StringBuffer buf = new StringBuffer();
+			buf.append("FIConfig:");
+			buf.append("\nuEst = " + uEst);
+			buf.append("\nuDelta0 = " + uDelta0);
+			buf.append("\nmatchbox = " + matchbox);
+			buf.append("\nnThresh0 = " + nThresh0);
+			buf.append("\nmatchFineThresh = " + matchFineThresh);
+			buf.append("\nnPeakMinThresh = " + nPeakMinThresh);
+			buf.append("\nnPeakMaxThresh = " + nPeakMaxThresh);
+			buf.append("\nlensletOrientation = " + lensletOrientation);
+			buf.append("\nspiralRingCount = " + spiralRingCount);
+			buf.append("\nforceScale = " + forceScale);
+			buf.append("\nforceRotation = " + forceRotation);
+			buf.append("\nfracFilledThresh = " + fracFilledThresh);
+			buf.append("\nfourierQualityThresh = " + fourierQualityThresh);
+			buf.append("\nforceRotationValue = " + forceRotationValue);
+			buf.append("\nforceScaleValue = " + forceScaleValue);
+			buf.append("\nforceRotationSource = " + forceRotationSource);
+			buf.append("\nforceScaleSource = " + forceScaleSource);
+			buf.append("\n");
+
+
+		return buf.toString();
+	
+
+	}
 	
 }

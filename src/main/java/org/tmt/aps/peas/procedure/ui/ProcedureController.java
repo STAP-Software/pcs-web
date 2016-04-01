@@ -443,6 +443,9 @@ public class ProcedureController implements Serializable {
 							physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
 			
 					procedureConfig.setPupilMask(defaultMask);
+					
+					// when the pupil mask changes the fiConfig needs to be reloaded
+					procedureExecutionMgmt.reloadFIConfig(procedure, physicalModel.getInstrument().getInstrumentId());
 
 				}
 				
