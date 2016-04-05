@@ -56,7 +56,17 @@ public class GlobalConfig {
 	public GlobalConfig(GlobalConfig source) {
 		
 		try {
-			BeanUtils.copyProperties(this, source);
+			
+			// FIXME: this call gives error when updateDate is null
+			//BeanUtils.copyProperties(this, source);
+			
+			// temp fix
+			this.updateDate = source.updateDate;
+			this.coarseMirrorX = source.coarseMirrorX;
+			this.coarseMirrorY = source.coarseMirrorY;
+			this.fineMirrorX = source.fineMirrorX;
+			this.fineMirrorY = source.fineMirrorY;
+			this.sufsZernikeOrderListEncoded = source.sufsZernikeOrderListEncoded;
 
 			this.globalConfigId = null;
 			

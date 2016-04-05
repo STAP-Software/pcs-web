@@ -28,6 +28,8 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -418,13 +420,14 @@ public class SufsExecutor {
 
 			
 			/*****************************************************/
-			/*    Calculate Avg Zernikes         */
-			/*****************************************************/
-			/*****************************************************/
+			/*        Calculate Zernikes Avg and EOM             */
 			/*               calcZernikeStats                    */
 			/*****************************************************/
-			// TODO: implement this (average and error on the mean) for each segment over iterations
-			// this may replace the above...
+			
+			SufsSegmentZernikeResult[] sufsSegmentZernikeResultIterations = procedureOutput.getIterationResultObjectFor("SufsSegmentZernikeResult", 
+					SufsSegmentZernikeResult.class).toArray(new SufsSegmentZernikeResult[0]);
+
+			SufsSegmentZernikeStatsResult sufsSegmentZernikeStatsResult = computationLibrary.calculateSufsZernikeStats(sufsSegmentZernikeResultIterations);
 			
 			/*****************************************************/
 			/* Display Avg SUFS Centroid Offsets */

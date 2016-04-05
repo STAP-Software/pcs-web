@@ -27,6 +27,7 @@ public class CentroidOffsetsConfig {
 
 	private boolean removeScale;
 	private boolean removeRotation;
+	private float sufsIgnoreSubimageThreshold;
 	
 	public CentroidOffsetsConfig() {
 		
@@ -61,6 +62,14 @@ public class CentroidOffsetsConfig {
 
 	public void setRemoveRotation(boolean removeRotation) {
 		this.removeRotation = removeRotation;
+	}
+
+	public float getSufsIgnoreSubimageThreshold() {
+		return sufsIgnoreSubimageThreshold;
+	}
+
+	public void setSufsIgnoreSubimageThreshold(float sufsIgnoreSubimageThreshold) {
+		this.sufsIgnoreSubimageThreshold = sufsIgnoreSubimageThreshold;
 	}
 	
 	

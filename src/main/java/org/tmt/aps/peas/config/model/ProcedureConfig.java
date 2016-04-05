@@ -51,9 +51,6 @@ public class ProcedureConfig {
 
 	private boolean defaultFlg;
 
-	@Temporal(TemporalType.TIMESTAMP)
-	private Date updateDate;
-
 		
 	private Float integrationTime;
 	@Column(name="numTrials")
@@ -231,14 +228,6 @@ public class ProcedureConfig {
 
 	public void setAutoCommandSecondary(int autoCommandSecondary) {
 		this.autoCommandSecondary = autoCommandSecondary;
-	}
-
-	public Date getUpdateDate() {
-		return updateDate;
-	}
-
-	public void setUpdateDate(Date updateDate) {
-		this.updateDate = updateDate;
 	}
 
 	public Integer getCoarsePhasingOption() {

@@ -54,7 +54,9 @@ import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.computation.model.SufsZernikeResult;
+import org.tmt.aps.peas.computation.model.SufsZernikeStatsResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -1852,7 +1854,7 @@ public class ComputationLibraryImpl {
 		// for each segment in the group
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 			
-			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]];
+			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]-1];
 							
 			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(sufsSegmentIdealSpotLocations,  
 				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikeOrder);
@@ -1866,6 +1868,62 @@ public class ComputationLibraryImpl {
 		return result;
 		
 	}
+
+	
+	@Computation
+	public SufsSegmentZernikeStatsResult calculateSufsZernikeStats(SufsSegmentZernikeResult[] sufsSegmentZernikeResultIterations) throws Exception {
+
+		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsZernikeStats"));
+		
+		
+		// get the sufsOffsetsToZernikes for each segment
+		
+		SufsZernikeStatsResult[] sufsZernikeStatsResults = new SufsZernikeStatsResult[7];
+		
+		
+		// for each segment in the group
+		for (int groupSegment=0; groupSegment<7; groupSegment++) {
+			
+			// holder for all zernikes for and each iteration for a single segment
+			int numberOfZernikesForSegment = sufsSegmentZernikeResultIterations[0].getBestFitZernikes()[groupSegment].length;
+			float[][] bestFitZernikesForSegmentIterations = new float[numberOfZernikesForSegment][sufsSegmentZernikeResultIterations.length];
+
+			
+			// for each iteration
+			for (int j=0; j<sufsSegmentZernikeResultIterations.length; j++) {
+				SufsSegmentZernikeResult result = sufsSegmentZernikeResultIterations[j];
+				
+				float[] bestFitZernikesForSegment = result.getBestFitZernikes()[groupSegment];
+				for (int k=0; k<bestFitZernikesForSegment.length; k++) {
+					bestFitZernikesForSegmentIterations[k][j] = bestFitZernikesForSegment[k];
+				}
+			}
+			
+			// for each zernike in a single segment
+			float[] zernikeMeans = new float[numberOfZernikesForSegment];
+			float[] zernikeEoms = new float[numberOfZernikesForSegment];
+			for (int zernike=0; zernike<numberOfZernikesForSegment; zernike++) {
+				// zernikeIterations is now a single array of iterations of best fit for a single zernike within a single segment
+				double[] zernikeIterations = JavaComputations.floatArrayToDouble(bestFitZernikesForSegmentIterations[zernike]);
+				// now we find the mean and eom for this segment zernike
+				zernikeMeans[zernike] = JavaComputations.getMean(zernikeIterations);
+				zernikeEoms[zernike] = JavaComputations.getEom(zernikeIterations);
+			}
+			
+			// place all the zernike errors and means for this segment in a SufsZernikeStatsResult
+			sufsZernikeStatsResults[groupSegment] = new SufsZernikeStatsResult(zernikeMeans, zernikeEoms);
+						
+		}
+
+		// put all seven segment results into the return object
+		SufsSegmentZernikeStatsResult result = new SufsSegmentZernikeStatsResult(sufsZernikeStatsResults);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsZernikeStats"));
+
+		return result;
+		
+	}
+
 
 	/*
 	 * Given the X and Y coarse mirror motions that are about to be sent to the instrument, calculate the desired telescope commands

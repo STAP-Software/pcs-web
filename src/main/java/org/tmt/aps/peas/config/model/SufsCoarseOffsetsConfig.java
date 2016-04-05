@@ -42,6 +42,7 @@ public class SufsCoarseOffsetsConfig {
 	int coarseMirrorOffsetCurrentX; 
 	int coarseMirrorOffsetCurrentY;
 
+	float telescopeMoveThreshold;
 	
 	public SufsCoarseOffsetsConfig() {
 		
@@ -118,6 +119,14 @@ public class SufsCoarseOffsetsConfig {
 	public Point getCoarseMirrorOffsetCurrent() {
 		
 		return new Point(coarseMirrorOffsetCurrentX, coarseMirrorOffsetCurrentY);
+	}
+
+	public float getTelescopeMoveThreshold() {
+		return telescopeMoveThreshold;
+	}
+
+	public void setTelescopeMoveThreshold(float telescopeMoveThreshold) {
+		this.telescopeMoveThreshold = telescopeMoveThreshold;
 	}
 
 

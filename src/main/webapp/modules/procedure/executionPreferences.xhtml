@@ -44,6 +44,8 @@
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgPtCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}" />
 					<h:outputLabel value="Auto Display Avg. FS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgFsCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
+					<h:outputLabel value="Auto Display Avg. SUFS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.sufs}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgSufsCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.sufs}"/>
 					<h:outputLabel value="Auto Display Actuator Deltas" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen}" />
 					<h:outputLabel value="Auto Display Pistons" rendered="#{procedureController.procedure.procedureType.phasing}" />
