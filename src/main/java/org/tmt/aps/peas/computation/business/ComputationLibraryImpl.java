@@ -108,7 +108,13 @@ public class ComputationLibraryImpl {
 	@EJB
 	StatusLogger statusLogger;
 
+	
+	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
 
+	private static final int NUMBER_OF_ZERNIKES = 15;
+
+
+	
 	public float actuatorLengths(float a, float b) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "actuatorLengths"));
@@ -1573,7 +1579,6 @@ public class ComputationLibraryImpl {
 		
 	}
 	
-	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
 	
 	public SufsSegmentCentroidsResult generateSufsSegmentCentroids (FindCentroidsResult findCentroidsResult, int[][] sufsGroupSegmentToMask) throws Exception {
 		
@@ -1783,7 +1788,7 @@ public class ComputationLibraryImpl {
 	
 
 	private SufsZernikeResult calcSufsZernikesOneSeg(FloatPoint[] idealSpots,  
-			FloatPoint[] offsets, float aHex, int[] goodSpots, int zernikeOrder) throws Exception {
+			FloatPoint[] offsets, float aHex, float secPerPixel, int[] goodSpots, int zernikeOrder) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcSufsZernikesOneSeg"));
 
@@ -1794,25 +1799,22 @@ public class ComputationLibraryImpl {
 		float[] xIdealSpotsInMeters = FloatPointListEncoder.extractXArray(idealSpotsInMeters);
 		float[] yIdealSpotsInMeters = FloatPointListEncoder.extractYArray(idealSpotsInMeters);
 		
-		// TODO: convert to arcsecs
-		float[] offsetsInArcseconds = new float[offsets.length]; 
-		float[] offsetsX = FloatPointListEncoder.extractXArray(Arrays.asList(offsets));
-		float[] offsetsY = FloatPointListEncoder.extractYArray(Arrays.asList(offsets));
 		
-		// FIXME: make a constant for max number of zernikes
-		float[] bestFitZernikes = new float[15];
-		float[] theoreticalOffsetsX = new float[offsetsInArcseconds.length];
-		float[] theoreticalOffsetsY = new float[offsetsInArcseconds.length];
+		List<FloatPoint> centroidOffsets = Arrays.asList(offsets);
 		
-		// FIXME: zernikeOrder is an int, the current Fortran implementation wants an array
-		int[] replaceMeWithZernikeOrder = new int[15];
-		for (int i=0; i<zernikeOrder; i++) {
-			replaceMeWithZernikeOrder[i] = 1;
-		}
-	
+		// offsets to arcseconds
+		List<FloatPoint> offsetsArcSec = FloatPointListEncoder.multiplyPoints(centroidOffsets, secPerPixel);
+		float[] offsetsArcsecondsX = FloatPointListEncoder.extractXArray(offsetsArcSec);
+		float[] offsetsArcsecondsY = FloatPointListEncoder.extractYArray(offsetsArcSec);
+		
+		float[] bestFitZernikes = new float[NUMBER_OF_ZERNIKES];
+		float[] theoreticalOffsetsX = new float[offsetsArcsecondsX.length];
+		float[] theoreticalOffsetsY = new float[offsetsArcsecondsY.length];
+		
+		
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
-				offsetsX, offsetsY, aHex, goodSpots, replaceMeWithZernikeOrder,
-				bestFitZernikes, theoreticalOffsetsX, theoreticalOffsetsX);
+				offsetsArcsecondsX, offsetsArcsecondsY, aHex, goodSpots, zernikeOrder,
+				bestFitZernikes, theoreticalOffsetsX, theoreticalOffsetsY);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1833,7 +1835,7 @@ public class ComputationLibraryImpl {
 	}
 	
 	@Computation
-	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[] maskOffsets, float aHex,
+	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[] maskOffsets, float aHex, float secPerPixel,
 			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
@@ -1857,7 +1859,7 @@ public class ComputationLibraryImpl {
 			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]-1];
 							
 			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(sufsSegmentIdealSpotLocations,  
-				segmentOffsets[groupSegment], aHex, segGoodSpots[groupSegment], zernikeOrder);
+				segmentOffsets[groupSegment], aHex, secPerPixel, segGoodSpots[groupSegment], zernikeOrder);
 		
 		}
 
