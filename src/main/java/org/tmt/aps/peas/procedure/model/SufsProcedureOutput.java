@@ -3,10 +3,10 @@ package org.tmt.aps.peas.procedure.model;
 import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
-import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
+import org.tmt.aps.peas.visualization.model.AvgSufsCentroidOffsetsDisplayValues;
 
 
-public class SufsProcedureOutput extends ProcedureOutput implements SufsCentroidOffsetsDisplayValues {
+public class SufsProcedureOutput extends ProcedureOutput implements AvgSufsCentroidOffsetsDisplayValues {
 	
 	SufsSegmentOffsetsResult sufsSegmentOffsetsResult;
 	SufsCentroidStatsResult sufsCentroidStatsResult;

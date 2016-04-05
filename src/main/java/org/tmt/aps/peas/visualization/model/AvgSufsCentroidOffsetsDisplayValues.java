@@ -1,12 +1,17 @@
 package org.tmt.aps.peas.visualization.model;
 
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 
 public interface AvgSufsCentroidOffsetsDisplayValues {
 	
-	public FloatPoint[] getAvgSufsCentroidOffsets();
+	//public FloatPoint[] getAvgSufsCentroidOffsets();
 	
-	public CentroidStatsResult getAvgSufsCentroidStatsResult();
+	//public CentroidStatsResult getAvgSufsCentroidStatsResult();
+	
+	
+	public SufsSegmentOffsetsResult getSufsSegmentOffsetsResult();
+	public SufsCentroidStatsResult getSufsCentroidStatsResult();
+
 
 }

@@ -1,0 +1,279 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<script type="text/javascript">  
+//<![CDATA[
+
+var avgSufsSideLen = 100
+var avgSufsHexRadius = (Math.sqrt(3.0)/2.0) * avgSufsSideLen
+           
+var resizing = false;   
+
+           
+function runDrawAvgSufsOffsets() {
+
+	var c = document.getElementById("avgSufsOffsetsCanvas");
+	var ctx = c.getContext("2d");
+
+	ctx.translate(-25,-10);
+	ctx.scale(0.61, 0.61);
+
+	window.setTimeout("drawAvgSufsCentroidOffsets(true,true)", 10);
+	
+
+	$(avgSufsCentroidOffsetDisplayDialog.jqId).bind('resize', function(){
+		if (!resizing) {
+			resizing = true;
+			window.setTimeout("avgSufsCentroidOffsetsResizeHandler()", 1000);
+		}
+	})
+	   
+}
+
+function avgSufsCentroidOffsetsResizeHandler() {
+	
+	var baseScale = 0.61;
+	var baseCanvasSize = 600.0;
+	
+	var d = document.getElementById("avgSufsCentroidOffsetDialog"); 
+	var availableWidth = d.offsetWidth - 300 - 100;
+	var availableHeight = d.offsetHeight - 70;
+	var available = Math.min(availableWidth, availableHeight);
+	
+	var scale = baseScale * available / baseCanvasSize;
+	
+	var c = document.getElementById("avgSufsOffsetsCanvas");
+	c.width=available;
+	c.height=available;
+	
+	var ctx = c.getContext("2d");
+
+	ctx.scale(scale, scale);
+
+	//alert("resizing")
+	drawAvgSufsCentroidOffsets();
+	
+	resizing = false;
+
+}
+
+
+
+function drawAvgSufsCentroidOffsets() {
+    	
+	var c = document.getElementById("avgSufsOffsetsCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,1000,1000);
+	
+	//alert("c = " + c)
+
+ 	
+ 	// display coordinates - ideal centroid positions
+	var xField2 = document.getElementById('avgSufsOffsetsForm:centDefXs').value;
+ 	var xCentroidArray = xField2.split(','); 
+ 	
+	var yField2 = document.getElementById('avgSufsOffsetsForm:centDefYs').value;
+ 	var yCentroidArray = yField2.split(','); 
+   
+ 	// display coordiantes - centroid offsets
+	var xField3 = document.getElementById('avgSufsOffsetsForm:centroidOffsetXs').value;
+ 	var xOffsetArray = xField3.split(','); 
+ 	
+	var yField3 = document.getElementById('avgSufsOffsetsForm:centroidOffsetYs').value;
+ 	var yOffsetArray = yField3.split(','); 
+   
+	var offsetScale = parseFloat(document.getElementById('avgSufsOffsetsForm:scaleSlider').value);
+ 	 
+	// calculate max length of all offsets
+	var maxLen = document.getElementById('avgSufsOffsetsForm:maxOffset').value;
+
+	
+	// the max displayed length at 100% offset scale is sqrt(3)/2 * avgSufsSideLen
+	
+	// test only
+	//var maxLen = 10.0;
+
+	var segmentWidth = 1.0;
+
+	
+	var scaleFactor = avgSufsHexRadius / maxLen  // the max length will then be the length of the avgSufsHexRadius
+	
+	
+	
+	//console.log("scaleFactor = " + scaleFactor + ", maxLen = " + maxLen)
+	
+	//console.log("xField3 = " + xField3)
+	
+	
+	for (var i = 0; i < xCentroidArray.length; i++) {
+		
+		// test only to get something on the screen
+		var x = (parseFloat(xCentroidArray[i]) + segmentWidth) * 500;
+		var y = (parseFloat(yCentroidArray[i]) + segmentWidth) * 500;
+		
+		var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+			
+		//console.log("xCentroidArray[i] = " + xCentroidArray[i]);
+		console.log("xOffsetArray[i] = " + xOffsetArray[i] + ", dx = " + dx);
+		
+		ctx.beginPath();
+		ctx.strokeStyle = 'red';
+	    ctx.moveTo(x, y);
+	    ctx.lineTo(dx, dy);
+	    ctx.stroke();
+		
+	    
+		ctx.beginPath();
+		ctx.strokeStyle = 'black';
+		ctx.arc(x, y, 5, 0, 2*Math.PI);
+		ctx.closePath();
+		ctx.stroke();
+		ctx.fillStyle = 'white';
+	    ctx.fill();
+
+	}
+	
+	// max len is the value assigned to a side in the key
+
+	// add the key
+	
+	ctx.beginPath();
+	ctx.strokeStyle = 'red';
+    ctx.moveTo(850, 950);
+    ctx.lineTo(850 + avgSufsSideLen, 950);
+    ctx.stroke();
+   
+
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();
+    
+	ctx.beginPath();
+	ctx.strokeStyle = 'black';
+	ctx.arc(850 + avgSufsSideLen, 950, 5, 0, 2*Math.PI);
+	ctx.closePath();
+	ctx.stroke();
+	ctx.fillStyle = 'white';
+    ctx.fill();   
+    
+	ctx.fillStyle = 'black';
+	ctx.font="18px Arial";
+	
+	
+	
+	ctx.fillText((avgSufsSideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " pixels", 844, 940);
+	
+}
+
+
+
+//]]>  
+</script>   
+
+		<p:dialog id="avgSufsCentroidOffsetDialog" header="SUFS Avg Centroid Offsets" widgetVar="avgSufsCentroidOffsetDisplayDialog" closable="false" >  
+     		<h:form id="avgSufsOffsetsForm">
+
+    		<h:inputHidden id="centroidOffsetXs" value="#{visualizationController.centroidOffsetXs}" />
+			<h:inputHidden id="centroidOffsetYs" value="#{visualizationController.centroidOffsetYs}" />
+
+     		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
+			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
+						  
+ 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxAvgSufsOffset}" />
+    			
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+     		
+    		
+    		<canvas id="avgSufsOffsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		
+    		
+    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >			
+ 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+			<h:outputLabel value="SUFS Group Number" />
+			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}" style="position:relative; top:2px" />
+			<h:outputLabel value="Group Segment Number" />
+			<h:outputText value="#{visualizationController.avgSufsGroupSegmentNumber+1}" style="position:relative; top:2px" />
+			<h:outputLabel value="Mirror Segment Number" />
+			<h:outputText value="#{constantsCache.sufsConstants.sufsGroupToMirror[procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup-1][visualizationController.avgSufsGroupSegmentNumber]}" style="position:relative; top:2px" />
+		
+
+			<p:spacer height="25"/><p:spacer height="25"/>
+			
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','RmsOffset')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.rmsOffset[visualizationController.avgSufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','EnclosedEnergy80')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.enclosedEnergy80[visualizationController.avgSufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsCentroidStatsResult','MaxOffset')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+			<h:outputText value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxOffset[visualizationController.avgSufsGroupSegmentNumber]}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+			<h:outputLabel value="Subimage with Max Offset"/>
+			<h:outputText value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxSpotNum[visualizationController.avgSufsGroupSegmentNumber]}" style="position:relative; top:2px" />
+			
+		
+			<p:spacer height="15"/><p:spacer height="15"/>
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','secPerPixel')}" />				
+			<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+						
+   			
+   			<p:spacer height="10"/><p:spacer height="10"/>
+				 
+    			
+    			
+    		</p:panelGrid>
+    		<p:panelGrid columns="1" style="margin-bottom: 10px; width:100%">
+  
+  				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
+        		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
+        		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
+            		<p:ajax event="slideEnd" listener="#{visualizationController.updateAvgSufsCentroidOffsetDisplayListener}" />
+        		</p:slider>
+        		
+        		<p:spacer height="20"/><p:spacer height="20"/>
+        		
+    		</p:panelGrid>
+    		
+   		
+    		</p:panelGrid>
+ 
+   		
+    		</p:panelGrid>
+    		<br/>
+    		<p:commandButton id="backButton" value="&lt;&lt; Back" styleClass="dialogbuttonBack" update="avgSufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doAvgSufsCentroidOffsetsBack}" oncomplete="runDrawAvgSufsOffsets()" />	
+        	<p:commandButton id="nextButton" value="Next &gt;&gt;" styleClass="dialogbuttonNext" update="avgSufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doAvgSufsCentroidOffsetsNext}" oncomplete="runDrawAvgSufsOffsets()" />	
+    		
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="avgSufsCentroidOffsetDisplayDialog.hide()" />
+			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="avgSufsCentroidOffsetDisplayDialog.hide()" />
+    		</h:form>
+		</p:dialog> 
+
+
+</ui:composition>

@@ -436,7 +436,7 @@ public class SufsExecutor {
 			// Display the average centroid offsets
 			if (procedureConfig.isAutoDisplayAvgSufsCentroidOffsets()) {
 			
-				graphicDisplayMgmt.displaySufsCentroidOffsets(procedureOutput);
+				graphicDisplayMgmt.displayAvgSufsCentroidOffsets(procedureOutput);
 			}
 
 			procedureExecutionState.setPercentComplete(85);

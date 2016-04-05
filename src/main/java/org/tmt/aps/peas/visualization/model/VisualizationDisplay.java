@@ -31,6 +31,7 @@ public class VisualizationDisplay extends UserPrompt {
 	public static final int DISPLAY_TYPE_EDGE_HEIGHTS = 6;
 	public static final int DISPLAY_TYPE_EDGE_RESIDUALS = 7;
 	public static final int DISPLAY_TYPE_SUFS_CENTROID_OFFSETS = 8;
+	public static final int DISPLAY_TYPE_AVG_SUFS_CENTROID_OFFSETS = 9;
 
 	
 	@Id
@@ -101,6 +102,10 @@ public class VisualizationDisplay extends UserPrompt {
 	
 	public boolean isDisplayTypeSufsCentroidOffsets() {
 		return visualizationDisplayId.intValue() == DISPLAY_TYPE_SUFS_CENTROID_OFFSETS;
+	}
+	
+	public boolean isDisplayTypeAvgSufsCentroidOffsets() {
+		return visualizationDisplayId.intValue() == DISPLAY_TYPE_AVG_SUFS_CENTROID_OFFSETS;
 	}
 	
 }
