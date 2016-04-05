@@ -215,6 +215,13 @@ public class JavaComputations {
 		return (float)StatUtils.mean(inputs);
 	}
 
+	public static double[] floatArrayToDouble(float[] input) {
+		double[] result = new double[input.length];
+		for (int i=0; i<input.length; i++) {
+			result[i] = input[i];
+		}
+		return result;
+	}
 	
 	public static float getMean(Float[] inputs) {
 		

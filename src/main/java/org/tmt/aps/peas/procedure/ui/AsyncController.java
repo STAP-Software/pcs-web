@@ -195,6 +195,9 @@ public class AsyncController implements Serializable {
 			if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
 				requestContext.execute("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
 			}
+			if (visualizationDisplay.isDisplayTypeAvgSufsCentroidOffsets()) {
+				requestContext.execute("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
+			}
 			
 			graphicDisplayMgmt.setPendingDisplay(null);
 		}
