@@ -4,6 +4,9 @@ import org.tmt.aps.peas.common.FloatPoint;
 
 public class SufsZernikeResult {
 	
+	
+	private static final int MAX_NUMBER_OF_ZERNIKES = 45;
+
 	float[] bestFitZernikes;
 	FloatPoint[] theoreticalOffsets;
 	float whFactor;
@@ -13,7 +16,9 @@ public class SufsZernikeResult {
 	}
 	
 	public SufsZernikeResult(float[] bestFitZernikes, FloatPoint[] theoreticalOffsets, float whFactor) {
-		this.bestFitZernikes = bestFitZernikes;
+		this.bestFitZernikes = new float[MAX_NUMBER_OF_ZERNIKES];
+		System.arraycopy(bestFitZernikes, 0, this.bestFitZernikes, 0, bestFitZernikes.length);
+		
 		this.theoreticalOffsets = theoreticalOffsets;
 		this.whFactor = whFactor;
 	}

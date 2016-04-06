@@ -72,9 +72,11 @@ public class SessionMgmt {
 		return session;
 	}
 
-	public List<Session> findAllSessions(Long telescopeId) {
-		TypedQuery<Session> query = em.createNamedQuery("findAllSessions", Session.class);
+	public List<Session> findLastSessions(Long telescopeId, Date searchDate) {
+		TypedQuery<Session> query = em.createNamedQuery("findLastSessions", Session.class);
 		query.setParameter("telescopeId", telescopeId);
+		query.setParameter("searchDate", searchDate);
+		query.setMaxResults(10);
 		
 		return query.getResultList();
 	}

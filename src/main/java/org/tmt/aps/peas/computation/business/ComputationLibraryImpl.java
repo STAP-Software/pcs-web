@@ -111,7 +111,6 @@ public class ComputationLibraryImpl {
 	
 	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
 
-	private static final int NUMBER_OF_ZERNIKES = 15;
 
 
 	
@@ -1659,7 +1658,7 @@ public class ComputationLibraryImpl {
 	@Computation
 	public SufsSegmentOffsetsResult calculateSufsCentroidOffsets(FindCentroidsResult findCentroidsResult, FindCentroidsResult refMapCentroidsResult, 
 			CentroidOffsetsConfig centroidOffsetsConfig, 
-			PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
+			PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask, float spotJumpedThreshold) throws Exception {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsCentroidOffsets"));
 
@@ -1670,6 +1669,8 @@ public class ComputationLibraryImpl {
 		int[][] segMissingSpotFlags = generateSufsSegmentInts(missingSpotFlags, sufsGroupSegmentToMask);
 		
 		CentroidOffsetsResult[] centroidOffsetsResult = new CentroidOffsetsResult[7];
+		
+		int[][] spotJumped = new int[7][NUM_SUFS_SEGMENT_SPOTS];
 		
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 		
@@ -1682,15 +1683,26 @@ public class ComputationLibraryImpl {
 					segNspotTypes[groupSegment], 
 					segMissingSpotFlags[groupSegment], 
 					groupSegmentCentroidsResult.getFindCentStatusList());
+			
+			spotJumped[groupSegment] = determineJumpedSpots(centroidOffsetsResult[groupSegment].getCartesianCentroidOffsets(), spotJumpedThreshold);
 		}
 
-		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult);
+		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult, spotJumped);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsCentroidOffsets"));
 		
 		return result;
 		
 	}
+	
+	private int[] determineJumpedSpots(FloatPoint[] offsets, float threshold) {
+		int[] jumped = new int[offsets.length];
+		for (int i=0; i<offsets.length; i++) {
+			jumped[i] = (offsets[i].mag() > threshold) ? 1 : 0;
+		}
+		return jumped;
+	}
+	
 	
 	@Computation
 	public SufsCentroidStatsResult calculateSufsCentroidStats(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, int[] findCentStatusList,  
@@ -1778,7 +1790,10 @@ public class ComputationLibraryImpl {
 			avgCentroidOffsetsResult[groupSegment] = calculateAvgCentroidOffsets(centroidOffsetsResultGroupSegmentIteration[groupSegment], goodSpotsGroupSegment[groupSegment]);
 		}
 
-		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(avgCentroidOffsetsResult);
+		// spotJumped not used, but in the interface
+		int[][] spotJumped = new int[7][NUM_SUFS_SEGMENT_SPOTS];
+
+		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(avgCentroidOffsetsResult, spotJumped);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgSufsCentroidOffsets"));
 
@@ -1807,13 +1822,15 @@ public class ComputationLibraryImpl {
 		float[] offsetsArcsecondsX = FloatPointListEncoder.extractXArray(offsetsArcSec);
 		float[] offsetsArcsecondsY = FloatPointListEncoder.extractYArray(offsetsArcSec);
 		
-		float[] bestFitZernikes = new float[NUMBER_OF_ZERNIKES];
+		int zernikeCount = (zernikeOrder+1)*(zernikeOrder+2)/2;
+		
+		float[] bestFitZernikes = new float[zernikeCount];
 		float[] theoreticalOffsetsX = new float[offsetsArcsecondsX.length];
 		float[] theoreticalOffsetsY = new float[offsetsArcsecondsY.length];
 		
 		
 		Object[] result = jsufsOffsetsToZernikes.jsufsOffsetsToZernikes(retVal, xIdealSpotsInMeters, yIdealSpotsInMeters, 
-				offsetsArcsecondsX, offsetsArcsecondsY, aHex, goodSpots, zernikeOrder,
+				offsetsArcsecondsX, offsetsArcsecondsY, aHex*Constants.METERS_TO_MM, goodSpots, zernikeOrder,
 				bestFitZernikes, theoreticalOffsetsX, theoreticalOffsetsY);
 
 		

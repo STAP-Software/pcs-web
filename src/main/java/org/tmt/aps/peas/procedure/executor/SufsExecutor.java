@@ -32,6 +32,7 @@ import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
+import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
@@ -134,6 +135,7 @@ public class SufsExecutor {
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig = procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
+			CentroidOffsetsConfig centroidOffsetsConfig = procedure.getProcedureConfigSet().getCentroidOffsetsConfig();
 
 			SufsProcedureOutput procedureOutput = (SufsProcedureOutput) procedure.getProcedureOutput();
 
@@ -308,7 +310,8 @@ public class SufsExecutor {
 				SufsSegmentOffsetsResult sufsCentroidOffsets = computationLibrary.calculateSufsCentroidOffsets(findCentroidsResult,
 						procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult(),
 						procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType(),
-						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), sufsGroupSegmentToMask);
+						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), sufsGroupSegmentToMask,
+						centroidOffsetsConfig.getSufsIgnoreSubimageThreshold());
 
 				/*****************************************************/
 				/* calculateCentroidStats */

@@ -14,6 +14,12 @@
 		<h:form id="sessionListForm" >
 		
 			<div style="margin:30px;" >
+			
+			<div>
+			<h:outputLabel value="Last 10 sessions since "/> &#160;&#160;<p:calendar size="6" id="popup" value="#{sessionController.searchDate}" />&#160;&#160; <p:commandButton value="Search" action="#{sessionController.doSearchSessionList}" />
+			</div>
+			<br/>
+			
 			<p:dataTable id="sessionTable" var="nightSession" value="#{sessionController.sessionList}">				
 			    <f:facet name="header">
 					Session List for #{sessionController.telescope.telescopeName}

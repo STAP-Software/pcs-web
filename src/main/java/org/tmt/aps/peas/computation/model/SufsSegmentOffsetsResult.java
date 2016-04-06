@@ -10,7 +10,9 @@ public class SufsSegmentOffsetsResult {
 	private FloatPoint[][] ccdCentroidOffsets;
 	private FloatPoint[][] cartesianCentroidOffsets;
 	
-	public SufsSegmentOffsetsResult(CentroidOffsetsResult[] segmentCentroidOffsetsResults) {
+	int[][] spotJumped;
+	
+	public SufsSegmentOffsetsResult(CentroidOffsetsResult[] segmentCentroidOffsetsResults, int[][] spotJumped) {
 		
 		int offsetCount = segmentCentroidOffsetsResults[0].getCartesianCentroidOffsets().length;
 		imageTranslation = new FloatPoint[segmentCentroidOffsetsResults.length];
@@ -26,6 +28,8 @@ public class SufsSegmentOffsetsResult {
 			ccdCentroidOffsets[i] = segmentCentroidOffsetsResults[i].getCcdCentroidOffsets();
 			cartesianCentroidOffsets[i] = segmentCentroidOffsetsResults[i].getCartesianCentroidOffsets();
 		}
+		
+		this.spotJumped = spotJumped;
 	}
 
 	public SufsSegmentOffsetsResult() {
@@ -70,6 +74,14 @@ public class SufsSegmentOffsetsResult {
 
 	public void setCartesianCentroidOffsets(FloatPoint[][] cartesianCentroidOffsets) {
 		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
+	}
+
+	public int[][] getSpotJumped() {
+		return spotJumped;
+	}
+
+	public void setSpotJumped(int[][] spotJumped) {
+		this.spotJumped = spotJumped;
 	}
 
 	public CentroidOffsetsResult extractCentroidOffsetsResult(int segmentNumber) {

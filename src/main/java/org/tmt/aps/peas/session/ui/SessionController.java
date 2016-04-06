@@ -8,6 +8,7 @@ package org.tmt.aps.peas.session.ui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -32,10 +33,8 @@ import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.ExtInfConnectConfig;
-import org.tmt.aps.peas.session.model.FieldMetaData;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -69,6 +68,7 @@ public class SessionController implements Serializable {
 	Session currentSession;
 	Session currentSessionPersisted; // the session that is completed and stored
 	Session session;
+	Date searchDate;
 	List<Session> sessionList;
 	List<String> frameList;
 
@@ -88,13 +88,17 @@ public class SessionController implements Serializable {
 	private void init() {
 
 		try {
+			
+			// initialize with today
+			searchDate = new Date();
+
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 			telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
 
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			instrument = sessionMgmt.findInstrument(new Long(instrumentIdStr));
 
-			sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
 
 			currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 			// do we get our own copy??
@@ -221,6 +225,14 @@ public class SessionController implements Serializable {
 		
 	}
 
+	public Date getSearchDate() {
+		return searchDate;
+	}
+
+	public void setSearchDate(Date searchDate) {
+		this.searchDate = searchDate;
+	}
+
 	public ExtInfConnectConfig getExtInfConnectConfig() {
 		return extInfConfigState.getExtInfConnectConfig();
 	}
@@ -311,7 +323,7 @@ public class SessionController implements Serializable {
 	public String doViewSessionList() {
 
 		try {
-			sessionList = sessionMgmt.findAllSessions(telescope.getTelescopeId());
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
 	
 			breadcrumbMenuBean.addFirstItem("Sessions", "/modules/session/sessionList.xhtml");
 			return "/modules/session/sessionList.xhtml?faces-redirect=true";
@@ -322,6 +334,24 @@ public class SessionController implements Serializable {
 			return null;
 		}
 	}
+	
+	
+	public String doSearchSessionList() {
+
+		try {
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
+	
+			breadcrumbMenuBean.addFirstItem("Sessions", "/modules/session/sessionList.xhtml");
+			return "/modules/session/sessionList.xhtml?faces-redirect=true";
+		
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			return null;
+		}
+	}
+	
+	
 	
 	public void doZapSession() {
 		
