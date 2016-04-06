@@ -33,7 +33,7 @@
 					<h:panelGroup id="maskPanel">
 					    <p:selectOneMenu value="#{missingSpotsController.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
 							<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
-							<p:ajax update=":missingSpotsForm" listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
+							<p:ajax event="change" update=":missingSpotsForm" listener="#{missingSpotsController.listViewChangeListener}" process="@this" oncomplete="runDrawMissingSpots();" />
 						</p:selectOneMenu>
 					</h:panelGroup>
 					
@@ -41,7 +41,7 @@
 					<h:panelGroup id="sufsGroupPanel" rendered="#{missingSpotsController.renderSufsGroup}">
 					    <p:selectOneMenu value="#{missingSpotsController.sufsGroup}" converter="#{sufsGroupConverter}">
 							<f:selectItems value="#{missingSpotsController.sufsGroupList}" var="group" itemLabel="#{group.groupNumber}" itemValue="#{group}" />
-							<p:ajax update="groupSegmentNumbers maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
+							<p:ajax update="groupSegmentNumbers maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots"  listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
 						</p:selectOneMenu>
 					</h:panelGroup>
 					
