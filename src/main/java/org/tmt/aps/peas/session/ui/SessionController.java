@@ -69,6 +69,7 @@ public class SessionController implements Serializable {
 	Session currentSessionPersisted; // the session that is completed and stored
 	Session session;
 	Date searchDate;
+	int searchQuantity = 10;
 	List<Session> sessionList;
 	List<String> frameList;
 
@@ -98,7 +99,7 @@ public class SessionController implements Serializable {
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			instrument = sessionMgmt.findInstrument(new Long(instrumentIdStr));
 
-			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate, searchQuantity);
 
 			currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 			// do we get our own copy??
@@ -233,6 +234,15 @@ public class SessionController implements Serializable {
 		this.searchDate = searchDate;
 	}
 
+
+	public int getSearchQuantity() {
+		return searchQuantity;
+	}
+
+	public void setSearchQuantity(int searchQuantity) {
+		this.searchQuantity = searchQuantity;
+	}
+
 	public ExtInfConnectConfig getExtInfConnectConfig() {
 		return extInfConfigState.getExtInfConnectConfig();
 	}
@@ -316,14 +326,14 @@ public class SessionController implements Serializable {
 
 	public String doCancelSaveSession() {
 
-		return doViewSessionList();
+		return doViewSessionList();	
 
 	}
 
 	public String doViewSessionList() {
 
 		try {
-			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate, searchQuantity);
 	
 			breadcrumbMenuBean.addFirstItem("Sessions", "/modules/session/sessionList.xhtml");
 			return "/modules/session/sessionList.xhtml?faces-redirect=true";
@@ -339,7 +349,7 @@ public class SessionController implements Serializable {
 	public String doSearchSessionList() {
 
 		try {
-			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate);
+			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate, searchQuantity);
 	
 			breadcrumbMenuBean.addFirstItem("Sessions", "/modules/session/sessionList.xhtml");
 			return "/modules/session/sessionList.xhtml?faces-redirect=true";
