@@ -204,8 +204,8 @@ public class SufsExecutor {
 			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 
 			/**********************************************/
-			/* Move Telescope to compensate for SUFS */
-			/* group coarse mirror steering */
+			/*    Move Telescope to compensate for SUFS   */
+			/*        group coarse mirror steering        */
 			/**********************************************/
 
 			// TODO: make DCS call asynchronous and wait after readyCamera
@@ -216,41 +216,38 @@ public class SufsExecutor {
 			// Auto point logic
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 
-				// only move telescope if the move is greater than the threshold
-				if (telescopeMoveAzEl.x > sufsCoarseOffsetsConfig.getTelescopeMoveThreshold() || telescopeMoveAzEl.y > sufsCoarseOffsetsConfig.getTelescopeMoveThreshold()) {
+				if (procedureConfig.getAutoPointTelescopeSufsGroup() != Constants.AUTO_SUFS_POINT_TEL_NO) {
 
-					if (procedureConfig.getAutoPointTelescopeSufsGroup() != Constants.AUTO_SUFS_POINT_TEL_NO) {
+					boolean autoPointTelescope = false;
+					if (procedureConfig.getAutoPointTelescopeSufsGroup() == Constants.AUTO_SUFS_POINT_TEL_PROMPT) {
+						// prompt user
+						autoPointTelescope = userPromptMgmt.displayYesNoDialog("SUFS Point Telescope",
+								"Send telescope commands to point to SUFS group?");
 
-						boolean autoPointTelescope = false;
-						if (procedureConfig.getAutoPointTelescopeSufsGroup() == Constants.AUTO_SUFS_POINT_TEL_PROMPT) {
-							// prompt user
-							autoPointTelescope = userPromptMgmt.displayYesNoDialog("SUFS Point Telescope",
-									"Send telescope commands to point to SUFS group?");
+					} else {
+						autoPointTelescope = true;
+					}
 
-						} else {
-							autoPointTelescope = true;
-						}
+					if (autoPointTelescope) {
 
-						if (autoPointTelescope) {
+						// send commands to DCS
+						statusLogger.log("telescope.desired_move", telescopeMoveAzEl.x, telescopeMoveAzEl.y);
+						statusLogger.log("telescope.cmd.start");
 
-							// send commands to DCS
-							statusLogger.log("telescope.desired_move", telescopeMoveAzEl.x, telescopeMoveAzEl.y);
-							statusLogger.log("telescope.cmd.start");
-
-							// send out the commands
-							dcsTelMoveFuture = dcsMgmt.commandTelescopeDeltasAsync(telescopeMoveAzEl.asDoubleArray());
-						}
+						// send out the commands
+						dcsTelMoveFuture = dcsMgmt.commandTelescopeDeltasAsync(telescopeMoveAzEl.asDoubleArray());
 					}
 				}
+				
 			}
 
 			/**********************************************/
-			/* Ready Camera */
+			/*                Ready Camera                */
 			/**********************************************/
 			readyCameraSubflow.execute(procedure);
 
 			/*****************************************************/
-			/* wait for Move Telescope to complete */
+			/*       wait for Move Telescope to complete         */
 			/*****************************************************/
 			long waitPeriodMsTelMove = Utils.waitForComplete(dcsTelMoveFuture);
 			if (dcsTelMoveFuture != null) {
@@ -290,7 +287,7 @@ public class SufsExecutor {
 				procedureOutput.addIteration(pio);
 
 				/*****************************************************/
-				/* centerTelescopeCalc subflow */
+				/*             centerTelescopeCalc subflow           */
 				/*****************************************************/
 				Future<Exception> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
@@ -302,7 +299,7 @@ public class SufsExecutor {
 						procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 
 				/*****************************************************/
-				/* Divide up offsets to each segment and recalc */
+				/*   Divide up offsets to each segment and recalc    */
 				/*****************************************************/
 
 				int[][] sufsGroupSegmentToMask = constantsCache.getSufsConstants().getSufsGroupSegmentToMask();
@@ -314,14 +311,14 @@ public class SufsExecutor {
 						centroidOffsetsConfig.getSufsIgnoreSubimageThreshold());
 
 				/*****************************************************/
-				/* calculateCentroidStats */
+				/*                calculateCentroidStats             */
 				/*****************************************************/
 
 				computationLibrary.calculateSufsCentroidStats(sufsCentroidOffsets, findCentroidsResult.getFindCentStatusList(),
 						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), sufsGroupSegmentToMask);
 
 				/*****************************************************/
-				/* Calculate Zernikes from Offsets */
+				/*        Calculate Zernikes from Offsets            */
 				/*****************************************************/
 
 				computationLibrary.calculateSufsZernikes(constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
@@ -335,7 +332,7 @@ public class SufsExecutor {
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 				/*****************************************************/
-				/* Display Centroid Offsets */
+				/*               Display Centroid Offsets            */
 				/*****************************************************/
 
 				if (procedureConfig.isAutoDisplayCentroidOffsets()) {
@@ -343,7 +340,7 @@ public class SufsExecutor {
 				}
 
 				/*****************************************************/
-				/* Wait for DCS */
+				/*                 Wait for DCS                      */
 				/*****************************************************/
 				long dcsWaitPeriodMs = Utils.waitForComplete(dcsFuture);
 				if (dcsFuture != null) {
@@ -362,7 +359,7 @@ public class SufsExecutor {
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			/*****************************************************/
-			/* Restore Telescope */
+			/*                 Restore Telescope                 */
 			/*****************************************************/
 
 			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
@@ -381,7 +378,7 @@ public class SufsExecutor {
 			}
 
 			/****************************************************/
-			/* calc average good spots */
+			/*              calc average good spots             */
 			/****************************************************/
 
 			// this needs to be an average over all frames
@@ -393,7 +390,7 @@ public class SufsExecutor {
 			int[][] sufsGroupSegmentToMask = constantsCache.getSufsConstants().getSufsGroupSegmentToMask();
 
 			/*****************************************************/
-			/* calcAvgCentroidOffsets */
+			/*             calcAvgCentroidOffsets                */
 			/*****************************************************/
 
 			SufsSegmentOffsetsResult[] sufsOffsetsIterations = procedureOutput
@@ -404,7 +401,7 @@ public class SufsExecutor {
 					avgGoodSpotMask, constantsCache.getSufsConstants().getSufsGroupSegmentToMask());
 
 			/*****************************************************/
-			/* calculateCentroidStats - avg SUFS */
+			/*         calculateCentroidStats - avg SUFS         */
 			/*****************************************************/
 
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(
@@ -414,7 +411,7 @@ public class SufsExecutor {
 					.getIterationResultObjectFor("FindCentroidsResult", FindCentroidsResult.class).toArray(new FindCentroidsResult[0]);
 
 			/*****************************************************/
-			/* calcAvgCentroidStats */
+			/*             calcAvgCentroidStats                  */
 			/*****************************************************/
 			computationLibrary.calculateSufsAvgCentroidStats(sufsSegmentAvgOffsetsResult, avgGoodSpotMask, subimageDefList.getNspotTypes(),
 					sufsGroupSegmentToMask);
@@ -422,8 +419,8 @@ public class SufsExecutor {
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 
 			/*****************************************************/
-			/* Calculate Zernikes Avg and EOM */
-			/* calcZernikeStats */
+			/*           Calculate Zernikes Avg and EOM          */
+			/*                 calcZernikeStats                  */
 			/*****************************************************/
 
 			SufsSegmentZernikeResult[] sufsSegmentZernikeResultIterations = procedureOutput
@@ -434,7 +431,7 @@ public class SufsExecutor {
 					.calculateSufsZernikeStats(sufsSegmentZernikeResultIterations);
 
 			/*****************************************************/
-			/* Display Avg SUFS Centroid Offsets */
+			/*        Display Avg SUFS Centroid Offsets          */
 			/*****************************************************/
 
 			// Display the average centroid offsets
@@ -446,7 +443,7 @@ public class SufsExecutor {
 			procedureExecutionState.setPercentComplete(85);
 
 			/*****************************************************/
-			/* wait for Restore Telescope to complete */
+			/*      wait for Restore Telescope to complete       */
 			/*****************************************************/
 			waitPeriodMsTelMove = Utils.waitForComplete(dcsTelMoveFuture);
 			if (dcsTelMoveFuture != null) {
