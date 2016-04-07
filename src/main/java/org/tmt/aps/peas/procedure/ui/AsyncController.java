@@ -169,6 +169,7 @@ public class AsyncController implements Serializable {
 			requestContext.update("edgeHeightsForm");
 			requestContext.update("edgeResidualsForm");
 			requestContext.update("sufsOffsetsForm");
+			requestContext.update("avgSufsOffsetsForm");
 			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
