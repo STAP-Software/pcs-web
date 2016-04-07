@@ -583,10 +583,14 @@ public class VisualizationController implements Serializable {
 		requestContext.execute("drawAvgSufsCentroidOffsets()");
 	}
 
+	// Create ref map only - does not use iterations
+	public void doPopulateCentroidDisplay() {
+
+		doPopulateCentroidDisplay(0);
+	}
 
 	public void doPopulateCentroidDisplay(int iteration) {
 
-		// FIXME - for now, just the first iteration
 		Procedure procedure = procedureController.getProcedure();
 
 		if (procedure.getProcedureCcdFrameList() != null) {
