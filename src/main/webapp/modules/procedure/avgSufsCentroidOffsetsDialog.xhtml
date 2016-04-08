@@ -194,7 +194,7 @@ function drawAvgSufsCentroidOffsets() {
     		
     		
     		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:380px" >			
- 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+ 			<p:panelGrid columns="2" style="margin:0px;height:506px" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 			<h:outputLabel value="SUFS Group Number" />
 			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}" style="position:relative; top:2px" />
@@ -246,7 +246,7 @@ function drawAvgSufsCentroidOffsets() {
 				
 			<!--  FIXME: get the formatting and labels from the metadata when available -->
 			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />
-			<c:forEach var="zernikeMean" items="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsSegmentZernikeStatsResult.zernikeMeans[visualizationController.avgSufsGroupSegmentNumber]}" varStatus="loop">
+			<c:forEach var="zernikeMean" items="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsSegmentZernikeStatsResult.zernikeMeans[visualizationController.avgSufsGroupSegmentNumber]}" varStatus="loop" end="9">
 				<c:set var="zernikeEom" value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsSegmentZernikeStatsResult.zernikeEoms[visualizationController.avgSufsGroupSegmentNumber][loop.index]}"/>
 				<h:outputLabel value="#{fieldMetaData.displayLabel} #{loop.index+1} (#{fieldMetaData.units}) " rendered="#{zernikeMean!=0.0 and (loop.index gt 2) and (loop.index lt 10)}"/>
 				<h:panelGroup rendered="#{zernikeMean!=0.0 and (loop.index gt 2) and (loop.index lt 10)}">
