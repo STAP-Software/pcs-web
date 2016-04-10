@@ -78,9 +78,9 @@ public class SubimageDefCache {
 		
 		}
 		
-		// get the reference map set to start with
-		List<SubimageDef> listOfSufsRefMapSubimageDefs = sufsSubimageDefMap.get(0).getListOfSubimageDefs();
 		
+		
+		/*
 		// set all its spots as missing at first
 		for (int i=0; i<listOfSufsRefMapSubimageDefs.size(); i++) {
 			listOfSufsRefMapSubimageDefs.get(i).setMissingSpotType(0);
@@ -91,25 +91,25 @@ public class SubimageDefCache {
 			listOfSufsRefMapSubimageDefs = missingSpotsIntersection(listOfSufsRefMapSubimageDefs, listOfSubimageDefs);
 
 		}
-		
+		*/
 		
 		// add the first one for the reference beam map, which does not require an SUFS group
-		subimageDefMap.put(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, new SubimageDefList(listOfSufsRefMapSubimageDefs));
+		subimageDefMap.put(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, sufsSubimageDefMap.get(0));
 		
-		
+		/*
 		System.out.println("MISSING SUFS REF SPOTS");
 		for (int i=0; i<listOfSufsRefMapSubimageDefs.size(); i++) {
 			if (listOfSufsRefMapSubimageDefs.get(i).getMissingSpotType() == 0) {
 				System.out.println(listOfSufsRefMapSubimageDefs.get(i).getSubimageNumber());
 			}
 		}
-		
+		*/
 		
 		// TODO: any change to missing spot type in UI needs to just call init() after DB is updated to refresh the cache
 		
 	}
 	
-
+	/*
 	private List<SubimageDef> missingSpotsIntersection(List<SubimageDef> input1, List<SubimageDef> input2) {
 		
 		
@@ -128,7 +128,7 @@ public class SubimageDefCache {
 		}
 		return resultList;
 	}
-		
+	*/
 	
 	public SubimageDefList getSubimageDefList(Long pupilMaskTypeId) {
 		return getSubimageDefList(pupilMaskTypeId, null);
