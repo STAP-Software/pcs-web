@@ -77,7 +77,9 @@
 					<h:outputLabel style="height: 10px" />
 					
 					<h:outputLabel value="Mirror Temp (C)" style="position:relative; top:5px" />
-					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:8px"/>
+					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:8px">
+						<f:convertNumber pattern="#0.000" />
+					</h:outputText>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
 							update=":growl :errorGrowl" />		
@@ -89,7 +91,9 @@
 							update=":growl :errorGrowl" />		
 						
 					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:5px" />
-					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:8px"/>
+					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:8px">
+						<f:convertNumber pattern="#0.000" />
+					</h:outputText>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryRmsActMove}"
 							update=":growl :errorGrowl" />		

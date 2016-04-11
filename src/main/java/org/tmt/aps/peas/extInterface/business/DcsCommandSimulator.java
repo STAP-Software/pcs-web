@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.extInterface.business;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extinf.CommandFailureException;
@@ -14,13 +15,13 @@ public class DcsCommandSimulator implements DcsCommand {
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	double[] dcsM2Pos = {0.1f, 0.2f, 0.3f};
-	double[] telPos = {1.1f, 2.2f};
+	double[] telPos = {1.101010101, 2.202020202};
 	
 	@Override
 	public void commandDcsOffset(double deltaAz, double deltaEl) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandDcsOffset::SIMULATOR"));
-		telPos[0] += (deltaAz / 1000000.0);
-		telPos[1] += (deltaEl / 1000000.0);
+		telPos[0] += ((deltaAz / 1000000.0) / Constants.DEG2RAD);
+		telPos[1] += ((deltaEl / 1000000.0) / Constants.DEG2RAD);
 		
 		Utils.waitFor(2000);
 		logger.info(MessageGenerator.generateMessage("command.success", "commandDcsOffset::SIMULATOR"));

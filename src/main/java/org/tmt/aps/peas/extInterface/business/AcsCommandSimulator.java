@@ -32,7 +32,7 @@ public class AcsCommandSimulator implements AcsCommand {
 			throws CommunicationException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getMirrTemp::SIMULATOR"));
 		logger.info(MessageGenerator.generateMessage("command.success", "getMirrTemp::SIMULATOR"));
-		return 0.2;
+		return -12.20402050607;
 	}
 
 	public boolean isRunning() 
@@ -46,7 +46,7 @@ public class AcsCommandSimulator implements AcsCommand {
 			throws CommunicationException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getRMSActuMove::SIMULATOR"));
 		logger.info(MessageGenerator.generateMessage("command.success", "getRMSActuMove::SIMULATOR"));
-		return 2.2;
+		return 2.204050607;
 	}
 
 	public int takeSnap() 

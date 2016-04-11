@@ -43,7 +43,12 @@ public class DcsMgmt {
 	}
 
 	public double[] queryTelescopePosition() throws Exception {
-		return extInfFactory.getDcsCommand().queryTelPos();
+		double[] telPosRad =  extInfFactory.getDcsCommand().queryTelPos();
+		double[] telPosDeg = new double[2];
+		telPosDeg[0] = telPosRad[0] / Constants.DEG2RAD;
+		telPosDeg[1] = telPosRad[1] / Constants.DEG2RAD;
+		
+		return telPosDeg;
 	}
 	
 	// input in arcsec, sends in rads (delte elevation is negated)

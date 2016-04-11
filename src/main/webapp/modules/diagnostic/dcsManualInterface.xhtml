@@ -3,7 +3,8 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -102,21 +103,27 @@
  
     			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
 				<h:panelGroup>
-				<h:outputText value="Actuator #1: " />
+				<h:outputText value="Actuator #1 (mm):" />
 				<p:spacer width="5px"/>				
-          		<h:outputText value="#{dcsManualController.m2Pos[0]} mm" />	
+          		<h:outputText value="#{dcsManualController.m2Pos[0]}">
+          			<f:convertNumber pattern="#0.000" />
+          		</h:outputText>	
  				</h:panelGroup>
  				
  				<h:panelGroup>
-          		<h:outputText value="Actuator #2: " />	
+          		<h:outputText value="Actuator #2 (mm): " />	
   				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.m2Pos[1]} mm" />	
+         		<h:outputText value="#{dcsManualController.m2Pos[1]}" >
+          			<f:convertNumber pattern="#0.000" />
+          		</h:outputText>		
           		</h:panelGroup>
 
  				<h:panelGroup>
-          		<h:outputText value="Actuator #3: " />	
+          		<h:outputText value="Actuator #3 (mm): " />	
 				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.m2Pos[2]} mm" />	
+         		<h:outputText value="#{dcsManualController.m2Pos[2]}" >
+          			<f:convertNumber pattern="#0.000" />
+          		</h:outputText>		
           		</h:panelGroup>
 				</p:panelGrid>
 				</p:fieldset>
@@ -129,15 +136,23 @@
     			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
  				
  				<h:panelGroup>
-          		<h:outputText value="Azimuth (rads): " />	
+ 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
+          		<h:outputText value="Azimuth (#{fieldMetaData.units}): " />	
  				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" />	
+         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" >
+          			<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+          		</h:outputText>		
           		</h:panelGroup>
  				
  				<h:panelGroup>
-          		<h:outputText value="Elevation (rads): " />	
+ 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
+          		<h:outputText value="Elevation (#{fieldMetaData.units}): " />	
  				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" />	
+         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" >
+          			<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+          		</h:outputText>		
           		</h:panelGroup>
        			</p:panelGrid>
  				</p:fieldset>
@@ -157,7 +172,9 @@
  				<h:panelGroup>
           		<h:outputText value="Mag: " />	
  				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.starInfo.starMag}" />	
+         		<h:outputText value="#{dcsManualController.starInfo.starMag}" >
+         			<f:convertNumber pattern="#0.00" />
+         		</h:outputText>	
           		</h:panelGroup>
  				          		 				          		
  				<h:panelGroup>
