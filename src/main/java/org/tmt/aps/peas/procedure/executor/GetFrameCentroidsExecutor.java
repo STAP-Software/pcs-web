@@ -377,11 +377,20 @@ public class GetFrameCentroidsExecutor {
 							procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold());
 					userPromptMgmt.displayInfoDialog("Subimage Intensity Warning", warningMessage);
 				}
-				// test for fracFilledThresh failed because of findCent			
-				int expectedSpotCount = procedure.getProcedureType().isCreateRefMap() ? 
-						procedureConfig.getPupilMask().getPupilMaskType().getNumSpots() :
-						subimageDefList.fandiExpectedSpotCount();
+				// test for fracFilledThresh failed because of findCent
+				   int expectedSpotCount = 0;
 
+				   if (procedure.getProcedureType().isCreateRefMap()) {
+					//SUFS subimageDefList being used is a special list just for reference maps 
+                      if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+                	     expectedSpotCount = subimageDefList.fandiExpectedSpotCount();
+                       } else {
+                	     expectedSpotCount = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots() ; 
+                       }                   
+                      expectedSpotCount = 	subimageDefList.fandiExpectedSpotCount();
+				  }
+					
+				
 				// add any other missed spots from findCentroids
 				float findCentFilledBoxes = fiResult.getNumFilledBoxes() - findCentroidsResult.missedSpots();
 				float findCentFracFilled = findCentFilledBoxes/expectedSpotCount;
