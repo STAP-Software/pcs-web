@@ -323,8 +323,8 @@ public class SufsExecutor {
 
 				computationLibrary.calculateSufsZernikes(constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
 						centroidOffsetsResult.getCcdCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
-						procedureConfig.getPupilMask().getSecPerPixel(), subimageDefList.getMissingSpotFlags(),
-						findCentroidsResult.getFindCentStatusList(), sufsGroupSegmentToMask,
+						procedureConfig.getPupilMask().getSecPerPixel(), sufsCentroidOffsets.getValidOffsets(),
+						sufsGroupSegmentToMask,
 						procedure.getProcedureConfigSet().getGlobalConfig().getSufsZernikeOrderArray(),
 						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup() - 1]);
 

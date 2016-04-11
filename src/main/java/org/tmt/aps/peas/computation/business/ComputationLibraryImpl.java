@@ -559,7 +559,7 @@ public class ComputationLibraryImpl {
 
 	}
 
-	// version with goodSpots passed in
+	// version with goodSpots (or validOffsets) passed in
 	private CentroidStatsResult calcCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] goodSpots) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
@@ -795,6 +795,17 @@ public class ComputationLibraryImpl {
 
 		return found;
 
+	}
+	
+	public int[] goodOffsetsFound(int[] goodSpots, int[] jumpedSpots) {
+		int[] validOffsets = new int[goodSpots.length];
+		
+		for (int i=0; i<goodSpots.length; i++) {
+			int notJumped = (jumpedSpots[i] == 0) ? 1 : 0;
+			validOffsets[i] = goodSpots[i] & notJumped;
+		}
+		
+		return validOffsets;
 	}
 
 	
@@ -1671,6 +1682,7 @@ public class ComputationLibraryImpl {
 		CentroidOffsetsResult[] centroidOffsetsResult = new CentroidOffsetsResult[7];
 		
 		int[][] spotJumped = new int[7][NUM_SUFS_SEGMENT_SPOTS];
+		int[][] validOffsets = new int[7][NUM_SUFS_SEGMENT_SPOTS];
 		
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 		
@@ -1685,9 +1697,16 @@ public class ComputationLibraryImpl {
 					groupSegmentCentroidsResult.getFindCentStatusList());
 			
 			spotJumped[groupSegment] = determineJumpedSpots(centroidOffsetsResult[groupSegment].getCartesianCentroidOffsets(), spotJumpedThreshold);
+			
+			// determine the 'valid' offsets (spot not missing, was found and did not jump)
+			int[] goodSpots = 	goodCentroidsFound(missingSpotFlags, groupSegmentCentroidsResult.getFindCentStatusList());
+			validOffsets[groupSegment] = goodOffsetsFound(goodSpots, spotJumped[groupSegment]);
+			
 		}
+		
+		
 
-		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult, spotJumped);
+		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(centroidOffsetsResult, spotJumped, validOffsets);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateSufsCentroidOffsets"));
 		
@@ -1720,9 +1739,10 @@ public class ComputationLibraryImpl {
 		for (int groupSegment=0; groupSegment<7; groupSegment++) {
 		
 			CentroidOffsetsResult centroidOffsetsResult = sufsSegmentOffsetsResult.extractCentroidOffsetsResult(groupSegment);
+			int[] validOffsets = sufsSegmentOffsetsResult.getValidOffsets()[groupSegment];
 			 
 			centroidStatsResult[groupSegment] = calcCentroidStats(centroidOffsetsResult.getCartesianCentroidOffsets(), 
-					segNspotTypes[groupSegment], segMissingSpotFlags[groupSegment], segFindCentStatusList[groupSegment]);
+					segNspotTypes[groupSegment], validOffsets);
 			
 		}
 
@@ -1792,8 +1812,9 @@ public class ComputationLibraryImpl {
 
 		// spotJumped not used, but in the interface
 		int[][] spotJumped = new int[7][NUM_SUFS_SEGMENT_SPOTS];
+		int[][] validOffsets = new int[7][NUM_SUFS_SEGMENT_SPOTS];
 
-		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(avgCentroidOffsetsResult, spotJumped);
+		SufsSegmentOffsetsResult result = new SufsSegmentOffsetsResult(avgCentroidOffsetsResult, spotJumped, validOffsets);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcAvgSufsCentroidOffsets"));
 
@@ -1853,16 +1874,13 @@ public class ComputationLibraryImpl {
 	
 	@Computation
 	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[] maskOffsets, float aHex, float secPerPixel,
-			int[] missingSpots, int[] findCentStatuses, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
+			int[][] validOffsets, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsZernikes"));
-
-		int[] goodSpots = goodCentroidsFound(missingSpots, findCentStatuses);
 		
 		//FloatPoint[][] idealSpots = generateSufsSegmentFloatPoints(sufsMaskSpotLocations, sufsGroupSegmentToMask);
 		FloatPoint[][] segmentOffsets = generateSufsSegmentFloatPoints(maskOffsets, sufsGroupSegmentToMask);
-		int[][] segGoodSpots = generateSufsSegmentInts(goodSpots, sufsGroupSegmentToMask);
 		
 		
 		// get the sufsOffsetsToZernikes for each segment
@@ -1876,7 +1894,7 @@ public class ComputationLibraryImpl {
 			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]-1];
 							
 			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(sufsSegmentIdealSpotLocations,  
-				segmentOffsets[groupSegment], aHex, secPerPixel, segGoodSpots[groupSegment], zernikeOrder);
+				segmentOffsets[groupSegment], aHex, secPerPixel, validOffsets[groupSegment], zernikeOrder);
 		
 		}
 
