@@ -96,7 +96,7 @@ public class SufsSegmentOffsetsResult {
 
 	public CentroidOffsetsResult extractCentroidOffsetsResult(int segmentNumber) {
 		return new CentroidOffsetsResult(imageTranslation[segmentNumber], imageScale[segmentNumber], imageRotation[segmentNumber], 
-				ccdCentroidOffsets[segmentNumber], cartesianCentroidOffsets[segmentNumber]);
+				ccdCentroidOffsets[segmentNumber], cartesianCentroidOffsets[segmentNumber], validOffsets[segmentNumber]);
 	}
 
 

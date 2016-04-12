@@ -7,6 +7,8 @@ public interface AvgFsCentroidOffsetsDisplayValues {
 	
 	public FloatPoint[] getAvgFsCentroidOffsets();
 	
+	public int[] getGoodSpots();
+	
 	public CentroidStatsResult getAvgFsCentroidStatsResult();
 
 }

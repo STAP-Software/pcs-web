@@ -82,6 +82,9 @@ function drawSufsCentroidOffsets() {
 	var yField3 = document.getElementById('sufsOffsetsForm:centroidOffsetYs').value;
  	var yOffsetArray = yField3.split(','); 
    
+	var field4 = document.getElementById('sufsOffsetsForm:goodSpots').value;
+ 	var goodSpotsArray = field4.split(','); 
+
 	var offsetScale = parseFloat(document.getElementById('sufsOffsetsForm:scaleSlider').value);
  	 
 	// calculate max length of all offsets
@@ -111,26 +114,42 @@ function drawSufsCentroidOffsets() {
 		var x = (parseFloat(xCentroidArray[i]) + segmentWidth) * 500;
 		var y = (parseFloat(yCentroidArray[i]) + segmentWidth) * 500;
 		
-		var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
-		var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+		
+		if (goodSpotsArray[i] == 0) {
+
+			ctx.beginPath();
+			ctx.strokeStyle = 'black';
+			ctx.arc(x, y, 5, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = 'lightgrey';
+		    ctx.fill();
+
+		} else {
+
+		
+			var dx = x - (parseFloat(xOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+			var dy = y + (parseFloat(yOffsetArray[i]) * scaleFactor * offsetScale / 100.0)
+				
+			//console.log("xCentroidArray[i] = " + xCentroidArray[i]);
+			console.log("xOffsetArray[i] = " + xOffsetArray[i] + ", dx = " + dx);
 			
-		//console.log("xCentroidArray[i] = " + xCentroidArray[i]);
-		console.log("xOffsetArray[i] = " + xOffsetArray[i] + ", dx = " + dx);
-		
-		ctx.beginPath();
-		ctx.strokeStyle = 'red';
-	    ctx.moveTo(x, y);
-	    ctx.lineTo(dx, dy);
-	    ctx.stroke();
-		
+			ctx.beginPath();
+			ctx.strokeStyle = 'red';
+		    ctx.moveTo(x, y);
+		    ctx.lineTo(dx, dy);
+		    ctx.stroke();
+			
+		    
+			ctx.beginPath();
+			ctx.strokeStyle = 'black';
+			ctx.arc(x, y, 5, 0, 2*Math.PI);
+			ctx.closePath();
+			ctx.stroke();
+			ctx.fillStyle = 'white';
+		    ctx.fill();
 	    
-		ctx.beginPath();
-		ctx.strokeStyle = 'black';
-		ctx.arc(x, y, 5, 0, 2*Math.PI);
-		ctx.closePath();
-		ctx.stroke();
-		ctx.fillStyle = 'white';
-	    ctx.fill();
+		}
 
 	}
 	
@@ -184,6 +203,8 @@ function drawSufsCentroidOffsets() {
      		<h:inputHidden id="centDefXs" value="#{visualizationController.centDefXs}" />
 			<h:inputHidden id="centDefYs" value="#{visualizationController.centDefYs}" />
 						  
+			<h:inputHidden id="goodSpots" value="#{visualizationController.goodSpots}" />
+
  			<h:inputHidden id="maxOffset" value="#{visualizationController.maxSufsOffset}" />
     			
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">

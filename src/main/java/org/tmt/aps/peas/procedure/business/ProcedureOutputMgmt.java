@@ -7,6 +7,7 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -466,6 +467,9 @@ public class ProcedureOutputMgmt {
 					}
 
 					method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), int[].class);
+					
+					//logger.debug("method = " + method.getName() + ", array = " + Arrays.toString(primitiveIntArray));
+					
 					method.invoke(classInstance, (Object) primitiveIntArray);
 					break;
 

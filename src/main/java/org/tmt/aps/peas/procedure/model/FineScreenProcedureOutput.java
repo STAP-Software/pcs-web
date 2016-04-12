@@ -103,6 +103,10 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	public CentroidStatsResult getAvgPtCentroidStatsResult() {
 		return pseudoTipTiltCentroidStatsResult;
 	}
+	
+	public int[] getGoodSpots() {
+		return centroidOffsetsResult.getGoodSpots();
+	}
 		
 	//  AvgFsCentroidOffsetsDisplayValues interface
 	public FloatPoint[] getAvgFsCentroidOffsets() {

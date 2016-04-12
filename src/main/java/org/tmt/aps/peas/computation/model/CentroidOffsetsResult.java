@@ -14,25 +14,27 @@ public class CentroidOffsetsResult {
 	float imageRotation;
 	private FloatPoint[] ccdCentroidOffsets;
 	private FloatPoint[] cartesianCentroidOffsets;
+	int[] goodSpots;
 
-	public CentroidOffsetsResult(float[][] ccdOffsetsArray, float[][] cartesianOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation) {
+	public CentroidOffsetsResult(float[][] ccdOffsetsArray, float[][] cartesianOffsetsArray, FloatPoint imageTranslation, float imageScale, float imageRotation, int[] goodSpots) {
 		
 		this.ccdCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(ccdOffsetsArray).toArray(new FloatPoint[0]);
 		this.cartesianCentroidOffsets = FloatPointListEncoder.convertFromNby2Array(cartesianOffsetsArray).toArray(new FloatPoint[0]);
 		this.imageTranslation = imageTranslation;
 		this.imageScale = imageScale;
 		this.imageRotation = imageRotation;
+		this.goodSpots = goodSpots;
 	}
 
 	public CentroidOffsetsResult(FloatPoint imageTranslation, float imageScale, float imageRotation, 
-			FloatPoint[] ccdCentroidOffsets, FloatPoint[] cartesianCentroidOffsets) {
+			FloatPoint[] ccdCentroidOffsets, FloatPoint[] cartesianCentroidOffsets, int[] goodSpots) {
 
 		this.ccdCentroidOffsets = ccdCentroidOffsets;
 		this.cartesianCentroidOffsets = cartesianCentroidOffsets;
 		this.imageTranslation = imageTranslation;
 		this.imageScale = imageScale;
 		this.imageRotation = imageRotation;
-
+		this.goodSpots = goodSpots;
 	}
 
 	
@@ -87,6 +89,14 @@ public class CentroidOffsetsResult {
 
 	public void setImageRotation(float imageRotation) {
 		this.imageRotation = imageRotation;
+	}
+
+	public int[] getGoodSpots() {
+		return goodSpots;
+	}
+
+	public void setGoodSpots(int[] goodSpots) {
+		this.goodSpots = goodSpots;
 	}
 
 }

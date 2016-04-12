@@ -296,6 +296,13 @@ public class VisualizationController implements Serializable {
 
 	public void setCentroidOffsetYs(String centroidYs) {
 	}
+	
+	public String getGoodSpots() {
+		return graphicDisplayMgmt.getGoodSpots();
+	}
+
+	public void setGoodSpots(String goodSpotsEncoded) {
+	}
 
 	public String getAvgPtCentroidOffsetXs() {
 		return graphicDisplayMgmt.getAvgPtCentroidOffsetXs();
