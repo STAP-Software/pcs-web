@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 <ui:composition template="../../template.xhtml">
@@ -19,16 +19,20 @@
 
 					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-						<h:outputLabel value="Coarse Mirror Offset x(microns)" for="coarseMirrorX" />
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorX')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 						<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfigDefaults.coarseMirrorX}" size="5" />
-
-						<h:outputLabel value="Coarse Mirror Offset y(microns)" for="coarseMirrorY" />
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorY')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 						<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfigDefaults.coarseMirrorY}" size="5" />
-
-						<h:outputLabel value="Fine Mirror Offset x(microns)" for="fineMirrorX" />
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorX')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 						<p:inputText id="fineMirrorX" value="#{globalConfigController.globalConfigDefaults.fineMirrorX}" size="5" />
-
-						<h:outputLabel value="Fine Mirror Offset y(microns)" for="fineMirrorY" />
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorY')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 						<p:inputText id="fineMirrorY" value="#{globalConfigController.globalConfigDefaults.fineMirrorY}" size="5" />
 
 					</p:panelGrid>
@@ -39,12 +43,9 @@
 				<p:spacer height="10px" />
 
 
-
-
 				<f:facet name="footer">
 					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{globalConfigController.doSaveSetup}" update=":growl :errorGrowl" />
-					<p:commandButton style="float:right" value="Cancel" icon="ui-icon-cancel" ajax="true" immediate="true"
-						action="#{globalConfigController.doCancelSaveSetup}" />
+					<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="false" action="#{globalConfigController.doViewGlobalConfig}" update="@form" />
 				</f:facet>
 
 			</p:panelGrid>

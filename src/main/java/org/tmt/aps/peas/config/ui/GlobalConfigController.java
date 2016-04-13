@@ -70,8 +70,8 @@ public class GlobalConfigController implements Serializable {
 
 	}
 
-	public void doCancelSaveSetup() {
-
+	public void doCancelSaveSetup() throws Exception {
+		
 	}
 
 	public void doSaveSetup() {
