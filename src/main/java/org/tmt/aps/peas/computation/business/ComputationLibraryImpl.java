@@ -1605,10 +1605,12 @@ public class ComputationLibraryImpl {
 			// loop over all spots
 			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
-				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[sufsGroupSegmentToMask[j][i]];
-				segmentIntensities[j] = findCentroidsResult.getIntensityList()[sufsGroupSegmentToMask[j][i]];
-				segmentPeaks[j] = findCentroidsResult.getPeakList()[sufsGroupSegmentToMask[j][i]];
-				findCentStatuses[j] = findCentroidsResult.getFindCentStatusList()[sufsGroupSegmentToMask[j][i]];
+				// subtract one from the sufsGroupSegmentToMask to get a zero based index
+				int maskIndex = sufsGroupSegmentToMask[j][i]-1;
+				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[maskIndex];
+				segmentIntensities[j] = findCentroidsResult.getIntensityList()[maskIndex];
+				segmentPeaks[j] = findCentroidsResult.getPeakList()[maskIndex];
+				findCentStatuses[j] = findCentroidsResult.getFindCentStatusList()[maskIndex];
 			}
 			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, findCentStatuses);
 
@@ -1633,7 +1635,10 @@ public class ComputationLibraryImpl {
 			// loop over all spots
 			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
-				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
+				// subtract one from the sufsGroupSegmentToMask to get a zero based index
+				int maskIndex = sufsGroupSegmentToMask[j][i]-1;
+
+				output[i][j] = input[maskIndex];
 			}
 		}
 
@@ -1654,7 +1659,9 @@ public class ComputationLibraryImpl {
 			// loop over all spots
 			for (int j=0; j<NUM_SUFS_SEGMENT_SPOTS; j++) {
 				// convert numbering
-				output[i][j] = input[sufsGroupSegmentToMask[j][i]];
+				// subtract one from the sufsGroupSegmentToMask to get a zero based index
+				int maskIndex = sufsGroupSegmentToMask[j][i]-1;
+				output[i][j] = input[maskIndex];
 			}
 		}
 
