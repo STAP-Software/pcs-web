@@ -10,13 +10,11 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -27,7 +25,6 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 @Entity
@@ -55,6 +52,22 @@ public class CentroidMap {
 	int numFilledBoxes;
 	float fracFilledBoxes;
 	Float medianPeakIntensity;
+	
+	@Column
+	String fandiPredictedCentroidMapData; 
+	
+	@Column
+	String fandiPeakCentroidMapData; 
+	
+	@Column
+	String nDetectData; 
+	
+	int emptyBoxCount;
+	
+	int singleDetectBoxCount;
+	int doubleDetectBoxCount;
+	int manyDetectBoxCount;
+	int translationSolutionCount;
 	
 	@Column
 	String centroidMapData;
@@ -233,6 +246,71 @@ public class CentroidMap {
 
 	public void setMedianPeakIntensity(Float medianPeakIntensity) {
 		this.medianPeakIntensity = medianPeakIntensity;
+	}
+
+
+	public String getFandiPredictedCentroidMapData() {
+		return fandiPredictedCentroidMapData;
+	}
+
+	public void setFandiPredictedCentroidMapData(String fandiPredictedCentroidMapData) {
+		this.fandiPredictedCentroidMapData = fandiPredictedCentroidMapData;
+	}
+
+	public String getFandiPeakCentroidMapData() {
+		return fandiPeakCentroidMapData;
+	}
+
+	public void setFandiPeakCentroidMapData(String fandiPeakCentroidMapData) {
+		this.fandiPeakCentroidMapData = fandiPeakCentroidMapData;
+	}
+
+	public String getnDetectData() {
+		return nDetectData;
+	}
+
+	public void setnDetectData(String nDetectData) {
+		this.nDetectData = nDetectData;
+	}
+
+	public int getEmptyBoxCount() {
+		return emptyBoxCount;
+	}
+
+	public void setEmptyBoxCount(int emptyBoxCount) {
+		this.emptyBoxCount = emptyBoxCount;
+	}
+
+	public int getSingleDetectBoxCount() {
+		return singleDetectBoxCount;
+	}
+
+	public void setSingleDetectBoxCount(int singleDetectBoxCount) {
+		this.singleDetectBoxCount = singleDetectBoxCount;
+	}
+
+	public int getDoubleDetectBoxCount() {
+		return doubleDetectBoxCount;
+	}
+
+	public void setDoubleDetectBoxCount(int doubleDetectBoxCount) {
+		this.doubleDetectBoxCount = doubleDetectBoxCount;
+	}
+
+	public int getManyDetectBoxCount() {
+		return manyDetectBoxCount;
+	}
+
+	public void setManyDetectBoxCount(int manyDetectBoxCount) {
+		this.manyDetectBoxCount = manyDetectBoxCount;
+	}
+
+	public int getTranslationSolutionCount() {
+		return translationSolutionCount;
+	}
+
+	public void setTranslationSolutionCount(int translationSolutionCount) {
+		this.translationSolutionCount = translationSolutionCount;
 	}
 
 

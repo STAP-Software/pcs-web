@@ -324,6 +324,23 @@ public class GetFrameCentroidsExecutor {
 		centroidMap.setTranslationY(fiResult.getTranslation().getY());
 		centroidMap.setNumFilledBoxes(fiResult.getNumFilledBoxes());
 		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
+		
+		centroidMap.setEmptyBoxCount(fiResult.getN0123()[0]);
+		centroidMap.setSingleDetectBoxCount(fiResult.getN0123()[1]);
+		centroidMap.setDoubleDetectBoxCount(fiResult.getN0123()[2]);
+		centroidMap.setManyDetectBoxCount(fiResult.getN0123()[3]);
+		
+
+		String fandiPredictedCentroidMapData = FloatPointListEncoder.encodeList(FloatPointListEncoder.constructFromXandY(fiResult.getXiRst(), fiResult.getYiRst()));
+		centroidMap.setFandiPredictedCentroidMapData(fandiPredictedCentroidMapData);
+		
+		String fandiPeakCentroidMapData = FloatPointListEncoder.encodeList(FloatPointListEncoder.constructFromXandY(fiResult.getxPeak(), fiResult.getyPeak()));
+		centroidMap.setFandiPeakCentroidMapData(fandiPeakCentroidMapData);
+
+		String nDetectData = IntegerListEncoder.encodeList(fiResult.getnDetect());
+		centroidMap.setnDetectData(nDetectData);
+
+		centroidMap.setTranslationSolutionCount(fiResult.getnSolution());
 
 		return centroidMap;
 	}
