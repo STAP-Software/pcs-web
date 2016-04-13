@@ -1,5 +1,8 @@
 package org.tmt.aps.peas.computation.model;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.tmt.aps.peas.common.FloatPoint;
 
 public class SufsSegmentOffsetsResult {
@@ -98,8 +101,55 @@ public class SufsSegmentOffsetsResult {
 		return new CentroidOffsetsResult(imageTranslation[segmentNumber], imageScale[segmentNumber], imageRotation[segmentNumber], 
 				ccdCentroidOffsets[segmentNumber], cartesianCentroidOffsets[segmentNumber], validOffsets[segmentNumber]);
 	}
+	
+	public List<SufsSegmentSpot> spotsJumpedString() {
+		
+		List<SufsSegmentSpot> result = new ArrayList<SufsSegmentSpot>();
+		for (int segmentNumber=0; segmentNumber<6; segmentNumber++) {
+			int[] jumpedSpots = getJumpedSpots(segmentNumber);
+			for (int i=0; i<jumpedSpots.length; i++) {
+				SufsSegmentSpot jumpedSpot = new SufsSegmentSpot(segmentNumber+1, i+1);
+				result.add(jumpedSpot);
+			}
+		}
+		return result;
+	}
 
-
+	public int[] getJumpedSpots(int segmentNumber) {
+		List<Integer> jumpList = new ArrayList<Integer>();
+		for (int i=0; i<spotJumped[segmentNumber].length; i++) {
+			if (spotJumped[segmentNumber][i] == 1) {
+				jumpList.add(i);
+			}
+		}
+		int[] jumpListArray = new int[jumpList.size()];
+		for (int i=0; i< jumpListArray.length; i++) {
+			jumpListArray[i] = jumpList.get(i);
+		}
+		return jumpListArray;
+	}
+	
+	public class SufsSegmentSpot {
+		int segmentGroupNumber;
+		int spotNumber;
+		public SufsSegmentSpot(int segmentGroupNumber, int spotNumber) {
+			this.segmentGroupNumber = segmentGroupNumber;
+			this.spotNumber = spotNumber;
+		}
+		public int getSegmentGroupNumber() {
+			return segmentGroupNumber;
+		}
+		public void setSegmentGroupNumber(int segmentGroupNumber) {
+			this.segmentGroupNumber = segmentGroupNumber;
+		}
+		public int getSpotNumber() {
+			return spotNumber;
+		}
+		public void setSpotNumber(int spotNumber) {
+			this.spotNumber = spotNumber;
+		}
+		
+	}
 	
 	
 }

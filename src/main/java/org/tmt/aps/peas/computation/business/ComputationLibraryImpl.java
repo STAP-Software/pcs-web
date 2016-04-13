@@ -1699,7 +1699,7 @@ public class ComputationLibraryImpl {
 			spotJumped[groupSegment] = determineJumpedSpots(centroidOffsetsResult[groupSegment].getCartesianCentroidOffsets(), spotJumpedThreshold);
 			
 			// determine the 'valid' offsets (spot not missing, was found and did not jump)
-			int[] goodSpots = 	goodCentroidsFound(missingSpotFlags, groupSegmentCentroidsResult.getFindCentStatusList());
+			int[] goodSpots = 	goodCentroidsFound(segMissingSpotFlags[groupSegment], groupSegmentCentroidsResult.getFindCentStatusList());
 			validOffsets[groupSegment] = goodOffsetsFound(goodSpots, spotJumped[groupSegment]);
 			
 		}

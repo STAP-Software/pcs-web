@@ -28,6 +28,7 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
+import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult.SufsSegmentSpot;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -310,6 +311,13 @@ public class SufsExecutor {
 						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), sufsGroupSegmentToMask,
 						centroidOffsetsConfig.getSufsIgnoreSubimageThreshold());
 
+				
+				// log jumping spots
+				List<SufsSegmentSpot> jumpedSpots = sufsCentroidOffsets.spotsJumpedString();
+				for (SufsSegmentSpot jumpedSpot : jumpedSpots) {
+					statusLogger.log("centroid_offsets.jumped_spots", jumpedSpot.getSegmentGroupNumber(), jumpedSpot.getSpotNumber());
+				}
+				
 				/*****************************************************/
 				/*                calculateCentroidStats             */
 				/*****************************************************/
