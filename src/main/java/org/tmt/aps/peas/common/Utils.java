@@ -275,6 +275,13 @@ public class Utils {
 						if (sresult.contains("E") && !sresult.contains("E-")) { // don't blast a negative sign
 							sresult = sresult.replace("E", "E+");
 						}
+						
+						// every 6 elements, we add another row
+						if (fj % 6 == 0 && fj != 0) {
+							buf.append("</tr><tr>");
+							buf.append("<td>" + " " + "</td>");
+						}
+						
 						buf.append("<td style=\"text-align:right\">" + sresult + "</td>");
 						buf.append("<td>&nbsp;</td>");
 					}
