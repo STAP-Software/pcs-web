@@ -363,4 +363,12 @@ public class Procedure {
 			return new PhasingProcedureOutput();
 		}
 	}
+	
+	public SufsProcedureOutput getSufsProcedureOutput() {
+		if (procedureOutput instanceof SufsProcedureOutput) {
+			return (SufsProcedureOutput)procedureOutput;
+		} else {
+			return new SufsProcedureOutput();
+		}
+	}
 }

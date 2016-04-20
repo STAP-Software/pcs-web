@@ -41,6 +41,16 @@ public class SufsSegmentZernikeStatsResult {
 		this.zernikeEoms = zernikeEoms;
 	}
 
+	public SufsZernikeStatsResult[] getSufsZernikeStatsResult() {
+		
+		SufsZernikeStatsResult[] result = new SufsZernikeStatsResult[7];
+		for (int i=0; i<7; i++) {
+		
+			result[i] = new SufsZernikeStatsResult(zernikeMeans[i], zernikeEoms[i]);
+		
+		}
+		return result;
+	}
 
 
 }

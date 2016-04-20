@@ -4,7 +4,8 @@
 	xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core"
 	xmlns:p="http://primefaces.org/ui"
-	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions"
+	 xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -89,6 +90,7 @@
 						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
 							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
 							<h:outputText value=" #{procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" rendered="#{procedure.procedureType.phasing}" />
+							<h:outputText value=" (Group #{procedure.procedureConfigSet.procedureConfig.sufsGroup})" rendered="#{procedure.procedureType.sufs}" />
 						</p:column>
 						<!-- 
 						<p:column headerText="Frames">
@@ -247,6 +249,75 @@
 									<h:outputLabel value="M1 Commands Sent" />
 									<h:outputText value="#{procedure.phasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 	
+								</p:panelGrid>
+
+
+								<p:panelGrid columns="1" 
+									styleClass="pcsFormNoBorder" style="width:320px"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.sufs}">
+	
+								<f:facet name="header">
+                   					#{procedure.procedureType.procedureTypeName} 
+               					</f:facet>
+
+								<p:panelGrid columns="2" 
+									styleClass="pcsFormNoBorder" style="width:100%"
+									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+									<h:outputLabel value="Coarse Offsets (x,y) (microns)" />
+									<h:panelGroup>
+									<h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+									<h:outputText value=",  " />
+									<h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>
+									</h:panelGroup>
+									
+								</p:panelGrid>
+
+
+								<p:dataTable var="segmentStats" rowIndexVar="rowIndex" value="#{procedure.sufsProcedureOutput.sufsSegmentZernikeStatsResult.sufsZernikeStatsResult}">
+								    <p:column headerText="SP">
+								    	<!-- need to use the group segment number to derive the segment number -->
+								        <h:outputText value="#{constantsCache.sufsConstants.sufsGroupToMirror[procedure.procedureConfigSet.procedureConfig.sufsGroup-1][rowIndex]}" />
+								        
+								    </p:column>
+								 
+							 								 
+								    <p:column headerText="Zernike 4">
+								        <h:outputText value="#{segmentStats.zernikeMeans[3]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								        <h:outputText value=" +- " />
+								        <h:outputText value="#{segmentStats.zernikeEoms[3]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								    </p:column>
+								 
+								    <p:column headerText="Zernike 5">
+								        <h:outputText value="#{segmentStats.zernikeMeans[4]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								        <h:outputText value=" +- " />
+								        <h:outputText value="#{segmentStats.zernikeEoms[4]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								    </p:column>
+								 
+								    <p:column headerText="Zernike 6">
+								        <h:outputText value="#{segmentStats.zernikeMeans[5]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								        <h:outputText value=" +- " />
+								        <h:outputText value="#{segmentStats.zernikeEoms[5]}">
+								        	<f:convertNumber pattern="#0.000" />
+								        </h:outputText>
+								    </p:column>
+								 
+								</p:dataTable>
+								
 								</p:panelGrid>
 
 							</p:panelGrid>
