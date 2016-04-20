@@ -283,6 +283,37 @@ public class Utils {
 
 				break;
 
+			case Constant.DATA_TYPE_FLOAT_POINT:
+				FloatPoint floatPointArray[] = FloatPointListEncoder.decodeList(value).toArray(new FloatPoint[] {});
+				
+				int fpdim1 = fieldDescriptor.getDimension1();
+				int fpdim2 = fieldDescriptor.getDimension2();
+				if (fieldDescriptor.getDimension1() * fieldDescriptor.getDimension2() != floatPointArray.length) {
+					// a hack for the case where # of elements is less than field descriptor dim1 * dim2
+					// in this case, dim1 is replaced with actual value, given dim2 is constant (which will work for ColorSteps)
+					fpdim1 = floatPointArray.length / fpdim2;
+				}
+				
+				// flat array now needs to be read into 2-d array
+				int fk2 = 0;
+				for (int fi = 0; fi < fpdim1; fi++) {
+					buf.append("<tr>");
+					buf.append("<td>------ " + (fi + 1) + "------ </td>");
+					buf.append("</tr>");
+					for (int i = 0; i < fpdim2; i++) {
+						buf.append("<tr>");
+						buf.append("<td>" + (i + 1) + "</td>");
+						buf.append("<td style=\"text-align:right\">" + MessageFormat.format(format, floatPointArray[fk2].x) + "</td>");
+						buf.append("<td>&nbsp;</td>");
+						buf.append("<td style=\"text-align:right\">" + MessageFormat.format(format, floatPointArray[fk2].y) + "</td>");
+						buf.append("<td>&nbsp;</td>");
+						buf.append("</tr>");
+						fk2++;
+					}
+					
+				}
+				break;
+
 			}
 		}
 		buf.append("</table>");
