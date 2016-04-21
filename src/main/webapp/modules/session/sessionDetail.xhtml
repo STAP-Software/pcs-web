@@ -253,7 +253,7 @@
 
 
 								<p:panelGrid columns="1" 
-									styleClass="pcsFormNoBorder" style="width:320px"
+									styleClass="pcsFormNoBorder" style="width:380px"
 									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.sufs}">
 	
 								<f:facet name="header">
@@ -285,34 +285,41 @@
 								        
 								    </p:column>
 								 
-							 								 
-								    <p:column headerText="Zernike 4">
+								 
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />				
+								    <p:column headerText="Zernike 4 (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[3]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								        <h:outputText value=" +- " />
 								        <h:outputText value="#{segmentStats.zernikeEoms[3]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								    </p:column>
 								 
-								    <p:column headerText="Zernike 5">
+								    <p:column headerText="Zernike 5 (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[4]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								        <h:outputText value=" +- " />
 								        <h:outputText value="#{segmentStats.zernikeEoms[4]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								    </p:column>
 								 
-								    <p:column headerText="Zernike 6">
+								    <p:column headerText="Zernike 6 (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[5]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								        <h:outputText value=" +- " />
 								        <h:outputText value="#{segmentStats.zernikeEoms[5]}">
-								        	<f:convertNumber pattern="#0.000" />
+								        	<f:converter converterId="DynamicNumberConverter" />
+											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 								        </h:outputText>
 								    </p:column>
 								 
