@@ -1893,26 +1893,20 @@ public class ComputationLibraryImpl {
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "calcSufsZernikesOneSeg"));
 
-		List<FloatPoint> theoreticalOffsetList = FloatPointListEncoder.constructFromXandY(theoreticalOffsetsX, theoreticalOffsetsX);
+		List<FloatPoint> theoreticalOffsetList = FloatPointListEncoder.constructFromXandY(theoreticalOffsetsX, theoreticalOffsetsY);
 		FloatPoint[] theoreticalOffsets = theoreticalOffsetList.toArray(new FloatPoint[0]);
 		return new SufsZernikeResult(bestFitZernikes, theoreticalOffsets, whFactor);
 		
 	}
 	
 	@Computation
-	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[] maskOffsets, float aHex, float secPerPixel,
+	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[][] segmentOffsets, float aHex, float secPerPixel,
 			int[][] validOffsets, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
 			int[] groupSegmentNumbers) throws Exception {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateSufsZernikes"));
 		
-		//FloatPoint[][] idealSpots = generateSufsSegmentFloatPoints(sufsMaskSpotLocations, sufsGroupSegmentToMask);
-		FloatPoint[][] segmentOffsets = generateSufsSegmentFloatPoints(maskOffsets, sufsGroupSegmentToMask);
-		
-		
 		// get the sufsOffsetsToZernikes for each segment
-		
-		
 		SufsZernikeResult[] sufsZernikeResults = new SufsZernikeResult[7];
 		
 		// for each segment in the group
@@ -1921,7 +1915,7 @@ public class ComputationLibraryImpl {
 			int zernikeOrder = sufsZernikeOrder[groupSegmentNumbers[groupSegment]-1];
 							
 			sufsZernikeResults[groupSegment] = calcSufsZernikesOneSeg(sufsSegmentIdealSpotLocations,  
-				segmentOffsets[groupSegment], aHex, secPerPixel, validOffsets[groupSegment], zernikeOrder);
+					segmentOffsets[groupSegment], aHex, secPerPixel, validOffsets[groupSegment], zernikeOrder);
 		
 		}
 
