@@ -61,7 +61,10 @@ public class BreadcrumbMenuBean implements Serializable {
 		MenuItem item = new MenuItem();
 		item.setValue(name);
 		item.setUrl(addBreadcrumbSource(url));
-		immediateUrl = addBreadcrumbSource(url);
+		if (model.getContents().size() == 0) {
+			// if this will be the only item, then set the immediateUrl
+			immediateUrl = addBreadcrumbSource(url);
+		}
 		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
 		model.getContents().add(0, item);
 	}
@@ -101,6 +104,9 @@ public class BreadcrumbMenuBean implements Serializable {
 	}
 	
 	public boolean getInProcedure() {
+		
+		logger.info("immediateUrl = " + immediateUrl);
+		
 		return immediateUrl != null && immediateUrl.contains("procedurePerspective");
 	}
 
