@@ -183,6 +183,13 @@ public class UserPrompt {
 		this.header = header;
 	}
 	
-	
+	// if the user prompt already contains abort, do not render the auto abort
+	public boolean isContainsAbort() {
+		if (promptType == PROMPT_TYPE_FLOW_CONTROL_BIFLOW || promptType == PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) return true;
+		
+		if (promptType == PROMPT_TYPE_INFO || promptType == PROMPT_TYPE_YES_NO) return false;
+		
+		return (button1Text.contains("Abort") || button2Text.contains("Abort") || button3Text.contains("Abort"));
+	}
 	
 }
