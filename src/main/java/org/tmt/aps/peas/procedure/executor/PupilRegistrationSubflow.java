@@ -26,9 +26,11 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -147,13 +149,36 @@ public class PupilRegistrationSubflow {
 			statusLogger.log("calc.pupil_reg.cmd_offloaded");
 		}
 		
-		Future<Point> coarseMirrorCommandFuture = null;
-		Future<Point> fineMirrorCommandFuture = null;
-		
 		boolean commandsSent = false;
+		
 		// if frame from file, do not send commands
 		if (!procedureConfig.isFrameFromFile()) {
 		
+			commandsSent = correctPupil(calcPrCommandsResult);
+
+		}
+		
+		// return false if we need to take a new frame
+		// if the error was > thresh (10 mm)and a move was performed, then return false
+		float frameOkThreshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
+		if ((Math.abs(regErrorMm.x) > frameOkThreshold || Math.abs(regErrorMm.y) > frameOkThreshold) && commandsSent) {
+			return false; // retake the frame
+		}
+		
+		return true;
+		
+		
+	}
+	
+	private boolean correctPupil(CalcPrCommandsResult calcPrCommandsResult) throws Exception {
+		
+		Future<Point> coarseMirrorCommandFuture = null;
+		Future<Point> fineMirrorCommandFuture = null;
+
+		boolean commandsSent = false;
+		
+		try {
+			
 			if (calcPrCommandsResult.hasCoarseMirrorCommands()) {
 				// always command the coarse mirror to setup values at the start of all procedures
 				coarseMirrorCommandFuture = cameraMgmt.commandCoarseTiltMirror(calcPrCommandsResult.getCoarseMirrorCommands());
@@ -171,26 +196,41 @@ public class PupilRegistrationSubflow {
 			long waitPeriodMs = Utils.waitForComplete(coarseMirrorCommandFuture, fineMirrorCommandFuture);
 			
 			if (calcPrCommandsResult.hasCoarseMirrorCommands() || calcPrCommandsResult.hasFineMirrorCommands()) {
-
+	
 				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 				commandsSent = true;
 			}
-		
+	
+		} catch (Exception e) {
+			
+			Throwable internalException = e;
+			if (e.getCause() instanceof java.util.concurrent.ExecutionException) {
+				internalException = e.getCause().getCause();
+			}
+			
+			String text = MessageGenerator.generateMessage("camera.cmd.exception", internalException.getMessage());
+			
+			statusLogger.log("camera.cmd.exception", internalException.getMessage());
+
+			String[] choices = {"Continue", "Retry Camera Commands", "Abort Test"};
+			int[] values = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+
+			int response = userPromptMgmt.displayGenericMultiChoiceDialog("Camera Command Failure", text, choices, values);
+
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+				throw new AbortProcedureException("User Aborted Test");
+			} 
+			
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+				// retry recursively
+				correctPupil(calcPrCommandsResult);
+			}
+			
+			
 		}
 		
-		// return false if we need to take a new frame
-		// if the error was > thresh (10 mm)and a move was performed, then return false
-		float frameOkThreshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
-		if ((Math.abs(regErrorMm.x) > frameOkThreshold || Math.abs(regErrorMm.y) > frameOkThreshold) && commandsSent) {
-			return false; // retake the frame
-		}
-		
-		return true;
-		
-		
+		return commandsSent;
 	}
-	
-	
 
 
 }
