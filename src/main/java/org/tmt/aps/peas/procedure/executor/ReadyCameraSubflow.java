@@ -8,6 +8,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
+import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
@@ -15,8 +16,11 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
+import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -29,15 +33,53 @@ public class ReadyCameraSubflow {
 	private StatusLogger statusLogger;
 	@EJB
 	private CameraMgmt cameraMgmt;
-
+	@EJB
+	private UserPromptMgmt userPromptMgmt;
 
 	@Abortable
 	public void execute(Procedure procedure) throws Throwable {
 		
-		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+		readyCameraFlow(procedure);
+	}
+	
+	private void readyCameraFlow(Procedure procedure) throws Throwable {
 		
-		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+		try {
 			
+			readyCamera(procedure);
+		
+		} catch (Exception e) {
+			
+			Throwable internalException = e;
+			if (e.getCause() instanceof java.util.concurrent.ExecutionException) {
+				internalException = e.getCause().getCause();
+			}
+			
+			String text = MessageGenerator.generateMessage("camera.cmd.exception", internalException.getMessage());
+			
+			statusLogger.log("camera.cmd.exception", internalException.getMessage());
+
+			String[] choices = {"Continue", "Retry Camera Commands", "Abort Test"};
+			int[] values = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+
+			int response = userPromptMgmt.displayGenericMultiChoiceDialog("Camera Command Failure", text, choices, values);
+
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+				throw new AbortProcedureException("User Aborted Test");
+			} 
+			
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+				// retry recursively
+				readyCameraFlow(procedure);
+			}
+		}
+	}
+			
+	private void readyCamera(Procedure procedure) throws Exception {
+			
+			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+
 			// always command the coarse and fine mirror to setup values at the start of all procedures
 			Point coarseMirrorDefault = procedure.getProcedureConfigSet().getGlobalConfig().getCoarseMirrorDefault();
 			Point desiredCoarseMirrorPosition = coarseMirrorDefault;
@@ -88,6 +130,7 @@ public class ReadyCameraSubflow {
 					coarseMirrorCommandFuture, fineMirrorCommandFuture);
 			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 
+			
 		}
 
 

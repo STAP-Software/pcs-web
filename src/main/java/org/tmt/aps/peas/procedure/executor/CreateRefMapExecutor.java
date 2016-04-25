@@ -98,10 +98,15 @@ public class CreateRefMapExecutor {
 	
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
-		executeSynchronousProcedure(procedure, currentSession);
+		
+		try {
+			executeSynchronousProcedure(procedure, currentSession);
+		} catch (Throwable e) {
+			// the throw is for a super-procedure, ignore it here
+		}
 	}
 		
-	public void executeSynchronousProcedure(Procedure procedure, Session currentSession) {
+	public void executeSynchronousProcedure(Procedure procedure, Session currentSession) throws Throwable {
 
 		logger.info("CreateRefMapExecutor::executeProcedure::");
 
@@ -154,13 +159,12 @@ public class CreateRefMapExecutor {
 
 		} catch (Throwable e) {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
+			throw e;
+		} finally {
+			procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 		}
 		
-		/*
-		 * getProcStats();
-		 */
 		
-		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
 	

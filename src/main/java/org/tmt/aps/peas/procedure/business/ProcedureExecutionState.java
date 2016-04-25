@@ -125,9 +125,11 @@ public class ProcedureExecutionState {
 	}
 
 	public Procedure transferControlFromSubProcedure() {
+		
 		currentProcedure = procedureStack;
 		procedureStack = null;
 		subProcedureEndRequested = true;
+		
 		return currentProcedure;
 	}
 
