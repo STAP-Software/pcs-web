@@ -498,6 +498,8 @@ public class FrameController implements Serializable {
 
 				// 3. create the table data
 				markedSubimageList.add(markedSubimage);
+				
+				count++;
 
 			}
 
@@ -558,13 +560,13 @@ public class FrameController implements Serializable {
 
 			}
 
-			MarkedSubimage markedSubimage = new MarkedSubimage(++count, subimage.getCentroid(), subimage.getSubimageIntensity(),
+			MarkedSubimage markedSubimage = new MarkedSubimage(count, subimage.getCentroid(), subimage.getSubimageIntensity(),
 					subimage.getPeakIntensity(), subimage.getFindCentStatus(), deltaPos, deltaDistance, deltaAngle);
 
 			return markedSubimage;
 
 		} catch (Exception e) {
-			MarkedSubimage markedSubimage = new MarkedSubimage(++count, subimage.getCentroid(), subimage.getSubimageIntensity(),
+			MarkedSubimage markedSubimage = new MarkedSubimage(count, subimage.getCentroid(), subimage.getSubimageIntensity(),
 					subimage.getPeakIntensity(), subimage.getFindCentStatus(), new FloatPoint(0,0), 0.0f, 0.0f);
 
 			return markedSubimage;

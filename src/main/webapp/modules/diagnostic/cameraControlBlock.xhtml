@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 	<p:panelGrid columns="2" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
@@ -10,8 +10,13 @@
 			<f:selectItem itemLabel="Filter" itemValue="2" />
 			<f:selectItem itemLabel="Ref. Beam" itemValue="3" />
 			<f:selectItem itemLabel="Shutter" itemValue="4" />
-			<f:selectItem itemLabel="Fine Tilt (&#181;m)" itemValue="5" />
-			<f:selectItem itemLabel="Coarse Tilt (&#181;m)" itemValue="6" />
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
+			<f:selectItem itemLabel="Fine Tilt (#{fieldMetaData.units})" itemValue="5" />
+			
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
+			<f:selectItem itemLabel="Coarse Tilt (#{fieldMetaData.units})" itemValue="6" />
+			
 			<f:selectItem itemLabel="Two Position Mech" itemValue="7" />
 			<f:selectItem itemLabel="CCD Power" itemValue="8" />
 
