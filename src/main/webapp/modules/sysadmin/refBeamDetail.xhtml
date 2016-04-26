@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -22,15 +22,18 @@
 				</f:facet>
 
 
-				<p:outputLabel value="Reference Beam Number" for="refBeamNum"/>
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ReferenceBeam','RefBeamNum')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 				<p:inputText id="refBeamNum" value="#{refBeamController.referenceBeam.refBeamNum}" required="true" disabled="#{!refBeamController.referenceBeam.newRecord}" >
 					<f:validateLongRange minimum="1" maximum="9" />
 				</p:inputText>
 				
-				<p:outputLabel value="Wavelength" for="wavelength"/>
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ReferenceBeam','Wavelength')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText id="wavelength" value="#{refBeamController.referenceBeam.wavelength}" required="true" />
 
-				<p:outputLabel value="Aligned To Segment #" for="segAlign"/>
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ReferenceBeam','SegmentNumAlignment')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 				<p:inputText id="segAlign" value="#{refBeamController.referenceBeam.segmentNumAlignment}" required="true" >
 					<f:validateLongRange minimum="0" maximum="36" />
 				</p:inputText>

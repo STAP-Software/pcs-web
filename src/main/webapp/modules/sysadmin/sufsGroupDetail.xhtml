@@ -16,25 +16,13 @@
 			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 				<f:facet name="header">
-					<h:outputText value="Sufs Group Instrument/Telescope related Configuation Information" />
+					<h:outputText value="Sufs Group Information" />
 				</f:facet>
 
 				<p:outputLabel value="Group Number" for="groupNumber"/>
 				<p:inputText id="groupNumber" value="#{sufsGroupController.sufsGroup.groupNumber}" required="true"  disabled="#{!sufsGroupController.sufsGroup.newRecord}" >
 					<f:validateLongRange minimum="1" maximum="6" />
 				</p:inputText>
-
-				<p:outputLabel value="Coarse Mirror Pos X" for="coarseMirrorPosX"/>
-				<p:inputText id="coarseMirrorPosX" value="#{sufsGroupController.sufsGroup.coarseMirrorPosX}" required="true" />
-
-				<p:outputLabel value="Coarse Mirror Pos Y" for="coarseMirrorPosY"/>
-				<p:inputText id="coarseMirrorPosY" value="#{sufsGroupController.sufsGroup.coarseMirrorPosY}" required="true" />
-
-				<p:outputLabel value="Telescope Offset (Az) from Group 0" for="telPosAz" />
-				<p:inputText id="telPosAz" value="#{sufsGroupController.sufsGroup.telPosAz}" required="true" />
-
-				<p:outputLabel value="Telescope Offset (El) from Group 0" for="telPosEl"/>
-				<p:inputText id="telPosEl" value="#{sufsGroupController.sufsGroup.telPosEl}" required="true" />
 
 				<p:outputLabel value="Default Reference Beam" for="defaultRefBeamNum" />
 				<p:inputText id="defaultRefBeamNum" value="#{sufsGroupController.sufsGroup.defaultRefBeamNum}" required="true" />

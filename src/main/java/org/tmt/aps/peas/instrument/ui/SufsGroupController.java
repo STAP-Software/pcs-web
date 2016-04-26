@@ -144,7 +144,7 @@ public class SufsGroupController implements Serializable {
 
 	public String doViewSufsGroup() {
 
-		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
+		breadcrumbMenuBean.addItem("Sufs Group " + sufsGroup.getGroupNumber(), "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
@@ -153,7 +153,7 @@ public class SufsGroupController implements Serializable {
 
 		sufsGroup = new SufsGroup();
 
-		breadcrumbMenuBean.addFirstItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
+		breadcrumbMenuBean.addItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}

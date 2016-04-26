@@ -22,7 +22,7 @@
 			<div style="margin:30px;width:400px">
 				<p:dataTable id="sessionTable" var="sufsGroup" value="#{sufsGroupController.sufsGroupList}">
 					<f:facet name="header">
-					Sufs Groups Instrument/Telescope related Configuation 
+					Sufs Groups Configuation 
 				</f:facet>
 
 					<p:column>
@@ -34,19 +34,7 @@
 					<p:column headerText="Group Number">
 						<h:outputText value="#{sufsGroup.groupNumber}" />
 					</p:column>
-					
-					<p:column headerText="Coarse Mirror Pos">
-						<h:outputText value="#{sufsGroup.coarseMirrorPosX}" />
-						<h:outputText value=", " />
-						<h:outputText value="#{sufsGroup.coarseMirrorPosY}" />
-					</p:column>
-					
-					<p:column headerText="Telescope Az,El offset from group 0">
-						<h:outputText value="#{sufsGroup.telPosAz}" />
-						<h:outputText value=", " />
-						<h:outputText value="#{sufsGroup.telPosEl}" />
-					</p:column>
-					
+										
 					<p:column headerText="Default Ref Beam">
 						<h:outputText value="#{sufsGroup.defaultRefBeamNum}" />
 					</p:column>
