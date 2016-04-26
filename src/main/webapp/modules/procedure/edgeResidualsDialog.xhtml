@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <script type="text/javascript">  
 //<![CDATA[
@@ -341,15 +341,23 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				 
 				<!-- residual edge stats -->
 				<p:spacer Residual="15"/><p:spacer Residual="15"/>
-				<h:outputLabel value="Number of good edges" />
+				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
-				<h:outputLabel value="Max residual edge height (microns)" />
+				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','ResidualEdgeErrorMax')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.000" />
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
-				<h:outputLabel value="RSS residual edge height (microns)" />
+				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','ResidualEdgeErrorRss')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px" >
-					<f:convertNumber pattern="#0.000" />
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
 				 			
 				<p:spacer Residual="30"/><p:spacer Residual="30"/>

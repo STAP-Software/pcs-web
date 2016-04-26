@@ -127,30 +127,44 @@
                     					General 
                 					</f:facet>
 
-									<h:outputLabel value="Integration Time (sec)" />
-									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px" >
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
 	
-									<h:outputLabel value="Telescope Elevation (deg)" />
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeEl')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px" >
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
 									
-									<h:outputLabel value="Star Name" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarName')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 									<h:outputText value="#{procedure.starNameFormatted}" style="position:relative; top:2px" />
 									
-									<h:outputLabel value="Star Mag" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarVmag')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 									<h:outputText value="#{procedure.starVmagFormatted}" style="position:relative; top:2px" />
 									
-									<h:outputLabel value="Star Sp. Type" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarSpType')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
 									<h:outputText value="#{procedure.starSpTypeFormatted}" style="position:relative; top:2px" />
 									
-									<h:outputLabel value="Coarse Mirror (x, y) (um)" style="position:relative; top:4px"/>
-									<h:panelGroup style="position:relative; top:8px">
+									
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirror')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:panelGroup style="position:relative; top:4px">
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
 									<h:outputText value=", " />
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorY}" />
 									</h:panelGroup>
 									
-									<h:outputLabel value="Fine Mirror (x, y) (um)" style="position:relative; top:4px"/>
-									<h:panelGroup style="position:relative; top:8px">
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlate')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:panelGroup style="position:relative; top:4px">
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateX}" />
 									<h:outputText value=", " />
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateY}" />
@@ -168,7 +182,9 @@
                 					</f:facet>
 
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
-									<h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>
 
 									<h:outputLabel value="M1 Commands Sent" />
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
@@ -177,7 +193,7 @@
 	
 	
 								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:300px"
+									styleClass="pcsFormNoBorder" style="width:330px"
 									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.fineScreen}">
 	
 									<f:facet name="header">
@@ -185,14 +201,26 @@
 	               					</f:facet>
 
 
-									<h:outputLabel value="Secondary Theta X (arcsec)" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px"/>
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2TipTiltErrorArcsec')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} X (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
+									
+									<h:outputLabel value="#{fieldMetaData.displayLabel} Y (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.y}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
+									
 	
-									<h:outputLabel value="Secondary Theta Y (arcsec)" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.y}" style="position:relative; top:2px"/>
-	
-									<h:outputLabel value="Secondary Focus (microns)" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2PistonErrorUm}" style="position:relative; top:2px"/>
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2PistonErrorUm')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2PistonErrorUm}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
 
 									<h:outputLabel value="Secondary Commands Sent" />
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m2CmdsSent}" style="position:relative; top:2px"/>
@@ -200,23 +228,40 @@
 
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
 									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />	
+									</h:outputText>
 									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasRmsEom}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasRmsEom}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+
 									</h:panelGroup>
 									
 									<h:outputLabel value="M1 Cmds RMS - Focus Mode Only (nm)" />
 									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasFmRms}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasFmRms}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+
 									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasFmRmsEom}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasFmRmsEom}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+
 									</h:panelGroup>
 									
 									<h:outputLabel value="M1 Cmds RMS - No Focus Mode (nm)" />
 									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasNoFmRms}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasNoFmRms}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+
 									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasNoFmRmsEom}" style="position:relative; top:2px"/>
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasNoFmRmsEom}" style="position:relative; top:2px">
+										<f:convertNumber pattern="#0.0" />
+									</h:outputText>		
+
 									</h:panelGroup>
 
 									<h:outputLabel value="M1 Commands Sent" />

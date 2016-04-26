@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -79,7 +79,8 @@
 
 							<p:row>
 								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Integration Time (sec)" />
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
 									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}" 
@@ -195,10 +196,14 @@
 								rendered="#{procedureController.procedure.procedureState ge 3}" />
 							<h:outputLabel value="Execution Start" rendered="#{procedureController.procedure.procedureState ge 3}" />
 							<h:outputText value="#{procedureController.procedure.executionStartTime}"
-								rendered="#{procedureController.procedure.procedureState ge 3}" />
+								rendered="#{procedureController.procedure.procedureState ge 3}" >
+									<f:convertDateTime pattern="hh:mm:ss" />
+								</h:outputText>
 							<h:outputLabel value="Execution End" rendered="#{procedureController.procedure.procedureState ge 3}" />
 							<h:outputText value="#{procedureController.procedure.executionEndTime}"
-								rendered="#{procedureController.procedure.procedureState ge 3}" />
+								rendered="#{procedureController.procedure.procedureState ge 3}" >
+									<f:convertDateTime pattern="hh:mm:ss" />
+								</h:outputText>
 						</p:panelGrid>
 
 						<p:spacer height="10px" width="40px" />

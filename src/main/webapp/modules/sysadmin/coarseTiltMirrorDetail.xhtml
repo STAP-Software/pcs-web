@@ -1,6 +1,6 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
 
@@ -16,13 +16,16 @@
 					<h:outputText value="Coarse Mirror Information" />
 				</f:facet>
 
-				<h:outputLabel value="Mechanism Lever Arm (x)" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmX')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmX}" />
 
-				<h:outputLabel value="Mechanism Lever Arm (y)" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmY')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmY}" />
 
-				<h:outputLabel value="ORA Factor (radians/mm)" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','Orafactor')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.orafactor}" />
 
 				<f:facet name="footer">

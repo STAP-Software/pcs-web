@@ -1,5 +1,5 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <script type="text/javascript">  
 //<![CDATA[
@@ -435,8 +435,12 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
 				<p:spacer height="30"/><p:spacer height="30"/>
-				<h:outputLabel value="RMS of Actuator Deltas (nm)" />
-				<h:outputText value="#{visualizationController.actuatorDeltasDisplayValues.desiredActDeltasRms}" style="position:relative; top:2px" />
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcDesiredActCommandsResult','DesiredActDeltasRms')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+				<h:outputText value="#{visualizationController.actuatorDeltasDisplayValues.desiredActDeltasRms}" style="position:relative; top:2px" >
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				</h:outputText>
 				
 				<p:spacer height="30"/><p:spacer height="30"/>
 				
