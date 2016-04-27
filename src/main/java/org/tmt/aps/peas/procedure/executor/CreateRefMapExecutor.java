@@ -161,6 +161,7 @@ public class CreateRefMapExecutor {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 			throw e;
 		} finally {
+			statusLogger.log("procedure.saving");
 			procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 		}
 		

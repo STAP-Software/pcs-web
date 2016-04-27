@@ -261,7 +261,7 @@ public class PupilRegistrationExecutor {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 
-		
+		statusLogger.log("procedure.saving");		
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 

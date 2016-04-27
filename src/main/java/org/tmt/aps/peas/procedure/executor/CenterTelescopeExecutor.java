@@ -213,12 +213,8 @@ public class CenterTelescopeExecutor {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 		
-		/*
-		 * getProcStats();
-		 */
 
-		//cameraPoller.setDoPoll(true);
-		
+		statusLogger.log("procedure.saving");
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 
 	}

@@ -237,7 +237,7 @@ public class ProcedureExecutionMgmt {
 	public void performProcedureCompletion(Procedure procedure, Session currentSession) {
 
 		try {
-			
+						
 			procedure.setExecutionEndTime(new Date());
 
 			logger.debug("performProcedureCompletion 1");

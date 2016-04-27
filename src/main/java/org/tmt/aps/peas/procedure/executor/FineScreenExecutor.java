@@ -599,11 +599,10 @@ public class FineScreenExecutor {
 		} catch (Throwable e) {
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
-		/*
-		 * getProcStats();
-		 */
 
-		
+
+		statusLogger.log("procedure.saving");
+
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
