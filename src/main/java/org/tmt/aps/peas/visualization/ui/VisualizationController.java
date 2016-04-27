@@ -513,6 +513,7 @@ public class VisualizationController implements Serializable {
 		avgSufsCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
 		edgeHeightsDisplayEnabled = false;
+		edgeResidualsDisplayEnabled = false;
 
 		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
 

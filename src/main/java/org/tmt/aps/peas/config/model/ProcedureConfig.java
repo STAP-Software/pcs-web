@@ -86,7 +86,6 @@ public class ProcedureConfig {
 	private boolean autoDisplayAvgFsCentroidOffsets;
 	private boolean autoDisplayAvgSufsCentroidOffsets;
 	private boolean autoDisplayActuatorDeltas;
-	private boolean autoDisplayPistons;
 	private boolean autoDisplayEdgeHeights;
 	private boolean autoDisplayResiduals;
 	private boolean autoDisplaySubimageIntensityWarning;
@@ -373,14 +372,6 @@ public class ProcedureConfig {
 
 	public void setAutoDisplayActuatorDeltas(boolean autoDisplayActuatorDeltas) {
 		this.autoDisplayActuatorDeltas = autoDisplayActuatorDeltas;
-	}
-
-	public boolean isAutoDisplayPistons() {
-		return autoDisplayPistons;
-	}
-
-	public void setAutoDisplayPistons(boolean autoDisplayPistons) {
-		this.autoDisplayPistons = autoDisplayPistons;
 	}
 
 	public boolean isAutoDisplayEdgeHeights() {
