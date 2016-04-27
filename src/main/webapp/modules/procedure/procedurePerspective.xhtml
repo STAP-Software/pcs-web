@@ -311,17 +311,13 @@
 							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
 						
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
-							<p:spacer height="1px"/>
-							<canvas id="infoCanvas" width="512px" height="15px" ></canvas>
+							
 
 							<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 							<p:row>
 								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<h:outputLabel value="Search Radius (pixels):" />
-								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-									<h:outputText value="8" />
+									<canvas id="infoCanvas" width="270px" height="15px" ></canvas>
 								</p:column>
 								<p:column styleClass="peasFormLabelColumn" style="width:35%">
 									<h:outputLabel value="Median Peak Intensity:" />
@@ -333,6 +329,8 @@
 								</p:column>
 							</p:row>
 							</p:panelGrid>
+							
+							<p:spacer height="1px"/>
 
 							<f:facet name="footer">
 								<a id="saveAsPngId" href="#" download="frame.png" />
