@@ -38,6 +38,7 @@ public class FindCentConfig {
 	private int ngauss;
 	private int itermax;
 	private float subimageIntensityThreshold;
+	private boolean ignoreNdectZeroSpots;
 
 	
 	public FindCentConfig() {
@@ -103,6 +104,14 @@ public class FindCentConfig {
 
 	public void setSubimageIntensityThreshold(float subimageIntensityThreshold) {
 		this.subimageIntensityThreshold = subimageIntensityThreshold;
+	}
+
+	public boolean isIgnoreNdectZeroSpots() {
+		return ignoreNdectZeroSpots;
+	}
+
+	public void setIgnoreNdectZeroSpots(boolean ignoreNdectZeroSpots) {
+		this.ignoreNdectZeroSpots = ignoreNdectZeroSpots;
 	}
 
 	public String toString() {

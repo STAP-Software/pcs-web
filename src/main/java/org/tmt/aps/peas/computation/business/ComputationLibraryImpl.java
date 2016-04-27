@@ -166,7 +166,8 @@ public class ComputationLibraryImpl {
 
 	// findCentStatus is also a property of a spot, to be used by calcs after this.
 	@Computation
-	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, boolean findAllMaskSpots) throws ComputationException {
+	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, 
+			boolean findAllMaskSpots) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "findCentroids"));
 
@@ -213,13 +214,22 @@ public class ComputationLibraryImpl {
 		}
 		
 		// if isRefMap, then set all missingSpotFlags to use
-		int[] passedMissingSpotFlags = missingSpotFlags;
+		int[] passedMissingSpotFlags = new int[missingSpotFlags.length];
 		if (findAllMaskSpots) {
-			passedMissingSpotFlags = new int[missingSpotFlags.length];
 			for (int i=0; i<missingSpotFlags.length; i++) {
 				passedMissingSpotFlags[i] = Constants.MISSING_SPOT_TYPE_USE;
 			}
-		}
+		} else {
+			
+			for (int i=0; i<arrayLen; i++ ) {
+				// add nDetect == 0 spots to the spots being ignored
+				if (nspotTypes[i] == Constants.SPOT_TYPE_INTERIOR) {
+					passedMissingSpotFlags[i] = (findCentConfigInterior.isIgnoreNdectZeroSpots() && fiResult.getnDetect()[i] == 0) ? Constants.MISSING_SPOT_TYPE_NOT_EXPECTED : missingSpotFlags[i];
+				} else {
+					passedMissingSpotFlags[i] = (findCentConfigPeripheral.isIgnoreNdectZeroSpots() && fiResult.getnDetect()[i] == 0) ? Constants.MISSING_SPOT_TYPE_NOT_EXPECTED : missingSpotFlags[i];					
+				}
+			}
+		} 
 		
 		float[] x_cent = new float[arrayLen];
 		float[] y_cent = new float[arrayLen];
