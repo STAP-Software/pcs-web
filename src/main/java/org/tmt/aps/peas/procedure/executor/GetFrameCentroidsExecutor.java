@@ -451,13 +451,6 @@ public class GetFrameCentroidsExecutor {
 				}
 			}
 			
-			// if a create reg map and gaussian find_cent had to fall back, inform the user to make an entry in the night log
-			if (centroidMap.getFindCentroidsResult().containsGaussianCmFallbackCentroids() && procedure.getProcedureType().isCreateRefMap()) {
-				String text = MessageGenerator.generateMessage("find_cent.gaussian_fallback_to_cm");
-				userPromptMgmt.displayInfoDialog("Find Cent Gaussian Calc Failed", text);
-			}
-			
-			
 
 		} catch (FandIException e1) {
 
