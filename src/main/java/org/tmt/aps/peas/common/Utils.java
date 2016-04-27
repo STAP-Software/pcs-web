@@ -67,7 +67,7 @@ public class Utils {
 	public static int[] floatArrayToIntArray(float[] input) {
 		int[] output = new int[input.length];
 		for (int i = 0; i < input.length; i++) {
-			output[i] = (int) input[i];
+			output[i] = Math.round(input[i]);
 		}
 		return output;
 	}
