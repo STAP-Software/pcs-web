@@ -38,7 +38,7 @@ public class HelpController implements Serializable {
 
 	private TreeNode helpContentRoot;
 	
-	private String currentPage = "/pcs-web/help/content/home.htm";
+	private String currentPage = "/pcs-web/help/content/overview.htm";
 
 	@PostConstruct
 	private void init() {

@@ -277,7 +277,7 @@
 						<f:facet name="header">
 							
 							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
-							<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px"/>
+							<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}"/>
 							<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
 								<f:selectItems value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureCcdFrame"
                       					itemLabel="#{procedureCcdFrame.procedureFrameNumber + 1}" itemValue="#{procedureCcdFrame.procedureFrameNumber}" />

@@ -1099,38 +1099,43 @@ public class ProcedureController implements Serializable {
 		
 		markedDisplayMode = setting;
 		
-		if (setting) {
-			// get the marking and set it
-			
-			FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();
-			//FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
-			
-			float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
-			float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
-			
-			String centroidXs = FloatListEncoder.encodeList(xArray);
-			String centroidYs = FloatListEncoder.encodeList(yArray);
-
-			setFrameCentroidXs(centroidXs);
-			setFrameCentroidYs(centroidYs);
-			
-			// display the frame unmarked
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("frameHiddenForm");
-			requestContext.execute("markFrame()");
-
-			
-		} else {
-			// clear the marking 
-			setFrameCentroidXs(null);
-			setFrameCentroidYs(null);
-			
-			// display the frame unmarked
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("frameHiddenForm");
-			requestContext.execute("drawFrame()");
-
-
+		try {
+		
+			if (setting) {
+				// get the marking and set it
+				
+				FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();
+				//FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+				
+				float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
+				float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
+				
+				String centroidXs = FloatListEncoder.encodeList(xArray);
+				String centroidYs = FloatListEncoder.encodeList(yArray);
+	
+				setFrameCentroidXs(centroidXs);
+				setFrameCentroidYs(centroidYs);
+				
+				// display the frame unmarked
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				requestContext.update("frameHiddenForm");
+				requestContext.execute("markFrame()");
+	
+				
+			} else {
+				// clear the marking 
+				setFrameCentroidXs(null);
+				setFrameCentroidYs(null);
+				
+				// display the frame unmarked
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				requestContext.update("frameHiddenForm");
+				requestContext.execute("drawFrame()");
+	
+	
+			}
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
 
