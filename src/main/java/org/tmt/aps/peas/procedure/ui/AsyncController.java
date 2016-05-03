@@ -210,7 +210,7 @@ public class AsyncController implements Serializable {
 		statusLogController.refreshCurrentProcedureStatusLog();
 		
 		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.update("procedureDetailForm:miscPanel");
+		//requestContext.update("procedureDetailForm:miscPanel");
 		requestContext.update("procedureDetailForm:controlPanel");
 	}
 	
@@ -268,7 +268,7 @@ public class AsyncController implements Serializable {
 
 			
 			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("procedureDetailForm:miscPanel");
+			//requestContext.update("procedureDetailForm:miscPanel");
 			requestContext.update("procedureDetailForm:controlPanel");
 			requestContext.update("breadcrumbForm");
 		}
@@ -295,7 +295,7 @@ public class AsyncController implements Serializable {
 			breadcrumbMenuBean.removeLast();
 
 			
-			requestContext.update("procedureDetailForm:miscPanel");
+			//requestContext.update("procedureDetailForm:miscPanel");
 			requestContext.update("procedureDetailForm:controlPanel");
 			requestContext.update("breadcrumbForm");
 
