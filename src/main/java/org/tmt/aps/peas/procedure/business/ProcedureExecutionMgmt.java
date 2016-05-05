@@ -222,7 +222,7 @@ public class ProcedureExecutionMgmt {
 		statusLogger.log("procedure.exception", procedureException.getMessage());
 		
 	
-		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
+		//procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		
 		// if we are a sub-procedure, then do not set the execution state
 		if (!procedureExecutionState.isExecutionContextSubProcedure()) {
@@ -360,7 +360,11 @@ public class ProcedureExecutionMgmt {
 
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			
-			procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
+			if (procedureExecutionState.getAbortRequested()) {
+				procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
+			} else {
+				procedure.setProcedureState(Procedure.PROCEDURE_STATE_COMPLETED);
+			}
 
 			// update in database
 			procedureMgmt.updateProcedure(procedure);

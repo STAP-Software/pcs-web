@@ -192,21 +192,27 @@
 							
 							</h:panelGroup>
 							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}"
-								rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" rendered="#{procedureController.procedure.procedureState eq 3}" />
+							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedureController.procedure.procedureState eq 4}" />
+
 							<h:outputLabel value="Execution Start" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{procedureController.procedure.executionStartTime}"
-								rendered="#{procedureController.procedure.procedureState ge 3}" >
-									<f:convertDateTime pattern="hh:mm:ss" />
+							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
+							<h:outputText value="#{procedureController.procedure.executionStartTime}" >
+									<f:convertDateTime pattern="hh:mm:ss " />
 								</h:outputText>
+								<h:outputText value=" UTC"/>
+							</h:panelGroup>
+							
 							<h:outputLabel value="Execution End" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{procedureController.procedure.executionEndTime}"
-								rendered="#{procedureController.procedure.procedureState ge 3}" >
-									<f:convertDateTime pattern="hh:mm:ss" />
+							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
+							<h:outputText value="#{procedureController.procedure.executionEndTime}" >
+									<f:convertDateTime pattern="hh:mm:ss " />
 								</h:outputText>
+								<h:outputText value=" UTC"/>
+							</h:panelGroup>
 								
-							<h:outputLabel value="ACS Snap # After" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" rendered="#{procedureController.procedure.procedureState ge 3}" />
+							<h:outputLabel value="ACS Snap # After" rendered="#{procedureController.procedure.procedureState eq 3}" />
+							<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" rendered="#{procedureController.procedure.procedureState eq 3}" />
 							
 						</p:panelGrid>
 

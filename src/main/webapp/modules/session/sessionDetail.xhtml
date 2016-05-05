@@ -105,6 +105,12 @@
 							<p:spacer width="6px"/>
 							<h:outputText value="UTC"/>
 						</p:column>
+						
+						<p:column headerText="Status">
+							<h:outputText value="#{procedure.procedureStateDisplayString}" rendered="#{procedure.procedureState eq 3}"  />
+							<h:outputText value="#{procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedure.procedureState eq 4}"  />
+						</p:column>
+						
 						<p:column headerText="M1 Snap Number After">
 							<h:outputText
 								value="#{procedure.procedureOutput.m1SnapNumberAfterDisplayText}" />
