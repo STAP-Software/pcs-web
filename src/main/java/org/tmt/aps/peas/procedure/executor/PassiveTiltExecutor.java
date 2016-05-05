@@ -298,6 +298,8 @@ public class PassiveTiltExecutor {
 
 				try {
 					// send out the commands
+					statusLogger.log("pt.m1_act_cmd_started");
+
 					acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
 
 					statusLogger.log("pt.m1_act_cmd_success");

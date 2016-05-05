@@ -432,6 +432,7 @@ public class PhasingExecutor {
 	
 				try {
 					// send out the commands
+					statusLogger.log("pt.m1_act_cmd_started");
 					acsMgmt.commandActuatorDeltas(procedureOutput.getDesiredActDeltas());
 	
 					statusLogger.log("pt.m1_act_cmd_success");

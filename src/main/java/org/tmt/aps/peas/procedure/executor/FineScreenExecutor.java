@@ -442,6 +442,8 @@ public class FineScreenExecutor {
 			if (sendM2Command) {
 	
 				try {
+					
+					statusLogger.log("fs.m2_act_cmd_started");
 					// send out the commands
 					dcsMgmt.commandSecondaryDeltasInUm(m2ActResult.getDeltaSecondardyActCmds());
 	
@@ -562,6 +564,7 @@ public class FineScreenExecutor {
 			if (sendM1Command) {
 	
 				try {
+					statusLogger.log("pt.m1_act_cmd_started");
 					// send out the commands
 					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 	
