@@ -105,7 +105,7 @@ public class BreadcrumbMenuBean implements Serializable {
 	
 	public boolean getInProcedure() {
 		
-		logger.info("immediateUrl = " + immediateUrl);
+		logger.debug("immediateUrl = " + immediateUrl);
 		
 		return immediateUrl != null && immediateUrl.contains("procedurePerspective");
 	}
