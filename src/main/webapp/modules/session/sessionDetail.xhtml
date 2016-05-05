@@ -111,6 +111,10 @@
 							<h:outputText value="#{procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedure.procedureState eq 4}"  />
 						</p:column>
 						
+						<p:column headerText="Trials">
+							<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.numberOfTrials}" />
+						</p:column>
+						
 						<p:column headerText="M1 Snap Number After">
 							<h:outputText
 								value="#{procedure.procedureOutput.m1SnapNumberAfterDisplayText}" />
