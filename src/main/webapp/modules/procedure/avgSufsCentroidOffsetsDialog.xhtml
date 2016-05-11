@@ -268,7 +268,7 @@ function drawAvgSufsCentroidOffsets() {
 			<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />
 			<c:forEach var="zernikeMean" items="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsSegmentZernikeStatsResult.zernikeMeans[visualizationController.avgSufsGroupSegmentNumber]}" varStatus="loop" end="9">
 				<c:set var="zernikeEom" value="#{visualizationController.avgSufsCentroidOffsetsDisplayValues.sufsSegmentZernikeStatsResult.zernikeEoms[visualizationController.avgSufsGroupSegmentNumber][loop.index]}"/>
-				<h:outputLabel value="#{fieldMetaData.displayLabel} #{loop.index+1} (#{fieldMetaData.units}) " rendered="#{zernikeMean!=0.0 and (loop.index gt 2) and (loop.index lt 10)}"/>
+				<h:outputLabel value="#{fieldMetaData.displayLabel} #{loop.index+1} Mean +- EOM (#{fieldMetaData.units}) " rendered="#{zernikeMean!=0.0 and (loop.index gt 2) and (loop.index lt 10)}"/>
 				<h:panelGroup rendered="#{zernikeMean!=0.0 and (loop.index gt 2) and (loop.index lt 10)}">
 				<h:outputText value="#{zernikeMean}">
 					<f:converter converterId="DynamicNumberConverter" />

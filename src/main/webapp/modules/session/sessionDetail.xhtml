@@ -308,7 +308,7 @@
 
 
 								<p:panelGrid columns="1" 
-									styleClass="pcsFormNoBorder" style="width:380px"
+									styleClass="pcsFormNoBorder" style="width:420px"
 									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.sufs}">
 	
 								<f:facet name="header">
@@ -342,7 +342,7 @@
 								 
 								 
 									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />				
-								    <p:column headerText="Zernike 4 (#{fieldMetaData.units})">
+								    <p:column headerText="Zernike 4 Mean +- EOM (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[3]}">
 								        	<f:converter converterId="DynamicNumberConverter" />
 											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
@@ -354,7 +354,7 @@
 								        </h:outputText>
 								    </p:column>
 								 
-								    <p:column headerText="Zernike 5 (#{fieldMetaData.units})">
+								    <p:column headerText="Zernike 5 Mean +- EOM (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[4]}">
 								        	<f:converter converterId="DynamicNumberConverter" />
 											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
@@ -366,7 +366,7 @@
 								        </h:outputText>
 								    </p:column>
 								 
-								    <p:column headerText="Zernike 6 (#{fieldMetaData.units})">
+								    <p:column headerText="Zernike 6 Mean +- EOM (#{fieldMetaData.units})">
 								        <h:outputText value="#{segmentStats.zernikeMeans[5]}">
 								        	<f:converter converterId="DynamicNumberConverter" />
 											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
