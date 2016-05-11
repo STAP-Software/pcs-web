@@ -97,6 +97,7 @@ import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
+import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 @Named
@@ -700,18 +701,77 @@ public class ProcedureController implements Serializable {
 
 		// if we are running, we need to restore some things
 
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		
 		if (procedureExecutionState.getExecutionStatus() == true) {
 
 			// restart the poller
-			RequestContext.getCurrentInstance().execute("procedureExecutionPoller.start();");
+			requestContext.execute("procedureExecutionPoller.start();");
 
-			// update the frame display
-			// frameDisplayMgmt.setPendingDisplay(true);
-			frameDisplayMgmt.setPendingMarkedDisplay(true);
+				
+			requestContext.execute("markFrame()");
 
-			// popup any popups that are currently active
-			RequestContext.getCurrentInstance().execute("drawSpots(); centroidsDisplayDialog.show()");
+			
+			VisualizationDisplay visualizationDisplay = visualizationController.getCurrentDisplay();
+			
+			if (visualizationDisplay != null) {
 
+				if (visualizationDisplay.isDisplayTypeCentroids()) {
+					requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
+					requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
+					requestContext.execute("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
+					requestContext.execute("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
+					requestContext.execute("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
+					requestContext.execute("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
+					requestContext.execute("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
+					requestContext.execute("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
+				}
+				if (visualizationDisplay.isDisplayTypeAvgSufsCentroidOffsets()) {
+					requestContext.execute("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
+				}
+			}
+			
+			// user prompt
+			if (currentPrompt != null) {
+				
+				requestContext.execute("userPromptDialog.show()");
+				
+			}
+			
+			// breadcrumb
+			if (procedureExecutionState.isExecutionContextSubProcedure()) {
+				// embedded subprocedure
+				Procedure superProcedure = procedureExecutionState.getSuperProcedure();
+				breadcrumbMenuBean.addFirstItem("Procedure #" + superProcedure.getProcedureNumber() + ": "
+					+ superProcedure.getProcedureType().getProcedureTypeName(),
+					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
+				breadcrumbMenuBean.addItem(procedure.getProcedureType().getProcedureTypeName() + " - EMBEDDED SUBPROCEDURE RUNNING",
+					"/modules/procedure/procedurePerspective.xhtml");
+				
+			} else {
+				breadcrumbMenuBean.addFirstItem("Procedure #" + procedure.getProcedureNumber() + ": "
+						+ procedure.getProcedureType().getProcedureTypeName(),
+						"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
+
+			}
+
+			
+			requestContext.update("breadcrumbForm");
+				
 		}
 
 	}
@@ -724,8 +784,7 @@ public class ProcedureController implements Serializable {
 			return doViewArchivedProcedure();
 
 		}
-
-		return null;
+		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
 	public String doViewArchivedProcedure() {

@@ -77,6 +77,10 @@ public class ProcedureExecutionState {
 	public void setCurrentProcedure(Procedure currentProcedure) {
 		this.currentProcedure = currentProcedure;
 	}
+	
+	public Procedure getSuperProcedure() {
+		return procedureStack;
+	}
 
 	public Throwable getProcedureException() {
 		return procedureException;
