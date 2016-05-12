@@ -375,6 +375,17 @@ public class ProcedureController implements Serializable {
 			selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 			// }
 
+			// if the selected frame was overwritten during the procedure, we want to show a blank frame
+			ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
+			if (nextFrame != null) {
+				// check to see if its the same FITS filename as the selected frame
+				if (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename())) {
+					// get a blank picture
+					return null;
+				}
+			}
+			
+			
 			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
 			logger.debug("falseColorPng = " + falseColorPng);
