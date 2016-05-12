@@ -18,7 +18,7 @@
 
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
-		<h:outputLabel value="Fine Tilt (x, y) (#{fieldMetaData.units})" />
+		<h:outputLabel value="Fine Pupil Adj (x, y) (#{fieldMetaData.units})" />
 		<h:panelGroup style="position:relative; top:3px">
 			<h:outputText value="#{cameraManualController.camera.fineTiltMirror.stateXDisplayString}" />
 			<h:outputText value=", " />
@@ -26,7 +26,7 @@
 		</h:panelGroup>
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
-		<h:outputLabel value="Coarse Tilt (x, y) (#{fieldMetaData.units})" />
+		<h:outputLabel value="Coarse Pupil Adj (x, y) (#{fieldMetaData.units})" />
 		<h:panelGroup style="position:relative; top:3px">
 			<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.stateXDisplayString}" />
 			<h:outputText value=", " />

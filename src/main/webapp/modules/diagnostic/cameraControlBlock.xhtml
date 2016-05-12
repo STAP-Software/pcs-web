@@ -12,10 +12,10 @@
 			<f:selectItem itemLabel="Shutter" itemValue="4" />
 			
 			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
-			<f:selectItem itemLabel="Fine Tilt (#{fieldMetaData.units})" itemValue="5" />
+			<f:selectItem itemLabel="Fine Pupil Adj (#{fieldMetaData.units})" itemValue="5" />
 			
 			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
-			<f:selectItem itemLabel="Coarse Tilt (#{fieldMetaData.units})" itemValue="6" />
+			<f:selectItem itemLabel="Coarse Pupil Adj (#{fieldMetaData.units})" itemValue="6" />
 			
 			<f:selectItem itemLabel="Two Position Mech" itemValue="7" />
 			<f:selectItem itemLabel="CCD Power" itemValue="8" />
