@@ -370,12 +370,11 @@ public class AsyncController implements Serializable {
 		}
 	}
 
-	public String doAbortProcedure() {
-		return null;
-	}
+
 	
 	public void doCloseGraphicsDisplay() {
 		graphicDisplayMgmt.setReturnState(1);
+		visualizationController.setCurrentDisplay(null);
 	}
 	
 	public void doCloseGraphicsDisplay1() {
@@ -385,35 +384,48 @@ public class AsyncController implements Serializable {
 		if (visualizationController.getCurrentDisplay().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
 			graphicDisplayMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_YES);
 		}
+		visualizationController.setCurrentDisplay(null);
+
 	}
 	
 	public void doCloseGraphicsDisplay2() {
 		if (visualizationController.getCurrentDisplay().getPromptType() == UserPrompt.PROMPT_TYPE_YES_NO) {
 			graphicDisplayMgmt.setReturnState(UserPrompt.PROMPT_VALUE_YES_NO_NO);
 		}
+		visualizationController.setCurrentDisplay(null);
+
 	}
 	
 	public void doCloseGraphicsDisplayAbort() {
 		procedureExecutionState.setAbortRequested(true);
 		graphicDisplayMgmt.setReturnState(1);
+		visualizationController.setCurrentDisplay(null);
+
 	}
 
 	
 	public void doCloseUserPrompt1() {
 		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton1Value());
+		procedureController.setCurrentPrompt(null);
 	}
 
 	public void doCloseUserPrompt2() {
 		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton2Value());
+		procedureController.setCurrentPrompt(null);
+
 	}
 
 	public void doCloseUserPrompt3() {
 		userPromptMgmt.setReturnState(procedureController.getCurrentPrompt().getButton3Value());
+		procedureController.setCurrentPrompt(null);
+
 	}
 
 	public void doCloseUserPromptAbort() {
 		procedureExecutionState.setAbortRequested(true);
 		userPromptMgmt.setReturnState(-1);
+		procedureController.setCurrentPrompt(null);
+
 	}
 
 

@@ -114,8 +114,8 @@ public class CameraCommandSimulator implements CameraCommand {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandXTiltPlate::SIMULATOR"));
 		Utils.waitFor(10000);
 		logger.info(MessageGenerator.generateMessage("command.success", "commandXTiltPlate::SIMULATOR"));
-		throw new CommandFailureException("Tilt plate command failed");
-		//return xTiltPlatePosition;
+		//throw new CommandFailureException("Tilt plate command failed");
+		return xTiltPlatePosition;
 	}
 
 	@Override

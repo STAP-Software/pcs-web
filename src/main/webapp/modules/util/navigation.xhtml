@@ -19,7 +19,7 @@
 						-->
 					</p:submenu>
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null}" />
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.procedureExecuting}" oncomplete="procedureExecutionPoller.start();" />
 					<p:submenu label="Run" icon="ui-icon-gear" >
