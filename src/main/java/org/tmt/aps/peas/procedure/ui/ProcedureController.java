@@ -382,7 +382,7 @@ public class ProcedureController implements Serializable {
 				ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
 				if (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename())) {
 					// get a blank picture
-					return null;
+					return new DefaultStreamedContent(new ByteArrayInputStream(new byte[0]), "image/png");
 				}
 			}
 			
