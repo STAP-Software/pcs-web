@@ -15,7 +15,7 @@
 			<div style="margin:30px;" >
 			
 			<div>
-			<h:outputLabel value="View the "/>&#160;<p:inputText value="#{sessionController.searchQuantity}" size="2" />&#160;<h:outputLabel value="most recent sessions prior to "/> &#160;&#160;<p:calendar size="6" id="popup" value="#{sessionController.searchDate}" />&#160;&#160; <p:commandButton value="Search" action="#{sessionController.doSearchSessionList}" />
+			<h:outputLabel value="View the "/>&#160;<p:inputText value="#{sessionController.searchQuantity}" size="2" />&#160;<h:outputLabel value="most recent sessions prior to "/> &#160;&#160;<p:calendar size="6" id="popup" value="#{sessionController.searchDate}" timeZone="UTC" />&#160;&#160; <p:commandButton value="Search" action="#{sessionController.doSearchSessionList}" />
 			</div>
 			<br/>
 			
