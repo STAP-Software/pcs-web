@@ -133,7 +133,6 @@ public class PhasingExecutor {
 			PhasingProcedureOutput procedureOutput = (PhasingProcedureOutput) procedure.getProcedureOutput();
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
-			statusLogger.log("camera.not_init");
 
 			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()

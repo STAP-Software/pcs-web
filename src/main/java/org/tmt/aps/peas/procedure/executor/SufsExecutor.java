@@ -141,7 +141,6 @@ public class SufsExecutor {
 			SufsProcedureOutput procedureOutput = (SufsProcedureOutput) procedure.getProcedureOutput();
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
-			statusLogger.log("camera.not_init");
 
 			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(),
