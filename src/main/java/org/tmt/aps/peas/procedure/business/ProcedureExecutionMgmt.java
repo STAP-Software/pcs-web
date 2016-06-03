@@ -222,7 +222,7 @@ public class ProcedureExecutionMgmt {
 		statusLogger.log("procedure.exception", procedureException.getMessage());
 		
 	
-		//procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
+		procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 		
 		// if we are a sub-procedure, then do not set the execution state
 		if (!procedureExecutionState.isExecutionContextSubProcedure()) {

@@ -362,6 +362,8 @@ public class AsyncController implements Serializable {
 			// update the currentSessionPersisted for use in the UI
 			sessionController.updateCurrentSessionPersisted();
 			
+			requestContext.update("procedureDetailForm:controlPanel");
+			
 		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
