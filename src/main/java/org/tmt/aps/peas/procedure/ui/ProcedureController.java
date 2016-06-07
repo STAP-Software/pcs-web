@@ -914,7 +914,7 @@ public class ProcedureController implements Serializable {
 				procedureMgmt.updateProcedure(procedure);
 
 				// for propagating value to the next procedure
-				sessionController.updateCurrentSessionPersisted();
+				sessionController.updateCurrentSession();
 			}
 
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());

@@ -360,7 +360,7 @@ public class AsyncController implements Serializable {
 			RequestContext.getCurrentInstance().update("breadcrumbForm");
 			
 			// update the currentSessionPersisted for use in the UI
-			sessionController.updateCurrentSessionPersisted();
+			sessionController.updateCurrentSession();
 			
 			requestContext.update("procedureDetailForm:controlPanel");
 			

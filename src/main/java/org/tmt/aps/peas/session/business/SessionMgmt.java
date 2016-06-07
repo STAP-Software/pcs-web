@@ -132,7 +132,13 @@ public class SessionMgmt {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Session updateSession(Session session) {
 		logger.info(MessageGenerator.generateMessage("record.update", "session"));
-		em.merge(session);
+		
+		if (session.isNewRecord()) {
+			em.persist(session);
+		} else {
+			em.merge(session);
+		}
+		
 		return session;
 	}
 

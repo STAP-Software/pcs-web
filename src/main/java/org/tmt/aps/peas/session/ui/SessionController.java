@@ -66,7 +66,7 @@ public class SessionController implements Serializable {
 	private ApplicationScopeBean applicationScopeBean;
 
 	Session currentSession;
-	Session currentSessionPersisted; // the session that is completed and stored
+	//Session currentSessionPersisted; // the session that is completed and stored
 	Session session;
 	Date searchDate;
 	int searchQuantity = 10;
@@ -103,13 +103,13 @@ public class SessionController implements Serializable {
 
 			currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 			// do we get our own copy??
-			currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
+			//currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
 
 			if (currentSession == null) {
 				currentSession = sessionMgmt.createNewSession(instrument, telescope);
-				currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
+				//currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
 				// the cloneBean will copy the procedure list, we want our own copy
-				currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
+				//currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
 			}
 
 			session = currentSession;
@@ -253,21 +253,23 @@ public class SessionController implements Serializable {
 		return new ProcedureNumberComparator().compare(p1, p2);
 	}
 
-	public void updateCurrentSessionPersisted() {
+	
+	public void updateCurrentSession() {
 		try {
-			currentSessionPersisted = sessionMgmt.findSession(currentSession.getSessionId());
+			currentSession = sessionMgmt.findSession(currentSession.getSessionId());
 		} catch (Exception e) {
 			// do nothing
 		}
 
 	}
+	
 
 	public String doViewCurrentSession() {
 		
 		try {
 			session = sessionMgmt.findSession(currentSession.getSessionId());
 		} catch (Exception e) {
-			session = currentSessionPersisted;
+			session = currentSession;
 		}
 
 		// order procedures by procedure number
@@ -310,7 +312,7 @@ public class SessionController implements Serializable {
 		}
 
 		try {
-			currentSessionPersisted = sessionMgmt.findSession(session.getSessionId());
+			currentSession = sessionMgmt.findSession(session.getSessionId());
 	
 			breadcrumbMenuBean.addFirstItem("Session: " + session, "/modules/session/sessionDetail.xhtml");
 			return "/modules/session/sessionDetail.xhtml";
@@ -375,7 +377,7 @@ public class SessionController implements Serializable {
 	}
 
 	public Procedure getCurrentSessionLastProcedure() {
-		List<Procedure> pList = currentSessionPersisted.getProcedureList();
+		List<Procedure> pList = currentSession.getProcedureList();
 
 		if (pList == null || pList.size() == 0) {
 			return null;
