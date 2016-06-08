@@ -21,6 +21,7 @@
 			<h:inputHidden id="handMark" value="#{procedureController.frameMarkingMode}" />
 			<h:inputHidden id="markedDisplayMode" value="#{procedureController.markedDisplayMode}" />
 			<h:inputHidden id="pixelValue" value="#{procedureController.pixelValue}" />
+			<h:inputHidden id="blankImage" value="#{procedureController.blankImage}" />
 		</h:form>
 
 		<h:form id="audioForm">
@@ -467,12 +468,25 @@
 		
 		var img = document.getElementById("procedureDetailForm:frameImage");
 		
+		// console.log(img)
+		
+		ctx.clearRect(0,0,c.width,c.height);
+		
 		ctx.drawImage(img,0,0,c.width,c.height);
 		
 		initCanvasEvents();
 		
-		if (mark)
+		var blankImage = document.getElementById('frameHiddenForm:blankImage').value;
+		
+		if (blankImage == "true") {
+		
+			ctx.font = "12px Arial";
+		 	ctx.fillStyle = "black";
+		 	ctx.fillText("Frame not used in analysis, overwritten by subsequent frame", 100, 250);
+			
+		} else if (mark) {
 			markFrame2(c, ctx, img);
+		}
 		
 		initCanvasEvents();
 	}

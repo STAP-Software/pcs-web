@@ -223,6 +223,7 @@ public class AsyncController implements Serializable {
 			procedureController.setSelectedFrameNumber(selectedFrameNumber);
 			ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
 			procedureController.setSelectedFrame(selectedFrame);
+			procedureController.setBlankImage(false); // hack so that new images are never considered overwritten
 			
 			// get the marking to the procedure
 			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());

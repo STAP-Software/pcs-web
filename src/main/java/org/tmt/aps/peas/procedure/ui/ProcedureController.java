@@ -189,6 +189,7 @@ public class ProcedureController implements Serializable {
 	List<PupilMask> pupilMaskSelectList;
 	List<PupilMask> prPupilMaskSelectList;
 	List<SelectItem> sufsGroupSelectList;
+	boolean blankImage = false;
 	
 	@PostConstruct
 	private void init() throws Exception {
@@ -268,6 +269,14 @@ public class ProcedureController implements Serializable {
 
 	public String getPixelValue() {
 		return pixelValue;
+	}
+
+	public boolean isBlankImage() {
+		return blankImage;
+	}
+
+	public void setBlankImage(boolean blankImage) {
+		this.blankImage = blankImage;
 	}
 
 	// search radius is from findCentConfig
@@ -834,10 +843,18 @@ public class ProcedureController implements Serializable {
 			// TODO: this needs to account for multiple frames someday.
 			if (procedure.getProcedureCcdFrameList() != null && !procedure.getProcedureCcdFrameList().isEmpty()) {
 			
-				selectedFrame = procedure.getProcedureCcdFrameList().get(0);
+				selectedFrameNumber = 0;
+				selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
+
+				if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
+					ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
+					blankImage = (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename()));
+				} else {
+					blankImage = false;
+				}
 
 				// set up display of camera state values for first frame
-				loadCameraState(procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
+				loadCameraState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState());
 
 			}
 			
@@ -939,6 +956,12 @@ public class ProcedureController implements Serializable {
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
 		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
 		
+		if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
+			ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
+			blankImage = (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename()));
+		} else {
+			blankImage = false;
+		}
 		
 		// load centroid values if markedDisplayMode is true
 		doSetMarkedDisplayMode(markedDisplayMode);
@@ -1227,8 +1250,18 @@ public class ProcedureController implements Serializable {
 	
 	
 			}
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			
+			// clear the marking 
+			setFrameCentroidXs(null);
+			setFrameCentroidYs(null);
+			
+			// display the frame unmarked
+			RequestContext requestContext = RequestContext.getCurrentInstance();
+			requestContext.update("frameHiddenForm");
+			requestContext.execute("drawFrame()");
+
 		}
 	}
 
