@@ -290,6 +290,9 @@ public class GetFrameCentroidsExecutor {
 
 	public CentroidMap buildCentroidMap(FindCentroidsResult findCentroidsResult, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
+		
+		
+		
 		CentroidMap centroidMap = new CentroidMap();
 		String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(findCentroidsResult.getCentroidList()));
 		centroidMap.setCentroidMapData(centroidMapData);
@@ -372,6 +375,16 @@ public class GetFrameCentroidsExecutor {
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(), 
 						procedure.getProcedureConfigSet().getFindCentConfigPeripheral(), 
 						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
+				
+				// if passive tilt hand-mark, we want to use the hand-marked location for any spots that failed
+				if (fiResult.isHandMarked()) {
+					// fiResult is a hand-marked result
+					for (int i=0; i<findCentroidsResult.getCentroidList().length; i++) {
+						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0) {
+							findCentroidsResult.getCentroidList()[i] = fiResult.getPeakLocationArray()[i];
+						}
+					}
+				}
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
 	

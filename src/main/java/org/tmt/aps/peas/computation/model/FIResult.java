@@ -27,6 +27,8 @@ public class FIResult {
 	int numFilledBoxes;
 	float fracFilledBoxes;
 	int nSolution;
+	
+	boolean handMarked = false;
 
 	public FIResult() {};
 	
@@ -60,6 +62,8 @@ public class FIResult {
 		for (int i=0; i<nDetect.length; i++) nDetect[i] = 1;
 		
 		translation = new FloatPoint(0.0f, 0.0f);
+		
+		handMarked = true;
 	}
 
 	public float[] getXiRst() {
@@ -206,6 +210,14 @@ public class FIResult {
 		return (FloatPoint[])getRstLocationList().toArray(new FloatPoint[0]);
 	}
 	
+	public boolean isHandMarked() {
+		return handMarked;
+	}
+
+	public void setHandMarked(boolean handMarked) {
+		this.handMarked = handMarked;
+	}
+
 	public boolean allDetectionsSinglePeaks() {
 		for (int peak : nDetect) {
 			if (peak != 1) {
