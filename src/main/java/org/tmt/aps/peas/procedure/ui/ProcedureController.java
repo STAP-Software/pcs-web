@@ -962,6 +962,27 @@ public class ProcedureController implements Serializable {
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 						
+		} else if (procedure.getProcedureType().isPupilRegistration()) {
+			// integration time needs to change
+			// if the mask is FS, use default PR int time, if mask is PH use PH int time
+			
+			float integrationTime = 0.0f;
+			if (procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeFs()) {
+				// use the PR int time
+				ProcedureConfig pupilRegProcedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), 
+						sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);
+				
+				integrationTime = pupilRegProcedureConfig.getIntegrationTime();
+			} else {
+			
+				ProcedureConfig phasingProcedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), 
+					sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PHASING);
+			
+				integrationTime = phasingProcedureConfig.getIntegrationTime();
+			}
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(integrationTime);
+			
 		}
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
@@ -1050,7 +1071,7 @@ public class ProcedureController implements Serializable {
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
-		}
+		} 
 		
 	}
 	
