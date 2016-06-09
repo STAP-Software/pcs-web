@@ -80,6 +80,11 @@ public class FindCentroidsResult {
 			}
 		}
 	}
+	
+	public void setSubimage(int index, Subimage subimage) {
+		this.subimageList.remove(index);
+		this.subimageList.add(index, subimage);
+	}
 
 	public float[] getIntensityList() {
 		

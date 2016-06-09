@@ -20,10 +20,10 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -382,8 +382,9 @@ public class GetFrameCentroidsExecutor {
 					// fiResult is a hand-marked result
 					for (int i=0; i<findCentroidsResult.getCentroidList().length; i++) {
 						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0) {
-							findCentroidsResult.getCentroidList()[i] = fiResult.getPeakLocationArray()[i];
-							findCentroidsResult.getFindCentStatusList()[i] = Constants.FIND_CENT_STATUS_SUCCESS;
+							
+							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
+							findCentroidsResult.setSubimage(i, markedSubimage);
 						}
 					}
 				}
