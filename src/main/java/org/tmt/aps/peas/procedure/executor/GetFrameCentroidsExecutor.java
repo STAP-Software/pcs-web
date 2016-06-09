@@ -14,6 +14,7 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
@@ -382,6 +383,7 @@ public class GetFrameCentroidsExecutor {
 					for (int i=0; i<findCentroidsResult.getCentroidList().length; i++) {
 						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0) {
 							findCentroidsResult.getCentroidList()[i] = fiResult.getPeakLocationArray()[i];
+							findCentroidsResult.getFindCentStatusList()[i] = Constants.FIND_CENT_STATUS_SUCCESS;
 						}
 					}
 				}
