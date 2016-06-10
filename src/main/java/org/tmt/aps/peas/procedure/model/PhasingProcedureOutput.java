@@ -69,10 +69,18 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 	
 	// actuator deltas display values
 
-
-
 	public float[][] getDesiredActDeltas() {
-		return calcDesiredActCommandsResult.getDesiredActDeltas();
+		
+		float[][] pistons = new float[36][3];
+		for (int i=0; i<bbAnalyzeSequenceResult.getActCalc().length; i++) {
+			pistons[i][0] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
+			pistons[i][1] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
+			pistons[i][2] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
+		
+		}
+		//return calcDesiredActCommandsResult.getDesiredActDeltas();
+		return pistons;
+		
 	}
 	public float getDesiredActDeltasRms() {
 		return calcDesiredActCommandsResult.getDesiredActDeltasRms();

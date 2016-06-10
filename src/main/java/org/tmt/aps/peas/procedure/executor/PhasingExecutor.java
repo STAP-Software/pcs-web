@@ -41,6 +41,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.PhasingProcedureOutput;
@@ -52,6 +53,7 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 @Singleton
 @Startup
@@ -255,7 +257,9 @@ public class PhasingExecutor {
 				statusLogger.log("acs.colorstep_cmds");
 				
 				// TODO: we need to be able to call asynchronously and wait for result.
-				long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				//long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
+				long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
+				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
 				
@@ -432,6 +436,8 @@ public class PhasingExecutor {
 				try {
 					// send out the commands
 					statusLogger.log("pt.m1_act_cmd_started");
+					
+					// FIXME: do we want to be resilient to settling here?
 					acsMgmt.commandActuatorDeltas(procedureOutput.getDesiredActDeltas());
 	
 					statusLogger.log("pt.m1_act_cmd_success");
@@ -503,9 +509,26 @@ public class PhasingExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
+	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
 	
+		try {
+			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
+			return deltaMs;
+		} catch (Exception e) {
+			// ask user what to do
+			
+			String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
+			int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+			
+			int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
 
-	
-	
+			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+				throw new AbortProcedureException("User Aborted Test");
+			} else {
+				return 0;
+			} 
+			
+		}
+	}
 
 }
