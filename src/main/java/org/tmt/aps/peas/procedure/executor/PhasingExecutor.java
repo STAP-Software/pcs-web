@@ -306,7 +306,7 @@ public class PhasingExecutor {
 			statusLogger.log("acs.colorstep_cmds");
 			
 			// TODO: we need to be able to call asynchronously and wait for result.
-			long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());;	
+			long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 
 			
@@ -474,8 +474,8 @@ public class PhasingExecutor {
 			
 		} catch (Throwable e) {
 			
-			// we are aborted, reset the request flag
-			procedureExecutionState.setAbortRequested(false);
+			// just to make sure
+			//procedureExecutionState.setAbortRequested(false);
 			
 			try {
 				/// attempt to put ACS state back to where it was when we began.
