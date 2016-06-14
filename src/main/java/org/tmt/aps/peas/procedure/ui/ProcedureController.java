@@ -989,22 +989,7 @@ public class ProcedureController implements Serializable {
 			// integration time needs to change
 			// if the mask is FS, use default PR int time, if mask is PH use PH int time
 			
-			float integrationTime = 0.0f;
-			if (procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeFs()) {
-				// use the PR int time
-				ProcedureConfig pupilRegProcedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), 
-						sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);
-				
-				integrationTime = pupilRegProcedureConfig.getIntegrationTime();
-			} else {
-			
-				ProcedureConfig phasingProcedureConfig = procedureMgmt.findDefaultProcedureConfig(sessionController.getTelescope().getTelescopeId(), 
-					sessionController.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PHASING);
-			
-				integrationTime = phasingProcedureConfig.getIntegrationTime();
-			}
-			
-			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(integrationTime);
+			procedureExecutionMgmt.setupPupilRegIntTime(procedure);
 			
 		}
 		

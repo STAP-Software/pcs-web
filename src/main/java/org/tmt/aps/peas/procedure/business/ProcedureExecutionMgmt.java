@@ -404,6 +404,7 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
 
 		
+		
 		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask, filter and sufsGroup
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
 			
@@ -451,6 +452,10 @@ public class ProcedureExecutionMgmt {
 		
 		}
 		
+		// set up the pupil reg integration time
+		if (procedure.getProcedureType().isPupilRegistration()) {
+			setupPupilRegIntTime(procedure);
+		}
 
 		// if procedure type is create ref map, then populate ref beam and integration times from the table
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP)) {
@@ -516,6 +521,24 @@ public class ProcedureExecutionMgmt {
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_NEW);
 
 		return procedure;
+	}
+	
+	public void setupPupilRegIntTime(Procedure procedure) {
+		float integrationTime = 0.0f;
+		if (procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeFs()) {
+			// use the FS int time
+			ProcedureConfig pupilRegProcedureConfig = procedureMgmt.findDefaultProcedureConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN);
+			
+			integrationTime = pupilRegProcedureConfig.getIntegrationTime();
+		} else {
+			// use the CPH int time
+			ProcedureConfig phasingProcedureConfig = procedureMgmt.findDefaultProcedureConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PHASING);
+		
+			integrationTime = phasingProcedureConfig.getIntegrationTime();
+		}
+		
+		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(integrationTime);
+
 	}
 
 	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
