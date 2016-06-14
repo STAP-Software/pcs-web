@@ -486,8 +486,8 @@ public class PhasingExecutor {
 				
 					statusLogger.log("procedure.cph.abort_recovered");
 					
-					// put up a warning dialog with the non-recovered text
-				    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"));
+					// put up a warning dialog with the non-recovered text (and supress abort button)
+				    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"), true);
 			    
 				} 
 

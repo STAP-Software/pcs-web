@@ -16,7 +16,7 @@
     		<p:commandButton id="button1" value="#{procedureController.currentPrompt.button1Text}" style="float:right" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPrompt1}" oncomplete="userPromptDialog.hide();" />
    			<p:commandButton id="abortButton" value="Abort Procedure" style="float:left" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseUserPromptAbort}" oncomplete="userPromptDialog.hide();" rendered="#{!procedureController.currentPrompt.containsAbort}"/>
+					action="#{asyncController.doCloseUserPromptAbort}" oncomplete="userPromptDialog.hide();" rendered="#{!procedureController.currentPrompt.containsAbort and !procedureController.currentPrompt.supressAbort}"/>
 			</h:form>
 		</p:dialog> 
 

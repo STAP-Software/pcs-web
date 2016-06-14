@@ -60,10 +60,17 @@ public class UserPromptMgmt implements Serializable {
 	@Abortable
 	public void displayInfoDialog(String header, String text) {
 		
+		displayInfoDialog(header, text, false);		
+		
+	}
+	
+	@Abortable
+	public void displayInfoDialog(String header, String text, boolean supressAbort) {
+		
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayInfoDialog"));
 
 		// change \n to <br/>
-		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_INFO, text.replace("\n", "<br/>"));
+		pendingPrompt = new UserPrompt(header, UserPrompt.PROMPT_TYPE_INFO, text.replace("\n", "<br/>"), supressAbort);
 		
 		waitForReturnState();
 		

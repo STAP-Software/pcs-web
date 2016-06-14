@@ -34,6 +34,7 @@ public class UserPrompt {
 	
 	int buttonCount;
 		
+	boolean supressAbort = false;
 	
 	public UserPrompt(String header) {
 		this.promptType = PROMPT_TYPE_INFO;
@@ -42,9 +43,13 @@ public class UserPrompt {
 	}
 	
 	public UserPrompt(String header, int type, String message) {
+		this(header, type, message, false);
+	}
+	public UserPrompt(String header, int type, String message, boolean supressAbort) {
 		this.promptType = type;	
 		this.message = message;
 		this.header = header;
+		this.supressAbort = supressAbort;
 		
 		if (type == PROMPT_TYPE_INFO) {
 			buttonCount = 1;
@@ -183,6 +188,14 @@ public class UserPrompt {
 		this.header = header;
 	}
 	
+	public boolean isSupressAbort() {
+		return supressAbort;
+	}
+
+	public void setSupressAbort(boolean supressAbort) {
+		this.supressAbort = supressAbort;
+	}
+
 	// if the user prompt already contains abort, do not render the auto abort
 	public boolean isContainsAbort() {
 		if (promptType == PROMPT_TYPE_FLOW_CONTROL_BIFLOW || promptType == PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) return true;
