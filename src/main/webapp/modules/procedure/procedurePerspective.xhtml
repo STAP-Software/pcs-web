@@ -97,9 +97,12 @@
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Number of Trials" />
 								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">
-									<p:inputMask id="iterationCount" mask="9?9" maxlength="2" placeHolder=" " value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
-										size="2" disabled="#{procedureController.procedure.procedureState gt 1}" />
+								<p:column styleClass="btmsFormInputColumn">								
+									<p:selectOneMenu id="iterationCount" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
+										editable="true"
+										disabled="#{procedureController.procedure.procedureState gt 1}" >
+										<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numTrialsList}" />
+									</p:selectOneMenu>
 								</p:column>
 							</p:row>
 

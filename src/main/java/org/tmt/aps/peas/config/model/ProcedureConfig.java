@@ -28,6 +28,7 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.tmt.aps.peas.common.FloatListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
@@ -98,8 +99,13 @@ public class ProcedureConfig {
 	@Column(nullable=false, length=255)
 	String intTimeSelectOptions;
 	
+	@Column(nullable=false, length=255)
+	String numTrialsSelectOptions;
+	
 	@Transient
 	List<Float> integrationTimeList; 
+	@Transient
+	List<Integer> numTrialsList; 
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -414,6 +420,14 @@ public class ProcedureConfig {
 		this.autoPointTelescopeSufsGroup = autoPointTelescopeSufsGroup;
 	}
 
+	public String getNumTrialsSelectOptions() {
+		return numTrialsSelectOptions;
+	}
+
+	public void setNumTrialsSelectOptions(String numTrialsSelectOptions) {
+		this.numTrialsSelectOptions = numTrialsSelectOptions;
+	}
+
 	public boolean isFrameFromFile() {
 		return frameSource == FRAME_SOURCE_FILE;
 	}
@@ -427,6 +441,20 @@ public class ProcedureConfig {
 	}
 	public void setIntegrationTimeList(List<Float> integrationTimeList) {
 		this.integrationTimeList = integrationTimeList;
+	}
+
+	public List<Integer> getNumTrialsList() {
+		
+		if (numTrialsSelectOptions != null) {
+			numTrialsList =  IntegerListEncoder.decodeList(numTrialsSelectOptions);
+			Collections.sort(numTrialsList);
+		}
+
+		return numTrialsList;
+	}
+
+	public void setNumTrialsList(List<Integer> numTrialsList) {
+		this.numTrialsList = numTrialsList;
 	}
 
 }
