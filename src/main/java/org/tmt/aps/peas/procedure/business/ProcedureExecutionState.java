@@ -54,7 +54,7 @@ public class ProcedureExecutionState {
 	}
 
 	public int getPercentComplete() {
-		return currentProcedure.getPercentComplete();
+		return (currentProcedure == null) ? 0 : currentProcedure.getPercentComplete();
 	}
 
 	@Abortable

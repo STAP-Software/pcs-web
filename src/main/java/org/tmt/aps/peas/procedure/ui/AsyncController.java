@@ -444,7 +444,7 @@ public class AsyncController implements Serializable {
 	}
 
 	public int getPercentComplete() {
-		logger.debug("getPercentComplete::" + procedureExecutionState.getPercentComplete());
+	
 		return procedureExecutionState.getPercentComplete();
 	}
 
