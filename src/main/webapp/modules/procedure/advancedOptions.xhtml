@@ -22,7 +22,7 @@
 						disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{filterConverter}">
 					<f:selectItem itemLabel="Select One" itemValue=""/> 
 					<f:selectItems value="#{sessionController.instrument.camera.filterWheel.origFilterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
-					<p:ajax update=":advancedForm :procedureDetailForm:procedureDetailPanel" listener="#{procedureController.filterSelectListener}" />
+					<p:ajax update="refBeamField :procedureDetailForm:procedureDetailPanel" listener="#{procedureController.filterSelectListener}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Light Source" />
@@ -34,7 +34,7 @@
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" />
-					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.referenceBeam}"
+					<p:selectOneMenu id="refBeamField" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.referenceBeam}"
 						rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
 					<f:selectItems value="#{sessionController.instrument.camera.orderedReferenceBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
 					</p:selectOneMenu>
