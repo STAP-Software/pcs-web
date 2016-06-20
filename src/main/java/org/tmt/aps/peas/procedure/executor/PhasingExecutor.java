@@ -475,7 +475,7 @@ public class PhasingExecutor {
 		} catch (Throwable e) {
 			
 			// just to make sure
-			//procedureExecutionState.setAbortRequested(false);
+			procedureExecutionState.setAbortRequested(false);
 			
 			try {
 				/// attempt to put ACS state back to where it was when we began.
