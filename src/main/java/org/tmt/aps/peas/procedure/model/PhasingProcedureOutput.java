@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.procedure.model;
 
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
@@ -73,9 +74,10 @@ public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeigh
 		
 		float[][] pistons = new float[36][3];
 		for (int i=0; i<bbAnalyzeSequenceResult.getActCalc().length; i++) {
-			pistons[i][0] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
-			pistons[i][1] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
-			pistons[i][2] = bbAnalyzeSequenceResult.getActCalc()[i] * 1000.0f;
+			// convert measured actuator pistons to desired actuator pistons
+			pistons[i][0] = bbAnalyzeSequenceResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
+			pistons[i][1] = bbAnalyzeSequenceResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
+			pistons[i][2] = bbAnalyzeSequenceResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
 		
 		}
 		//return calcDesiredActCommandsResult.getDesiredActDeltas();
