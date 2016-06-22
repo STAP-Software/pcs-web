@@ -119,8 +119,9 @@ public class GlobalConfigMgmt {
 		RefMapConfigDefaults refMapConfigDefaults = query.getSingleResult();
 		
 		// get the reference beam by ref beam number
-		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
+		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumberAndInstrument", ReferenceBeam.class);
 		query2.setParameter("refBeamNum", refMapConfigDefaults.getReferenceBeamNum());
+		query2.setParameter("instrumentId", instrumentId);
 		
 		query2.setMaxResults(1);
 		

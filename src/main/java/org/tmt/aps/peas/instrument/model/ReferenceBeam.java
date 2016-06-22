@@ -18,7 +18,8 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "ReferenceBeam")
 @NamedQueries({
-	@NamedQuery(name = "findByNumber", query = "SELECT o from ReferenceBeam o where o.refBeamNum = :refBeamNum" )
+	@NamedQuery(name = "findByNumberAndInstrument", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
+			+ "where o.refBeamNum = :refBeamNum and c.cameraId = :instrumentId" )
 })
 public class ReferenceBeam {
 
