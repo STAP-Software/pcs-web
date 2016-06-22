@@ -14,6 +14,7 @@ import javax.ejb.Singleton;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -62,6 +63,7 @@ public class FrameSimulator {
 		ccdFrame.setInstrumentId(instrument.getInstrumentId());
 		ccdFrame.setIntTime(0.0f);
 
+		//Utils.waitFor(1000);
 		
 		return ccdFrame;
 	}
