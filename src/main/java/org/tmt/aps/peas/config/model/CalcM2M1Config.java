@@ -31,7 +31,7 @@ public class CalcM2M1Config {
 	@GeneratedValue(strategy=GenerationType.AUTO)
 	private Long calcM2M1ConfigId;
 	
-	private int calcMethod; // Ray Trace vs Zernike (TODO: add to UI)
+	private int calcMethod; // Ray Trace vs Zernike
 	private float m2TTUnitPertibation; // arcsec
 	private float m2PistonUnitPertibation; // microns
 	

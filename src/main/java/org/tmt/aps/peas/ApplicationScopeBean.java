@@ -76,6 +76,7 @@ public class ApplicationScopeBean implements Serializable {
 	private FilterController filterController;
 
 	HttpSession persistentSession = null;
+	String ownerRequestedSessionId = null;
 	
 	public void preRenderView(ComponentSystemEvent e) {
 
@@ -87,17 +88,23 @@ public class ApplicationScopeBean implements Serializable {
 		HttpSession session = null;
 
 		
-		
-		
-		if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
-			
-			logger.info("invalid or null persistent session = " + getPersistentSession());
-			session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-			setPersistentSession(session);
-		} else {
-			// set the JSESSIONID cookie to that of the persistent session
-			session = getPersistentSession();
-			addCookie(response, "JSESSIONID", session.getId(), 1800);			
+		// set up persistent session if this is first access since reboot (ownerRequestedSessionId == null) or this is the owner asking
+		if (ownerRequestedSessionId == null || ownerRequestedSessionId.equals(request.getRequestedSessionId())) {
+			if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
+				
+				logger.info("invalid or null persistent session = " + getPersistentSession());
+				session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+				// set run procedure permission on session controller for this session (SessionController is session scoped)
+				sessionController.setRunProcedurePermission(true);
+				// set I/F command permission on session controller for this session (SessionController is session scoped)
+				sessionController.setIfCommandPermission(true);
+				setPersistentSession(session);
+				ownerRequestedSessionId = request.getRequestedSessionId();
+			} else {
+				// set the JSESSIONID cookie to that of the persistent session
+				session = getPersistentSession();
+				addCookie(response, "JSESSIONID", session.getId(), 1800);			
+			}
 		}
 		
 		

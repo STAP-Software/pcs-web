@@ -665,7 +665,7 @@ public class ProcedureController implements Serializable {
 		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 		// validate inputs
 		// KECK: warn user and let them use abort, but don't make anyone answer a validation question on the fly
-		// TODO: check if this is passive tilt before performing this validation
+		// check if this is passive tilt before performing this validation
 		if (procedure.getProcedureType().isPassiveTilt()
 				&& procedure.getProcedureConfigSet().getProcedureConfig().getFilter().getWavelength() == 611.0) {
 
@@ -1062,15 +1062,6 @@ public class ProcedureController implements Serializable {
 		procedureConfig.setFilter(defaultFilter);
 		procedureConfig.setPhasingStepSize(phasingStepSize);
 		
-		// changing filter also changes the int time
-		// TODO: should we do this?
-		//PHASING_INT_TIME(FILT_POS_611) = ZPHASING_INT_TIME611
-		//PHASING_INT_TIME(FILT_POS_618) = ZPHASING_INT_TIME618
-		//PHASING_INT_TIME(FILT_POS_651) = ZPHASING_INT_TIME651
-		//PHASING_INT_TIME(FILT_POS_891) = ZPHASING_INT_TIME891
-		//PHASING_INT_TIME(FILT_POS_852) = ZPHASING_INT_TIME852
-		//PHASING_INT_TIME(FILT_POS_870) = ZPHASING_INT_TIME870
-		
 
 		
 		if (procedure.getProcedureType().isCreateRefMap()) {
@@ -1154,7 +1145,7 @@ public class ProcedureController implements Serializable {
 	}
 
 	public void doApplyMarking() {
-		// TODO: put this in the action for the apply marking on the frame
+		
 		frameDisplayMgmt.setPendingMarkAction(false);
 
 		frameMarkingMode = false;
@@ -1253,8 +1244,6 @@ public class ProcedureController implements Serializable {
 	
 	public void doGetFrameValue() {
 		
-		
-		// TODO: get the x,y from the form and use it to populate the value field
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
 		

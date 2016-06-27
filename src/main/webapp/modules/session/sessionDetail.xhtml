@@ -392,103 +392,103 @@
 			<p:dataTable id="sessionTableExport" var="procedure"
 				value="#{sessionController.session.procedureList}" style="display:none">
 
-				<p:column>
-				<f:facet name="header"><h:outputText value="Procedure Number" /></f:facet>
-					<h:outputText value="#{procedure.procedureNumber}" />
-				</p:column>
-				<p:column>
-				<f:facet name="header"><h:outputText value="Test Number" /></f:facet>
-					<h:outputText value="1" />
-				</p:column>
-				<p:column>
-				<f:facet name="header"><h:outputText value="Procedure Type" /></f:facet>
-					<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
-				</p:column>
-				<p:column>
-				<f:facet name="header"><h:outputText value="Started" /></f:facet>
-					<h:outputText value="#{procedure.executionStartTime}" />
-				</p:column>
-				<p:column>
-				<f:facet name="header"><h:outputText value="Comments" /></f:facet>
-					<h:outputText value="Procedure specific comments" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Integration Time (sec)" /></f:facet>
-					<h:outputText value="15.00" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="FWHM (pix)" /></f:facet>
-					<h:outputText value="2.90" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Theta80 (pix)" /></f:facet>
-					<h:outputText value="6.36" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Centroid RMS (pix)" /></f:facet>
-					<h:outputText value="1.74" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Act Cmd RMS (nm)" /></f:facet>
-					<h:outputText value="nan" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Equiv. Focus Mode (nm)" /></f:facet>
-					<h:outputText value="0.0" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Coarse Mirror X (um)" /></f:facet>
-					<h:outputText value="264" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Coarse Mirror Y (um)" /></f:facet>
-					<h:outputText value="-1" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Telescope Elevation (deg)" /></f:facet>
-					<h:outputText value="66.25" />
-				</p:column>
-				
-				<p:column>
-				<f:facet name="header"><h:outputText value="ACS commands sent" /></f:facet>
-					<h:outputText value="No" />
-				</p:column>
-				
-				<p:column>
-				<f:facet name="header"><h:outputText value="Number of Frames" /></f:facet>
-					<h:outputText value="1" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="ACS Snap # After" /></f:facet>
-					<h:outputText value="0" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Star Name" /></f:facet>
-					<h:outputText value="#{procedure.starName}" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Star Sp Type" /></f:facet>
-					<h:outputText value="#{procedure.starSpType}" />
-				</p:column>
-
-				<p:column>
-				<f:facet name="header"><h:outputText value="Star Vmag" /></f:facet>
-					<h:outputText value="#{procedure.starVmag}" />
-				</p:column>
+						<p:column headerText="Procedure Number" sortBy="#{procedure}" sortFunction="#{sessionController.procedureSortFunction}" style="width:5%">
+							<h:outputText value="#{procedure.procedureNumber}" />
+						</p:column>
+						<p:column headerText="Test Number" style="width:10%">
+							<h:outputText value="#{procedure.testNumber}" />
+						</p:column>
+						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
+							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
+							<h:outputText value=" #{procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" rendered="#{procedure.procedureType.phasing}" />
+							<h:outputText value=" (Group #{procedure.procedureConfigSet.procedureConfig.sufsGroup})" rendered="#{procedure.procedureType.sufs}" />
+						</p:column>
+						<!-- 
+						<p:column headerText="Frames">
+							<h:outputText
+								value="#{fn:length(procedure.procedureCcdFrameList)}" />
+						</p:column>
+						 -->
+						<p:column headerText="Start Time" style="width:10%">
+							<h:outputText value="#{procedure.executionStartTime}" >
+								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
+							</h:outputText>
+							<p:spacer width="6px"/>
+							<h:outputText value="UTC"/>
+						</p:column>
+						
+						<p:column headerText="Status">
+							<h:outputText value="#{procedure.procedureStateDisplayString}" rendered="#{procedure.procedureState eq 3}"  />
+							<h:outputText value="#{procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedure.procedureState eq 4}"  />
+						</p:column>
+						
+						<p:column headerText="Trials">
+							<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.numberOfTrials}" />
+						</p:column>
+						
+						<p:column headerText="M1 Snap Number After">
+							<h:outputText
+								value="#{procedure.procedureOutput.m1SnapNumberAfterDisplayText}" />
+						</p:column>
+						
+						<p:column headerText="Comments" style="width:30%">
+							<h:outputText value="#{procedure.comments}" />
+						</p:column>
 
 
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" >
+						<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px" >
+							<f:converter converterId="DynamicNumberConverter" />
+							<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+						</h:outputText>
+						</p:column>
+						
+						<!-- 
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeEl')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" >
+						<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px" >
+							<f:converter converterId="DynamicNumberConverter" />
+							<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+						</h:outputText>
+						</p:column>
+						 -->
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarName')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel}" >
+						<h:outputText value="#{procedure.starNameFormatted}" style="position:relative; top:2px" />
+						</p:column>
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarVmag')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel}" >
+						<h:outputText value="#{procedure.starVmagFormatted}" style="position:relative; top:2px" />
+						</p:column>
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarSpType')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel}" >
+						<h:outputText value="#{procedure.starSpTypeFormatted}" style="position:relative; top:2px" />
+						</p:column>
+						
+						<!-- 
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirror')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" >
+						<h:panelGroup style="position:relative; top:4px">
+						<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
+						<h:outputText value=", " />
+						<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorY}" />
+						</h:panelGroup>
+						</p:column>
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlate')}" />				
+						<p:column headerText="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" >
+						<h:panelGroup style="position:relative; top:4px">
+						<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateX}" />
+						<h:outputText value=", " />
+						<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateY}" />
+						</h:panelGroup>
+						</p:column>
+						
+						-->		
 
 			</p:dataTable>
 

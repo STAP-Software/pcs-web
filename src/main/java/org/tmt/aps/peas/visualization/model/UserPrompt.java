@@ -12,7 +12,7 @@ public class UserPrompt {
 	public static final int PROMPT_TYPE_FLOW_CONTROL_TRIFLOW = 2;  // continue, do over, abort
 	public static final int PROMPT_TYPE_FLOW_CONTROL_BIFLOW = 3;  // do over, abort
 	public static final int PROMPT_TYPE_GENERIC_MULTI_CHOICE = 4;
-	// TODO: add the others
+	
 	
 	public static final int PROMPT_VALUE_YES_NO_YES = 1;
 	public static final int PROMPT_VALUE_YES_NO_NO = 0; 

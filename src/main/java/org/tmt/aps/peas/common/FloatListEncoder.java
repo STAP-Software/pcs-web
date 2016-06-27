@@ -77,16 +77,5 @@ public class FloatListEncoder {
 		return buf.toString();
 	}
 	
-	public static List<Float> removeNumber(List<Float> numberList, Float number) {
-		
-		numberList.remove(number);
-		return numberList;
-	}
-	
-	// TODO: do we need to retain ordering?
-	public static List<Float> addNumber(List<Float> numberList, Float number) {
-		numberList.add(number);
-		return numberList;
-	}
-	
+
 }

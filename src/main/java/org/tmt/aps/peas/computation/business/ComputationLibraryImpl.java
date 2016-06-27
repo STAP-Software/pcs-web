@@ -915,8 +915,6 @@ public class ComputationLibraryImpl {
 		// logger.debug("findCent::  " + guess + ", value = " + frame[(int)guess.x][(int)guess.y]);
 
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
-
-		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
 		
 		List<FloatPoint> centroidOffsetsPixels = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
 		
@@ -1004,8 +1002,6 @@ public class ComputationLibraryImpl {
 
 		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
 
-		// TODO: check if we want cartesian vs ccd coordinates/is the conversion correct?
-		
 		List<FloatPoint> centroidOffsetsPixels = Arrays.asList(centroidOffsetsResult.getCartesianInteriorCentroidOffsets(nspotTypes));
 		
 		// convert offsets from pixels to arcsec
@@ -1103,10 +1099,9 @@ public class ComputationLibraryImpl {
 		float desiredActDeltasRms = calcRms(desiredActDeltas);
 		
 		
-		// TODO: add calc for focus mode and non-focus mode components
+	
 		float[] focusModeVector = calculateFocusModeVector(controlMatrix);
 		
-		// TODO: Calculate dot-product
 		// RMS of the focus mode component of the actuator commands
 		float[] desiredActDeltasFlattened= JavaComputations.flatten2dArray(desiredActDeltas, 1);
 		float desiredActDeltasFmRms = JavaComputations.getDotProdRms(desiredActDeltasFlattened, focusModeVector);

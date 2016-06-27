@@ -102,17 +102,6 @@ public class IntegerListEncoder {
 		return buf.toString();
 	}
 	
-	public static List<Integer> removeNumber(List<Integer> numberList, Integer number) {
-		
-		numberList.remove(number);
-		return numberList;
-	}
-	
-	// TODO: do we need to retain ordering?
-	public static List<Integer> addNumber(List<Integer> numberList, Integer number) {
-		numberList.add(number);
-		return numberList;
-	}
-	
+
 	
 }

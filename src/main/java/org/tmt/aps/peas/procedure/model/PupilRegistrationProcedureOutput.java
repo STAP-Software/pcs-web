@@ -6,7 +6,7 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
-// TODO - display i/fs need to change
+
 public class PupilRegistrationProcedureOutput extends ProcedureOutput {
 	
 	CenterTelescopeCalcResult centerTelescopeCalcResult;

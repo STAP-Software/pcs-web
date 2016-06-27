@@ -84,6 +84,8 @@ public class SessionController implements Serializable {
 	
 	String password;
 	
+	boolean runProcedurePermission;
+	boolean ifCommandPermission;
 
 	@PostConstruct
 	private void init() {
@@ -465,6 +467,23 @@ public class SessionController implements Serializable {
 		//return false;
 		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
 	}
+
+	public boolean isRunProcedurePermission() {
+		return runProcedurePermission;
+	}
+
+	public void setRunProcedurePermission(boolean runProcedurePermission) {
+		this.runProcedurePermission = runProcedurePermission;
+	}
+
+	public boolean isIfCommandPermission() {
+		return ifCommandPermission;
+	}
+
+	public void setIfCommandPermission(boolean ifCommandPermission) {
+		this.ifCommandPermission = ifCommandPermission;
+	}
+
 	
 
 }

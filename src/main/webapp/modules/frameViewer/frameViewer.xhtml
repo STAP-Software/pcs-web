@@ -28,17 +28,17 @@
 						<ui:include src="fitsManualBlock.xhtml"/>
 					</p:tab>
 					
-					<p:tab title="CCD Manual Control">
+					<p:tab title="CCD Manual Control" rendered="#{sessionController.ifCommandPermission}">
 						<h:form id="ccdManualControlForm">
 							<ui:include src="../diagnostic/ccdManualBlock.xhtml"/>
 						</h:form>
 					</p:tab>
 					
-					<p:tab id="advTab" title="Advanced Instrument Status">
+					<p:tab id="advTab" title="Advanced Instrument Status"  rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/instrumentStatusBlock.xhtml"/>
 					</p:tab>
 					
-					<p:tab title="Advanced Instrument Control">
+					<p:tab title="Advanced Instrument Control"  rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/instrumentControlBlock.xhtml"/>
 					</p:tab>
 					
@@ -48,7 +48,7 @@
 					<ui:include src="../frameViewer/frameDisplayBlock.xhtml"/> 
 				</h:panelGroup>
 				
-				<p:accordionPanel id="cameraPanel" multiple="true" activeIndex="0,1">
+				<p:accordionPanel id="cameraPanel" multiple="true" activeIndex="0,1"  rendered="#{sessionController.ifCommandPermission}">
 
 					<p:tab title="Camera Status">
 						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/> 

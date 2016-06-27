@@ -9,8 +9,8 @@
 				
 					<p:submenu label="Session" icon="ui-icon-document">
 					
-						<p:menuitem value="Connect ..." ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{sessionController.extInfSimulationMode}"/>
-						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode}"/>
+						<p:menuitem value="Connect ..." ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
+						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
 					
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.procedureExecuting}"/>
@@ -19,10 +19,10 @@
 						-->
 					</p:submenu>
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting}" />
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting and sessionController.runProcedurePermission}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.procedureExecuting}" oncomplete="procedureExecutionPoller.start();" />
-					<p:submenu label="Run" icon="ui-icon-gear" >
+					<p:submenu label="Run" icon="ui-icon-gear" rendered="#{sessionController.runProcedurePermission}">
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
@@ -33,8 +33,8 @@
 						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.procedureExecuting}"/>
 					</p:submenu>
 					<p:submenu label="Tools" icon="ui-icon-contact">
-						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.engineeringView}" />
-						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.engineeringView }" />
+						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.ifCommandPermission}"/>
 					</p:submenu>
 
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
@@ -83,7 +83,7 @@
 						
 					</p:submenu>
 					
-				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.engineeringView}">
+				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.engineeringView and sessionController.ifCommandPermission}">
 						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
 							

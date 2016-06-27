@@ -208,7 +208,6 @@ public class SufsExecutor {
 			/*        group coarse mirror steering        */
 			/**********************************************/
 
-			// TODO: make DCS call asynchronous and wait after readyCamera
 			// determine telescope moves given coarse offsets
 			FloatPoint telescopeMoveAzEl = computationLibrary.coarseOffsetsToTelMoves(
 					sufsCoarseOffsetsConfig.getCoarseMirrorOffsetCurrent(), constantsCache.getTelescopeConstants().getTelPerCoarseMotion());

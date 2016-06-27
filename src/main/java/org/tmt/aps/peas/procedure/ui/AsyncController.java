@@ -158,7 +158,6 @@ public class AsyncController implements Serializable {
 			//visualizationController.doUpdateDisplays();
 			
 			// update form values 
-			// TODO: update other visualization displays once developed
 			RequestContext requestContext = RequestContext.getCurrentInstance();
 			
 			requestContext.update("offsetsForm");

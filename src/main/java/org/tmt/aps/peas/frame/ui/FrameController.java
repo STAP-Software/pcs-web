@@ -266,7 +266,7 @@ public class FrameController implements Serializable {
 					List<FitsFilename> dateFitsList = telescopeFitsMap.get(date);
 					TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
 	
-					// TODO: order dateFitsList by procedure number
+					// order dateFitsList by procedure number
 					Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
 					for (FitsFilename fitsFile : dateFitsList) {
 						TreeNode sessionNode00 = new DefaultTreeNode("picture",
@@ -286,7 +286,7 @@ public class FrameController implements Serializable {
 	
 				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
 	
-				// TODO: order dateFitsList by procedure number
+				// order typeFitsList by telescope
 				Collections.sort(typeFitsList, new BeanComparator("telescope"));
 				for (FitsFilename fitsFile : typeFitsList) {
 					TreeNode sessionNode00 = new DefaultTreeNode("picture",
@@ -423,7 +423,7 @@ public class FrameController implements Serializable {
 	}
 
 	public void doGetFrameValue() {
-		// TODO: get the x,y from the form and use it to populate the value field
+		
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
 

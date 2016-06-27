@@ -247,9 +247,9 @@ public class PhasingExecutor {
 				procedureOutput.addIteration(pio);
 				
 				/**********************************************/
-				/* Send ACS colorstep commands                */
+				/* Send next ACS colorstep commands           */
 				/**********************************************/
-				// TODO: call in best place for efficiency
+
 				ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
 						colorStepResult.getColorSteps()[i],
 						constantsCache.getPrimaryMirrorConstants().getnColor());
@@ -257,29 +257,18 @@ public class PhasingExecutor {
 				statusLogger.log("acs.colorstep_cmds");
 				
 				// TODO: we need to be able to call asynchronously and wait for result.
-				//long deltaMs = acsMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());	
 				long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
-				
-				/**********************************************/
-				/*        wait for ACS to be done			  */
-				/**********************************************/
-				// TODO - only needed if we call acs asynchonously
-	
+					
 				/**********************************************/
 				/*        PupilRegistration Subflow           */
 				/**********************************************/
 				// TODO: may need to change this for performance reasons
 				// TODO: if we fail and need to retake frame, then this should be here
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
-				
-				/**********************************************/
-				/*        send next colorstep to ACS 		  */
-				/**********************************************/				
-				// TODO: send next colorstep to ACS
-						
+										
 				
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				
@@ -297,7 +286,7 @@ public class PhasingExecutor {
 	
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
-		    // TODO: send last colorstep to M1 (do not wait here) - at first we do, then later try async
+		    // send last colorstep to M1 
 			ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
 					colorStepResult.getColorSteps()[procedureConfig.getPhasingSteps()],
 					constantsCache.getPrimaryMirrorConstants().getnColor());
@@ -402,12 +391,7 @@ public class PhasingExecutor {
 
 		    
 			procedureExecutionState.setPercentComplete(98);
-			
-			/**********************************************/
-			/// wait for ACS final colorstep cmds to complete
-			/**********************************************/
-			// TODO: wait for ACS final colorstep to complete
-			
+						
 
 		    statusLogger.log("calc.phasing_summary",
 					procedureOutput.getFixPistonsResult().getActRms(), 
