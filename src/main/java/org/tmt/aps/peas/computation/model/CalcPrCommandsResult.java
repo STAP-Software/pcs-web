@@ -2,6 +2,11 @@ package org.tmt.aps.peas.computation.model;
 
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Computation data result class for calcPrCommands computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcPrCommands(boolean, int, PupilRegErrorResult, org.tmt.aps.peas.config.model.PupilRegErrorConfig, org.tmt.aps.peas.instrument.model.FineTiltMirror, org.tmt.aps.peas.instrument.model.CoarseTiltMirror)
+ */
 public class CalcPrCommandsResult {
 
 	

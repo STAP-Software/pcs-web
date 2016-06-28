@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for calcDesiredActDeltasRmsEom computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcDesiredActDeltasRmsEom(Float[], Float[], Float[])
+ */
 public class CalcDesiredActDeltasRmsEomResult {
 
 	float desiredActDeltasRmsEom;

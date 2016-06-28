@@ -1,7 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
-import org.tmt.aps.peas.Constants;
-
+/**
+ * Computation data result class for calcDesiredActCommands computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcDesiredActCommands(float[][], float[][])
+ */
 public class CalcDesiredActCommandsResult {
 
 	

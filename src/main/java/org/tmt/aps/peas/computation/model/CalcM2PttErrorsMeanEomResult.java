@@ -3,6 +3,11 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Computation data result class for calcM2PttErrorsMeanEom computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcM2PttErrorsMeanEom(Float[], FloatPoint[])
+ */
 public class CalcM2PttErrorsMeanEomResult {
 
 	float meanM2PistonError;

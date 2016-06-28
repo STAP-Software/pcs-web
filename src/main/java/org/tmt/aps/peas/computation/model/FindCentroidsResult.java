@@ -5,8 +5,12 @@ import java.util.List;
 
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.config.model.SubimageDef;
 
+/**
+ * Computation data result class for findCentroids computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#findCentroids(float[][], FIResult, org.tmt.aps.peas.config.model.FindCentConfig, org.tmt.aps.peas.config.model.FindCentConfig, int[], int[], boolean)
+ */
 public class FindCentroidsResult {
 
 	private List<Subimage> subimageList;
@@ -14,7 +18,14 @@ public class FindCentroidsResult {
 	public FindCentroidsResult() {
 		
 	}
-	
+	/**
+	 * Constructor using x and y arrays
+	 * @param xCent
+	 * @param yCent
+	 * @param intensity
+	 * @param peak
+	 * @param findCentStatus
+	 */
 	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak, int[] findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
@@ -25,6 +36,13 @@ public class FindCentroidsResult {
 		}
 	}
 	
+	/**
+	 * Constructor using FloatPoint coordinates array
+	 * @param centroidList
+	 * @param intensity
+	 * @param peak
+	 * @param findCentStatus
+	 */
 	public FindCentroidsResult(FloatPoint[] centroidList, float[] intensity, float[] peak, int[] findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
@@ -35,6 +53,13 @@ public class FindCentroidsResult {
 		}
 	}
 	
+	/**
+	 * Constructor using List of FloatPoint coordinates
+	 * @param centroidList
+	 * @param intensity
+	 * @param peak
+	 * @param findCentStatus
+	 */
 	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak, List<Integer> findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
@@ -45,7 +70,10 @@ public class FindCentroidsResult {
 		}
 	}
 	
-
+	/**
+	 * Constructor using List of Subimage objects
+	 * @param subimageList
+	 */
 	public FindCentroidsResult(List<Subimage> subimageList) {
 		this.subimageList = subimageList;
 	}
@@ -53,7 +81,10 @@ public class FindCentroidsResult {
 	
 	// getters and setters for procedure iteration output store
 
-	
+	/**
+	 * Extracts centroid list from list of subimages
+	 * @return array of centroid coordinates
+	 */
 	public FloatPoint[] getCentroidList() {
 		
 		List<FloatPoint> centroids = new ArrayList<FloatPoint>();
@@ -65,6 +96,10 @@ public class FindCentroidsResult {
 		return centroids.toArray(new FloatPoint[0]);
 	}
 	
+	/**
+	 * Sets centroids.  Adds centroids to Subimage list.  Creates new Subimage objects as necessary.
+	 * @param centroidList
+	 */
 	public void setCentroidList(FloatPoint[] centroidList) {
 		if (subimageList == null) {
 			subimageList = new ArrayList<Subimage>();
@@ -80,12 +115,20 @@ public class FindCentroidsResult {
 			}
 		}
 	}
-	
+	/**
+	 * Replaces a single subimage in the list of Subimages
+	 * @param index the index of the subimage to replace
+	 * @param subimage the subimage to replace at index
+	 */
 	public void setSubimage(int index, Subimage subimage) {
 		this.subimageList.remove(index);
 		this.subimageList.add(index, subimage);
 	}
 
+	/**
+	 * Computes the array of intensities from the list of Subimage objects
+	 * @return array of subimage intensities
+	 */
 	public float[] getIntensityList() {
 		
 		float[] intensities = new float[subimageList.size()];
@@ -97,23 +140,11 @@ public class FindCentroidsResult {
 		return intensities;
 	}
 	
-	public void setIntensityList(FloatPoint[] intensityList) {
-		if (subimageList == null) {
-			subimageList = new ArrayList<Subimage>();
 
-			for (int i = 0; i< intensityList.length; i++) {
-				Subimage subimage = new Subimage(intensityList[i], 0.0f, 0.0f, 0);
-				subimageList.add(subimage);
-			}
-		} else {
-			for (int i = 0; i< intensityList.length; i++) {
-				Subimage subimage = subimageList.get(i);
-				subimage.setCentroid(intensityList[i]);
-			}
-		}
-	}
-
-	
+	/**
+	 * Computes the array of intensity peaks from the list of Subimage objects
+	 * @return array of subimage peak intensities
+	 */	
 	public float[] getPeakList() {
 		
 		float[] peaks = new float[subimageList.size()];
@@ -125,23 +156,10 @@ public class FindCentroidsResult {
 		return peaks;
 	}
 	
-	public void setPeakList(FloatPoint[] peakList) {
-		if (subimageList == null) {
-			subimageList = new ArrayList<Subimage>();
-
-			for (int i = 0; i< peakList.length; i++) {
-				Subimage subimage = new Subimage(peakList[i], 0.0f, 0.0f, 0);
-				subimageList.add(subimage);
-			}
-		} else {
-			for (int i = 0; i< peakList.length; i++) {
-				Subimage subimage = subimageList.get(i);
-				subimage.setCentroid(peakList[i]);
-			}
-		}
-	}
-
-	// generate a list of good peaks (no longer ordered by spot number)
+	/**
+	 * Generate a list of good peaks.  Only peaks for found subimages appear in the list.
+	 * @return the list of good peak intensity values
+	 */
 	public float[] generateGoodPeakList() {
 		float[] peakList = getPeakList();
 		int[] foundSubimages = getFoundSubimageFlags();
@@ -159,7 +177,9 @@ public class FindCentroidsResult {
 		return result;
 	}
 	
-	
+	/**
+	 * @return an array of integers corresponding to the findCentStatus for each subimage in the list
+	 */
 	public int[] getFindCentStatusList() {
 		
 		int[] statuses = new int[subimageList.size()];
@@ -171,28 +191,15 @@ public class FindCentroidsResult {
 		return statuses;
 	}
 	
-	public void setFindCentStatusList(FloatPoint[] findCentStatusList) {
-		if (subimageList == null) {
-			subimageList = new ArrayList<Subimage>();
 
-			for (int i = 0; i< findCentStatusList.length; i++) {
-				Subimage subimage = new Subimage(findCentStatusList[i], 0.0f, 0.0f, 0);
-				subimageList.add(subimage);
-			}
-		} else {
-			for (int i = 0; i< findCentStatusList.length; i++) {
-				Subimage subimage = subimageList.get(i);
-				subimage.setCentroid(findCentStatusList[i]);
-			}
-		}
-	}
-
-	
 	
 	// convenience routines
 	
 
-	
+	/**
+	 * Convenience function that generates an array containing one if the corresponding find cent status is success or gaussian fallback, otherwise zero.
+	 * @return array of found subimage flags
+	 */
 	public int[] getFoundSubimageFlags() {
 		int[] foundFlags = new int[subimageList.size()];
 		int i=0;
@@ -206,6 +213,10 @@ public class FindCentroidsResult {
 
 	}
 	
+	/**
+	 * Convenience function that generates an array for the interior spots only, containing one if the corresponding find cent status is success or gaussian fallback, otherwise zero.
+	 * @return array of found subimage flags
+	 */	
 	public int[] getFoundInteriorSubimageFlags(int[] nspotTypes) {
 		
 		List<Subimage> interiorList = new ArrayList<Subimage>();
@@ -228,6 +239,10 @@ public class FindCentroidsResult {
 
 	}
 
+	/**
+	 * Convenience function returns true if any of the subimages findCentStatus was a gaussian fallback
+	 * @return true if any subimage findCentStatus was a gaussian fallback
+	 */	
 	public boolean containsGaussianCmFallbackCentroids() {
 		for (Subimage subimage : subimageList) {
 			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
@@ -240,10 +255,8 @@ public class FindCentroidsResult {
 	
 	
 	/**
-	 * 
 	 * @return the number of spots that find_cent missed e.g. status != 0, != -1 and != 1008 and != 1009
 	 * these are spots in addition to what f&i missed
-	 * 
 	 */
 	public int missedSpots() {
 		int missedSpots = 0;

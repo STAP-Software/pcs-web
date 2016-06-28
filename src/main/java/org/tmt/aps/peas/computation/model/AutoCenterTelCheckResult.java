@@ -2,6 +2,11 @@ package org.tmt.aps.peas.computation.model;
 
 import org.tmt.aps.peas.common.TriState;
 
+/**
+ * Computation data result class for AutoCenterTelescopeCheck computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#autoCenterTelescopeCheck(org.tmt.aps.peas.config.model.AutoCenterTelConfig, org.tmt.aps.peas.common.FloatPoint, org.tmt.aps.peas.common.FloatPoint)
+ */
 public class AutoCenterTelCheckResult {
 	
 	TriState recenterTelescope;

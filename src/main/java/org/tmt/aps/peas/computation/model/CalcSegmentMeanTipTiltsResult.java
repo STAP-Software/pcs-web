@@ -2,6 +2,11 @@ package org.tmt.aps.peas.computation.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Computation data result class for calcSegmentMeanTipTilts computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcSegmentMeanTipTilts(FloatPoint[][])
+ */
 public class CalcSegmentMeanTipTiltsResult {
 
 	FloatPoint[] segmentMeanTipTiltErrors;

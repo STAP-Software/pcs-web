@@ -26,6 +26,10 @@ import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
+/**
+ * Computation implementation using Java.  This class implements functions that are called by ComputationLibraryImpl that are implemented in Java rather than FORTRAN.
+ * @author smichaels
+ */
 public class JavaComputations {
 
 	static Logger logger = Logger.getLogger(JavaComputations.class);

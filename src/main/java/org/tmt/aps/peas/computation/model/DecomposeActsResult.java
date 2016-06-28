@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for decomposeActs computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#decomposeActs(float[][])
+ */
 public class DecomposeActsResult {
 
 	float[][] tipTiltActs;

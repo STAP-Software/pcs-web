@@ -5,6 +5,11 @@ import java.util.List;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 
+/**
+ * Computation data result class for findAndIdentify computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#findAndIdentify(float[][], int, org.tmt.aps.peas.config.model.FIConfig, org.tmt.aps.peas.refBeamMap.model.RefBeamMap, List, int[], boolean)
+ */
 public class FIResult {
 
 	float xiRst[]; 
@@ -30,8 +35,16 @@ public class FIResult {
 	
 	boolean handMarked = false;
 
+	/**
+	 * Null constructor
+	 */
 	public FIResult() {};
 	
+	/**
+	 * Constructor that initializes arrays to zero values
+	 * @param numSpots number of spots 
+	 * @param frame the raw ccdFrame values
+	 */
 	public FIResult(int numSpots, float[][] frame) {
 		xiRst = new float[numSpots]; 
 		yiRst = new float[numSpots];
@@ -43,7 +56,14 @@ public class FIResult {
 		ccdBoxesSha = new float[frame.length][frame[0].length];
 		ccdBoxesNum = new float[frame.length][frame[0].length];
 	}
-	
+	/**
+	 * Constructor that creates an FIResult from a list of handMarks.  Sets the handMarked flag to true.
+	 * This constructor is called from GetFrameCentroidsExecutor private handMark method, which is the alternate way to 
+	 * build a FIResult when FindAndIdentify fails.
+	 * @param handMarks the list of coordinates to construct FIResult with
+	 * @param frame used for array initialization sizing only
+	 * @see org.tmt.aps.peas.procedure.executor.GetFrameCentroidsExecutor
+	 */
 	public FIResult(List<FloatPoint> handMarks, float[][] frame) {
 		int numSpots = handMarks.size();
 		xiRst = new float[numSpots]; 

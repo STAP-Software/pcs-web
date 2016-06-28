@@ -7,6 +7,11 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 
+/**
+ * Computation data result class for calculateCentroidOffsets computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateCentroidOffsets(FloatPoint[], FloatPoint[], org.tmt.aps.peas.config.model.CentroidOffsetsConfig, org.tmt.aps.peas.instrument.model.PupilMaskType, int[], int[], int[])
+ */
 public class CentroidOffsetsResult {
 
 	FloatPoint imageTranslation;

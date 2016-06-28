@@ -13,10 +13,22 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Utility functions to encode and decode lists of Rects from a string representation to Lists.
+ * Includes list manipulation functions specific to Rect lists.
+ * 
+ * @author smichaels
+ *
+ */
 public class RectListEncoder {
 
 	Logger logger = Logger.getLogger(this.getClass());
 	
+	/**
+	 * Decodes a string encoded list of Rects to a List of type Rect
+	 * @param encodedList the list to decode
+	 * @return the decoded list of Rects
+	 */
 	public static List<Rect> decodeList(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
@@ -34,6 +46,11 @@ public class RectListEncoder {
 		return rectList;
 	}
 	
+	/**
+	 * Encodes a list of Rect into a string representation of the list 
+	 * @param rectList the list of Rects to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(List<Rect> rectList) {
 		
 		StringBuffer buf = new StringBuffer();
@@ -47,6 +64,12 @@ public class RectListEncoder {
 		return buf.toString();
 	}
 	
+	/**
+	 * Removes a Rect from a list of Rects.  All Rects in the list that match the coordinates will be removed.
+	 * @param rectList the list to remove items from
+	 * @param rect the Rect to remove
+	 * @return the modified list of Rects
+	 */
 	public static List<Rect> removeRect(List<Rect> rectList, Rect rect) {
 		
 		for (Iterator<Rect> it = rectList.iterator(); it.hasNext(); ) {
@@ -60,6 +83,12 @@ public class RectListEncoder {
 		return rectList;
 	}
 	
+	/**
+	 * Adds a Rect to a list of Rects.  
+	 * @param rectList the list to add to
+	 * @param rect the Rect to add
+	 * @return the modified list of Rects
+	 */
 	public static List<Rect> addRect(List<Rect> rectList, Rect rect) {
 		rectList.add(rect);
 		return rectList;

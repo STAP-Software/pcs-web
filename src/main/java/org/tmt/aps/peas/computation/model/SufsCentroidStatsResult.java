@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for calculateSufsCentroidStats computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsCentroidStats(SufsSegmentOffsetsResult, int[], int[], int[], int[][])
+ */
 public class SufsCentroidStatsResult {
 
 	int maxSpotNum[];

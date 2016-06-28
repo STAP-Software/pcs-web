@@ -5,6 +5,11 @@ import java.util.List;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Computation data result class for calculateSufsCentroidOffsets computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsCentroidOffsets(FindCentroidsResult, FindCentroidsResult, org.tmt.aps.peas.config.model.CentroidOffsetsConfig, org.tmt.aps.peas.instrument.model.PupilMaskType, int[], int[], int[][], float)
+ */
 public class SufsSegmentOffsetsResult {
 
 	FloatPoint[] imageTranslation;
@@ -97,24 +102,37 @@ public class SufsSegmentOffsetsResult {
 		this.validOffsets = validOffsets;
 	}
 
+	/**
+	 * Returns a CentroidOffsetsResult for a single segment in the SUFS segment group
+	 * @param segmentNumber the segment number in the group to extract
+	 * @return the centroid offsets result object for the single segment
+	 */
 	public CentroidOffsetsResult extractCentroidOffsetsResult(int segmentNumber) {
 		return new CentroidOffsetsResult(imageTranslation[segmentNumber], imageScale[segmentNumber], imageRotation[segmentNumber], 
 				ccdCentroidOffsets[segmentNumber], cartesianCentroidOffsets[segmentNumber], validOffsets[segmentNumber]);
 	}
 	
+	/**
+	 * @return a list of SufsSegmentSpots that jumped
+	 */
 	public List<SufsSegmentSpot> spotsJumpedString() {
 		
 		List<SufsSegmentSpot> result = new ArrayList<SufsSegmentSpot>();
 		for (int segmentNumber=0; segmentNumber<6; segmentNumber++) {
 			int[] jumpedSpots = getJumpedSpots(segmentNumber);
 			for (int i=0; i<jumpedSpots.length; i++) {
-				SufsSegmentSpot jumpedSpot = new SufsSegmentSpot(segmentNumber+1, i+1);
+				SufsSegmentSpot jumpedSpot = new SufsSegmentSpot(segmentNumber+1, jumpedSpots[i]);
 				result.add(jumpedSpot);
 			}
 		}
 		return result;
 	}
 
+	/**
+	 * For a segment number within the SUFS segment group, returns an array of jumped spot indicies
+	 * @param segmentNumber the segment number within the SUFS segment group to return jumped spots for
+	 * @return an array of jumped spots indicies
+	 */
 	public int[] getJumpedSpots(int segmentNumber) {
 		List<Integer> jumpList = new ArrayList<Integer>();
 		for (int i=0; i<spotJumped[segmentNumber].length; i++) {
@@ -129,6 +147,10 @@ public class SufsSegmentOffsetsResult {
 		return jumpListArray;
 	}
 	
+	/**
+	 * Data model class representing an SUFS segment spot, which contains two elements: the segment number withing the SUFS group and the spot number within that segment.
+	 * @author smichaels
+	 */
 	public class SufsSegmentSpot {
 		int segmentGroupNumber;
 		int spotNumber;

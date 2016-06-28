@@ -1,9 +1,13 @@
 package org.tmt.aps.peas.computation.model;
 
-import java.util.List;
-
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Computation data result class for both calculateM2M1Analytical and calculateM2M1RayTrace computations.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateM2M1Analytical(FindCentroidsResult, CentroidOffsetsResult, int[], FloatPoint[][], int[], org.tmt.aps.peas.config.model.TelescopeConstants, float, float, float, int, int, org.tmt.aps.peas.instrument.model.PupilMaskType)
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateM2M1RayTrace(FindCentroidsResult, CentroidOffsetsResult, int[], float, float, FloatPoint[][], int[], org.tmt.aps.peas.config.model.TelescopeConstants, float, float, org.tmt.aps.peas.instrument.model.PupilMaskType)
+ */
 public class CalcM2M1Result {
 
 	

@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for calculatePupilRegError computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculatePupilRegError(org.tmt.aps.peas.config.model.PupilRegErrorConfig, org.tmt.aps.peas.refBeamMap.model.CentroidMap, int, float[], float[], float[], float, float, int[], int[], int[])
+ */
 public class PupilRegErrorResult {
 
 	private float regErrorX; // x registration error (m)

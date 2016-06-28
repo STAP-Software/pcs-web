@@ -5,18 +5,30 @@
  */
 package org.tmt.aps.peas.computation.business;
 
-
+/**
+ * Exception thrown when a computation fails.  Thrown by ComputationLibraryImpl methods and JavaComputation methods.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl
+ * @see org.tmt.aps.peas.computation.java.JavaComputations
+ */
 public class ComputationException extends Exception {
 	
 	private static final long serialVersionUID = -2741048348398071514L;
 	
 	String errorCode;
-	
+	/**
+	 * Constructor with message and error code
+	 * @deprecated
+	 */
 	public ComputationException(String errorCode, String message) {
 		super(message);
 		this.errorCode = errorCode;
 	}
 
+	/**
+	 * Constructor with message string
+	 * @param message the message string 
+	 */
 	public ComputationException(String message) {
 		super(message);
 	}

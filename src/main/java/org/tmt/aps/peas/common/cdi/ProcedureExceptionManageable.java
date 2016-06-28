@@ -13,6 +13,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
+/**
+ * This annotation is not used
+ * @author smichaels
+ * @deprecated
+ */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

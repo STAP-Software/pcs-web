@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for bbAnalyzeFrame computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#bbAnalyzeFrame(float[][], FindCentroidsResult, int[], float[][][][], int)
+ */
 public class BbAnalyzeFrameResult {
 
 	private float[] coherenceArray;

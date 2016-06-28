@@ -1,9 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
-import java.util.List;
-
-import org.tmt.aps.peas.common.FloatPoint;
-
+/**
+ * Computation data result class for colorStep computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#colorStep(int, float)
+ */
 public class ColorStepResult {
 
 	

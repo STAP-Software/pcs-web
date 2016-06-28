@@ -13,7 +13,13 @@ import javax.interceptor.Interceptor;
 import javax.interceptor.InvocationContext;
 
 import org.apache.log4j.Logger;
-
+/**
+ * Logging interceptor.  Every method with the <code>@Loggable</code> annotation will participate in trace level logging of
+ * method name, input and output values.  This interceptor is currently not being called as no method is currently so annotated.
+ * Trace logging using this interceptor can be set up by simply annotating a method with the <code>@Loggable</code> annotation.
+ * @author smichaels
+ *
+ */
 @Interceptor
 @Loggable
 public class LoggingInterceptor implements Serializable {

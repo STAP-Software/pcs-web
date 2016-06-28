@@ -5,7 +5,13 @@
  */
 package org.tmt.aps.peas.common;
 
-
+/**
+ * An integer point coordinate class.  PEAS uses an abundance of x,y pairs.  This class encapsulates a single coordinate.
+ * This class should have been named Coordinate.
+ * 
+ * @author smichaels
+ *
+ */
 public class Point {
 	
 	
@@ -39,7 +45,7 @@ public class Point {
     }
 
     /**
-     * Constructs and initializes a point at the specified
+     * Constructs and initializes a point at the specified x and y coordinates
       */
     public Point(int x, int y) {
         this.x = x;
@@ -63,56 +69,18 @@ public class Point {
 		this.y = y;
 	}
 
+
 	/**
-     * Returns the location of this point.
-     * This method is included for completeness, to parallel the
-     * <code>getLocation</code> method of <code>Component</code>.
-     */
-    public Point getLocation() {
-        return new Point(x, y);
-    }
-
-    /**
-     * Sets the location of the point to the specified location.
-     * This method is included for completeness, to parallel the
-     * <code>setLocation</code> method of <code>Component</code>.
-     */
-    public void setLocation(Point p) {
-        setLocation(p.x, p.y);
-    }
-
-
-    /**
-     * Sets the location of this point to the specified double coordinates.
-     * The double values will be rounded to integer values.
-     * Any number smaller than <code>Integer.MIN_VALUE</code>
-     * will be reset to <code>MIN_VALUE</code>, and any number
-     * larger than <code>Integer.MAX_VALUE</code> will be
-     * reset to <code>MAX_VALUE</code>.
-     */
-    public void setLocation(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     * Translates this point, at location {@code (x,y)},
-     * by {@code dx} along the {@code x} axis and {@code dy}
-     * along the {@code y} axis so that it now represents the point
-     * {@code (x+dx,y+dy)}.
-     */
-    public void translate(int dx, int dy) {
-        this.x += dx;
-        this.y += dy;
-    }
-
+	 * 
+	 * @return true if the Point is {@code (0,0)}
+	 */
     public boolean isZero() {
     	return this.x == 0 && this.y == 0;
     }
     
     /**
      * Determines whether or not two points are equal. Two instances of
-     * <code>Point2D</code> are equal if the values of their
+     * <code>Point</code> are equal if the values of their
      * <code>x</code> and <code>y</code> member fields, representing
      * their position in the coordinate space, are the same.
      */
@@ -126,18 +94,28 @@ public class Point {
 
     /**
      * Returns a string representation of this point and its location
-     * in the {@code (x,y)} coordinate space. This method is
-     * intended to be used only for debugging purposes, and the content
-     * and format of the returned string may vary between implementations.
-     * The returned string may be empty but may not be <code>null</code>.
+     * in the {@code (x,y)} coordinate space. 
      */
     public String toString() {
         return x + "," + y;
     }
 
+	/**
+	 * Adds two passed coordinates 
+	 * @param p1 coordinate to add
+	 * @param p2 coordinate to add
+	 * @return a new Point that is the sum of this Point and the passed Point
+	 */
 	public static Point add(Point p1, Point p2) {
 		return new Point(p1.x + p2.x, p1.y + p2.y);
 	}
+	
+	/**
+	 * Takes the product of a passed value and the passed Point
+	 * @param p1 coordinate to multiply
+	 * @param val value to multiply by
+	 * @return a new Point that is the product of the passed Point and the passed scalar value
+	 */
 	public static Point multiply(Point p1, int val) {
 		return new Point(p1.x * val, p1.y * val);
 	}

@@ -11,10 +11,21 @@ import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.session.model.FieldDescriptor;
 
+/**
+ * General Utilities for PEAS PCS: includes static functions for generating exception messages for screen display and logging, Futures waiting, Thread sleeping and data formatting for viewable output.
+ * @author smichaels
+ *
+ */
 public class Utils {
 
 	static Logger logger = Logger.getLogger(Utils.class);
 
+	/**
+	 * Waits until all passed futures have completed
+	 * @param futures a variable argument list of futures to wait on
+	 * @return the number of milliseconds waited
+	 * @throws Exception
+	 */
 	public static long waitForComplete(Future... futures) throws Exception {
 
 		// if a future is null, then ignore it
@@ -63,7 +74,12 @@ public class Utils {
 		return endTime - startTime;
 
 	}
-
+	
+	/**
+	 * Converts a floating point array to an integer primitive array, by rounding all values
+	 * @param input the floating point array
+	 * @return an integer primitive array
+	 */
 	public static int[] floatArrayToIntArray(float[] input) {
 		int[] output = new int[input.length];
 		for (int i = 0; i < input.length; i++) {
@@ -72,6 +88,11 @@ public class Utils {
 		return output;
 	}
 
+	/**
+	 * Creates a standard exception message for PEAS-PCS, which recursively retrieves all exception causes to add to the output string
+	 * @param e the exception Throwable
+	 * @return the exception string
+	 */
 	public static String createExceptionMessage(Throwable e) {
 		StringBuffer buf = new StringBuffer();
 
@@ -80,6 +101,10 @@ public class Utils {
 		return buf.toString();
 	}
 
+	/**
+	 * Puts the current Thread to sleep for msec milliseconds
+	 * @param msec number of milliseconds to wait
+	 */
 	public static void waitFor(long msec) {
 
 		try {
@@ -100,52 +125,110 @@ public class Utils {
 		}
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating a database record creation success
+	 * @return the message to display
+	 */
 	public static FacesMessage recordUpdateSuccessfulMessage() {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("crud.success"), "");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating a database record creation failure
+	 * @param e the exception thrown during database record creation
+	 * @return the message to display
+	 */
 	public static FacesMessage recordUpdateFailedMessage(Throwable e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("crud.failure"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating a generic error
+	 * @param e the exception thrown 
+	 * @return the message to display
+	 */
 	public static FacesMessage genericErrorMessage(Throwable e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating a generic error with a supplied message
+	 * @param e the exception thrown 
+	 * @param message the message to include in the output
+	 * @return the message to display
+	 */
 	public static FacesMessage genericErrorMessage(Throwable e, String message) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error.w_arg", message),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating an interface command success
+	 * @return the message to display
+	 */
 	public static FacesMessage commandSuccessfulMessage() {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success"), "");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating an interface command success, including the name of what was commanded
+	 * @param commandedName the name of the commanded interface/command
+	 * @return the message to display
+	 */
 	public static FacesMessage commandSuccessfulMessage(String commandedName) {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("command.success", commandedName), "");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating an interface command failure
+	 * @param e the exception thrown while commanding/querying the interface
+	 * @return the message to display
+	 */
 	public static FacesMessage commandFailedMessage(CommandFailureException e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("command.failure", e.getFailureCode()),
 				Utils.createExceptionMessage(e));
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating an interface command failure, with a supplied message
+	 * @param e the exception thrown while commanding/querying the interface
+	 * @param message an additional message to add to output text
+	 * @return the message to display
+	 */
 	public static FacesMessage commandFailedMessage(CommandFailureException e, String message) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR,
 				MessageGenerator.generateMessage("command.failure", e.getFailureCode()) + "\n" + message, Utils.createExceptionMessage(e));
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating the procedure was successful
+	 * @param procedureType the procedure type name
+	 * @return the message to display
+	 */
 	public static FacesMessage procedureSuccessfulMessage(String procedureType) {
 		return new FacesMessage(FacesMessage.SEVERITY_INFO, MessageGenerator.generateMessage("procedure.success", procedureType), "");
 	}
 
+	/**
+	 * Creates a FacesMessage to print to screen indicating the procedure failed
+	 * @param e the exception thrown by the procedure
+	 * @return the message to display
+	 */
 	public static FacesMessage procedureFailedMessage(Throwable e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
 
+	/**
+	 * Generates a data value display string given a FieldDescriptor and string representation of the value. 
+	 * @param value string representation of the value, this is how procedure outputs and field values are stored in the database.
+	 * @param fieldDescriptor the description of the field, including data type and dimension
+	 * @return the message to display
+	 * @see org.tmt.aps.peas.procedure.model.ProcedureOutputValue#getDataFormatted()
+	 * @see org.tmt.aps.peas.session.model.FrameFieldDisplay#getDataFormatted()
+	 */
 	public static String reformatData(String value, FieldDescriptor fieldDescriptor) {
 
 		if (value == null || value.trim().length() == 0 || value.equals("null")) {

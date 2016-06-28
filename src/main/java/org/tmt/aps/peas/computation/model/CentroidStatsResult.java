@@ -1,5 +1,12 @@
 package org.tmt.aps.peas.computation.model;
 
+import org.tmt.aps.peas.common.FloatPoint;
+
+/**
+ * Computation data result class for calculateCentroidStats computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateCentroidStats(FloatPoint[], int[], int[], int[])
+ */
 public class CentroidStatsResult {
 
 	int maxSpotNum;

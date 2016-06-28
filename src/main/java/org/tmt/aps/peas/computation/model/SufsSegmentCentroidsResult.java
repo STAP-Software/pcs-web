@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for generateSufsSegmentCentroids computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#generateSufsSegmentCentroids(FindCentroidsResult, int[][])
+ */
 public class SufsSegmentCentroidsResult {
 
 	FindCentroidsResult[] segmentCentroidResultList;

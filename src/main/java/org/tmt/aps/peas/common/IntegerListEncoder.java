@@ -11,11 +11,21 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Utility functions to encode and decode lists and arrays of integer numbers to a string representation.
+ * 
+ * @author smichaels
+ *
+ */
 public class IntegerListEncoder {
 
 	Logger logger = Logger.getLogger(this.getClass());
 	
-	
+	/**
+	 * Decodes a string representation of an integer list to a List of Integers
+	 * @param encodedList string encoded list representing the list
+	 * @return the decoded list as a List of Integers
+	 */
 	public static List<Integer> decodeList(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
@@ -32,6 +42,11 @@ public class IntegerListEncoder {
 		return numberList;
 	}
 	
+	/**
+	 * Decodes a string representation of an integer list to an array of ints
+	 * @param encodedList string encoded list representing the list
+	 * @return the decoded array of ints
+	 */
 	public static int[] decodeListToArray(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
@@ -48,6 +63,11 @@ public class IntegerListEncoder {
 		return result;
 	}
 	
+	/**
+	 * Decodes a string representation of an integer list to an array of Integer objects
+	 * @param encodedList string encoded list representing the list
+	 * @return the decoded array of Integer objects
+	 */
 	public static Integer[] decodeListToObjectArray(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
@@ -64,6 +84,11 @@ public class IntegerListEncoder {
 		return result;
 	}
 	
+	/**
+	 * Encodes a List of Integer objects to a string representation
+	 * @param numberList the input array to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(List<Integer> numberList) {
 		
 		StringBuffer buf = new StringBuffer();
@@ -76,6 +101,11 @@ public class IntegerListEncoder {
 		return buf.toString();
 	}
 	
+	/**
+	 * Encodes a one-dimensional array of integer primitives to a string representation
+	 * @param numberList the input array to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(int[] numberList) {
 		
 		StringBuffer buf = new StringBuffer();
@@ -89,6 +119,11 @@ public class IntegerListEncoder {
 		return buf.toString();
 	}
 	
+	/**
+	 * Encodes a one-dimensional array of Integer objects to a string representation
+	 * @param numberList the input Integer array to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(Integer[] numberList) {
 		
 		StringBuffer buf = new StringBuffer();

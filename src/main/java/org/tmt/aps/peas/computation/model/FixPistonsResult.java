@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for fixPistons computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#fixPistons(org.tmt.aps.peas.common.FloatPoint[], float[])
+ */
 public class FixPistonsResult {
 
 	private float[] actRaw;

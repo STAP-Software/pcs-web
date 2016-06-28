@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.computation.model;
 
+/**
+ * Computation data result class for calculatePhasingStats computation.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculatePhasingStats(int[], int[], float[], float[])
+ */
 public class PhasingStatsResult {
 
 	int goodEdgeCount;

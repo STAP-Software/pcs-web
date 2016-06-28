@@ -19,6 +19,11 @@ import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
+/**
+ * This interceptor is not used.
+ * @author smichaels
+ * @deprecated
+ */
 @Interceptor
 @ProcedureExceptionManageable
 public class ProcedureExceptionInterceptor implements Serializable {

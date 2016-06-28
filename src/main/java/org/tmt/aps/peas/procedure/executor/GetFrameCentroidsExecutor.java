@@ -476,7 +476,7 @@ public class GetFrameCentroidsExecutor {
 		return centroidMap;
 	}
 
-	private FIResult handMark(Procedure procedure, FIConfig fiConfig) throws AbortProcedureException {
+	FIResult handMark(Procedure procedure, FIConfig fiConfig) throws AbortProcedureException {
 
 		List<FloatPoint> handMarked = null;
 		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();

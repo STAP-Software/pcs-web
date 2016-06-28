@@ -11,14 +11,22 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+/**
+ * Utility functions to encode and decode lists and one and two dimensional arrays of floating point numbers to a string representation.
+ * 
+ * @author smichaels
+ *
+ */
 public class FloatListEncoder {
 
 	Logger logger = Logger.getLogger(this.getClass());
 	
-	
 
-	
-	
+	/**
+	 * Decodes a string representation of a list of floating point numbers to a List of Floats
+	 * @param encodedList the string encoded list
+	 * @return a List of decoded floating point numbers
+	 */
 	public static List<Float> decodeList(String encodedList) {
 		
 		if (encodedList == null || encodedList.trim().length() == 0) {
@@ -35,6 +43,11 @@ public class FloatListEncoder {
 		return numberList;
 	}
 	
+	/**
+	 * Encodes a one-dimensional array of floating point numbers to a string representation
+	 * @param numberList the input array to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(float[] numberList) {
 		
 		StringBuffer buf = new StringBuffer();
@@ -47,6 +60,11 @@ public class FloatListEncoder {
 		return buf.toString();
 	}
 	
+	/**
+	 * Encodes a two-dimensional array of floating point numbers to a string representation
+	 * @param numberList the input array to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(float[][] numberList) {
 		
 		StringBuffer buf = new StringBuffer();
@@ -61,6 +79,11 @@ public class FloatListEncoder {
 		return buf.toString();
 	}
 	
+	/**
+	 * Encodes a List of floating point numbers to a string representation
+	 * @param numberList the input list to encode
+	 * @return the encoded string
+	 */
 	public static String encodeList(List<Float> numberList) {
 		
 		if (numberList.isEmpty()) {

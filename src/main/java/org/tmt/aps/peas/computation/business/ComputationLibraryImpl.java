@@ -100,6 +100,13 @@ import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
+/**
+ * The computation library session bean.  This EJB contains all the methods that PEAS-PCS uses to perform all computations, either implemented in FORTRAN or Java.
+ * When an executor object needs to call a computation, this is the EJB whose methods are called to accomplish this.
+ * The methods in this EJB will delegate computations to FORTRAN library routines or to JavaComputations.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.java.JavaComputations
+ */
 @Stateless
 public class ComputationLibraryImpl {
 
