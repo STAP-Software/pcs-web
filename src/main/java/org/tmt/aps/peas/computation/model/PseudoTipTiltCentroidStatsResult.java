@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for calculatePseudoCentroidStats computation.
+ * Computation data result class for <b>calculatePseudoCentroidStats</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculatePseudoCentroidStats(org.tmt.aps.peas.common.FloatPoint[], int[])
  */

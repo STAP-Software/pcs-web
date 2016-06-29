@@ -6,7 +6,7 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 
 /**
- * Computation data result class for findAndIdentify computation.
+ * Computation data result class for <b>findAndIdentify</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#findAndIdentify(float[][], int, org.tmt.aps.peas.config.model.FIConfig, org.tmt.aps.peas.refBeamMap.model.RefBeamMap, List, int[], boolean)
  */

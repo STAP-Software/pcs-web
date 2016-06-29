@@ -7,7 +7,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for findCentroids computation.
+ * Computation data result class for <b>findCentroids</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#findCentroids(float[][], FIResult, org.tmt.aps.peas.config.model.FindCentConfig, org.tmt.aps.peas.config.model.FindCentConfig, int[], int[], boolean)
  */

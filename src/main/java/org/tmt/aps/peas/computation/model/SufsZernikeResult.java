@@ -3,7 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data intermediate result class for SufsSegmentZernikeResult computation.  Contains Zernike calculation results for a single segment.
+ * Computation data intermediate result class for <b>SufsSegmentZernikeResult</b> computation.  Contains Zernike calculation results for a single segment.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult
  */

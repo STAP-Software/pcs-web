@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for AvgCentroidStats computation.
+ * Computation data result class for <b>avgCentroidStats</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateAvgCentroidStats(org.tmt.aps.peas.common.FloatPoint[], int[], int[], int[])
  */

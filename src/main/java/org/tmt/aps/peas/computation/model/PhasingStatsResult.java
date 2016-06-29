@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for calculatePhasingStats computation.
+ * Computation data result class for <b>calculatePhasingStats</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculatePhasingStats(int[], int[], float[], float[])
  */

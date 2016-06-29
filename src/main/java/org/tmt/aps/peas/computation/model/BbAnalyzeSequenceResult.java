@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for bbAnalyzeSequence computation.
+ * Computation data result class for <b>bbAnalyzeSequence</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#bbAnalyzeSequence(int[], int[], float[][], float, int, int[], int[], float, org.tmt.aps.peas.instrument.model.Filter, float, float[], int, int[], int[])
  */

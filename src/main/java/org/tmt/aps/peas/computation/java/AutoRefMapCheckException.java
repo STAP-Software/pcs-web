@@ -4,7 +4,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 
 /**
  * Exception class thrown when the most recent reference beam centroid map is checked for suitability to be used in a procedure.  
- * This check is performed in JavaComputations.autoRefMapCheck().  The exception contains a message bundle key and arguments for output to the logs 
+ * This check is performed in {@link org.tmt.aps.peas.computation.java.JavaComputations#autoRefMapCheck(org.tmt.aps.peas.config.model.AutoRefMapConfig, org.tmt.aps.peas.common.Point, org.tmt.aps.peas.common.Point, float, int, java.util.Date, org.tmt.aps.peas.refBeamMap.model.RefBeamMap)}.  The exception contains a message bundle key and arguments for output to the logs 
  * and potentially to the user in order to make decisions whether to take a new reference beam centroid map or not. 
  * 
  * @author smichaels

@@ -19,8 +19,8 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 /**
  * Computation interceptor.  Every method with the <code>@Computation</code> annotation calls the method in this class with the 
  * <code>@AroundInvoke</code> tag.  Once a computation call so annotated has completed, this interceptor will populate the current 
- * output target (which is a subclass of ProcedureOutput or ProcedureIterationOutput).
- * Computation methods have unique result class names, which are used to populate setter methods in the current output target.
+ * output target, which is a subclass of either {@link org.tmt.aps.peas.procedure.model.ProcedureOutput} or {@link org.tmt.aps.peas.procedure.model.ProcedureIterationOutput}.
+ * Computation methods have unique result class names, which are used to populate corresponding setter methods in the current output target.
  * The current output target is set in the procedureExecutionState within the procedure executor code.
  * @author smichaels
  * @see org.tmt.aps.peas.procedure.business.ProcedureExecutionState#getCurrentOutputTarget()

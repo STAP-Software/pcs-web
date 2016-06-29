@@ -3,7 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for calculateSufsZernikes computation.  Contains Zernikes for each segment in the SUFS group.
+ * Computation data result class for <b>calculateSufsZernikes</b> computation.  Contains Zernikes for each segment in the SUFS group.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsZernikes(FloatPoint[], FloatPoint[][], float, float, int[][], int[][], int[], int[])
  */

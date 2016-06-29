@@ -6,7 +6,7 @@ import javax.faces.convert.FacesConverter;
 import javax.faces.convert.NumberConverter;
 
 /**
- * JSF Converter used to format output data using patterns found in the database such as FieldMetaData displayFormat() method.
+ * JSF Converter used to format output data using patterns found in the database such as the {@link org.tmt.aps.peas.session.model.FieldMetaData#getDisplayFormat()} method.
  * @author smichaels
  *
  * @see org.tmt.aps.peas.session.model.FieldMetaData#getDisplayFormat()

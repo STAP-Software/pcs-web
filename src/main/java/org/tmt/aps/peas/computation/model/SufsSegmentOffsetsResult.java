@@ -6,7 +6,7 @@ import java.util.List;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for calculateSufsCentroidOffsets computation.
+ * Computation data result class for <b>calculateSufsCentroidOffsets</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsCentroidOffsets(FindCentroidsResult, FindCentroidsResult, org.tmt.aps.peas.config.model.CentroidOffsetsConfig, org.tmt.aps.peas.instrument.model.PupilMaskType, int[], int[], int[][], float)
  */

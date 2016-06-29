@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for calculateSufsCentroidStats computation.
+ * Computation data result class for <b>calculateSufsCentroidStats</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsCentroidStats(SufsSegmentOffsetsResult, int[], int[], int[], int[][])
  */

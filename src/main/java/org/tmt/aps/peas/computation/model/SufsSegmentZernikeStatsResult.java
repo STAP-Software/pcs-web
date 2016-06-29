@@ -3,7 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for calculateSufsZernikeStats computation.  Contains Zernike statistics for each segment in the SUFS group.
+ * Computation data result class for <b>calculateSufsZernikeStats</b> computation.  Contains Zernike statistics for each segment in the SUFS group.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calculateSufsZernikeStats(SufsSegmentZernikeResult[])
  */

@@ -6,7 +6,7 @@
 package org.tmt.aps.peas.computation.business;
 
 /**
- * Exception thrown when a computation fails.  Thrown by ComputationLibraryImpl methods and JavaComputation methods.
+ * Exception thrown when a computation fails.  Thrown by {@link org.tmt.aps.peas.computation.business.ComputationLibraryImpl} methods and {@link org.tmt.aps.peas.computation.java.JavaComputations} methods.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl
  * @see org.tmt.aps.peas.computation.java.JavaComputations

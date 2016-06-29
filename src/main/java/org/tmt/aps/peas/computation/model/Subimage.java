@@ -4,8 +4,9 @@ import org.tmt.aps.peas.common.FloatPoint;
 
 /**
  * Model for a subimage: a centroid, subimage intensity, peak intensity and a find cent status flag.
- * Used in FrameController, ProcedureController and GetFrameCentroidsExecutor in hand-marking of centroids
- * Used in findCentResult, findCentroidsResult when auto identifying centroids
+ * Used in {@link org.tmt.aps.peas.frame.ui.FrameController}, {@link org.tmt.aps.peas.procedure.ui.ProcedureController} and 
+ * {@link org.tmt.aps.peas.procedure.executor.GetFrameCentroidsExecutor} for hand-marking of centroids.
+ * Used in {@link FindCentResult}, {@link FindCentroidsResult} when auto identifying centroids
  * @author smichaels
  * @see org.tmt.aps.peas.computation.model.FindCentResult
  * @see org.tmt.aps.peas.computation.model.FindCentroidsResult

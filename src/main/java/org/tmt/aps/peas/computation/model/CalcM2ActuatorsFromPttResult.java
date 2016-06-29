@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data result class for calcM2ActuatorsFromPtt computation.
+ * Computation data result class for <b>calcM2ActuatorsFromPtt</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcM2ActuatorsFromPtt(float, org.tmt.aps.peas.common.FloatPoint, float)
  */

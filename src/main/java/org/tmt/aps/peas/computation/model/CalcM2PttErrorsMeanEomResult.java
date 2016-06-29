@@ -4,7 +4,7 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for calcM2PttErrorsMeanEom computation.
+ * Computation data result class for <b>calcM2PttErrorsMeanEom</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#calcM2PttErrorsMeanEom(Float[], FloatPoint[])
  */

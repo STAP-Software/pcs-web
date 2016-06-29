@@ -3,7 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for findCent computation.
+ * Computation data result class for <b>findCent</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#findCent(float[][], FloatPoint, org.tmt.aps.peas.config.model.FindCentConfig, int)
  * @see org.tmt.aps.peas.computation.model.Subimage

@@ -11,7 +11,7 @@ import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.model.FieldMetaData;
 
 /**
- * Session scoped, JSF named object used for supplying fieldMetaData and procedureOutputField field metadata from the cache and making this data available to JSF when rendering a page.
+ * Session scoped, JSF named object used for supplying {@link org.tmt.aps.peas.session.model.FieldMetaData} and {@link org.tmt.aps.peas.procedure.model.ProcedureOutputField} metadata from the {@link org.tmt.aps.peas.session.business.FieldMetaDataCache} and making this data available to JSF when rendering a page.
  * @author smichaels
  * @see org.tmt.aps.peas.session.business.FieldMetaDataCache
  */

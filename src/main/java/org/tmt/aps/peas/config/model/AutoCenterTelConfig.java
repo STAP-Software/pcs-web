@@ -15,6 +15,11 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+/**
+ * Configuration entity class representing the AutoCenterTelConfig table
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "AutoCenterTelConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

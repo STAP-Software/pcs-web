@@ -1,7 +1,7 @@
 package org.tmt.aps.peas.computation.model;
 
 /**
- * Computation data intermediate result class for SufsSegmentZernikeStatsResult computation.  Contains Zernike means and eoms over iterations for a single segment.
+ * Computation data intermediate result class for <b>SufsSegmentZernikeStatsResult</b> computation.  Contains Zernike means and eoms over iterations for a single segment.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult
  */

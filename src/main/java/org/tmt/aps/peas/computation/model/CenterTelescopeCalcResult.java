@@ -3,7 +3,7 @@ package org.tmt.aps.peas.computation.model;
 import org.tmt.aps.peas.common.FloatPoint;
 
 /**
- * Computation data result class for centerTelescopeCalc computation.
+ * Computation data result class for <b>centerTelescopeCalc</b> computation.
  * @author smichaels
  * @see org.tmt.aps.peas.computation.business.ComputationLibraryImpl#centerTelescopeCalc(FloatPoint, FloatPoint, double)
  */

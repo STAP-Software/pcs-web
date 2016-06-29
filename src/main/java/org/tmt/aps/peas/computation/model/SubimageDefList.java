@@ -10,7 +10,8 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.config.model.SubimageDef;
 /**
  * A List of Subimage definitions, and convenience methods for subimage definition lists.
- * A subimage definition list corresponds to the mask used and missing spots, etc.
+ * A subimage definition list describes mask subimages: ideal spot locations, spot type (interior vs peripheral), 
+ * if the spot is expected to be found and if it is to be used for analysis.
  * @author smichaels
  *
  */

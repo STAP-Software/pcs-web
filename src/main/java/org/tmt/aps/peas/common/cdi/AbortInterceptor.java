@@ -16,8 +16,9 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 
 /**
- * CDI interceptor for aborting a procedure.  Every method that contains the <code>@Abortable</code> annotation checks the procedureExecutionState getAbortRequested() method.  If true, the interceptor will throw an AbortProcedureException.
- * Typically, the AsyncController will set the abort request when the user presses an Abort button on any screen.
+ * CDI interceptor for aborting a procedure.  Every method that contains the <code>@Abortable</code> annotation checks the 
+ * {@link org.tmt.aps.peas.procedure.business.ProcedureExecutionState#getAbortRequested()} method.  If true, the interceptor will throw an {@link org.tmt.aps.peas.procedure.exception.AbortProcedureException}.
+ * Typically, the {@link org.tmt.aps.peas.procedure.ui.AsyncController} will set the abort request when the user presses an Abort button on any screen.
  * @author smichaels
  * @see org.tmt.aps.peas.procedure.exception.AbortProcedureException
  * @see org.tmt.aps.peas.procedure.business.ProcedureExecutionState#getAbortRequested()
