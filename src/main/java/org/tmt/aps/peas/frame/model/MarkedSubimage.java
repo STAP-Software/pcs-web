@@ -2,7 +2,13 @@ package org.tmt.aps.peas.frame.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
-// class used for marked subimage
+
+/**
+ * Data for a marked subimage. This should be subclassed from the {@link org.tmt.aps.peas.computation.model.Subimage} class.
+ * Contains additional fields useful in tracking marking.
+ * @author smichaels
+ *
+ */
 public class MarkedSubimage {
 
 	int markNumber;

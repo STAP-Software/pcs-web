@@ -17,6 +17,12 @@ import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.extinf.StarInfo;
 
+/**
+ * EJB Session bean for the DCS command interface. 
+ * This EJB is the single entry point to the DCS interface called from executors and diagnostic user interfaces. 
+ * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * @author smichaels
+ */
 @Stateless
 public class DcsMgmt {
 
@@ -51,7 +57,10 @@ public class DcsMgmt {
 		return telPosDeg;
 	}
 	
-	// input in arcsec, sends in rads (delte elevation is negated)
+	/**
+	 * Sends telescope delta commands synchronously; takes input in arcseconds, sends in radians.  Delta elevation is negated.
+	 * @param telescopeDeltas delta Azimuth and Elevation in arcseconds
+	 */
 	public void commandTelescopeDeltas(double[] telescopeDeltas) throws Exception {
 		
 		double deltaAz = telescopeDeltas[0] * Constants.PI/ (60.0 * 60.0 * 180);
@@ -61,6 +70,10 @@ public class DcsMgmt {
 		extInfFactory.getDcsCommand().commandDcsOffset(deltaAz, deltaEl);
 	}
 	
+	/**
+	 * Sends telescope delta commands asynchronously; takes input in arcseconds, sends in radians.  Delta elevation is negated.
+	 * @param telescopeDeltas delta Azimuth and Elevation in arcseconds
+	 */
 	@Asynchronous
 	public Future<Exception> commandTelescopeDeltasAsync(double[] telescopeDeltas) {
 		
@@ -80,7 +93,10 @@ public class DcsMgmt {
 		return new AsyncResult<Exception>(ex);
 	}
 	
-	// input in microns, sends in mm
+	/**
+	 * Sends secondary commands in mm, given passed secondary commands in microns
+	 * @param secondaryDeltasUm secondary commands in micons
+	 */
 	public void commandSecondaryDeltasInUm(float[] secondaryDeltasUm) throws Exception {
 		double[] secondaryDeltas = new double[3];
 		
@@ -91,6 +107,10 @@ public class DcsMgmt {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
 	}
 	
+	/**
+	 * Sends secondary commands in mm
+	 * @param secondaryDeltas secondary commands in mm
+	 */
 	public void commandSecondaryDeltas(double[] secondaryDeltas) throws Exception {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
 	}

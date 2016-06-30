@@ -5,6 +5,10 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+/**
+ * Data class representing the two position mechanism state
+ * @author smichaels
+ */
 public class TwoPosMechanism {
 
 	public static final int TWO_POS_MECH_STATE_EXTEND = 1;

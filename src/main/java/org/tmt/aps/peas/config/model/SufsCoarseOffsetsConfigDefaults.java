@@ -16,6 +16,10 @@ import javax.persistence.Table;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
+/**
+ * Configuration entity class representing the SufsCoarseOffsetsConfigDefaults table.  This table is joined with the SufsCoarseOffsetsConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "SufsCoarseOffsetsConfigDefaults")
 @PrimaryKeyJoinColumn(name="SufsCoarseOffsetsConfigId")

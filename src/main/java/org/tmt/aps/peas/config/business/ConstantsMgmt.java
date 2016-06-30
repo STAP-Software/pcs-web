@@ -22,6 +22,10 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.config.model.Constant;
 
+/**
+ * Session EJB to load constants from the database.  Reads in and decodes array and coordinate data from string encoded data stored in database.
+ * @author smichaels
+ */
 @Stateless
 public class ConstantsMgmt {
 
@@ -30,12 +34,22 @@ public class ConstantsMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
+	/**
+	 * Query to load all constants from the database
+	 * @return a list of constants, each of which is a field description and encoded data
+	 */
 	public List<Constant> findAllConstants() {
 		TypedQuery<Constant> query = em.createNamedQuery("findAllConstants", Constant.class);
 
 		return query.getResultList();
 	}
 
+	/**
+	 * Loads the constants from the database, decodes data values according to field metadata such as data type and dimensions for all constants for which the metadata classname matches a passed object class names.
+	 * Each passed instance is populated with its associated decoded constants data.
+	 * @param instances instantiation of constants data classes, such as (@link org.tmt.aps.peas.config.model.PrimaryMirrorConstants}, {@link org.tmt.aps.peas.config.model.PhasingConstants}, etc.
+	 * @throws Exception
+	 */
 	public void loadConstants(List<Object> instances) throws Exception {
 
 		List<Constant> constantList = findAllConstants();

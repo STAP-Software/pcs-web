@@ -21,6 +21,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Configuration entity class representing the PupilRegErrorConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PupilRegErrorConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

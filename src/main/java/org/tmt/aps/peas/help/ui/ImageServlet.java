@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 
+/**
+ * Servlet used to serve images from /help/images/ directory.
+ * @author smichaels
+ *
+ */
 @WebServlet("/help/images/*")
 public class ImageServlet extends HttpServlet {
 	

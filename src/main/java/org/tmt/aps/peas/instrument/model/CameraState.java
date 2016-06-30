@@ -20,6 +20,11 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 
+/**
+ * Database Entity representing the CameraState table.  Each record is a snapshot of the camera state, typically taken when a frame is being taken.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "CameraState")
 public class CameraState {
@@ -50,11 +55,17 @@ public class CameraState {
 	private boolean steeringMirrorXIsInTransit;
 	private boolean steeringMirrorYIsInTransit;
 
-	
+	/**
+	 * Default constructor
+	 */
 	public CameraState() {
 		
 	}
 
+	/**
+	 * Constructs a CameraState from a CameraStatus object. 
+	 * @param cameraStatus the camera status read from the camera I/F
+	 */
 	public CameraState(CameraStatus cameraStatus) {
 		this.prismWheelPos = cameraStatus.prismWheelPos;
 		this.filterWheelPos = cameraStatus.filterWheelPos;
@@ -78,6 +89,12 @@ public class CameraState {
 		this.steeringMirrorYIsInTransit = cameraStatus.steeringMirrorYIsInTransit;
 	}
 	
+	/**
+	 * Constructs a CameraState from an Instrument.  Descends the instrument reference tree to each component and reads state information from transient fields into this instance.
+	 * This is useful when creating a CameraState to assign to a CcdFrame: if the passed instrument is 'live', i.e. a reference to the Instrument in the {#link PhysicalModel} 
+	 * then the most recent camera state can be stored without an additional I/F query, which could add time to CCD reads.
+	 * @param instrument the instrument object to read state from
+	 */
 	public CameraState(Instrument instrument) {
 		
 		Camera camera = instrument.getCamera();

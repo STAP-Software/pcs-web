@@ -17,6 +17,13 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraStatus;
 
+/**
+ * Entity class representing the Instrument class.  Query defined on this class joins instrument with Ccd, Camera, referenceBeamSet, coarseTiltMirror, 
+ * fineTiltMirror, pupilWheel, filterWheel, pupilMaskSet and filterMaskSet.  This creates one data structure where all configuration can be accessed 
+ * and state can be written/read to transient fields in each class. 
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Instrument")
 @NamedQueries({
@@ -78,7 +85,12 @@ public class Instrument {
 		this.ccd = ccd;
 	}
 	
-	
+	/**
+	 * Given a CameraStatus object, descends the reference chain to the PupilMask, Filter, Ref Beam, Shutter, fine and coarse tilt mirrors,
+	 * two position mechanism, CCD power and temperatures and populates each of these with current states.
+	 * @param cameraStatus the cameraStatus object to read from and apply.  The source of the cameraStatus object is a status query to the 
+	 * PCS camera.
+	 */
 	public void updateState(CameraStatus cameraStatus) {
 		
 		// Pupil Mask
@@ -123,6 +135,12 @@ public class Instrument {
 		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
 	}
 	
+	/**
+	 * Given a CameraState object, descends the reference chain to the PupilMask, Filter, Ref Beam, Shutter, fine and coarse tilt mirrors,
+	 * two position mechanism, CCD power and temperatures and populates each of these with current states.
+	 * @param cameraState the cameraState object to read from and apply.  The source of the cameraState object is a database query of the 
+	 * state of the camera.
+	 */
 	public void updateState(CameraState cameraState) {
 		
 		if (cameraState != null) {

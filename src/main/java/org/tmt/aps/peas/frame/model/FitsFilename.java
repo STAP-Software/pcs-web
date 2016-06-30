@@ -14,6 +14,11 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * A description of a FITS filename compatable with PCSP.
+ * @author smichaels
+ *
+ */
 public class FitsFilename {
 
 	Logger logger = Logger.getLogger(this.getClass());
@@ -30,6 +35,10 @@ public class FitsFilename {
 	int phasingStep;  // A-K = 1-11 for phasing
 	String fileName;
 
+	/**
+	 * Constructor for Phasing frames or SUFS
+	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
+	 */
 	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration,
 			int ufsSegment, int sufsGroup, int phasingStep) {
 		
@@ -45,7 +54,11 @@ public class FitsFilename {
 		this.fileName = generateFileName();
 	}
 	
-	// non-phasing, non-SUFS constructor
+
+	/**
+	 * Constructor for non-phasing, non-SUFS frames
+	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
+	 */
 	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration) {
 		
 		this.telescope = (int)telescopeId.longValue();
@@ -60,7 +73,12 @@ public class FitsFilename {
 		this.fileName = generateFileName();
 	}
 	
-	// constructor for ad-hoc files
+	/**
+	 * Constuctor for ad-hoc files (taken manually)
+	 * @param telescopeId
+	 * @param pupilMaskType the type of the pupil mask used
+	 * @param iteration
+	 */
 	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration) {
 		
 		this.telescope = (int)telescopeId.longValue();
@@ -75,7 +93,10 @@ public class FitsFilename {
 		this.fileName = generateFileName();
 	}
 
-	
+	/**
+	 * Constructor given the fits filename string.  The string is decomposed to generate values for each field.
+	 * @param fitsFileName the fits filename string
+	 */
 	public FitsFilename(String fitsFileName) {
 
 		try {
@@ -193,6 +214,9 @@ public class FitsFilename {
 		this.fileName = fileName;
 	}
 
+	/**
+	 * @return the procedure name long text derived form the procedure type code
+	 */
 	public String getProcedureName() {
 		if (procedureTypeCd == "PR") {
 			return "Pupil Registration";
@@ -209,7 +233,10 @@ public class FitsFilename {
 		}
 	}
 	
-	
+	/**
+	 * Generates a FITS filename from the internal field values
+	 * @return the generate FITS filename
+	 */
 	public String generateFileName() {
 		
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
@@ -250,7 +277,11 @@ public class FitsFilename {
 	}
 
 	
-	
+	/**
+	 * Returns true if the passed candidate FitsFilename object matches all fields necessary to be in the same phasing sequence
+	 * @param candidate the candidate fits filename to test against
+	 * @return true if the passed candidate is in the same phasing sequence as this FitsFilename object
+	 */
 	public boolean isInSamePhasingSequence(FitsFilename candidate) {
 		return candidate.getTelescope() == getTelescope() &&	
 			candidate.getDate().equals(getDate()) &&

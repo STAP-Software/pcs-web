@@ -5,6 +5,10 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+/**
+ * @deprecated
+ * @author smichaels
+ */
 public class KnifeEdge {
 
 	public static final int POSITION_COMMAND_TYPE_HOME = 1;

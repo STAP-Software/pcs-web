@@ -15,6 +15,11 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 
+/**
+ * Servlet that serves up pages from help/content/
+ * @author smichaels
+ *
+ */
 @WebServlet("/help/content/*")
 public class ContentServlet extends HttpServlet {
 

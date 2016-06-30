@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Configuration entity class representing the PupilRegErrorConfigDefaults table.  This table is joined with the PupilRegErrorConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PupilRegErrorConfigDefaults")
 @PrimaryKeyJoinColumn(name="pupilRegErrorConfigId")

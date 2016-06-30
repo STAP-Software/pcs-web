@@ -40,7 +40,6 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
-import org.tmt.aps.peas.frame.ui.FalseColorProcessor;
 import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
@@ -66,6 +65,10 @@ import nom.tam.fits.Header;
 import nom.tam.fits.PrimaryHDU;
 import nom.tam.util.BufferedDataOutputStream;
 
+/**
+ * Session EJB that manages frames: CCD frame taking, FITS frame loading/storing, frame database record reading/writing. 
+ * @author smichaels
+ */
 @Stateless
 public class FrameMgmt {
 

@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -27,6 +26,11 @@ import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.FilterWheel;
 
+/**
+ * JSF Controller for the filter configuration user interface 
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class FilterController implements Serializable {
@@ -104,6 +108,10 @@ public class FilterController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to view the filter list
+	 * @return the JSF page to render the filter list
+	 */
 	public String doViewFilterList() {
 
 		breadcrumbMenuBean.addFirstItem("PCS Filters", "/modules/sysadmin/filterList.xhtml");
@@ -111,6 +119,10 @@ public class FilterController implements Serializable {
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 	}
 
+	/** 
+	 * JSF Action method to view a filter
+	 * @return the JSF page rendering the filter detail
+	 */
 	public String doViewFilter() {
 		
 		try {
@@ -128,6 +140,10 @@ public class FilterController implements Serializable {
 		
 	}
 
+	/**
+	 * JSF Action method to view the filter wheel slot assignments 
+	 * @return the JSF page to view the filter wheel
+	 */
 	public String doViewFilterWheel() {
 
 		try {
@@ -146,6 +162,10 @@ public class FilterController implements Serializable {
 
 	}
 
+	/** 
+	 * JSF Action method to setup to create a new filter
+	 * @return the JSF filter detail page
+	 */
 	public String doNewFilter() {
 
 		filter = new Filter();
@@ -156,6 +176,10 @@ public class FilterController implements Serializable {
 
 	}
 
+	/** 
+	 * JSF Action method to save a filter to the database
+	 * @return JSF page to render when complete
+	 */
 	public String doSaveFilter() {
 
 		try {
@@ -179,6 +203,10 @@ public class FilterController implements Serializable {
 		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method called when the user clicks 'Cancel'
+	 * @return the JSF page to render the filter list
+	 */
 	public String doCancelSaveFilter() {
 
 		breadcrumbMenuBean.addFirstItem("PCS Filters", "/modules/sysadmin/filterList.xhtml");
@@ -187,9 +215,9 @@ public class FilterController implements Serializable {
 
 	}
 
-	
-	
-	
+	/**
+	 * JSF Action method to save the filter wheel slot assignments
+	 */
 	public String doSaveFilterWheel() {
 
 		filterWheel.updateFilterStates();
@@ -222,6 +250,10 @@ public class FilterController implements Serializable {
 		return null;
 	}
 
+	/**
+	 * JSF Action method called when the user cancels saving the filter wheel state
+	 * @return the JSF page to render the filter wheel
+	 */
 	public String doCancelSaveFilterWheel() {
 
 		return "/modules/sysadmin/filterWheel.xhtml?faces-redirect=true";

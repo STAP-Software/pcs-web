@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,6 +25,11 @@ import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.PupilWheel;
 
+/**
+ * JSF Controller for the pupil mask configuration user interface 
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class PupilMaskController implements Serializable {
@@ -98,6 +102,10 @@ public class PupilMaskController implements Serializable {
 		pupilWheel.updateSlotsFromList();
 	}
 
+	/**
+	 * JSF Action method to view the pupil mask list
+	 * @return the JSF page to render the pupil mask list
+	 */
 	public String doViewPupilMaskList() {
 		
 		try {
@@ -115,6 +123,10 @@ public class PupilMaskController implements Serializable {
 
 	}
 
+	/** 
+	 * JSF Action method to view a pupil mask
+	 * @return the JSF page rendering the pupil mask detail
+	 */
 	public String doViewPupilMask() {
 
 		breadcrumbMenuBean.addItem(pupilMask.getMaskName(), "/modules/sysadmin/pupilMaskDetail.xhtml");
@@ -122,6 +134,10 @@ public class PupilMaskController implements Serializable {
 		return "/modules/sysadmin/pupilMaskDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to view the pupil wheel slot assignments 
+	 * @return the JSF page to view the pupil wheel
+	 */
 	public String doViewPupilWheel() {
 		
 		try {
@@ -139,6 +155,10 @@ public class PupilMaskController implements Serializable {
 		
 	}
 
+	/** 
+	 * JSF Action method to setup to create a new pupil mask
+	 * @return the JSF pupil mask detail page
+	 */
 	public String doNewPupilMask() {
 
 		pupilMask = new PupilMask();
@@ -149,6 +169,10 @@ public class PupilMaskController implements Serializable {
 
 	}
 
+	/** 
+	 * JSF Action method to save a pupil mask to the database
+	 * @return JSF page to render when complete
+	 */
 	public String doSavePupilMask() {
 		
 		try {
@@ -175,6 +199,10 @@ public class PupilMaskController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the user clicks 'Cancel'
+	 * @return the JSF page to render the pupil mask list
+	 */
 	public String doCancelSavePupilMask() {
 
 		breadcrumbMenuBean.addFirstItem("PCS Pupil Masks", "/modules/sysadmin/pupilMaskList.xhtml");
@@ -183,6 +211,9 @@ public class PupilMaskController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to save the pupil wheel slot assignments
+	 */
 	public void doSavePupilWheel() {
 
 		pupilWheel.updatePupilMaskStates();
@@ -213,7 +244,11 @@ public class PupilMaskController implements Serializable {
 		}
 
 	}
-
+	
+	/**
+	 * JSF Action method called when the user cancels saving the pupil wheel state
+	 * @return the JSF page to render the pupil wheel
+	 */
 	public String doCancelSavePupilWheel() {
 
 		return "/modules/sysadmin/pupilWheel.xhtml?faces-redirect=true";

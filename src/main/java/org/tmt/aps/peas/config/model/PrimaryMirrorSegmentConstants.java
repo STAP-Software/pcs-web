@@ -2,7 +2,11 @@ package org.tmt.aps.peas.config.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
-
+/**
+ * Constants data class containing primary mirror segment constants.  This class is populated from database data in the {@link Constant} class and is made available to executors and
+ * the user interface controllers in the {@link org.tmt.aps.peas.config.business.ConstantsCache}.
+ * @author smichaels
+ */
 public class PrimaryMirrorSegmentConstants {
 
 	FloatPoint fineSpotCoordinates[];  

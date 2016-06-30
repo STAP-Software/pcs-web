@@ -24,6 +24,11 @@ import org.tmt.aps.peas.instrument.model.SufsGroup;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Singleton EJB cache that contains current configuration and state of the PCS Camera, CCD, and telescope
+ * @author smichaels
+ *
+ */
 @Singleton
 @Startup
 @DependsOn("PeasProperties")
@@ -46,12 +51,20 @@ public class PhysicalModel {
 	private List<FilterType> filterTypeList;
 	private Map<Integer, SufsGroup> sufsGroupMap;
 
+	/**
+	 * Called on startup, calls {@link #refresh()}
+	 */
 	@PostConstruct
 	public void init() throws Exception {
 		
 		refresh();
 	}
 
+	/**
+	 * Reads instrument and telescope ids from peas.properties file, loads all instrument and telescope configuration into the cache.
+	 * Also loads up metadata such as all filter types, all pupil mask types and all SUFS groups.
+	 * @throws Exception
+	 */
 	public void refresh() throws Exception {
 		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		instrument = cameraDefMgmt.findInstrument(instrumentId);	
@@ -84,6 +97,11 @@ public class PhysicalModel {
 		this.telescope = telescope;
 	}
 
+	/**
+	 * Convinience method to return a pupil mask type given its id without having to make a trip to the database.
+	 * @param pupilMaskTypeId the id of the pupil mask type record to find
+	 * @return the pupil mask type record
+	 */
 	public PupilMaskType getPupilMaskTypeById(Long pupilMaskTypeId) {
 		for (PupilMaskType pupilMaskType : pupilMaskTypeList) {
 			if (pupilMaskType.getPupilMaskTypeId().equals(pupilMaskTypeId)) {
@@ -93,6 +111,11 @@ public class PhysicalModel {
 		return null;
 	}
 
+	/**
+	 * Convenience method to return an SUFS group given its group number without having to make a trip to the database
+	 * @param sufsGroupNumber the group number to search on
+	 * @return the SUFS group matching the passed group number
+	 */
 	public SufsGroup getSufsGroupByNumber(int sufsGroupNumber) {
 		return sufsGroupMap.get(sufsGroupNumber);
 	}

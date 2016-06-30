@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.config.model;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,10 +16,13 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Configuration entity class representing the SufsCoarseOffsetsConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "SufsCoarseOffsetsConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

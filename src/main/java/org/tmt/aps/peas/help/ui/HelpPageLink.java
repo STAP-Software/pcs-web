@@ -1,5 +1,9 @@
 package org.tmt.aps.peas.help.ui;
 
+/**
+ * Data bean class used in the help browser tree. 
+ * @author smichaels
+ */
 public class HelpPageLink {
 
 	private String name;

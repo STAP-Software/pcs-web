@@ -24,6 +24,10 @@ import org.primefaces.model.TreeNode;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 
+/**
+ * JSF Controller for rendering help pages
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class HelpController implements Serializable {
@@ -40,6 +44,11 @@ public class HelpController implements Serializable {
 	
 	private String currentPage = "/pcs-web/help/content/overview.htm";
 
+	/**
+	 * Initialization method called on bean construction.  This method opens and parses the contents.json file, 
+	 * and generates a JSF tree browser from those contents.  Each leaf node will then contain a {@link HelpPageLink} that links to 
+	 * HTML content in the help/content/ directory. 
+	 */
 	@PostConstruct
 	private void init() {
 		
@@ -110,7 +119,10 @@ public class HelpController implements Serializable {
 
 	}
 	
-
+	/**
+	 * JSF Action method that renders the help documentation page
+	 * @return the JSF page to render
+	 */
 	public String doViewDocumentation() {
 
 		breadcrumbMenuBean.addFirstItem("Documentation", "/modules/util/documentation.xhtml");
@@ -118,6 +130,10 @@ public class HelpController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the user clicks on a table of contents tree node leaf
+	 * @param newPage the HTML file name that was stored in the tree node {@link HelpPageLink}
+	 */
 	public void doUpdatePage(String newPage) {
 		// set the current page
 		this.currentPage = "/pcs-web/help/content/" + newPage;

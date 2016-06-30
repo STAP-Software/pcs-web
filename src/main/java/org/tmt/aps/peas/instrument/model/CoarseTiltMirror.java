@@ -15,6 +15,11 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Instrument configuration Entity class representing the CoarseTiltMirror table.  
+ * Contains <code>@Transient</code> fields used to store current state information for current state and current position values.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "CoarseTiltMirror")
 public class CoarseTiltMirror implements DeviceStates {

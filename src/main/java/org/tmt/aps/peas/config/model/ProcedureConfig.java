@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.config.model;
 
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Column;
@@ -19,11 +18,7 @@ import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -35,6 +30,10 @@ import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
+/**
+ * Configuration entity class representing the ProcedureConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "ProcedureConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

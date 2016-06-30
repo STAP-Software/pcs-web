@@ -18,6 +18,11 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+/**
+ * Instrument configuration Entity class representing the FilterWheel table.  Transient fields for managing filters 1 through 6, 
+ * and state related transient fields for the selected filter and the filter wheel state.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "FilterWheel")
 
@@ -124,6 +129,9 @@ public class FilterWheel implements DeviceStates {
 		this.filterSet =  filterList;
 	}
 	
+	/** 
+	 * updates the transient filter1..6 values from the filterSet in the database
+	 */
 	public void updateSlotsFromList() {
 		filter1 = null;
 		filter2 = null;
@@ -156,6 +164,9 @@ public class FilterWheel implements DeviceStates {
 		}
 	}
 	
+	/**
+	 * Updates the transient filter records with their wheel position
+	 */
 	public void updateFilterStates() {
 		if (filter1 != null) filter1.setWheelPosition(1);
 		if (filter2 != null) filter2.setWheelPosition(2);

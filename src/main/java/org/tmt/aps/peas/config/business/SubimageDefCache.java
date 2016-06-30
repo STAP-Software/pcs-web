@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.config.business;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -16,13 +15,17 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.model.SubimageDef;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 
+/**
+ * EJB Singleton cache for subimage definitions.  On initialization, this EJB calls {@link org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt#getSubimageDefList(Long, Long)} to load all subimage definition values from the database into this cache. 
+ * Provides methods for reading subimage definitions.  This EJB is initialized on startup.
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class SubimageDefCache {

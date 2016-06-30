@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
+/**
+ * Configuration entity class representing the AutoCenterTelConfigDefaults table.  This table is joined with the AutoCenterTelConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "AutoCenterTelConfigDefaults")
 @PrimaryKeyJoinColumn(name="autoCenterTelConfigId")

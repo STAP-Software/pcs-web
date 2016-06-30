@@ -15,6 +15,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Instrument configuration Entity class representing the ReferenceBeam table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "ReferenceBeam")
 @NamedQueries({

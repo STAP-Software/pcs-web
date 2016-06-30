@@ -36,7 +36,11 @@ import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
-
+/**
+ * JSF Controller for missing spots configuration user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class MissingSpotsController implements Serializable {
@@ -294,6 +298,10 @@ public class MissingSpotsController implements Serializable {
 		return pupilMaskType.isPupilMaskTypeSufs();
 	}
 
+	/**
+	 * Listener called when the mask or missing spot type is changed.
+	 * Loads values from database for new selected mask or missing spot type.
+	 */
 	public void listViewChangeListener() {
 		// values have changed, refresh display values
 		try {
@@ -317,12 +325,18 @@ public class MissingSpotsController implements Serializable {
 
 	}
 
-	
+	/**
+	 * Listener called when a missing spot in the list is changed.  Refreshes the missing spot list.
+	 */
 	public void spotChangeListener(AjaxBehaviorEvent event) {
 
 		refreshMissingSpots();
 	}
 
+	/**
+	 * Action method to view missing spots.  Updates the display with missing spots.
+	 * @return JSF page to render
+	 */
 	public String doViewMissingSpots() {
 		try {
 			if (pupilMaskType.isPupilMaskTypeSufs()) {
@@ -346,6 +360,9 @@ public class MissingSpotsController implements Serializable {
 
 	}
 
+	/**
+	 * Action method called when user clicks 'Save'.  Updates the list of missing spots in the database.
+	 */
 	public void doSave() {
 		try {
 			refreshMissingSpots();

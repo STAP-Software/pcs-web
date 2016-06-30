@@ -23,6 +23,12 @@ import javax.persistence.Transient;
 import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Instrument configuration Entity class representing the Camera table.  Contains <code>@Transient</code> fields used to store current state information for
+ * the current ref beam, shutter state, two position mechanism state and instrument and electronics box temperatures.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Camera")
 @NamedQueries({
@@ -176,7 +182,11 @@ public class Camera {
 		this.cameraId = cameraId;
 	}
 
-	// return the ref beam with the closest wavelength
+	/**
+	 * Returns the reference beam record with the closest wavelength to the passed wavelength
+	 * @param wavelength the wavelength to compare with
+	 * @return the reference beam closest to the passed wavelength
+	 */
 	public ReferenceBeam getReferenceBeamByWavelength(float wavelength) {
 		
 		ReferenceBeam bestCandidate = null;
@@ -194,6 +204,9 @@ public class Camera {
 		return bestCandidate;
 	}
 
+	/**
+	 * @return a list of reference beam records ordered by number
+	 */
 	public List<ReferenceBeam> getOrderedReferenceBeamList() {
 		List<ReferenceBeam> refBeamList = new ArrayList<ReferenceBeam>(referenceBeamSet);
 		

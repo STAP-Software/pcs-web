@@ -17,6 +17,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Configuration entity class representing the PeripheralSpotList table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PeripheralSpotList")
 @NamedQueries({

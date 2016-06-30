@@ -14,7 +14,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
-
+/**
+ * Instrument configuration Entity class representing the Filter table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "Filter")
 @NamedQueries({

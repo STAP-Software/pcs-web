@@ -209,7 +209,6 @@ public class ApplicationScopeBean implements Serializable {
 	
 	/**
 	 * 
-	 * @author BalusC
 	 */
 	public static String getCookieValue(HttpServletRequest request, String name) {
 	    Cookie[] cookies = request.getCookies();
@@ -225,7 +224,6 @@ public class ApplicationScopeBean implements Serializable {
 
 	/**
 	 * 
-	 * @author BalusC
 	 */
 	public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 	    Cookie cookie = new Cookie(name, value);
@@ -236,7 +234,6 @@ public class ApplicationScopeBean implements Serializable {
 
 	/**
 	 * 
-	 * @author BalusC
 	 */
 	public static void removeCookie(HttpServletResponse response, String name) {
 	    addCookie(response, name, null, 0);

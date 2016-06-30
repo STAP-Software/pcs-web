@@ -19,6 +19,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
 
+/**
+ * Configuration entity class representing the CalcM2M1Config table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "CalcM2M1Config")
 @Inheritance(strategy=InheritanceType.JOINED)

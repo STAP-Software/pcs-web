@@ -51,11 +51,8 @@ public class PeasProperties {
 	}
 
 	/**
-	 * Static method will read from the weblogic properties file of the current server context.
-	 * 
-	 * @param prop
-	 *            String property to look up
-	 * @exception
+	 * Static method will read from the peas.properties file of the current server context.
+	 * @param prop String property to look up
 	 */
 	public String getProp(String prop) throws Exception {
 		String propValue = properties.getProperty(prop);

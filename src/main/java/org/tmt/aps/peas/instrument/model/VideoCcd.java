@@ -5,6 +5,10 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+/**
+ * @deprecated
+ * @author smichaels
+ */
 public class VideoCcd {
 
 	public static final int POWER_STATE_ON = 1;

@@ -10,10 +10,14 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.extinf.CommandFailureException;
-import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * EJB Session bean for the PCS CCD command interface. 
+ * This EJB is the single entry point to the PCS CCD interface called from executors and diagnostic user interfaces. 
+ * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * @author smichaels
+ */
 @Stateless
 public class CcdMgmt {
 

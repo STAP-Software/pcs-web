@@ -5,6 +5,10 @@
  */
 package org.tmt.aps.peas.instrument.model;
 
+/**
+ * Data class representing the shutter state
+ * @author smichaels
+ */
 public class Shutter {
 
 	public static final int STATE_OPEN = 1;
@@ -13,12 +17,7 @@ public class Shutter {
 	public static final int STATE_IN_TRANSIT = 4;
 
 	private int state;
-	private float exposureTime;
 
-	public Shutter(int state, float exposureTime) {
-		this.state = state;
-		this.exposureTime = exposureTime;
-	}
 	
 	public Shutter() {
 	}
@@ -29,14 +28,6 @@ public class Shutter {
 
 	public void setState(int state) {
 		this.state = state;
-	}
-
-	public float getExposureTime() {
-		return exposureTime;
-	}
-
-	public void setExposureTime(float exposureTime) {
-		this.exposureTime = exposureTime;
 	}
 
 	public String getShutterDisplayString() {

@@ -1,10 +1,13 @@
 package org.tmt.aps.peas.config.model;
 
-import java.util.Arrays;
-
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Constants data class containing primary mirror constants.  This class is populated from database data in the {@link Constant} class and is made available to executors and
+ * the user interface controllers in the {@link org.tmt.aps.peas.config.business.ConstantsCache}.
+ * @author smichaels
+ */
 public class PrimaryMirrorConstants {
 
 	int[] nColor;

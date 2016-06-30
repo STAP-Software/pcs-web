@@ -21,6 +21,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.FilterType;
 
+/** 
+ * JSF Converter class enabling {@link FilterType} objects to be used in JSF pages
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class FilterTypeConverter implements Converter, Serializable {

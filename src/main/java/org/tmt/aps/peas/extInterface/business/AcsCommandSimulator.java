@@ -8,6 +8,10 @@ import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * ACS command simulator.  Generates dummy values for queries.
+ * @author smichaels
+ */
 public class AcsCommandSimulator implements AcsCommand {
 
 	Logger logger = Logger.getLogger(this.getClass());

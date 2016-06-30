@@ -26,6 +26,11 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 
+/**
+ * JSF Controller for global configuration user interface and zernike order user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class GlobalConfigController implements Serializable {
@@ -46,7 +51,6 @@ public class GlobalConfigController implements Serializable {
 
 	Integer[] sufsZernikeOrderObjectArray;
 	
-	// convenience methods for encoding and decoding
 
 	public Integer[] getSufsZernikeOrderObjectArray() {
 		return sufsZernikeOrderObjectArray;
@@ -70,10 +74,16 @@ public class GlobalConfigController implements Serializable {
 
 	}
 
+	/**
+	 * Action method called when 'cancel' button is clicked on global configuration page
+	 */
 	public void doCancelSaveSetup() throws Exception {
 		
 	}
 
+	/**
+	 * Action method to save the global configuration to the database
+	 */
 	public void doSaveSetup() {
 
 		try {
@@ -87,6 +97,10 @@ public class GlobalConfigController implements Serializable {
 		}
 	}
 
+	/**
+	 * Action method to view the current global configuration values
+	 * @return JSF page to render
+	 */
 	public String doViewGlobalConfig() {
 		
 		
@@ -115,7 +129,10 @@ public class GlobalConfigController implements Serializable {
 	}
 	
 	
-	
+	/**
+	 * Action method to view the current SUFS Zernike order calculation configuration
+	 * @return JSF page to render
+	 */
 	public String doViewSufsZernikes() {
 		
 		try {
@@ -145,6 +162,9 @@ public class GlobalConfigController implements Serializable {
 
 	}
 
+	/**
+	 * Action method saving SUFS Zernike orders to calculate.
+	 */
 	public void doSaveSufsZernikes() {
 
 		try {
@@ -164,6 +184,9 @@ public class GlobalConfigController implements Serializable {
 
 	}
 
+	/**
+	 * Action method called when user clicks 'cancel' on SUFS Zernike order page
+	 */
 	public void doCancelSaveSufsZernikes() {
 
 

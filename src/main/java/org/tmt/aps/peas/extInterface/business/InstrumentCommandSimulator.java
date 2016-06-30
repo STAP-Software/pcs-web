@@ -11,6 +11,11 @@ import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.InstrumentInterface;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * PCS Instrument command simulator.  Generates dummy values for queries.
+ * This simulator is for new Instrument commands, that are the union of PCS camera, CCD and additional new commands.
+ * @author smichaels
+ */
 public class InstrumentCommandSimulator implements InstrumentInterface {
 
 	Logger logger = Logger.getLogger(this.getClass());

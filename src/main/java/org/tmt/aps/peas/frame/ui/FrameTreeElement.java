@@ -7,6 +7,10 @@ package org.tmt.aps.peas.frame.ui;
 
 import org.apache.log4j.Logger;
 
+/**
+ * JSF class to support tree display in frame tools frame browser window
+ * @author smichaels
+ */
 public class FrameTreeElement {
 
 	Logger logger = Logger.getLogger(this.getClass());

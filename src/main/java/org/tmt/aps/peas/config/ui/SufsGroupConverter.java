@@ -19,9 +19,13 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
+/**
+ * JSF Converter class to enable usage of SufsGroup objects on JSF pages
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class SufsGroupConverter implements Converter, Serializable {

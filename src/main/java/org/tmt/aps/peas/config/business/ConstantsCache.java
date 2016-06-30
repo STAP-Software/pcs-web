@@ -22,6 +22,11 @@ import org.tmt.aps.peas.config.model.SufsConstants;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 
+/**
+ * EJB Singleton cache for all constants.  On initialization, this EJB calls {@link org.tmt.aps.peas.config.business.ConstantsMgmt#loadConstants(List)} to pull all constant values from the database into this cache. 
+ * Provides methods for reading constants values.  This EJB is initialized on startup.
+ * @author smichaels
+ */
 @Singleton
 @Startup
 @Named

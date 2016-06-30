@@ -15,6 +15,10 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.session.model.ExtInfConnectConfig;
 
+/**
+ * EJB Singleton cache that contains the external interface connection configuration (actual connection vs simulator, connection state, etc)
+ * @author smichaels
+ */
 @Singleton
 @Startup
 @Lock(LockType.READ)

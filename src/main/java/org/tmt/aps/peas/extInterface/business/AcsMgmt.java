@@ -10,6 +10,13 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 
+/**
+ * EJB Session bean for the ACS command interface.  
+ * This EJB is the single entry point to the ACS interface called from executors and diagnostic user interfaces. 
+ * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * @author smichaels
+ *
+ */
 @Stateless
 public class AcsMgmt {
 
@@ -43,6 +50,11 @@ public class AcsMgmt {
 		extInfFactory.getAcsCommand().loadSnap(snapNumber);
 	}
 
+	/**
+	 * Commands actuator deltas given an array numbered from element 1 to 108
+	 * @param actDeltas - array of length 109 actuator deltas, element 0 is ignored.
+	 * @return the command elapsed time in ms
+	 */
 	public long commandActuatorDelta(double[] actDeltas) throws Exception {
 		long start = System.currentTimeMillis();
 		extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
@@ -50,7 +62,11 @@ public class AcsMgmt {
 		return end - start;
 	}
 	
-	// Convenience routine 
+	/**
+	 * Commands actuator deltas given a 2-d array of Float actuators
+	 * @param actDeltas array of 36,3 actuator deltas
+	 * @return the command elapsed time in ms
+	 */
 	public long commandActuatorDeltas(Float[][] actDeltas) throws Exception {
 		float[][] myFloat = new float[actDeltas.length][actDeltas[0].length];
 		for (int i=0; i<actDeltas.length; i++) {
@@ -65,6 +81,11 @@ public class AcsMgmt {
 	}
 	
 	
+	/**
+	 * Commands actuator deltas given a 2-d array of float actuators
+	 * @param actDeltas array of 36,3 actuator deltas
+	 * @return the command elapsed time in ms
+	 */
 	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
 		
 		// interface requires that we use indexes 1-108
@@ -87,6 +108,11 @@ public class AcsMgmt {
 		return deltaMs;
 	}
 	
+	/**
+	 * Commands actuator deltas given an array of 108 actuators
+	 * @param actDeltas array of 108 actuator deltas
+	 * @return the command elapsed time in ms
+	 */
 	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
 		
 		// interface requires that we use indexes 1-108

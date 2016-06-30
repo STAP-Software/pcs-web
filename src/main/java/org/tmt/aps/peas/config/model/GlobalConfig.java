@@ -18,12 +18,15 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 
+/**
+ * Configuration entity class representing the GlobalConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "GlobalConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

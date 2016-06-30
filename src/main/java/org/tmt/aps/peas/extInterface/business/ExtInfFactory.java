@@ -5,9 +5,6 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
-
 import javax.annotation.PostConstruct;
 import javax.ejb.AccessTimeout;
 import javax.ejb.DependsOn;
@@ -31,6 +28,12 @@ import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.DcsRsk;
 import org.tmt.aps.peas.extinf.InstrumentInterface;
 
+/**
+ * EJB Singleton managing external interface command delegation, either to the RPC client or a simulator.
+ * If an interface is a simultor or not is determined by {@link ExtInfConfigState} 
+ * @author smichaels
+ *
+ */
 @Singleton
 @Startup
 @Lock(LockType.READ)
@@ -63,8 +66,9 @@ public class ExtInfFactory {
 
 	}
 
-
-
+	/**
+	 * @return a reference to the ACS RPC client, or a simulator depending on current interface connection configuration
+	 */
 	public AcsCommand getAcsCommand() throws Exception {
 
 		try {
@@ -81,6 +85,9 @@ public class ExtInfFactory {
 		}
 	}
 
+	/**
+	 * @return a reference to the PCS Camera RPC client, or a simulator depending on current interface connection configuration
+	 */
 	@Lock(LockType.WRITE)
 	@AccessTimeout(value=2000)  // two seconds
 	public CameraCommand getCameraCommand() throws Exception {
@@ -99,6 +106,9 @@ public class ExtInfFactory {
 		}
 	}
 	
+	/**
+	 * @return a reference to the PCS CCD RPC client, or a simulator depending on current interface connection configuration
+	 */
 	public CcdCommand getCcdCommand() throws Exception {
 
 		try {
@@ -115,6 +125,9 @@ public class ExtInfFactory {
 		}
 	}
 
+	/**
+	 * @return a reference to the DCS RPC client, or a simulator depending on current interface connection configuration
+	 */
 	public DcsCommand getDcsCommand() throws Exception {
 
 		try {
@@ -131,6 +144,9 @@ public class ExtInfFactory {
 		}
 	}
 	
+	/**
+	 * @return a reference to the PCS Instrument RPC client, or a simulator depending on current interface connection configuration
+	 */
 	public InstrumentInterface getInstrumentCommand() throws Exception {
 
 		try {
@@ -149,6 +165,9 @@ public class ExtInfFactory {
 		}
 	}
 
+	/**
+	 * Resets all RPC client instances so that the next command will instantiate new ones.
+	 */
 	public void resetAll() {
 		acs = null;
 		dcsRsk = null;
@@ -216,12 +235,8 @@ public class ExtInfFactory {
 
 	private InstrumentInterface getInstrumentCommandRemote() throws Exception {
 		try {
-			String instrumentExtInfServer = peasProperties.getProp("org.tmt.aps.peas.instrument_ext_inf_server");
-			String instrumentServiceName = peasProperties.getProp("org.tmt.aps.peas.instrument_service_name");
-
-			Registry registry = LocateRegistry.getRegistry(instrumentExtInfServer);
-			InstrumentInterface instCommand = (InstrumentInterface) registry.lookup(instrumentServiceName);
-			return instCommand;
+			
+			throw new UnsupportedOperationException("Not Implemented");
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
 			throw e;

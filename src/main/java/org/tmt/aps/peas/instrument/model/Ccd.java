@@ -23,6 +23,12 @@ import javax.persistence.Transient;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.common.RectListEncoder;
 
+/**
+ * Instrument configuration Entity class representing the Ccd database table.  Also contains transient fields for CCD state and temperature.
+ * Hot pixel lists are encoded strings in the database.  This class encodes and decodes hot pixel lists from the database.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
@@ -185,17 +191,28 @@ public class Ccd {
 		return "";
 	}
 
+	/**
+	 * Returns the list of hot pixels for this CCD
+	 * @return a list of rectangles for all hot pixels 
+	 */
 	public List<Rect> getHotPixelList() {
 		
 		return RectListEncoder.decodeList(hotPixelListEncoded);
 	}
 	
+	/**
+	 * Returns the list of hot columns for this CCD
+	 * @return a list of rectangles for all hot columns 
+	 */
 	public List<Rect> getHotColumnList() {
 		
 		return RectListEncoder.decodeList(hotColumnListEncoded);
 	}
 	
-	// this method returns all rects in hot pixel list, plus generated rects for each pixel in each hot column
+	/**
+	 * Returns all rectangles in hot pixel list, plus generated rectangles for each pixel in each hot column
+	 * @return
+	 */
 	public List<Rect> getAllHotPixelRects() {
 		
 		List<Rect> allHotPixelRects = new ArrayList<Rect>();
@@ -211,13 +228,20 @@ public class Ccd {
 		return allHotPixelRects;
 		
 	}
-	
+	/**
+	 * Removes a hot pixel from this CCD instance
+	 * @param boundingRect
+	 */
 	public void removeHotPixel(Rect boundingRect) {
 		
 		List<Rect> hotPixelList = RectListEncoder.removeRect(getHotPixelList(), boundingRect);		
 		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
 	
+	/**
+	 * Adds a hot pixel to this CCD instance
+	 * @param hotPixel the hot pixel to add
+	 */
 	public void addHotPixel(Rect hotPixel) {
 		
 		List<Rect> hotPixelList = getHotPixelList();
@@ -226,12 +250,20 @@ public class Ccd {
 		hotPixelListEncoded = RectListEncoder.encodeList(hotPixelList);
 	}
 	
+	/**
+	 * Removes a hot column from this CCD
+	 * @param boundingRect the rectangle bounding the hot column
+	 */
 	public void removeHotColumn(Rect boundingRect) {
 		
 		List<Rect> hotColumnList = RectListEncoder.removeRect(getHotColumnList(), boundingRect);		
 		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
 	}
 		
+	/**
+	 * Adds a hot column to this CCD
+	 * @param hotColumn the hot column to add
+	 */
 	public void addHotColumn(Rect hotColumn) {
 		
 		List<Rect> hotColumnList = getHotColumnList();

@@ -19,6 +19,11 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
+/**
+ * JSF Controller exposing the {#link Instrument} from the {@link PhysicalModel}
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class CameraDefController implements Serializable {

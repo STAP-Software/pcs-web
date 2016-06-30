@@ -31,6 +31,10 @@ import org.tmt.aps.peas.instrument.model.DeviceStates;
 import org.tmt.aps.peas.instrument.model.Shutter;
 import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 
+/**
+ * JSF Controller class for PCS camera manual/diagnostic user interface.
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class CameraManualController implements Serializable {
@@ -175,6 +179,10 @@ public class CameraManualController implements Serializable {
 		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
 	}
 
+	/**
+	 * JSF Action method to render the Camera I/F manual/diagnostic user interface
+	 * @return the JSF page to render
+	 */
 	public String doViewCameraDiagnostic() {
 
 		try {
@@ -191,11 +199,17 @@ public class CameraManualController implements Serializable {
 		
 	}
 
+	/**
+	 * JSF Action method handling user pressing the 'cancel' button
+	 */
 	public String doCancel() {
 
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method handling when the user clicks the 'Send Command' button
+	 */
 	public void doSendCommand() {
 
 		try {

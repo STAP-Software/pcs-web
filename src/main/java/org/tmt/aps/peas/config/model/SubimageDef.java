@@ -7,16 +7,14 @@ package org.tmt.aps.peas.config.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Data class defines definition information for a single subimage. The definition includes: 'ideal' ccd spot centroid, the spotType (interior, peripheral),
+ * the missingSpotType (good, missing, missing for analysis), and if the spot is used for M2 calculation.
+ * Instances of this class are generally managed as a list that corresponds to a specific mask: {@link org.tmt.aps.peas.computation.model.SubimageDefList}.
+ * @author smichaels
+ * @see org.tmt.aps.peas.computation.model.SubimageDefList
+ */
 public class SubimageDef {
-
-	
-	// subimage def defines all the definition information for a subimage.
-	// The 'ideal' ccd spot centroid
-	// the spotType - interior, peripheral
-	// the missingSpotType - good, missing, missing for analysis
-	
-	// The class Subimage will contain the actual centroid location, intensity, peak and findCentStatus, and replaces FindCentResult, 
-	// and also contains a reference to the SubimageDef for that subimage
 	
 	int subimageNumber;
 

@@ -10,6 +10,10 @@ import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * DCS command simulator.  Generates dummy values for queries.
+ * @author smichaels
+ */
 public class DcsCommandSimulator implements DcsCommand {
 
 	Logger logger = Logger.getLogger(this.getClass());

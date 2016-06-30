@@ -20,6 +20,10 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Configuration entity class representing the GlobalConfigDefaults table.  This table is joined with the GlobalConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "GlobalConfigDefaults")
 @PrimaryKeyJoinColumn(name="globalConfigId")

@@ -17,6 +17,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Configuration Entity class representing the SufsGroup table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "SufsGroup")
 @NamedQueries({ @NamedQuery(name = "findAllSufsGroups", query = "SELECT o from SufsGroup o") })

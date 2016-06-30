@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
+/**
+ * Configuration entity class representing the CentroidOffsetsConfigDefaults table.  This table is joined with the CentroidOffsetsConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "CentroidOffsetsConfigDefaults")
 @PrimaryKeyJoinColumn(name="centroidOffsetsConfigId")

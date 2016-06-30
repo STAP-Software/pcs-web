@@ -21,6 +21,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
+/** 
+ * JSF Converter class enabling {@link ReferenceBeam} objects to be used in JSF pages
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class RefBeamConverter implements Converter, Serializable {

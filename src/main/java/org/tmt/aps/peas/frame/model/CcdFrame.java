@@ -26,6 +26,12 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Entity class representing the CcdFrame database table.  The class also contains a number of <code>@Transient</code> fields used to contain information 
+ * about the frame, but that is not stored in the database.  These include rawFrame, correctedFrame, pupilMaskType and false color png byte array.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "CcdFrame")
 @NamedQueries({

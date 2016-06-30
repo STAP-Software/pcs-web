@@ -18,6 +18,10 @@ import javax.persistence.Table;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Configuration entity class representing the MissingSpotList table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "MissingSpotList")
 @NamedQueries({

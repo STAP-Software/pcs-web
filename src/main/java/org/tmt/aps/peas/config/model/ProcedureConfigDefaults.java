@@ -18,6 +18,10 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Configuration entity class representing the ProcedureConfigDefaults table.  This table is joined with the ProcedureConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "ProcedureConfigDefaults")
 @PrimaryKeyJoinColumn(name="procedureConfigId")

@@ -13,6 +13,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Instrument metadata Entity class representing the PupilMaskType table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PupilMaskType")
 @NamedQueries({ @NamedQuery(name = "findAllPupilMaskTypes", query = "SELECT o from PupilMaskType o") })

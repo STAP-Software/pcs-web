@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+/**
+ * Configuration entity class representing the AutoRefMapConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "AutoRefMapConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

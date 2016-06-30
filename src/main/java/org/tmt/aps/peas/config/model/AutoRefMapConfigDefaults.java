@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
+/**
+ * Configuration entity class representing the AutoRefMapConfigDefaults table.  This table is joined with the AutoRefMapConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "AutoRefMapConfigDefaults")
 @PrimaryKeyJoinColumn(name="autoRefMapConfigId")

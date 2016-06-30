@@ -54,6 +54,10 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 
+/**
+ * JSF Controller for the frame tools user interface
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class FrameController implements Serializable {
@@ -214,6 +218,9 @@ public class FrameController implements Serializable {
 		return allowFrameSave;
 	}
 
+	/**
+	 * Initialization method, sets up tree nodes and reloads all fits files by calling {@link #reloadFits()}
+	 */
 	@PostConstruct
 	public void init() {
 
@@ -246,6 +253,10 @@ public class FrameController implements Serializable {
 		logger.info("Frame Tree loaded in " + (end - start) + " ms");
 	}
 
+	/**
+	 * Reloads all fits files and creates maps for tree browser
+	 * @return the fits filename of the default 'first' fits file node
+	 */
 	public String reloadFits() {
 			
 		SimpleDateFormat sdf = new SimpleDateFormat("MMM dd, yyyy");
@@ -306,7 +317,9 @@ public class FrameController implements Serializable {
 		
 	}
 	
-	
+	/**
+	 * Node select listener from tree node.  Loads the selected FITS file into the frame display.
+	 */
 	public void onNodeSelect(NodeSelectEvent event) {
 
 		try {
@@ -339,6 +352,10 @@ public class FrameController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to render the frame tools view.  Calls {@link #init()}.  
+	 * @return the JSF page to render
+	 */
 	public String doSetupFrameViewer() {
 
 		try {
@@ -356,7 +373,11 @@ public class FrameController implements Serializable {
 		}
 
 	}
-
+	
+	/**
+	 * Sets up a raw frame for display (one that has been manually taken)
+	 * @param rawFrame the raw frame
+	 */
 	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
 
 		try {
@@ -375,6 +396,9 @@ public class FrameController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method called when the user marks the frame display.  Updates the centroid list with the new marked centroid.
+	 */
 	public void doHandMark() {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
@@ -399,12 +423,18 @@ public class FrameController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to reset the frame marking data, clearing all centroids.
+	 */
 	public void doResetMarking() {
 		centroidXs = null;
 		centroidYs = null;
 		markedSubimageList.clear();
 	}
 
+	/**
+	 * JSF Action method removing the centroid last marked when the user clicks 'Undo'.
+	 */
 	public void doUndoMarking() {
 		// remove the last one marked
 
@@ -422,6 +452,9 @@ public class FrameController implements Serializable {
 		markedSubimageList.remove(markedSubimageList.size() - 1);
 	}
 
+	/**
+	 * JSF Action method called as the user mouses over the frame, updates the pixel value display with the CCD value from the raw frame.
+	 */
 	public void doGetFrameValue() {
 		
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
@@ -435,6 +468,9 @@ public class FrameController implements Serializable {
 		pixelValue = "" + value;
 	}
 
+	/**
+	 * JSF Action method to saves a frame that was taken manually
+	 */
 	public void doSaveFrame() {
 
 		try {
@@ -467,14 +503,25 @@ public class FrameController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to set the frame display mode to allow panning and zooming into the frame
+	 * @param setting if true sets the pan/zoom mode on
+	 */
 	public void doSetPanZoomDisplayMode(boolean setting) {
 		frameEditMode = setting;
 	}
 
+	/**
+	 * JSF Action method to set the frame display mode to allow frame marking
+	 * @param setting if true sets the frame marking mode on
+	 */
 	public void doSetMarkingDisplayMode(boolean setting) {
 		frameEditMode = !setting;
 	}
 
+	/**
+	 * JSF Action method that updates the marking info dialog with all the current frame marking
+	 */
 	public void doUpdateMarkingInfoDialog() {
 		markedSubimageList = new ArrayList<MarkedSubimage>();
 

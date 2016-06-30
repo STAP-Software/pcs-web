@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -26,6 +25,10 @@ import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.frame.ui.FrameController;
 
+/**
+ * JSF Controller class for PCS CCD manual/diagnostic user interface.
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class CcdManualController implements Serializable {
@@ -151,6 +154,10 @@ public class CcdManualController implements Serializable {
 		this.imageSize = imageSize;
 	}
 
+	/**
+	 * JSF Action method to render the PCS CCD manual/diagnostic user interface
+	 * @return the JSF page to render
+	 */
 	public String doViewCcdDiagnostic() {
 
 		commandSelection = 1;
@@ -160,6 +167,9 @@ public class CcdManualController implements Serializable {
 		return "/modules/diagnostic/ccdDiagnostic.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method called when the user clicks on the 'Send Command' button
+	 */
 	public void doSendCommand() {
 		try {
 
@@ -219,6 +229,10 @@ public class CcdManualController implements Serializable {
 		}
 
 	}
+	
+	/**
+	 * JSF Action method called when the user clicks on the 'Send Command' button from the advanced 'Instrument' panel 
+	 */
 	public void doSendAdvCommand() {
 		try {
 			
@@ -279,6 +293,9 @@ public class CcdManualController implements Serializable {
 
 	}
 	
+	/**
+	 * JSF Action method called when the user clicks on the 'Refresh' button in the advanced 'Instrument' panel
+	 */
 	public void doRefresh() {
 		try {
 
@@ -302,6 +319,9 @@ public class CcdManualController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the user clicks the 'Cancel' button
+	 */
 	public String doCancel() {
 
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";

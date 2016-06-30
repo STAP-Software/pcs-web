@@ -13,6 +13,10 @@ import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * PCS Camera command simulator.  Generates dummy values for queries.
+ * @author smichaels
+ */
 public class CameraCommandSimulator implements CameraCommand {
 
 	Logger logger = Logger.getLogger(this.getClass());

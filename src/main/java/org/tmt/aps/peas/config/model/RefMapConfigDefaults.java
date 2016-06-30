@@ -21,6 +21,13 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
+/** 
+ * Configuration entity class representing the RefMapConfigDefaults table.  This information does not need to be stored with a procedure 
+ * (it already is as part of the {@link ProcedureConfig}), and hence this does not conform to the standard inheritance model and there is no 
+ * corresponding RefMapConfig table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "RefMapConfigDefaults")
 @NamedQueries({

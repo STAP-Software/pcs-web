@@ -18,7 +18,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-
+/**
+ * Instrument configuration Entity class representing the PupilMask table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PupilMask")
 @NamedQueries({

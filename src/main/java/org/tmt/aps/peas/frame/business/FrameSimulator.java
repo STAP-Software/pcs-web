@@ -21,6 +21,11 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
+/**
+ * Singleton EJB handling frame simulation (frame from file), including support for multiple frames.
+ * @author smichaels
+ *
+ */
 @Singleton
 public class FrameSimulator {
 
@@ -33,6 +38,11 @@ public class FrameSimulator {
 	
 	private List<CcdFrame> frameList;
 	
+	/**
+	 * Initialization method called from {@link org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt#performProcedureStartup(org.tmt.aps.peas.procedure.model.Procedure, List)}, 
+	 * takes a list of frames from file, loads the CCD frames and generates the PNG files for display.
+	 * @param fitsFilenameList the list of fits files to use
+	 */
 	public void init(List<FitsFilename> fitsFilenameList) throws Exception {
 		frameList = new ArrayList<CcdFrame>();
 		
@@ -51,6 +61,11 @@ public class FrameSimulator {
 		}
 	}
 	
+	/**
+	 * Returns the frame with the given sequence index 
+	 * @param index the index of the frame in the frame sequence 
+	 * @return the CcdFrame from file
+	 */
 	public CcdFrame getFrame(int index) {
 		
 		CcdFrame ccdFrame = frameList.get(index);

@@ -13,6 +13,12 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Entity representing the Constant database table.  This table contains metadata for each constant and a string data value field.
+ * Data from the Constant database table is decoded and used to populate {@link PhasingConstants}, {@link PrimaryMirrorConstants}, {@link PrimaryMirrorSegmentConstants}, 
+ * {@link SufsConstants} and {@link TelescopeConstants}
+ * @author smichaels
+ */
 @Entity
 @Table(name = "Constant")
 @NamedQueries({ @NamedQuery(name = "findAllConstants", query = "SELECT g from Constant g") })

@@ -15,6 +15,10 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
+/**
+ * Configuration entity class representing the CalcM2M1ConfigDefaults table.  This table is joined with the CalcM2M1Config table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "CalcM2M1ConfigDefaults")
 @PrimaryKeyJoinColumn(name="calcM2M1ConfigId")

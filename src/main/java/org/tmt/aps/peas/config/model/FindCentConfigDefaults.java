@@ -16,6 +16,10 @@ import javax.persistence.Table;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Configuration entity class representing the FindCentConfigDefaults table.  This table is joined with the FindCentConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "FindCentConfigDefaults")
 @PrimaryKeyJoinColumn(name="findCentConfigId")

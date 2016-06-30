@@ -27,6 +27,11 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 
+/**
+ * JSF Controller class for ACS manual/diagnostic user interface.
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class AcsManualController implements Serializable {
@@ -99,6 +104,10 @@ public class AcsManualController implements Serializable {
 		this.actDeltas = actDeltas;
 	}
 
+	/**
+	 * Handles file update of actuator deltas files
+	 * @param event the file upload event containing the file that was uploaded
+	 */
 	public void handleFileUpload(FileUploadEvent event) {
 
 		BufferedReader br = null;
@@ -131,6 +140,10 @@ public class AcsManualController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to render the ACS manual/diagnostic view
+	 * @return the JSF page to render
+	 */
 	public String doViewAcsManualInterface() {
 
 		breadcrumbMenuBean.addFirstItem("ACS Manual Interface", "/modules/diagnostic/acsManualInterface.xhtml");
@@ -139,10 +152,16 @@ public class AcsManualController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method that does nothing
+	 */
 	public void doNothing() {
 		
 	}
 	
+	/**
+	 * JSF Action method to clear the actuator deltas
+	 */
 	public void doClear() {
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
@@ -151,7 +170,9 @@ public class AcsManualController implements Serializable {
 		}
 	}
 	
-	
+	/**
+	 * JSF Action method that sends the actuator commands
+	 */
 	public void doSendActDeltaCommands() {
 
 		try {
@@ -175,6 +196,9 @@ public class AcsManualController implements Serializable {
 		init();
 	}
 
+	/**
+	 * JSF Action method that loads the ACS snapshot
+	 */
 	public void doLoadSnapshot() {
 
 		try {
@@ -197,6 +221,9 @@ public class AcsManualController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action methos that takes an ACS snaphot
+	 */
 	public void doTakeSnapshot() {
 
 		try {
@@ -218,6 +245,9 @@ public class AcsManualController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method that sends commands to query the mirror temperature
+	 */
 	public void doQueryMirrorTemp() {
 		try {
 			mirrorTemp = acsMgmt.queryMirrorTemp();
@@ -235,6 +265,9 @@ public class AcsManualController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method that sends commands to query if ACS is running
+	 */
 	public void doQueryRunning() {
 		try {
 			acsRunning = acsMgmt.queryRunning();
@@ -252,6 +285,9 @@ public class AcsManualController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method that sends commands to query the RMS actuator move
+	 */
 	public void doQueryRmsActMove() {
 		try {
 			rmsActuatorMove = acsMgmt.queryRmsActuMove();
@@ -268,6 +304,9 @@ public class AcsManualController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method that sends all ACS query commands
+	 */
 	public void doQueryAll() {
 		try {
 			mirrorTemp = acsMgmt.queryMirrorTemp();

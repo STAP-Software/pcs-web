@@ -31,6 +31,11 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
+/**
+ * JSF Controller for reference beam user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class RefBeamController implements Serializable {
@@ -85,6 +90,10 @@ public class RefBeamController implements Serializable {
 		}
 	}
 
+	/**
+	 * Validates the form.  Does not allow duplicate reference beam numbers to be created.
+	 * @param event
+	 */
 	public void validate(ComponentSystemEvent event) {
 
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -124,6 +133,10 @@ public class RefBeamController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to view the reference beam list 
+	 * @return the JSF page to render the reference beam list
+	 */
 	public String doViewReferenceBeamList() {
 
 		try {
@@ -140,6 +153,10 @@ public class RefBeamController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to view a single reference beam configuration
+	 * @return the JSF page to render a reference beam configuration detail
+	 */
 	public String doViewReferenceBeam() {
 
 		breadcrumbMenuBean.addItem("" + referenceBeam.getRefBeamNum(), "/modules/sysadmin/refBeamDetail.xhtml");
@@ -147,6 +164,10 @@ public class RefBeamController implements Serializable {
 		return "/modules/sysadmin/refBeamDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to setup for a new reference beam to be created
+	 * @return the JSF page to render a reference beam configuration detail
+	 */
 	public String doNewReferenceBeam() {
 
 		referenceBeam = new ReferenceBeam();
@@ -159,6 +180,10 @@ public class RefBeamController implements Serializable {
 
 	}
 
+	/**
+	 * Creates or updates a reference beam configuration record
+	 * @return the JSF page to render when complete
+	 */
 	public String doSaveReferenceBeam() {
 
 		try {
@@ -185,6 +210,10 @@ public class RefBeamController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 * @return the JSF page rendering the reference beam list
+	 */
 	public String doCancelSaveReferenceBeam() {
 
 		breadcrumbMenuBean.addFirstItem("Reference Beams", "/modules/sysadmin/refBeamList.xhtml");

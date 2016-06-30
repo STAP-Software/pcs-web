@@ -20,6 +20,12 @@ import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
+/**
+ * EJB Session bean for the PCS camera command interface. 
+ * This EJB is the single entry point to the PCS camera interface called from executors and diagnostic user interfaces. 
+ * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * @author smichaels
+ */
 @Stateless
 public class CameraMgmt {
 
@@ -94,7 +100,6 @@ public class CameraMgmt {
 	 * 
 	 * @param ccdExposureTime
 	 *            Desired exposure time 100 to 360000 milliseconds
-	 * @return
 	 */
 	public void commandCcdShutterExposure(int ccdExposureTime) throws Exception {
 		extInfFactory.getCameraCommand().commandCcdShutterExposure(ccdExposureTime);
@@ -119,7 +124,6 @@ public class CameraMgmt {
 	 * @param referenceBeamCommand
 	 *            Number of the desired reference beam to turn on, 0 turns off all reference beams. Multiple reference beams can be on at
 	 *            the same time. 0-9
-	 * @return
 	 */
 	@Asynchronous
 	public Future<Integer> commandReferenceBeamState(int referenceBeamCommand) throws Exception {
@@ -169,7 +173,9 @@ public class CameraMgmt {
 	}
 
 
-
+	/**
+	 * Refreshes the camera status values into the {@link Instrument} state of the {@link PhysicalModel}.
+	 */
 	@Asynchronous
 	public Future<Boolean> refreshStatus() throws Exception {
 

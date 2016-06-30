@@ -21,6 +21,10 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 
+/** 
+ * JSF Converter class enabling {@link PupilMask} objects to be used in JSF pages
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class PupilMaskConverter implements Converter, Serializable {

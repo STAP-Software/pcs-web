@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +21,6 @@ import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
@@ -32,6 +30,11 @@ import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.SufsGroup;
 
+/**
+ * JSF Controller for the SufsGroup configuration user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class SufsGroupController implements Serializable {
@@ -84,6 +87,10 @@ public class SufsGroupController implements Serializable {
 		//Collections.sort(sufsGroupList, new BeanComparator("groupNumber"));
 	}
 
+	/**
+	 * Validates the form input.  Does not allow duplicate group numbers.
+	 * @param event
+	 */
 	public void validate(ComponentSystemEvent event) {
 
 		FacesContext fc = FacesContext.getCurrentInstance();
@@ -125,6 +132,10 @@ public class SufsGroupController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to view the SUFS group list
+	 * @return the JSF page to render the SUFS group list
+	 */
 	public String doViewSufsGroupList() {
 
 		try {
@@ -142,6 +153,10 @@ public class SufsGroupController implements Serializable {
 		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to view a single SUFS group configuration
+	 * @return the JSF page to render an SUFS group detail
+	 */
 	public String doViewSufsGroup() {
 
 		breadcrumbMenuBean.addItem("Sufs Group " + sufsGroup.getGroupNumber(), "/modules/sysadmin/sufsGroupDetail.xhtml");
@@ -149,6 +164,10 @@ public class SufsGroupController implements Serializable {
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to create a new SUFS group
+	 * @return the JSF page to render an SUFS group detail
+	 */
 	public String doNewSufsGroup() {
 
 		sufsGroup = new SufsGroup();
@@ -158,6 +177,10 @@ public class SufsGroupController implements Serializable {
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to save an SUFS group configuration.  Does not allow duplicate group numbers or group numbers greater than 7.
+	 * @return the JSF page to render the SUFS group list
+	 */
 	public String doSaveSufsGroup() {
 
 		try {
@@ -195,6 +218,11 @@ public class SufsGroupController implements Serializable {
 
 		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 	}
+	
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 * @return the JSF page to render the SUFS group list
+	 */
 
 	public String doCancelSaveSufsGroup() {
 

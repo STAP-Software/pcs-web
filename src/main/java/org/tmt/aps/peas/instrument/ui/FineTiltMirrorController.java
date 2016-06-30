@@ -10,7 +10,6 @@ import java.io.Serializable;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -22,9 +21,13 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 
+/**
+ * JSF Controller for fine tilt mirror configuration user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class FineTiltMirrorController implements Serializable {
@@ -57,6 +60,10 @@ public class FineTiltMirrorController implements Serializable {
 		this.fineTiltMirror = fineTiltMirror;
 	}
 
+	/**
+	 * JSF Action method for viewing the fine tilt mirror configuration
+	 * @return the JSF page to render the fine tilt mirror detail
+	 */
 	public String doViewFineTiltMirror() {
 		
 		try {
@@ -75,6 +82,9 @@ public class FineTiltMirrorController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method for saving the configuration of the fine tilt mirror
+	 */
 	public void doSaveFineTiltMirror() {
 
 		try {
@@ -89,6 +99,10 @@ public class FineTiltMirrorController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 * @return the JSF page to render the fine tilt mirror detail
+	 */
 	public String doCancelSaveFineTiltMirror() {
 
 		breadcrumbMenuBean.addFirstItem("Fine Tilt Mirror", "/modules/sysadmin/fineTiltMirrorDetail.xhtml");

@@ -21,6 +21,11 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
 
+/**
+ * Instrument configuration Entity class representing the PupilWheel table.  Transient fields for managing pupilMasks 1 through 6, 
+ * and state related transient fields for the selected pupil mask and the pupil wheel state.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "PupilWheel")
 public class PupilWheel implements DeviceStates {
@@ -103,6 +108,9 @@ public class PupilWheel implements DeviceStates {
 		}
 	}
 	
+	/**
+	 * @return sorted list of pupil masks from the database field: maskList, ordered by mask name
+	 */
 	public List<PupilMask> getOrigPupilMaskList() {
 		
 		List<PupilMask> maskList = new ArrayList<PupilMask>(pupilMaskSet);
@@ -128,6 +136,9 @@ public class PupilWheel implements DeviceStates {
 		this.pupilMaskSet =  pupilMaskList;
 	}
 	
+	/** 
+	 * updates the transient pupilMask1..6 values from the pupilMaskSet in the database
+	 */
 	public void updateSlotsFromList() {
 		pupilMask1 = null;
 		pupilMask2 = null;
@@ -160,6 +171,9 @@ public class PupilWheel implements DeviceStates {
 		}
 	}
 	
+	/**
+	 * Updates the transient pupilMask records with their wheel position
+	 */
 	public void updatePupilMaskStates() {
 		if (pupilMask1 != null) pupilMask1.setWheelPosition(1);
 		if (pupilMask2 != null) pupilMask2.setWheelPosition(2);

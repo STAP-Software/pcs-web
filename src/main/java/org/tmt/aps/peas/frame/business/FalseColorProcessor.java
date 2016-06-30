@@ -3,7 +3,7 @@
  * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
  * All Rights Reserved.
  */
-package org.tmt.aps.peas.frame.ui;
+package org.tmt.aps.peas.frame.business;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
@@ -14,9 +14,16 @@ import javax.imageio.ImageIO;
 
 import org.apache.log4j.Logger;
  
+/**
+ * Contains the colormap used to create the false color in all CCD images and methods to generate png formatted images from CCD values.
+ * @author smichaels
+ *
+ */
 public class FalseColorProcessor { 
 	
-	
+	/**
+	 * The color map used for PEAS PCS CCD images
+	 */
 	public static final int[][] COLORMAP = {  {0, 0, 8}, {0, 0, 16}, {0, 0, 24}, {0, 0, 32}, {0, 0, 40}, {0, 0, 48}, {0, 0, 56}, {0, 0, 64}, 
 			   {0, 0, 72}, {0, 0, 80}, {0, 0, 88}, {0, 0, 96}, {0, 0, 104}, {0, 0, 112}, {0, 0, 120}, {0, 0, 128}, 
 			   {0, 0, 136}, {0, 0, 144}, {0, 0, 152}, {0, 0, 160}, {0, 0, 168}, {0, 0, 176}, {0, 0, 184}, {0, 0, 192}, 
@@ -54,6 +61,11 @@ public class FalseColorProcessor {
 	
 	Logger logger = Logger.getLogger(this.getClass());
 
+	/**
+	 * Generates a false color png formatted image given CCD values
+	 * @param grayArray the 2-d array of CCD values
+	 * @return a byte array in png format
+	 */
 	public byte[] createImage(short[][] grayArray) {
 			
 		int width = grayArray.length; 

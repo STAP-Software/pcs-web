@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.config.model;
 
 import javax.persistence.Entity;
+
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -15,6 +16,10 @@ import javax.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
 
+/**
+ * Configuration entity class representing the CentroidOffsetsConfig table
+ * @author smichaels
+ */
 @Entity
 @Table(name = "CentroidOffsetsConfig")
 @Inheritance(strategy=InheritanceType.JOINED)

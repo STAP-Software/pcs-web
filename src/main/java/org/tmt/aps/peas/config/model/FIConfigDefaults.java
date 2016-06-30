@@ -18,6 +18,10 @@ import javax.persistence.Table;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Configuration entity class representing the FIConfigDefaults table.  This table is joined with the FIConfig table using inheritance model.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "FIConfigDefaults")
 @PrimaryKeyJoinColumn(name="fiConfigId")

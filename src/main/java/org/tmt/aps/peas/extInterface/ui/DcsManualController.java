@@ -26,6 +26,10 @@ import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.StarInfo;
 import org.tmt.aps.peas.extinf.TimeoutException;
 
+/**
+ * JSF Controller class for ACS manual/diagnostic user interface.
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class DcsManualController implements Serializable {
@@ -68,6 +72,9 @@ public class DcsManualController implements Serializable {
 		this.dcsStatus = dcsStatus;
 	}
 
+	/**
+	 * @return DCS status string 
+	 */
 	public String getDcsStatusDisplayString() {
 		switch (dcsStatus) {
 		case DcsCommand.DCS_STATUS_OFF: return "Off";
@@ -122,6 +129,10 @@ public class DcsManualController implements Serializable {
 		this.secondaryDeltaCmds = secondaryDeltaCmds;
 	}
 
+	/**
+	 * JSF Action method to render the DCS manual/diagnostic user interface
+	 * @return the JSF page to render
+	 */
 	public String doViewDcsManualInterface() {
 
 		breadcrumbMenuBean.addFirstItem("DCS Manual Interface", "/modules/diagnostic/dcsManualInterface.xhtml");
@@ -129,7 +140,9 @@ public class DcsManualController implements Serializable {
 		return "/modules/diagnostic/dcsManualInterface.xhtml?faces-redirect=true";
 
 	}
-	
+	/**
+	 * JSF Action method to query the telescope position
+	 */
 	public void doQueryTelescopePosition() {
 		try {
 			telescopePosition = dcsMgmt.queryTelescopePosition();
@@ -146,6 +159,9 @@ public class DcsManualController implements Serializable {
 		}			
 	}
 
+	/**
+	 * JSF Action method to query current star information
+	 */
 	public void doQueryStar() {
 		try {
 			starInfo = dcsMgmt.queryStar();
@@ -162,6 +178,9 @@ public class DcsManualController implements Serializable {
 		}						
 	}
 
+	/**
+	 * JSF Action method to query the DCS status
+	 */
 	public void doQueryDcsStatus() {
 		try {
 			dcsStatus = dcsMgmt.queryDcsStatus();
@@ -178,6 +197,9 @@ public class DcsManualController implements Serializable {
 		}						
 	}
 	
+	/**
+	 * JSF Action method to query the secondary position
+	 */
 	public void doQuerySecondary() {
 		try {
 			m2Pos = dcsMgmt.querySecondary();
@@ -194,6 +216,9 @@ public class DcsManualController implements Serializable {
 		}						
 	}
 	
+	/**
+	 * JSF Action method to command all DCS queries
+	 */
 	public void doQueryAll() {
 		
 		try {
@@ -218,7 +243,9 @@ public class DcsManualController implements Serializable {
 
 	}
 
-	
+	/**
+	 * JSF Action method to command delta telescope moves
+	 */
 	public void doCommandTelescopeDelta() {
 		
 		try {
@@ -248,6 +275,9 @@ public class DcsManualController implements Serializable {
 
 	}
 	
+	/**
+	 * JSF Action method to command secondary deltas
+	 */
 	public void doCommandSecondary() {
 		try {
 			double[] deltaCmds = new double[3];

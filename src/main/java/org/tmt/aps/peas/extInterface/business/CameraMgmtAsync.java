@@ -14,9 +14,13 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.extinf.CameraQueryResult;
 
+/**
+ * EJB Session bean for additional PCS camera command interfaces.  Used because JBoss bug that requires an EJB boundary to have methods tagged <code>@Asynchronous</code>  
+ * execute in a separate thread.  CameraMgmt nested <code>@Asynchronous<code> calls call methods here.
+ * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * @author smichaels
+ */
 @Stateless
 public class CameraMgmtAsync {
 

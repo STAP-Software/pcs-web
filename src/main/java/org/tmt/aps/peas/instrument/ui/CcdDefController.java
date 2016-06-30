@@ -11,7 +11,6 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -25,6 +24,11 @@ import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Ccd;
 
+/**
+ * JSF Controller for CCD configuration user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class CcdDefController implements Serializable {
@@ -93,6 +97,10 @@ public class CcdDefController implements Serializable {
 		this.selectedCcd = selectedCcd;
 	}
 
+	/**
+	 * JSF Action method to view the list of CCDs
+	 * @return the JSF page to render the CCD list
+	 */
 	public String doViewCcdList() {
 		
 		try {
@@ -110,6 +118,10 @@ public class CcdDefController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to view a single CCD configuration
+	 * @return the JSF page to render the CCD detail
+	 */
 	public String doViewCcd() {
 
 		breadcrumbMenuBean.addItem(ccd.getCcdName(), "/modules/sysadmin/ccdDetail.xhtml");
@@ -117,6 +129,10 @@ public class CcdDefController implements Serializable {
 		return "/modules/sysadmin/ccdDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to setup a new CCD configuration
+	 * @return the JSF page to render the CCD detail
+	 */
 	public String doNewCcd() {
 
 		ccd = new Ccd();
@@ -127,6 +143,9 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to remove a hot pixel from the current CCD configuration
+	 */
 	public void doDeleteHotPixel() {
 
 		try {
@@ -145,6 +164,9 @@ public class CcdDefController implements Serializable {
 
 	}
 	
+	/**
+	 * JSF Action method to remove a hot column from the current CCD configuration
+	 */
 	public void doDeleteHotColumn() {
 
 		try {
@@ -163,6 +185,10 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action to save a CCD configuration
+	 * @return the JSF page to render when complete
+	 */
 	public String doSaveCcd() {
 
 		try {
@@ -188,6 +214,10 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 * @return the JSF page to render the CCD list
+	 */
 	public String doCancelSaveCcd() {
 
 		breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
@@ -196,6 +226,9 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to add a hot pixel to the current CCD configuration
+	 */
 	public void doAddHotPixel() {
 
 		try {
@@ -216,6 +249,9 @@ public class CcdDefController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method to add a hot column to the current CCD configuration
+	 */
 	public void doAddHotColumn() {
 
 		try {
@@ -237,6 +273,10 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to view the CCDs available to assign to the instrument
+	 * @return the JSF page to render the CCD selection list
+	 */
 	public String doViewCcdSelectList() {
 		
 		try {
@@ -255,6 +295,9 @@ public class CcdDefController implements Serializable {
 		
 	}
 
+	/**
+	 * JSF Action method to assign the selected CCD to the instrument
+	 */
 	public void doSaveCcdSelection() {
 
 		try {
@@ -270,6 +313,9 @@ public class CcdDefController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 */
 	public void doCancelSaveCcdSelection() {
 
 

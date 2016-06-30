@@ -20,10 +20,15 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.procedure.model.Procedure;
-import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 
+/**
+ * Entity class representing the ProcedureCcdFrame database table.  The class also contains the <code>@Transient</code> frameFieldDisplayList used to display frame
+ * data in the reporting interface.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureCcdFrame")
 @NamedQueries({

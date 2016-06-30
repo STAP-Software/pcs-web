@@ -21,6 +21,11 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 
+/**
+ * JSF Converter class to make FitsFilename objects available to JSF pages
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class PcsFitsFileConverter implements Converter, Serializable {

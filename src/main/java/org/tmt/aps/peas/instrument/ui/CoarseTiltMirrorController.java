@@ -24,6 +24,11 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 
+/**
+ * JSF Controller for coarse tilt mirror configuration user interface
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class CoarseTiltMirrorController implements Serializable {
@@ -56,6 +61,10 @@ public class CoarseTiltMirrorController implements Serializable {
 		this.coarseTiltMirror = coarseTiltMirror;
 	}
 
+	/**
+	 * JSF Action method to view the coarse tilt mirror configuration
+	 * @return the JSF page to render the coarse tilt mirror detail
+	 */
 	public String doViewCoarseTiltMirror() {
 
 		try {
@@ -75,6 +84,9 @@ public class CoarseTiltMirrorController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to save the coarse tilt mirror configuration
+	 */
 	public void doSaveCoarseTiltMirror() {
 
 		try {

@@ -12,6 +12,10 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 
+/**
+ * Scheduled Singleton EJB that polls PCS camera at two second intervals.  Calls {@link CameraMgmt#refreshStatus()} every two seconds.
+ * @author smichaels
+ */
 @Singleton
 @Startup
 @DependsOn({ "CameraMgmt", "PeasProperties" })

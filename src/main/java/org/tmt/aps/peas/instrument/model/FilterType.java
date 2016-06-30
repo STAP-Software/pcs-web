@@ -13,6 +13,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Instrument metadata Entity class representing the FilterType table.  
+ * @author smichaels
+ */
 @Entity
 @Table(name = "FilterType")
 @NamedQueries({ @NamedQuery(name = "findAllFilterTypes", query = "SELECT o from FilterType o") })

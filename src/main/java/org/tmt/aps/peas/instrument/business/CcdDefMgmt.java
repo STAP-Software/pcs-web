@@ -17,6 +17,11 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.Ccd;
 
+/**
+ * Session EJB managing database queries/updates for CCD configuration records
+ * @author smichaels
+ *
+ */
 @Stateless
 public class CcdDefMgmt {
 
@@ -28,13 +33,19 @@ public class CcdDefMgmt {
 	@EJB
 	PhysicalModel physicalModel;
 
-	
+	/**
+	 * @return all CCD records in the database
+	 */
 	public List<Ccd> findAllCcds() {
 		TypedQuery<Ccd> query = em.createNamedQuery("findAllCcds", Ccd.class);
 
 		return query.getResultList();
 	}
 
+	/**
+	 * Creates a CCD record in the database
+	 * @param ccd the CCD record to create
+	 */
 	public void createCcd(Ccd ccd) {
 		
 		logger.info(MessageGenerator.generateMessage("record.create", "ccd"));
@@ -42,6 +53,10 @@ public class CcdDefMgmt {
 		
 	}
 
+	/**
+	 * Updates a CCD record in the database
+	 * @param ccd the CCD record to update
+	 */
 	public void updateCcd(Ccd ccd) {
 		
 		logger.info(MessageGenerator.generateMessage("record.update", "ccd"));
@@ -49,6 +64,12 @@ public class CcdDefMgmt {
 		
 	}
 	
+	/**
+	 * Links a CCD record to an instrument record, removing any previous link to another CCD record.
+	 * The instrument is found in the {@link PhysicalModel} which is initialized when PEAS-PCS is started up
+	 * to be either PCS1 or PCS2, depending on what is specified in the peas.properties file.
+	 * @param ccd the new CCD record to link
+	 */
 	public void assignCcdToInstrument(Ccd ccd) {
 		// remove current assigned ccd, if it exists
 		Ccd oldCcd = physicalModel.getInstrument().getCcd();

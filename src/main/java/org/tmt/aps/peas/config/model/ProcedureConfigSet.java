@@ -15,6 +15,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+/**
+ * Configuration entity class representing the ProcedureConfigSet table.  This is a join table for many of the configuration tables, 
+ * and this class contains references to each of the entities.
+ * @author smichaels
+ */
 @Entity
 @Table(name = "ProcedureConfigSet")
 public class ProcedureConfigSet {
