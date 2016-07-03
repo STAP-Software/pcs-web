@@ -12,6 +12,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Metadata Entity class representing a row in the ProcedureType table
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureType")
 @NamedQueries({

@@ -8,6 +8,11 @@ import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
+/**
+ * Procedure output data for a single step during the Phasing procedure
+ * @author smichaels
+ *
+ */
 public class PhasingIterationOutput extends ProcedureIterationOutput  {
 
 

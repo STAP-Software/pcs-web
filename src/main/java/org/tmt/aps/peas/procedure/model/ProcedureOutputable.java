@@ -1,6 +1,10 @@
 package org.tmt.aps.peas.procedure.model;
 
-
+/**
+ * Interface for any data output by a procedure that can map to the procedure output table
+ * @author smichaels
+ *
+ */
 public interface ProcedureOutputable {
 
 	public Long getProcedureId();

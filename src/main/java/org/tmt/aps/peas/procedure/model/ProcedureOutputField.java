@@ -19,6 +19,12 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.session.model.FieldDescriptor;
 
+/**
+ * Metadata Entity representing a single row in the ProcedureOutputField table.
+ * The metadata describes each procedure output field and is useful in encoding/decoding and display
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureOutputField")
 @NamedQueries({

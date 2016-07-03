@@ -18,6 +18,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
 
+/**
+ * JSF Controller class for the StatusLog related functionality in the PEAS user interface.  Exposes a procedureStatusLog to the user interface.
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class StatusLogController implements Serializable {
@@ -42,17 +46,24 @@ public class StatusLogController implements Serializable {
 		return procedureStatusLog;
 	}
 	
-	// call load most recent procedure status log
+	/**
+	 * load the most recent procedure status log to expose to the user interface
+	 */
 	public void refreshCurrentProcedureStatusLog() {
 		logger.debug("refreshing");
 		this.procedureStatusLog = statusLogger.getProcedureStatusLog();
 	}
 	
-	// call to load legacy procedure status log
+	/**
+	 * load procedure status log from a completed procedure to expose to the user interface
+	 */
 	public void refreshProcedureStatusLog() {
 		this.procedureStatusLog = statusLogMgmt.getProcedureStatusLog(procedureController.getProcedure().getProcedureId());
 	}
 	
+	/**
+	 * clears the reference being exposed to the user interface
+	 */
 	public void clearProcedureStatusLog() {
 		procedureStatusLog = new ProcedureStatusLog();
 	}

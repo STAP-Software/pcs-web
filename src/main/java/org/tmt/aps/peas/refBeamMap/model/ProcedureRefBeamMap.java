@@ -18,6 +18,11 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.Procedure;
 
+/**
+ * Database Entity representing a row in the ProcedureRefBeamMap table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureRefBeamMap")
 @NamedQueries({

@@ -19,6 +19,10 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 
+/**
+ * Singleton EJB cache for peas.properties.  Values are updated from the peas.properties file every 60 seconds.
+ * @author smichaels
+ */
 @Singleton
 @Startup
 @Lock(LockType.READ)
@@ -53,6 +57,7 @@ public class PeasProperties {
 	/**
 	 * Static method will read from the peas.properties file of the current server context.
 	 * @param prop String property to look up
+	 * return the property value
 	 */
 	public String getProp(String prop) throws Exception {
 		String propValue = properties.getProperty(prop);

@@ -24,6 +24,11 @@ import javax.persistence.TemporalType;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
+/**
+ * Database Entity class representing a row in the RefBeamMap table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "RefBeamMap")
 @NamedQueries({

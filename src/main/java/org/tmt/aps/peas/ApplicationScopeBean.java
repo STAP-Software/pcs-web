@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.config.ui.GlobalConfigController;
 import org.tmt.aps.peas.config.ui.MissingSpotsController;
 import org.tmt.aps.peas.extInterface.ui.AcsManualController;
@@ -36,6 +35,11 @@ import org.tmt.aps.peas.instrument.ui.SufsGroupController;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.session.ui.SessionController;
 
+/**
+ * JSF Application scoped bean; used to allow limited page bookmarking and managing user sessions.
+ * @author smichaels
+ *
+ */
 @ManagedBean
 @ApplicationScoped
 public class ApplicationScopeBean implements Serializable {
@@ -78,6 +82,14 @@ public class ApplicationScopeBean implements Serializable {
 	HttpSession persistentSession = null;
 	String ownerRequestedSessionId = null;
 	
+	/**
+	 * Called by all JSF requests prior to the RenderView phase
+	 * Manages the persistent session: the first browser user to make a request after a reboot will get the persistent session.
+	 * Killing the browser session will not kill the persistent session, which will be reinstated upon the next request
+	 * The persistent session will obtain the RunProcedurePermission and IfCommandPermission, to run procedures and command interfaces.
+	 * Any subsequent browser request not from that user (different IP or Linux account) will have a standard browser session without
+	 * those permissions.
+	 */
 	public void preRenderView(ComponentSystemEvent e) {
 
 		Logger logger = Logger.getLogger(this.getClass());
@@ -198,17 +210,25 @@ public class ApplicationScopeBean implements Serializable {
 		}
 		
 	}
-
+	/**
+	 * @return the persistent session object
+	 */
 	public HttpSession getPersistentSession() {
 		return persistentSession;
 	}
 
+	/**
+	 * Sets the persistent session object
+	 */
 	public void setPersistentSession(HttpSession persistentSession) {
 		this.persistentSession = persistentSession;
 	}
 	
 	/**
-	 * 
+	 * Returns a cookie value from the request, given its name
+	 * @param request the request
+	 * @param name the cookie name
+	 * @return the cookie value
 	 */
 	public static String getCookieValue(HttpServletRequest request, String name) {
 	    Cookie[] cookies = request.getCookies();
@@ -223,7 +243,11 @@ public class ApplicationScopeBean implements Serializable {
 	}
 
 	/**
-	 * 
+	 * Adds a cookie to the user
+	 * @param response the HTTP response
+	 * @param name the new cookie name
+	 * @param value the new cookie value
+	 * @param maxAge expiration age for the cookie
 	 */
 	public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {
 	    Cookie cookie = new Cookie(name, value);
@@ -233,7 +257,9 @@ public class ApplicationScopeBean implements Serializable {
 	}
 
 	/**
-	 * 
+	 * Removes a cookie for the user of this response
+	 * @param response the HTTP response
+	 * @param name the name of the cookie to remove
 	 */
 	public static void removeCookie(HttpServletResponse response, String name) {
 	    addCookie(response, name, null, 0);

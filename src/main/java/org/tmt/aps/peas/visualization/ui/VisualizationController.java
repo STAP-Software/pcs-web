@@ -45,6 +45,9 @@ import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
+/**
+ * JSF Controller class that controls the rendering and functioning of visualization displays
+ */
 @Named
 @SessionScoped
 public class VisualizationController implements Serializable {
@@ -103,35 +106,52 @@ public class VisualizationController implements Serializable {
 		}
 	}
 	
-	// segment centers
+	/**
+	 * @return the x-coordinates of the segment centers; used by javascript to render segments
+	 */
 	public String getSegCentDefXs() {
 		// determine which procedure type we are in
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
 		return subimageDefList.getInteriorCentroidXsAsString();
 	}
+	/**
+	 * @return the y-coordinates of the segment centers; used by javascript to render segments
+	 */
 	public String getSegCentDefYs() {
 		// determine which procedure type we are in
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
 		return subimageDefList.getInteriorCentroidYsAsString();
 	}
 
+	/**
+	 * @return the x coordinates of segment edge centers
+	 */
 	public String getEdgeXs() {
 		// determine which procedure type we are in
 		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
 		return PointListEncoder.encodeXList(nEdges);
 	}
+	
+	/**
+	 * @return the y coordinates of segment edge centers
+	 */
 	public String getEdgeYs() {
 		// determine which procedure type we are in
 		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
 		return PointListEncoder.encodeYList(nEdges);
 	}
 
+	/**
+	 * @return the angle of the normal to the edge for each segment edge
+	 */
 	public String getEdgeNormAngles() {
 		int[] edgeNormAngles = constantsCache.getPrimaryMirrorConstants().getNormAngle();
 		return IntegerListEncoder.encodeList(edgeNormAngles);
 	}
 
-
+	/**
+	 * @return the x-coordinates of the ideal centroid locations for the mask type currently being displayed
+	 */
 	public String getCentDefXs() {
 		// determine which procedure type we are in
 		// TODO: we are deciding that AvgCentroidOffset displays always use 36.  We may need to generalize this
@@ -150,6 +170,10 @@ public class VisualizationController implements Serializable {
 			return subimageDefList.getInteriorCentroidXsAsString(); // default
 		}
 	}
+
+	/**
+	 * @return the y-coordinates of the ideal centroid locations for the mask type currently being displayed
+	 */
 	public String getCentDefYs() {
 		
 		// determine which procedure type we are in
@@ -504,6 +528,9 @@ public class VisualizationController implements Serializable {
 		graphicDisplayMgmt.setAvgSufsGroupSegmentNumber(avgSufsGroupSegmentNumber);
 	}
 
+	/**
+	 * Initializes enabled state for each visualization display type accessible from this controller for the currently rendered procedure type.
+	 */
 	public void initVisualizationDisplays(Long procedureTypeId) {
 
 		centroidDisplayEnabled = false;
@@ -551,52 +578,91 @@ public class VisualizationController implements Serializable {
 		}
 	}
 
+	/**
+	 * UI event listener for centroid offset display
+	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
+	 */
 	public void updateCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
+	/**
+	 * UI event listener for average PT centroid offset display
+	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
+	 */
 	public void updateAvgPtCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawAvgPtCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
+	/**
+	 * UI event listener for averate FS centroid offset display
+	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
+	 */
 	public void updateAvgFsCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawAvgFsCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
+	/**
+	 * UI event listener for actuator deltas display
+	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums', 'showActVals', 'showHeat', and 'showHeatCircles'
+	 */
 	public void updateActDeltaDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
 	}
 
+	/**
+	 * UI event listener for edge heights display
+	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
+	 */
 	public void updateEdgeHeightsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
 	}
 
+	/**
+	 * UI event listener for edge residuals display
+	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
+	 */
 	public void updateEdgeResidualsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ", " + showEdgeNums  + ")");
 	}
 	
+	/**
+	 * UI event listener for SUFS centroid offsets display
+	 * Calls javascript to redraw the centroid offsets with current values
+	 */
 	public void updateSufsCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawSufsCentroidOffsets()");
 	}
 
+	/**
+	 * UI event listener for average SUFS centroid offsets display
+	 * Calls javascript to redraw the average centroid offsets with current values
+	 */
 	public void updateAvgSufsCentroidOffsetDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawAvgSufsCentroidOffsets()");
 	}
 
-	// Create ref map only - does not use iterations
+	/**
+	 * JSF Action method to populate the centroid display data prior to rendering, called from the navigation menu dropdown
+	 * Create ref map version only
+	 */
 	public void doPopulateCentroidDisplay() {
 
 		doPopulateCentroidDisplay(0);
 	}
 
+	/**
+	 * JSF Action method to populate the centroid display data prior to rendering, called from the navigation menu dropdown
+	 * @param iteration the iteration to draw data from 
+	 */
 	public void doPopulateCentroidDisplay(int iteration) {
 
 		Procedure procedure = procedureController.getProcedure();
@@ -613,6 +679,10 @@ public class VisualizationController implements Serializable {
 	}
 
 	
+	/**
+	 * JSF Action method to populate the centroid offsets display data prior to rendering, called from the navigation menu dropdown
+	 * @param iteration the iteration to draw data from 
+	 */
 	public void doPopulateCentroidOffsetDisplay(int iteration) {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -625,7 +695,9 @@ public class VisualizationController implements Serializable {
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_CENTROID_OFFSETS);		
 	}
 	
-
+	/**
+	 * JSF Action method to populate the averate passive tilt centroid display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateAvgPtCentroidOffsetDisplay() {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -638,6 +710,9 @@ public class VisualizationController implements Serializable {
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_AVG_PT_CENTROID_OFFSETS);		
 	}
 
+	/**
+	 * JSF Action method to populate the average fine screen centroid display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateAvgFsCentroidOffsetDisplay() {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -651,6 +726,9 @@ public class VisualizationController implements Serializable {
 	}
 
 
+	/**
+	 * JSF Action method to populate the SUFS centroid display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateSufsCentroidOffsetDisplay(int iteration) {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -666,7 +744,9 @@ public class VisualizationController implements Serializable {
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SUFS_CENTROID_OFFSETS);		
 	}
 
-	
+	/**
+	 * JSF Action method to populate the average SUFS centroid display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateAvgSufsCentroidOffsetDisplay() {
 		offsetScale = 100.0f; // initialize at 100%
 
@@ -683,6 +763,9 @@ public class VisualizationController implements Serializable {
 	}
 
 	
+	/**
+	 * JSF Action method to populate the actuator delta display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateActuatorDeltaDisplay() {
 		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
@@ -698,6 +781,9 @@ public class VisualizationController implements Serializable {
 
 	}
 	
+	/**
+	 * JSF Action method to populate the edge heights display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateEdgeHeightsDisplay() {
 		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
@@ -713,6 +799,9 @@ public class VisualizationController implements Serializable {
 
 	}
 	
+	/**
+	 * JSF Action method to populate the edge residual display data prior to rendering, called from the navigation menu dropdown
+	 */
 	public void doPopulateEdgeResidualsDisplay() {
 		
 		ProcedureOutput procedureOutput = procedureController.getProcedure().getProcedureOutput();
@@ -728,22 +817,40 @@ public class VisualizationController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called with the SUFS centroid offsets display 'Next' button is clicked.
+	 * Increments the SUFS segment number and populates the centroid offsets for that segment
+	 */
 	public void doSufsCentroidOffsetsNext() {
 		int sufsGroupSegmentNumber = (getSufsGroupSegmentNumber() < 6) ? getSufsGroupSegmentNumber()+1 : 0; 	
 		setSufsGroupSegmentNumber(sufsGroupSegmentNumber);
 		graphicDisplayMgmt.encodeSufsOffsetsForDisplay(sufsGroupSegmentNumber);
 	}
+
+	/**
+	 * JSF Action method called with the SUFS centroid offsets display 'Back' button is clicked.
+	 * Decrements the SUFS segment number and populates the centroid offsets for that segment
+	 */
 	public void doSufsCentroidOffsetsBack() {
 		int sufsGroupSegmentNumber = (getSufsGroupSegmentNumber() >0) ? getSufsGroupSegmentNumber()-1 : 6; 	
 		setSufsGroupSegmentNumber(sufsGroupSegmentNumber);
 		graphicDisplayMgmt.encodeSufsOffsetsForDisplay(sufsGroupSegmentNumber);
 	}
 	
+	/**
+	 * JSF Action method called with the average SUFS centroid offsets display 'Next' button is clicked.
+	 * Increments the SUFS segment number and populates the average centroid offsets for that segment
+	 */
 	public void doAvgSufsCentroidOffsetsNext() {
 		int avgSufsGroupSegmentNumber = (getAvgSufsGroupSegmentNumber() < 6) ? getAvgSufsGroupSegmentNumber()+1 : 0; 	
 		setAvgSufsGroupSegmentNumber(avgSufsGroupSegmentNumber);
 		graphicDisplayMgmt.encodeAvgSufsOffsetsForDisplay(avgSufsGroupSegmentNumber);
 	}
+
+	/**
+	 * JSF Action method called with the average SUFS centroid offsets display 'Back' button is clicked.
+	 * Decrements the SUFS segment number and populates the average centroid offsets for that segment
+	 */
 	public void doAvgSufsCentroidOffsetsBack() {
 		int avgSufsGroupSegmentNumber = (getAvgSufsGroupSegmentNumber() >0) ? getAvgSufsGroupSegmentNumber()-1 : 6; 	
 		setAvgSufsGroupSegmentNumber(avgSufsGroupSegmentNumber);
@@ -751,7 +858,9 @@ public class VisualizationController implements Serializable {
 	}
 	
 
-	
+	/**
+	 * @return the current display being rendered
+	 */
 	public VisualizationDisplay getCurrentDisplay() {
 		return currentDisplay;
 	}

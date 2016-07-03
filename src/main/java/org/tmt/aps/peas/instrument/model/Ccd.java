@@ -210,8 +210,7 @@ public class Ccd {
 	}
 	
 	/**
-	 * Returns all rectangles in hot pixel list, plus generated rectangles for each pixel in each hot column
-	 * @return
+	 * @return all rectangles in hot pixel list, plus generated rectangles for each pixel in each hot column
 	 */
 	public List<Rect> getAllHotPixelRects() {
 		

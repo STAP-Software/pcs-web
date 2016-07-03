@@ -5,8 +5,6 @@
  */
 package org.tmt.aps.peas.session.model;
 
-import java.text.MessageFormat;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -19,15 +17,15 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
-import org.tmt.aps.peas.common.FloatListEncoder;
-import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.FloatPointListEncoder;
-import org.tmt.aps.peas.common.IntegerListEncoder;
-import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.common.Utils;
-import org.tmt.aps.peas.config.model.Constant;
 
+/**
+ * Database metadata Entity class representing a row in the FrameFieldDisplay table
+ * These fields are the frame/centroid related fields that are used in reports, yet not part of the procedure output
+ * An additional Transient field for the field value is supplied to also use this class to populate the report
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "FrameFieldDisplay")
 @NamedQueries({
@@ -102,7 +100,10 @@ public class FrameFieldDisplay {
 		this.value = value;
 	}
 	
-	
+	/**
+	 * Convienience method that calls {@link Utils#reformatData(String, FieldDescriptor)} to format the value string using the fieldMetaData description of the data.
+	 * @return the value data formatted for use in frame reports
+	 */
 	public String getDataFormatted() {
 		return Utils.reformatData(value, fieldMetaData);
 	}

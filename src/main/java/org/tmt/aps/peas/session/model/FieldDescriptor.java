@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.session.model;
 
+/**
+ * Field decriptor interface used to describe a field and as input data to encoding/decoding operations for field values
+ * @author smichaels
+ *
+ */
 public interface FieldDescriptor {
 	
 	public String getFieldName();

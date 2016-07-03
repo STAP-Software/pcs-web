@@ -20,6 +20,12 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.Utils;
 
+/**
+ * Procedure output data Entity representing the ProcedureOutputValue table.
+ * String encoded Data for a procedure output field for a procedure or iteration.  
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureOutputValue")
 @NamedQueries({

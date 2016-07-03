@@ -18,7 +18,11 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 
-
+/**
+ * Database Entity class representing a row in the the StatusLogEntry table.  Supports queries by procedure id.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "StatusLogEntry")
 @NamedQueries({

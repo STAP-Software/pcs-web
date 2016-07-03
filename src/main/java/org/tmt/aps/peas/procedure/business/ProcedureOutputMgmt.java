@@ -7,7 +7,6 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +37,11 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutputValue;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 import org.tmt.aps.peas.session.model.FieldDescriptor;
 
+/**
+ * Session EJB managing procedure output data.  Handles encoding and decoding of values based on procedure output field metadata.
+ * @author smichaels
+ *
+ */
 @Stateless
 public class ProcedureOutputMgmt {
 
@@ -46,6 +50,14 @@ public class ProcedureOutputMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
+	/**
+	 * Creates a procedure output by traversing all the data in the passed procedureOutput
+	 * The method calls {@link #getOutputFieldClassNames()} and {@link #getOuputFieldMapForClass(String)} to traverse the data
+	 * by class and then encodes each field using that field's {@link ProcedureOutputField} metadata.
+	 * Each field is then persisted as a {@link ProcedureOutputValue}
+	 * @param procedureOutput the procedure output data
+	 * @param procedureId the procedure to associate with the data
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcedureOutputable createProcedureOutput(ProcedureOutputable procedureOutput, Long procedureId) throws Exception {
 
@@ -110,10 +122,6 @@ public class ProcedureOutputMgmt {
 		return procedureOutput;
 	}
 	
-	
-
-	
-
 			
 	private boolean testMethodName(Class poClass, String methodName, List<String> candidates) {
 		if (methodName.startsWith("get")) {
@@ -125,7 +133,14 @@ public class ProcedureOutputMgmt {
 		}
 		return false;
 	}
-			
+		
+	/**
+	 * Generates a procedure output by querying all the {@link ProcedureOutputValue} data associated with the procedure output list.
+	 * The procedure output list is the list of output fields defined for the procedure type.
+	 * The method calls {@link #decodeAndSetObjectFieldValue(Object, FieldDescriptor, String)} to reconstitute the data structure
+	 * This method handles all procedure iteration outputs as well.
+	 * @param procedure the procedure to query and generate output data structure for
+	 */
 	public ProcedureOutput findProcedureOutput(Procedure procedure) throws Exception {
 
 		// fill out a list of ProcedureOutputValues
@@ -251,7 +266,9 @@ public class ProcedureOutputMgmt {
 	}
 	
 	
-	// returns a map of output fields
+	/**
+	 * @return the list of all defined procedure output fields
+	 */
 	public List<ProcedureOutputField> findAllProcedureOutputFields() {
 		TypedQuery<ProcedureOutputField> query = em.createNamedQuery("findAllOutputFields", ProcedureOutputField.class);
 
@@ -300,6 +317,13 @@ public class ProcedureOutputMgmt {
 		return string;
 	}
 
+	/**
+	 * Encodes a field value for the passed object and returns the encoded string
+	 * @param object the object containing the data value
+	 * @param method the getter method to extract the value from object
+	 * @param fieldDescriptor the field descriptor that determines the encoding method to use
+	 * @return the encoded string
+	 */
 	public String encodeObjectFieldValue(Object object, Method method, FieldDescriptor fieldDescriptor) throws Exception {
 
 		// extract and convert the data
@@ -403,6 +427,14 @@ public class ProcedureOutputMgmt {
 
 	}
 
+	
+	/**
+	 * Decodes a passed value using the passed field descriptor to determine the decoding method to use.
+	 * Sets the field value in the passed classInstance using the setter method defined by the field name in the field descriptor. 
+	 * @param classInstance the object to set the decoded value into
+	 * @param fieldDescriptor the field descriptor of the data
+	 * @param value the encoded data
+	 */
 	public void decodeAndSetObjectFieldValue(Object classInstance, FieldDescriptor fieldDescriptor, String value) throws Exception {
 
 		if (value == null || value.trim().length() == 0 || value.equals("null")) return;

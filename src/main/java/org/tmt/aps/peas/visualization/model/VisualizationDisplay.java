@@ -5,17 +5,18 @@
  */
 package org.tmt.aps.peas.visualization.model;
 
-import java.util.Set;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-
+/**
+ * Visualization display metadata Entity class representing a row in the VisualizationDisplay table
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "VisualizationDisplay")
 @NamedQueries({

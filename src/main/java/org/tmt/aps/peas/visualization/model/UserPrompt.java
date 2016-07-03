@@ -5,6 +5,11 @@
  */
 package org.tmt.aps.peas.visualization.model;
 
+/**
+ * Model class containing data required to render a user prompt
+ * @author smichaels
+ *
+ */
 public class UserPrompt {
 
 	public static final int PROMPT_TYPE_INFO = 0;
@@ -36,15 +41,33 @@ public class UserPrompt {
 		
 	boolean supressAbort = false;
 	
+	/**
+	 * Constructor for blank info type with a header only
+	 * @param header text for the dialog title bar
+	 */
 	public UserPrompt(String header) {
 		this.promptType = PROMPT_TYPE_INFO;
 		this.message = "";
 		this.header = header;
 	}
 	
+	/**
+	 * Constructor for user prompt with a header, message and prompt type
+	 * @param header text for the dialog title bar
+	 * @param type the prompt type
+	 * @param message the text or html format text message to be displayed within the prompt dialog
+	 */
 	public UserPrompt(String header, int type, String message) {
 		this(header, type, message, false);
 	}
+	
+	/**
+	 * Constructor for user prompt with a header, message and prompt type; with the option to suppress automatic abort button rendering. 
+	 * @param header text for the dialog title bar
+	 * @param type the prompt type, (info, yes/no, flow_control_triflow, etc)
+	 * @param message the text or html format text message to be displayed within the prompt dialog
+	 * @param supressAbort if true, the auto generation of Abort buttons is suppressed.
+	 */
 	public UserPrompt(String header, int type, String message, boolean supressAbort) {
 		this.promptType = type;	
 		this.message = message;
@@ -85,6 +108,14 @@ public class UserPrompt {
 		
 	}
 	
+	/**
+	 * Generic User Prompt constructor
+	 * @param header text for the dialog title bar
+	 * @param message the text or html format text message to be displayed within the prompt dialog
+	 * @param type usually 'Generic' 
+	 * @param buttonTexts an array of strings that will be the labels on the dialog buttons
+	 * @param buttonValues an array of integers that will be assigned to each button, and will be the return value when that button is clicked
+	 */
 	public UserPrompt(String header, int type, String message, String[] buttonTexts, int[] buttonValues) {
 		this.promptType = type;	
 		this.message = message;
@@ -196,7 +227,9 @@ public class UserPrompt {
 		this.supressAbort = supressAbort;
 	}
 
-	// if the user prompt already contains abort, do not render the auto abort
+	/**
+	 * @return true if the prompt dialog already contains an Abort button.  Used by the auto-abort button rendering feature to avoid duplicate rendering.
+	 */
 	public boolean isContainsAbort() {
 		if (promptType == PROMPT_TYPE_FLOW_CONTROL_BIFLOW || promptType == PROMPT_TYPE_FLOW_CONTROL_TRIFLOW) return true;
 		

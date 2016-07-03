@@ -47,6 +47,10 @@ import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * The GetFrameCentroids common subflow methods
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class GetFrameCentroidsExecutor {
@@ -97,6 +101,9 @@ public class GetFrameCentroidsExecutor {
 		logger.debug("GetFrameCentroidsExecutor::PostConstruct::");
 	}
 
+	/**
+	 * This method is the GetFrameCentroids sub-flow
+	 */
 	public ProcedureCcdFrame executeProcedure(Procedure procedure, Session currentSession) throws Throwable {
 
 		logger.info("GetFrameCentroidsExecutor::executeProcedure::");
@@ -289,11 +296,16 @@ public class GetFrameCentroidsExecutor {
 
 	// TODO: generalize this, does not need to be explicit in an executor
 
+	/**
+	 * Builds the centroid map
+	 * @param findCentroidsResult result of findCentroids computation
+	 * @param procedureConfig the procedure configuration
+	 * @param fiConfig the find and identify configuration
+	 * @param fiResult the result of the findAndIdentify computation
+	 * @return the centroid map
+	 */
 	public CentroidMap buildCentroidMap(FindCentroidsResult findCentroidsResult, ProcedureConfig procedureConfig, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
-		
-		
-		
 		CentroidMap centroidMap = new CentroidMap();
 		String centroidMapData = FloatPointListEncoder.encodeList(Arrays.asList(findCentroidsResult.getCentroidList()));
 		centroidMap.setCentroidMapData(centroidMapData);

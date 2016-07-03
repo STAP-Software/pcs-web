@@ -6,9 +6,13 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+/**
+ * Stand alone Java program used to convert PCSP spots files to text suitable for generating SQL statements.
+ * @author smichaels
+ *
+ */
 public class RefDefConverter {
 
 	public static void main(String[] args) {

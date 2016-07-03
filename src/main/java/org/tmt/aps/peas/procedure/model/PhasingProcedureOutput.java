@@ -10,6 +10,11 @@ import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 
+/**
+ * Procedure output data (not including step specific data) for Phasing procedure
+ * @author smichaels
+ *
+ */
 public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeightsDisplayValues, ActuatorDeltasDisplayValues {
 
 	BbAnalyzeSequenceResult bbAnalyzeSequenceResult;

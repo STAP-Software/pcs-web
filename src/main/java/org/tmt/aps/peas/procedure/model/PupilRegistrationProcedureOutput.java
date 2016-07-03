@@ -6,7 +6,11 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
-
+/**
+ * Procedure output data (not including trial specific data) for Pupil Registration procedure
+ * @author smichaels
+ *
+ */
 public class PupilRegistrationProcedureOutput extends ProcedureOutput {
 	
 	CenterTelescopeCalcResult centerTelescopeCalcResult;

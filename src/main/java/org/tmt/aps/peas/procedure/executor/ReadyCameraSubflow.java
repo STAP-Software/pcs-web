@@ -22,6 +22,11 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * Executor for the Ready Camera subflow
+ * This is a common flow, but not a procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class ReadyCameraSubflow {
@@ -36,6 +41,9 @@ public class ReadyCameraSubflow {
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 
+	/**
+	 * Executor method: this method is the Ready Camera sub-flow
+	 */
 	@Abortable
 	public void execute(Procedure procedure) throws Throwable {
 		

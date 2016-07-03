@@ -13,6 +13,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 import javax.interceptor.InterceptorBinding;
 
+/**
+ * Methods annotated with this Annotation are intercepted with the {@link ComputationInterceptor}
+ * @author smichaels
+ *
+ */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE, ElementType.METHOD})

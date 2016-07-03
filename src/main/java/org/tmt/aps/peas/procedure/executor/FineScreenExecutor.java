@@ -58,6 +58,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
+/**
+ * Executor for the Fine Screen procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class FineScreenExecutor {
@@ -125,6 +129,9 @@ public class FineScreenExecutor {
 		return null;
 	}
 
+	/**
+	 * Executor method: this method is the Fine Screen flow
+	 */
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 

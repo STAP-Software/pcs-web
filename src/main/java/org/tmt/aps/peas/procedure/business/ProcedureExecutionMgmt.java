@@ -70,6 +70,11 @@ import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 
+/**
+ * Session EJB handling common procedure tasks: setup, startup, completion and exception.
+ * @author smichaels
+ *
+ */
 @Stateless
 public class ProcedureExecutionMgmt {
 
@@ -108,6 +113,11 @@ public class ProcedureExecutionMgmt {
 	@EJB
 	ExtInfConfigState extInfConfigState;
 
+	/**
+	 * Derives configuration necessary for procedure execution, creates the procedure entity in the database, initializes status log and frame display. 
+	 * @param procedure the procedure to start
+	 * @param selectedFitsFiles optional FITS files for frame simulation
+	 */
 	public void performProcedureStartup(Procedure procedure, List<FitsFilename> selectedFitsFiles) throws Exception {
 
 		logger.info("performProcedureStartup 1");
@@ -193,6 +203,12 @@ public class ProcedureExecutionMgmt {
 
 	}
 
+	/**
+	 * Performs cleanup functions when a procedure exeception occurs
+	 * Manages escalation when exception occurs in a subprocedure
+	 * @param procedure the procedure 
+	 * @param exception the original exception
+	 */
 	public void handleProcedureException(Procedure procedure, Throwable exception) {
 
 		Throwable procedureException = exception;
@@ -234,6 +250,11 @@ public class ProcedureExecutionMgmt {
 
 	}
 
+	/**
+	 * Performs procedure completion tasks, stores procedure and all associated records in database
+	 * @param procedure the procedure to complete and store
+	 * @param currentSession the night session the procedure is associated with
+	 */
 	public void performProcedureCompletion(Procedure procedure, Session currentSession) {
 
 		try {
@@ -379,6 +400,15 @@ public class ProcedureExecutionMgmt {
 		}
 	}
 
+	/**
+	 * Initial procedure setup tasks: load up all default procedure configurations depending on procedure type.
+	 * This method is called when a procedure type to run is first selected and afterwards the user has an opportunity to change the default values.
+	 * @param procedureTypeId the type of the procedure being set up
+	 * @param session the current night session
+	 * @param testNumber the test number potentially carried over from previous procedure
+	 * @param procedureOutput the procedure output object to assign
+	 * @return the procedure, now set up with default configurations
+	 */
 	public Procedure performProcedureSetup(Long procedureTypeId, Session session, String testNumber, ProcedureOutput procedureOutput)
 			throws Exception {
 		Procedure procedure = new Procedure();
@@ -528,6 +558,12 @@ public class ProcedureExecutionMgmt {
 		return procedure;
 	}
 	
+	/**
+	 * Sets up the integration time procedure configuration element for Pupil Registration
+	 * The mask type is used to determine the integration time.
+	 * Called initially and when mask type is changed by user
+	 * @param procedure the procedure being set up
+	 */
 	public void setupPupilRegIntTime(Procedure procedure) {
 		float integrationTime = 0.0f;
 		if (procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeFs()) {
@@ -546,6 +582,14 @@ public class ProcedureExecutionMgmt {
 
 	}
 
+	/**
+	 * Sets up default values for the create reference beam map procedure
+	 * This method is called on procedure setup and when the user changes the pupil mask or filter
+	 * @param procedure the procedure being set up
+	 * @param instrumentId PCS1 or PCS2
+	 * @param pupilMaskTypeId the pupil mask type currently selected
+	 * @param filterTypeId the filter type currently selected
+	 */
 	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
 
@@ -580,6 +624,12 @@ public class ProcedureExecutionMgmt {
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTimeList(integrationTimeList);
 	}
 	
+	/**
+	 * Reloads the Find and Identify computation configuration
+	 * This method is called during procedure setup and when the user changes the pupil mask or light source
+	 * @param procedure the procedure being set up
+	 * @param instrumentId PCS1 or PCS2
+	 */
 	public void reloadFIConfig(Procedure procedure, Long instrumentId) throws Exception {
 		
 		if (!procedure.getProcedureType().isCenterTelescope()) {
@@ -596,6 +646,11 @@ public class ProcedureExecutionMgmt {
 		
 	}
 	
+	/**
+	 * Reloads the Pupil Registration Error computation configuration
+	 * This method is called during procedure setup and when the user changes the pupil mask
+	 * @param procedure the procedure being set up
+	 */
 	public void reloadPupilRegErrorConfig(Procedure procedure) throws Exception {
 	
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();	

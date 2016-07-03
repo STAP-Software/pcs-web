@@ -12,9 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.TimeZone;
 
 import javax.annotation.PostConstruct;
@@ -70,7 +68,6 @@ import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
-import org.tmt.aps.peas.instrument.model.SufsGroup;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
@@ -100,6 +97,10 @@ import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
+/**
+ * JSF Controller for procedure setup, execution, frame marking and viewing archived procedures
+ * @author smichaels
+ */
 @Named
 @SessionScoped
 public class ProcedureController implements Serializable {
@@ -364,6 +365,9 @@ public class ProcedureController implements Serializable {
 		return sufsGroupSelectList;
 	}
 
+	/**
+	 * Supply correct php image as streamed content for frame display, using selectedFrameNumber
+	 */
 	public StreamedContent getGraphicImage() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
@@ -412,6 +416,10 @@ public class ProcedureController implements Serializable {
 		return availableFitsFiles;
 	}
 
+	/**
+	 * Handles upload of FITS files
+	 * @param event
+	 */
 	public void handleFileUpload(FileUploadEvent event) {
 
 		try {
@@ -429,6 +437,10 @@ public class ProcedureController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF action method called when frames from file selection dialog 'Save' button is clicked.
+	 * If the current procedure type is Phasing, will load the entire sequence of files even if only a subset are chosen
+	 */
 	public void doLoadFitsFile() {
 		try {
 
@@ -498,23 +510,37 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	/**
+	 * @return true if the pupil mask selection list should be rendered
+	 */
 	public boolean getRenderPupilMaskSelect() {
 		return procedure.getProcedureType().isCreateRefMap() || procedure.getProcedureType().isPupilRegistration();
 	}
 
+	/**
+	 * @return true if the number of trials selection list should be rendered
+	 */
 	public boolean getRenderNumTrials() {
 		return procedure.getProcedureType().isFineScreen() || procedure.getProcedureType().isSufs();
 	}
 
+	/**
+	 * @return true if the SUFS group selection list should be rendered
+	 */
 	public boolean getRenderSufsGroup() {
 		return procedure.getProcedureType().isSufs() || (procedure.getProcedureType().isCreateRefMap() && procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs());
 	}
 
+	/**
+	 * @return true if frame marking instructions should be rendered
+	 */
 	public boolean getRenderFrameInstructions() {
 		return frameDisplayMgmt.getFrameInstructions() != null;
 	}
 
-	// start button enable logic
+	/**
+	 * @return true if the start button should be enabled
+	 */
 	public boolean isStartEnabled() {
 		
 		// if frame source is file, a file needs to be selected
@@ -549,39 +575,74 @@ public class ProcedureController implements Serializable {
 		logger.debug("Frame Source Listener");
 	}
 
-	// setup for each procedure type
+	/**
+	 * JSF Action method called when user selects Run...Passive Tilt menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewPassiveTilt() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PASSIVE_TILT, new PassiveTiltProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...Phasing menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewPhasing() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING, new PhasingProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...Fine Screen menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewFineScreen() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN, new FineScreenProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...SUFS menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewSufs() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_SUFS, new SufsProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...Pupil Registration menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewPupilRegistration() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PUPIL_REGISTRATION, new PupilRegistrationProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...Center Telescope menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewCenterTelescope() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CENTER_TELESCOPE, new CenterTelescopeProcedureOutput());
 	}
 
+	/**
+	 * JSF Action method called when user selects Run...Create Ref Beam Map menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
 	public String doNewCreateRefBeam() {
 		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, new CreateRefBeamMapProcedureOutput());
 	}
 
-	public String doNewCreateFirstRefBeam() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP, null);
-	}
 
+	/**
+	 * JSF Action method called with user select Run Last Procedure menu item
+	 * Selects the appropriate doNewCreate.. method based on last procedure run
+	 */
 	public String doNewLastProc() {
 		ProcedureType lastProcedureType = sessionController.getCurrentSessionLastProcedure().getProcedureType();
 		if (lastProcedureType.isCenterTelescope()) {
@@ -604,6 +665,13 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	/**
+	 * Sets up a new procedure for user configuration and execution
+	 * Calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @param procedureTypeId the procedure type
+	 * @param procedureOutput a procedure output to assign
+	 * @return the JSF page to render the procedure perspective
+	 */
 	public String doNewProcedure(Long procedureTypeId, ProcedureOutput procedureOutput) {
 
 		try {
@@ -657,6 +725,11 @@ public class ProcedureController implements Serializable {
 		return "/modules/sessionDetail.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method calls when the 'Start' button is pressed.
+	 * Calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)} to perform procedure setup
+	 * tasks prior to execution.  Then calls the non-blocking "executeProcedure()" method on the appropriate procedure executor class.  
+	 */
 	public void doExecuteProcedure() {
 
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = "
@@ -719,6 +792,11 @@ public class ProcedureController implements Serializable {
 				new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Initializing Procedure, check log files for details", ""));
 	}
 
+	/**
+	 * JSF Action method called when the page is first loaded.  This method participates in a pattern that allows the persistent session 
+	 * to be resumed on a running procedure even if the original browser session has terminated.  All open dialogs should appear popped 
+	 * up.
+	 */
 	public void doOnLoad() {
 
 		// if we are running, we need to restore some things
@@ -798,6 +876,10 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when a procedure view is desired.  If the procedure is an archived procedure, this method calls
+	 * {@link #doViewArchivedProcedure()}
+	 */
 	public String doViewProcedure() {
 
 		// we might be running....
@@ -809,6 +891,11 @@ public class ProcedureController implements Serializable {
 		return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 	}
 
+	/**
+	 * JSF Action method to bring up an archived procedure for viewing
+	 * Loads up the procedure, the procedure output, all FITS frames and visualization displays
+	 * @return the JSF page to view a procedure
+	 */
 	public String doViewArchivedProcedure() {
 
 		try {
@@ -884,10 +971,17 @@ public class ProcedureController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method called when 'Abort' button is pressed on the procedure perspective view or any dialog.
+	 */
 	public void doAbortProcedure() {
 		procedureExecutionState.setAbortRequested(true);
 	}
 
+	/** 
+	 * JSF Actio method to render the procedure reports
+	 * @return the JSF page to render the procedure report view
+	 */
 	public String doShowProcedureLog() {
 
 		breadcrumbMenuBean.removeTo("Procedure #");
@@ -900,28 +994,44 @@ public class ProcedureController implements Serializable {
 
 	// Maybe in another controller, not sure yet
 
+	/**
+	 * JSF Action method called when the Save button in the Advanced Options dialog is clicked
+	 */
 	public void doSaveAdvancedOptions() {
 
 	}
 
+	/**
+	 * JSF Action method called when the Advanced Options menu item is clicked
+	 */
 	public void doViewAdvancedOptions() {
 
 	}
 
+	/**
+	 * JSF Action method called when the Cancel button in the Advanced Options dialog is clicked
+	 */
 	public void doCancelSaveAdvancedOptions() {
 
 	}
 
+	/**
+	 * JSF Action method called when the Save button in the Execution Preferences dialog is clicked
+	 */
 	public void doSaveExecutionPreferences() {
 
 	}
 
+	/**
+	 * JSF Action method called when the Cancel button in the Execution Preferences dialog is clicked
+	 */
 	public void doCancelSaveExecutionPreferences() {
 
 	}
 
-
-
+	/**
+	 * JSF Action method called when the procedure context panel Save button is pressed
+	 */
 	public void doSaveContext() {
 
 		try {
@@ -943,6 +1053,10 @@ public class ProcedureController implements Serializable {
 
 	}
 
+	/**
+	 * method to load a passed camera state into the view
+	 * @param cameraState the camera state to view
+	 */
 	public void loadCameraState(CameraState cameraState) {
 		frameInstrument.updateState(cameraState);
 	}
@@ -951,6 +1065,10 @@ public class ProcedureController implements Serializable {
 	// Select Listeners                                                                       //
 	// ====================================================================================== //
 
+	/**
+	 * JSF Listener method when a frame is selected from a list
+	 * Loads the camera state associated with the frame
+	 */
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
@@ -968,11 +1086,20 @@ public class ProcedureController implements Serializable {
 		
 	}
 
+	/**
+	 * JSF Listener method called when the integration time has changed
+	 * @param event
+	 */
 	public void intTimeChangeListener(AjaxBehaviorEvent event) {
 		Float intTime = procedure.getProcedureConfigSet().getProcedureConfig().getIntegrationTime();
 		logger.debug("int time = " + intTime);
 	}
 
+	/**
+	 * JSF Listener method called when the pupil mask selection has changed
+	 * Loads new reference map configuration if in a ref map procedure; reloads the find and identify configuration, reloads the pupil registration error configuration
+	 * @throws Exception
+	 */
 	public void pupilMaskSelectListener() throws Exception {
 
 		// pupil mask has changed, but we need to change the pupil mask type
@@ -997,6 +1124,11 @@ public class ProcedureController implements Serializable {
 		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
 	}
 
+	/**
+	 * JSF Listener method called when the filter selection has changed
+	 * Loads new reference map configuration if in a ref map procedure
+	 * @throws Exception
+	 */
 	public void filterSelectListener() {
 
 		// filter has changed, but we need to change the filter type
@@ -1011,6 +1143,12 @@ public class ProcedureController implements Serializable {
 					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 		}
 	}	
+
+	/**
+	 * JSF Listener method called when the light source selection has changed
+	 * Sets reference beam #1 as default, reloads find and identify configuration
+	 * @throws Exception
+	 */
 	public void lightSourceSelectListener() throws Exception {
 		
 		// if light source is now LED, load up refBeam #1 as a default
@@ -1024,8 +1162,12 @@ public class ProcedureController implements Serializable {
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 
 	}
-	
-	
+		
+	/**
+	 * JSF Listener method called when the coarse phasing selection has changed
+	 * Updates phasing step size and filter; reloads new create ref map config if this is a ref map procedure.
+	 * @throws Exception
+	 */
 	public void coarsePhasingOptionSelectListener() throws Exception {
 
 		// determine new filter
@@ -1075,6 +1217,11 @@ public class ProcedureController implements Serializable {
 	}
 	
 	
+	/**
+	 * JSF Listener method called when the SUFS group selection has changed
+	 * Reloads SUFS coarse offsets config defaults; if a create ref map procedure, sets up the correct reference beam selection
+	 * @throws Exception
+	 */
 	public void sufsGroupChangeListener() throws Exception {
 
 		// determine new group
@@ -1101,6 +1248,10 @@ public class ProcedureController implements Serializable {
 	// Frame Displays //
 	// ====================================================================================== //
 
+	/**
+	 * JSF Action method called when the frame is marked
+	 * A centroid is calculated using the marked location, and the list of frame markings is updated
+	 */
 	public void doHandMark() {
 
 		frameMarkingMode = true;
@@ -1144,6 +1295,9 @@ public class ProcedureController implements Serializable {
 		frameDisplayMgmt.setMarking(FloatListEncoder.decodeList(centroidXs), FloatListEncoder.decodeList(centroidYs));
 	}
 
+	/**
+	 * JSF Action method called when the frame Apply button is pressed
+	 */
 	public void doApplyMarking() {
 		
 		frameDisplayMgmt.setPendingMarkAction(false);
@@ -1153,6 +1307,9 @@ public class ProcedureController implements Serializable {
 		requestContext.execute("instructionDialog.hide()");
 	}
 
+	/**
+	 * JSF Action method called when the frame 'Cancel' button is pressed
+	 */
 	public void doAbortFromHandMarking() {
 		frameDisplayMgmt.setPendingMarkAction(false);
 
@@ -1162,11 +1319,17 @@ public class ProcedureController implements Serializable {
 		procedureExecutionState.setAbortRequested(true);
 	}
 	
+	/**
+	 * JSF Action method called when the 'Reset' button is pressed.  All marking info is reset.
+	 */
 	public void doResetMarking() {
 		setFrameCentroidXs(null);
 		setFrameCentroidYs(null);
 	}
 
+	/**
+	 * JSF Action method called when the 'Undo' button is pressed.  The last centroid in the marking list is removed.
+	 */
 	public void doUndoMarking() {
 		// remove the last one marked
 		String centroidXs = getFrameCentroidXs();
@@ -1187,6 +1350,13 @@ public class ProcedureController implements Serializable {
 		setFrameCentroidYs(centroidYs);
 	}
 
+	/**
+	 * JSF Action method called from the frame menu for "Show Marking/Do Not Show Marking" menu items
+	 * When setting is true, gets all the centroids from the selected procedureCcdFrame and sets up rendering of marking for all centroids associated with the frame, 
+	 * then displays the frame.
+	 * When setting is false, clears all marking and displays the frame
+	 * @param setting true if Show Marking, false otherwise
+	 */
 	public void doSetMarkedDisplayMode(boolean setting) {
 		
 		markedDisplayMode = setting;
@@ -1242,6 +1412,10 @@ public class ProcedureController implements Serializable {
 	}
 
 	
+	/**
+	 * Sets the managed variable 'pixelValue' to a value from the raw frame associated with the 
+	 * current mouse position in the request at 'mouse_x', 'mouse_y'
+	 */
 	public void doGetFrameValue() {
 		
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");

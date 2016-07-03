@@ -9,6 +9,11 @@ import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 
+/**
+ * Procedure output data for a single trial during the SUFS procedure
+ * @author smichaels
+ *
+ */
 public class SufsIterationOutput extends ProcedureIterationOutput implements SufsCentroidOffsetsDisplayValues {
 
 

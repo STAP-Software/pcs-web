@@ -19,6 +19,10 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
+/**
+ * Pupil registration subflow loop common methods
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class PupilRegistrationLoopSubflow {
@@ -42,7 +46,9 @@ public class PupilRegistrationLoopSubflow {
 	@EJB
 	private CenterTelescopeSubflow centerTelescopeSubflow;
 
-
+	/**
+	 * This method is the Pupil Registration Loop sub-flow
+	 */
 	@Abortable
 	public void pupilRegistrationLoop(Procedure procedure, Session currentSession) throws Throwable {
 		

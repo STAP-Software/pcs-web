@@ -5,7 +5,6 @@
  */
 package org.tmt.aps.peas.telescope.business;
 
-import javax.ejb.AsyncResult;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -19,6 +18,11 @@ import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Session EJB managing telescope record database queries and manages current status.
+ * @author smichaels
+ *
+ */
 @Stateless
 public class TelescopeMgmt {
 
@@ -36,6 +40,11 @@ public class TelescopeMgmt {
 
 
 
+	/**
+	 * Returns a telescope record from the database given its id
+	 * @param telescopeId the telescope id to search
+	 * @return the telescope record
+	 */
 	public Telescope findTelescope(long telescopeId) {
 		TypedQuery<Telescope> query = em.createNamedQuery("findTelescope", Telescope.class);
 		query.setParameter("telescopeId", telescopeId);
@@ -43,6 +52,9 @@ public class TelescopeMgmt {
 		return query.getSingleResult();
 	}
 
+	/**
+	 * Sends query commands to DCS using {@link DcsMgmt} and ACS using {@link AcsMgmt} and updates the telescope's state in the {@link PhysicalModel}
+	 */
 	public void refreshStatus() throws Exception {
 
 		Telescope telescope = physicalModel.getTelescope();

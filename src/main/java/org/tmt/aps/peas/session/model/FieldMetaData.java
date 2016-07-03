@@ -14,6 +14,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+/**
+ * Database metadata Entity class representing a row in the FieldMetaData table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "FieldMetaData")
 @NamedQueries({

@@ -3,6 +3,11 @@ package org.tmt.aps.peas.procedure.model;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 
+/**
+ * Procedure output data for Center Telescope procedure
+ * @author smichaels
+ *
+ */
 public class CenterTelescopeProcedureOutput extends ProcedureOutput {
 
 	

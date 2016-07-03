@@ -5,6 +5,11 @@
  */
 package org.tmt.aps.peas;
 
+/**
+ * PEAS-PCS general constants.  Option values and units conversion constants.
+ * @author smichaels
+ *
+ */
 public class Constants {
 
 	public static final int FRAME_SOURCE_CCD = 1;

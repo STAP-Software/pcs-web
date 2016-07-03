@@ -5,6 +5,11 @@ import java.util.StringTokenizer;
 
 import org.tmt.aps.peas.procedure.model.Procedure;
 
+/**
+ * Comparator class used to order procedures by procedure number
+ * @author smichaels
+ *
+ */
 public class ProcedureNumberComparator implements Comparator<Procedure> {
 
 	@Override

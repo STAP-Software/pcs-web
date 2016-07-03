@@ -29,6 +29,11 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Database Entity representing a single row in the Session table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Session")
 @NamedQueries({
@@ -127,6 +132,10 @@ public class Session {
 		this.observers = observers;
 	}
 
+	/**
+	 * Convienience method returning the session date formatted as a UTC date
+	 * @return the date as a formatted string
+	 */
 	public String getSessionDateFormatted() {
 		SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy");
 		sdf.setTimeZone(TimeZone.getTimeZone("UTC"));

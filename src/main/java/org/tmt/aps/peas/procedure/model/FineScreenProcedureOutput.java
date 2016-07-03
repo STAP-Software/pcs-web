@@ -15,7 +15,11 @@ import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 
-
+/**
+ * Procedure output data (not including trial specific data) for Fine Screen procedure
+ * @author smichaels
+ *
+ */
 public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtCentroidOffsetsDisplayValues, AvgFsCentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 	
 	CentroidOffsetsResult centroidOffsetsResult;

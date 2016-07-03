@@ -55,6 +55,10 @@ import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * Executor for the broadband Phasing procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class PhasingExecutor {
@@ -122,6 +126,9 @@ public class PhasingExecutor {
 		return null;
 	}
 
+	/**
+	 * Executor method: this method is the broad band Phasing flow
+	 */
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 

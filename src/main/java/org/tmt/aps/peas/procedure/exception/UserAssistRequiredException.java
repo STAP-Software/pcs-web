@@ -1,7 +1,12 @@
 package org.tmt.aps.peas.procedure.exception;
 
-import java.util.List;
-
+/**
+ * Exception thrown when Find and Identify fails to meet criteria.
+ * The criteria that are missed are contained in the exception
+ * The exception is used to print messages to the screen and ask the user for assistance about what to do next. 
+ * @author smichaels
+ *
+ */
 public class UserAssistRequiredException extends FandIException {
 	
 	private boolean ndetectNotAllSingle;

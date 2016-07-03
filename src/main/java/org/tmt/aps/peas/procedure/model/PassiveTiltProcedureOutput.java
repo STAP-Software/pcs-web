@@ -8,7 +8,11 @@ import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
-
+/**
+ * Procedure output data (not including trial specific data) for Passive Tilt procedure
+ * @author smichaels
+ *
+ */
 public class PassiveTiltProcedureOutput extends ProcedureOutput implements CentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 	
 	CenterTelescopeCalcResult centerTelescopeCalcResult;

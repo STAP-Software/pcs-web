@@ -37,6 +37,11 @@ import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
+/**
+ * Singleton EJB state machine for Visualization displays, user interaction waiting and return states.
+ * Also acts as a source of visualization data.
+ * @author smichaels
+ */
 @Singleton
 @Lock(LockType.READ)
 public class GraphicDisplayMgmt implements Serializable {
@@ -241,22 +246,35 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setAvgSufsGroupSegmentNumber(int avgSufsGroupSegmentNumber) {
 		this.avgSufsGroupSegmentNumber = avgSufsGroupSegmentNumber;
 	}
-
+	
+	/** 
+	 * @return the visualization pending display, if any
+	 */
 	@Lock(LockType.READ)
 	public VisualizationDisplay getPendingDisplay() {
 		return pendingDisplay;
 	}
 
+	/**
+	 * Sets a visualization dialog to be displayed.  This works in concert with {@link org.tmt.aps.peas.procedure.ui.AsyncController} which reads the state and performs the display.
+	 */
 	@Lock(LockType.READ)
 	public void setPendingDisplay(VisualizationDisplay pendingDisplay) {
 		this.pendingDisplay = pendingDisplay;
 	}
 
+	/**
+	 * @return the return state that was clicked
+	 */
 	@Lock(LockType.READ)
 	public Integer getReturnState() {
 		return returnState;
 	}
 
+	/**
+	 * Sets the return state of the display.  
+	 * @param returnState the return state to set
+	 */
 	@Lock(LockType.READ)
 	public void setReturnState(Integer returnState) {
 		this.returnState = returnState;
@@ -271,6 +289,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
 	}
 	
+	/**
+	 * Sets centroid offsets display values, encoding the x and y lists and good spots lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeCentroidOffsetsDisplayValues(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
 		this.centroidOffsetsDisplayValues = centroidOffsetsDisplayValues;
@@ -282,6 +303,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		setGoodSpots(IntegerListEncoder.encodeList(getCentroidOffsetsDisplayValues().getCentroidOffsetsResult().getGoodSpots()));
 	}
 
+	/**
+	 * Sets SUFS centroid offsets display values, encoding the x and y lists and good spots lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeSufsOffsetsDisplayValues(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues, int groupSegmentNumber) {
 		
 		this.sufsCentroidOffsetsDisplayValues = sufsCentroidOffsetsDisplayValues;
@@ -289,6 +313,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		encodeSufsOffsetsForDisplay(0);
 	}
 	
+	/**
+	 * Sets average SUFS centroid offsets display values, encoding the x and y lists and good spots lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeAvgSufsOffsetsDisplayValues(AvgSufsCentroidOffsetsDisplayValues avgSufsCentroidOffsetsDisplayValues, int groupSegmentNumber) {
 		
 		this.avgSufsCentroidOffsetsDisplayValues = avgSufsCentroidOffsetsDisplayValues;
@@ -296,6 +323,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		encodeAvgSufsOffsetsForDisplay(0);
 	}
 
+	/**
+	 * Encodes the SUFS x and y lists and good spots lists as strings to use with the display javascript, given the SUFS group segment number
+	 */
 	public void encodeSufsOffsetsForDisplay(int groupSegmentNumber) {
 		
 		FloatPoint[][] segmentOffsetsArray = sufsCentroidOffsetsDisplayValues.getSufsSegmentOffsetsResult().getCartesianCentroidOffsets();
@@ -308,6 +338,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		setGoodSpots(IntegerListEncoder.encodeList(validOffsets[groupSegmentNumber]));
 	}
 
+	/**
+	 * Encodes the average SUFS x and y lists and good spots lists as strings to use with the display javascript, given the SUFS group segment number
+	 */
 	public void encodeAvgSufsOffsetsForDisplay(int groupSegmentNumber) {
 		
 		FloatPoint[][] segmentOffsetsArray = avgSufsCentroidOffsetsDisplayValues.getSufsSegmentOffsetsResult().getCartesianCentroidOffsets();
@@ -330,6 +363,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.avgPtCentroidOffsetsDisplayValues = avgPtCentroidOffsetsDisplayValues;
 	}
 	
+	/**
+	 * Sets average PT centroid offsets display values, encoding the x and y lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeAvgPtCentroidOffsetsDisplayValues(AvgPtCentroidOffsetsDisplayValues avgPtCentroidOffsetsDisplayValues) {
 		
 		this.avgPtCentroidOffsetsDisplayValues = avgPtCentroidOffsetsDisplayValues;
@@ -350,6 +386,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.avgFsCentroidOffsetsDisplayValues = avgFsCentroidOffsetsDisplayValues;
 	}
 	
+	/**
+	 * Sets average fine screen centroid offsets display values, encoding the x and y lists and good spots lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeAvgFsCentroidOffsetsDisplayValues(AvgFsCentroidOffsetsDisplayValues avgFsCentroidOffsetsDisplayValues) {
 		
 		this.avgFsCentroidOffsetsDisplayValues = avgFsCentroidOffsetsDisplayValues;
@@ -369,6 +408,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
 	}
 
+	/**
+	 * Sets the edge heights display values, encoding the edge heights, use for analysis list, and rowFlagOut lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeEdgeHeightsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
 		
@@ -390,6 +432,9 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	}
 
+	/**
+	 * Sets the edge residuals display values, encoding the edge residuals, use for analysis list, and rowFlagOut lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeEdgeResidualsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
 		
@@ -420,6 +465,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 	}
 
+	/**
+	 * Sets the actuator deltas display values, encoding the actuator deltas and corresponding heat map lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeActuatorDeltasDisplayValues(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		this.actuatorDeltasDisplayValues = actuatorDeltasDisplayValues;
 		
@@ -430,6 +478,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 	
+	/**
+	 * Encodes the centroid map list x and y coordinate lists as strings to use with the display javascript
+	 */
 	public void setAndEncodeCentroidMap(CentroidMap centroidMap) {
 		
 		List<FloatPoint> centroids = FloatPointListEncoder.decodeList(centroidMap.getCentroidMapData());
@@ -437,6 +488,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		setCentroidYs(FloatPointListEncoder.encodeYList(centroids));
 	}
 	
+	/**
+	 * Queues a centroids dialog with the passed centroid map.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displaySubimageCentroids(CentroidMap centroidMap) {
 		
@@ -449,10 +504,12 @@ public class GraphicDisplayMgmt implements Serializable {
 		waitForReturnState();
 		
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySubimageCentroids"));
-
-		
 	}
 
+	/**
+	 * Queues a centroids dialog with the passed centroid map and header and text.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public boolean displaySubimageCentroids(CentroidMap centroidMap, int type, String message) {
 		
@@ -469,6 +526,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false; 
 	}
 
+	/**
+	 * Queues a centroid offsets dialog with the passed centroid offsets display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayCentroidOffsets(CentroidOffsetsDisplayValues centroidOffsetsDisplayValues) {
 		
@@ -484,6 +545,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayCentroidOffsets"));
 	}
 	
+	/**
+	 * Queues an SUFS centroid offsets dialog with the passed SUFS centroid offsets display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displaySufsCentroidOffsets(SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues) {
 		
@@ -501,6 +566,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySufsCentroidOffsets"));
 	}
 	
+	/**
+	 * Queues an average SUFS centroid offsets dialog with the passed average SUFS centroid offsets display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayAvgSufsCentroidOffsets(AvgSufsCentroidOffsetsDisplayValues avgSufsCentroidOffsetsDisplayValues) {
 		
@@ -518,6 +587,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayAvgSufsCentroidOffsets"));
 	}
 	
+	/**
+	 * Queues an average passive tilt centroid offsets dialog with the passed average passive tilt centroid offsets display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayAvgPtCentroidOffsets(AvgPtCentroidOffsetsDisplayValues avgPtCentroidOffsetsDisplayValues) {
 		
@@ -533,6 +606,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayAvgPtCentroidOffsets"));
 	}
 	
+	/**
+	 * Queues an average fine screen centroid offsets dialog with the passed average fine screen centroid offsets display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayAvgFsCentroidOffsets(AvgFsCentroidOffsetsDisplayValues avgFsCentroidOffsetsDisplayValues) {
 		
@@ -548,6 +625,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayAvgFsCentroidOffsets"));
 	}
 	
+	/**
+	 * Queues an actuator deltas dialog with the passed average actuator deltas display values.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayActuatorDeltas(ActuatorDeltasDisplayValues actuatorDeltasDisplayValues) {
 		
@@ -563,6 +644,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 
+	/**
+	 * Queues an edge heights dialog with the passed edge heights display values.  
+	 * This method waits for display and the user response.
+	 */
 	public void displayEdgeHeights(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayEdgeHeights"));
@@ -577,6 +662,10 @@ public class GraphicDisplayMgmt implements Serializable {
 		
 	}
 	
+	/**
+	 * Queues an edge residuals dialog with the passed edge residuals display values.  
+	 * This method waits for display and the user response.
+	 */
 	public void displayEdgeResiduals(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayEdgeResiduals"));
@@ -623,6 +712,9 @@ public class GraphicDisplayMgmt implements Serializable {
 	}
 
 
+	/**
+	 * Creates a heat map string given an array of actuator deltas
+	 */
 	public String heatMap(float[][] actDeltas) {
 
 		// zero: #ffffff
@@ -673,6 +765,9 @@ public class GraphicDisplayMgmt implements Serializable {
 		return buf.toString();
 	}
 
+	/**
+	 * Heat map interpolation method
+	 */
 	public String interpolate(float value, boolean isNeg, int startIndex, int endIndex, float startValue, float endValue) {
 		
 		int rValPos[] = { 0xff, 0xfe, 0xfc, 0xde };

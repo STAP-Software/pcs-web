@@ -19,6 +19,10 @@ import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * Singleton EJB state machine for User Prompt display, user interaction waiting and return states.
+ * @author smichaels
+ */
 @Singleton
 @Lock(LockType.READ)
 public class UserPromptMgmt implements Serializable {
@@ -37,26 +41,43 @@ public class UserPromptMgmt implements Serializable {
 		return waitingForSecs;
 	}
 
+	/** 
+	 * @return the user prompt pending display, if any
+	 */
 	@Lock(LockType.READ)
 	public UserPrompt getPendingPrompt() {
 		return pendingPrompt;
 	}
 
+	/**
+	 * Sets a user prompt to be displayed.  This works in concert with {@link org.tmt.aps.peas.procedure.ui.AsyncController} which reads the state and performs the display.
+	 */
 	@Lock(LockType.READ)
 	public void setPendingPrompt(UserPrompt pendingPrompt) {
 		this.pendingPrompt = pendingPrompt;
 	}
 
+	/**
+	 * @return the return state that the user chose from the prompt.
+	 */
 	@Lock(LockType.READ)
 	public Integer getReturnState() {
 		return returnState;
 	}
 
+	/**
+	 * Sets the return state of the prompt.  
+	 * @param returnState the return state to set
+	 */
 	@Lock(LockType.READ)
 	public void setReturnState(Integer returnState) {
 		this.returnState = returnState;
 	}
 
+	/**
+	 * Displays an 'info' dialog with the passed header and text.  
+	 * This method waits for display and the user response.
+	 */
 	@Abortable
 	public void displayInfoDialog(String header, String text) {
 		
@@ -64,6 +85,11 @@ public class UserPromptMgmt implements Serializable {
 		
 	}
 	
+	/**
+	 * Displays an 'info' dialog with the passed header and text.  
+	 * This method waits for display and the user response.
+	 * @param supressAbort if true, no 'Abort' button will be rendered on the prompt
+	 */
 	@Abortable
 	public void displayInfoDialog(String header, String text, boolean supressAbort) {
 		
@@ -78,6 +104,11 @@ public class UserPromptMgmt implements Serializable {
 		
 	}
 	
+	/**
+	 * Displays a 'yes/no' dialog with the passed header and text.  
+	 * This method waits for display and the user response.
+	 * @return true if the user clicked "Yes", false otherwise
+	 */
 	@Abortable
 	public boolean displayYesNoDialog(String header, String text) {
 		
@@ -93,6 +124,12 @@ public class UserPromptMgmt implements Serializable {
 		return (returnState.intValue() == 1) ? true : false;
 	}
 	
+	/**
+	 * Displays a 3 state flow related dialog with the passed header and text.  
+	 * A 3 state flow dialog contains "Retry, Continue and Abort"
+	 * This method waits for display and the user response.
+	 * @return value corresponding to the button that was clicked
+	 */
 	@Abortable
 	public int displayFlowControlTriFlowDialog(String header, String text) {
 		
@@ -107,7 +144,13 @@ public class UserPromptMgmt implements Serializable {
 
 		return returnState.intValue();
 	}
-	
+
+	/**
+	 * Displays a 2 state flow related dialog with the passed header and text.  
+	 * A 2 state flow dialog contains "Retry and Abort"
+	 * This method waits for display and the user response.
+	 * @return value corresponding to the button that was clicked
+	 */
 	@Abortable
 	public int displayFlowControlBiFlowDialog(String header, String text) {
 		
@@ -123,6 +166,13 @@ public class UserPromptMgmt implements Serializable {
 		return returnState.intValue();
 	}
 	
+	/**
+	 * Displays a dialog with the passed header and text, and arrays of button text and associated return values.
+	 * This method waits for display and the user response.
+	 * @param choicesText array of strings indicating what will be displayed on the dialog buttons
+	 * @param choicesValues array of strings indicating the value that will be returned when the respective button is clicked
+	 * @return value corresponding to the button that was clicked
+	 */
 	@Abortable
 	public int displayGenericMultiChoiceDialog(String header, String text, String[] choicesText, int[] choicesValues) {
 		

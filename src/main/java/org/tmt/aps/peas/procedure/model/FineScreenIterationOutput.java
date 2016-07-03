@@ -12,6 +12,11 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 
+/**
+ * Procedure output data for a single trial during the Fine Screen procedure
+ * @author smichaels
+ *
+ */
 public class FineScreenIterationOutput extends ProcedureIterationOutput implements CentroidOffsetsDisplayValues, ActuatorDeltasDisplayValues {
 
 

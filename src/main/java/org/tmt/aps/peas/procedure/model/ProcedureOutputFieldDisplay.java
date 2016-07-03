@@ -15,6 +15,12 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.Table;
 
+/**
+ * Metadata Entity representing a single row in the ProcedureOutputFieldDisplay table.
+ * The metadata describes maps procedure output fields to procedure types, iteration, and what order the field will be displayed in the report
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcedureOutputFieldDisplay")
 @NamedQueries({

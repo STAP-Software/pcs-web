@@ -27,6 +27,12 @@ import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
+/**
+ * Database entity representing a row in the CentroidMap table
+ * Also contains a Transient derived value for FindCentroidsResult, which is derived from decoded strings in the database table.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "CentroidMap")
 
@@ -317,6 +323,10 @@ public class CentroidMap {
 	@Transient
 	protected FindCentroidsResult findCentroidsResult;
 
+	/**
+	 * Returns a derived FindCentroidsResult by decoding the centroid map data, the intensity map data, the peak map data and the find cent status data.
+	 * @return the derived value
+	 */
 	public FindCentroidsResult getFindCentroidsResult() {
 		
 		if (findCentroidsResult == null) {

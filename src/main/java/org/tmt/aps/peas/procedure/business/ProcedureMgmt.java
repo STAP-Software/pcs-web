@@ -30,6 +30,11 @@ import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
 
+/** 
+ * Session EJB for procedure related database queries and updates 
+ * @author smichaels
+ *
+ */
 @Stateless
 public class ProcedureMgmt {
 
@@ -43,6 +48,9 @@ public class ProcedureMgmt {
 	@EJB
 	SessionMgmt sessionMgmt;
 	
+	/**
+	 * Returns a procedure and related data structures (procedure output and frame list) given the procedure id
+	 */
 	public Procedure findProcedure(Long procedureId) {
 		TypedQuery<Procedure> query = em.createNamedQuery("findProcedure", Procedure.class);
 		query.setParameter("procedureId", procedureId);
@@ -66,7 +74,12 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 	
-	
+	/**
+	 * Load up frame report data from a single procedureCcdFrame
+	 * Ultimately populates the frame log data by calling {@link ProcedureCcdFrame#setFrameFieldDisplayList(List)} 
+	 * @param procedureCcdFrame data structure including {@link org.tmt.aps.peas.frame.model.CcdFrame} and {@link org.tmt.aps.peas.refBeamMap.model.CentroidMap}
+	 * @throws Exception
+	 */
 	public void setupFrameLog(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 	
 		List<FrameFieldDisplay> displayList = sessionMgmt.findAllFrameFieldsToDisplay();
@@ -107,6 +120,9 @@ public class ProcedureMgmt {
 		procedureCcdFrame.setFrameFieldDisplayList(myList);
 	}
 
+	/**
+	 * Updates a procedure in the database
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Procedure updateProcedure(Procedure procedure) {
 		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
@@ -114,6 +130,11 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 	
+	/**
+	 * Creates a session record in the database
+	 * @param session the sessio record to create
+	 * @return the created night session object
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Session createSession(Session session) {
 		logger.info(MessageGenerator.generateMessage("record.create", "session"));
@@ -121,7 +142,11 @@ public class ProcedureMgmt {
 		return session;
 	}
 	
-	
+	/**
+	 * Creates a procedure record in the database
+	 * @param procedure the procedure entity to create
+	 * @return the created procedure entity
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Procedure createProcedure(Procedure procedure) {
 		
@@ -130,6 +155,11 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 	
+	/**
+	 * Returns a procedure type record given its id
+	 * @param procedureTypeId the procedure type id
+	 * @return the procedure type entity
+	 */
 	public ProcedureType findProcedureType(Long procedureTypeId) {
 		TypedQuery<ProcedureType> query = em.createNamedQuery("findProcedureType", ProcedureType.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
@@ -140,6 +170,13 @@ public class ProcedureMgmt {
 		return procedureType;
 	}
 	
+	/**
+	 * Returns the default procedure configuration for this telescope, instrument and procedure type
+	 * @param telescopeId Keck1 or Keck2
+	 * @param instrumentId PCS1 or PCS2
+	 * @param procedureTypeId the procedure type, e.g. passive tilt, fine screen, etc
+	 * @return the default procedure configuration
+	 */
 	public ProcedureConfigDefaults findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {
 		TypedQuery<ProcedureConfigDefaults> query = em.createNamedQuery("findDefaultProcedureConfig", ProcedureConfigDefaults.class);
 		query.setParameter("telescopeId", telescopeId);

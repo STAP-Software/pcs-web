@@ -8,9 +8,22 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Date;
 
-
+/**
+ * Stand-alone Java program that searches a Maven repository for versions of an artifact.
+ * @author smichaels
+ *
+ */
 public class VersionTool {
 
+	/**
+	 * Main program entry point
+	 * @param args two elements are required, the first is the switch and the second is the directory path to search
+	 * switch values are:
+	 * -l lists all versions found
+	 * -v returns the current version number
+	 * -i returns the next version number available
+
+	 */
 	public static void main(String[] args) {
 		
 		DateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss a z");

@@ -28,6 +28,11 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * Executor for the Center Telescope sub-procedure
+ * @author smichaels
+ *
+ */
 @Singleton
 @Startup
 public class CenterTelescopeSubflow {
@@ -48,6 +53,9 @@ public class CenterTelescopeSubflow {
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
 
 
+	/**
+	 * Executor method: this method is the Center Telescope sub-flow
+	 */
 	@Abortable
 	public Future<Exception> centerTelescope(Procedure procedure, Session currentSession) throws Throwable {
 		

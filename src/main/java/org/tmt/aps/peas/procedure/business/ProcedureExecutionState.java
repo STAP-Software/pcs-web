@@ -14,6 +14,13 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 
+/**
+ * Singleton EJB containing procedure state information: run state, procedure/subprocedure context, 
+ * queues abort requests, manages the current output target and execution iteration count
+ * Manages a procedure stack to handle state of subprocedures and superprocedures.
+ * @author smichaels
+ *
+ */
 @Singleton
 @Named
 public class ProcedureExecutionState {
@@ -120,6 +127,10 @@ public class ProcedureExecutionState {
 		subProcedureStartRequested = true;
 	}
 
+	/**
+	 * Pushes the current superprocedure onto the stack, sets the currentProcedure to the pending subprocedure
+	 * @return the now current procedure (the subprocedure)
+	 */
 	public Procedure transferControlToSubProcedure() {
 		procedureStack = currentProcedure;
 		currentProcedure = pendingSubProcedure;
@@ -128,6 +139,10 @@ public class ProcedureExecutionState {
 		return currentProcedure;
 	}
 
+	/**
+	 * Pops the superprocedure off the stack and sets it as the current procedure
+	 * @return the now current procedure 
+	 */
 	public Procedure transferControlFromSubProcedure() {
 		
 		currentProcedure = procedureStack;
@@ -137,7 +152,10 @@ public class ProcedureExecutionState {
 		return currentProcedure;
 	}
 
-	// returns true if the current execution context is a subprocedure
+	/**
+	 * 
+	 * @return true if the current execution context is a subprocedure
+	 */
 	public boolean isExecutionContextSubProcedure() {
 		return procedureStack != null;
 	}

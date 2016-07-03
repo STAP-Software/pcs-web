@@ -34,6 +34,11 @@ import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
+/**
+ * Session EJB managing Centroid maps: frame centroid maps, reference beam maps and subimage definition lists.
+ * @author smichaels
+ *
+ */
 @Stateless
 public class CentroidMapMgmt {
 
@@ -47,10 +52,25 @@ public class CentroidMapMgmt {
 	@PersistenceContext
 	private EntityManager em;
 
+	/**
+	 * Returns the reference beam map current to this session, given the instrument, pupil mask type and filter type
+	 * @param instrumentId PCS1 or PCS2
+	 * @param pupilMaskTypeId the pupil mask type id
+	 * @param filterTypeId the filter type id
+	 * @return the reference beam map
+	 */
 	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
 		return getCurrentSessionRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, -1);
 	}
 
+	/**
+	 * Returns the reference beam map current to this session, given the instrument, pupil mask type, filter type and SUFS group number
+	 * @param instrumentId PCS1 or PCS2
+	 * @param pupilMaskTypeId the pupil mask type id
+	 * @param filterTypeId the filter type id
+	 * @param sufsGroupNumber the SUFS group number
+	 * @return the reference beam map
+	 */
 	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 		RefBeamMap refBeamMap = getCurrentRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, sufsGroupNumber);
 
@@ -66,6 +86,14 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 
+	/**
+	 * Returns the newest reference beam map stored in the database, for a given instrument, pupil mask type, filter type and SUFS group number
+	 * @param instrumentId PCS1 or PCS2
+	 * @param pupilMaskTypeId the pupil mask type id
+	 * @param filterTypeId the filter type id
+	 * @param sufsGroupNumber the SUFS group number
+	 * @return the reference beam map
+	 */
 	public RefBeamMap getCurrentRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 
 		TypedQuery<RefBeamMap> query;
@@ -93,10 +121,23 @@ public class CentroidMapMgmt {
 
 	}
 
+	/**
+	 * Retrieves a subimage definition list from the database, for a telecscope and pupil mask type
+	 * @param telescopeId Keck1 or Keck2
+	 * @param pupilMaskTypeId the pupil mask type
+	 * @return the subimage definition list
+	 */
 	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId) {
 		return getSubimageDefList(telescopeId, pupilMaskTypeId, null);
 	}
 	
+	/**
+	 * Retrieves a subimage definition list from the database, for a telecscope, pupil mask type and SUFS group number
+	 * @param telescopeId Keck1 or Keck2
+	 * @param pupilMaskTypeId the pupil mask type
+	 * @param sufsGroupNumber the SUFS group number
+	 * @return the subimage definition list
+	 */
 	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer sufsGroupNumber) {
 
 		RefBeamMap refBeamMap = null;
@@ -175,6 +216,11 @@ public class CentroidMapMgmt {
 		return subimageDefList;
 	}
 
+	/**
+	 * Queries the database for the list of peripheral spots for a given pupil mask type
+	 * @param pupilMaskTypeId the pupil mask type
+	 * @return the list of peripheral spots
+	 */
 	public PeripheralSpotList findPeripheralSpotList(Long pupilMaskTypeId) {
 
 		TypedQuery<PeripheralSpotList> query = em.createNamedQuery("findPeripheralSpotList", PeripheralSpotList.class);
@@ -185,6 +231,11 @@ public class CentroidMapMgmt {
 		return query.getSingleResult();
 	}
 
+	/**
+	 * Queries the database for the list of M2 calculation spots for a given telescope
+	 * @param telescopeId Keck1 or Keck2
+	 * @return the list of M2 calculation spots
+	 */
 	public M2CalcSpotList findM2CalcSpotList(Long telescopeId) {
 
 		TypedQuery<M2CalcSpotList> query = em.createNamedQuery("findM2CalcSpotList", M2CalcSpotList.class);
@@ -195,6 +246,11 @@ public class CentroidMapMgmt {
 		return query.getSingleResult();
 	}
 
+	/**
+	 * Saves a reference beam map to the database
+	 * @param refBeamMap the reference beam map to save
+	 * @return the saved reference beam map entity
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap) {
 
@@ -212,6 +268,11 @@ public class CentroidMapMgmt {
 		return refBeamMap;
 	}
 
+	/**
+	 * Saves a centroid map to the database
+	 * @param centroidMap the centroid map entity
+	 * @return the saved centroid map entity
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public CentroidMap saveCentroidMap(CentroidMap centroidMap) {
 
@@ -223,6 +284,11 @@ public class CentroidMapMgmt {
 		return centroidMap;
 	}
 
+	/**
+	 * Associates a reference beam map with a procedure as the reference beam map used in that procedure
+	 * @param refBeamMap the reference beam map
+	 * @param procedure the procedure to associate the reference beam map with
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void associateRefBeamMap(RefBeamMap refBeamMap, Procedure procedure) {
 

@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.session.ui;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -19,7 +18,6 @@ import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.ApplicationScopeBean;
@@ -39,6 +37,11 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * JSF Controller for session user interfaces, user login, external interface connection user interface and user permissions
+ * @author smichaels
+ *
+ */
 @Named
 @SessionScoped
 public class SessionController implements Serializable {
@@ -87,6 +90,10 @@ public class SessionController implements Serializable {
 	boolean runProcedurePermission;
 	boolean ifCommandPermission;
 
+	/**
+	 * Initialization method: creates a new current session if one does not exist
+	 * Sets up external interfaces to start up either in simulation or operational mode
+	 */
 	@PostConstruct
 	private void init() {
 
@@ -265,7 +272,10 @@ public class SessionController implements Serializable {
 
 	}
 	
-
+	/**
+	 * JSF Action method to view the current night session user interface
+	 * @return the JSF page rendering the session detail
+	 */
 	public String doViewCurrentSession() {
 		
 		try {
@@ -282,6 +292,10 @@ public class SessionController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method to view the currently selected session
+	 * @return the JSF page rendering the session detail
+	 */
 	public String doViewSession() {
 
 		try {
@@ -302,6 +316,10 @@ public class SessionController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method that saves the current session
+	 * @return the JSF page rendering the session detail
+	 */
 	public String doSaveSession() {
 
 		try {
@@ -328,12 +346,20 @@ public class SessionController implements Serializable {
 
 	}
 
+	/**
+	 * JSF Action method called when the 'Cancel' button is clicked
+	 * @return the JSF page rendering the session list
+	 */
 	public String doCancelSaveSession() {
 
 		return doViewSessionList();	
 
 	}
 
+	/**
+	 * JSF Action method rendering the session list
+	 * @return the JSF page rendering the session list
+	 */
 	public String doViewSessionList() {
 
 		try {
@@ -349,7 +375,10 @@ public class SessionController implements Serializable {
 		}
 	}
 	
-	
+	/**
+	 * JSF Action method called when the 'Search' button is clicked
+	 * @return the JSF page rendering the session list
+	 */
 	public String doSearchSessionList() {
 
 		try {
@@ -365,19 +394,18 @@ public class SessionController implements Serializable {
 		}
 	}
 	
-	
-	
-	public void doZapSession() {
-		
-		applicationScopeBean.setPersistentSession(null);
-		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session successfully Zapped", ""));
-
-	}
-
+	/**
+	 * Adds a new procedure to the current session
+	 * @param procedure the procedure to add
+	 */
 	public void addNewProcedure(Procedure procedure) {
 		currentSession.getProcedureList().add(procedure);
 	}
 
+	/**
+	 * Returns the last procedure in the list of procedures for the current session
+	 * @return the last procedure run in the current session
+	 */
 	public Procedure getCurrentSessionLastProcedure() {
 		List<Procedure> pList = currentSession.getProcedureList();
 
@@ -399,6 +427,10 @@ public class SessionController implements Serializable {
 
 	}
 
+	/**
+	 * JSF event listener called when the User mode button is clicked
+	 * Pops up the login dialog
+	 */
 	public void modeChangeListener() {
 		// here we check the mode and popup dialog at correct state change
 		RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -407,6 +439,11 @@ public class SessionController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action listener called when 'Login' button is clicked
+	 * If a password was supplied, checks and if a match changes to administration mode
+	 * If no password was supplied, changes to engineering mode
+	 */
 	public void login() {
 		// here we check the password and change the mode accordingly
 		RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -426,6 +463,11 @@ public class SessionController implements Serializable {
 		requestContext.update("procedureDetailForm");
 	}
 
+	/**
+	 * JSF listener method called when the 'Connect...' or 'Disconnect' menu items are selected
+	 * If 'Connect...' was clicked, pops up the dialog to manage the connections
+	 * If 'Disconnect' was clicked, reset all connections and go into simulation mode.
+	 */
 	public void extInfChangeListener() {
 		// here we check the mode and popup dialog at correct state change
 		RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -444,6 +486,10 @@ public class SessionController implements Serializable {
 		}
 	}
 
+	/**
+	 * JSF Action method called when external i/f connection dialog buttons 'Ok' or 'Cancel' are clicked
+	 * @param ok  true if Ok was clicked otherwise false
+	 */
 	public void doExtInfChange(boolean ok) {
 		// here we check the password and change the mode accordingly
 		RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -463,23 +509,42 @@ public class SessionController implements Serializable {
 
 	}
 
+	/**
+	 * @return true if simulation mode should be rendered to the screen
+	 */
 	public boolean getRenderSimulationMode() {
 		//return false;
 		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
 	}
 
+	/**
+	 * Accessor method for procedure run permission
+	 * Used by UI to show/hide elements based on this permission.
+	 */
 	public boolean isRunProcedurePermission() {
 		return runProcedurePermission;
 	}
 
+	/**
+	 * Setter method for procedure run permission
+	 * This is set by the {@link ApplicationScopeBean} for the browser session that accessed PEAS-PCS first after startup
+	 */
 	public void setRunProcedurePermission(boolean runProcedurePermission) {
 		this.runProcedurePermission = runProcedurePermission;
 	}
 
+	/**
+	 * Accessor method for interface command permission
+	 * Used by UI to show/hide elements based on this permission.
+	 */
 	public boolean isIfCommandPermission() {
 		return ifCommandPermission;
 	}
 
+	/**
+	 * Setter method for interface command permission
+	 * This is set by the {@link ApplicationScopeBean} for the browser session that accessed PEAS-PCS first after startup
+	 */
 	public void setIfCommandPermission(boolean ifCommandPermission) {
 		this.ifCommandPermission = ifCommandPermission;
 	}

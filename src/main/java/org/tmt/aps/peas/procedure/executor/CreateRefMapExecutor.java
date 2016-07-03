@@ -17,7 +17,6 @@ import javax.ejb.Singleton;
 import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -39,6 +38,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
+/**
+ * Executor for the Create Ref Map procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class CreateRefMapExecutor {
@@ -96,6 +99,9 @@ public class CreateRefMapExecutor {
 		return null;
 	}
 	
+	/**
+	 * Executor method: this method is the Create Ref Map flow
+	 */
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 		
@@ -105,7 +111,10 @@ public class CreateRefMapExecutor {
 			// the throw is for a super-procedure, ignore it here
 		}
 	}
-		
+	
+	/**
+	 * Synchronous Executor method: callers wait on completion; this method is the create ref map sub-procedure
+	 */
 	public void executeSynchronousProcedure(Procedure procedure, Session currentSession) throws Throwable {
 
 		logger.info("CreateRefMapExecutor::executeProcedure::");

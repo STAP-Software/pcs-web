@@ -15,7 +15,11 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
-
+/**
+ * Visualization display Entity class representing a row in the ProcTypeVisualDisplay table
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "ProcTypeVisualDisplay")
 @NamedQueries({

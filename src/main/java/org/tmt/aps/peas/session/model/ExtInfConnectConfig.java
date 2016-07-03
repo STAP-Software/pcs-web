@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.session.model;
 
+/**
+ * Model class containing the current state of external connection configurations
+ * @author smichaels
+ *
+ */
 public class ExtInfConnectConfig {
 
 	

@@ -47,6 +47,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
+/**
+ * Executor for the Pupil Registration procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class PupilRegistrationExecutor {
@@ -113,6 +117,9 @@ public class PupilRegistrationExecutor {
 		return null;
 	}
 
+	/**
+	 * Executor method: this method is the Pupil Registration flow
+	 */
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 

@@ -5,7 +5,11 @@ import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.visualization.model.AvgSufsCentroidOffsetsDisplayValues;
 
-
+/**
+ * Procedure output data (not including trial specific data) for SUFS procedure
+ * @author smichaels
+ *
+ */
 public class SufsProcedureOutput extends ProcedureOutput implements AvgSufsCentroidOffsetsDisplayValues {
 	
 	SufsSegmentOffsetsResult sufsSegmentOffsetsResult;

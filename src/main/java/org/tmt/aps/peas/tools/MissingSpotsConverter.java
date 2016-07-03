@@ -8,6 +8,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
+/**
+ * Stand alone Java program used to convert PCSP missing spots files to text suitable for generating SQL statements.
+ * @author smichaels
+ *
+ */
 public class MissingSpotsConverter {
 
 	public static void main(String[] args) {

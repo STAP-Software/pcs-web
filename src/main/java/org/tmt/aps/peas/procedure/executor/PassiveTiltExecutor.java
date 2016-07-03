@@ -52,6 +52,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 
+/**
+ * Executor for the Passive Tilt procedure
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class PassiveTiltExecutor {
@@ -118,6 +122,9 @@ public class PassiveTiltExecutor {
 		return null;
 	}
 
+	/**
+	 * Executor method: this method is the Passive Tilt flow
+	 */
 	@Asynchronous
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 

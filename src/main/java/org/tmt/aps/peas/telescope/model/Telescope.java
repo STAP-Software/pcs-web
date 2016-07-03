@@ -15,6 +15,11 @@ import javax.persistence.Transient;
 
 import org.tmt.aps.peas.common.FloatPoint;
 
+/**
+ * Entity class representing the Telescope database record.  Includes Transient fields for current state information: telescope position, M2 position and mirror temperature.
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Telescope")
 @NamedQueries({

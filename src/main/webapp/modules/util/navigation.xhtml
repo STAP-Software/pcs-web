@@ -14,9 +14,6 @@
 					
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.procedureExecuting}"/>
-						<!--  
-						<p:menuitem value="Zap Session" ajax="false" action="#{sessionController.doZapSession}" rendered="#{sessionController.engineeringView}" />
-						-->
 					</p:submenu>
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting and sessionController.runProcedurePermission}" />

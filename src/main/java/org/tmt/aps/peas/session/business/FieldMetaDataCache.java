@@ -19,6 +19,11 @@ import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.session.model.FieldMetaData;
 
+/**
+ * Singleton EJB cache for all database field metadata and procedure output field metadata
+ * @author smichaels
+ *
+ */
 @Singleton
 @Startup
 public class FieldMetaDataCache {
@@ -33,7 +38,10 @@ public class FieldMetaDataCache {
 	private Map<String, FieldMetaData> fieldMap;
 	private Map<String, ProcedureOutputField> procedureOutputFieldMap;
 	
-	
+	/**
+	 * Upon startup, query database for all field meta data and procedure output metadata and store in the cache
+	 * @throws Exception
+	 */
 	@PostConstruct
 	public void init() throws Exception {
 		
@@ -59,11 +67,23 @@ public class FieldMetaDataCache {
 
 	}
 
+	/**
+	 * Cache access method to retrieve metadata for a single database field
+	 * @param tableName the table name for the field
+	 * @param columnName the column name for the field
+	 * @return the field metadata
+	 */
 	public FieldMetaData getFieldMetaData(String tableName, String columnName) {
 		String key = tableName + "::" + columnName;
 		return fieldMap.get(key.toLowerCase());
 	}
 	
+	/**
+	 * Cache access method to retrieve metadata for a procedure output field
+	 * @param className the class name of the class that contains the procedure output field
+	 * @param fieldName the field name of the procedure output field
+	 * @return the field metadata
+	 */
 	public ProcedureOutputField getProcedureOutputField(String className, String fieldName) {
 		String key = className + "::" + fieldName;
 		return procedureOutputFieldMap.get(key.toLowerCase());

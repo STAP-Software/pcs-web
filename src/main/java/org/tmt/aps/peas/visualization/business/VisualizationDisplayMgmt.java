@@ -15,11 +15,14 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.procedure.model.ProcedureOutput;
-import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.visualization.model.ProcTypeVisualizationDisplay;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
+/**
+ * Session EJB managing visualization display metadata
+ * @author smichaels
+ *
+ */
 @Stateless
 public class VisualizationDisplayMgmt {
 
@@ -28,7 +31,11 @@ public class VisualizationDisplayMgmt {
 	@PersistenceContext
 	private EntityManager em;
 	
-	
+	/**
+	 * Queries the database for the list of visualization displays supported by the passed procedure type
+	 * @param procedureTypeId the procedure type id of the procedure type
+	 * @return the list of visualization display types supported
+	 */
 	public List<VisualizationDisplay> findVisualizationDisplays(Long procedureTypeId) {
 		TypedQuery<ProcTypeVisualizationDisplay> query = em.createNamedQuery("findProcTypeVisualizationDisplays", ProcTypeVisualizationDisplay.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
@@ -41,17 +48,6 @@ public class VisualizationDisplayMgmt {
 		}
 		
 		return visualizationDisplayList;
-	}
-	
-	public ProcedureConfig findDefaultProcedureConfig(Long telescopeId, Long instrumentId, Long procedureTypeId) {
-		TypedQuery<ProcedureConfig> query = em.createNamedQuery("findDefaultProcedureConfig", ProcedureConfig.class);
-		query.setParameter("telescopeId", telescopeId);
-		query.setParameter("instrumentId", instrumentId);
-		query.setParameter("procedureTypeId", procedureTypeId);
-		
-		query.setMaxResults(1);
-		
-		return query.getSingleResult();
 	}
 	
 }

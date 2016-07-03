@@ -1,5 +1,10 @@
 package org.tmt.aps.peas.procedure.model;
 
+/**
+ * Procedure output data of decision branches made during a procedure
+ * @author smichaels
+ *
+ */
 public class ProcedureDecisionLog {
 
 	private boolean m1CmdsSent;

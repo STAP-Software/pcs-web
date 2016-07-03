@@ -32,6 +32,10 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
+/**
+ * Pupil Registration common sub flow methods
+ * @author smichaels
+ */
 @Singleton
 @Startup
 public class PupilRegistrationSubflow {
@@ -57,6 +61,9 @@ public class PupilRegistrationSubflow {
 	PhysicalModel physicalModel;
 
 
+	/**
+	 * This method is the PupilRegistration sub-flow
+	 */
 	@Abortable
 	public boolean execute(Procedure procedure, FindCentroidsResult findCentroidsResult) throws Throwable {
 		

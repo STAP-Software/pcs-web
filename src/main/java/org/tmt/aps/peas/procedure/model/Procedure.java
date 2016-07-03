@@ -36,6 +36,13 @@ import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
+/**
+ * Database Entity class representing a single row in the Procedure table
+ * Includes Transient fields for {@link RefBeamMap} and {@link ProcedureOutput} and percentComplete
+ * Includes utility and convenience methods
+ * @author smichaels
+ *
+ */
 @Entity
 @Table(name = "Procedure")
 @NamedQueries({
@@ -283,6 +290,9 @@ public class Procedure {
 		this.procedureOutput = procedureOutput;
 	}
 
+	/**
+	 * @return a display string of the procedure state
+	 */
 	public String getProcedureStateDisplayString() {
 
 		switch (procedureState) {
@@ -299,10 +309,17 @@ public class Procedure {
 		}
 	}
 	
+	/**
+	 * @return true if this procedure state is completed or aborted
+	 */
 	public boolean isArchivedProcedure() {
 		return procedureState == PROCEDURE_STATE_COMPLETED || procedureState == PROCEDURE_STATE_ABORTED;
 	}
 
+	/**
+	 * Adds a procedureCcdFrame to this procedure
+	 * @param procedureCcdFrame the procedureCcdFrame to add
+	 */
 	public void addProcedureCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
 		if (procedureCcdFrameList == null) {
 			procedureCcdFrameList = new ArrayList<ProcedureCcdFrame>();
@@ -311,6 +328,9 @@ public class Procedure {
 		
 	}
 	
+	/**
+	 * @return the most recent ProcedureCcdFrame in the list or null if the list does not exist
+	 */
 	public ProcedureCcdFrame getLatestProcedureCcdFrame() {
 		if (procedureCcdFrameList == null) {
 			return null;
@@ -318,6 +338,9 @@ public class Procedure {
 		return procedureCcdFrameList.get(procedureCcdFrameList.size()-1);
 	}
 	
+	/**
+	 * @return true if this is a new procedure record that has not yet been stored in the database
+	 */
 	public boolean isNewRecord() {
 		return procedureId == null;
 	}
@@ -340,6 +363,10 @@ public class Procedure {
 	}
 	
 
+	/**
+	 * @return the associated procedure output if it is an instance of {@link PassiveTiltProcedureOutput}.
+	 * Used by session detail row expansion display
+	 */
 	public PassiveTiltProcedureOutput getPassiveTiltProcedureOutput() {
 		if (procedureOutput instanceof PassiveTiltProcedureOutput) {
 			return (PassiveTiltProcedureOutput)procedureOutput;
@@ -348,6 +375,10 @@ public class Procedure {
 		}
 	}
 
+	/**
+	 * @return the associated procedure output if it is an instance of {@link FineScreenProcedureOutput}.
+	 * Used by session detail row expansion display
+	 */
 	public FineScreenProcedureOutput getFineScreenProcedureOutput() {
 		if (procedureOutput instanceof FineScreenProcedureOutput) {
 			return (FineScreenProcedureOutput)procedureOutput;
@@ -356,6 +387,10 @@ public class Procedure {
 		}
 	}
 	
+	/**
+	 * @return the associated procedure output if it is an instance of {@link PhasingProcedureOutput}.
+	 * Used by session detail row expansion display
+	 */
 	public PhasingProcedureOutput getPhasingProcedureOutput() {
 		if (procedureOutput instanceof PhasingProcedureOutput) {
 			return (PhasingProcedureOutput)procedureOutput;
@@ -364,6 +399,10 @@ public class Procedure {
 		}
 	}
 	
+	/**
+	 * @return the associated procedure output if it is an instance of {@link SufsProcedureOutput}.
+	 * Used by session detail row expansion display
+	 */
 	public SufsProcedureOutput getSufsProcedureOutput() {
 		if (procedureOutput instanceof SufsProcedureOutput) {
 			return (SufsProcedureOutput)procedureOutput;
