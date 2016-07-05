@@ -110,6 +110,8 @@ public class ApplicationScopeBean implements Serializable {
 				sessionController.setRunProcedurePermission(true);
 				// set I/F command permission on session controller for this session (SessionController is session scoped)
 				sessionController.setIfCommandPermission(true);
+				// set configuration permissing on session controller for this session (SessionController is session scoped)
+				sessionController.setConfigPermission(true);
 				setPersistentSession(session);
 				ownerRequestedSessionId = request.getRequestedSessionId();
 			} else {

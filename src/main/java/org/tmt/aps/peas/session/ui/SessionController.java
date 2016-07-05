@@ -89,6 +89,7 @@ public class SessionController implements Serializable {
 	
 	boolean runProcedurePermission;
 	boolean ifCommandPermission;
+	boolean configPermission;
 
 	/**
 	 * Initialization method: creates a new current session if one does not exist
@@ -547,6 +548,22 @@ public class SessionController implements Serializable {
 	 */
 	public void setIfCommandPermission(boolean ifCommandPermission) {
 		this.ifCommandPermission = ifCommandPermission;
+	}
+
+	/**
+	 * Accessor method for configuration permission
+	 * Used by UI to show/hide elements based on this permission.
+	 */
+	public boolean isConfigPermission() {
+		return configPermission;
+	}
+
+	/**
+	 * Setter method for configuration permission
+	 * This is set by the {@link ApplicationScopeBean} for the browser session that accessed PEAS-PCS first after startup
+	 */
+	public void setConfigPermission(boolean configPermission) {
+		this.configPermission = configPermission;
 	}
 
 	

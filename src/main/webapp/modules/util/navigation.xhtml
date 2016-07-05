@@ -18,7 +18,7 @@
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting and sessionController.runProcedurePermission}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.procedureExecuting}" oncomplete="procedureExecutionPoller.start();" />
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.procedureExecuting and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
 					<p:submenu label="Run" icon="ui-icon-gear" rendered="#{sessionController.runProcedurePermission}">
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
@@ -34,7 +34,7 @@
 						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.ifCommandPermission}"/>
 					</p:submenu>
 
-					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}">
+					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.configPermission}">
 						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.procedureExecuting}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}"/>
 						<p:menuitem value="SUFS Segment Zernikes" action="#{globalConfigController.doViewSufsZernikes}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>

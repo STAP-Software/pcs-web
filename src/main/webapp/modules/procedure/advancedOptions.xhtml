@@ -35,12 +35,12 @@
 					
 					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" />
 					<p:selectOneMenu id="refBeamField" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.referenceBeam}"
-						rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" converter="#{refBeamConverter}">
+						rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" disabled="#{procedureController.procedure.procedureState gt 1}" converter="#{refBeamConverter}">
 					<f:selectItems value="#{sessionController.instrument.camera.orderedReferenceBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Remove Bad Pixels" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.removeBadPixels}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.removeBadPixels}" disabled="#{procedureController.procedure.procedureState gt 1}" />
 
 					<p:spacer height="5px" />
 					<p:spacer height="5px" />
@@ -54,7 +54,7 @@
 					rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					<h:outputLabel value="Force Scale" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}">
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}" disabled="#{procedureController.procedure.procedureState gt 1}" >
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
  
@@ -63,39 +63,39 @@
         			
         			<p:panelGrid columns="3" id="forceScalePanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScale}" >
         			  
-        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource}">
+        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource}" disabled="#{procedureController.procedure.procedureState gt 1}">
             			<f:selectItem itemLabel="Ref Map" itemValue="1" />
             			<f:selectItem itemLabel="User Value" itemValue="2" />
 					<p:ajax update="forceScalePanelGroup" />
 					</p:selectOneMenu>
 					<p:spacer height="1" width="10" />
 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleValue}" 
-						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource eq 2}"  />
+						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceScaleSource eq 2}" disabled="#{procedureController.procedure.procedureState gt 1}" />
         			</p:panelGrid>
           			
 					<h:outputLabel value="Force Rotation" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}">
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" disabled="#{procedureController.procedure.procedureState gt 1}">
             			<p:ajax update="advancedForm" />
         			</p:selectBooleanCheckbox>
 
-       				<h:outputLabel value="Force Rotation Source" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" />
+       				<h:outputLabel value="Force Rotation Source" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" disabled="#{procedureController.procedure.procedureState gt 1}" />
         			
         			<p:panelGrid columns="3" id="forceRotationPanelGroup" styleClass="noPadding" rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotation}" >
-        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource}">
+        			<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource}" disabled="#{procedureController.procedure.procedureState gt 1}">
             			<f:selectItem itemLabel="Ref Map" itemValue="1" />
             			<f:selectItem itemLabel="User Value (deg)" itemValue="2" />
 					<p:ajax update="forceRotationPanelGroup" />
 					</p:selectOneMenu>
 					<p:spacer height="1" width="10" />
 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationValue}" 
-						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource eq 2}"  />
+						rendered="#{procedureController.procedure.procedureConfigSet.fiConfig.forceRotationSource eq 2}" disabled="#{procedureController.procedure.procedureState gt 1}" />
         			</p:panelGrid>
  
  					<h:outputLabel value="Fraction of Boxes Filled Threshold" />
- 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fracFilledThresh}" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fracFilledThresh}" disabled="#{procedureController.procedure.procedureState gt 1}" />
  					
  					<h:outputLabel value="Fourier Quality Threshold" />
- 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fourierQualityThresh}" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fourierQualityThresh}" disabled="#{procedureController.procedure.procedureState gt 1}" />
   
  
 				</p:panelGrid>
@@ -106,9 +106,9 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					
 					<h:outputLabel value="Remove Scale" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeScale}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeScale}" disabled="#{procedureController.procedure.procedureState gt 1}" />
  					<h:outputLabel value="Remove Rotation" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeRotation}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.removeRotation}" disabled="#{procedureController.procedure.procedureState gt 1}" />
   
 				</p:panelGrid>
 				</p:fieldset>
@@ -118,7 +118,7 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					
 					<h:outputLabel value="Fractional Intensity Normalization Method" />
-       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.pupilRegErrorConfig.fractionalIntensityCalcMethod}">
+       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.pupilRegErrorConfig.fractionalIntensityCalcMethod}" disabled="#{procedureController.procedure.procedureState gt 1}">
              			<f:selectItem itemLabel="Use Peripheral Subimages (PCS)" itemValue="1" />
             			<f:selectItem itemLabel="Use Interior Subimages (APS)" itemValue="2" />
 					</p:selectOneMenu>
@@ -131,7 +131,7 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					
 					<h:outputLabel value="M2/M1 Calculation Method" />
-       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.calcM2M1Config.calcMethod}">
+       				<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.calcM2M1Config.calcMethod}" disabled="#{procedureController.procedure.procedureState gt 1}">
              			<f:selectItem itemLabel="Ray Trace" itemValue="1" />
             			<f:selectItem itemLabel="Zernikes" itemValue="2" />
 					</p:selectOneMenu>
@@ -145,11 +145,11 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					
 					<h:outputLabel value="Number of Phasing Steps" />
-       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingSteps}" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingSteps}" disabled="#{procedureController.procedure.procedureState gt 1}" />
        								
        				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','PhasingStepSize')}" />				
 					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingStepSize}" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingStepSize}" disabled="#{procedureController.procedure.procedureState gt 1}" />
   
 				</p:panelGrid>
 				</p:fieldset>
@@ -159,7 +159,7 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 					
 					<h:outputLabel value="Ignore Jumped Subimage Threshold (pixels)" />
-       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.sufsIgnoreSubimageThreshold}" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.centroidOffsetsConfig.sufsIgnoreSubimageThreshold}" disabled="#{procedureController.procedure.procedureState gt 1}" />
        								  
 				</p:panelGrid>
 				</p:fieldset>
@@ -168,7 +168,7 @@
 				</p:panelGrid>
 
 				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm"
-					action="#{procedureController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" />
+					action="#{procedureController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" disabled="#{procedureController.procedure.procedureState gt 1}" />
 				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
 					type="button" onclick="advancedDialog.hide();" />
 

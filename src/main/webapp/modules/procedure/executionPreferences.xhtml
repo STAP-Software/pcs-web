@@ -37,23 +37,23 @@
 					<p:spacer height="5px" />
 
 					<h:outputLabel value="Auto Display Centroids" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroids}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroids}" disabled="#{procedureController.procedure.procedureState gt 1}" />
 					<h:outputLabel value="Auto Display Centroid Offsets" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.sufs}"/>
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.sufs}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.sufs}" />
 					<h:outputLabel value="Auto Display Avg. Pseudo PT Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgPtCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgPtCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.fineScreen}" />
 					<h:outputLabel value="Auto Display Avg. FS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgFsCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgFsCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
 					<h:outputLabel value="Auto Display Avg. SUFS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.sufs}"/>
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgSufsCentroidOffsets}" rendered="#{procedureController.procedure.procedureType.sufs}"/>					
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgSufsCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.sufs}"/>					
 					<h:outputLabel value="Auto Display Actuator Deltas" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}" />					
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}" />					
 					<h:outputLabel value="Auto Display Edge Heights" rendered="#{procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<h:outputLabel value="Auto Display Residuals" rendered="#{procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.phasing}" />
 					<h:outputLabel value="Display Subimage Intensity Warning" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplaySubimageIntensityWarning}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplaySubimageIntensityWarning}" disabled="#{procedureController.procedure.procedureState gt 1}" />
 
 				</p:panelGrid>
 
@@ -116,7 +116,7 @@
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
 					<h:outputLabel value="SUFS Auto Point Telescope to Segment/Group" />
-					<p:selectOneMenu id="options" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoPointTelescopeSufsGroup}">
+					<p:selectOneMenu id="options" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoPointTelescopeSufsGroup}" disabled="#{procedureController.procedure.procedureState gt 1}">
 						<f:selectItem itemLabel="Auto Point Telescope" itemValue="1" />
 						<f:selectItem itemLabel="Never Auto Point Telescope" itemValue="2" />
 						<f:selectItem itemLabel="Prompt User During Test" itemValue="3" />
@@ -168,7 +168,7 @@
 			<br/>
 
 			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
-				oncomplete="executionPrefsDialog.hide();" />
+				oncomplete="executionPrefsDialog.hide();" disabled="#{procedureController.procedure.procedureState gt 1}" />
 			<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
 				action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="executionPrefsDialog.hide();" />
 
