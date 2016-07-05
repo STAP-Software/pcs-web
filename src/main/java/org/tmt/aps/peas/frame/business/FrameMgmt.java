@@ -105,12 +105,21 @@ public class FrameMgmt {
 	UserPromptMgmt userPromptMgmt;
 
 
+	/**
+	 * Calls {@link #loadFitsFrame(String)}
+	 * @param fitsFilename
+	 */
 	public CcdFrame getCcdFrame(String fitsFilename) throws Exception {
 
 		CcdFrame ccdFrame = loadFitsFrame(fitsFilename);
 		return ccdFrame;
 	}
 
+	/**
+	 * Searches for a CcdFrame record by fitsFilename
+	 * @param fitsFilename the fitsFilename to match
+	 * @return the CcdFrame entity
+	 */
 	public CcdFrame findCcdFrame(String fitsFilename) {
 
 		try {
@@ -125,6 +134,11 @@ public class FrameMgmt {
 		}
 	}
 
+	/**
+	 * Returns a list of ProcedureCcdFrames for the passed procedure
+	 * @param procedureId the procedure id to search on
+	 * @return a list of ProcedureCcdFrames; each ProcedureCcdFrame structure also includes CcdFrame and CentroidMap entities
+	 */
 	public List<ProcedureCcdFrame> getFramesForProcedure(Long procedureId) {
 
 		TypedQuery<ProcedureCcdFrame> query = em.createNamedQuery("findAllFramesForProcedure", ProcedureCcdFrame.class);
@@ -134,6 +148,11 @@ public class FrameMgmt {
 
 	}
 
+	/**
+	 * Saves a frame to FITS file  
+	 * @param procedureCcdFrame the procedureCcdFrame structure containing the information to create the FITS filename and the raw frame
+	 * @throws Exception
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		// determine FITS file name
@@ -164,6 +183,11 @@ public class FrameMgmt {
 
 	}
 
+	/**
+	 * Associate a ccdFrame with a procedure.  If the ccdFrame may only have a FITS filename.  This function finds the CcdFrame record in the database 
+	 * if it exists, otherwise it is stored in the database at this time.  
+	 * @param procedureCcdFrame the procedure CcdFrame structure.  This may not be fully populated with a raw frame, but must at least have a FITS Filename
+	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
 		// create a ProcedureCcdRecord
@@ -359,6 +383,19 @@ public class FrameMgmt {
 		return ccdFrame;
 	}
 	
+	/**
+	 * Returns a CcdFrame as part of a ProcedureCcdFrame structure either from reading the CCD or from the simulator, if read from CCD, the CcdFrame is saved to the database.
+	 * @param procedureConfig used to determine the frame source, CCD or simulator
+	 * @param procedureType the procedure type, used to populate the FITS filename
+	 * @param procedureNumber the procedure number used to populate the FITS filename
+	 * @param iteration the procedure iteration number used to populate the FITS filename
+	 * @param frameNumber the frame number used to populate the FITS filename
+	 * @param exposureTime the CCD exposure time
+	 * @param badPixelList a list of bad pixels for the CCD
+	 * @param removeBadPixels flag to remove bad pixels
+	 * @return a procedureCcdFrame structure populated with the ccdFrame and procedure.  
+	 * @throws Exception
+	 */
 	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
@@ -396,6 +433,9 @@ public class FrameMgmt {
 		return procedureCcdFrame;
 	}
 
+	/**
+	 * @return a list of all fits files in the fits repository path specified in the peas.properties file
+	 */
 	public List<FitsFilename> findAllFitsFiles() throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -427,6 +467,11 @@ public class FrameMgmt {
 		return fitsFileList;
 	}
 
+	/**
+	 * Find all FITS files in the fits repository path specified in the peas.properties file matching the filter
+	 * @param filter wildcard filter
+	 * @return the fits files that match the filter
+	 */
 	public List<FitsFilename> findMatchingFitsFiles(String filter) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -456,11 +501,22 @@ public class FrameMgmt {
 		return fitsFileList;
 	}
 
+	/**
+	 * Loads a FITS frame given its input stream and filename
+	 * @param is the input stream to use
+	 * @param filename the filename
+	 * @return a CcdFrame entity containing the raw frame data
+	 */
 	public CcdFrame loadFitsFrame(InputStream is, String filename) throws Exception {
 		Fits fitsFile = new Fits(is);
 		return loadFitsFrame(fitsFile, filename);
 	}
 
+	/**
+	 * Returns a frame given its FITS filename
+	 * @param fitsFilename the fits filename
+	 * @return the CcdFrame entitiy containing the raw frame data
+	 */
 	public CcdFrame loadFitsFrame(String fitsFilename) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -471,6 +527,12 @@ public class FrameMgmt {
 		return loadFitsFrame(fitsFile, fitsFilename);
 	}
 
+	/** 
+	 * Loads a FITS file given its Fits descriptor and filename
+	 * @param fitsFile the descriptor 
+	 * @param fitsFilename the FITS filename 
+	 * @return the CcdFrame entitiy containing the raw frame data
+	 */
 	public CcdFrame loadFitsFrame(Fits fitsFile, String fitsFilename) throws Exception {
 
 		BasicHDU[] bhdus = fitsFile.read();
@@ -555,6 +617,11 @@ public class FrameMgmt {
 		return ccdFrame;
 	}
 
+	/**
+	 * Saves a frame to a FITS file
+	 * @param ccdFrame the frame to save 
+	 * @return true if the file already existed and was overwritten
+	 */
 	public boolean saveFitsFrame(CcdFrame ccdFrame) throws Exception {
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
@@ -615,8 +682,14 @@ public class FrameMgmt {
 		return overwrite;
 	}
 
-	// TODO: clean up loadPng usage.  This method should never write to a file. Those methods that call this and really need to write to file should use generatePng()
+	/**
+	 * Loads a png file to a byte array.  
+	 * @param ccdFrame the ccdFrame containing the FITS filename 
+	 * @param writeToFile if true should write to a file if it does not exist
+	 */
 	public byte[] loadPng(CcdFrame ccdFrame, boolean writeToFile) throws Exception {
+		// TODO: clean up loadPng usage.  This method should never write to a file. Those methods that call this and really need to write to file should use generatePng()
+
 
 		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
 		String path = frameFolder + File.separator + ccdFrame.getFitsFilename();
@@ -639,7 +712,12 @@ public class FrameMgmt {
 		}
 	}
 	
-	
+	/**
+	 * Generates a png file and writes to a file if writeToFile flag is set
+	 * @param ccdFrame the ccdFrame supplying the raw frame and fits filename to this method
+	 * @param writeToFile if true, also write the png image to file
+	 * @return the pmg byte array
+	 */
 	public byte[] generatePng(CcdFrame ccdFrame, boolean writeToFile) throws Exception {
 		
 		FalseColorProcessor falseColorer = new FalseColorProcessor();
@@ -660,6 +738,10 @@ public class FrameMgmt {
 
 	}
 
+	/**
+	 * Builds maps of FITS files for file browsing tree structures
+	 * @return an object tuple of tree structures for browsing FITS files in the frame tools user interface 
+	 */
 	public FitsFilesMaps generateFitsFilesMaps() throws Exception {
 
 		// search folder for fits files
