@@ -20,9 +20,7 @@ public class SufsSegmentZernikeStatsResult {
 	 * @param sufsZernikeStatsResults array of Zernike statistics objects 
 	 */
 	public SufsSegmentZernikeStatsResult(SufsZernikeStatsResult[] sufsZernikeStatsResults) {
-				
-		// TODO: we may need to make these as large as the largest number of zernikes since multiple segments are stored together
-		
+						
 		int meanCount = sufsZernikeStatsResults[0].getZernikeMeans().length;
 		int eomCount = sufsZernikeStatsResults[0].getZernikeEoms().length;
 			

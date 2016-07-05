@@ -113,7 +113,8 @@ public class ApplicationScopeBean implements Serializable {
 				// set configuration permissing on session controller for this session (SessionController is session scoped)
 				sessionController.setConfigPermission(true);
 				setPersistentSession(session);
-				ownerRequestedSessionId = request.getRequestedSessionId();
+				ownerRequestedSessionId = session.getId();
+				
 			} else {
 				// set the JSESSIONID cookie to that of the persistent session
 				session = getPersistentSession();

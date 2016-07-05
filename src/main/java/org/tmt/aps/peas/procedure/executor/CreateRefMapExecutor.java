@@ -143,9 +143,7 @@ public class CreateRefMapExecutor {
 
 			statusLogger.log("procedure.refmap.created");                
 
-			// TODO: remove this: just to have something to save
-			boolean saveMap = true;
-			procedureOutput.setMapSaved(saveMap);
+			procedureOutput.setMapSaved(true);
 			
 			// save the reference beam map
 			RefBeamMap refBeamMap = buildRefMap(procedureCcdFrame.getCentroidMap(), procedure);

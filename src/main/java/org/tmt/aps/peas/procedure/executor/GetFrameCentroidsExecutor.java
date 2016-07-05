@@ -518,9 +518,7 @@ public class GetFrameCentroidsExecutor {
 			if (handMarked.size() == 36) {
 				break;
 			} else {
-				// TODO: put in resource bundle
-				userPromptMgmt.displayInfoDialog("Frame Marking Error", "You did not mark the correct number of spots");
-
+				userPromptMgmt.displayInfoDialog("Frame Marking Error", MessageGenerator.generateMessage("frame.mark_incorrect_number"));
 			}
 		}
 

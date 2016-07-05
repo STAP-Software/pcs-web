@@ -212,7 +212,6 @@ public class PassiveTiltExecutor {
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
 			// Set up the only iteration as the current output target
-			// TODO: hide these functions
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
 			procedureExecutionState.setCurrentOutputTarget(pio);
 			procedureOutput.addIteration(pio);
@@ -323,7 +322,6 @@ public class PassiveTiltExecutor {
 
 			}
 			
-			// TODO: eventually replace this with an framework solution
 			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 
 			/*****************************************************/

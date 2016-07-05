@@ -154,7 +154,6 @@ public class VisualizationController implements Serializable {
 	 */
 	public String getCentDefXs() {
 		// determine which procedure type we are in
-		// TODO: we are deciding that AvgCentroidOffset displays always use 36.  We may need to generalize this
 		
 		if (procedureController.getProcedure() != null && procedureController.getProcedure().getProcedureType().isSufs()) {
 			FloatPoint[] coords = constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates();

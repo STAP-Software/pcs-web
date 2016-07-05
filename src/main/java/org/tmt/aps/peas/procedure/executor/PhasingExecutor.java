@@ -446,7 +446,6 @@ public class PhasingExecutor {
 	
 			}
 					
-			// TODO: eventually replace this with an framework solution
 			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 		
 			

@@ -181,7 +181,6 @@ public class PupilRegistrationExecutor {
 
 			
 			// Set up the only iteration as the current output target
-			// TODO: hide these functions
 			PupilRegistrationIterationOutput pio = new PupilRegistrationIterationOutput();
 			procedureExecutionState.setCurrentOutputTarget(pio);
 			procedureOutput.addIteration(pio);
@@ -229,7 +228,6 @@ public class PupilRegistrationExecutor {
 
 			}
 			
-			// TODO: handle with framework
 			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 			procedureExecutionState.setPercentComplete(70);

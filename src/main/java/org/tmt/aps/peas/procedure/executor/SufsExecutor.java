@@ -341,7 +341,6 @@ public class SufsExecutor {
 						procedure.getProcedureConfigSet().getGlobalConfig().getSufsZernikeOrderArray(),
 						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup() - 1]);
 
-				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 
 				/*****************************************************/

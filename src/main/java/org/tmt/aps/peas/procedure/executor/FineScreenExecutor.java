@@ -260,7 +260,6 @@ public class FineScreenExecutor {
 				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
 				
-				// TODO: this may eventually be handled in a different structure
 				pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);
 	
 				/*****************************************************/
@@ -464,7 +463,6 @@ public class FineScreenExecutor {
 	
 			}
 			
-			// TODO: eventually replace this with an framework solution
 			procedureOutput.getProcedureDecisionLog().setM2CmdsSent(dcsCommandsSent);
 
 			
@@ -589,7 +587,6 @@ public class FineScreenExecutor {
 	
 			}
 					
-			// TODO: eventually replace this with an framework solution
 			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 		
 			

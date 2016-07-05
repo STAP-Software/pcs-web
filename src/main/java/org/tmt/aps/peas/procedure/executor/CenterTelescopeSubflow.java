@@ -22,6 +22,7 @@ import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -134,7 +135,7 @@ public class CenterTelescopeSubflow {
 			
 				if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
 					
-					// TODO: put in logic here (throw user abort exception?
+					throw new AbortProcedureException("User Aborted Test");
 					
 				} else if (reply == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
 					retakeFrame = true;
