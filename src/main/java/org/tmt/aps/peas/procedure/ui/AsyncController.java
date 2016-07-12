@@ -357,8 +357,10 @@ public class AsyncController implements Serializable {
 		
 		try {
 			// update camera state to be the one associated with the first frame.  We do it here because it is the 'last' asynchronous thing we do
-			CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
-			procedureController.loadCameraState(cameraState);
+			if (procedureController.getProcedure().getProcedureCcdFrameList() != null ) {
+				CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
+				procedureController.loadCameraState(cameraState);
+			}
 			statusLogController.refreshProcedureStatusLog();
 			
 			// update the fits frames to be available to the rest of the application
@@ -390,7 +392,7 @@ public class AsyncController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
 			setOnCompletePerformed(true);
-			logger.info("ONCOMPLETE COMPLTETED");
+			logger.info("ONCOMPLETE COMPLETED");
 		}
 	}
 
