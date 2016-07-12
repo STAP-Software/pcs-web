@@ -205,6 +205,7 @@ public class FindCentroidsResult {
 		int i=0;
 		for (Subimage subimage : subimageList) {
 			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
 		}
@@ -231,7 +232,8 @@ public class FindCentroidsResult {
 		int i=0;
 		for (Subimage subimage : interiorList) {
 			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
-					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
+       			    subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
 		}
 
@@ -245,7 +247,8 @@ public class FindCentroidsResult {
 	 */	
 	public boolean containsGaussianCmFallbackCentroids() {
 		for (Subimage subimage : subimageList) {
-			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) {
 				return true;
 			}
@@ -261,7 +264,8 @@ public class FindCentroidsResult {
 	public int missedSpots() {
 		int missedSpots = 0;
 		for (Subimage subimage : subimageList) {
-			if (subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X && 
+			if (subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK && 
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X && 
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_NOT_PERFORMED &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_SUCCESS) {
