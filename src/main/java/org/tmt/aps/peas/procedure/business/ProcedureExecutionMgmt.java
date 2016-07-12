@@ -134,7 +134,6 @@ public class ProcedureExecutionMgmt {
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
 		// need to propagate pupilMask and filter types into to procedureConfig object
-		// FIXME: this needs to be handled more automatically within the model classes
 		procedureConfig.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
 		procedureConfig.setFilterType(procedureConfig.getFilter().getFilterType());
 		

@@ -428,7 +428,6 @@ public class PhasingExecutor {
 					// send out the commands
 					statusLogger.log("pt.m1_act_cmd_started");
 					
-					// FIXME: do we want to be resilient to settling here?
 					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 						
 					statusLogger.log("pt.m1_act_cmd_success");

@@ -18,6 +18,8 @@ import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -60,17 +62,10 @@ public class GlobalConfig {
 		
 		try {
 			
-			// FIXME: this call gives error when updateDate is null
-			//BeanUtils.copyProperties(this, source);
+			BeanUtilsBean.getInstance().getConvertUtils().register(false, false, 0);
 			
-			// temp fix
-			this.updateDate = source.updateDate;
-			this.coarseMirrorX = source.coarseMirrorX;
-			this.coarseMirrorY = source.coarseMirrorY;
-			this.fineMirrorX = source.fineMirrorX;
-			this.fineMirrorY = source.fineMirrorY;
-			this.sufsZernikeOrderListEncoded = source.sufsZernikeOrderListEncoded;
-
+			BeanUtils.copyProperties(this, source);
+			
 			this.globalConfigId = null;
 			
 		} catch (Exception e) {

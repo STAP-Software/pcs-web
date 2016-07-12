@@ -219,7 +219,7 @@ public class FrameMgmt {
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 
 		if (procedureCcdFrame.getCentroidMap() != null) {
-			em.merge(procedureCcdFrame.getCentroidMap());  // FIXME: attach the detached object 
+			em.merge(procedureCcdFrame.getCentroidMap());  // attach the detached object 
 		}
 		
 		// perform the association
@@ -227,6 +227,9 @@ public class FrameMgmt {
 		em.persist(procedureCcdFrame);
 	}
 
+	/*
+	 * This should become a subprocedure
+	 */
 	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 		
 		
@@ -235,21 +238,13 @@ public class FrameMgmt {
 		
 		// get the frame from CCD or from file, depending on the called type
 		ccdMgmt.fastWipeCcd();
-		
-		// FIXME: do not use instrument interface and wait for a sec between shutter close and read.
-		//int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, true);
-		// TODO: write a JIRA bug that this was a workaround for
-		
-		
-			
+					
 			
 		try {
 			
 			cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
 		
 		} catch (TimeoutException e) {
-			
-			// FIXME: UI code should not be outside of an executor, this needs to be redesigned for APS
 			
 			String text = MessageGenerator.generateMessage("ccd.shutter_timeout");
 			
@@ -273,7 +268,7 @@ public class FrameMgmt {
 		
 		if (ccdSimulator) {
 			// here we make a better frame than the external package simulator can
-			// FIXME: determine if this should be put in the simulator.  Will require a change in app packaging.
+			// TODO: determine if this should be put in the simulator.  Will require a change in app packaging.
 			// TODO: This needs to be improved to get a frame from file given the procedure type			
 			
 			switch (procedureConfig.getPupilMaskType().getPupilMaskTypeId().intValue()) {

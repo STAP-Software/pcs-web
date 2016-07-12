@@ -324,8 +324,6 @@ public class GetFrameCentroidsExecutor {
 		String findCentStatusData = IntegerListEncoder.encodeList(findCentroidsResult.getFindCentStatusList());
 		centroidMap.setFindCentStatusData(findCentStatusData);
 		
-
-		// FIXME: these are stored in FIConfigActual table, associate from there, do not store here
 		centroidMap.setForcedRotation(fiConfig.getForceRotationValue());
 		centroidMap.setForcedRotationFlg(fiConfig.isForceRotation());
 		centroidMap.setForcedScale(fiConfig.getForceScaleValue());
