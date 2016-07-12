@@ -305,7 +305,6 @@ public class ProcedureExecutionMgmt {
 					logger.debug("performProcedureCompletion::persisting frame");
 
 					// load up png file again because associateCcdFrame reloads ccd frame fresh
-					// FIXME: we should not have to do this.
 					String filename = procedureCcdFrame.getCcdFrame().getFitsFilename();
 
 					CcdFrame loadedFitsFile = null;
@@ -381,7 +380,7 @@ public class ProcedureExecutionMgmt {
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			
 			// for phasing, we are already aborted at this point but do not have getAbortRequested() set anymore.
-			// FIXME: we really need to implement this as a better state machine to avoid this kind of hack
+			// FIXME: we need to implement this as a better state machine to avoid this kind of hack
 			if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_ABORTED) {
 				if (procedureExecutionState.getAbortRequested()) {
 					procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);

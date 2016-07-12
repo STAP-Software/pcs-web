@@ -211,14 +211,10 @@ public class SessionMgmt {
 				return "" + newMajorNum;
 			} else {
 				if (isLatestProcedureSubProcedure) {
-					// FIXME this code only works if we are persisting and autocommiting each procedure as they are completed.
-					
 					// extract minor number
-					//String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
-					//return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
+					String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
+					return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
 					
-					// TODO: get rid of this and reinstate the above when partial commits of procedures are implemented.
-					return superProcedureNum + ".1";
 				} else {
 					return superProcedureNum + ".1";
 				}
