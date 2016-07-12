@@ -263,7 +263,6 @@ public class PhasingExecutor {
 				
 				statusLogger.log("acs.colorstep_cmds");
 				
-				// TODO: we need to be able to call asynchronously and wait for result.
 				long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
@@ -272,8 +271,6 @@ public class PhasingExecutor {
 				/**********************************************/
 				/*        PupilRegistration Subflow           */
 				/**********************************************/
-				// TODO: may need to change this for performance reasons
-				// TODO: if we fail and need to retake frame, then this should be here
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
 										
 				
@@ -301,7 +298,6 @@ public class PhasingExecutor {
 			
 			statusLogger.log("acs.colorstep_cmds");
 			
-			// TODO: we need to be able to call asynchronously and wait for result.
 			long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 

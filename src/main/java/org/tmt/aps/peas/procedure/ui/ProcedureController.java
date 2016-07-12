@@ -927,7 +927,6 @@ public class ProcedureController implements Serializable {
 
 			}
 			
-			// TODO: this needs to account for multiple frames someday.
 			if (procedure.getProcedureCcdFrameList() != null && !procedure.getProcedureCcdFrameList().isEmpty()) {
 			
 				selectedFrameNumber = 0;
