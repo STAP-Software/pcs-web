@@ -251,7 +251,7 @@ public class CcdFrame {
 
 	public float[][] getCorrectedFrame() {
 		
-		// TODO: for now we copy directly from raw frame if the corrected frame is desired and not yet initialized
+		// we copy directly from raw frame if the corrected frame is desired and not yet initialized
 		if (correctedFrame == null) {
 			correctedFrame = new float[1024][1024];
 			for (int i = 0; i < 1024; i++) {

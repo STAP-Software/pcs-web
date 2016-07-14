@@ -927,7 +927,6 @@ public class ProcedureController implements Serializable {
 
 			}
 			
-			// TODO: this needs to account for multiple frames someday.
 			if (procedure.getProcedureCcdFrameList() != null && !procedure.getProcedureCcdFrameList().isEmpty()) {
 			
 				selectedFrameNumber = 0;
@@ -1251,6 +1250,7 @@ public class ProcedureController implements Serializable {
 	/**
 	 * JSF Action method called when the frame is marked
 	 * A centroid is calculated using the marked location, and the list of frame markings is updated
+	 * This should become a subprocedure.
 	 */
 	public void doHandMark() {
 
@@ -1264,7 +1264,6 @@ public class ProcedureController implements Serializable {
 		// add to the centroid hidden form vars
 
 		// call findCent on each centroid
-		// FIXME this means that frame marking needs to be a sub-procedure
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
 		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);

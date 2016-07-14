@@ -254,11 +254,8 @@ public class CentroidMapMgmt {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap) {
 
-		// FIXME: not sure why we need to do it this way, but need to attach the centroid map entity before saving it
 		CentroidMap centroidMap = em.find(CentroidMap.class, refBeamMap.getCentroidMap().getCentroidMapId());
-		em.merge(centroidMap);
 		refBeamMap.setCentroidMap(centroidMap);
-		
 		
 		refBeamMap.setCreateDate(new Date());
 

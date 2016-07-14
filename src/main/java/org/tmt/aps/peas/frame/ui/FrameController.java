@@ -556,7 +556,6 @@ public class FrameController implements Serializable {
 
 	}
 
-	// TODO: handle centroids not found (N/A, etc)
 
 	private MarkedSubimage calcMarkedSubimage(FloatPoint guess, int count, FloatPoint firstCentroid) {
 
