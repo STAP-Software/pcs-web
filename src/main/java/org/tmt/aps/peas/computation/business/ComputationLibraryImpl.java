@@ -119,26 +119,16 @@ public class ComputationLibraryImpl {
 	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
 
 
-
-	
-	public float actuatorLengths(float a, float b) throws ComputationException {
-
-		logger.info(MessageGenerator.generateMessage("computation.start", "actuatorLengths"));
-
-		Jsum jsum = new Jsum();
-		RetVal retVal = new RetVal();
-		float[] c = new float[1];
-		jsum.sum(retVal, a, b, c);
-
-		if (retVal.getCode() > 0) {
-			statusLogger.log(retVal);
-		}
-
-		logger.info(MessageGenerator.generateMessage("computation.success", "actuatorLengths"));
-
-		return c[0];
-	}
-
+	/**
+	 * Compute the centroid using a center of mass or Gaussian fit method.
+	 * This method calls the FORTRAN function in findCent.f90
+	 * 
+	 * @param frame Full image array containing subimages to be centroided.
+	 * @param guess original guess for centroid
+	 * @param findCentConfig configuration for find cent, containing irad, imargin, itermax, and ngauss
+	 * @param nspotType Spot type to determine how the background is computed: 2 for peripheral spots; 1 for non-peripheral spots.
+	 * @return result class containing original guess, computed centroid, intensities and findCent status flag
+	 */
 	@Computation
 	public FindCentResult findCent(float[][] frame, FloatPoint guess, FindCentConfig findCentConfig, int nspotType) throws ComputationException {
 
@@ -171,7 +161,18 @@ public class ComputationLibraryImpl {
 	}
 
 
-	// findCentStatus is also a property of a spot, to be used by calcs after this.
+	/**
+	 * Calls findCent for multiple passed in centroid guesses.  This method calls the FORTRAN function in findCentroid.f90
+	 * 
+	 * @param frame Full image array containing subimages to be centroided.
+	 * @param fiResult result class returned from calling findAndIdentify function
+	 * @param findCentConfigInterior findCent configuration for this mask type to be used for interior spots.  FindCentConfig is configuration for find cent, containing irad, imargin, itermax, and ngauss
+	 * @param findCentConfigPeripheral findCent configuration for this mask type to be used for peripheral spots. FindCentConfig is configuration for find cent, containing irad, imargin, itermax, and ngauss
+	 * @param nspotTypes array of spot types for background computation (2=peripheral spot; 1=other).
+	 * @param missingSpotFlags array of flags indicating if a spot is expected to be present and if it is to be used in analysis.
+	 * @param findAllMaskSpots override of missing spots, if true all spots should be found.  Typically true for reference beam frames.
+	 * @return result class containing computed centroid, intensities and findCent status flag for all centroids attempted to be found
+	 */
 	@Computation
 	public FindCentroidsResult findCentroids(float[][] frame, FIResult fiResult, FindCentConfig findCentConfigInterior,  FindCentConfig findCentConfigPeripheral, int[] nspotTypes, int[] missingSpotFlags, 
 			boolean findAllMaskSpots) throws ComputationException {
@@ -315,6 +316,13 @@ public class ComputationLibraryImpl {
 
 	}
 
+	/**
+	 * Correct for bad pixels in the CCD image.  This method calls the FORTRAN function in removeBadPixels.f90.
+	 * 
+	 * @param frame Input CCD array
+	 * @param badPixelList list of rectangles specifying all bad pixels and/or bad columns
+	 * @return output CCD array with corrected bad pixels
+	 */
 	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "removeBadPixels"));
@@ -355,7 +363,18 @@ public class ComputationLibraryImpl {
 
 	}
 
-	
+	/**
+	 * Find and Identify all of the sub-images in a CCD frame.  This method calls the FORTRAN function in findAndIdentify.f90.
+	 * 
+	 * @param frame CCD Frame to find sub-images in
+	 * @param numSpots the number of spots to find
+	 * @param fiConfig findAndIdentify computation configuration.  See {@link org.tmt.aps.peas.config.model.FIConfig} and findAndIdentify.f90 for complete descriptions.
+	 * @param currentRefMap the reference beam map to use to force scale and rotation of image, if specified in the configuration
+	 * @param refDefCentroids the ideal locations of the centroids to find
+	 * @param missingSpotFlags array of flags indicating if a spot is expected and if it will be used for analysis
+	 * @param findAllMaskSpots missing spots override, if true find all spots.  Typically true for reference beam frames.
+	 * @return result class. Descriptions of each field are in the header descriptions in findAndIdentify.f90. 
+	 */
 	public FIResult findAndIdentify(float[][] frame, int numSpots, FIConfig fiConfig, RefBeamMap currentRefMap, List<FloatPoint> refDefCentroids, int[] missingSpotFlags, boolean findAllMaskSpots)
 			throws ComputationException {
 
@@ -433,6 +452,13 @@ public class ComputationLibraryImpl {
 		return fiResult;
 	}
 
+	/**
+	 * Evaluates the findAndIdentify result an throws exception if result fails threshold tests
+	 * @param fiResult the findAndIdenfity result
+	 * @param fiConfig the computation configuration used for findAndIdentify
+	 * @param procedureConfig the procedure configuration (only used to determine the mask type used)
+	 * @throws UserAssistRequiredException contains flags indicating which threshold(s) failed: fraction of filled boxes, Fourier quality or number of solutions. 
+	 */
 	public void evalFiResult(FIResult fiResult, FIConfig fiConfig, ProcedureConfig procedureConfig) throws UserAssistRequiredException,
 			AbortProcedureException, HandMarkRequiredException {
 		
@@ -468,6 +494,14 @@ public class ComputationLibraryImpl {
 
 	}
 
+	/**
+	 * Converts pixel location to a delta arcsecond value to center the telescope.  Calls {@link JavaComputations#pixLocationToDeltaArcSeconds(FloatPoint, FloatPoint, double)}
+	 * 
+	 * @param measuredPix center of current centroid(s)
+	 * @param desiredPix desired position for the center
+	 * @param secPerPixel arcseconds per pixel for this mask
+	 * @return result class containing delta azimuth and delta elevation
+	 */
 	@Computation
 	public CenterTelescopeCalcResult centerTelescopeCalc(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
 
@@ -479,20 +513,12 @@ public class ComputationLibraryImpl {
 		
 		return new CenterTelescopeCalcResult(result);
 	}
-
-	/*
-	public FloatPoint pixLocationToDeltaArcSeconds(FloatPoint measuredPix, FloatPoint desiredPix, double secPerPixel) {
-
-		logger.info(MessageGenerator.generateMessage("computation.start", "pixLocationToDeltaArcSeconds"));
-
-		FloatPoint result = JavaComputations.pixLocationToDeltaArcSeconds(measuredPix, desiredPix, secPerPixel);
-		
-		logger.info(MessageGenerator.generateMessage("computation.success", "pixLocationToDeltaArcSeconds"));
-		
-		return result;
-	}
-	*/
 	
+	/**
+	 * Calculates RMS for a given a 2-d input array.  Calls {@link JavaComputations#calcRms(float[][])}
+	 * @param data the input 2-d array
+	 * @return the RMS of all values in the array
+	 */
 	public float calcRms(float[][] data) {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcRms"));

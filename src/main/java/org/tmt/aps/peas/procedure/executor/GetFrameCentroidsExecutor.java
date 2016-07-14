@@ -244,10 +244,11 @@ public class GetFrameCentroidsExecutor {
 			throw new AbortProcedureException("User Aborted Test");
 		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 
-			if (e.isBadNSolution() || e.isFracThreshExceededPT()) {
+			if (e.isFracThreshExceededPT()) {
 				handleHandMarking();
 			} else {
 			
+				// fracThreshExceededFindCent is only thrown from findCent, so we don't need to find again
 				if (!e.isFracThreshExceededFindCent()) {
 					centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);				
 				}
