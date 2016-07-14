@@ -831,8 +831,11 @@ public class ComputationLibraryImpl {
 		int[] found = new int[findCentStatusList.length];
 
 		for (int i=0; i<found.length; i++) {
-			boolean isGood = (findCentStatusList[i] == Constants.FIND_CENT_STATUS_SUCCESS ||  findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X ||  
-					findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) && missingSpotFlags[i] == Constants.MISSING_SPOT_TYPE_USE;
+			boolean isGood = (findCentStatusList[i] == Constants.FIND_CENT_STATUS_SUCCESS || 
+					findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK ||  
+					findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X ||  
+					findCentStatusList[i] == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) && 
+					missingSpotFlags[i] == Constants.MISSING_SPOT_TYPE_USE;
 			found[i] = isGood ? 1 : 0;
 		}
 
@@ -1317,6 +1320,7 @@ public class ComputationLibraryImpl {
 				
 				// if all iterations are success, then it is a good spot, otherwise not
 				 if (findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_SUCCESS && 
+						 findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK &&
 						 findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X &&
 						 findCentStatusIterations[i][j] != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y
 						 ) status = false;
