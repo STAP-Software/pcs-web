@@ -277,7 +277,8 @@ public class ProcedureExecutionMgmt {
 
 			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled() && 
-					!procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs()) {
+					!procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs() &&
+					!procedure.getProcedureType().isCreateRefMap()) {
 				// create a config defaults object to save back
 				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
 						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());
