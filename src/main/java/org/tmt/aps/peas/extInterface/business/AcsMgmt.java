@@ -56,10 +56,20 @@ public class AcsMgmt {
 	 * @return the command elapsed time in ms
 	 */
 	public long commandActuatorDelta(double[] actDeltas) throws Exception {
+		
+		// check if all commands are zero, if so do not send commands
+		boolean nonZero = false;
+		for (double delta: actDeltas) {
+			if (delta != 0.0) nonZero = true;
+		}
+		
 		long start = System.currentTimeMillis();
-		extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
+		if (nonZero) {
+			extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
+		}
 		long end = System.currentTimeMillis();
 		return end - start;
+		
 	}
 	
 	/**
