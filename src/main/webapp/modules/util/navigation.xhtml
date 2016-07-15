@@ -12,77 +12,77 @@
 						<p:menuitem value="Connect ..." ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
 						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
 					
-						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.navDisabled}"/>
 					</p:submenu>
-					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.procedureExecuting}" 
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.procedureExecuting and sessionController.runProcedurePermission}" />
+					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.navDisabled}" 
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.navDisabled and sessionController.runProcedurePermission}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.procedureExecuting and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
+						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
 					<p:submenu label="Run" icon="ui-icon-gear" rendered="#{sessionController.runProcedurePermission}">
-						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.navDisabled}"/>
 						<p:separator />
-						<p:menuitem value="Create Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Create Reference Beam" action="#{procedureController.doNewCreateRefBeam}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.navDisabled}"/>
 					</p:submenu>
 					<p:submenu label="Tools" icon="ui-icon-contact">
-						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.engineeringView }" />
-						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.ifCommandPermission}"/>
+						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView }" />
+						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.ifCommandPermission}"/>
 					</p:submenu>
 
-					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.configPermission}">
-						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}"/>
-						<p:menuitem value="SUFS Segment Zernikes" action="#{globalConfigController.doViewSufsZernikes}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>
+					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.configPermission}">
+						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.administrationView}"/>
+						<p:menuitem value="SUFS Segment Zernikes" action="#{globalConfigController.doViewSufsZernikes}" disabled="#{sessionController.navDisabled}" update=":growl :errorGrowl"/>
 						<p:separator />
-						<p:submenu label="PCS Components"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}">
+						<p:submenu label="PCS Components"  disabled="#{sessionController.navDisabled}" rendered="#{sessionController.administrationView}">
 							<p:menuitem value="Manage CCDs" action="#{ccdDefController.doViewCcdList}" />
 							<p:menuitem value="Manage Filters" action="#{filterController.doViewFilterList}" />
 							<p:menuitem value="Manage Pupil Masks" action="#{pupilMaskController.doViewPupilMaskList}" />
 						</p:submenu>
-						<p:submenu label="#{cameraDefController.instrument.instrumentName} Configuration"  disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.administrationView}" >
+						<p:submenu label="#{cameraDefController.instrument.instrumentName} Configuration"  disabled="#{sessionController.navDisabled}" rendered="#{sessionController.administrationView}" >
 							<p:menuitem value="Manage Filter Wheel" action="#{filterController.doViewFilterWheel}" />
 							<p:menuitem value="Manage Pupil Wheel" action="#{pupilMaskController.doViewPupilWheel}" />
 							<p:menuitem value="Manage Reference Beams" action="#{refBeamController.doViewReferenceBeamList}" />
 							<p:menuitem value="Select CCD" action="#{ccdDefController.doViewCcdSelectList}" />
 							<p:menuitem value="Manage Coarse Tilt Mirror" action="#{coarseTiltMirrorController.doViewCoarseTiltMirror}" />
 							<p:menuitem value="Manage Fine Tilt Mirror" action="#{fineTiltMirrorController.doViewFineTiltMirror}" />
-							<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl"/>
+							<p:menuitem value="SUFS Tel/Inst Config" action="#{sufsGroupController.doViewSufsGroupList}" disabled="#{sessionController.navDisabled}" update=":growl :errorGrowl"/>
 						</p:submenu>
 					</p:submenu>
 
 					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{breadcrumbMenuBean.inProcedure}" >
-						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="advancedDialog.show();" disabled="#{sessionController.procedureExecuting}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
-						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.procedureExecuting}" rendered="#{sessionController.engineeringView}" />
+						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="advancedDialog.show();" disabled="#{sessionController.navDisabled}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
+						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}" />
 					</p:submenu>
 					
 					<p:submenu label="Procedure Displays" icon="ui-icon-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
 						
 						<c:forEach var="iterationOutput" items="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" varStatus="loop">
 						<p:submenu label="Iteration #{loop.index+1}" >
-							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{visualizationController.centroidDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" rendered="#{visualizationController.centroidOffsetDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
-							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.sufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
+							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{visualizationController.centroidDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" rendered="#{visualizationController.centroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.sufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 						</p:submenu>
 						</c:forEach>
 					
-						<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{procedureController.procedure.procedureType.createRefMap}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgPtCentroidOffsetDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgFsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>						
-						<p:menuitem value="Avg. SUFS Centroid Offsets" action="#{visualizationController.doPopulateAvgSufsCentroidOffsetDisplay}" update=":avgSufsOffsetsForm" oncomplete="runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgSufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>						
- 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" rendered="#{visualizationController.actuatorDeltaDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
- 						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" rendered="#{visualizationController.edgeHeightsDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
- 						<p:menuitem value="Edge Residuals" action="#{visualizationController.doPopulateEdgeResidualsDisplay}" update=":edgeResidualsForm" oncomplete="runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()" rendered="#{visualizationController.edgeResidualsDisplayEnabled}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{procedureController.procedure.procedureType.createRefMap}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgPtCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgFsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>						
+						<p:menuitem value="Avg. SUFS Centroid Offsets" action="#{visualizationController.doPopulateAvgSufsCentroidOffsetDisplay}" update=":avgSufsOffsetsForm" oncomplete="runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgSufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>						
+ 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" rendered="#{visualizationController.actuatorDeltaDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+ 						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" rendered="#{visualizationController.edgeHeightsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+ 						<p:menuitem value="Edge Residuals" action="#{visualizationController.doPopulateEdgeResidualsDisplay}" update=":edgeResidualsForm" oncomplete="runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()" rendered="#{visualizationController.edgeResidualsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 						
 					</p:submenu>
 					
 				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.engineeringView and sessionController.ifCommandPermission}">
-						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
-						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.procedureExecuting}"/>
+						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
 							
 					</p:submenu>
 

@@ -256,6 +256,10 @@ public class SessionController implements Serializable {
 	public ExtInfConnectConfig getExtInfConnectConfig() {
 		return extInfConfigState.getExtInfConnectConfig();
 	}
+	
+	public boolean isNavDisabled() {
+		return isRunProcedurePermission() && isProcedureExecuting();
+	}
 
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;
