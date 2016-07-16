@@ -9,6 +9,7 @@ import java.io.Serializable;
 
 import javax.faces.bean.ApplicationScoped;
 import javax.faces.bean.ManagedBean;
+import javax.faces.context.ExternalContext;
 import javax.faces.context.FacesContext;
 import javax.faces.event.ComponentSystemEvent;
 import javax.inject.Inject;
@@ -99,28 +100,39 @@ public class ApplicationScopeBean implements Serializable {
 		HttpServletResponse response = (HttpServletResponse) FacesContext.getCurrentInstance().getExternalContext().getResponse();
 		HttpSession session = null;
 
-		
-		// set up persistent session if this is first access since reboot (ownerRequestedSessionId == null) or this is the owner asking
-		if (ownerRequestedSessionId == null || ownerRequestedSessionId.equals(request.getRequestedSessionId())) {
-			if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
+		// root context cannot get the persistent session
+		if (request.getRequestURI().contains("pcs-web")) {
+			// set up persistent session if this is first access since reboot (ownerRequestedSessionId == null) or this is the owner asking
+			if (ownerRequestedSessionId == null || ownerRequestedSessionId.equals(request.getRequestedSessionId())) {
 				
-				logger.info("invalid or null persistent session = " + getPersistentSession());
-				session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
-				// set run procedure permission on session controller for this session (SessionController is session scoped)
-				sessionController.setRunProcedurePermission(true);
-				// set I/F command permission on session controller for this session (SessionController is session scoped)
-				sessionController.setIfCommandPermission(true);
-				// set configuration permissing on session controller for this session (SessionController is session scoped)
-				sessionController.setConfigPermission(true);
-				setPersistentSession(session);
-				ownerRequestedSessionId = session.getId();
-				
+				if (getPersistentSession() == null || !request.isRequestedSessionIdValid()) {
+					
+					logger.info("invalid or null persistent session = " + getPersistentSession());
+					session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+					// set run procedure permission on session controller for this session (SessionController is session scoped)
+					sessionController.setRunProcedurePermission(true);
+					// set I/F command permission on session controller for this session (SessionController is session scoped)
+					sessionController.setIfCommandPermission(true);
+					// set configuration permissing on session controller for this session (SessionController is session scoped)
+					sessionController.setConfigPermission(true);
+					setPersistentSession(session);
+					ownerRequestedSessionId = session.getId();
+					
+				} else {
+					// set the JSESSIONID cookie to that of the persistent session
+					session = getPersistentSession();
+					addCookie(response, "JSESSIONID", session.getId(), 1800);			
+				}
 			} else {
-				// set the JSESSIONID cookie to that of the persistent session
-				session = getPersistentSession();
-				addCookie(response, "JSESSIONID", session.getId(), 1800);			
+				// bounce them out
+				try {
+					ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+				    ec.redirect(ec.getRequestContextPath() + "/error.html");
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}
 			}
-		}
+		} 
 		
 		
 		

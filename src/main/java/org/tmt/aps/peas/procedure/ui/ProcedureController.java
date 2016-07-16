@@ -883,7 +883,7 @@ public class ProcedureController implements Serializable {
 	public String doViewProcedure() {
 
 		// we might be running....
-		if (procedureExecutionState.getExecutionStatus() != true) {
+		if (procedureExecutionState.getExecutionStatus() != true || !sessionController.isRunProcedurePermission()) {
 
 			return doViewArchivedProcedure();
 

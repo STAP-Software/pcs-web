@@ -570,6 +570,12 @@ public class SessionController implements Serializable {
 		this.configPermission = configPermission;
 	}
 
+	public String doError() {
+
+		return "/error.xhtml?faces-redirect=true";
+		
+	}
+
 	
 
 }

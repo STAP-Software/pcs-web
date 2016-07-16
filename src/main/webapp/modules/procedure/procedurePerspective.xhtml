@@ -12,7 +12,8 @@
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
 				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
-				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()"/>
+				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()"
+				rendered="#{sessionController.runProcedurePermission}" />
 		</h:form>
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
