@@ -9,6 +9,7 @@ import java.io.Serializable;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -27,7 +28,10 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -52,6 +56,8 @@ public class SessionController implements Serializable {
 	SessionMgmt sessionMgmt;
 	@EJB
 	TelescopeMgmt telescopeMgmt;
+	@EJB
+	CameraMgmt cameraMgmt;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
@@ -512,6 +518,32 @@ public class SessionController implements Serializable {
 		
 		requestContext.update("extInfMode");
 
+	}
+	
+	/**
+	 * JSF Action method called when the End Session button is clicked.  Extends the Two Position mechanism and disconnects from all external I/Fs.
+	 */
+	public void doEndSession() {
+		
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		
+			
+		try {
+			Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
+
+			Utils.waitForComplete(twoPosCommandFuture);
+						
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+		}
+		
+		// turn off all the ext interfaces
+		getExtInfConnectConfig().reset();
+		
+		extInfSimulationMode = true;
+		requestContext.update("extInfMode");
+
+		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session Ended", ""));
 	}
 
 	/**

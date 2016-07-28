@@ -14,7 +14,9 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -93,6 +95,7 @@ public class CameraMgmt {
 		int result = extInfFactory.getCameraCommand().commandTwoPositionDevice(twoPositionDevicePosition);
 		return new AsyncResult<Integer>(result);
 	}
+
 
 	/**
 	 * Open the shutter for the specified period of time<br/>
