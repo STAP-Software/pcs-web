@@ -409,8 +409,7 @@ public class SufsExecutor {
 					.getIterationResultObjectFor("SufsSegmentOffsetsResult", SufsSegmentOffsetsResult.class)
 					.toArray(new SufsSegmentOffsetsResult[0]);
 
-			SufsSegmentOffsetsResult sufsSegmentAvgOffsetsResult = computationLibrary.calcAvgSufsCentroidOffsets(sufsOffsetsIterations,
-					avgGoodSpotMask, constantsCache.getSufsConstants().getSufsGroupSegmentToMask());
+			SufsSegmentOffsetsResult sufsSegmentAvgOffsetsResult = computationLibrary.calcAvgSufsCentroidOffsets(sufsOffsetsIterations);
 
 			/*****************************************************/
 			/*         calculateCentroidStats - avg SUFS         */

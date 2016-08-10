@@ -90,11 +90,11 @@ import org.tmt.aps.peas.lang.interop.JmakeTemplate;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
-import org.tmt.aps.peas.lang.interop.Jsum;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
+import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
@@ -530,7 +530,18 @@ public class ComputationLibraryImpl {
 		return result;
 	}
 
-	
+	/**
+	 * Calculates centroid offsets given an array of centroids and reference map centroids
+	 * @param centroids the array of centroids to find the offsets of
+	 * @param refMapCentroids the reference map of centroids to find the offsets from
+	 * @param centroidOffsetsConfig rotation removal and scale removal flags
+	 * @param pupilMaskType the type of mask that produced the centroids (e.g. Fine Screen, Passive Tilt, etc)
+	 * @param nspotTypes array of flags indicating if a spot is interior or peripheral
+	 * @param missingSpotFlags array of flags indicating if a spot is to be used for this analysis
+	 * @param findCentStatusList an array of flags indicating if/how this spot was found during find and identify
+	 * @return a result object containing the offsets in ccd and cartesian coordinates, the image translation, rotation and scale, and which spots were actually used in the analysis.
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public CentroidOffsetsResult calculateCentroidOffsets(FloatPoint[] centroids, FloatPoint[] refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
@@ -540,6 +551,11 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/*
+	 * private method for centroid offsets, called by both calculateCentroidOffsets and calculate SufsCentroidOffsets.  This pattern is used
+	 * so that sufs can also call this for each segment, without encountering a second @Computation annotation, which would confuse the 
+	 * automatic data collection.  
+	 */
 	private CentroidOffsetsResult calcCentroidOffsets(FloatPoint[] centroids, FloatPoint[] refMapCentroids,
 			CentroidOffsetsConfig centroidOffsetsConfig, PupilMaskType pupilMaskType, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidOffsets"));
@@ -586,12 +602,25 @@ public class ComputationLibraryImpl {
 
 	}
 
+	/**
+	 * Calculates centroid offsets statistics such as max and rms offsets, enclosed energy and the spot with the max offset
+	 * @param centroidOffsets the array of centroid offsets to calculate statistics on
+	 * @param nspotTypes array of flags indicating if a spot is interior or peripheral
+	 * @param missingSpotFlags array of flags indicating if a spot is to be used for this analysis
+	 * @param findCentStatusList an array of flags indicating if/how this spot was found during find and identify
+	 * @return status result object containing max and rms offsets, enclosed energy and the spot with the max offset
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public CentroidStatsResult calculateCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 		return calcCentroidStats(centroidOffsets, nspotTypes, missingSpotFlags, findCentStatusList);
 	}
 	
-	// version with missingSpotFlags and findCentStatusLists passed in
+	/*
+	 * private method for centroid stats, version with missingSpotFlags and findCentStatusLists passed in.  This pattern is used
+	 * so that sufs can also call this for each segment, without encountering a second @Computation annotation, which would confuse the 
+	 * automatic data collection.  
+	 */
 	private CentroidStatsResult calcCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList) throws ComputationException {
 
 
@@ -602,7 +631,11 @@ public class ComputationLibraryImpl {
 
 	}
 
-	// version with goodSpots (or validOffsets) passed in
+	/*
+	 * private method for centroid stats, version with goodSpots (or validOffsets) passed in.  This pattern is used
+	 * so that sufs can also call this for each segment, without encountering a second @Computation annotation, which would confuse the 
+	 * automatic data collection.  
+	 */
 	private CentroidStatsResult calcCentroidStats(FloatPoint[] centroidOffsets, int[] nspotTypes, int[] goodSpots) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
@@ -627,6 +660,13 @@ public class ComputationLibraryImpl {
 
 	}
 
+	/**
+	 * Calculates centroid stats for pseudo passive tilt
+	 * @param centroidOffsetsPixels array of centroid offsets 
+	 * @param nspotTypes array of flags indicating if spot is peripheral or interior
+	 * @return a wrapper around {#link CentroidStatsResult} so that this result can be distinguished from a {#link CentroidStatsResult} when performing auto data collection
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public PseudoTipTiltCentroidStatsResult calculatePseudoCentroidStats(FloatPoint[] centroidOffsetsPixels, int[] nspotTypes) throws ComputationException {
 
@@ -658,6 +698,15 @@ public class ComputationLibraryImpl {
 
 	}
 	
+	/**
+	 * Calculates the centroid offsets statistics on the average of the centroid offsets
+	 * @param avgCentroidOffsets an array of averaged centroid offsets
+	 * @param nspotTypes array of flags indicating if a spot is interior or peripheral
+	 * @param missingSpotFlags this is not used, it should be removed from the method signature
+	 * @param goodSpots array of flags indicating if a spot was usable for analysis for every iteration
+	 * @return a wrapper around {#link CentroidStatsResult} so that this result can be distinguished from a {#link CentroidStatsResult} when performing auto data collection
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public AvgCentroidStatsResult calculateAvgCentroidStats(FloatPoint[] avgCentroidOffsets, int[] nspotTypes, int[] missingSpotFlags, int[] goodSpots) throws ComputationException {
 
@@ -688,7 +737,14 @@ public class ComputationLibraryImpl {
 
 
 
-	
+	/**
+	 * Calculates the desired actuator corrections from x and y passive tilt offsets
+	 * @param actuatorPositions array of coordinates of the actuators in microns, numbered consecutively.
+	 * @param imageScale Image scale in arcseconds per pixel.
+	 * @param centroidOffsets array of centroid offsets for each segment
+	 * @return array of actuator deltas to add to each actuator in order to correct the PT errors
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, FloatPoint[] centroidOffsets)
 			throws ComputationException {
 		
@@ -729,6 +785,12 @@ public class ComputationLibraryImpl {
 		return desiredActDeltas;
 	}
 
+	/**
+	 * Decompose a vector of actuators into pure tilt and pure piston
+	 * @param actuatorPositions input array of actuators
+	 * @return result object containing 2-d array (36 x 3) of pure piston actuators and 2-d array (36 x 3) of tip/tilt actuators
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
 		
@@ -761,7 +823,13 @@ public class ComputationLibraryImpl {
 		
 	}
 
-	
+	/**
+	 * Given pure tip/tilt actuators, calculate the pure piston actuators that minimize the changes to the sensor readings
+	 * @param controlMatrix primary mirror A matrix
+	 * @param tipTiltActs pure tip/tilt actuators
+	 * @return pure piston actuators as a 2-d array (36 x 3)
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "optimalPistons"));
@@ -792,6 +860,22 @@ public class ComputationLibraryImpl {
 
 	}
 	
+	/**
+	 * Calculate the pupil registration error in X, Y, rotation and scale (if fractionalIntensityCalcMethod is APS)
+	 * @param pupilRegErrorConfig contains input config parameters for fractional intensity calculation method and nStart
+	 * @param centroidMap the map of centroids, including each subimage intensity
+	 * @param numSpots number of subimages 
+	 * @param peripheralSpotPerp array of "Perpendicular" locations of the periperhal subapertures on the primary mirror.
+	 * @param peripheralSpotParallel array of "Parallel" locations of the periperhal subapertures on the primary mirror.
+	 * @param peripheralSpotTheta array of rotational orientations of the peripheral subapertures
+	 * @param aHex segment side length in meters
+	 * @param spotDiameter diameter of peripheral subiamges on the primary mirror in meters
+	 * @param nspotTypes array of spot types, interior vs peripheral
+	 * @param missingSpotFlags array of flags indicating missing spot type (missing from find and identify, use for analysis)
+	 * @param findCentStatusList an array of flags indicating if/how this spot was found during find and identify
+	 * @return result object containing registration error in x, y and phi and scale error
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
 			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList)
@@ -826,7 +910,12 @@ public class ComputationLibraryImpl {
 	}
 	
 
-
+	/**
+	 * Utility method that returns an array of usable spot flags.  A spot is usable if it was a missing spot type 'Use for analysis' and the
+	 * findCentStatus for that spot indicates that the spot was found.
+	 * @param missingSpotFlags array of flags indicating missing spot type (missing from find and identify, use for analysis)
+	 * @param findCentStatusList an array of flags indicating if/how this spot was found during find and identify
+	 */
 	public int[] goodCentroidsFound(int[] missingSpotFlags, int[] findCentStatusList) {
 		int[] found = new int[findCentStatusList.length];
 
@@ -843,6 +932,13 @@ public class ComputationLibraryImpl {
 
 	}
 	
+	/**
+	 * Returns an array of flags that indicate if the corresponding centroid offset is 'good'.  Good is defined as being a good spot as 
+	 * defined in {@link ComputationLibraryImpl#goodCentroidsFound(int[], int[])} and also that the subimage did not jump.
+	 * @param goodSpots array of 'good spots' as defined in {@link ComputationLibraryImpl#goodCentroidsFound(int[], int[])}
+	 * @param jumpedSpots array of jumped flags (0 == did not jump)
+	 * @return array of good offset flags
+	 */
 	public int[] goodOffsetsFound(int[] goodSpots, int[] jumpedSpots) {
 		int[] validOffsets = new int[goodSpots.length];
 		
@@ -854,7 +950,13 @@ public class ComputationLibraryImpl {
 		return validOffsets;
 	}
 
-	
+	/**
+	 * Adds two matricies.  Delegates to {@link JavaComputations#addMatricies(float[][], float[][])}
+	 * @param matrix1 input matrix (2-d)
+	 * @param matrix2 input matrix (2-d)
+	 * @return a 2-d sum of the two matricies
+	 * @throws ComputationException if the Java computation fails
+	 */
 	public float[][] addMatricies(float[][] matrix1, float[][] matrix2) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "addMatricies"));
@@ -866,6 +968,21 @@ public class ComputationLibraryImpl {
 		return result;
 	}
 	
+	/**
+	 * Checks the current reference beam map, the current date, number of iterations, CCD temperature and coarse and fine mirror positions against
+	 * thresholds set in autoRefMapConfig.  If thresholds are exceeded, a new ref map should be taken and an {@link AutoRefMapCheckException} will
+	 * be thrown.  This method delegates to {@link JavaComputations#autoRefMapCheck(AutoRefMapConfig, Point, Point, float, int, Date, RefBeamMap)}
+	 * 
+	 * @param autoRefMapConfig configuration thresholds to determine if a new reference map needs to be taken
+	 * @param currentCoarsePosition current coarse mirror position
+	 * @param currentFinePosition current fine mirror position
+	 * @param temperature current CCD temperature
+	 * @param numIterations number of iterations for the procedure being executed
+	 * @param currentDate the current date/time
+	 * @param currentRefMap the most current reference beam map for the procedure being executed 
+	 * @throws ComputationException if there is a problem in {@link JavaComputations#autoRefMapCheck(AutoRefMapConfig, Point, Point, float, int, Date, RefBeamMap)}
+	 * @throws AutoRefMapCheckException thrown if a new reference map needs to be taken
+	 */
 	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
@@ -877,7 +994,17 @@ public class ComputationLibraryImpl {
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
 
-
+	/**
+	 * Checks the magnitude of the telescope move against the passed configuration and lastMove, and determines if the telescope should be commanded
+	 * and if a new frame should automatically be taken, or if the user needs to be consulted on a decision. 
+	 * This method delegates to {@link JavaComputations#autoCenterTelescopeCheck(AutoCenterTelConfig, FloatPoint, FloatPoint)}
+	 * 
+	 * @param autoCenterTelConfig configuration thresholds for moving the telescope, re-taking frames, or telescope move too large
+	 * @param deltaAzEl the delta Azimuth and Elevation telescope moves
+	 * @param lastMove the delta Azimuth and Elevation of the previous telescope move
+	 * @return result object with recommendations for moving telescope and re-taking frame, along with text to display if either of these recomendations 
+	 * requires user input.
+	 */
 	public AutoCenterTelCheckResult autoCenterTelescopeCheck(AutoCenterTelConfig autoCenterTelConfig, FloatPoint deltaAzEl, FloatPoint lastMove) {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoCenterTelescopeCheck"));
@@ -889,8 +1016,15 @@ public class ComputationLibraryImpl {
 		return result;
 	}
 
-	
-	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
+	/**
+	 * Checks the subimages intensities against the passed threshold and throws a {@link org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException}
+	 * if any subimages exceed the passed threshold.
+	 * This method delegates to {@link JavaComputations#autoCenterTelescopeCheck(AutoCenterTelConfig, FloatPoint, FloatPoint)}
+	 * @param centroidMap centroid map object containing the array of subimage peak intensities
+	 * @param threshold the threshold to test against
+	 * @throws NonLinearIntensitiesException when a subimage exceeds the threshold
+	 */
+	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws NonLinearIntensitiesException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
 
@@ -900,6 +1034,12 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculates the median value of an array
+	 * This method delegates to {@link JavaComputations#autoCenterTelescopeCheck(AutoCenterTelConfig, FloatPoint, FloatPoint)}
+	 * @param inputs the array of inputs to calculate the median of
+	 * @return the median value
+	 */
 	public float getMedianValue(float[] inputs) throws Exception {
 		logger.info(MessageGenerator.generateMessage("computation.start", "getMedianValue"));
 	
@@ -910,6 +1050,19 @@ public class ComputationLibraryImpl {
 		return result;
 	}
 
+	/**
+	 * Calculates the pupil registration commands automatically determining which mechanism to use (fine or coarse).  Automatically 
+	 * offloads fine mechanism when thresholds are passed.
+	 * 
+	 * @param centerPupil if false, return a null result
+	 * @param desiredCenterPupilMech desired mechanism to use: fine, coarse or auto determine.  Specifying the fine mechanism is not a guarantee 
+	 * that the fine will be used, as this function will offload to the coarse mirror when limits are exceeded.
+	 * @param pupilRegErrorResult the pupil registration error to correct
+	 * @param pupilRegErrorConfig configuration parameters including large/small thresholds and gain factors for coarse and fine mirrors
+	 * @param fineTiltMirror fine tilt mirror configuration parameters including offload thresholds, and current position
+	 * @param coarseTiltMirror coarse tilt mirror configuration parameters and current position
+	 * @return result object containing coarse and fine mirror commands to send and if the fine mirror is being offloaded.
+	 */
 	@Computation
 	public CalcPrCommandsResult calcPrCommands(boolean centerPupil, int desiredCenterPupilMech, PupilRegErrorResult pupilRegErrorResult,
 			PupilRegErrorConfig pupilRegErrorConfig, FineTiltMirror fineTiltMirror, CoarseTiltMirror coarseTiltMirror)
@@ -926,18 +1079,23 @@ public class ComputationLibraryImpl {
 	}
 
 
-	public Point calcCoarseMirrorCmds(FloatPoint desiredMotion, FloatPoint leverCoarse, float oraFactor) throws Exception {
-		
-		logger.info(MessageGenerator.generateMessage("computation.start", "calcCoarseMirrorCmds"));
-		
-		Point result = JavaComputations.calcCoarseMirrorCmds(desiredMotion, leverCoarse, oraFactor);
-		
-		logger.info(MessageGenerator.generateMessage("computation.success", "calcCoarseMirrorCmds"));
-		
-		return result;
-
-	}
-
+	/**
+	 * Calculate M2 Piston, Tip, Tilt and segment Tip/tilts from Keck Fine Screen centroid offsets using ray trace.
+	 * 
+	 * @param findCentroidsResult result object containing centroid locations
+	 * @param centroidOffsetsResult result object containing centroid offsets
+	 * @param subimagesForM2Calc array of flags indicating which subimages to use for M2 calc
+	 * @param m2PistonUnitPertibation unit perturbation for M2 piston, to be used for creating Ray Trace model matrix
+	 * @param m2TTUnitPertibation unit perturbation for M2 tip/tilt, to be used for creating Ray Trace model matrix
+	 * @param fineScreenSpotCoords fine screen spot locations on primary mirror in primary mirror coordinates
+	 * @param nspotTypes array of flags indicating if the spot is interior or peripheral
+	 * @param telescopeConstants telescope constants data structure containing number of segments, back focal distance, m1 focal length, telescope focal length and m1 curvature radius
+	 * @param secPerPixel arcseconds per pixel for the mask used
+	 * @param m2TtCorrectionFactor M2 tip/tilt fudge factor, needed because M2 does not rotate about its vertex
+	 * @param pupilMaskType pupil mask type data structure containing CCD to cartesian pixel conversion
+	 * @return result object containing m2 piston and tip/tilt, centroid residual and m1 offsets corrected for m2
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public CalcM2M1Result calculateM2M1RayTrace(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
 			float m2PistonUnitPertibation, float m2TTUnitPertibation, FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel,
@@ -1024,6 +1182,24 @@ public class ComputationLibraryImpl {
 	
 	}
 	
+	/**
+	 * Calculate M2 Piston, Tip, Tilt and segment Tip/tilts from Keck Fine Screen centroid offsets using analytical approximations.
+	 * 
+	 * @param findCentroidsResult result object containing centroid locations
+	 * @param centroidOffsetsResult result object containing centroid offsets
+	 * @param subimagesForM2Calc array of flags indicating which subimages to use for M2 calc
+	 * @param fineScreenSpotCoords fine screen spot locations on primary mirror in primary mirror coordinates
+	 * @param nspotTypes array of flags indicating if the spot is interior or peripheral
+	 * @param telescopeConstants telescope constants data structure containing number of segments, back focal distance, m1 focal length, telescope focal length and m1 curvature radius
+	 * @param secPerPixel arcseconds per pixel for the mask used
+	 * @param m2TtCorrectionFactor M2 tip/tilt fudge factor, needed because M2 does not rotate about its vertex
+	 * @param aHex segment side length in m
+	 * @param startSegNum segment Number to start M2 calculations at
+	 * @param endSegNum segment Number to stop M2 calculations at
+	 * @param pupilMaskType pupil mask type data structure containing CCD to cartesian pixel conversion
+	 * @return result object containing m2 piston and tip/tilt, centroid residual and m1 offsets corrected for m2
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public CalcM2M1Result calculateM2M1Analytical(FindCentroidsResult findCentroidsResult, CentroidOffsetsResult centroidOffsetsResult, int[] subimagesForM2Calc,
 			FloatPoint[][] fineScreenSpotCoords, int[] nspotTypes, TelescopeConstants telescopeConstants, float secPerPixel, float m2TtCorrectionFactor,
@@ -1112,13 +1288,18 @@ public class ComputationLibraryImpl {
 	
 	}
 
+	/**
+	 * Calculate the optimal pistons associated with the calculated actuators (minimizes the changes to the edges). 
+	 * Note that this routine just determines the optimal pistons; if you want to add these on to the tip/tilt pistons, 
+	 * you need to do it yourself.
+	 * 
+	 * @param controlMatrix M1 control system A-Matrix
+	 * @param tipTiltActs pure tip/tilt actuators
+	 * @return result object containing piston actuators, desired actuator deltas, rms values for both plus rms of focus mode and no focus mode
+	 */
 	@Computation
 	public CalcDesiredActCommandsResult calcDesiredActCommands(float[][] controlMatrix, float[][] tipTiltActs) throws Exception {
 		
-		// Calculate the optimal pistons associated with the calculated
-		// actuators (minimizes the changes to the edges). Note that this
-		// routine just determines the optimal pistons; if you want to add
-		// these on to the tip/tilt pistons, you need to do it yourself.
 		float[][] pistonActs = optimalPistons(controlMatrix, tipTiltActs);
 
 		// calculate RMS of the actuator cmds
@@ -1147,9 +1328,13 @@ public class ComputationLibraryImpl {
 		return new CalcDesiredActCommandsResult(pistonActs, pistonActsRms, desiredActDeltas, desiredActDeltasRms, desiredActDeltasFmRms, desiredActDeltasNoFmRms);
 	}
 
-
-	 
-	
+	/**
+	 * Calculate and return a vector of the M1CS actuators corresponding to focus mode, normalized so the RMS = 1
+	 * 
+	 * @param controlMatrix M1 control matrix
+	 * @return vector of M1CS actuators corresponding to focus mode
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	public float[] calculateFocusModeVector(float[][] controlMatrix) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateFocusModeVector"));
@@ -1178,7 +1363,15 @@ public class ComputationLibraryImpl {
 	}
 
 	
-	
+	/**
+	 * Convert the given M2 tip, tilt, and piston errors to the three M2 actuator commands.
+	 * 
+	 * @param meanM2PistonError input M2 piston error in m
+	 * @param meanM2TipTiltError input M2 tip/tilt error in m
+	 * @param m2ActuatorRadius M2 actuator radius in m
+	 * @return result object containing computed M2 actuator commands in microns
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public CalcM2ActuatorsFromPttResult calcM2ActuatorsFromPtt(float meanM2PistonError, FloatPoint meanM2TipTiltError,
 			float m2ActuatorRadius) throws Exception {
@@ -1212,6 +1405,14 @@ public class ComputationLibraryImpl {
 	
 	}
 
+	/**
+	 * Calculates desired actuator deltas EOMs for act deltas, focus mode and no focus mode, given the RMS values over the iterations
+	 * 
+	 * @param desiredActDeltaRmsIterations array of desired actuator deltas RMS for each iteration
+	 * @param desiredActDeltaFmRmsIterations array of focus mode actuator deltas RMS for each iteration
+	 * @param desiredActDeltaNoFmRmsIterations array of no focus mode actuator deltas RMS for each iteration
+	 * @return result object containing desired actuator deltas EOMs for act deltas RMS, focus mode RMS and no focus mode RMS
+	 */
 	@Computation
 	public CalcDesiredActDeltasRmsEomResult calcDesiredActDeltasRmsEom(Float[] desiredActDeltaRmsIterations, Float[] desiredActDeltaFmRmsIterations, 
 			Float[] desiredActDeltaNoFmRmsIterations) {
@@ -1227,6 +1428,12 @@ public class ComputationLibraryImpl {
 		return new CalcDesiredActDeltasRmsEomResult(desiredActDeltasRmsEom, desiredActDeltasFmRmsEom, desiredActDeltasNoFmRmsEom);
 	}
 
+	/**
+	 * Calculates the mean and EOM for m2 piston errors and m2 tip/tilt errors
+	 * @param m2PistonErrors array of m2 piston errors
+	 * @param m2TipTiltErrors array of m2 tip tilt errors
+	 * @return result object containing the mean and EOM for the m2 piston errors and m2 tip/tilt errors
+	 */
 	@Computation
 	public CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEom(Float[] m2PistonErrors, FloatPoint[] m2TipTiltErrors) {
 
@@ -1246,6 +1453,12 @@ public class ComputationLibraryImpl {
 		
 	}
 
+	/**
+	 * Calculates the mean of tip/tilts for M1 segments over a number of iterations
+	 * 
+	 * @param m1SegmentTipTiltErrors 2-d array of m1 segment tip tilt errors over all segments and all iterations
+	 * @return result object containing an array of mean segment tip/tilt errors for all segments
+	 */
 	@Computation
 	public CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTilts(FloatPoint[][] m1SegmentTipTiltErrors) {
 		
@@ -1264,6 +1477,12 @@ public class ComputationLibraryImpl {
 		return new CalcSegmentMeanTipTiltsResult(segmentMeanTipTiltErrors);
 	}
 
+	/**
+	 * Calculates the average of centroid offsets for a set of iterations
+	 * @param offsetsIterations an array of {@link CentroidOffsetsResult} objects, for each iteration
+	 * @param goodSpots good spots array (value == 1 if spot is to be used)
+	 * @return a single {@link CentroidOffsetsResult} object containing the averaged centroid offsets 
+	 */
 	@Computation
 	public CentroidOffsetsResult calcAvgCentroidOffsets(CentroidOffsetsResult[] offsetsIterations, int[] goodSpots) {
 		return  calculateAvgCentroidOffsets(offsetsIterations, goodSpots);
@@ -1310,6 +1529,11 @@ public class ComputationLibraryImpl {
 		
 	}
 
+	/**
+	 * Returns the findCentStatus for the averaging of multiple trials.  A spot is only considered good if it was good for every iteration.
+	 * @param findCentStatusIterations findCentStatus array for each spot over multiple iterations.
+	 * @return an array of good spots that are equal to one if the spot is good for every iteration
+	 */
 	public int[] calculateAvgFindCentStatus(int[][] findCentStatusIterations) {
 		
 		// for now, a spot is good only if it was good every time
@@ -1331,6 +1555,17 @@ public class ComputationLibraryImpl {
 		return avgFindCentStatus;
 	}
 	
+	/**
+	 * Create monochromatic templates for phasing.
+	 * @param phasingSubimageFftSize Number of pixels across the subaperture pupil function (ie the size of the FFT)
+	 * @param phasingTemplateCount the number of templates to calculate
+	 * @param findCentConfig contains irad, iterMax, iMargin and nGauss inputs
+	 * @param pupilMask contains plate scale in arcseconds per pixel for the mask, cross hair diameter for the mask and interior spot diameter for the mask
+	 * @param filter contains the input filter wavelength
+	 * @return result object containing the output template sequence for all piston steps and edge angles. This is a 4-dim array: dim-1/2: X,Y 
+	 * should nominally be of size 2*irad+1, dim-3: number of templates to calculate, dim-4: 3 for the three edge angles
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, PupilMask pupilMask, Filter filter) throws Exception {
 		
@@ -1373,6 +1608,18 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculate coherence parameters from a single broadband phasing exposure.
+	 * 
+	 * @param frame full image array containing subimages to be analyzed
+	 * @param findCentroidsResult centroid result object containing the list of centroid locations and found subimage flags
+	 * @param edgeAngle edge angles (0, 120, 240 deg) defined for each phasing edge
+	 * @param templateArray template sequence of ideal subimages.
+	 * @param numberOfSegments the number of segments in the primary mirror
+	 * @return result object containing the calculated coherence parameters for all edges in the frame and interpolated best index 
+	 * corresponding to the maximum cross correlation coefficient
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public BbAnalyzeFrameResult bbAnalyzeFrame(float[][] frame, FindCentroidsResult findCentroidsResult, int[] edgeAngle, float[][][][] templateArray, int numberOfSegments) throws Exception {
 		
@@ -1414,6 +1661,29 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Fit the coherence curves to determine the edge heights and do the SVD to determine the pistons.
+	 * 
+	 * @param edgeAngle array of edge angles defined for each phasing edge (0, 120, or 240 degrees).
+	 * @param edgeColor array of three-Color-Mode edge color defined for each phasing edge (1, 2, or 3) 
+	 * @param coherenceArraySet coherence parameters for all phasing spots and all exposures
+	 * @param stepSize phasing step size
+	 * @param numSegments number of primary mirror segments
+	 * @param plusPiston used to create the phasing control matrix (nedges x nsegments)
+	 * @param minusPiston used to create the phasing control matrix (nedges x nsegments)
+	 * @param ringModeCorrectionFactor the magnitude of ring-mode correction to apply to the measured edge heights
+	 * @param filter contains the input sigma of coherence parameter
+	 * @param bbPhasingFracInterval the fractional interval size to use for chi-square analysis
+	 * @param ringMode array of ring-mode edges with unit rms (where the averaging is over the 78 edges from 7 thru 84).
+	 * @param numSteps number of phasing steps
+	 * @param useForAnalysis array of flags indicating if a spot can be used for analysis
+	 * @param goodSpots array of flags indicating if the spot was found
+	 * @return result object containing: measured edge heights after correcting for the dispersion effect of the prisms, 
+	 * computed segment piston commands, Predicted residual edge heights that are expected after applying the calculated 
+	 * segment piston commands, array of flags specifying which edges had good edge height measurements (0=bad, 1=good), 
+	 * number of constrained segments and RMS of segment piston commands
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public BbAnalyzeSequenceResult bbAnalyzeSequence(int[] edgeAngle, int[] edgeColor, float[][] coherenceArraySet, float stepSize, int numSegments, 
 			int[] plusPiston, int[] minusPiston, float ringModeCorrectionFactor, Filter filter, float bbPhasingFracInterval,
@@ -1478,7 +1748,14 @@ public class ComputationLibraryImpl {
 		
 	}
 	
-	
+	/**
+	 * Given a vactor of segment pistons remove the best fit plane.  Return the actuator values and RMS of them.
+	 * @param actuatorPositions coordinates of the segment actuators 
+	 * @param actCalc input segment piston values
+	 * @return result object containing the pistonRaw values expanded to 3*numSegment values, the actRaw values with the 
+	 * best fit plane removed and RMS of the actuator values with the best fit plane removed
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public FixPistonsResult fixPistons(FloatPoint[] actuatorPositions, float[] actCalc) throws Exception {
 		
@@ -1515,6 +1792,12 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculates the desired actuator commands given a {@link FixPistonsResult}.  The desired actuator deltas are the values of the 
+	 * actuators with best fit plane removed with the sign reversed and converted from microns to nanometers.
+	 * @param fixPistonsResult the input fix pistons result 
+	 * @return result object containing the desired actuator deltas and the RMS of the desired actuator deltas
+	 */
 	@Computation
 	public CalcDesiredActCommandsResult fixPistonsToDesiredActs(FixPistonsResult fixPistonsResult) throws Exception {
 		
@@ -1540,6 +1823,14 @@ public class ComputationLibraryImpl {
 		return new CalcDesiredActCommandsResult(pistonActs, 0.0f, desiredActDeltas, desiredActDeltasRms,  0.0f, 0.0f);
 	}
 	
+	/**
+	 * 
+	 * @param rowFlagIn array of flags specifying which edges to use in the Broadband Phasing calculation.
+	 * @param rowFlagOut array of flags specifying which edges had good edge height measurements (0=bad, 1=good).
+	 * @param stepCorr measured edge heights after correcting for the dispersion effect of the prisms
+	 * @param stepResid predicted residual edge heights that are expected after applying the calculated segment piston commands
+	 * @return result object containing max and rss values for measured edge heights and residual edge heights
+	 */
 	@Computation
 	public PhasingStatsResult calculatePhasingStats(int[] rowFlagIn, int[] rowFlagOut, float[] stepCorr, float[] stepResid) throws Exception {
 		
@@ -1576,6 +1867,15 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculate the segment color steps for each color step for phasing
+	 * @param stepCount number of desired steps
+	 * @param stepSizeMicrons size of each step (surface)
+	 * @return result object containing the color step array: A 2-dimensional array where the first dimension is the color step.
+	 * There are n+1, steps as the last step restores the mirror back to it's initial state. The 2nd dimension is 3 long and 
+	 * describes the step for that color segment.
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public ColorStepResult colorStep(int stepCount, float stepSizeMicrons) throws Exception {
 		
@@ -1604,6 +1904,13 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Given the desired segment color steps return a vector of commands to send to ACS/M1CS.
+	 * @param colors step size for each segment color
+	 * @param segmentColors the color of each segment
+	 * @return result object containing the actuator commands to send to M1
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
 	@Computation
 	public ColorStepToActuatorsResult colorStepToActuators(float[] colors, int[] segmentColors) throws Exception {
 		
@@ -1631,7 +1938,12 @@ public class ComputationLibraryImpl {
 		
 	}
 	
-	
+	/**
+	 * Calculates the SUFS segment centroids for each segment in the SUFS group
+	 * @param findCentroidsResult the centroids found in mask coordinates/numbering
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number
+	 * @return a result object containing an array of 7 {@link FindCentroidsResult} objects, for each segment with segment specific ordering.
+	 */
 	public SufsSegmentCentroidsResult generateSufsSegmentCentroids (FindCentroidsResult findCentroidsResult, int[][] sufsGroupSegmentToMask) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentCentroidOffsets"));
@@ -1666,6 +1978,13 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Reorders any input integer array that corresonds to mask spot ordering into a 2-d array of segment ordered spot arrays.  The first index
+	 * is the number of SUFS segments in the group (7) and the second index is the segment spot number.
+	 * @param input the input integer array in mask order
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number
+	 * @return the 2-d array of sufs segment spot numbered values
+	 */
 	public int[][] generateSufsSegmentInts (int[] input, int[][] sufsGroupSegmentToMask) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentInts"));
@@ -1690,6 +2009,13 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Reorders any input FloatPoint array that corresonds to mask spot ordering into a 2-d array of segment ordered spot arrays.  The first index
+	 * is the number of SUFS segments in the group (7) and the second index is the segment spot number.
+	 * @param input the input FloatPoint array in mask order
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number
+	 * @return the 2-d array of sufs segment spot numbered values
+	 */
 	public FloatPoint[][] generateSufsSegmentFloatPoints (FloatPoint[] input, int[][] sufsGroupSegmentToMask) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "generateSufsSegmentFloatPoints"));
@@ -1713,8 +2039,21 @@ public class ComputationLibraryImpl {
 		
 	}
 	
-	
-	
+	/**
+	 * Calculates SUFS centroid offsets for each of the segments using segment numbering and coordinates.  Also determines jumped spots.
+	 * 
+	 * @param findCentroidsResult mask coordinate and numbered centroids
+	 * @param refMapCentroidsResult mask coordinate and numbered reference map centroids
+	 * @param centroidOffsetsConfig input configuration for centroid offsets, passed to {@link #calcCentroidOffsets}, which is called for 
+	 * each segment
+	 * @param pupilMaskType passed to {@link #calcCentroidOffsets}, which is called for each segment
+	 * @param nspotTypes array of spot types (interior vs peripheral) ordered by mask numbering
+	 * @param missingSpotFlags array of missing spot flags ordered by mask numbering
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number
+	 * @param spotJumpedThreshold threshold in pixels to determine if a spot has jumped
+	 * @return result object containing the same results as {@link #calcCentroidOffsets} but for each segment, plus 2-d arrays (per segment, per spot)
+	 * of jumped spot flags and valid offsets flags
+	 */
 	@Computation
 	public SufsSegmentOffsetsResult calculateSufsCentroidOffsets(FindCentroidsResult findCentroidsResult, FindCentroidsResult refMapCentroidsResult, 
 			CentroidOffsetsConfig centroidOffsetsConfig, 
@@ -1771,7 +2110,18 @@ public class ComputationLibraryImpl {
 		return jumped;
 	}
 	
-	
+	/**
+	 * SUFS calculation of centroid statistics.  Calls {@link #calcCentroidStats(FloatPoint[], int[], int[])} for each of the segments
+	 * 
+	 * @param sufsSegmentOffsetsResult SUFS segment offsets result object containing offsets for each segment
+	 * @param findCentStatusList findCent status flags ordered by mask numbering
+	 * @param nspotTypes spot types (interior vs peripheral) flags ordered by mask numbering
+	 * @param missingSpotFlags missing spots flags ordered by mask numbering
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number, used to reorder mask numbered arrays into
+	 * seven segment spot numbered arrays
+	 * @return result object containing the exact information returned from {@link #calcCentroidStats(FloatPoint[], int[], int[])}, but for each segment
+	 * in the SUFS group
+	 */
 	@Computation
 	public SufsCentroidStatsResult calculateSufsCentroidStats(SufsSegmentOffsetsResult sufsSegmentOffsetsResult, int[] findCentStatusList,  
 			int[] nspotTypes, int[] missingSpotFlags, int[][] sufsGroupSegmentToMask) throws Exception {
@@ -1803,6 +2153,18 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculates the SUFS centroid statistics for the averages of the segment offsets results, by calling {@link #calcCentroidStats(FloatPoint[], int[], int[])}
+	 * for the average offsets for each segment
+	 * 
+	 * @param sufsAvgSegmentOffsetsResult average segment offsets for each segment in the SUFS group
+	 * @param avgGoodSpotMask averaging all good spots in mask numbering, a spot is good if it was good over all iterations
+	 * @param nspotTypes spot types (interior vs peripheral) flags ordered by mask numbering
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number, used to reorder mask numbered arrays into
+	 * seven segment spot numbered arrays
+	 * @return result object containing the exact information returned from {@link #calcCentroidStats(FloatPoint[], int[], int[])}, but for the
+	 * average of each centroid offset and for each segment in the SUFS group
+	 */
 	@Computation
 	public SufsCentroidStatsResult calculateSufsAvgCentroidStats(SufsSegmentOffsetsResult sufsAvgSegmentOffsetsResult, int[] avgGoodSpotMask,  
 			int[] nspotTypes, int[][] sufsGroupSegmentToMask) throws Exception {
@@ -1832,15 +2194,16 @@ public class ComputationLibraryImpl {
 		
 	}
 	
-	
+	/**
+	 * Calculates the average SUFS centroid offsets given the centroid offsets for a set of iterations.
+	 * 
+	 * @param sufsSegmentOffsetsResultIterations an array of iterations of SUFS segment offsets results
+	 * @return result object containing the average of the centroid offsets for each segment
+	 */
 	@Computation
-	public SufsSegmentOffsetsResult calcAvgSufsCentroidOffsets(SufsSegmentOffsetsResult[] sufsSegmentOffsetsResultIterations, int[] goodSpotsMask, int[][] sufsGroupSegmentToMask) throws Exception {
+	public SufsSegmentOffsetsResult calcAvgSufsCentroidOffsets(SufsSegmentOffsetsResult[] sufsSegmentOffsetsResultIterations) throws Exception {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calcAvgSufsCentroidOffsets"));
-
-		// we need to reorder this into sufsSegmentOffsetsResultIterations into CentroidOffsetsResult[groupSegment][iteration]
-		
-		//int[][] goodSpotsGroupSegment = generateSufsSegmentInts(goodSpotsMask, sufsGroupSegmentToMask);
 
 		
 		CentroidOffsetsResult[][] centroidOffsetsResultGroupSegmentIteration = new CentroidOffsetsResult[7][sufsSegmentOffsetsResultIterations.length];
@@ -1941,6 +2304,22 @@ public class ComputationLibraryImpl {
 		
 	}
 	
+	/**
+	 * Calculates SUFS Zernikes for each segment in the SUFS group.
+	 * 
+	 * @param sufsSegmentIdealSpotLocations ideal subaperature locations for a segment
+	 * @param segmentOffsets centroid offsets for each spot of each of the seven SUFS group segments
+	 * @param aHex hexagon side length in meters
+	 * @param secPerPixel converts pixels to arcseconds
+	 * @param validOffsets flag specifying which subapertures per segment to use in the Zernike calculation
+	 * @param sufsGroupSegmentToMask mapping of sufs group segment spot number to mask spot number, used to reorder mask numbered arrays into
+	 * seven segment spot numbered arrays
+	 * @param sufsZernikeOrder array of zernike orders to calculate ordered by segment number
+	 * @param groupSegmentNumbers array of segment numbers for this SUFS group
+	 * @return result object containing the following zernike related information for each segment: the best-fit Zernike coefficients computed 
+	 * from the given centroid offsets, The fraction of the RMS-squared centroid offsets (i.e. power) that is represented by the fitted Zernike 
+	 * coefficients and the theoretical centroid offsets corresponding to the fitted Zernike coefficients.
+	 */
 	@Computation
 	public SufsSegmentZernikeResult calculateSufsZernikes(FloatPoint[] sufsSegmentIdealSpotLocations, FloatPoint[][] segmentOffsets, float aHex, float secPerPixel,
 			int[][] validOffsets, int[][] sufsGroupSegmentToMask, int[] sufsZernikeOrder,
@@ -1969,7 +2348,13 @@ public class ComputationLibraryImpl {
 		
 	}
 
-	
+	/**
+	 * Calculates SUFS Zernike statistics given the {@link SufsSegmentZernikeResult} over a set of iterations.  Calculates the 
+	 * zernike means and EOMs for each segment.
+	 * 
+	 * @param sufsSegmentZernikeResultIterations an array of zernike results over a set of iterations
+	 * @return a result object containing zernike means and EOMs for all zernikes calculated for all segments in the SUFS group
+	 */
 	@Computation
 	public SufsSegmentZernikeStatsResult calculateSufsZernikeStats(SufsSegmentZernikeResult[] sufsSegmentZernikeResultIterations) throws Exception {
 
@@ -2025,15 +2410,14 @@ public class ComputationLibraryImpl {
 	}
 
 
-	/*
+	/**
 	 * Given the X and Y coarse mirror motions that are about to be sent to the instrument, calculate the desired telescope commands
 	 * to keep the telescope centered.  These are calculated as approx using on-sky data.to keep the telescope centered.  
 	 * 
-	 * @param coarseMirrorOffsets 	The x,y motion about to be applied to the coarse mirror in microns
-	 * @param telPerCoarseMotion	Telescope motion (in arcsecs) for a 1 micron coarse mirror move
+	 * @param coarseMirrorOffsets The x,y motion about to be applied to the coarse mirror in microns
+	 * @param telPerCoarseMotion Telescope motion (in arcsecs) for a 1 micron coarse mirror move
 	 * 
-	 * @return 						Required telescope motion (az,el) in arcseconds
-	 * 
+	 * @return Required telescope motion (az,el) in arcseconds
 	 */
 	public FloatPoint coarseOffsetsToTelMoves(Point coarseMirrorOffsets, float telPerCoarseMotion) {
 
