@@ -572,7 +572,7 @@ public class ProcedureExecutionMgmt {
 			integrationTime = pupilRegProcedureConfig.getIntegrationTime();
 		} else {
 			// use the CPH int time
-			ProcedureConfig phasingProcedureConfig = procedureMgmt.findDefaultProcedureConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_PHASING);
+			ProcedureConfig phasingProcedureConfig = procedureMgmt.findDefaultProcedureConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId(), ProcedureType.PROCEDURE_TYPE_ID_COARSE_PHASING);
 		
 			integrationTime = phasingProcedureConfig.getIntegrationTime();
 		}

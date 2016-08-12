@@ -388,14 +388,26 @@ public class Procedure {
 	}
 	
 	/**
-	 * @return the associated procedure output if it is an instance of {@link PhasingProcedureOutput}.
+	 * @return the associated procedure output if it is an instance of {@link CoarsePhasingProcedureOutput}.
 	 * Used by session detail row expansion display
 	 */
-	public PhasingProcedureOutput getPhasingProcedureOutput() {
-		if (procedureOutput instanceof PhasingProcedureOutput) {
-			return (PhasingProcedureOutput)procedureOutput;
+	public CoarsePhasingProcedureOutput getCoarsePhasingProcedureOutput() {
+		if (procedureOutput instanceof CoarsePhasingProcedureOutput) {
+			return (CoarsePhasingProcedureOutput)procedureOutput;
 		} else {
-			return new PhasingProcedureOutput();
+			return new CoarsePhasingProcedureOutput();
+		}
+	}
+	
+	/**
+	 * @return the associated procedure output if it is an instance of {@link NarrowBandPhasingProcedureOutput}.
+	 * Used by session detail row expansion display
+	 */
+	public NarrowBandPhasingProcedureOutput getNarrowBandPhasingProcedureOutput() {
+		if (procedureOutput instanceof NarrowBandPhasingProcedureOutput) {
+			return (NarrowBandPhasingProcedureOutput)procedureOutput;
+		} else {
+			return new NarrowBandPhasingProcedureOutput();
 		}
 	}
 	

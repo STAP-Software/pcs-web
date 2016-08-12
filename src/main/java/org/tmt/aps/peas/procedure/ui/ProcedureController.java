@@ -72,17 +72,19 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.business.ProcedureMgmt;
 import org.tmt.aps.peas.procedure.executor.CenterTelescopeExecutor;
+import org.tmt.aps.peas.procedure.executor.CoarsePhasingExecutor;
 import org.tmt.aps.peas.procedure.executor.CreateRefMapExecutor;
 import org.tmt.aps.peas.procedure.executor.FineScreenExecutor;
+import org.tmt.aps.peas.procedure.executor.NarrowBandPhasingExecutor;
 import org.tmt.aps.peas.procedure.executor.PassiveTiltExecutor;
-import org.tmt.aps.peas.procedure.executor.PhasingExecutor;
 import org.tmt.aps.peas.procedure.executor.PupilRegistrationExecutor;
 import org.tmt.aps.peas.procedure.executor.SufsExecutor;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
+import org.tmt.aps.peas.procedure.model.CoarsePhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.FineScreenProcedureOutput;
+import org.tmt.aps.peas.procedure.model.NarrowBandPhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.PassiveTiltProcedureOutput;
-import org.tmt.aps.peas.procedure.model.PhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -116,7 +118,9 @@ public class ProcedureController implements Serializable {
 	@EJB
 	FineScreenExecutor fineScreenExecutor;
 	@EJB
-	PhasingExecutor phasingExecutor;
+	CoarsePhasingExecutor coarsePhasingExecutor;
+	@EJB
+	NarrowBandPhasingExecutor narrowBandPhasingExecutor;
 	@EJB
 	SufsExecutor sufsExecutor;
 	@EJB
@@ -451,7 +455,7 @@ public class ProcedureController implements Serializable {
 				return;
 			}
 			
-			if (procedure.getProcedureType().isPhasing()) {
+			if (procedure.getProcedureType().isCoarsePhasing() || procedure.getProcedureType().isNarrowBandPhasing()) {
 				FitsFilename selected = selectedFitsFiles.get(0);
 				for (FitsFilename candidate : availableFitsFiles) {
 					if (selected.isInSamePhasingSequence(candidate)) {
@@ -550,7 +554,7 @@ public class ProcedureController implements Serializable {
 			}
 		}
 		// if a coarse phasing procedure, then the coarse phasing option needs to be set
-		if (procedure.getProcedureType().isPhasing() && procedure.getProcedureConfigSet().getProcedureConfig().getCoarsePhasingOption() == 0) {
+		if (procedure.getProcedureType().isCoarsePhasing() && procedure.getProcedureConfigSet().getProcedureConfig().getCoarsePhasingOption() == 0) {
 			return false;
 		}
 		
@@ -585,12 +589,21 @@ public class ProcedureController implements Serializable {
 	}
 
 	/**
-	 * JSF Action method called when user selects Run...Phasing menu item.  
+	 * JSF Action method called when user selects Run... Coarse Phasing menu item.  
 	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
 	 * @return JSF page to render the procedure perspective
 	 */
-	public String doNewPhasing() {
-		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_PHASING, new PhasingProcedureOutput());
+	public String doNewCoarsePhasing() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_COARSE_PHASING, new CoarsePhasingProcedureOutput());
+	}
+
+	/**
+	 * JSF Action method called when user selects Run...Narrow Band Phasing menu item.  
+	 * Calls {@link #doNewProcedure(Long, ProcedureOutput)} which calls {@link ProcedureExecutionMgmt#performProcedureSetup(Long, org.tmt.aps.peas.session.model.Session, String, ProcedureOutput)}
+	 * @return JSF page to render the procedure perspective
+	 */
+	public String doNewNarrowBandPhasing() {
+		return doNewProcedure(ProcedureType.PROCEDURE_TYPE_ID_NARROW_BAND_PHASING, new NarrowBandPhasingProcedureOutput());
 	}
 
 	/**
@@ -655,8 +668,10 @@ public class ProcedureController implements Serializable {
 			return doNewPupilRegistration();
 		} else if (lastProcedureType.isFineScreen()) {
 			return doNewFineScreen();
-		} else if (lastProcedureType.isPhasing()) {
-			return doNewPhasing();
+		} else if (lastProcedureType.isCoarsePhasing()) {
+			return doNewCoarsePhasing();
+		} else if (lastProcedureType.isNarrowBandPhasing()) {
+			return doNewNarrowBandPhasing();
 		} else if (lastProcedureType.isSufs()) {
 			return doNewSufs();
 		} else {
@@ -771,8 +786,10 @@ public class ProcedureController implements Serializable {
 			passiveTiltExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isFineScreen()) {
 			fineScreenExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
-		} else if (procedure.getProcedureType().isPhasing()) {
-			phasingExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedure.getProcedureType().isCoarsePhasing()) {
+			coarsePhasingExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
+		} else if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			narrowBandPhasingExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isSufs()) {
 			sufsExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		} else if (procedure.getProcedureType().isPupilRegistration()) {

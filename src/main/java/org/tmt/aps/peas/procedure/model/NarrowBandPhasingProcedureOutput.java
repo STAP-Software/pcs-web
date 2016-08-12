@@ -15,7 +15,7 @@ import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
  * @author smichaels
  *
  */
-public class PhasingProcedureOutput extends ProcedureOutput implements EdgeHeightsDisplayValues, ActuatorDeltasDisplayValues {
+public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements EdgeHeightsDisplayValues, ActuatorDeltasDisplayValues {
 
 	BbAnalyzeSequenceResult bbAnalyzeSequenceResult;
 	FixPistonsResult fixPistonsResult;

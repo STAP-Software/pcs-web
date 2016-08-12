@@ -28,7 +28,8 @@ public class ProcedureType {
 
 	public static final Long PROCEDURE_TYPE_ID_PASSIVE_TILT = new Long(1);
 	public static final Long PROCEDURE_TYPE_ID_FINE_SCREEN = new Long(2);
-	public static final Long PROCEDURE_TYPE_ID_PHASING = new Long(3);
+	public static final Long PROCEDURE_TYPE_ID_COARSE_PHASING = new Long(3);
+	public static final Long PROCEDURE_TYPE_ID_NARROW_BAND_PHASING = new Long(4);
 	public static final Long PROCEDURE_TYPE_ID_SUFS = new Long(5);
 	public static final Long PROCEDURE_TYPE_ID_PUPIL_REGISTRATION = new Long(6);
 	public static final Long PROCEDURE_TYPE_ID_CENTER_TELESCOPE = new Long(7);
@@ -92,8 +93,11 @@ public class ProcedureType {
 	public boolean isPupilRegistration() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_PUPIL_REGISTRATION);	
 	}
-	public boolean isPhasing() {
-		return procedureTypeId.equals(PROCEDURE_TYPE_ID_PHASING);	
+	public boolean isCoarsePhasing() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_COARSE_PHASING);	
+	}
+	public boolean isNarrowBandPhasing() {
+		return procedureTypeId.equals(PROCEDURE_TYPE_ID_NARROW_BAND_PHASING);	
 	}
 	public boolean isSufs() {
 		return procedureTypeId.equals(PROCEDURE_TYPE_ID_SUFS);	

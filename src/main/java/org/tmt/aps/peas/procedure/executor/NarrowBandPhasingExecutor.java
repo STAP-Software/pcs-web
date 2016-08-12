@@ -42,9 +42,9 @@ import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.model.CoarsePhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
-import org.tmt.aps.peas.procedure.model.PhasingIterationOutput;
-import org.tmt.aps.peas.procedure.model.PhasingProcedureOutput;
+import org.tmt.aps.peas.procedure.model.NarrowBandPhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -61,7 +61,7 @@ import org.tmt.aps.peas.visualization.model.UserPrompt;
  */
 @Singleton
 @Startup
-public class PhasingExecutor {
+public class NarrowBandPhasingExecutor {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -139,7 +139,7 @@ public class PhasingExecutor {
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
-			PhasingProcedureOutput procedureOutput = (PhasingProcedureOutput) procedure.getProcedureOutput();
+			NarrowBandPhasingProcedureOutput procedureOutput = (NarrowBandPhasingProcedureOutput) procedure.getProcedureOutput();
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
@@ -249,7 +249,7 @@ public class PhasingExecutor {
 				procedureExecutionState.incrementIteration();
 	
 				// setup the iteration output as the output target
-				PhasingIterationOutput pio = new PhasingIterationOutput();
+				CoarsePhasingIterationOutput pio = new CoarsePhasingIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
 				
@@ -465,9 +465,9 @@ public class PhasingExecutor {
 			try {
 				/// attempt to put ACS state back to where it was when we began.
 				
-				if (procedure.getPhasingProcedureOutput().getM1SnapNumberBefore() != -1) {
+				if (procedure.getNarrowBandPhasingProcedureOutput().getM1SnapNumberBefore() != -1) {
 					
-					acsMgmt.commandLoadSnap(procedure.getPhasingProcedureOutput().getM1SnapNumberBefore());
+					acsMgmt.commandLoadSnap(procedure.getNarrowBandPhasingProcedureOutput().getM1SnapNumberBefore());
 				
 					statusLogger.log("procedure.cph.abort_recovered");
 					

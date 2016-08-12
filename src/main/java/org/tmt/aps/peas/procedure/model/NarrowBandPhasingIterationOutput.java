@@ -13,7 +13,7 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
  * @author smichaels
  *
  */
-public class PhasingIterationOutput extends ProcedureIterationOutput  {
+public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput  {
 
 
 	CenterTelescopeCalcResult centerTelescopeCalcResult;

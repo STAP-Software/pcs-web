@@ -46,12 +46,12 @@
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgFsCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.fineScreen}"/>
 					<h:outputLabel value="Auto Display Avg. SUFS Centroid Offsets" rendered="#{procedureController.procedure.procedureType.sufs}"/>
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayAvgSufsCentroidOffsets}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.sufs}"/>					
-					<h:outputLabel value="Auto Display Actuator Deltas" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}" />					
-					<h:outputLabel value="Auto Display Edge Heights" rendered="#{procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.phasing}" />
-					<h:outputLabel value="Auto Display Residuals" rendered="#{procedureController.procedure.procedureType.phasing}" />
-					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.phasing}" />
+					<h:outputLabel value="Auto Display Actuator Deltas" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayActuatorDeltas}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />					
+					<h:outputLabel value="Auto Display Edge Heights" rendered="#{procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayEdgeHeights}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />
+					<h:outputLabel value="Auto Display Residuals" rendered="#{procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />
+					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayResiduals}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}" />
 					<h:outputLabel value="Display Subimage Intensity Warning" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplaySubimageIntensityWarning}" disabled="#{procedureController.procedure.procedureState gt 1}" />
 
@@ -86,7 +86,7 @@
 
 			<p:spacer height="10px" />
 					
-			<p:fieldset legend="Pupil Registration Workflow Preferences" rendered="#{procedureController.procedure.procedureType.pupilRegistration or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
+			<p:fieldset legend="Pupil Registration Workflow Preferences" rendered="#{procedureController.procedure.procedureType.pupilRegistration or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}">
 				
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				
@@ -131,7 +131,7 @@
 			<p:spacer height="10px" />
 					
 			<!-- TODO: add rendering for sufs -->
-			<p:fieldset legend="M1 Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.phasing}">
+			<p:fieldset legend="M1 Command Workflow Preferences" rendered="#{procedureController.procedure.procedureType.passiveTilt or procedureController.procedure.procedureType.fineScreen or procedureController.procedure.procedureType.coarsePhasing or procedureController.procedure.procedureType.narrowBandPhasing}">
 					
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 				

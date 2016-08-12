@@ -21,7 +21,8 @@
 						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
 					<p:submenu label="Run" icon="ui-icon-gear" rendered="#{sessionController.runProcedurePermission}">
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.navDisabled}"/>
-						<p:menuitem value="Phasing" action="#{procedureController.doNewPhasing}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Coarse Phasing" action="#{procedureController.doNewCoarsePhasing}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Narrow Band Phasing" action="#{procedureController.doNewNarrowBandPhasing}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Fine Screen" action="#{procedureController.doNewFineScreen}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="SUFS" action="#{procedureController.doNewSufs}" disabled="#{sessionController.navDisabled}"/>
 						<p:separator />
