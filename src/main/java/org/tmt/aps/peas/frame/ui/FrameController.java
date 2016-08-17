@@ -476,14 +476,14 @@ public class FrameController implements Serializable {
 		try {
 
 			String newName = new FitsFilename(physicalModel.getInstrument().getInstrumentId(),
-					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), 0)
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), 0, 0)
 							.generateFileName();
 
 			// determine 'iteration' number if multiple frames of this mask taken today
 			int iterationNumber = frameMgmt.findMatchingFitsFiles(newName.substring(0, newName.length() - 8) + "*").size();
 
 			FitsFilename fitsFilename = new FitsFilename(physicalModel.getInstrument().getInstrumentId(),
-					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), iterationNumber);
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getPupilMaskType(), iterationNumber, 0);
 
 			// refresh status for fits header
 			telescopeMgmt.refreshStatus();

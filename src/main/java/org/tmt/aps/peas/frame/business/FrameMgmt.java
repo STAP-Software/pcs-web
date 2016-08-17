@@ -163,7 +163,8 @@ public class FrameMgmt {
 				procedureCcdFrame.getProcedureIterationNumber(), 
 				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getUfsSegment(),
 				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup(), 
-				procedureCcdFrame.getPhasingStepNumber());
+				procedureCcdFrame.getPhasingStepNumber(),
+				procedureCcdFrame.getPhasingFilterNumber());
 
 		// save the frame to a FITS file
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
@@ -407,12 +408,18 @@ public class FrameMgmt {
 		procedureCcdFrame.setNewFrameFlg(false); // frame from file
 		procedureCcdFrame.setProcedureFrameNumber(frameNumber);
 		procedureCcdFrame.setProcedure(procedure);
-		if (procedureType.isCoarsePhasing() || procedureType.isNarrowBandPhasing()) {
-			procedureCcdFrame.setProcedureIterationNumber(1); // FIXME: Normal Phasing implementation will require this be generalized
+		if (procedureType.isCoarsePhasing()) {
+			procedureCcdFrame.setProcedureIterationNumber(1); 
 			procedureCcdFrame.setPhasingStepNumber(iteration);
+			procedureCcdFrame.setPhasingFilterNumber(0);
+		} else if (procedureType.isNarrowBandPhasing()) {
+				procedureCcdFrame.setProcedureIterationNumber(1); 
+				procedureCcdFrame.setPhasingStepNumber(0);
+				procedureCcdFrame.setPhasingFilterNumber(iteration);
 		} else {
 			procedureCcdFrame.setProcedureIterationNumber(iteration);
 			procedureCcdFrame.setPhasingStepNumber(0);
+			procedureCcdFrame.setPhasingFilterNumber(0);
 		}
 		
 		// add it to the procedure

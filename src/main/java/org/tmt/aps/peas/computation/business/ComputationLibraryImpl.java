@@ -46,6 +46,10 @@ import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.NbActuatorsResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
@@ -87,6 +91,10 @@ import org.tmt.aps.peas.lang.interop.JfindCentroids;
 import org.tmt.aps.peas.lang.interop.JfixPistons;
 import org.tmt.aps.peas.lang.interop.Jm2ActuatorsFromPtt;
 import org.tmt.aps.peas.lang.interop.JmakeTemplate;
+import org.tmt.aps.peas.lang.interop.JnbActuators;
+import org.tmt.aps.peas.lang.interop.JnbAnalyzeFilterSequence;
+import org.tmt.aps.peas.lang.interop.JnbAnalyzeFrame;
+import org.tmt.aps.peas.lang.interop.JnbAnalyzeStepSequence;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
@@ -2409,7 +2417,6 @@ public class ComputationLibraryImpl {
 		
 	}
 
-
 	/**
 	 * Given the X and Y coarse mirror motions that are about to be sent to the instrument, calculate the desired telescope commands
 	 * to keep the telescope centered.  These are calculated as approx using on-sky data.to keep the telescope centered.  
@@ -2430,6 +2437,199 @@ public class ComputationLibraryImpl {
 		return new FloatPoint(az, el);
 	}
 	
+	
+	//**************************************//
+	//   Narrow Band Phasing Computations   //
+	//**************************************//
+
+	/**
+	 * Single frame analysis for NB phasing
+	 * 
+	 * 
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
+	@Computation
+	public NbAnalyzeFrameResult nbAnalyzeFrame(float[][] frame, FloatPoint[] centroids, int[] goodSpots, int[] edgeAngle,
+			float[][][][] template) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFrame"));
+
+		JnbAnalyzeFrame jnbAnalyzeFrame = new JnbAnalyzeFrame();
+		RetVal retVal = new RetVal();
+
+		float[] xCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
+		float[] yCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
+
+		int numEdges = 84;
+		
+	    float[] coherenceOut = new float[numEdges];
+	    float[] bestCorrelationIndex = new float[numEdges];
+	    float[] aFit = new float[numEdges];
+	    float[] bFit  = new float[numEdges];
+	    float[] phiFit  = new float[numEdges];
+	    float[] chisqF = new float[numEdges];
+
+	
+		Object[] result = jnbAnalyzeFrame.jnbAnalyzeFrame(retVal, frame, xCentroids, yCentroids, goodSpots, edgeAngle, template, 
+	            coherenceOut, bestCorrelationIndex, aFit, bFit, phiFit, chisqF);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("nbAnalyzeFrame calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+
+		NbAnalyzeFrameResult nbAnalyzeFrameResult = new NbAnalyzeFrameResult(coherenceOut, bestCorrelationIndex, aFit, bFit, phiFit, chisqF);
+
+		
+		logger.info(MessageGenerator.generateMessage("computation.success", "nbAnalyzeFrame"));
+
+		return nbAnalyzeFrameResult;
+		
+	}
+    
+	/**
+	 * Take the data from the individual phasing frames and extract the phases (whether one-shot or several exposure steps).
+	 * 
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
+	@Computation
+	public NbAnalyzeStepSequenceResult nbAnalyzeStepSequence(float[][] nbTable, float[][] corrTable, float xlambda0,
+			int[] rowFlagIn, int[] edgeColor, int templateCount, int numExposures) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeStepSequence"));
+
+		JnbAnalyzeStepSequence jnbAnalyzeStepSequence = new JnbAnalyzeStepSequence();
+		RetVal retVal = new RetVal();
+
+		int numEdges = 84;
+
+		int[] rowFlagOut = new int[numEdges];
+		float[] stepTable = new float[numEdges];
+		float[][][] indexTable = new float[numEdges][numExposures][2];
+
+		Object[] result = jnbAnalyzeStepSequence.jnbAnalyzeStepSequence(retVal, nbTable, corrTable, xlambda0,
+				rowFlagIn, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("nbAnalyzeStepSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+
+		float edgeErrorSteps = (Float)result[0];
+		float edgeErrorMicrons = (Float)result[1];
+		float lineSlopeAvg = (Float)result[2];
+		
+		
+		NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult = new NbAnalyzeStepSequenceResult(rowFlagOut, stepTable, indexTable, 
+				edgeErrorSteps, edgeErrorMicrons, lineSlopeAvg);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "nbAnalyzeStepSequence"));
+
+		return nbAnalyzeStepSequenceResult;
+		
+	}
+    
+	/**
+	 * This routine combines the results of the individual filter measurements
+	 * (or sequences of the various filter measurements) to extract the edge 
+	 * heights.  It must be called even if only a single filter is used.
+	 * CHI2_NM(I) is only calculated when there are two or more filters. 
+	 * Otherwise it is 0.
+	 * 
+	 * what is the difference between stepTable and nbTable from the analyzeStepSequence function?
+	 * 
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
+	@Computation
+	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] xlambda,
+			float range, float rInt) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFilterSequence"));
+
+		JnbAnalyzeFilterSequence jnbAnalyzeFilterSequence = new JnbAnalyzeFilterSequence();
+		RetVal retVal = new RetVal();
+
+
+		int numEdges = 84;
+
+		float[] chi2nm = new float[numEdges];
+		float[] nbStep = new float[numEdges];
+
+		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagIn, stepTable, corrTable, xlambda, range, 
+				rInt, chi2nm, nbStep);
+	            
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("nbAnalyzeFilterSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+
+		NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = new NbAnalyzeFilterSequenceResult(chi2nm, nbStep);
+
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "nbAnalyzeFilterSequence"));
+
+		return nbAnalyzeFilterSequenceResult;
+		
+	}   
+    	
+	/**
+	 * Given the measured NB edge steps and the flags that indicate whether they 
+	 * are good or not, solve for actuators (pistons), and residuals (predicted 
+	 * steps).
+	 * 
+	 * @throws ComputationException if the Fortran routine returns an error code
+	 */
+	@Computation
+	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag, FloatPoint[] actuatorPositions,
+			float[][] acsa) throws Exception {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "nbActuators"));
+
+		JnbActuators jnbActuators = new JnbActuators();
+		RetVal retVal = new RetVal();
+
+	
+		float[] actuatorPositionsX = FloatPointListEncoder.extractXArray(Arrays.asList(actuatorPositions));
+		float[] actuatorPositionsY = FloatPointListEncoder.extractYArray(Arrays.asList(actuatorPositions));
+ 
+		int actCount = actuatorPositions.length;
+		int numEdges = 84;
+		
+		float[] actNoplaneCmd = new float[actCount];
+		float[] resid = new float[numEdges];
+		
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, actuatorPositionsX, actuatorPositionsY, acsa, 
+				actNoplaneCmd,  resid);
+
+		
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("nbActuators calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+
+		int constrainedSegmentCount = (Integer)result[0];
+		int goodEdgeCount = (Integer)result[1];
+		float edgeResMax = (Float)result[2];
+		float edgeResRms = (Float)result[3];
+		float actRms = (Float)result[4];
+		
+		
+		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actNoplaneCmd, resid, constrainedSegmentCount, goodEdgeCount, edgeResMax,
+				edgeResRms, actRms);
+
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "nbActuators"));
+
+		return nbActuatorsResult;
+		
+	}    
+    
+
+
+    
 }
 
 

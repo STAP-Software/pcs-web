@@ -50,6 +50,7 @@ public class ProcedureCcdFrame {
 	private int procedureFrameNumber;
 	private int procedureIterationNumber;
 	private Integer phasingStepNumber;
+	private Integer phasingFilterNumber;
 	
 
 	@OneToOne (fetch = FetchType.LAZY)
@@ -122,6 +123,14 @@ public class ProcedureCcdFrame {
 
 	public void setPhasingStepNumber(Integer phasingStepNumber) {
 		this.phasingStepNumber = phasingStepNumber;
+	}
+
+	public Integer getPhasingFilterNumber() {
+		return phasingFilterNumber;
+	}
+
+	public void setPhasingFilterNumber(Integer phasingFilterNumber) {
+		this.phasingFilterNumber = phasingFilterNumber;
 	}
 
 	public CentroidMap getCentroidMap() {

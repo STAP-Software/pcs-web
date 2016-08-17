@@ -33,6 +33,7 @@ public class FitsFilename {
 	int sufsGroup;
 	int iteration;
 	int phasingStep;  // A-K = 1-11 for phasing
+	int phasingFilter;
 	String fileName;
 
 	/**
@@ -40,7 +41,7 @@ public class FitsFilename {
 	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
 	 */
 	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration,
-			int ufsSegment, int sufsGroup, int phasingStep) {
+			int ufsSegment, int sufsGroup, int phasingStep, int phasingFilter) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -50,28 +51,13 @@ public class FitsFilename {
 		this.ufsSegment = ufsSegment;
 		this.sufsGroup = sufsGroup;
 		this.phasingStep = phasingStep;
+		this.phasingFilter = phasingFilter;
 		
 		this.fileName = generateFileName();
 	}
 	
 
-	/**
-	 * Constructor for non-phasing, non-SUFS frames
-	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
-	 */
-	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration) {
-		
-		this.telescope = (int)telescopeId.longValue();
-		this.date = new Date();
-		this.procedureTypeCd = procedureTypeCd;
-		this.procedureNumber = procedureNumber;
-		this.iteration = iteration;
-		this.ufsSegment = 0;
-		this.sufsGroup = 0;
-		this.phasingStep = 0;
-		
-		this.fileName = generateFileName();
-	}
+
 	
 	/**
 	 * Constuctor for ad-hoc files (taken manually)
@@ -79,7 +65,7 @@ public class FitsFilename {
 	 * @param pupilMaskType the type of the pupil mask used
 	 * @param iteration
 	 */
-	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration) {
+	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration, int phasingFilter) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -89,6 +75,7 @@ public class FitsFilename {
 		this.ufsSegment = 0;
 		this.sufsGroup = 0;
 		this.phasingStep = 0;
+		this.phasingFilter = phasingFilter;
 		
 		this.fileName = generateFileName();
 	}
@@ -131,6 +118,10 @@ public class FitsFilename {
 				iteration = new Integer(sequenceCd.substring(0, 1));
 				// transform A-K to 1-11
 				phasingStep = (int)sequenceCd.charAt(1) - (int)'A' + 1; // A-K
+				phasingFilter = 0;
+			} else if (procedureTypeCd.startsWith("NPH")) {
+				phasingStep = 0;
+				phasingFilter = new Integer(sequenceCd);
 			} else {
 				iteration = new Integer(sequenceCd.substring(0,2));
 			}
@@ -206,6 +197,15 @@ public class FitsFilename {
 		this.phasingStep = phasingStep;
 	}
 	
+	public int getPhasingFilter() {
+		return phasingFilter;
+	}
+
+	public void setPhasingFilter(int phasingFilter) {
+		this.phasingFilter = phasingFilter;
+	}
+
+
 	public String getFileName() {
 		return fileName;
 	}
@@ -224,6 +224,8 @@ public class FitsFilename {
 			return "Reference Beam";
 		} else if (procedureTypeCd == "CPH") {
 			return "Coarse Phasing";
+		} else if (procedureTypeCd == "NPH") {
+			return "Narrow Band Phasing";
 		} else if (procedureTypeCd == "FS-B") {
 			return "Fine Screen";
 		} else if (procedureTypeCd == "CT") {
@@ -268,6 +270,8 @@ public class FitsFilename {
 		if (procedureTypeCd.startsWith("CPH")) {
 			buf.append(iteration);			
 			buf.append((char)(phasingStep + 'A' - 1));
+		} else if (procedureTypeCd.startsWith("NPH")) {
+			buf.append(phasingFilter);			
 		} else {
 			buf.append(String.format("%02d", iteration));			
 		}

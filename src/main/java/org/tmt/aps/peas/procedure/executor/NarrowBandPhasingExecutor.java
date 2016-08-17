@@ -21,14 +21,8 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
-import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
-import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
-import org.tmt.aps.peas.computation.model.ColorStepResult;
-import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
-import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
-import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -38,12 +32,13 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
-import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
-import org.tmt.aps.peas.procedure.model.CoarsePhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
+import org.tmt.aps.peas.procedure.model.NarrowBandPhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.NarrowBandPhasingProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -53,7 +48,6 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
-import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 /**
  * Executor for the broadband Phasing procedure
@@ -215,57 +209,48 @@ public class NarrowBandPhasingExecutor {
 			int readyCameraTime = 10;
 			int trialsTime = 70;
         			
-
-			// calculate templates on the fly
-			MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
-					constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
-					constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
-					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
-					procedureConfig.getPupilMask(), procedureConfig.getFilter());
-					
-			/**********************************************/
-			/*           Set up colorsteps                */
-			/**********************************************/
-			ColorStepResult colorStepResult = computationLibrary.colorStep(procedureConfig.getPhasingSteps(), procedureConfig.getPhasingStepSize());
-						
 			
-			// take and store a snapshot
-			int snapNumBefore = acsMgmt.commandTakeSnap();
-			procedureOutput.getProcedureDecisionLog().setM1SnapNumberBefore(snapNumBefore);
+			//****************************************//
+			//   Start logic for Narrow Band Phasing  //
+			//****************************************//
+			
+			// Begin the filter loop:
 
-
- 			/**********************************************/
-			/// send colorstep 1 to ACS prior to loop
-			/**********************************************/
-		
-							
-			for (int i=0; i<procedureConfig.getPhasingSteps(); i++) {
+			int iFilter=0;
+			// requirement: a set of predefined lists + advanced options to create a new one
+			for (Filter currentFilter : procedureConfig.getNarrowBandPhasingFilterList()) {
 				
-				int trialTimeDelta = (trialsTime/procedureConfig.getPhasingSteps())*i + readyCameraTime;
+				iFilter++;
+				
+				int trialTimeDelta = (trialsTime/procedureConfig.getNarrowBandPhasingFilterList().size())*iFilter + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
-				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), i+1, procedureConfig.getPhasingSteps());
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), iFilter+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
-	
+
+				//***********************************************//
+				//   Make the Phasing Templates for this filter  //
+				//***********************************************//
+
+				MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
+						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
+						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
+						procedure.getProcedureConfigSet().getFindCentConfigInterior(),
+						procedureConfig.getPupilMask(), currentFilter);
+				
+
+		           // Write out the template in a format suitable for display.
+		           // sm - not sure if we need this
+		           // makeTableau(ret_val_makeTableau, template_c)
+
+		           
+						
+		
 				// setup the iteration output as the output target
-				CoarsePhasingIterationOutput pio = new CoarsePhasingIterationOutput();
+				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
-				
-				/**********************************************/
-				/* Send next ACS colorstep commands           */
-				/**********************************************/
-
-				ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
-						colorStepResult.getColorSteps()[i],
-						constantsCache.getPrimaryMirrorConstants().getnColor());
-				
-				statusLogger.log("acs.colorstep_cmds");
-				
-				long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
-				
-				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
 					
 				/**********************************************/
@@ -275,117 +260,130 @@ public class NarrowBandPhasingExecutor {
 										
 				
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				CcdFrame ccdFrame = procedure.getLatestProcedureCcdFrame().getCcdFrame();
+
+				//***********************************************//
+				//                 nbAnalyzeFrame                //
+				//***********************************************//
+	            
+	           // frame Analysis
+	           computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
+	        		   findCentroidsResult.getFoundSubimageFlags(), 
+	        		   constantsCache.getPrimaryMirrorConstants().getEdgeAngle(), 
+	        		   makeTemplateResult.getTemplateArray());
+
+
+				// Begin Phase Analysis:  Combine the results from multiple exposures.
+		           
+		        // TODO: what is the logic we need to use to set row_flag_analyze for a particular filter set of exposures
+		        // does this depend on results from other filters?
+				// TODO: the output iteration target is now a bit uncertain.. an embedded loop creates problems for which iteration
+				// this is part of
 				
-				/**********************************************/
-				/// BbAnalyzeFrame
-				/**********************************************/		
-			    BbAnalyzeFrameResult bbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
-			    		procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame(),
-			    		findCentroidsResult, 
-			    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
-			    		makeTemplateResult.getTemplateArray(), constantsCache.getTelescopeConstants().getNumberOfSegments());
-			    
+
+				//***********************************************//
+				//            nbAnalyzeStepSequence              //
+				//***********************************************//
+		           
+		        // Determine the phases
 				
-			} // end of iteration loop
+				// nbTable, corrTable, stepTable, indexTable and xlamda0 are all passed in for a particular filter, and are derived from
+				// information (arrays?) of one dimension larger
+				// EACH OF THE FOLLOWING MUST BE RESOLVED:
+				float[][][] nbTable;
+				float[][][] corrTable;
+				float xlambda0[];
+				int[] rowFlagIn; 
+				int[] edgeColor; 
+				int templateCount;
+				
+				
+				computationLibrary.nbAnalyzeStepSequence(nbTable[iFilter], corrTable[iFilter], xlambda0[iFilter], rowFlagIn, edgeColor, 
+						templateCount, procedureConfig.getNumberOfTrials());
+
+		        // TODO: account for this logic
+		        // Combine ROW_FLAG_OUT from multiple filters:
+		        // good_edge_flag(:) = good_edge_flag(:) * row_flag_out(:)
+
+			}      // end Filter Loop
+
+
+			//***********************************************//
+			//             nbAnalyzeFilterSequence           //
+			//***********************************************//
+
+	        // Begin Filter Analysis:  Combine the results from multiple filters.
+
+			// EACH OF THE FOLLOWING MUST BE RESOLVED:
+			float[][] stepTable;
+			float[][][] corrTable;
+			float xlambda[]; // why not xlambda0?
+			int[] rowFlagIn; 
+			float range;
+			float rInt;
+
+			computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, range, rInt);
+	        
+			//***********************************************//
+			//                   nbActuators                 //
+			//***********************************************//
+
+	        // Calculate the actuators:
+
+			// EACH OF THE FOLLOWING MUST BE RESOLVED:
+			float[] nbStep; 
+			int[] rowFlag;
+			int[] colFlag;
+			float[][] acsa;
+			
+			
+			computationLibrary.nbActuators(nbStep, rowFlag, colFlag, constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), acsa);
+
 	
-			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+	        // TODO: is this data to be displayed and where
 
-		    // send last colorstep to M1 
-			ColorStepToActuatorsResult colorStepToActuatorsResult = computationLibrary.colorStepToActuators(
-					colorStepResult.getColorSteps()[procedureConfig.getPhasingSteps()],
-					constantsCache.getPrimaryMirrorConstants().getnColor());
-
-			
-			statusLogger.log("acs.colorstep_cmds");
-			
-			long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
-			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
+	        // print *,' No. constrained segments      = ', constrainedSegmentCount
+	        // print *,' Number of good edges          = ', edge_count
+	        // print *,' RMS edge residual             = ', edge_res_rms
+	        // print *,' Max. edge residual            = ', edge_res_max
+	        // print *,' Plane removed rms             = ', act_noplane_rms
 
 			
+	        // TODO: need to fix this
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
 
 
-			/****************************************************/
-			/*    calc union good spots over all steps          */
-			/****************************************************/
-			
-			// this needs to be an average over all frames
-			int[][] findCentStatusIterations = procedureOutput.getIterationValuesFor("FindCentroidsResult", "FindCentStatusList", int[].class).toArray(new int[0][0]);
-			
-			int[] goodSpots = computationLibrary.calculateAvgFindCentStatus(findCentStatusIterations);
-
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-
-			float[][] coherenceArraySet = procedureOutput.getIterationValuesFor("BbAnalyzeFrameResult", "CoherenceArray", float[].class).toArray(new float[0][0]);
-
-		                                                                                
-			/**********************************************/
-			/*            BbAnalyzeSequence               */
-			/**********************************************/
-		    BbAnalyzeSequenceResult bbAnalyzeSequenceResult = computationLibrary.bbAnalyzeSequence(
-		    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
-		    		constantsCache.getPrimaryMirrorConstants().getEdgeColor(),
-		    		coherenceArraySet, 
-		    		procedureConfig.getPhasingStepSize(), 
-		    		constantsCache.getTelescopeConstants().getNumberOfSegments(), 
-		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
-		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
-		    		constantsCache.getPhasingConstants().getRingModeCorrectionFactor(),
-		    		procedureConfig.getFilter(),
- 					constantsCache.getPhasingConstants().getBbPhasingFracInterval(),
- 					constantsCache.getPhasingConstants().getRingMode(),
-					procedureConfig.getPhasingSteps(), 
-		    		subimageDefList.useForAnalysis(), goodSpots);
-		
-		    
-		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
-		    	
-			    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", MessageGenerator.generateMessage("phasing.constrained_warning", 
-			    		bbAnalyzeSequenceResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments()));
-		    	
-		    }
-		    
-		    statusLogger.log("procedure.cph_calc_piston");
-		
-		    
-		    /**********************************************/
-			/*                FixPistons                  */
-			/**********************************************/		
-		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
-		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
-		    		bbAnalyzeSequenceResult.getActCalc());
-
 		    /**********************************************/
 			/*          CalculatePhasingStats             */
-			/**********************************************/		
-		    computationLibrary.calculatePhasingStats(
-		    		bbAnalyzeSequenceResult.getRowFlagIn(), 
-		    		bbAnalyzeSequenceResult.getRowFlagOut(), 
-		    		bbAnalyzeSequenceResult.getStepCorr(),
-		    		bbAnalyzeSequenceResult.getResid());
+			/**********************************************/	
+	        // TODO: do we need to do something like this?
+		    //computationLibrary.calculatePhasingStats(
+		    //		bbAnalyzeSequenceResult.getRowFlagIn(), 
+		    //		bbAnalyzeSequenceResult.getRowFlagOut(), 
+		    //		bbAnalyzeSequenceResult.getStepCorr(),
+		    //		bbAnalyzeSequenceResult.getResid());
 		      
-		    /**********************************************/
-			/*       CalculateDesiredActCommands          */
-			/**********************************************/		
-		    computationLibrary.fixPistonsToDesiredActs(fixPistonsResult);
 
 		    /**********************************************/
 			/*      Display Measured Edge Heights         */
-			/**********************************************/		
+			/**********************************************/	
+		    // TODO: do we keep this?
 		    if (procedureConfig.isAutoDisplayEdgeHeights()) {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
 
 		    /**********************************************/
 			/*      Display Residual Edge Heights         */
-			/**********************************************/		
+			/**********************************************/
+		    // TODO: do we keep this?
 		    if (procedureConfig.isAutoDisplayResiduals()) {
 				graphicDisplayMgmt.displayEdgeResiduals(procedureOutput);
 			}
 
 		    /**********************************************/
 			/*          Display Piston Deltas             */
-			/**********************************************/		
+			/**********************************************/	
+		    // TODO: do we keep this?
 			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}
@@ -396,6 +394,7 @@ public class NarrowBandPhasingExecutor {
 			procedureExecutionState.setPercentComplete(98);
 						
 
+			// TODO: is this set of output correct for nph?
 		    statusLogger.log("calc.phasing_summary",
 					procedureOutput.getFixPistonsResult().getActRms(), 
 					procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
@@ -406,7 +405,8 @@ public class NarrowBandPhasingExecutor {
 			boolean sendM1Command = procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_YES;
 			if (procedureConfig.getAutoSendActuatorCmds() == Constants.AUTO_SEND_ACT_DELTAS_PROMPT) {
 								
-				// Display to user and ask if they want to command				
+				// Display to user and ask if they want to command	
+				// TODO: fix this to be the outputs and sources we want for nph
 				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
 						procedureOutput.getFixPistonsResult().getActRms(), 
 						procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
@@ -462,31 +462,6 @@ public class NarrowBandPhasingExecutor {
 			// just to make sure
 			procedureExecutionState.setAbortRequested(false);
 			
-			try {
-				/// attempt to put ACS state back to where it was when we began.
-				
-				if (procedure.getNarrowBandPhasingProcedureOutput().getM1SnapNumberBefore() != -1) {
-					
-					acsMgmt.commandLoadSnap(procedure.getNarrowBandPhasingProcedureOutput().getM1SnapNumberBefore());
-				
-					statusLogger.log("procedure.cph.abort_recovered");
-					
-					// put up a warning dialog with the non-recovered text (and supress abort button)
-				    userPromptMgmt.displayInfoDialog("Successful Mirror Restoration", MessageGenerator.generateMessage("procedure.cph.abort_recovered"), true);
-			    
-				} 
-
-			} catch (Exception e1) {
-				
-				e1.printStackTrace();
-				
-			    statusLogger.log("procedure.cph.abort_not_recovered");
-
-			    // put up a warning dialog with the non-recovered text
-			    userPromptMgmt.displayInfoDialog("WARNING", MessageGenerator.generateMessage("procedure.cph.abort_not_recovered"));
-
-			} 
-			
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
 		}
 		
@@ -494,26 +469,6 @@ public class NarrowBandPhasingExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
-	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
-	
-		try {
-			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
-			return deltaMs;
-		} catch (Exception e) {
-			// ask user what to do
-			
-			String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
-			int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
-			
-			int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
 
-			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-				throw new AbortProcedureException("User Aborted Test");
-			} else {
-				return 0;
-			} 
-			
-		}
-	}
 
 }
