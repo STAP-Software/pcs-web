@@ -216,11 +216,12 @@ public class NarrowBandPhasingExecutor {
 			
 			// Begin the filter loop:
 
-			int iFilter=0;
+			
 			// requirement: a set of predefined lists + advanced options to create a new one
-			for (Filter currentFilter : procedureConfig.getNarrowBandPhasingFilterList()) {
+			for (int iFilter=0; iFilter<procedureConfig.getNarrowBandPhasingFilterList().size(); iFilter++) {
 				
-				iFilter++;
+				Filter currentFilter = procedureConfig.getNarrowBandFilterForIteration(iFilter);
+				Filter currentRefBeam = procedureConfig.getNarrowBandRefBeamForIteration(iFilter);
 				
 				int trialTimeDelta = (trialsTime/procedureConfig.getNarrowBandPhasingFilterList().size())*iFilter + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
@@ -228,6 +229,12 @@ public class NarrowBandPhasingExecutor {
 				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), iFilter+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
+				
+				//***********************************************//
+				//       Set the Filter and Reference Beam       //
+				//***********************************************//
+				
+				// TBD - we need a way to get the filter and reference beam
 
 				//***********************************************//
 				//   Make the Phasing Templates for this filter  //
@@ -305,6 +312,8 @@ public class NarrowBandPhasingExecutor {
 		        // Combine ROW_FLAG_OUT from multiple filters:
 		        // good_edge_flag(:) = good_edge_flag(:) * row_flag_out(:)
 
+				
+				
 			}      // end Filter Loop
 
 
