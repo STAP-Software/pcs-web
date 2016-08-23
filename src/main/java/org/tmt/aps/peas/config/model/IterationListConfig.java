@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.tmt.aps.peas.instrument.model.Instrument;
 
 /**
  * Configuration entity class representing the IterationListConfig table
@@ -40,9 +41,6 @@ public class IterationListConfig {
 	@JoinColumn(name = "procedureIterationDefId")
 	ProcedureIterationDef procedureIterationDef;
 
-	// procedureId bigint,    FIXME: we need to remove this from the database, we attach to procedures through the procedureConfigSet
-
-	
 	
 	public IterationListConfig() {
 		

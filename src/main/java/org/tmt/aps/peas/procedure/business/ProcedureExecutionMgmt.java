@@ -552,9 +552,10 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 		}
 		
-		// default for IterationListConfig
-		procedure.getProcedureConfigSet().setIterationListConfig(iterationEntityCache.getOptionList(procedureTypeId).get(0));
-		
+		// default for IterationListConfig (only if it is defined for this procedure type)
+		if (iterationEntityCache.getOptionList(procedureTypeId) != null) {
+			procedure.getProcedureConfigSet().setIterationListConfig(iterationEntityCache.getOptionList(procedureTypeId).get(0));
+		}
 		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();

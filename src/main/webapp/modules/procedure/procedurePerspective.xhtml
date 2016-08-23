@@ -107,9 +107,9 @@
 								</p:column>
 							</p:row>
 
-							<p:row >
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
 								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Loop Options" />
+									<h:outputLabel value="Filter Set" />
 								</p:column>   
 								<p:column styleClass="btmsFormInputColumn">								
 									<p:selectOneMenu id="loopOptions" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"

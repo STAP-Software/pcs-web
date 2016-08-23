@@ -14,6 +14,8 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
+
+import org.tmt.aps.peas.config.model.IterableEntity;
 /**
  * Instrument configuration Entity class representing the Filter table.  
  * @author smichaels
@@ -25,7 +27,7 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findByFilterTypeAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw INNER JOIN FETCH o.filterType ft "
 			+ "where ft.filterTypeId = :filterTypeId AND fw.filterWheelId = :filterWheelId" )
 })
-public class Filter {
+public class Filter implements IterableEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -137,5 +139,27 @@ public class Filter {
 			}
 		}
 		return false;
+	}
+	
+	public String getClassName() {
+		return this.getClass().getName();
+	}
+
+
+	@Override
+	public String getKeyFieldName() {
+		return "filterId";
+	}
+
+
+	@Override
+	public String getLabelFieldName() {
+		return "filterName";
+	}
+
+
+	@Override
+	public String getLabel() {
+		return "Filter";
 	}
 }

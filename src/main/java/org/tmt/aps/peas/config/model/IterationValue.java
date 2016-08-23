@@ -17,12 +17,12 @@ public class IterationValue {
 		}
 	}
 	
-	IterableEntity getIterableEntity(String className) {
+	public IterableEntity getIterableEntity(String className) {
 	
 		return classNameToEntity.get(className);
 	}
 	
-	String getDisplayString() {
+	public String getDisplayString() {
 		// We display only the label for the first entity class
 		
 		try {

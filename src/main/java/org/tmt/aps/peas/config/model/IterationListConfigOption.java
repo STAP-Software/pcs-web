@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.config.model;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -13,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 /**
@@ -24,7 +26,8 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @PrimaryKeyJoinColumn(name="iterationListConfigId")
 @NamedQueries({
 	@NamedQuery(name = "findIterationListConfigOptions", query = "SELECT o from IterationListConfigOption o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId ORDER BY o.optionOrder" )
+			+ "INNER JOIN FETCH o.instrument inst "
+			+ "where p.procedureTypeId = :procedureTypeId AND inst.instrumentId = :instrumentId ORDER BY o.optionOrder" )
 })
 public class IterationListConfigOption extends IterationListConfig {
 	
@@ -34,12 +37,25 @@ public class IterationListConfigOption extends IterationListConfig {
 	@JoinColumn(name = "procedureTypeId")
 	private ProcedureType procedureType;
 
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "instrumentId")
+	private Instrument instrument;
+
+	
 	public ProcedureType getProcedureType() {
 		return procedureType;
 	}
 
 	public void setProcedureType(ProcedureType procedureType) {
 		this.procedureType = procedureType;
+	}
+
+	public Instrument getInstrument() {
+		return instrument;
+	}
+
+	public void setInstrument(Instrument instrument) {
+		this.instrument = instrument;
 	}
 
 	public int getOptionOrder() {

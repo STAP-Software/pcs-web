@@ -28,6 +28,7 @@ import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.ProcedureIterationDef;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -115,6 +116,16 @@ public class IterationEntityCache {
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
+		// Filters
+		List<Filter> filterList = cameraDefMgmt.findAllFilters();
+		indexToEntityMap = new HashMap<Long, IterableEntity>();
+		className = null;
+		for (Filter filter : filterList) {
+			indexToEntityMap.put(getKeyFieldValue(filter), filter);
+			className = filter.getClassName();
+		}
+		classToEntityMap.put(className, indexToEntityMap);
+		
 		// Pupil Mask Types
 		List<PupilMaskType> pupilMaskList = cameraDefMgmt.findAllPupilMaskTypes();
 		indexToEntityMap = new HashMap<Long, IterableEntity>();
@@ -144,22 +155,15 @@ public class IterationEntityCache {
 		
 		for (Long procedureTypeId : procedureTypeToIterationDefList.keySet()) {
 		
-			List<String> iterationClassList = procedureTypeToIterationClassList.get(procedureTypeId);
 			
 			// query iteration list config option lists
-			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId);
+			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId, instrumentId);
 			
 			List<IterationListConfigOption> options = new ArrayList<IterationListConfigOption>();
 			for (IterationListConfigOption iterationListConfigOption : iterationListConfigList) {
 				
-				// for each option, we need to decode the iteration value list
-				
-				String encodedValueList = iterationListConfigOption.getIterationValueListEncoded();
-				
-				// the iterationValueList option has all the information in it to be used within an executor
-				IterationValueList option = decodeList(encodedValueList, iterationClassList);
-								
-				iterationListConfigOption.setIterationValueList(option);
+				// for each option, we need to decode and populate the iteration value list
+				populateIterationValueList(iterationListConfigOption, procedureTypeId);
 				
 				options.add(iterationListConfigOption);
 			}
@@ -168,6 +172,27 @@ public class IterationEntityCache {
 		}
 		
 	}
+	
+	/**
+	 * Method to populate iteration value lists given the iterationListConfigOption from the database.  This can be used 
+	 * by reporting to populate iteration tab labels and values.
+	 * @param iterationListConfigOption
+	 * @param procedureTypeId
+	 */
+	public void populateIterationValueList(IterationListConfigOption iterationListConfigOption, Long procedureTypeId) {
+		
+		List<String> iterationClassList = procedureTypeToIterationClassList.get(procedureTypeId);
+
+		// we need to decode the iteration value list
+		String encodedValueList = iterationListConfigOption.getIterationValueListEncoded();
+		
+		// the iterationValueList option has all the information in it to be used within an executor
+		IterationValueList valueList = decodeList(encodedValueList, iterationClassList);
+						
+		iterationListConfigOption.setIterationValueList(valueList);
+
+	}
+	
 
 	/**
 	 * Decodes a string representation of an IterationList to a List of IterationValues.  Values are encoded as x1, y1,..., x2, y2,...,...

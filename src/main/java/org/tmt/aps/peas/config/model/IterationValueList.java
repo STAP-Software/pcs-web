@@ -10,8 +10,12 @@ public class IterationValueList {
 		this.iterationValueList = iterationValueList;
 	}
 	
-	IterationValue getIterationValue(int index) {
+	public IterationValue getIterationValue(int index) {
 		return iterationValueList.get(index);
+	}
+	
+	public int getSize() {
+		return iterationValueList.size();
 	}
 	
 	public String getDisplayString() {

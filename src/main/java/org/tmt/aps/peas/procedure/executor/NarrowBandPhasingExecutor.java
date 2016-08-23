@@ -26,6 +26,8 @@ import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.IterationListConfig;
+import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -35,6 +37,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
@@ -216,20 +219,21 @@ public class NarrowBandPhasingExecutor {
 			
 			// Begin the filter loop:
 
-			// TESTONLY
-			for (int iFilter=0; iFilter<2; iFilter++) {
-				Filter currentFilter = new Filter();
 				
 			// requirement: a set of predefined lists + advanced options to create a new one
-			//for (int iFilter=0; iFilter<procedureConfig.getNarrowBandPhasingFilterList().size(); iFilter++) {
+			IterationListConfig iterationList = procedure.getProcedureConfigSet().getIterationListConfig();
+			
+			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
 				
-			//	Filter currentFilter = procedureConfig.getNarrowBandFilterForIteration(iFilter);
-			//	Filter currentRefBeam = procedureConfig.getNarrowBandRefBeamForIteration(iFilter);
+				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
-			//	int trialTimeDelta = (trialsTime/procedureConfig.getNarrowBandPhasingFilterList().size())*iFilter + readyCameraTime;
-			//	procedureExecutionState.setPercentComplete(trialTimeDelta);
+				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
+				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
 				
-			//	statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), iFilter+1, procedureConfig.getPhasingSteps());
+				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
+				procedureExecutionState.setPercentComplete(trialTimeDelta);
+				
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
 				
@@ -237,7 +241,16 @@ public class NarrowBandPhasingExecutor {
 				//       Set the Filter and Reference Beam       //
 				//***********************************************//
 				
-				// TBD - we need a way to get the filter and reference beam
+				statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
+				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
+
+				statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
+				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
+
+				// wait for all commands to complete
+				long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture);
+				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+
 
 				//***********************************************//
 				//   Make the Phasing Templates for this filter  //
@@ -308,7 +321,7 @@ public class NarrowBandPhasingExecutor {
 				int templateCount = 0;
 				
 				
-				computationLibrary.nbAnalyzeStepSequence(nbTable[iFilter], corrTable[iFilter], xlambda0[iFilter], rowFlagIn, edgeColor, 
+				computationLibrary.nbAnalyzeStepSequence(nbTable[index], corrTable[index], xlambda0[index], rowFlagIn, edgeColor, 
 						templateCount, procedureConfig.getNumberOfTrials());
 
 		        // TODO: account for this logic
