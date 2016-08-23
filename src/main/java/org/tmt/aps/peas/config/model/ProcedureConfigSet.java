@@ -72,6 +72,11 @@ public class ProcedureConfigSet {
 	@JoinColumn(name = "sufsCoarseOffsetsConfigId")
 	private SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig;
 
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "iterationListConfigId")
+	private IterationListConfig iterationListConfig;
+	
+
 
 	public ProcedureConfig getProcedureConfig() {
 		return procedureConfig;
@@ -167,6 +172,14 @@ public class ProcedureConfigSet {
 
 	public void setSufsCoarseOffsetsConfig(SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig) {
 		this.sufsCoarseOffsetsConfig = sufsCoarseOffsetsConfig;
+	}
+
+	public IterationListConfig getIterationListConfig() {
+		return iterationListConfig;
+	}
+
+	public void setIterationListConfig(IterationListConfig iterationListConfig) {
+		this.iterationListConfig = iterationListConfig;
 	}
 
 

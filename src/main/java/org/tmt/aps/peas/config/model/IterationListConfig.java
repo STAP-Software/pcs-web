@@ -15,6 +15,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
 
@@ -87,6 +88,19 @@ public class IterationListConfig {
 		this.procedureIterationDef = procedureIterationDef;
 	}
 
+	@Transient
+	IterationValueList iterationValueList;
+
+	public IterationValueList getIterationValueList() {
+		return iterationValueList;
+	}
+
+	public void setIterationValueList(IterationValueList iterationValueList) {
+		this.iterationValueList = iterationValueList;
+	}
+	
+	
+	
 }
 
 

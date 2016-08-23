@@ -24,9 +24,9 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @PrimaryKeyJoinColumn(name="iterationListConfigId")
 @NamedQueries({
 	@NamedQuery(name = "findIterationListConfigOptions", query = "SELECT o from IterationListConfigOption o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId" )
+			+ "where p.procedureTypeId = :procedureTypeId ORDER BY o.optionOrder" )
 })
-public class IterationListConfigOption extends AutoCenterTelConfig {
+public class IterationListConfigOption extends IterationListConfig {
 	
 	int optionOrder;
 	

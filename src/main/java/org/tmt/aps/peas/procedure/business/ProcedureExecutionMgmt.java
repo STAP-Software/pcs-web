@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfigDefaults;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -112,6 +113,8 @@ public class ProcedureExecutionMgmt {
 	private FrameSimulator frameSimulator;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	IterationEntityCache iterationEntityCache;
 
 	/**
 	 * Derives configuration necessary for procedure execution, creates the procedure entity in the database, initializes status log and frame display. 
@@ -548,6 +551,10 @@ public class ProcedureExecutionMgmt {
 					physicalModel.getInstrument().getInstrumentId(), new Long(procedureConfig.getSufsGroup()));
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 		}
+		
+		// default for IterationListConfig
+		procedure.getProcedureConfigSet().setIterationListConfig(iterationEntityCache.getOptionList(procedureTypeId).get(0));
+		
 		
 		// clear any marking
 		frameDisplayMgmt.clearMarking();

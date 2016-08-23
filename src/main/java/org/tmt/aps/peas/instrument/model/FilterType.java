@@ -13,6 +13,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.config.model.IterableEntity;
+
 /**
  * Instrument metadata Entity class representing the FilterType table.  
  * @author smichaels
@@ -20,7 +22,7 @@ import javax.persistence.Table;
 @Entity
 @Table(name = "FilterType")
 @NamedQueries({ @NamedQuery(name = "findAllFilterTypes", query = "SELECT o from FilterType o") })
-public class FilterType {
+public class FilterType implements IterableEntity {
 
 	public static final Long FILTER_TYPE_ID_611 = new Long(1);
 	public static final Long FILTER_TYPE_ID_651 = new Long(2);
@@ -71,6 +73,29 @@ public class FilterType {
 			}
 		}
 		return false;
+	}
+
+
+	public String getClassName() {
+		return this.getClass().getName();
+	}
+
+
+	@Override
+	public String getKeyFieldName() {
+		return "filterTypeId";
+	}
+
+
+	@Override
+	public String getLabelFieldName() {
+		return "filterTypeName";
+	}
+
+
+	@Override
+	public String getLabel() {
+		return "Filter";
 	}
 
 }

@@ -47,8 +47,10 @@ import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.config.model.IterationListConfigOption;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
@@ -157,6 +159,8 @@ public class ProcedureController implements Serializable {
 	private PhysicalModel physicalModel;
 	@EJB
 	private ConstantsCache constantsCache;
+	@EJB
+	private IterationEntityCache iterationEntityCache;
 
 
 	@Inject
@@ -367,6 +371,10 @@ public class ProcedureController implements Serializable {
 	
 	public List<SelectItem> getSufsGroupSelectList() {
 		return sufsGroupSelectList;
+	}
+	
+	public List<IterationListConfigOption> getIterationListConfigOptions() {
+		return iterationEntityCache.getOptionList(procedure.getProcedureType().getProcedureTypeId());
 	}
 
 	/**
@@ -1257,6 +1265,10 @@ public class ProcedureController implements Serializable {
 		
 		}
 		
+	}
+
+	public void iterationListChangeListener() throws Exception {
+		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
 	}
 
 	

@@ -107,6 +107,19 @@
 								</p:column>
 							</p:row>
 
+							<p:row >
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Loop Options" />
+								</p:column>   
+								<p:column styleClass="btmsFormInputColumn">								
+									<p:selectOneMenu id="loopOptions" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
+										disabled="#{procedureController.procedure.procedureState gt 1}" >
+										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.displayString}" itemValue="#{option}" />
+										<p:ajax update="startButton" listener="#{procedureController.iterationListChangeListener}" />  
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+
 							<p:row rendered="#{procedureController.renderSufsGroup}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Segment Group Number" />

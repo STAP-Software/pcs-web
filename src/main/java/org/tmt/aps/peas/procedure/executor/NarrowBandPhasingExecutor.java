@@ -216,17 +216,20 @@ public class NarrowBandPhasingExecutor {
 			
 			// Begin the filter loop:
 
-			
+			// TESTONLY
+			for (int iFilter=0; iFilter<2; iFilter++) {
+				Filter currentFilter = new Filter();
+				
 			// requirement: a set of predefined lists + advanced options to create a new one
-			for (int iFilter=0; iFilter<procedureConfig.getNarrowBandPhasingFilterList().size(); iFilter++) {
+			//for (int iFilter=0; iFilter<procedureConfig.getNarrowBandPhasingFilterList().size(); iFilter++) {
 				
-				Filter currentFilter = procedureConfig.getNarrowBandFilterForIteration(iFilter);
-				Filter currentRefBeam = procedureConfig.getNarrowBandRefBeamForIteration(iFilter);
+			//	Filter currentFilter = procedureConfig.getNarrowBandFilterForIteration(iFilter);
+			//	Filter currentRefBeam = procedureConfig.getNarrowBandRefBeamForIteration(iFilter);
 				
-				int trialTimeDelta = (trialsTime/procedureConfig.getNarrowBandPhasingFilterList().size())*iFilter + readyCameraTime;
-				procedureExecutionState.setPercentComplete(trialTimeDelta);
+			//	int trialTimeDelta = (trialsTime/procedureConfig.getNarrowBandPhasingFilterList().size())*iFilter + readyCameraTime;
+			//	procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
-				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), iFilter+1, procedureConfig.getPhasingSteps());
+			//	statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), iFilter+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
 				
@@ -297,12 +300,12 @@ public class NarrowBandPhasingExecutor {
 				// nbTable, corrTable, stepTable, indexTable and xlamda0 are all passed in for a particular filter, and are derived from
 				// information (arrays?) of one dimension larger
 				// EACH OF THE FOLLOWING MUST BE RESOLVED:
-				float[][][] nbTable;
-				float[][][] corrTable;
-				float xlambda0[];
-				int[] rowFlagIn; 
-				int[] edgeColor; 
-				int templateCount;
+				float[][][] nbTable = new float[0][0][0];
+				float[][][] corrTable = new float[0][0][0];
+				float xlambda0[] = new float[0];
+				int[] rowFlagIn = new int[0]; 
+				int[] edgeColor = new int[0]; 
+				int templateCount = 0;
 				
 				
 				computationLibrary.nbAnalyzeStepSequence(nbTable[iFilter], corrTable[iFilter], xlambda0[iFilter], rowFlagIn, edgeColor, 
@@ -324,12 +327,12 @@ public class NarrowBandPhasingExecutor {
 	        // Begin Filter Analysis:  Combine the results from multiple filters.
 
 			// EACH OF THE FOLLOWING MUST BE RESOLVED:
-			float[][] stepTable;
-			float[][][] corrTable;
-			float xlambda[]; // why not xlambda0?
-			int[] rowFlagIn; 
-			float range;
-			float rInt;
+			float[][] stepTable = new float[0][0];
+			float[][][] corrTable = new float[0][0][0];
+			float xlambda[] = new float[0]; // why not xlambda0?
+			int[] rowFlagIn = new int[0]; 
+			float range = 0.0f;
+			float rInt = 0.0f;
 
 			computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, range, rInt);
 	        
@@ -340,10 +343,10 @@ public class NarrowBandPhasingExecutor {
 	        // Calculate the actuators:
 
 			// EACH OF THE FOLLOWING MUST BE RESOLVED:
-			float[] nbStep; 
-			int[] rowFlag;
-			int[] colFlag;
-			float[][] acsa;
+			float[] nbStep = new float[0]; 
+			int[] rowFlag = new int[0];
+			int[] colFlag = new int[0];
+			float[][] acsa = new float[0][0];
 			
 			
 			computationLibrary.nbActuators(nbStep, rowFlag, colFlag, constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), acsa);

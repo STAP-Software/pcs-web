@@ -15,6 +15,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.config.model.IterableEntity;
+
 /**
  * Instrument configuration Entity class representing the ReferenceBeam table.  
  * @author smichaels
@@ -25,9 +27,12 @@ import javax.persistence.Table;
 	@NamedQuery(name = "findByNumberAndInstrument", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
 			+ "where o.refBeamNum = :refBeamNum and c.cameraId = :instrumentId" ),
 	@NamedQuery(name = "findByNumber", query = "SELECT o from ReferenceBeam o "
-			+ "where o.refBeamNum = :refBeamNum" )
+			+ "where o.refBeamNum = :refBeamNum" ),
+	@NamedQuery(name = "findRefBeamByInstrument", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
+			+ "where c.cameraId = :instrumentId" ),
+
 })
-public class ReferenceBeam {
+public class ReferenceBeam implements IterableEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -96,6 +101,28 @@ public class ReferenceBeam {
 			return candidate.getReferenceBeamId().equals(referenceBeamId);
 		}
 		return super.equals(obj);
+	}
+
+	@Override
+	public String getClassName() {
+		return this.getClass().getName();
+	}
+
+	@Override
+	public String getKeyFieldName() {
+		return "refBeamNum";
+	}
+
+	@Override
+	public String getLabelFieldName() {
+		
+		return "refBeamNum";
+	}
+
+	@Override
+	public String getLabel() {
+		
+		return "Ref Beam";
 	}
 
 

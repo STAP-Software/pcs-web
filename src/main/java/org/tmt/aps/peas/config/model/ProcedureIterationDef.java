@@ -21,7 +21,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Entity
 @Table(name = "ProcedureIterationDef")
 @NamedQueries({ @NamedQuery(name = "findIterationDefs", query = "SELECT pid from ProcedureIterationDef pid INNER JOIN FETCH pid.procedureType pt"
-		+ " where pt.procedureTypeId = :procedureTypeId") })
+		+ " ORDER BY pid.iterationEntityOrder ") })
 public class ProcedureIterationDef {
 
 	@Id

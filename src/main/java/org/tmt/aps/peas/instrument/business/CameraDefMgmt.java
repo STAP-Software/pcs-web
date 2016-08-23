@@ -289,4 +289,14 @@ public class CameraDefMgmt {
 		return query.getResultList();
 	}
 
+	public List<ReferenceBeam> findAllRefBeams(Long instrumentId) {
+		TypedQuery<ReferenceBeam> query = em.createNamedQuery("findRefBeamByInstrument", ReferenceBeam.class);
+
+		query.setParameter("instrumentId", instrumentId);
+
+		return query.getResultList();
+	}
+	
+
+
 }
