@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+<ui:composition>
+		<p:dialog id="iterationDlg" header="Add Iteration Set Option" widgetVar="iterationDialog" >
+
+		<h:form id="iterationConfigForm"  style="margin:30px">
+
+			<p:panelGrid columns="1" styleClass="pcsForm" columnClasses="btmsFormInputColumn">
+
+				<f:facet name="header">
+					<h:outputText value="Iteration Configuration" />
+				</f:facet>
+
+				<p:fieldset legend="Create a Custom Iteration Set" >
+
+					<p:panelGrid columns="5" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn btmsFormInputColumn btmsFormInputColumn btmsFormInputColumn ">
+
+					<h:outputLabel value="Enable Iteration" />
+					
+					<h:panelGroup>
+						<p:selectBooleanCheckbox value="#{iterationConfigController.elementEnable1}"> 
+							<p:ajax update="iterationConfigForm" />
+						</p:selectBooleanCheckbox>
+					</h:panelGroup>
+
+					<h:panelGroup>
+						<p:selectBooleanCheckbox value="#{iterationConfigController.elementEnable2}"> 
+							<p:ajax update="iterationConfigForm" />
+						</p:selectBooleanCheckbox>
+					</h:panelGroup>
+
+					<h:panelGroup>
+						<p:selectBooleanCheckbox value="#{iterationConfigController.elementEnable3}"> 
+							<p:ajax update="iterationConfigForm" />
+						</p:selectBooleanCheckbox>
+					</h:panelGroup>
+
+					<h:panelGroup>
+						<p:selectBooleanCheckbox value="#{iterationConfigController.elementEnable4}"> 
+							<p:ajax update="iterationConfigForm" />
+						</p:selectBooleanCheckbox>
+					</h:panelGroup>
+
+
+					<h:outputLabel value="Filter Values" />
+
+					<p:selectOneMenu value="#{iterationConfigController.filter1}"
+						disabled="#{not iterationConfigController.elementEnable1}" converter="#{filterConverter}">
+					<f:selectItems value="#{iterationConfigController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.filter2}"
+						disabled="#{not iterationConfigController.elementEnable2}" converter="#{filterConverter}">
+					<f:selectItems value="#{iterationConfigController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.filter3}"
+						disabled="#{not iterationConfigController.elementEnable3}" converter="#{filterConverter}">
+					<f:selectItems value="#{iterationConfigController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.filter4}"
+						disabled="#{not iterationConfigController.elementEnable4}" converter="#{filterConverter}">
+					<f:selectItems value="#{iterationConfigController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+
+					<h:outputLabel value="Ref Beam Values (when light source is LED)" />
+
+					<p:selectOneMenu value="#{iterationConfigController.refBeam1}"
+						disabled="#{not iterationConfigController.elementEnable1}" converter="#{refBeamConverter}">
+					<f:selectItems value="#{iterationConfigController.refBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.refBeam2}"
+						disabled="#{not iterationConfigController.elementEnable2}" converter="#{refBeamConverter}">
+					<f:selectItems value="#{iterationConfigController.refBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu> 
+
+					<p:selectOneMenu value="#{iterationConfigController.refBeam3}"
+						disabled="#{not iterationConfigController.elementEnable3}" converter="#{refBeamConverter}">
+					<f:selectItems value="#{iterationConfigController.refBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.refBeam4}"
+						disabled="#{not iterationConfigController.elementEnable4}" converter="#{refBeamConverter}">
+					<f:selectItems value="#{iterationConfigController.refBeamList}" var="refBeam" itemLabel="#{refBeam.refBeamNum}" itemValue="#{refBeam}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					
+					</p:panelGrid>
+
+				</p:fieldset>
+
+
+				<p:spacer height="10px" />
+
+
+				<f:facet name="footer">
+					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{iterationConfigController.doSaveIterationSet}" oncomplete="iterationDialog.hide();" update=":procedureDetailForm:controlPanel:loopOptions1 :procedureDetailForm:controlPanel:loopOptions2 :growl :errorGrowl" />
+					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl" type="button" onclick="iterationDialog.hide();" />
+					
+				</f:facet>
+
+			</p:panelGrid>
+		</h:form>
+		</p:dialog>
+
+</ui:composition>
+
+
+</html>
+
+
+

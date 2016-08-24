@@ -35,11 +35,7 @@ public class IterationListConfig {
 	private Long iterationListConfigId;
 
 	String iterationValueListEncoded;
-	int iterationEntityOrder;
-	
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "procedureIterationDefId")
-	ProcedureIterationDef procedureIterationDef;
+
 
 	
 	public IterationListConfig() {
@@ -70,21 +66,6 @@ public class IterationListConfig {
 		this.iterationValueListEncoded = iterationValueListEncoded;
 	}
 
-	public int getIterationEntityOrder() {
-		return iterationEntityOrder;
-	}
-
-	public void setIterationEntityOrder(int iterationEntityOrder) {
-		this.iterationEntityOrder = iterationEntityOrder;
-	}
-
-	public ProcedureIterationDef getProcedureIterationDef() {
-		return procedureIterationDef;
-	}
-
-	public void setProcedureIterationDef(ProcedureIterationDef procedureIterationDef) {
-		this.procedureIterationDef = procedureIterationDef;
-	}
 
 	@Transient
 	IterationValueList iterationValueList;

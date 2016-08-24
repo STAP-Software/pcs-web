@@ -225,9 +225,22 @@ public class IterationEntityCache {
 		return new IterationValueList(iterationValues);
 	}
 
-	public static String encodeList(List<FloatPoint> pointList) {
-		// TODO: implement
-		return null;
+	public String encodeList(IterationValueList iterationValueList) {
+		
+		StringBuffer buf = new StringBuffer();
+		
+		for (int i=0; i<iterationValueList.getSize(); i++) {
+			
+			IterationValue iterationValue = iterationValueList.getIterationValue(i);
+
+			for (IterableEntity entity : iterationValue.getEntities()) {
+				buf.append(getKeyFieldValue(entity) + ",");
+			}
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
 	}
 	
 	
@@ -238,29 +251,44 @@ public class IterationEntityCache {
 	 * @return
 	 * @throws Exception
 	 */
-	Long getKeyFieldValue(IterableEntity entity) throws Exception {
+	Long getKeyFieldValue(IterableEntity entity) {
 		
 		String getter = "get" + Character.toUpperCase(entity.getKeyFieldName().charAt(0)) + entity.getKeyFieldName().substring(1);
 		
-		Method method = entity.getClass().getMethod(getter , null);
+		try {
+			Method method = entity.getClass().getMethod(getter , null);
+			
+			Object result = method.invoke(entity, null);
+			
+			if (result instanceof String) {
+				return new Long((String)result);
+			}
+			if (result instanceof Integer) {
+				return new Long((Integer)result);
+			}
+			if (result instanceof Long) {
+				return (Long)result;
+			}
 		
-		Object result = method.invoke(entity, null);
-		
-		if (result instanceof String) {
-			return new Long((String)result);
-		}
-		if (result instanceof Integer) {
-			return new Long((Integer)result);
-		}
-		if (result instanceof Long) {
-			return (Long)result;
-		}
+		} catch (Exception e) {
+			e.printStackTrace();
+		} 
 		return null;
 		
 	}
 
 	public List<IterationListConfigOption> getOptionList(Long procedureTypeId) {
 		return procedureTypeToOptionList.get(procedureTypeId);
+	}
+
+	public void addOption(Long procedureTypeId, IterationListConfigOption option) {
+		List<IterationListConfigOption> optionList = procedureTypeToOptionList.get(procedureTypeId);
+		optionList.add(option);
+	}
+
+	public List<ProcedureIterationDef> getProcedureIterationDefList(Long procedureTypeId) {
+		return procedureTypeToIterationDefList.get(procedureTypeId);
+		
 	}
 
 	

@@ -107,16 +107,33 @@
 								</p:column>
 							</p:row>
 
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}">
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Filter(Ref Beam) Set" />
+								</p:column>   
+								<p:column styleClass="btmsFormInputColumn" style="white-space: nowrap">	
+									<p:selectOneMenu id="loopOptions1" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
+										disabled="#{procedureController.procedure.procedureState gt 1}" >
+										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.fullDisplayString}" itemValue="#{option}" />
+										<p:ajax update="startButton" listener="#{procedureController.iterationListChangeListener}" />  
+									</p:selectOneMenu>
+									<p:spacer width="10px" />
+									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
+								</p:column>
+							</p:row>
+
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and procedureController.procedure.procedureConfigSet.procedureConfig.lightSource ne 2}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Filter Set" />
 								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">								
-									<p:selectOneMenu id="loopOptions" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
+								<p:column styleClass="btmsFormInputColumn">	
+									<p:selectOneMenu id="loopOptions2" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.displayString}" itemValue="#{option}" />
 										<p:ajax update="startButton" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
+									<p:spacer width="10px" />
+									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
 								</p:column>
 							</p:row>
 
@@ -416,6 +433,7 @@
 		</h:form>
 
 		<ui:include src="advancedOptions.xhtml" />
+		<ui:include src="iterationConfig.xhtml" /> 
 		<ui:include src="procedureLogDialog.xhtml" />
 		<ui:include src="executionPreferences.xhtml" />
 		<ui:include src="fitsFileLoadDialog.xhtml" />

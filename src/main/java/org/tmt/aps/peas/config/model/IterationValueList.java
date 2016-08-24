@@ -30,5 +30,17 @@ public class IterationValueList {
 		return buf.toString();
 	}
 	
+	public String getFullDisplayString() {
+		StringBuffer buf = new StringBuffer();
+		for (IterationValue iterationValue : iterationValueList) {
+			buf.append(iterationValue.getFullDisplayString() + ", ");
+		}
+		if (buf.length() > 0) {
+			buf.deleteCharAt(buf.length()-1);
+			buf.deleteCharAt(buf.length()-1);
+		}
+		return buf.toString();
+	}
+	
 	
 }

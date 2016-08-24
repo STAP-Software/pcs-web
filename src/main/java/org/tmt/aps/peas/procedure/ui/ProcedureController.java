@@ -701,7 +701,7 @@ public class ProcedureController implements Serializable {
 
 			Procedure lastProcedure = sessionController.getCurrentSessionLastProcedure();
 			String testNumber = (lastProcedure != null) ? lastProcedure.getTestNumber() : "";
-
+			
 			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession(),
 					testNumber, procedureOutput);
 
