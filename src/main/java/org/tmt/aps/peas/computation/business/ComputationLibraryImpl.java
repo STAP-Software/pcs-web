@@ -2460,7 +2460,7 @@ public class ComputationLibraryImpl {
 		float[] xCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
 		float[] yCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
 
-		int numEdges = 84;
+		int numEdges = centroids.length;
 		
 	    float[] coherenceOut = new float[numEdges];
 	    float[] bestCorrelationIndex = new float[numEdges];
@@ -2494,22 +2494,37 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public NbAnalyzeStepSequenceResult nbAnalyzeStepSequence(float[][] nbTable, float[][] corrTable, float xlambda0,
-			int[] rowFlagIn, int[] edgeColor, int templateCount, int numExposures) throws Exception {
+	public NbAnalyzeStepSequenceResult nbAnalyzeStepSequence(float[] bestCorrelationIndex, float[] coherenceOut, float xlambda0,
+			int[] missingSpotFlags, int[] findCentStatusList, int[] edgeColor, int templateCount) throws Exception {
 		
+	
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeStepSequence"));
 
 		JnbAnalyzeStepSequence jnbAnalyzeStepSequence = new JnbAnalyzeStepSequence();
 		RetVal retVal = new RetVal();
 
-		int numEdges = 84;
+		// spots that can be used (found without errors and should be used for analysis)
+		int[] goodSpots = goodCentroidsFound(missingSpotFlags, findCentStatusList);
 
+		
+		
+		int numEdges = missingSpotFlags.length;
+
+		float[][] nbTableT = new float[1][84];
+		nbTableT[1] = bestCorrelationIndex;
+		float[][] nbTable = JavaComputations.transpose2dArray(nbTableT);
+		
+		float[][] corrTableT = new float[1][84];
+		corrTableT[1] = coherenceOut;
+		float[][] corrTable = JavaComputations.transpose2dArray(corrTableT);
+		
+		
 		int[] rowFlagOut = new int[numEdges];
 		float[] stepTable = new float[numEdges];
-		float[][][] indexTable = new float[numEdges][numExposures][2];
+		float[][][] indexTable = new float[numEdges][1][2];
 
 		Object[] result = jnbAnalyzeStepSequence.jnbAnalyzeStepSequence(retVal, nbTable, corrTable, xlambda0,
-				rowFlagIn, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
+				goodSpots, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);

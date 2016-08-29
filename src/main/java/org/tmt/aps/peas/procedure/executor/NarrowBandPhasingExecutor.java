@@ -23,6 +23,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -290,7 +291,7 @@ public class NarrowBandPhasingExecutor {
 				//***********************************************//
 	            
 	           // frame Analysis
-	           computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
+	           NbAnalyzeFrameResult nbAnalyzeFrameResult = computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
 	        		   findCentroidsResult.getFoundSubimageFlags(), 
 	        		   constantsCache.getPrimaryMirrorConstants().getEdgeAngle(), 
 	        		   makeTemplateResult.getTemplateArray());
@@ -313,26 +314,26 @@ public class NarrowBandPhasingExecutor {
 				// nbTable, corrTable, stepTable, indexTable and xlamda0 are all passed in for a particular filter, and are derived from
 				// information (arrays?) of one dimension larger
 				// EACH OF THE FOLLOWING MUST BE RESOLVED:
-				float[][][] nbTable = new float[0][0][0];
-				float[][][] corrTable = new float[0][0][0];
-				float xlambda0[] = new float[0];
-				int[] rowFlagIn = new int[0]; 
-				int[] edgeColor = new int[0]; 
-				int templateCount = 0;
+	          
+	           
+	            // TODO: analyze spots for nbPhasing (not yet implemented)
+				int[] missingSpotsFlags = new int[0]; 
 				
 				
-				computationLibrary.nbAnalyzeStepSequence(nbTable[index], corrTable[index], xlambda0[index], rowFlagIn, edgeColor, 
-						templateCount, procedureConfig.getNumberOfTrials());
+				computationLibrary.nbAnalyzeStepSequence(nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), currentFilter.getWavelength(), missingSpotsFlags, 
+						findCentroidsResult.getFoundSubimageFlags(), constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
+						constantsCache.getPhasingConstants().getPhasingTemplateCount());
 
-		        // TODO: account for this logic
-		        // Combine ROW_FLAG_OUT from multiple filters:
-		        // good_edge_flag(:) = good_edge_flag(:) * row_flag_out(:)
 
 				
 				
 			}      // end Filter Loop
 
 
+			// TODO calculate the Intersection of all row_flag_out for each filter and put that in row_flag_in for the next computation
+			int[] rowFlagIn = new int[0]; 
+			
+			
 			//***********************************************//
 			//             nbAnalyzeFilterSequence           //
 			//***********************************************//
@@ -343,7 +344,7 @@ public class NarrowBandPhasingExecutor {
 			float[][] stepTable = new float[0][0];
 			float[][][] corrTable = new float[0][0][0];
 			float xlambda[] = new float[0]; // why not xlambda0?
-			int[] rowFlagIn = new int[0]; 
+			
 			float range = 0.0f;
 			float rInt = 0.0f;
 
@@ -420,10 +421,11 @@ public class NarrowBandPhasingExecutor {
 						
 
 			// TODO: is this set of output correct for nph?
+			// FIXME: edge residual RSS is not here, we have the RMS instead
 		    statusLogger.log("calc.phasing_summary",
-					procedureOutput.getFixPistonsResult().getActRms(), 
-					procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
-					procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
+					procedureOutput.getNbActuatorsResult().getActRms(), 
+					procedureOutput.getNbActuatorsResult().getEdgeResRms(), 
+					procedureOutput.getNbActuatorsResult().getGoodEdgeCount());
 
 			
 			// prepare to command primary
@@ -432,10 +434,11 @@ public class NarrowBandPhasingExecutor {
 								
 				// Display to user and ask if they want to command	
 				// TODO: fix this to be the outputs and sources we want for nph
+				// FIXME: edge residual RSS is not here, we have the RMS instead
 				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
-						procedureOutput.getFixPistonsResult().getActRms(), 
-						procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
-						procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
+						procedureOutput.getNbActuatorsResult().getActRms(), 
+						procedureOutput.getNbActuatorsResult().getEdgeResRms(), 
+						procedureOutput.getNbActuatorsResult().getGoodEdgeCount());   
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", phasingSummaryText  + "\n\n\nCommand Primary Mirror?");
 			}
@@ -449,7 +452,7 @@ public class NarrowBandPhasingExecutor {
 					// send out the commands
 					statusLogger.log("pt.m1_act_cmd_started");
 					
-					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+					acsMgmt.commandActuatorDeltas(procedureOutput.getNbActuatorsResult().getActNoplaneCmd());
 						
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");

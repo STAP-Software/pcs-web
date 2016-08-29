@@ -355,6 +355,22 @@ public class JavaComputations {
 	    return transpose;
 	}
 
+	public static float[][] transpose2dArray(float[][] matrix)
+	{
+		int idx1 = matrix.length;
+		int idx2 = matrix[0].length;
+		
+	    float[][] transpose = new float[idx2][idx1];
+	    for (int x = 0; x < idx2; x++)
+	    {
+	        for (int y = 0; y < idx1; y++)
+	        {
+	            transpose[x][y] = matrix[y][x];
+	        }
+	    }
+	    return transpose;
+	}
+
 	public static float calcMax(float[] input, int[] useValue) {
 		// sum absolute values of inputs for which useValue = 1
 		float max = 0.0f;

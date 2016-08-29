@@ -1,11 +1,12 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
-import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
 /**
@@ -22,8 +23,9 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput  
 	CalcPrCommandsResult calcPrCommandsResult;
 	FindCentroidsResult findCentroidsResult;
 	
-	BbAnalyzeFrameResult bbAnalyzeFrameResult;
-	ColorStepToActuatorsResult colorStepToActuatorsResult;
+	MakeTemplateResult makeTemplateResult;
+	NbAnalyzeFrameResult nbAnalyzeFrameResult;
+	NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult;
 	
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
@@ -56,18 +58,27 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput  
 	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
 		this.findCentroidsResult = findCentroidsResult;
 	}
-	public BbAnalyzeFrameResult getBbAnalyzeFrameResult() {
-		return bbAnalyzeFrameResult;
+	public MakeTemplateResult getMakeTemplateResult() {
+		return makeTemplateResult;
 	}
-	public void setBbAnalyzeFrameResult(BbAnalyzeFrameResult bbAnalyzeFrameResult) {
-		this.bbAnalyzeFrameResult = bbAnalyzeFrameResult;
+	public void setMakeTemplateResult(MakeTemplateResult makeTemplateResult) {
+		this.makeTemplateResult = makeTemplateResult;
 	}
-	public ColorStepToActuatorsResult getColorStepToActuatorsResult() {
-		return colorStepToActuatorsResult;
+	public NbAnalyzeFrameResult getNbAnalyzeFrameResult() {
+		return nbAnalyzeFrameResult;
 	}
-	public void setColorStepToActuatorsResult(ColorStepToActuatorsResult colorStepToActuatorsResult) {
-		this.colorStepToActuatorsResult = colorStepToActuatorsResult;
+	public void setNbAnalyzeFrameResult(NbAnalyzeFrameResult nbAnalyzeFrameResult) {
+		this.nbAnalyzeFrameResult = nbAnalyzeFrameResult;
 	}
+	public NbAnalyzeStepSequenceResult getNbAnalyzeStepSequenceResult() {
+		return nbAnalyzeStepSequenceResult;
+	}
+	public void setNbAnalyzeStepSequenceResult(NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult) {
+		this.nbAnalyzeStepSequenceResult = nbAnalyzeStepSequenceResult;
+	}
+
+	
+	
 	
 	
 	
