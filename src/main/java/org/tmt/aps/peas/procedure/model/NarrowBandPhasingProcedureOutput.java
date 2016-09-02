@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
+import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
@@ -15,11 +16,17 @@ import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements EdgeHeightsDisplayValues, ActuatorDeltasDisplayValues {
 
 
-
+	MakeTemplateResult makeTemplateResult;
 	NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult;
 	NbActuatorsResult nbActuatorsResult;
 	
 	
+	public MakeTemplateResult getMakeTemplateResult() {
+		return makeTemplateResult;
+	}
+	public void setMakeTemplateResult(MakeTemplateResult makeTemplateResult) {
+		this.makeTemplateResult = makeTemplateResult;
+	}
 	public NbAnalyzeFilterSequenceResult getNbAnalyzeFilterSequenceResult() {
 		return nbAnalyzeFilterSequenceResult;
 	}

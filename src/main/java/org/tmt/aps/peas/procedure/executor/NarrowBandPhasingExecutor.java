@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -24,6 +25,7 @@ import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -213,6 +215,8 @@ public class NarrowBandPhasingExecutor {
 			int readyCameraTime = 10;
 			int trialsTime = 70;
         			
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+
 			
 			//****************************************//
 			//   Start logic for Narrow Band Phasing  //
@@ -228,8 +232,8 @@ public class NarrowBandPhasingExecutor {
 				
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
-				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
-				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
+				Filter currentFilter = (Filter)iterationValue.getIterableEntity(Filter.class.getName());
+				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity(ReferenceBeam.class.getName());
 				
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
@@ -282,6 +286,7 @@ public class NarrowBandPhasingExecutor {
 				/**********************************************/
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
 										
+
 				
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				CcdFrame ccdFrame = procedure.getLatestProcedureCcdFrame().getCcdFrame();
@@ -291,11 +296,12 @@ public class NarrowBandPhasingExecutor {
 				//***********************************************//
 	            
 	           // frame Analysis
+				
 	           NbAnalyzeFrameResult nbAnalyzeFrameResult = computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
 	        		   findCentroidsResult.getFoundSubimageFlags(), 
 	        		   constantsCache.getPrimaryMirrorConstants().getEdgeAngle(), 
 	        		   makeTemplateResult.getTemplateArray());
-
+				
 
 				// Begin Phase Analysis:  Combine the results from multiple exposures.
 		           
@@ -310,23 +316,15 @@ public class NarrowBandPhasingExecutor {
 				//***********************************************//
 		           
 		        // Determine the phases
-				
-				// nbTable, corrTable, stepTable, indexTable and xlamda0 are all passed in for a particular filter, and are derived from
-				// information (arrays?) of one dimension larger
-				// EACH OF THE FOLLOWING MUST BE RESOLVED:
 	          
-	           
-	            // TODO: analyze spots for nbPhasing (not yet implemented)
-				int[] missingSpotsFlags = new int[0]; 
-				
-				
-				computationLibrary.nbAnalyzeStepSequence(nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), currentFilter.getWavelength(), missingSpotsFlags, 
+	            // analyze spots for nbPhasing 
+				int[] nphMissingSpotsFlags = subimageDefList.getNphMissingSpotFlags(); 
+							
+				computationLibrary.nbAnalyzeStepSequence(nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), currentFilter.getWavelength(), nphMissingSpotsFlags, 
 						findCentroidsResult.getFoundSubimageFlags(), constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount());
 
 
-				
-				
 			}      // end Filter Loop
 
 

@@ -19,8 +19,8 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
-import org.tmt.aps.peas.instrument.model.SufsGroup;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 
 /**
@@ -45,9 +45,9 @@ public class IterationListConfigConverter implements Converter, Serializable {
 				String idStr = submittedValue;
 				long id = new Long(idStr);
 
-				List<IterationListConfigOption> fullList = procedureController.getIterationListConfigOptions();
+				List<IterationListConfig> fullList = procedureController.getIterationListConfigOptions();
 
-				for (IterationListConfigOption option : fullList) {
+				for (IterationListConfig option : fullList) {
 					if (option.getIterationListConfigId().longValue() == id) {
 						return option;
 					}
@@ -68,7 +68,7 @@ public class IterationListConfigConverter implements Converter, Serializable {
 		if (value == null || value.equals("")) {
 			return "";
 		} else {
-			IterationListConfigOption option = (IterationListConfigOption) value;
+			IterationListConfig option = (IterationListConfig) value;
 			return "" + option.getIterationListConfigId();
 
 		}

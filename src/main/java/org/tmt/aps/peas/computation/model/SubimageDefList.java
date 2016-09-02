@@ -99,7 +99,25 @@ public class SubimageDefList {
 		
 		return spotFlag;
 	}
-	
+
+	/**
+	 * returns the 'spot_flag' array for NPH, where: value is 0 if subimage is not expected, 
+	 * 1 if subimage is expected, 
+	 * 2 if subimage is expected and to be used in analysis for nph.
+	 * @return array of spot flags
+	 */
+	public int[] getNphMissingSpotFlags() {
+		
+		int[] spotFlag = new int[listOfSubimageDefs.size()];
+		
+		int i=0;
+		for (SubimageDef subimageDef : listOfSubimageDefs) {
+			spotFlag[i++] = subimageDef.getNphMissingSpotType();
+		}
+		
+		return spotFlag;
+	}
+
 	/**
 	 * Returns the number of spots that are expected to be present. e.g. for which the subimageDef missing spot type is not MISSING_SPOT_TYPE_NOT_EXPECTED
 	 * @return the number of expected spots

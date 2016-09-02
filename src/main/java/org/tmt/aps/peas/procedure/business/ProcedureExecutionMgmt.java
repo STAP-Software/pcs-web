@@ -38,6 +38,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
+import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
@@ -159,6 +160,9 @@ public class ProcedureExecutionMgmt {
 					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentY());
 		}
 
+		// create a new iterationListConfig from the option chosen
+		procedure.getProcedureConfigSet().setIterationListConfig(new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig()));
+		
 		logger.info("performProcedureStartup 3");
 
 		// if this is frame from file, associate the frame now
@@ -197,6 +201,9 @@ public class ProcedureExecutionMgmt {
 			Session session = procedureMgmt.createSession(procedure.getSession());
 			procedure.setSession(session);
 		}
+		
+		// we need a new IterationlistConfig
+		
 		procedureMgmt.createProcedure(procedure);
 
 		statusLogger.initLog();

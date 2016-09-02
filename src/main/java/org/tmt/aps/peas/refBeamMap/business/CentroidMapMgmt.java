@@ -29,6 +29,7 @@ import org.tmt.aps.peas.config.model.M2CalcSpotList;
 import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.config.model.PeripheralSpotList;
 import org.tmt.aps.peas.config.model.SubimageDef;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
@@ -158,7 +159,7 @@ public class CentroidMapMgmt {
 		int i = 0;
 		for (FloatPoint centroid : centroidList) {
 			// make some subimageDefs without spotTypes and missingSpotTypes
-			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_USE, 0);
+			SubimageDef subimageDef = new SubimageDef(++i, centroid, Constants.SPOT_TYPE_INTERIOR, Constants.MISSING_SPOT_TYPE_USE, Constants.MISSING_SPOT_TYPE_USE, 0);
 			// make some subimages without intensities or findCentResults
 			subimageDefList.add(subimageDef);
 		}
@@ -166,6 +167,7 @@ public class CentroidMapMgmt {
 		// merge this list with the spotType and missingSpotType lists
 		MissingSpotList missingSpotListFandI = null;
 		MissingSpotList missingSpotListAnalysis = null;
+		MissingSpotList missingSpotListNphAnalysis = null;
 		if (sufsGroupNumber == null) {
 		
 			missingSpotListFandI = missingSpotsMgmt.findMissingSpotList(1, telescopeId, pupilMaskTypeId);
@@ -185,7 +187,18 @@ public class CentroidMapMgmt {
 		List<Integer> missingSpotListFandIDecoded = IntegerListEncoder.decodeList(missingSpotListFandI.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListFandIDecoded) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);
+			subimageDefList.get(spot - 1).setNphMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);
 		}
+		
+		// special case for NPH
+		if (pupilMaskTypeId.longValue() == PupilMaskType.PUPIL_MASK_TYPE_ID_160.longValue()) {
+			missingSpotListNphAnalysis = missingSpotsMgmt.findMissingSpotList(3, telescopeId, pupilMaskTypeId);
+			List<Integer> missingSpotListNphAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListNphAnalysis.getMissingSpotListEncoded());
+			for (Integer spot : missingSpotListNphAnalysisDecoded) {
+				subimageDefList.get(spot - 1).setNphMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS);
+			}
+		}
+
 
 		// apply peripheral spot definitions
 		try {

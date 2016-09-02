@@ -44,7 +44,9 @@ public class IterationListConfig {
 	
 	public IterationListConfig(IterationListConfig source) throws Exception {
 		
-		BeanUtils.copyProperties(this, source);
+		if (source != null) {
+			BeanUtils.copyProperties(this, source);
+		}
 
 		this.iterationListConfigId = null;
 	}

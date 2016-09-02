@@ -22,9 +22,16 @@
 				<p:panelGrid id="controlPanel" columns="8" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
 
 					<h:outputLabel value="Spot List Type" />
-					<p:selectOneMenu id="options" value="#{missingSpotsController.spotListType}" style="top:2px">
+					<p:selectOneMenu id="options1" value="#{missingSpotsController.spotListType}" style="top:2px" rendered="#{not missingSpotsController.pupilMaskType.pupilMaskTypePh}">
 						<f:selectItem itemLabel="Find and Identify" itemValue="1" />
 						<f:selectItem itemLabel="Analysis" itemValue="2" />
+					    <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}"
+					    	oncomplete="runDrawMissingSpots();" />
+					</p:selectOneMenu>
+					<p:selectOneMenu id="options2" value="#{missingSpotsController.spotListType}" style="top:2px" rendered="#{missingSpotsController.pupilMaskType.pupilMaskTypePh}">
+						<f:selectItem itemLabel="Find and Identify" itemValue="1" />
+						<f:selectItem itemLabel="CPH Analysis" itemValue="2" />
+						<f:selectItem itemLabel="NPH Analysis" itemValue="3" />
 					    <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}"
 					    	oncomplete="runDrawMissingSpots();" />
 					</p:selectOneMenu>

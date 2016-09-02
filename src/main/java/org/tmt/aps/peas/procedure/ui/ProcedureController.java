@@ -50,6 +50,7 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
@@ -373,7 +374,7 @@ public class ProcedureController implements Serializable {
 		return sufsGroupSelectList;
 	}
 	
-	public List<IterationListConfigOption> getIterationListConfigOptions() {
+	public List<IterationListConfig> getIterationListConfigOptions() {
 		return iterationEntityCache.getOptionList(procedure.getProcedureType().getProcedureTypeId());
 	}
 

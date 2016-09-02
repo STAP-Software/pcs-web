@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.config.model.IterableEntity;
+import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
 import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
@@ -64,7 +65,7 @@ public class IterationEntityCache {
 	Map<String, Map<Long, IterableEntity>> classToEntityMap = new HashMap<String, Map<Long, IterableEntity>>();
 	
 	// cache store for config Option Lists indexed by procedureType
-	Map<Long, List<IterationListConfigOption>> procedureTypeToOptionList = new HashMap<Long, List<IterationListConfigOption>>();
+	Map<Long, List<IterationListConfig>> procedureTypeToOptionList = new HashMap<Long, List<IterationListConfig>>();
 	
 	
 	List<Long> procedureTypeList = new ArrayList<Long>();
@@ -159,7 +160,7 @@ public class IterationEntityCache {
 			// query iteration list config option lists
 			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId, instrumentId);
 			
-			List<IterationListConfigOption> options = new ArrayList<IterationListConfigOption>();
+			List<IterationListConfig> options = new ArrayList<IterationListConfig>();
 			for (IterationListConfigOption iterationListConfigOption : iterationListConfigList) {
 				
 				// for each option, we need to decode and populate the iteration value list
@@ -277,12 +278,12 @@ public class IterationEntityCache {
 		
 	}
 
-	public List<IterationListConfigOption> getOptionList(Long procedureTypeId) {
+	public List<IterationListConfig> getOptionList(Long procedureTypeId) {
 		return procedureTypeToOptionList.get(procedureTypeId);
 	}
 
 	public void addOption(Long procedureTypeId, IterationListConfigOption option) {
-		List<IterationListConfigOption> optionList = procedureTypeToOptionList.get(procedureTypeId);
+		List<IterationListConfig> optionList = procedureTypeToOptionList.get(procedureTypeId);
 		optionList.add(option);
 	}
 
