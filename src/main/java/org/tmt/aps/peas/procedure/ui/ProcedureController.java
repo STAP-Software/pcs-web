@@ -70,6 +70,7 @@ import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -197,9 +198,11 @@ public class ProcedureController implements Serializable {
 	String pixelValue;
 	List<Procedure> procedureList;
 	List<PupilMask> pupilMaskSelectList;
-	List<PupilMask> prPupilMaskSelectList;
+	List<ProcedureType> procedureTypeForSelectList;
 	List<SelectItem> sufsGroupSelectList;
 	boolean blankImage = false;
+	
+	ProcedureType registerPupilFor;
 	
 	@PostConstruct
 	private void init() throws Exception {
@@ -212,12 +215,10 @@ public class ProcedureController implements Serializable {
 		
 		pupilMaskSelectList = sessionController.getInstrument().getCamera().getPupilWheel().getOrigPupilMaskList();
 		
-		prPupilMaskSelectList = new ArrayList<PupilMask>();
-		for (PupilMask pupilMask : pupilMaskSelectList) {
-			if (pupilMask.getPupilMaskType().isPupilMaskTypeFs() || pupilMask.getPupilMaskType().isPupilMaskTypePh()) {
-				prPupilMaskSelectList.add(pupilMask);
-			}
-		}
+		procedureTypeForSelectList = new ArrayList<ProcedureType>();
+		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN));
+		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_COARSE_PHASING));
+		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_NARROW_BAND_PHASING));
 		
 		sufsGroupSelectList = new ArrayList<SelectItem>();
 		for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
@@ -287,6 +288,14 @@ public class ProcedureController implements Serializable {
 
 	public void setBlankImage(boolean blankImage) {
 		this.blankImage = blankImage;
+	}
+
+	public ProcedureType getRegisterPupilFor() {
+		return registerPupilFor;
+	}
+
+	public void setRegisterPupilFor(ProcedureType registerPupilFor) {
+		this.registerPupilFor = registerPupilFor;
 	}
 
 	// search radius is from findCentConfig
@@ -363,11 +372,12 @@ public class ProcedureController implements Serializable {
 
 	// the mask list is supplied here where we know what the procedure is
 	public List<PupilMask> getPupilMaskSelectList() {
-		if (procedure.getProcedureType().isPupilRegistration()) {
-			return prPupilMaskSelectList;
-		} else {
-			return pupilMaskSelectList;
-		}
+		return pupilMaskSelectList;
+	}
+	
+	// select list for pupil registration to know what procedure type we are registering the pupil for
+	public List<ProcedureType> getProcedureTypeForSelectList() {
+		return procedureTypeForSelectList;
 	}
 	
 	public List<SelectItem> getSufsGroupSelectList() {
@@ -527,7 +537,14 @@ public class ProcedureController implements Serializable {
 	 * @return true if the pupil mask selection list should be rendered
 	 */
 	public boolean getRenderPupilMaskSelect() {
-		return procedure.getProcedureType().isCreateRefMap() || procedure.getProcedureType().isPupilRegistration();
+		return procedure.getProcedureType().isCreateRefMap();
+	}
+
+	/**
+	 * @return true if the pupil registration for which procedure type selection list should be rendered
+	 */
+	public boolean getRenderRegisterForSelect() {
+		return procedure.getProcedureType().isPupilRegistration();
 	}
 
 	/**
@@ -1130,21 +1147,40 @@ public class ProcedureController implements Serializable {
 		// pupil mask has changed, but we need to change the pupil mask type
 		procedure.getProcedureConfigSet().getProcedureConfig().setPupilMaskType(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType());
 		
-		if (procedure.getProcedureType().isCreateRefMap()) {
-
-			// change int time and selected ref beam settings in procedure config
-			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+		// change int time and selected ref beam settings in procedure config
+		procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
+				.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
+				.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
 						
-		} else if (procedure.getProcedureType().isPupilRegistration()) {
-			// integration time needs to change
-			// if the mask is FS, use default PR int time, if mask is PH use PH int time
-			
-			procedureExecutionMgmt.setupPupilRegIntTime(procedure);
-			
+		
+		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
+		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
+	}
+
+	/**
+	 * JSF Listener method called when the register pupil for selection has changed
+	 * Reloads the find and identify configuration, reloads the pupil registration error configuration
+	 * @throws Exception
+	 */
+	public void registerPupilForSelectListener() throws Exception {
+
+		// get the correct pupil mask type for the procedure type
+		if (registerPupilFor.isFineScreen()) {
+			procedure.getProcedureConfigSet().getProcedureConfig().setPupilMaskType(physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_508));
+		} else {
+			procedure.getProcedureConfigSet().getProcedureConfig().setPupilMaskType(physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_160));			
 		}
 		
+		// also change the pupil mask
+		PupilMask pupilMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().getPupilMaskTypeId(),
+				physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
+
+		procedure.getProcedureConfigSet().getProcedureConfig().setPupilMask(pupilMask);
+		
+		// integration time needs to change
+		// if the mask is FS, use default PR int time, if mask is PH use PH int time	
+		procedureExecutionMgmt.setupPupilRegIntTime(procedure);
+			
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
 	}

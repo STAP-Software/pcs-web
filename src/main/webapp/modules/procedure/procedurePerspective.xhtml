@@ -60,9 +60,22 @@
 								</p:column>
 							</p:row>
 
+							<p:row rendered="#{procedureController.renderRegisterForSelect}">
+								<p:column styleClass="btmsFormLabelColumn">
+									<h:outputLabel value="Register Pupil For" />
+								</p:column>
+								<p:column styleClass="btmsFormInputColumn">
+									<p:selectOneMenu id="registerPupilForSelect" value="#{procedureController.registerPupilFor}" converter="#{procedureTypeConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
+										<f:selectItem itemLabel="Select One" itemValue=""/> 
+										<f:selectItems value="#{procedureController.procedureTypeForSelectList}" var="procedureType" itemLabel="#{procedureType.procedureTypeName}" itemValue="#{procedureType}" />
+										<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.registerPupilForSelectListener}" />
+									</p:selectOneMenu>
+								</p:column>
+							</p:row>
+
 							<p:row rendered="#{procedureController.procedure.procedureType.coarsePhasing or 
 								(procedureController.procedure.procedureType.pupilRegistration and 
-								procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.pupilMaskType.pupilMaskTypeId == 2)}">
+								procedureController.registerPupilFor.procedureTypeId == 3)}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Coarse Phasing Option" />
 								</p:column>
