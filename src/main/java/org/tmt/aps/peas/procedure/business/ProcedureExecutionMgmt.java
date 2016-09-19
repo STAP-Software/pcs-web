@@ -365,6 +365,9 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 
+			
+			statusLogger.log("procedure.saving_complete");
+			statusLogger.saveLog(procedure.getProcedureId());
 			// everything is now stored. Reload somethings for immediate viewing.
 
 			try {

@@ -262,7 +262,7 @@ public class NarrowBandPhasingExecutor {
 				//***********************************************//
 
 				MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
-						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
+						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(currentFilter.getFilterType()), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(),
 						procedureConfig.getPupilMask(), currentFilter);

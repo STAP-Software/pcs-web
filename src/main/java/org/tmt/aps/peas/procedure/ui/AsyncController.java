@@ -138,6 +138,10 @@ public class AsyncController implements Serializable {
 			logger.info("CALLING ONCOMPLETE");
 			onComplete();
 		}
+		
+		if (!procedureExecutionState.getExecutionStatus() && isOnCompletePerformed()) {
+			checkCompleteMessage();
+		}
 				
 	}
 	
@@ -366,11 +370,6 @@ public class AsyncController implements Serializable {
 			// update the fits frames to be available to the rest of the application
 			frameController.reloadFits();
 			
-			if (procedureExecutionState.getProcedureException() == null) {
-				// put up completion notice if there was no exception
-				FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
-				RequestContext.getCurrentInstance().update("procedureDetailForm");
-			}
 			
 			// display frame
 			RequestContext requestContext = RequestContext.getCurrentInstance();
@@ -388,6 +387,8 @@ public class AsyncController implements Serializable {
 			
 			requestContext.update("procedureDetailForm:controlPanel");
 			
+
+			
 		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
@@ -396,6 +397,17 @@ public class AsyncController implements Serializable {
 		}
 	}
 
+	private void checkCompleteMessage() {
+		
+		if (procedureExecutionState.getProcedureException() == null) {
+			// put up completion notice if there was no exception
+			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
+			RequestContext.getCurrentInstance().update("procedureDetailForm");
+		}
+		
+		statusLogController.refreshProcedureStatusLog();
+
+	}
 
 	/**
 	 * JSF Action method called when visualization display close button is clicked.
