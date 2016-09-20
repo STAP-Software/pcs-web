@@ -87,6 +87,7 @@ public class ProcedureConfig {
 	private boolean autoDisplayAvgSufsCentroidOffsets;
 	private boolean autoDisplayActuatorDeltas;
 	private boolean autoDisplayEdgeHeights;
+	private boolean autoDisplaySingleFilterEdgeHeights;
 	private boolean autoDisplayResiduals;
 	private boolean autoDisplaySubimageIntensityWarning;
 	
@@ -385,6 +386,14 @@ public class ProcedureConfig {
 
 	public void setAutoDisplayEdgeHeights(boolean autoDisplayEdgeHeights) {
 		this.autoDisplayEdgeHeights = autoDisplayEdgeHeights;
+	}
+
+	public boolean isAutoDisplaySingleFilterEdgeHeights() {
+		return autoDisplaySingleFilterEdgeHeights;
+	}
+
+	public void setAutoDisplaySingleFilterEdgeHeights(boolean autoDisplaySingleFilterEdgeHeights) {
+		this.autoDisplaySingleFilterEdgeHeights = autoDisplaySingleFilterEdgeHeights;
 	}
 
 	public boolean isAutoDisplayResiduals() {
