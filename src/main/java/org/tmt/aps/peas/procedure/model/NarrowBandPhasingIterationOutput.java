@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.procedure.model;
 
+import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
@@ -7,14 +8,16 @@ import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
+import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
+import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 
 /**
  * Procedure output data for a single step during the Phasing procedure
  * @author smichaels
  *
  */
-public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput  {
+public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput implements EdgeHeightsDisplayValues  {
 
 
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
@@ -77,9 +80,63 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput  
 		this.nbAnalyzeStepSequenceResult = nbAnalyzeStepSequenceResult;
 	}
 
+	// Edge Heights Display Values implementation methods
+	
+	// EdgeHeights Display Values
+	
+	@Override
+	public float[] getStepCorr() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public float[] getResid() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int[] getRowFlagOut() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int getGoodEdgeCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getEdgeErrorMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public void setEdgeErrorMax(float edgeErrorMax) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setResidualEdgeErrorMax(float residualEdgeErrorMax) {
+		// TODO Auto-generated method stub	
+	}
+	
+	@Override
+	public float getEdgeErrorRss() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getResidualEdgeErrorMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getResidualEdgeErrorRss() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
 	
 	
 	
+
 	
 	
 }

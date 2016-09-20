@@ -176,7 +176,7 @@ public class AsyncController implements Serializable {
 
 		
 		if (visualizationDisplay != null) {
-			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext...");
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to update Forms...");
 			
 			visualizationController.setCurrentDisplay(visualizationDisplay);
 			
@@ -192,6 +192,7 @@ public class AsyncController implements Serializable {
 			requestContext.update("spotsForm");
 			requestContext.update("actDeltasForm");
 			requestContext.update("edgeHeightsForm");
+			requestContext.update("singleFilterEdgeHeightsForm");
 			requestContext.update("edgeResidualsForm");
 			requestContext.update("sufsOffsetsForm");
 			requestContext.update("avgSufsOffsetsForm");
@@ -214,6 +215,9 @@ public class AsyncController implements Serializable {
 			}
 			if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
 				requestContext.execute("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
+			}
+			if (visualizationDisplay.isDisplayTypeSingleFilterEdgeHeights()) {
+				requestContext.execute("runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
 				requestContext.execute("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
@@ -413,6 +417,7 @@ public class AsyncController implements Serializable {
 	 * JSF Action method called when visualization display close button is clicked.
 	 */
 	public void doCloseGraphicsDisplay() {
+		System.out.println("closing graphics display");
 		graphicDisplayMgmt.setReturnState(1);
 		visualizationController.setCurrentDisplay(null);
 	}

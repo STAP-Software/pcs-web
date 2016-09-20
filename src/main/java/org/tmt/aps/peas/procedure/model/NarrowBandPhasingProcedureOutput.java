@@ -51,16 +51,63 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 		// TODO Auto-generated method stub
 		return 0;
 	}
+	
+	
+	
+	// EdgeHeights Display Values
+	
 	@Override
-	public BbAnalyzeSequenceResult getBbAnalyzeSequenceResult() {
+	public float[] getStepCorr() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	@Override
-	public PhasingStatsResult getPhasingStatsResult() {
+	public float[] getResid() {
 		// TODO Auto-generated method stub
 		return null;
 	}
+	@Override
+	public int[] getRowFlagOut() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+	@Override
+	public int getGoodEdgeCount() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getEdgeErrorMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	public void setEdgeErrorMax(float edgeErrorMax) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setResidualEdgeErrorMax(float residualEdgeErrorMax) {
+		// TODO Auto-generated method stub	
+	}
+	
+	@Override
+	public float getEdgeErrorRss() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getResidualEdgeErrorMax() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	@Override
+	public float getResidualEdgeErrorRss() {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+	
+	
+	
 	
 
 

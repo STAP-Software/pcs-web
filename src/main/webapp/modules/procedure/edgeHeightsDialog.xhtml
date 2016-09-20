@@ -311,12 +311,11 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 //]]>  
 </script>   
 
-
 		<p:dialog id="edgeHeightsDialog" header="Measured Edge Heights" widgetVar="edgeHeightsDisplayDialog" closable="false" >  
      		<h:form id="edgeHeightsForm">
 
     		<h:inputHidden id="edgeHeights" value="#{visualizationController.edgeHeights}" />
-    		<h:inputHidden id="maxError" value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" />
+    		<h:inputHidden id="maxError" value="#{visualizationController.edgeHeightsDisplayValues.edgeErrorMax}" />
     		<h:inputHidden id="useForAnalysis" value="#{visualizationController.useForAnalysis}" />
     		<h:inputHidden id="rowFlagOut" value="#{visualizationController.rowFlagOut}" />
 
@@ -346,18 +345,18 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				
 				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />				
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.goodEdgeCount}" style="position:relative; top:2px" />				
 				
 				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorMax')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorMax}" style="position:relative; top:2px" >
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.edgeErrorMax}" style="position:relative; top:2px" >
 					<f:converter converterId="DynamicNumberConverter" />
 					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
 				
 				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorRss')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.phasingStatsResult.edgeErrorRss}" style="position:relative; top:2px" >
+				<h:outputText value="#{visualizationController.edgeHeightsDisplayValues.edgeErrorRss}" style="position:relative; top:2px" >
 					<f:converter converterId="DynamicNumberConverter" />
 					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
@@ -410,11 +409,15 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		</p:panelGrid>
     		<br/>
+			
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="edgeHeightsDisplayDialog.hide()" />
+			 
 			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="edgeHeightsDisplayDialog.hide()" />
      		</h:form>
+     		
+
 		</p:dialog> 
 
 

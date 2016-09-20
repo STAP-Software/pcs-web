@@ -85,7 +85,8 @@ public class VisualizationController implements Serializable {
 	boolean avgFsCentroidOffsetDisplayEnabled;
 	boolean avgSufsCentroidOffsetDisplayEnabled;
 	boolean actuatorDeltaDisplayEnabled;
-	boolean edgeHeightsDisplayEnabled;
+	boolean edgeHeightsDisplayEnabled;	
+	boolean singleFilterEdgeHeightsDisplayEnabled;
 	boolean edgeResidualsDisplayEnabled;
 	boolean sufsCentroidOffsetDisplayEnabled;
 
@@ -283,6 +284,14 @@ public class VisualizationController implements Serializable {
 		return edgeResidualsDisplayEnabled;
 	}
 
+	public boolean isSingleFilterEdgeHeightsDisplayEnabled() {
+		return singleFilterEdgeHeightsDisplayEnabled;
+	}
+
+	public void setSingleFilterEdgeHeightsDisplayEnabled(boolean singleFilterEdgeHeightsDisplayEnabled) {
+		this.singleFilterEdgeHeightsDisplayEnabled = singleFilterEdgeHeightsDisplayEnabled;
+	}
+
 	public void setEdgeResidualsDisplayEnabled(boolean edgeResidualsDisplayEnabled) {
 		this.edgeResidualsDisplayEnabled = edgeResidualsDisplayEnabled;
 	}
@@ -360,6 +369,14 @@ public class VisualizationController implements Serializable {
 	}
 	
 	public void setEdgeHeights(String edgeHeights) {
+		
+	}
+	
+	public String getSingleFilterEdgeHeights() {
+		return graphicDisplayMgmt.getEdgeHeights();  // FIXME: this needs to point to the right data 
+	}
+	
+	public void setSingleFilterEdgeHeights(String edgeHeights) {
 		
 	}
 	
@@ -490,6 +507,13 @@ public class VisualizationController implements Serializable {
 	
 	public void setEdgeHeightsDisplayValues(EdgeHeightsDisplayValues values) {}
 	
+	// FIXME: this might need to change
+	public EdgeHeightsDisplayValues getSingleFilterEdgeHeightsDisplayValues() {
+		return graphicDisplayMgmt.getEdgeHeightsDisplayValues();
+	}
+	
+	public void setSingleFilterEdgeHeightsDisplayValues(EdgeHeightsDisplayValues values) {}
+	
 	public String getAct1Pos() {
 		return act1Pos;
 	}
@@ -539,6 +563,7 @@ public class VisualizationController implements Serializable {
 		avgSufsCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
 		edgeHeightsDisplayEnabled = false;
+		singleFilterEdgeHeightsDisplayEnabled = false;
 		edgeResidualsDisplayEnabled = false;
 
 		List<VisualizationDisplay> visualizationDisplayList = visualizationDisplayMgmt.findVisualizationDisplays(procedureTypeId);
@@ -569,6 +594,9 @@ public class VisualizationController implements Serializable {
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS:
 				edgeHeightsDisplayEnabled = true;
+				break;
+			case VisualizationDisplay.DISPLAY_TYPE_SINGLE_FILTER_EDGE_HEIGHTS:
+				singleFilterEdgeHeightsDisplayEnabled = true;
 				break;
 			case VisualizationDisplay.DISPLAY_TYPE_EDGE_RESIDUALS:
 				edgeResidualsDisplayEnabled = true;
@@ -620,6 +648,15 @@ public class VisualizationController implements Serializable {
 	public void updateEdgeHeightsDisplayListener() {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
+	}
+
+	/**
+	 * UI event listener for single filter edge heights display
+	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
+	 */
+	public void updateSingleFilterEdgeHeightsDisplayListener() {
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		requestContext.execute("drawSingleFilterEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
 	}
 
 	/**
@@ -797,6 +834,25 @@ public class VisualizationController implements Serializable {
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);		
 
 	}
+	
+	/**
+	 * JSF Action method to populate the centroid offsets display data prior to rendering, called from the navigation menu dropdown
+	 * @param iteration the iteration to draw data from 
+	 */
+	public void doPopulateSingleFilterEdgeHeightsDisplay(int iteration) {
+		offsetScale = 100.0f; // initialize at 100%
+
+		ProcedureIterationOutput procedureIterationOutput = procedureController.getProcedure().getProcedureOutput().getProcedureIterationOutputList().get(iteration);
+
+		if (procedureIterationOutput instanceof EdgeHeightsDisplayValues) {
+
+			EdgeHeightsDisplayValues ehdv = (EdgeHeightsDisplayValues) procedureIterationOutput;
+			
+			graphicDisplayMgmt.setAndEncodeEdgeHeightsDisplayValues(ehdv);
+		}
+		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);		
+	}
+
 	
 	/**
 	 * JSF Action method to populate the edge residual display data prior to rendering, called from the navigation menu dropdown

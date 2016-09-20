@@ -342,7 +342,6 @@ public class ProcedureExecutionMgmt {
 			}
 
 			logger.debug("performProcedureCompletion::all frames and centroid maps completed");
-			statusLogger.saveLog(procedure.getProcedureId());
 
 			// associate ref beam map
 			if (procedure.getRefBeamMap() != null) {

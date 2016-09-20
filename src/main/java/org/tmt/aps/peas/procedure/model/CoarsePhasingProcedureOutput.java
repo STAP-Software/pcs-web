@@ -93,6 +93,53 @@ public class CoarsePhasingProcedureOutput extends ProcedureOutput implements Edg
 		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
 	}
 
+	
+	// edge heights display values
+	
 
+	public float[] getStepCorr() {
+		return bbAnalyzeSequenceResult.getStepCorr();
+	}
+
+	public float[] getResid() {
+		return bbAnalyzeSequenceResult.getResid();
+	}
+
+	public int[] getRowFlagOut() {
+		return bbAnalyzeSequenceResult.getRowFlagOut();
+	}
+
+	public int getGoodEdgeCount() {
+		return phasingStatsResult.getGoodEdgeCount();
+	}
+
+	public float getEdgeErrorMax() {
+		return phasingStatsResult.getEdgeErrorMax();
+	}
+
+	public void setEdgeErrorMax(float edgeErrorMax) {
+		// TODO Auto-generated method stub
+		
+	}
+	public void setResidualEdgeErrorMax(float residualEdgeErrorMax) {
+		// TODO Auto-generated method stub	
+	}
+
+	public float getEdgeErrorRss() {
+		return phasingStatsResult.getEdgeErrorRss();
+	}
+
+	public float getResidualEdgeErrorMax() {
+		return phasingStatsResult.getResidualEdgeErrorMax();
+	}
+
+	public float getResidualEdgeErrorRss() {
+		return phasingStatsResult.getResidualEdgeErrorRss();
+	}
+
+
+
+	
+	
 	
 }

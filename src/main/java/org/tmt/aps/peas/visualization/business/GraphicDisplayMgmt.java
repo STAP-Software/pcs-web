@@ -414,12 +414,12 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setAndEncodeEdgeHeightsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
 		
-		String edgeHeights = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr());
+		String edgeHeights = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getStepCorr());
 		setEdgeHeights(edgeHeights);
 		
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( PupilMaskType.PUPIL_MASK_TYPE_ID_160);
 		
-		int numEdges = edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getStepCorr().length;
+		int numEdges = edgeHeightsDisplayValues.getStepCorr().length;
 		int numSegments = constantsCache.getTelescopeConstants().getNumberOfSegments();
 		int[] useEdgeForAnalysis = new int[numEdges];
 		for (int i=0; i<numEdges; i++) {
@@ -428,7 +428,7 @@ public class GraphicDisplayMgmt implements Serializable {
 
 		
 		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
-		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
+		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getRowFlagOut());
 
 	}
 
@@ -438,12 +438,12 @@ public class GraphicDisplayMgmt implements Serializable {
 	public void setAndEncodeEdgeResidualsDisplayValues(EdgeHeightsDisplayValues edgeHeightsDisplayValues) {
 		this.edgeHeightsDisplayValues = edgeHeightsDisplayValues;
 		
-		String resids = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getResid());
+		String resids = FloatListEncoder.encodeList(edgeHeightsDisplayValues.getResid());
 		setEdgeResiduals(resids);
 		
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( PupilMaskType.PUPIL_MASK_TYPE_ID_160);
 		
-		int numEdges = edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getResid().length;
+		int numEdges = edgeHeightsDisplayValues.getResid().length;
 		int numSegments = constantsCache.getTelescopeConstants().getNumberOfSegments();
 		int[] useEdgeForAnalysis = new int[numEdges];
 		for (int i=0; i<numEdges; i++) {
@@ -451,7 +451,7 @@ public class GraphicDisplayMgmt implements Serializable {
 		}
 
 		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
-		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getBbAnalyzeSequenceResult().getRowFlagOut());
+		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getRowFlagOut());
 
 	}
 

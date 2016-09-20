@@ -1047,9 +1047,13 @@ public class ProcedureController implements Serializable {
 	 * JSF Action method called when the Advanced Options menu item is clicked
 	 */
 	public void doViewAdvancedOptions() {
-
+		
 	}
 
+	public void doTest1() {
+		System.out.println("test");
+	}
+	
 	/**
 	 * JSF Action method called when the Cancel button in the Advanced Options dialog is clicked
 	 */
