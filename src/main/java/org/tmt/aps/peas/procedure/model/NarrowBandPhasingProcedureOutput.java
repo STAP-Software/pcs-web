@@ -43,6 +43,7 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	
 	@Override
 	public float[][] getDesiredActDeltas() {
+		
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -86,22 +86,24 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	
 	@Override
 	public float[] getStepCorr() {
-		// TODO Auto-generated method stub
-		return null;
+		
+		// FIXME: is this correct?
+		return nbAnalyzeFrameResult.getCoherenceOut();
+		
 	}
 	@Override
 	public float[] getResid() {
 		// TODO Auto-generated method stub
 		return null;
 	}
-	@Override
+
 	public int[] getRowFlagOut() {
-		// TODO Auto-generated method stub
-		return null;
+		return nbAnalyzeStepSequenceResult.getRowFlagOut();
 	}
+	
 	@Override
 	public int getGoodEdgeCount() {
-		// TODO Auto-generated method stub
+		
 		return 0;
 	}
 	@Override
