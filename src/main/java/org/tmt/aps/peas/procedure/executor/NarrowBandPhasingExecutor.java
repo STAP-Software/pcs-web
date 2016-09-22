@@ -24,6 +24,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -238,6 +239,13 @@ public class NarrowBandPhasingExecutor {
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
+				
+				// setup the iteration output as the output target
+				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();
+				procedureExecutionState.setCurrentOutputTarget(pio);
+				procedureOutput.addIteration(pio);
+
+				
 				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, procedureConfig.getPhasingSteps());
 				
 				procedureExecutionState.incrementIteration();
@@ -275,10 +283,6 @@ public class NarrowBandPhasingExecutor {
 		           
 						
 		
-				// setup the iteration output as the output target
-				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();
-				procedureExecutionState.setCurrentOutputTarget(pio);
-				procedureOutput.addIteration(pio);
 				
 					
 				/**********************************************/
@@ -300,7 +304,8 @@ public class NarrowBandPhasingExecutor {
 	           NbAnalyzeFrameResult nbAnalyzeFrameResult = computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
 	        		   findCentroidsResult.getFoundSubimageFlags(), 
 	        		   constantsCache.getPrimaryMirrorConstants().getEdgeAngle(), 
-	        		   makeTemplateResult.getTemplateArray());
+	        		   makeTemplateResult.getTemplateArray(),
+	        		   constantsCache.getTelescopeConstants().getNumberOfSegments());
 				
 
 				// Begin Phase Analysis:  Combine the results from multiple exposures.
@@ -322,15 +327,30 @@ public class NarrowBandPhasingExecutor {
 							
 				computationLibrary.nbAnalyzeStepSequence(nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), currentFilter.getWavelength(), nphMissingSpotsFlags, 
 						findCentroidsResult.getFoundSubimageFlags(), constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
-						constantsCache.getPhasingConstants().getPhasingTemplateCount());
+						constantsCache.getPhasingConstants().getPhasingTemplateCount(), constantsCache.getTelescopeConstants().getNumberOfSegments());
 
 
 			}      // end Filter Loop
 
 
-			// TODO calculate the Intersection of all row_flag_out for each filter and put that in row_flag_in for the next computation
-			int[] rowFlagIn = new int[0]; 
+			// setup the iteration output as the output target
+
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
+			int edgeCount = constantsCache.getPrimaryMirrorConstants().getEdgeAngle().length;
+			int filterCount = iterationList.getIterationValueList().getSize();
 			
+			// calculate the Intersection of all row_flag_out for each filter and put that in row_flag_in for the next computation
+			int[][] rowFlagOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "RowFlagOut", int[].class).toArray(new int[0][0]);
+			
+			int[] rowFlagIn = new int[edgeCount];
+			Arrays.fill(rowFlagIn, 1);
+			
+			for (int[] rowFlagOutFilter : rowFlagOutFilters) {
+				for (int i=0; i<edgeCount; i++) {
+					rowFlagIn[i] = rowFlagIn[i] * rowFlagOutFilter[i];
+				}
+			}
 			
 			//***********************************************//
 			//             nbAnalyzeFilterSequence           //
@@ -338,30 +358,62 @@ public class NarrowBandPhasingExecutor {
 
 	        // Begin Filter Analysis:  Combine the results from multiple filters.
 
-			// EACH OF THE FOLLOWING MUST BE RESOLVED:
-			float[][] stepTable = new float[0][0];
-			float[][][] corrTable = new float[0][0][0];
-			float xlambda[] = new float[0]; // why not xlambda0?
+			float[][] stepTable = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "StepTable", float[].class).toArray(new float[0][0]);
 			
-			float range = 0.0f;
-			float rInt = 0.0f;
+			float[][] coherenceOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeFrameResult", "CoherenceOut", float[].class).toArray(new float[0][0]);
+			float[][][] corrTable = new float[filterCount][1][edgeCount];
+			
+			for (int i=0; i<coherenceOutFilters.length; i++) {
+				
+				for (int j=0; j<edgeCount; j++) {
+					
+					corrTable[i][0][j] = coherenceOutFilters[i][j];	
+				}
+			}
+			
+			float xlambda[] = new float[filterCount]; 
 
-			computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, range, rInt);
+			
+			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
+								
+				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
+				
+				Filter currentFilter = (Filter)iterationValue.getIterableEntity(Filter.class.getName());
+
+				xlambda[index] = currentFilter.getWavelength();
+				
+			}
+
+			// TODO: this should be in the constants table as 4 values
+			float range = 0f;
+			
+			if (filterCount == 2) {
+				range = 0.65f;
+			} else if (filterCount == 3) {
+				range = 3.0f;
+			}
+			
+			// TODO: this should be a phasing constant
+			float rInt = 0.001f;
+
+			
+			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, range, rInt);
 	        
 			//***********************************************//
 			//                   nbActuators                 //
 			//***********************************************//
-
+	
 	        // Calculate the actuators:
 
-			// EACH OF THE FOLLOWING MUST BE RESOLVED:
-			float[] nbStep = new float[0]; 
-			int[] rowFlag = new int[0];
-			int[] colFlag = new int[0];
-			float[][] acsa = new float[0][0];
+			// no incomplete mirror
+			int[] colFlag = new int[constantsCache.getTelescopeConstants().getNumberOfSegments()];
+			Arrays.fill(colFlag, 1);
 			
 			
-			computationLibrary.nbActuators(nbStep, rowFlag, colFlag, constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), acsa);
+			computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), rowFlagIn, colFlag, constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
+		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
+		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
+		    		constantsCache.getTelescopeConstants().getNumberOfSegments());
 
 	
 	        // TODO: is this data to be displayed and where
@@ -391,7 +443,7 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*      Display Measured Edge Heights         */
 			/**********************************************/	
-		    // TODO: do we keep this?
+		    // TODO: do we keep this - yes
 		    if (procedureConfig.isAutoDisplayEdgeHeights()) {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
@@ -399,7 +451,7 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*      Display Residual Edge Heights         */
 			/**********************************************/
-		    // TODO: do we keep this?
+		    // TODO: do we keep this - yes
 		    if (procedureConfig.isAutoDisplayResiduals()) {
 				graphicDisplayMgmt.displayEdgeResiduals(procedureOutput);
 			}
@@ -407,7 +459,7 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*          Display Piston Deltas             */
 			/**********************************************/	
-		    // TODO: do we keep this?
+		    // TODO: do we keep this - yes
 			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}

@@ -31,7 +31,7 @@ public class JcorrInterp
 		// collapse array to one dimension
 		for (int i=0; i<z_len1; i++) { 
 			for (int j=0; j<z_len2; j++) { 
-			for (int k=0; j<z_len3; k++) { 
+			for (int k=0; k<z_len3; k++) { 
 				z_collapse[i*z_len2 * z_len3 + j * z_len3 + k] = z[i][j][k]; 
 			} 
 			} 

@@ -40,7 +40,7 @@ public class JnbAnalyzeStepSequence
 		// collapse array to one dimension
 		for (int i=0; i<index_table_out_len1; i++) { 
 			for (int j=0; j<index_table_out_len2; j++) { 
-			for (int k=0; j<index_table_out_len3; k++) { 
+			for (int k=0; k<index_table_out_len3; k++) { 
 				index_table_out_collapse[i*index_table_out_len2 * index_table_out_len3 + j * index_table_out_len3 + k] = index_table_out[i][j][k]; 
 			} 
 			} 

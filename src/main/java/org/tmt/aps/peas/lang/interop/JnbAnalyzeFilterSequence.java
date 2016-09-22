@@ -28,7 +28,7 @@ public class JnbAnalyzeFilterSequence
 		// collapse array to one dimension
 		for (int i=0; i<corr_table_len1; i++) { 
 			for (int j=0; j<corr_table_len2; j++) { 
-			for (int k=0; j<corr_table_len3; k++) { 
+			for (int k=0; k<corr_table_len3; k++) { 
 				corr_table_collapse[i*corr_table_len2 * corr_table_len3 + j * corr_table_len3 + k] = corr_table[i][j][k]; 
 			} 
 			} 

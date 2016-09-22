@@ -2450,27 +2450,33 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbAnalyzeFrameResult nbAnalyzeFrame(float[][] frame, FloatPoint[] centroids, int[] goodSpots, int[] edgeAngle,
-			float[][][][] template) throws Exception {
+			float[][][][] template, int numberOfSegments) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFrame"));
 
 		JnbAnalyzeFrame jnbAnalyzeFrame = new JnbAnalyzeFrame();
 		RetVal retVal = new RetVal();
 
-		float[] xCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
-		float[] yCentroids = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
-
-		int numEdges = centroids.length;
+		int edgeCount = edgeAngle.length;
 		
-	    float[] coherenceOut = new float[numEdges];
-	    float[] bestCorrelationIndex = new float[numEdges];
-	    float[] aFit = new float[numEdges];
-	    float[] bFit  = new float[numEdges];
-	    float[] phiFit  = new float[numEdges];
-	    float[] chisqF = new float[numEdges];
+		
+		List<FloatPoint> edgeCentroidList = Arrays.asList(centroids).subList(numberOfSegments, numberOfSegments+edgeCount);
+		
+		float[] xCentroids = FloatPointListEncoder.extractXArray(edgeCentroidList);
+		float[] yCentroids = FloatPointListEncoder.extractYArray(edgeCentroidList);
+		
+		int[] goodEdgeSpots = Arrays.copyOfRange(goodSpots, numberOfSegments, numberOfSegments+edgeCount);
+
+		
+	    float[] coherenceOut = new float[edgeCount];
+	    float[] bestCorrelationIndex = new float[edgeCount];
+	    float[] aFit = new float[edgeCount];
+	    float[] bFit  = new float[edgeCount];
+	    float[] phiFit  = new float[edgeCount];
+	    float[] chisqF = new float[edgeCount];
 
 	
-		Object[] result = jnbAnalyzeFrame.jnbAnalyzeFrame(retVal, frame, xCentroids, yCentroids, goodSpots, edgeAngle, template, 
+		Object[] result = jnbAnalyzeFrame.jnbAnalyzeFrame(retVal, frame, xCentroids, yCentroids, goodEdgeSpots, edgeAngle, template, 
 	            coherenceOut, bestCorrelationIndex, aFit, bFit, phiFit, chisqF);
 
 		
@@ -2495,7 +2501,7 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbAnalyzeStepSequenceResult nbAnalyzeStepSequence(float[] bestCorrelationIndex, float[] coherenceOut, float xlambda0,
-			int[] missingSpotFlags, int[] findCentStatusList, int[] edgeColor, int templateCount) throws Exception {
+			int[] missingSpotFlags, int[] findCentStatusList, int[] edgeColor, int templateCount, int numberOfSegments) throws Exception {
 		
 	
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeStepSequence"));
@@ -2503,28 +2509,30 @@ public class ComputationLibraryImpl {
 		JnbAnalyzeStepSequence jnbAnalyzeStepSequence = new JnbAnalyzeStepSequence();
 		RetVal retVal = new RetVal();
 
+		
+		int edgeCount = edgeColor.length;
+
 		// spots that can be used (found without errors and should be used for analysis)
 		int[] goodSpots = goodCentroidsFound(missingSpotFlags, findCentStatusList);
 
-		
-		
-		int numEdges = missingSpotFlags.length;
+		int[] goodEdgeSpots = Arrays.copyOfRange(goodSpots, numberOfSegments, numberOfSegments+edgeCount);
 
-		float[][] nbTableT = new float[1][84];
-		nbTableT[1] = bestCorrelationIndex;
+
+		float[][] nbTableT = new float[1][edgeCount];
+		nbTableT[0] = bestCorrelationIndex;
 		float[][] nbTable = JavaComputations.transpose2dArray(nbTableT);
 		
-		float[][] corrTableT = new float[1][84];
-		corrTableT[1] = coherenceOut;
+		float[][] corrTableT = new float[1][edgeCount];
+		corrTableT[0] = coherenceOut;
 		float[][] corrTable = JavaComputations.transpose2dArray(corrTableT);
 		
 		
-		int[] rowFlagOut = new int[numEdges];
-		float[] stepTable = new float[numEdges];
-		float[][][] indexTable = new float[numEdges][1][2];
+		int[] rowFlagOut = new int[edgeCount];
+		float[] stepTable = new float[edgeCount];
+		float[][][] indexTable = new float[edgeCount][1][2];
 
 		Object[] result = jnbAnalyzeStepSequence.jnbAnalyzeStepSequence(retVal, nbTable, corrTable, xlambda0,
-				goodSpots, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
+				goodEdgeSpots, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -2565,13 +2573,19 @@ public class ComputationLibraryImpl {
 		JnbAnalyzeFilterSequence jnbAnalyzeFilterSequence = new JnbAnalyzeFilterSequence();
 		RetVal retVal = new RetVal();
 
+		
+		// TODO: invert corrTable, stepTable
+		
+		float[][] stepTableT = JavaComputations.transpose2dArray(stepTable);
+		float[][][] corrTableT = JavaComputations.transpose3dArray(corrTable);
+		
 
 		int numEdges = 84;
 
 		float[] chi2nm = new float[numEdges];
 		float[] nbStep = new float[numEdges];
 
-		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagIn, stepTable, corrTable, xlambda, range, 
+		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagIn, stepTableT, corrTableT, xlambda, range, 
 				rInt, chi2nm, nbStep);
 	            
 
@@ -2599,7 +2613,7 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag, FloatPoint[] actuatorPositions,
-			float[][] acsa) throws Exception {
+			int[] plusPiston, int[] minusPiston, int numSegments) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbActuators"));
 
@@ -2611,10 +2625,12 @@ public class ComputationLibraryImpl {
 		float[] actuatorPositionsY = FloatPointListEncoder.extractYArray(Arrays.asList(actuatorPositions));
  
 		int actCount = actuatorPositions.length;
-		int numEdges = 84;
+		int numEdges = nbStep.length;
 		
 		float[] actNoplaneCmd = new float[actCount];
 		float[] resid = new float[numEdges];
+		
+		float[][] acsa = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
 		
 		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, actuatorPositionsX, actuatorPositionsY, acsa, 
 				actNoplaneCmd,  resid);
