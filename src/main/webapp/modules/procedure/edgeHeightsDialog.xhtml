@@ -311,6 +311,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 //]]>  
 </script>   
 
+
 		<p:dialog id="edgeHeightsDialog" header="Measured Edge Heights" widgetVar="edgeHeightsDisplayDialog" closable="false" >  
      		<h:form id="edgeHeightsForm">
 
@@ -410,11 +411,14 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		</p:panelGrid>
     		<br/>
 			
+    		<h:panelGroup styleClass="dialogCommandGroup">
+    		
+			<p:commandButton value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="edgeHeightsDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="edgeHeightsDisplayDialog.hide()" />
-			 
-			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="edgeHeightsDisplayDialog.hide()" />
+			</h:panelGroup>
+
      		</h:form>
      		
 

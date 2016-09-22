@@ -106,26 +106,27 @@ function drawSpots() {
    		<br/>
  		<br/>   		
    		
-   		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}" styleClass="dialogbutton">
+   		<h:panelGroup rendered="#{not empty visualizationController.currentDisplay.message}" styleClass="dialogCommandGroup">
 
 		
-    	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" style="float:right" update=":growl :errorGrowl"
+ 		<p:commandButton value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidsDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}" />
+    	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" styleClass="dialogbutton" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay2}" oncomplete="centroidsDisplayDialog.hide()" rendered="#{visualizationController.currentDisplay.buttonCount gt 1}" />
-    	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" style="float:right" update=":growl :errorGrowl"
+    	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" styleClass="dialogbutton" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay1}" oncomplete="centroidsDisplayDialog.hide()" />
 
-    	<h:outputText escape="false" value="#{visualizationController.currentDisplay.message}" style="white-space:pre-wrap; text-align: right; position:relative; margin-right:30px; top:8px; color: #444444" />
+    	<h:outputText escape="false" value="#{visualizationController.currentDisplay.message}" style="white-space:pre-wrap; text-align: right; position:relative; margin-right:15px; top:8px; color: #444444" />
     	
     	</h:panelGroup>
     	
- 	   	<h:panelGroup rendered="#{empty visualizationController.currentDisplay.message}">
+ 	   	<h:panelGroup rendered="#{empty visualizationController.currentDisplay.message}" styleClass="dialogCommandGroup">
+ 		<p:commandButton value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidsDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}" />
     	<p:commandButton id="button3" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidsDisplayDialog.hide()" />
     	
     	</h:panelGroup>
- 				
- 		<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
-			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidsDisplayDialog.hide()" />
  				
  		
 		</p:panelGrid>

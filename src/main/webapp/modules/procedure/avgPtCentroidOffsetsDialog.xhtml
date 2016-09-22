@@ -324,10 +324,13 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		</p:panelGrid>
     		<br/>
+    		    		
+    		<h:panelGroup styleClass="dialogCommandGroup">
+			<p:commandButton value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="avgPtCentroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="avgPtCentroidOffsetDisplayDialog.hide()" />
-			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="avgPtCentroidOffsetDisplayDialog.hide()" />
+			</h:panelGroup>
     		</h:form>
 		</p:dialog> 
 

@@ -286,13 +286,17 @@ function drawSufsCentroidOffsets() {
    		
     		</p:panelGrid>
     		<br/>
-    		<p:commandButton id="backButton" value="&lt;&lt; Back" styleClass="dialogbuttonBack" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsBack}" oncomplete="runDrawSufsOffsets()" />	
-        	<p:commandButton id="nextButton" value="Next &gt;&gt;" styleClass="dialogbuttonNext" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsNext}" oncomplete="runDrawSufsOffsets()" />	
+    		    		
+    		<h:panelGroup styleClass="dialogCommandGroup">
     		
+    		
+			<p:commandButton value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" />
-			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="sufsCentroidOffsetDisplayDialog.hide()" />
+        	<p:commandButton id="nextButton" value="Next &gt;&gt;" styleClass="dialogbutton" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsNext}" oncomplete="runDrawSufsOffsets()" />	
+    		<p:commandButton id="backButton" value="&lt;&lt; Back" styleClass="dialogbutton" update="sufsOffsetsForm :growl :errorGrowl" action="#{visualizationController.doSufsCentroidOffsetsBack}" oncomplete="runDrawSufsOffsets()" />	
+			</h:panelGroup>
     		</h:form>
 		</p:dialog> 
 
