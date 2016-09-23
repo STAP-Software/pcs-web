@@ -19,7 +19,11 @@ public class PhasingConstants {
 	int phasingSubimageFftSize870;
 	int phasingSubimageFftSize891;
 	
-	
+	float edgeHeightSearchInterval;
+	float edgeHeightSearchRange1Filter;
+	float edgeHeightSearchRange2Filter;
+	float edgeHeightSearchRange3Filter;
+	float edgeHeightSearchRange4Filter;
 	
 	
 	float bbPhasingFracInterval;
@@ -135,6 +139,46 @@ public class PhasingConstants {
 		this.stepSize1000 = stepSize1000;
 	}
 
+	public float getEdgeHeightSearchInterval() {
+		return edgeHeightSearchInterval;
+	}
+
+	public void setEdgeHeightSearchInterval(float edgeHeightSearchInterval) {
+		this.edgeHeightSearchInterval = edgeHeightSearchInterval;
+	}
+
+	public float getEdgeHeightSearchRange1Filter() {
+		return edgeHeightSearchRange1Filter;
+	}
+
+	public void setEdgeHeightSearchRange1Filter(float edgeHeightSearchRange1Filter) {
+		this.edgeHeightSearchRange1Filter = edgeHeightSearchRange1Filter;
+	}
+
+	public float getEdgeHeightSearchRange2Filter() {
+		return edgeHeightSearchRange2Filter;
+	}
+
+	public void setEdgeHeightSearchRange2Filter(float edgeHeightSearchRange2Filter) {
+		this.edgeHeightSearchRange2Filter = edgeHeightSearchRange2Filter;
+	}
+
+	public float getEdgeHeightSearchRange3Filter() {
+		return edgeHeightSearchRange3Filter;
+	}
+
+	public void setEdgeHeightSearchRange3Filter(float edgeHeightSearchRange3Filter) {
+		this.edgeHeightSearchRange3Filter = edgeHeightSearchRange3Filter;
+	}
+
+	public float getEdgeHeightSearchRange4Filter() {
+		return edgeHeightSearchRange4Filter;
+	}
+
+	public void setEdgeHeightSearchRange4Filter(float edgeHeightSearchRange4Filter) {
+		this.edgeHeightSearchRange4Filter = edgeHeightSearchRange4Filter;
+	}
+
 	/**
 	 * Convenience method returning the phasing subimage fft size for a given filter
 	 * @param filterType the filter type to get the fft size for
@@ -158,7 +202,29 @@ public class PhasingConstants {
 			return -1;
 		}
 	}
+
 	
+	/**
+	 * Convenience method returning the phasing edgeHeightSearchRange for a given number of filters
+	 * @param filterType the filter type to get the fft size for
+	 * @return the phasing subimage fft size for the passed filter type
+	 */
+	public float getEdgeHeightSearchRange(int filterCount) {
+		
+		switch (filterCount) {
+		case 1: 
+			return edgeHeightSearchRange1Filter;
+		case 2: 
+			return edgeHeightSearchRange2Filter;
+		case 3: 
+			return edgeHeightSearchRange3Filter;
+		case 4: 
+			return edgeHeightSearchRange4Filter;
+			
+		default: 
+			return 0.0f;
+		}
+	}
 	
 	public String toString() {
 		

@@ -385,21 +385,10 @@ public class NarrowBandPhasingExecutor {
 				xlambda[index] = currentFilter.getWavelength();
 				
 			}
-
-			// TODO: this should be in the constants table as 4 values
-			float range = 0f;
 			
-			if (filterCount == 2) {
-				range = 0.65f;
-			} else if (filterCount == 3) {
-				range = 3.0f;
-			}
-			
-			// TODO: this should be a phasing constant
-			float rInt = 0.001f;
-
-			
-			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, range, rInt);
+			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, 
+					constantsCache.getPhasingConstants().getEdgeHeightSearchRange(filterCount), 
+					constantsCache.getPhasingConstants().getEdgeHeightSearchInterval());
 	        
 			//***********************************************//
 			//                   nbActuators                 //
