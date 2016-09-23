@@ -1184,7 +1184,19 @@ public class ProcedureController implements Serializable {
 		// integration time needs to change
 		// if the mask is FS, use default PR int time, if mask is PH use PH int time	
 		procedureExecutionMgmt.setupPupilRegIntTime(procedure);
+
+		
+		// set default filter for NPH
+		if (registerPupilFor.isNarrowBandPhasing()) {
+			FilterType filterType = physicalModel.getFilterTypeById(FilterType.FILTER_TYPE_ID_891);
+			procedure.getProcedureConfigSet().getProcedureConfig().setFilterType(filterType);
 			
+			Filter filter = cameraDefMgmt.getFilterByFilterTypeAndWheel(FilterType.FILTER_TYPE_ID_891, 
+					physicalModel.getInstrument().getCamera().getFilterWheel().getFilterWheelId());
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setFilter(filter);
+		}
+ 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 		procedureExecutionMgmt.reloadPupilRegErrorConfig(procedure);
 	}

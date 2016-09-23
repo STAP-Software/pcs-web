@@ -98,7 +98,7 @@ public class PhysicalModel {
 	}
 
 	/**
-	 * Convinience method to return a pupil mask type given its id without having to make a trip to the database.
+	 * Convenience method to return a pupil mask type given its id without having to make a trip to the database.
 	 * @param pupilMaskTypeId the id of the pupil mask type record to find
 	 * @return the pupil mask type record
 	 */
@@ -106,6 +106,20 @@ public class PhysicalModel {
 		for (PupilMaskType pupilMaskType : pupilMaskTypeList) {
 			if (pupilMaskType.getPupilMaskTypeId().equals(pupilMaskTypeId)) {
 				return pupilMaskType;
+			}
+		}
+		return null;
+	}
+
+	/**
+	 * Convenience method to return a filter type given its id without having to make a trip to the database.
+	 * @param filterTypeId the id of the filter type record to find
+	 * @return the filter type record
+	 */
+	public FilterType getFilterTypeById(Long filterTypeId) {
+		for (FilterType filterType : filterTypeList) {
+			if (filterType.getFilterTypeId().equals(filterTypeId)) {
+				return filterType;
 			}
 		}
 		return null;
