@@ -2612,7 +2612,7 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag, FloatPoint[] actuatorPositions,
+	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag,
 			int[] plusPiston, int[] minusPiston, int numSegments) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbActuators"));
@@ -2620,20 +2620,15 @@ public class ComputationLibraryImpl {
 		JnbActuators jnbActuators = new JnbActuators();
 		RetVal retVal = new RetVal();
 
-	
-		float[] actuatorPositionsX = FloatPointListEncoder.extractXArray(Arrays.asList(actuatorPositions));
-		float[] actuatorPositionsY = FloatPointListEncoder.extractYArray(Arrays.asList(actuatorPositions));
- 
-		int actCount = actuatorPositions.length;
+
 		int numEdges = nbStep.length;
 		
-		float[] actNoplaneCmd = new float[actCount];
+		float[] actCalc = new float[numSegments];
 		float[] resid = new float[numEdges];
 		
 		float[][] acsa = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
 		
-		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, actuatorPositionsX, actuatorPositionsY, acsa, 
-				actNoplaneCmd,  resid);
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, actCalc,  resid);
 
 		
 		if (retVal.getCode() > 0) {
@@ -2648,7 +2643,7 @@ public class ComputationLibraryImpl {
 		float actRms = (Float)result[4];
 		
 		
-		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actNoplaneCmd, resid, constrainedSegmentCount, goodEdgeCount, edgeResMax,
+		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actCalc, resid, constrainedSegmentCount, goodEdgeCount, edgeResMax,
 				edgeResRms, actRms);
 
 

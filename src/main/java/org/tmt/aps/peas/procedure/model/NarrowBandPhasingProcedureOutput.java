@@ -1,6 +1,8 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
+import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
@@ -19,6 +21,9 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	MakeTemplateResult makeTemplateResult;
 	NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult;
 	NbActuatorsResult nbActuatorsResult;
+	FixPistonsResult fixPistonsResult;
+	PhasingStatsResult phasingStatsResult;
+	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	
 	
 	public MakeTemplateResult getMakeTemplateResult() {
@@ -41,6 +46,24 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	}
 	
 	
+	public FixPistonsResult getFixPistonsResult() {
+		return fixPistonsResult;
+	}
+	public void setFixPistonsResult(FixPistonsResult fixPistonsResult) {
+		this.fixPistonsResult = fixPistonsResult;
+	}
+	public PhasingStatsResult getPhasingStatsResult() {
+		return phasingStatsResult;
+	}
+	public void setPhasingStatsResult(PhasingStatsResult phasingStatsResult) {
+		this.phasingStatsResult = phasingStatsResult;
+	}
+	public CalcDesiredActCommandsResult getCalcDesiredActCommandsResult() {
+		return calcDesiredActCommandsResult;
+	}
+	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
+		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
+	}
 	@Override
 	public float[][] getDesiredActDeltas() {
 		

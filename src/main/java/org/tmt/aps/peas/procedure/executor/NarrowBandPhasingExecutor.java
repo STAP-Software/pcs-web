@@ -23,7 +23,9 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
@@ -410,12 +412,34 @@ public class NarrowBandPhasingExecutor {
 			Arrays.fill(colFlag, 1);
 			
 			
-			computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), rowFlagIn, colFlag, constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
+			NbActuatorsResult nbActuatorsResult = computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), rowFlagIn, colFlag, 
 		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
 		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
 		    		constantsCache.getTelescopeConstants().getNumberOfSegments());
 
-	
+
+		    /**********************************************/
+			/*                FixPistons                  */
+			/**********************************************/		
+		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
+		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
+		    		nbActuatorsResult.getActCalc());
+
+		    /**********************************************/
+			/*          CalculatePhasingStats             */
+			/**********************************************/		
+		    computationLibrary.calculatePhasingStats(
+		    		rowFlagIn, 
+		    		rowFlagIn, 
+		    		nbAnalyzeFilterSequenceResult.getNbStep(),
+		    		nbActuatorsResult.getResid());
+		      
+		    /**********************************************/
+			/*       CalculateDesiredActCommands          */
+			/**********************************************/		
+		    computationLibrary.fixPistonsToDesiredActs(fixPistonsResult);
+		    
+		    
 	        // TODO: is this data to be displayed and where
 
 	        // print *,' No. constrained segments      = ', constrainedSegmentCount
@@ -427,17 +451,6 @@ public class NarrowBandPhasingExecutor {
 			
 	        // TODO: need to fix this
 			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
-
-
-		    /**********************************************/
-			/*          CalculatePhasingStats             */
-			/**********************************************/	
-	        // TODO: do we need to do something like this?
-		    //computationLibrary.calculatePhasingStats(
-		    //		bbAnalyzeSequenceResult.getRowFlagIn(), 
-		    //		bbAnalyzeSequenceResult.getRowFlagOut(), 
-		    //		bbAnalyzeSequenceResult.getStepCorr(),
-		    //		bbAnalyzeSequenceResult.getResid());
 		      
 
 		    /**********************************************/
@@ -473,9 +486,9 @@ public class NarrowBandPhasingExecutor {
 			// TODO: is this set of output correct for nph?
 			// FIXME: edge residual RSS is not here, we have the RMS instead
 		    statusLogger.log("calc.phasing_summary",
-					procedureOutput.getNbActuatorsResult().getActRms(), 
-					procedureOutput.getNbActuatorsResult().getEdgeResRms(), 
-					procedureOutput.getNbActuatorsResult().getGoodEdgeCount());
+					procedureOutput.getFixPistonsResult().getActRms(), 
+					procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
+					procedureOutput.getPhasingStatsResult().getGoodEdgeCount());
 
 			
 			// prepare to command primary
@@ -486,9 +499,9 @@ public class NarrowBandPhasingExecutor {
 				// TODO: fix this to be the outputs and sources we want for nph
 				// FIXME: edge residual RSS is not here, we have the RMS instead
 				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
-						procedureOutput.getNbActuatorsResult().getActRms(), 
-						procedureOutput.getNbActuatorsResult().getEdgeResRms(), 
-						procedureOutput.getNbActuatorsResult().getGoodEdgeCount());   
+						procedureOutput.getFixPistonsResult().getActRms(), 
+						procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
+						procedureOutput.getPhasingStatsResult().getGoodEdgeCount());   
 				
 				sendM1Command = userPromptMgmt.displayYesNoDialog("Primary Mirror Command", phasingSummaryText  + "\n\n\nCommand Primary Mirror?");
 			}
@@ -502,7 +515,7 @@ public class NarrowBandPhasingExecutor {
 					// send out the commands
 					statusLogger.log("pt.m1_act_cmd_started");
 					
-					acsMgmt.commandActuatorDeltas(procedureOutput.getNbActuatorsResult().getActNoplaneCmd());
+					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 						
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
