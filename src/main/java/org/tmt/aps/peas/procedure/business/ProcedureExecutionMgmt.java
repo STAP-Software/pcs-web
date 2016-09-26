@@ -7,6 +7,7 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -38,7 +39,10 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
+import org.tmt.aps.peas.config.model.IntegrationTime;
+import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
+import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
@@ -160,8 +164,15 @@ public class ProcedureExecutionMgmt {
 					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentY());
 		}
 
-		// create a new iterationListConfig from the option chosen
-		procedure.getProcedureConfigSet().setIterationListConfig(new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig()));
+		// create a new iterationListConfig from the option chosen 
+		
+		IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
+		
+		// apply integration times set in the UI
+		applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+		
+		procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
+		
 		
 		logger.info("performProcedureStartup 3");
 
@@ -209,6 +220,29 @@ public class ProcedureExecutionMgmt {
 		statusLogger.initLog();
 
 		frameDisplayMgmt.init();
+
+	}
+	
+	
+	public void applyIntegrationTimeList(int lightSource, IterationListConfig iterationListConfig) {
+		
+		// get the integration times from the String list
+		List<String> items = Arrays.asList(iterationListConfig.getIntegrationTimeList().split("\\s*,\\s*"));
+		
+
+		for (int index=0; index<iterationListConfig.getIterationValueList().getSize(); index++) {
+			float intTime = new Float(items.get(index));
+			IterationValue iterationValue = iterationListConfig.getIterationValueList().getIterationValue(index);
+			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
+				
+				IterableEntity iterableEntity = iterationEntityCache.getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
+				iterationValue.setIterableEntity("LedIntegrationTime", iterableEntity);
+				
+			} else {
+				IterableEntity iterableEntity = iterationEntityCache.getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
+				iterationValue.setIterableEntity("StarIntegrationTime", iterableEntity);
+			}
+		}
 
 	}
 
@@ -563,7 +597,15 @@ public class ProcedureExecutionMgmt {
 		
 		// default for IterationListConfig (only if it is defined for this procedure type)
 		if (iterationEntityCache.getOptionList(procedureTypeId) != null) {
-			procedure.getProcedureConfigSet().setIterationListConfig(iterationEntityCache.getOptionList(procedureTypeId).get(0));
+			
+			IterationListConfig iterationListConfig = iterationEntityCache.getOptionList(procedureTypeId).get(0);
+			
+			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
+			
+			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			
+			
+			
 		}
 		
 		// clear any marking
@@ -573,6 +615,12 @@ public class ProcedureExecutionMgmt {
 
 		return procedure;
 	}
+	
+	
+	public void updateIterationListIntTimes(IterationListConfig iterationListConfig) {
+		
+	}
+	
 	
 	/**
 	 * Sets up the integration time procedure configuration element for Pupil Registration

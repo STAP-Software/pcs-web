@@ -5,20 +5,19 @@
  */
 package org.tmt.aps.peas.config.model;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
-import org.tmt.aps.peas.instrument.model.Instrument;
 
 /**
  * Configuration entity class representing the IterationListConfig table
@@ -80,8 +79,36 @@ public class IterationListConfig {
 		this.iterationValueList = iterationValueList;
 	}
 	
+	@Transient
+	String integrationTimeList;
+	
+	public String getIntegrationTimeList() {
+		return integrationTimeList;
+	}
+
+	public void setIntegrationTimeList(String integrationTimeList) {
+		this.integrationTimeList = integrationTimeList;
+	}
+	
+	public void updateIntegrationTimeList(int lightSource) {
+		// also populate the associated integration times
+		StringBuffer buf = new StringBuffer();
+		for (int index=0; index<getIterationValueList().getSize(); index++) {
+			
+			IterationValue iterationValue = getIterationValueList().getIterationValue(index);
+			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
+				buf.append(((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).integrationTime + ", ");
+			} else {
+				buf.append(((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).integrationTime + ", ");					
+			}
+		}
+		buf.deleteCharAt(buf.length()-1);
+		buf.deleteCharAt(buf.length()-1);
+		setIntegrationTimeList(buf.toString());
+	}
 	
 	
+
 }
 
 

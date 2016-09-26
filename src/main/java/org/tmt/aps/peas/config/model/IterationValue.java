@@ -1,6 +1,7 @@
 package org.tmt.aps.peas.config.model;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,9 +19,9 @@ public class IterationValue {
 		}
 	}
 	
-	public IterableEntity getIterableEntity(String className) {
+	public IterableEntity getIterableEntity(String accessName) {
 	
-		return accessNameToEntity.get(className);
+		return accessNameToEntity.get(accessName);
 	}
 	
 	public String getDisplayString() {
@@ -66,5 +67,11 @@ public class IterationValue {
 
 	public List<IterableEntity> getEntities() {
 		return entities;
+	}
+
+	public void setIterableEntity(String accessName, IterableEntity iterableEntity) {
+		
+		accessNameToEntity.put(accessName,  iterableEntity);
+		entities = new ArrayList<IterableEntity>(accessNameToEntity.values());
 	}
 }

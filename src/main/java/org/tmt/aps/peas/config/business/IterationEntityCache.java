@@ -324,5 +324,8 @@ public class IterationEntityCache {
 		
 	}
 
+	public IterableEntity getIterableEntity(String className, Long key) {
+		return classToEntityMap.get(className).get(key);
+	}
 	
 }

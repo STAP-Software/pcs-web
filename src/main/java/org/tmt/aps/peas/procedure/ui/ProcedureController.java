@@ -1321,6 +1321,11 @@ public class ProcedureController implements Serializable {
 	}
 
 	public void iterationListChangeListener() throws Exception {
+		
+		// change the associated integration times when the option changes (in procedure controller)
+		IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
+		iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		
 		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
 	}
 
