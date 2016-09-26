@@ -465,4 +465,9 @@ public class ProcedureConfig {
 		this.numTrialsList = numTrialsList;
 	}
 
+	public boolean isLightSourceLed() {
+		// TODO Auto-generated method stub
+		return lightSource == LIGHT_SOURCE_LED;
+	}
+
 }

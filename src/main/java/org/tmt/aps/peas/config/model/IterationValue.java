@@ -7,19 +7,20 @@ import java.util.Map;
 
 public class IterationValue {
 
-	Map<String, IterableEntity> classNameToEntity = new HashMap<String, IterableEntity>();
+	Map<String, IterableEntity> accessNameToEntity = new HashMap<String, IterableEntity>();
 	List<IterableEntity> entities;
 	
-	public IterationValue(List<IterableEntity> entities) {
+	public IterationValue(List<IterableEntity> entities, List<ProcedureIterationDef> iterationDefs) {
 		this.entities = entities;
+		int i=0;
 		for (IterableEntity entity : entities) {
-			classNameToEntity.put(entity.getClassName(), entity);
+			accessNameToEntity.put(iterationDefs.get(i++).getIterationEntityAccessName(), entity);
 		}
 	}
 	
 	public IterableEntity getIterableEntity(String className) {
 	
-		return classNameToEntity.get(className);
+		return accessNameToEntity.get(className);
 	}
 	
 	public String getDisplayString() {

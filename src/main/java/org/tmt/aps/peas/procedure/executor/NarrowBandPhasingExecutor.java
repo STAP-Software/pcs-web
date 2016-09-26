@@ -32,6 +32,7 @@ import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
+import org.tmt.aps.peas.config.model.IntegrationTime;
 import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -235,12 +236,21 @@ public class NarrowBandPhasingExecutor {
 				
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
-				Filter currentFilter = (Filter)iterationValue.getIterableEntity(Filter.class.getName());
-				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity(ReferenceBeam.class.getName());
+				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
+				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
 				
+				// set up integration time for this iteration
+				if (procedureConfig.isLightSourceLed()) {
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+				} else {
+					
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+				}
+
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
-				
 				
 				// setup the iteration output as the output target
 				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();

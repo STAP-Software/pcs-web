@@ -285,7 +285,7 @@ public class IterationConfigController implements Serializable {
 		for (IterableEntity entity : entityArgs) {
 			entities.add(entity);
 		}
-		IterationValue iterationValue = new IterationValue(entities);
+		IterationValue iterationValue = new IterationValue(entities, iterationEntityCache.getProcedureIterationDefList(procedureController.getProcedure().getProcedureType().getProcedureTypeId()));
 		return iterationValue;
 	}
 

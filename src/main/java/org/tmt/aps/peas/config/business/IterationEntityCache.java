@@ -20,7 +20,7 @@ import javax.inject.Named;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
-import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.config.model.IntegrationTime;
 import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
@@ -67,6 +67,7 @@ public class IterationEntityCache {
 	// cache store for config Option Lists indexed by procedureType
 	Map<Long, List<IterationListConfig>> procedureTypeToOptionList = new HashMap<Long, List<IterationListConfig>>();
 	
+	List<ProcedureIterationDef> iterationDefs = null;
 	
 	List<Long> procedureTypeList = new ArrayList<Long>();
 	
@@ -83,7 +84,7 @@ public class IterationEntityCache {
 		Long instrumentId = new Long(instrumentIdStr);
 
 		// load up the procedureTypeToIterationDefList map
-		List<ProcedureIterationDef> iterationDefs = iterationMgmt.findProcedureIterationDefs();
+		iterationDefs = iterationMgmt.findProcedureIterationDefs();
 		
 		
 		// IterationDefLists maps to procedure type
@@ -144,6 +145,19 @@ public class IterationEntityCache {
 		for (ReferenceBeam referenceBeam : referenceBeamList) {
 			indexToEntityMap.put(getKeyFieldValue(referenceBeam), referenceBeam);
 			className = referenceBeam.getClassName();
+		}
+		classToEntityMap.put(className, indexToEntityMap);
+		
+		indexToEntityMap = new HashMap<Long, IterableEntity>();
+		// Integration Time - just create all possible times here	
+		
+		float intTime = 0.1f;
+		while (intTime < 61.0f) {
+		
+			IntegrationTime integrationTime = new IntegrationTime(new Long((int)(intTime*10)), intTime);
+			indexToEntityMap.put(getKeyFieldValue(integrationTime), integrationTime);
+			className = integrationTime.getClassName();		
+			intTime += (intTime < 1.0) ? 0.1f : 1.0f; 
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
@@ -213,13 +227,31 @@ public class IterationEntityCache {
 		for (int i=0; i<items.size()/classNames.size(); i++) {
 			List<IterableEntity> entities = new ArrayList<IterableEntity>();
 			for (int j=0; j<classNames.size(); j++) {
-				Long nextKey = new Long(items.get(i*classNames.size() + j));
-				// find the entity that matches
-				IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(nextKey);
-				entities.add(entity);
+				
+				try {
+					Long nextKey = new Long(items.get(i*classNames.size() + j));
+					// find the entity that matches
+					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(nextKey);
+					entities.add(entity);
+					
+				} catch (NumberFormatException e) {
+					
+					// for now we only support float instead of int
+					
+					Float nextKey = new Float(items.get(i*classNames.size() + j));
+					// find the entity that matches
+					
+					Long key = new Long((int)(nextKey*10));
+										
+					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(key);
+					entities.add(entity);
+					
+				}
+				
+				
 			}
 			// create an IterationValue using the classNames and next className.size() key values
-			IterationValue iv = new IterationValue(entities);
+			IterationValue iv = new IterationValue(entities, iterationDefs);
 			iterationValues.add(iv);
 		}
 		

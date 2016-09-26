@@ -29,6 +29,7 @@ public class ProcedureIterationDef {
 	Long procedureIterationDefId;
 
 	String iterationEntityClassName;
+	String iterationEntityAccessName;
 	int iterationEntityOrder;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -67,6 +68,14 @@ public class ProcedureIterationDef {
 
 	public void setProcedureType(ProcedureType procedureType) {
 		this.procedureType = procedureType;
+	}
+
+	public String getIterationEntityAccessName() {
+		return iterationEntityAccessName;
+	}
+
+	public void setIterationEntityAccessName(String iterationEntityAccessName) {
+		this.iterationEntityAccessName = iterationEntityAccessName;
 	}
 	
 }
