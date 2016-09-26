@@ -1238,6 +1238,12 @@ public class ProcedureController implements Serializable {
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
 
+		// if we are setting up NPH, then we need to load the integration times for the LED
+		// FIXME: generalize this
+		if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
+			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		}
 	}
 		
 	/**

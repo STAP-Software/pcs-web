@@ -121,7 +121,7 @@ public class FitsFilename {
 				phasingFilter = 0;
 			} else if (procedureTypeCd.startsWith("NPH")) {
 				phasingStep = 0;
-				phasingFilter = new Integer(sequenceCd);
+				phasingFilter = new Integer(sequenceCd.substring(0,1));
 			} else {
 				iteration = new Integer(sequenceCd.substring(0,2));
 			}

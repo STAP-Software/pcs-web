@@ -390,7 +390,7 @@ public class NarrowBandPhasingExecutor {
 								
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
-				Filter currentFilter = (Filter)iterationValue.getIterableEntity(Filter.class.getName());
+				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 
 				xlambda[index] = currentFilter.getWavelength();
 				
