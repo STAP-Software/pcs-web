@@ -33,7 +33,7 @@ public class FitsFilename {
 	int sufsGroup;
 	int iteration;
 	int phasingStep;  // A-K = 1-11 for phasing
-	int phasingFilter;
+	int nphFilter;
 	String fileName;
 
 	/**
@@ -41,7 +41,7 @@ public class FitsFilename {
 	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
 	 */
 	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration,
-			int ufsSegment, int sufsGroup, int phasingStep, int phasingFilter) {
+			int ufsSegment, int sufsGroup, int phasingStep, int nphFilter) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -51,7 +51,7 @@ public class FitsFilename {
 		this.ufsSegment = ufsSegment;
 		this.sufsGroup = sufsGroup;
 		this.phasingStep = phasingStep;
-		this.phasingFilter = phasingFilter;
+		this.nphFilter = nphFilter;
 		
 		this.fileName = generateFileName();
 	}
@@ -65,7 +65,7 @@ public class FitsFilename {
 	 * @param pupilMaskType the type of the pupil mask used
 	 * @param iteration
 	 */
-	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration, int phasingFilter) {
+	public FitsFilename(Long telescopeId, PupilMaskType pupilMaskType, int iteration, int nphFilter) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -75,7 +75,7 @@ public class FitsFilename {
 		this.ufsSegment = 0;
 		this.sufsGroup = 0;
 		this.phasingStep = 0;
-		this.phasingFilter = phasingFilter;
+		this.nphFilter = nphFilter;
 		
 		this.fileName = generateFileName();
 	}
@@ -118,10 +118,13 @@ public class FitsFilename {
 				iteration = new Integer(sequenceCd.substring(0, 1));
 				// transform A-K to 1-11
 				phasingStep = (int)sequenceCd.charAt(1) - (int)'A' + 1; // A-K
-				phasingFilter = 0;
+				nphFilter = 0;
+
 			} else if (procedureTypeCd.startsWith("NPH")) {
 				phasingStep = 0;
-				phasingFilter = new Integer(sequenceCd.substring(0,1));
+				iteration = new Integer(sequenceCd.substring(0,1));
+				String filter = st.nextToken().substring(0,3);
+				nphFilter = new Integer(filter);
 			} else {
 				iteration = new Integer(sequenceCd.substring(0,2));
 			}
@@ -197,13 +200,14 @@ public class FitsFilename {
 		this.phasingStep = phasingStep;
 	}
 	
-	public int getPhasingFilter() {
-		return phasingFilter;
+	public int getNphFilter() {
+		return nphFilter;
 	}
 
-	public void setPhasingFilter(int phasingFilter) {
-		this.phasingFilter = phasingFilter;
+	public void setNphFilter(int nphFilter) {
+		this.nphFilter = nphFilter;
 	}
+
 
 
 	public String getFileName() {
@@ -271,7 +275,7 @@ public class FitsFilename {
 			buf.append(iteration);			
 			buf.append((char)(phasingStep + 'A' - 1));
 		} else if (procedureTypeCd.startsWith("NPH")) {
-			buf.append(phasingFilter);			
+			buf.append(iteration + "_" + nphFilter);			
 		} else {
 			buf.append(String.format("%02d", iteration));			
 		}

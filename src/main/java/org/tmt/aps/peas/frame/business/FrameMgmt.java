@@ -607,6 +607,9 @@ public class FrameMgmt {
 				ccdFrame.setHeaderPupilMaskType(headerPupilMaskType);
 				
 				System.out.println("MASK = " + mask);
+				
+				String filter = imhdu.getHeader().getStringValue("FILTER");
+				System.out.println("FILTER = " + filter);
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
