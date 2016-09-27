@@ -42,6 +42,7 @@ import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgSufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
+import org.tmt.aps.peas.visualization.model.SingleFilterEdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -507,12 +508,11 @@ public class VisualizationController implements Serializable {
 	
 	public void setEdgeHeightsDisplayValues(EdgeHeightsDisplayValues values) {}
 	
-	// FIXME: this might need to change
-	public EdgeHeightsDisplayValues getSingleFilterEdgeHeightsDisplayValues() {
-		return graphicDisplayMgmt.getEdgeHeightsDisplayValues();
+	public SingleFilterEdgeHeightsDisplayValues getSingleFilterEdgeHeightsDisplayValues() {
+		return graphicDisplayMgmt.getSingleFilterEdgeHeightsDisplayValues();
 	}
 	
-	public void setSingleFilterEdgeHeightsDisplayValues(EdgeHeightsDisplayValues values) {}
+	public void setSingleFilterEdgeHeightsDisplayValues(SingleFilterEdgeHeightsDisplayValues values) {}
 	
 	public String getAct1Pos() {
 		return act1Pos;

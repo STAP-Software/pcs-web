@@ -28,6 +28,7 @@ import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
+import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -227,7 +228,7 @@ public class NarrowBandPhasingExecutor {
 			//****************************************//
 			
 			// Begin the filter loop:
-
+			int edgeCount = constantsCache.getPrimaryMirrorConstants().getEdgeAngle().length;
 				
 			// requirement: a set of predefined lists + advanced options to create a new one
 			IterationListConfig iterationList = procedure.getProcedureConfigSet().getIterationListConfig();
@@ -249,6 +250,7 @@ public class NarrowBandPhasingExecutor {
 					procedureConfig.setIntegrationTime(intTime);
 				}
 
+				
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
@@ -256,7 +258,8 @@ public class NarrowBandPhasingExecutor {
 				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
-
+				
+				pio.setFilter(currentFilter);
 				
 				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, procedureConfig.getPhasingSteps());
 				
@@ -337,10 +340,35 @@ public class NarrowBandPhasingExecutor {
 	            // analyze spots for nbPhasing 
 				int[] nphMissingSpotsFlags = subimageDefList.getNphMissingSpotFlags(); 
 							
-				computationLibrary.nbAnalyzeStepSequence(nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), currentFilter.getWavelength(), nphMissingSpotsFlags, 
-						findCentroidsResult.getFoundSubimageFlags(), constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
+				NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult = computationLibrary.nbAnalyzeStepSequence(
+						nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), 
+						currentFilter.getWavelength(), nphMissingSpotsFlags, 
+						findCentroidsResult.getFindCentStatusList(), 
+						constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), constantsCache.getTelescopeConstants().getNumberOfSegments());
 
+				
+			    /**********************************************/
+				/*          CalculatePhasingStats             */
+				/**********************************************/		
+			    computationLibrary.calculatePhasingStats(
+			    		nbAnalyzeStepSequenceResult.getRowFlagOut(), 
+			    		nbAnalyzeStepSequenceResult.getRowFlagOut(), 
+			    		nbAnalyzeStepSequenceResult.getStepTable(),
+			    		new float[edgeCount]);
+
+			    
+			    
+			    
+			    /**********************************************/
+				/*      Display Measured Edge Heights         */
+				/**********************************************/
+			    // TODO: find a way to have the heading be "edge heights for filter: xxx"
+			    if (procedureConfig.isAutoDisplaySingleFilterEdgeHeights()) {
+					graphicDisplayMgmt.displaySingleFilterEdgeHeights(pio);
+				}
+
+				
 
 			}      // end Filter Loop
 
@@ -349,11 +377,14 @@ public class NarrowBandPhasingExecutor {
 
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
-			int edgeCount = constantsCache.getPrimaryMirrorConstants().getEdgeAngle().length;
+			
 			int filterCount = iterationList.getIterationValueList().getSize();
 			
 			// calculate the Intersection of all row_flag_out for each filter and put that in row_flag_in for the next computation
 			int[][] rowFlagOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "RowFlagOut", int[].class).toArray(new int[0][0]);
+			
+			
+			// TODO: this calculation needs to be in JavaComputations so that it can be a procedure output
 			
 			int[] rowFlagIn = new int[edgeCount];
 			Arrays.fill(rowFlagIn, 1);
@@ -363,6 +394,9 @@ public class NarrowBandPhasingExecutor {
 					rowFlagIn[i] = rowFlagIn[i] * rowFlagOutFilter[i];
 				}
 			}
+			
+			// FIXME - TEST ONLY
+			procedureOutput.setRowFlagOut(rowFlagIn);
 			
 			//***********************************************//
 			//             nbAnalyzeFilterSequence           //
@@ -455,7 +489,6 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*      Display Measured Edge Heights         */
 			/**********************************************/	
-		    // TODO: do we keep this - yes
 		    if (procedureConfig.isAutoDisplayEdgeHeights()) {
 				graphicDisplayMgmt.displayEdgeHeights(procedureOutput);
 			}
@@ -463,7 +496,6 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*      Display Residual Edge Heights         */
 			/**********************************************/
-		    // TODO: do we keep this - yes
 		    if (procedureConfig.isAutoDisplayResiduals()) {
 				graphicDisplayMgmt.displayEdgeResiduals(procedureOutput);
 			}
@@ -471,7 +503,6 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*          Display Piston Deltas             */
 			/**********************************************/	
-		    // TODO: do we keep this - yes
 			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
 				graphicDisplayMgmt.displayActuatorDeltas(procedureOutput);
 			}

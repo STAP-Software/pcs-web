@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.procedure.model;
 
+import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
@@ -25,6 +26,11 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	PhasingStatsResult phasingStatsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	
+	// TEST ONLY
+	int[] rowFlagOut;
+	public void setRowFlagOut(int[] rowFlagOut) {
+		this.rowFlagOut = rowFlagOut;
+	}
 	
 	public MakeTemplateResult getMakeTemplateResult() {
 		return makeTemplateResult;
@@ -64,48 +70,58 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
 		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
 	}
-	@Override
+
+	
 	public float[][] getDesiredActDeltas() {
 		
-		// TODO Auto-generated method stub
-		return null;
+		float[][] pistons = new float[36][3];
+		for (int i=0; i<nbActuatorsResult.getActCalc().length; i++) {
+			// convert measured actuator pistons to desired actuator pistons
+			pistons[i][0] = nbActuatorsResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
+			pistons[i][1] = nbActuatorsResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
+			pistons[i][2] = nbActuatorsResult.getActCalc()[i] * -Constants.MICRONS_TO_NM;
+		
+		}
+		//return calcDesiredActCommandsResult.getDesiredActDeltas();
+		return pistons;
+		
 	}
-	@Override
+	
 	public float getDesiredActDeltasRms() {
-		// TODO Auto-generated method stub
-		return 0;
+		return calcDesiredActCommandsResult.getDesiredActDeltasRms();
 	}
+	
+	
+	
+	
 	
 	
 	
 	// EdgeHeights Display Values
 	
-	@Override
 	public float[] getStepCorr() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public float[] getResid() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public int[] getRowFlagOut() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	@Override
-	public int getGoodEdgeCount() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-	@Override
-	public float getEdgeErrorMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		
+		return nbAnalyzeFilterSequenceResult.getNbStep();
 	}
 	
+	public float[] getResid() {
+		return nbActuatorsResult.getResid();
+	}
+	
+	public int[] getRowFlagOut() {
+		
+		return rowFlagOut;
+	}
+	
+	
+	public int getGoodEdgeCount() {
+		return phasingStatsResult.getGoodEdgeCount();
+	}
+
+	public float getEdgeErrorMax() {
+		return phasingStatsResult.getEdgeErrorMax();
+	}
+
 	public void setEdgeErrorMax(float edgeErrorMax) {
 		// TODO Auto-generated method stub
 		
@@ -113,22 +129,20 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	public void setResidualEdgeErrorMax(float residualEdgeErrorMax) {
 		// TODO Auto-generated method stub	
 	}
-	
-	@Override
+
 	public float getEdgeErrorRss() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getEdgeErrorRss();
 	}
-	@Override
+
 	public float getResidualEdgeErrorMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getResidualEdgeErrorMax();
 	}
-	@Override
+
 	public float getResidualEdgeErrorRss() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getResidualEdgeErrorRss();
 	}
+
+	
 	
 	
 	

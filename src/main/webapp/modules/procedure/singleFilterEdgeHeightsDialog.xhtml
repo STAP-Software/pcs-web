@@ -311,8 +311,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 //]]>  
 </script>   
 
-
-		<p:dialog id="singleFilterEdgeHeightsDialog" header="Measured Edge Heights" widgetVar="singleFilterEdgeHeightsDisplayDialog" closable="false" >  
+		<p:dialog id="singleFilterEdgeHeightsDialog" header="Measured Edge Heights for Single Filter" widgetVar="singleFilterEdgeHeightsDisplayDialog" closable="false" >  
      		<h:form id="singleFilterEdgeHeightsForm">
 
     		<h:inputHidden id="singleFilterEdgeHeights" value="#{visualizationController.singleFilterEdgeHeights}" />
@@ -343,6 +342,9 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				
 				<!-- measure edge stats -->
 				<p:spacer height="15"/><p:spacer height="15"/>
+				
+				<h:outputLabel value="Filter" />
+				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.filter.filterName}" style="position:relative; top:2px" />				
 				
 				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel}" />

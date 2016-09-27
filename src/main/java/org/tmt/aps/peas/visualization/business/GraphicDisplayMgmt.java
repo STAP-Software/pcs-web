@@ -34,6 +34,7 @@ import org.tmt.aps.peas.visualization.model.AvgPtCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgSufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.CentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
+import org.tmt.aps.peas.visualization.model.SingleFilterEdgeHeightsDisplayValues;
 import org.tmt.aps.peas.visualization.model.SufsCentroidOffsetsDisplayValues;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 
@@ -75,6 +76,7 @@ public class GraphicDisplayMgmt implements Serializable {
 	SufsCentroidOffsetsDisplayValues sufsCentroidOffsetsDisplayValues;
 	AvgSufsCentroidOffsetsDisplayValues avgSufsCentroidOffsetsDisplayValues;
 	EdgeHeightsDisplayValues edgeHeightsDisplayValues;
+	SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues;
 	
 	String actDeltaHeats;
 
@@ -432,6 +434,42 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	}
 
+
+	
+	public SingleFilterEdgeHeightsDisplayValues getSingleFilterEdgeHeightsDisplayValues() {
+		return singleFilterEdgeHeightsDisplayValues;
+	}
+
+	public void setSingleFilterEdgeHeightsDisplayValues(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues) {
+		this.singleFilterEdgeHeightsDisplayValues = singleFilterEdgeHeightsDisplayValues;
+	}
+
+	/**
+	 * Sets the edge heights display values, encoding the edge heights, use for analysis list, and rowFlagOut lists as strings to use with the display javascript
+	 */
+	public void setAndEncodeSingleFilterEdgeHeightsDisplayValues(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues) {
+		
+		this.singleFilterEdgeHeightsDisplayValues = singleFilterEdgeHeightsDisplayValues;
+		
+		String edgeHeights = FloatListEncoder.encodeList(singleFilterEdgeHeightsDisplayValues.getStepCorr());
+		setEdgeHeights(edgeHeights);
+		
+		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( PupilMaskType.PUPIL_MASK_TYPE_ID_160);
+		
+		int numEdges = singleFilterEdgeHeightsDisplayValues.getStepCorr().length;
+		int numSegments = constantsCache.getTelescopeConstants().getNumberOfSegments();
+		int[] useEdgeForAnalysis = new int[numEdges];
+		for (int i=0; i<numEdges; i++) {
+			useEdgeForAnalysis[i] = subimageDefList.useForAnalysis()[i+numSegments];
+		}
+
+		
+		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
+		rowFlagOut = IntegerListEncoder.encodeList(singleFilterEdgeHeightsDisplayValues.getRowFlagOut());
+
+	}
+
+	
 	/**
 	 * Sets the edge residuals display values, encoding the edge residuals, use for analysis list, and rowFlagOut lists as strings to use with the display javascript
 	 */
@@ -661,6 +699,25 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displayEdgeHeights"));
 		
 	}
+	
+	/**
+	 * Queues an edge heights dialog with the passed edge heights display values.  
+	 * This method waits for display and the user response.
+	 */
+	public void displaySingleFilterEdgeHeights(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues) {
+
+		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySingleFilterEdgeHeights"));
+
+		setAndEncodeSingleFilterEdgeHeightsDisplayValues(singleFilterEdgeHeightsDisplayValues);
+				
+		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SINGLE_FILTER_EDGE_HEIGHTS);
+		
+		waitForReturnState();
+		
+		logger.info(MessageGenerator.generateMessage("waitForUser.success", "displaySingleFilterEdgeHeights"));
+		
+	}
+
 	
 	/**
 	 * Queues an edge residuals dialog with the passed edge residuals display values.  

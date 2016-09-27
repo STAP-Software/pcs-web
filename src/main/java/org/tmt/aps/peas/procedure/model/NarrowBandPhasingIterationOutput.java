@@ -1,6 +1,5 @@
 package org.tmt.aps.peas.procedure.model;
 
-import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
@@ -10,14 +9,15 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
+import org.tmt.aps.peas.instrument.model.Filter;
+import org.tmt.aps.peas.visualization.model.SingleFilterEdgeHeightsDisplayValues;
 
 /**
  * Procedure output data for a single step during the Phasing procedure
  * @author smichaels
  *
  */
-public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput implements EdgeHeightsDisplayValues  {
+public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput implements SingleFilterEdgeHeightsDisplayValues  {
 
 
 	CenterTelescopeCalcResult centerTelescopeCalcResult;
@@ -29,7 +29,8 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	MakeTemplateResult makeTemplateResult;
 	NbAnalyzeFrameResult nbAnalyzeFrameResult;
 	NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult;
-	
+	PhasingStatsResult phasingStatsResult;
+	Filter filter;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -79,39 +80,47 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	public void setNbAnalyzeStepSequenceResult(NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult) {
 		this.nbAnalyzeStepSequenceResult = nbAnalyzeStepSequenceResult;
 	}
+	public Filter getFilter() {
+		return filter;
+	}
+	public void setFilter(Filter filter) {
+		this.filter = filter;
+	}
+	public PhasingStatsResult getPhasingStatsResult() {
+		return phasingStatsResult;
+	}
+	public void setPhasingStatsResult(PhasingStatsResult phasingStatsResult) {
+		this.phasingStatsResult = phasingStatsResult;
+	}
+	
 
 	// Edge Heights Display Values implementation methods
 	
 	// EdgeHeights Display Values
 	
-	@Override
+
+	
 	public float[] getStepCorr() {
 		
-		// FIXME: is this correct?
-		return nbAnalyzeFrameResult.getCoherenceOut();
-		
+		return nbAnalyzeStepSequenceResult.getStepTable();
 	}
-	@Override
+	
 	public float[] getResid() {
-		// TODO Auto-generated method stub
-		return null;
+		return new float[84];
 	}
 
 	public int[] getRowFlagOut() {
 		return nbAnalyzeStepSequenceResult.getRowFlagOut();
 	}
 	
-	@Override
 	public int getGoodEdgeCount() {
-		
-		return 0;
+		return phasingStatsResult.getGoodEdgeCount();
 	}
-	@Override
+
 	public float getEdgeErrorMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getEdgeErrorMax();
 	}
-	
+
 	public void setEdgeErrorMax(float edgeErrorMax) {
 		// TODO Auto-generated method stub
 		
@@ -119,22 +128,20 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	public void setResidualEdgeErrorMax(float residualEdgeErrorMax) {
 		// TODO Auto-generated method stub	
 	}
-	
-	@Override
+
 	public float getEdgeErrorRss() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getEdgeErrorRss();
 	}
-	@Override
+
 	public float getResidualEdgeErrorMax() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getResidualEdgeErrorMax();
 	}
-	@Override
+
 	public float getResidualEdgeErrorRss() {
-		// TODO Auto-generated method stub
-		return 0;
+		return phasingStatsResult.getResidualEdgeErrorRss();
 	}
+
+
 	
 	
 	
