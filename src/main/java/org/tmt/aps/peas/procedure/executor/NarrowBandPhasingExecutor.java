@@ -258,8 +258,7 @@ public class NarrowBandPhasingExecutor {
 				NarrowBandPhasingIterationOutput pio = new NarrowBandPhasingIterationOutput();
 				procedureExecutionState.setCurrentOutputTarget(pio);
 				procedureOutput.addIteration(pio);
-				
-				pio.setFilter(currentFilter);
+
 				
 				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, procedureConfig.getPhasingSteps());
 				
@@ -285,7 +284,7 @@ public class NarrowBandPhasingExecutor {
 				//***********************************************//
 
 				MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
-						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(currentFilter.getFilterType()), 
+						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(),
 						procedureConfig.getPupilMask(), currentFilter);
@@ -365,7 +364,7 @@ public class NarrowBandPhasingExecutor {
 				/**********************************************/
 			    // TODO: find a way to have the heading be "edge heights for filter: xxx"
 			    if (procedureConfig.isAutoDisplaySingleFilterEdgeHeights()) {
-					graphicDisplayMgmt.displaySingleFilterEdgeHeights(pio);
+					graphicDisplayMgmt.displaySingleFilterEdgeHeights(pio, index);
 				}
 
 				
@@ -380,23 +379,7 @@ public class NarrowBandPhasingExecutor {
 			
 			int filterCount = iterationList.getIterationValueList().getSize();
 			
-			// calculate the Intersection of all row_flag_out for each filter and put that in row_flag_in for the next computation
-			int[][] rowFlagOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "RowFlagOut", int[].class).toArray(new int[0][0]);
 			
-			
-			// TODO: this calculation needs to be in JavaComputations so that it can be a procedure output
-			
-			int[] rowFlagIn = new int[edgeCount];
-			Arrays.fill(rowFlagIn, 1);
-			
-			for (int[] rowFlagOutFilter : rowFlagOutFilters) {
-				for (int i=0; i<edgeCount; i++) {
-					rowFlagIn[i] = rowFlagIn[i] * rowFlagOutFilter[i];
-				}
-			}
-			
-			// FIXME - TEST ONLY
-			procedureOutput.setRowFlagOut(rowFlagIn);
 			
 			//***********************************************//
 			//             nbAnalyzeFilterSequence           //
@@ -405,6 +388,8 @@ public class NarrowBandPhasingExecutor {
 	        // Begin Filter Analysis:  Combine the results from multiple filters.
 
 			float[][] stepTable = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "StepTable", float[].class).toArray(new float[0][0]);
+			
+			int[][] rowFlagOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeStepSequenceResult", "RowFlagOut", int[].class).toArray(new int[0][0]);
 			
 			float[][] coherenceOutFilters = procedureOutput.getIterationValuesFor("NbAnalyzeFrameResult", "CoherenceOut", float[].class).toArray(new float[0][0]);
 			float[][][] corrTable = new float[filterCount][1][edgeCount];
@@ -430,7 +415,7 @@ public class NarrowBandPhasingExecutor {
 				
 			}
 			
-			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagIn, stepTable, corrTable, xlambda, 
+			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, corrTable, xlambda, 
 					constantsCache.getPhasingConstants().getEdgeHeightSearchRange(filterCount), 
 					constantsCache.getPhasingConstants().getEdgeHeightSearchInterval());
 	        
@@ -445,10 +430,19 @@ public class NarrowBandPhasingExecutor {
 			Arrays.fill(colFlag, 1);
 			
 			
-			NbActuatorsResult nbActuatorsResult = computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), rowFlagIn, colFlag, 
+			NbActuatorsResult nbActuatorsResult = computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), 
+					nbAnalyzeFilterSequenceResult.getRowFlagOut(), colFlag, 
 		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
 		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
 		    		constantsCache.getTelescopeConstants().getNumberOfSegments());
+
+			
+		    if (nbActuatorsResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
+		    	
+			    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", MessageGenerator.generateMessage("phasing.constrained_warning", 
+			    		nbActuatorsResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments()));
+		    	
+		    }
 
 
 		    /**********************************************/
@@ -462,8 +456,8 @@ public class NarrowBandPhasingExecutor {
 			/*          CalculatePhasingStats             */
 			/**********************************************/		
 		    computationLibrary.calculatePhasingStats(
-		    		rowFlagIn, 
-		    		rowFlagIn, 
+		    		nbAnalyzeFilterSequenceResult.getRowFlagOut(), 
+		    		nbAnalyzeFilterSequenceResult.getRowFlagOut(), 
 		    		nbAnalyzeFilterSequenceResult.getNbStep(),
 		    		nbActuatorsResult.getResid());
 		      

@@ -464,6 +464,12 @@ public class VisualizationController implements Serializable {
 		this.offsetScale = offsetScale;
 	}
 
+	public int getIteration() {
+		return graphicDisplayMgmt.getIteration();
+	}
+	
+	public void setIteration(int iteration) {};
+	
 	public CentroidOffsetsDisplayValues getCentroidOffsetsDisplayValues() {
 		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues();
 	}
@@ -844,11 +850,11 @@ public class VisualizationController implements Serializable {
 
 		ProcedureIterationOutput procedureIterationOutput = procedureController.getProcedure().getProcedureOutput().getProcedureIterationOutputList().get(iteration);
 
-		if (procedureIterationOutput instanceof EdgeHeightsDisplayValues) {
+		if (procedureIterationOutput instanceof SingleFilterEdgeHeightsDisplayValues) {
 
-			EdgeHeightsDisplayValues ehdv = (EdgeHeightsDisplayValues) procedureIterationOutput;
+			SingleFilterEdgeHeightsDisplayValues ehdv = (SingleFilterEdgeHeightsDisplayValues) procedureIterationOutput;
 			
-			graphicDisplayMgmt.setAndEncodeEdgeHeightsDisplayValues(ehdv);
+			graphicDisplayMgmt.setAndEncodeSingleFilterEdgeHeightsDisplayValues(ehdv, iteration);
 		}
 		currentDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);		
 	}

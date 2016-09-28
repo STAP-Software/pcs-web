@@ -20,6 +20,7 @@ import javax.persistence.TypedQuery;
 import org.apache.commons.beanutils.BeanUtils;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
@@ -47,6 +48,8 @@ public class ProcedureMgmt {
 	ProcedureOutputMgmt procedureOutputMgmt;
 	@EJB
 	SessionMgmt sessionMgmt;
+	@EJB 
+	IterationEntityCache iterationEntityCache;
 	
 	/**
 	 * Returns a procedure and related data structures (procedure output and frame list) given the procedure id
@@ -56,6 +59,8 @@ public class ProcedureMgmt {
 		query.setParameter("procedureId", procedureId);
 		
 		Procedure procedure = query.getSingleResult();
+		
+		iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), procedure.getProcedureType().getProcedureTypeId());
 		
 		try {
 			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);

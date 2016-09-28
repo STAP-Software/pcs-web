@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.config.model;
 
+import java.lang.reflect.Method;
 import java.util.List;
 
 public class IterationValueList {
@@ -42,5 +43,20 @@ public class IterationValueList {
 		return buf.toString();
 	}
 	
-	
+	public String findEntityLabelValue(int iteration, String accessName) throws Exception {
+		
+		String labelFieldName = getIterationValue(iteration).getIterableEntity(accessName).getLabelFieldName();
+		
+		Object object = getIterationValue(iteration).getIterableEntity(accessName);
+		
+		Class clazz = object.getClass();
+		
+		String methodName = "get" + Character.toUpperCase(labelFieldName.charAt(0)) + labelFieldName.substring(1);
+		
+		Method method = clazz.getMethod(methodName, null);
+		
+		return method.invoke(object, null).toString();
+		
+
+	}
 }

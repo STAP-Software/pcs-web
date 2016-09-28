@@ -90,6 +90,7 @@ public class GraphicDisplayMgmt implements Serializable {
 
 	int sufsGroupSegmentNumber = 0;
 	int avgSufsGroupSegmentNumber = 0;
+	int iteration = 0;
 
 	
 	public int getWaitingForSecs() {
@@ -249,6 +250,14 @@ public class GraphicDisplayMgmt implements Serializable {
 		this.avgSufsGroupSegmentNumber = avgSufsGroupSegmentNumber;
 	}
 	
+	public int getIteration() {
+		return iteration;
+	}
+
+	public void setIteration(int iteration) {
+		this.iteration = iteration;
+	}
+
 	/** 
 	 * @return the visualization pending display, if any
 	 */
@@ -447,9 +456,10 @@ public class GraphicDisplayMgmt implements Serializable {
 	/**
 	 * Sets the edge heights display values, encoding the edge heights, use for analysis list, and rowFlagOut lists as strings to use with the display javascript
 	 */
-	public void setAndEncodeSingleFilterEdgeHeightsDisplayValues(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues) {
+	public void setAndEncodeSingleFilterEdgeHeightsDisplayValues(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues, int iteration) {
 		
 		this.singleFilterEdgeHeightsDisplayValues = singleFilterEdgeHeightsDisplayValues;
+		this.iteration = iteration;
 		
 		String edgeHeights = FloatListEncoder.encodeList(singleFilterEdgeHeightsDisplayValues.getStepCorr());
 		setEdgeHeights(edgeHeights);
@@ -704,11 +714,11 @@ public class GraphicDisplayMgmt implements Serializable {
 	 * Queues an edge heights dialog with the passed edge heights display values.  
 	 * This method waits for display and the user response.
 	 */
-	public void displaySingleFilterEdgeHeights(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues) {
+	public void displaySingleFilterEdgeHeights(SingleFilterEdgeHeightsDisplayValues singleFilterEdgeHeightsDisplayValues, int iteration) {
 
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displaySingleFilterEdgeHeights"));
 
-		setAndEncodeSingleFilterEdgeHeightsDisplayValues(singleFilterEdgeHeightsDisplayValues);
+		setAndEncodeSingleFilterEdgeHeightsDisplayValues(singleFilterEdgeHeightsDisplayValues, iteration);
 				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_SINGLE_FILTER_EDGE_HEIGHTS);
 		

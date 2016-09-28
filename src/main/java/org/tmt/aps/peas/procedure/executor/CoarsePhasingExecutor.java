@@ -218,7 +218,7 @@ public class CoarsePhasingExecutor {
 
 			// calculate templates on the fly
 			MakeTemplateResult makeTemplateResult = computationLibrary.makeTemplate(
-					constantsCache.getPhasingConstants().getPhasingSubimageFftSize(procedureConfig.getFilterType()), 
+					constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
 					constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
 					procedureConfig.getPupilMask(), procedureConfig.getFilter());

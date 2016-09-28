@@ -26,11 +26,6 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	PhasingStatsResult phasingStatsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	
-	// TEST ONLY
-	int[] rowFlagOut;
-	public void setRowFlagOut(int[] rowFlagOut) {
-		this.rowFlagOut = rowFlagOut;
-	}
 	
 	public MakeTemplateResult getMakeTemplateResult() {
 		return makeTemplateResult;
@@ -110,7 +105,7 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	
 	public int[] getRowFlagOut() {
 		
-		return rowFlagOut;
+		return nbAnalyzeFilterSequenceResult.getRowFlagOut();
 	}
 	
 	

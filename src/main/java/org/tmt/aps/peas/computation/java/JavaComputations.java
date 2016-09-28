@@ -371,6 +371,22 @@ public class JavaComputations {
 	    return transpose;
 	}
 
+	public static int[][] transpose2dArray(int[][] matrix)
+	{
+		int idx1 = matrix.length;
+		int idx2 = matrix[0].length;
+		
+	    int[][] transpose = new int[idx2][idx1];
+	    for (int x = 0; x < idx2; x++)
+	    {
+	        for (int y = 0; y < idx1; y++)
+	        {
+	            transpose[x][y] = matrix[y][x];
+	        }
+	    }
+	    return transpose;
+	}
+
 	public static float[][][] transpose3dArray(float[][][] matrix)
 	{
 		int idx1 = matrix.length;

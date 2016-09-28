@@ -13,11 +13,7 @@ public class PhasingConstants {
 	float ringMode[];
 
 	int phasingTemplateCount;
-	int phasingSubimageFftSize611;
-	int phasingSubimageFftSize651;
-	int phasingSubimageFftSize852;
-	int phasingSubimageFftSize870;
-	int phasingSubimageFftSize891;
+	int phasingSubimageFftSize;
 	
 	float edgeHeightSearchInterval;
 	float edgeHeightSearchRange1Filter;
@@ -51,44 +47,13 @@ public class PhasingConstants {
 	}
 
 
-	public int getPhasingSubimageFftSize611() {
-		return phasingSubimageFftSize611;
+
+	public int getPhasingSubimageFftSize() {
+		return phasingSubimageFftSize;
 	}
 
-	public void setPhasingSubimageFftSize611(int phasingSubimageFftSize611) {
-		this.phasingSubimageFftSize611 = phasingSubimageFftSize611;
-	}
-
-	public int getPhasingSubimageFftSize651() {
-		return phasingSubimageFftSize651;
-	}
-
-	public void setPhasingSubimageFftSize651(int phasingSubimageFftSize651) {
-		this.phasingSubimageFftSize651 = phasingSubimageFftSize651;
-	}
-
-	public int getPhasingSubimageFftSize852() {
-		return phasingSubimageFftSize852;
-	}
-
-	public void setPhasingSubimageFftSize852(int phasingSubimageFftSize852) {
-		this.phasingSubimageFftSize852 = phasingSubimageFftSize852;
-	}
-
-	public int getPhasingSubimageFftSize870() {
-		return phasingSubimageFftSize870;
-	}
-
-	public void setPhasingSubimageFftSize870(int phasingSubimageFftSize870) {
-		this.phasingSubimageFftSize870 = phasingSubimageFftSize870;
-	}
-
-	public int getPhasingSubimageFftSize891() {
-		return phasingSubimageFftSize891;
-	}
-
-	public void setPhasingSubimageFftSize891(int phasingSubimageFftSize891) {
-		this.phasingSubimageFftSize891 = phasingSubimageFftSize891;
+	public void setPhasingSubimageFftSize(int phasingSubimageFftSize) {
+		this.phasingSubimageFftSize = phasingSubimageFftSize;
 	}
 
 	public float getBbPhasingFracInterval() {
@@ -179,29 +144,6 @@ public class PhasingConstants {
 		this.edgeHeightSearchRange4Filter = edgeHeightSearchRange4Filter;
 	}
 
-	/**
-	 * Convenience method returning the phasing subimage fft size for a given filter
-	 * @param filterType the filter type to get the fft size for
-	 * @return the phasing subimage fft size for the passed filter type
-	 */
-	public int getPhasingSubimageFftSize(FilterType filterType) {
-		int filterTypeWaveLength = new Integer(filterType.getFilterTypeName());
-		switch (filterTypeWaveLength) {
-		case 611: 
-			return phasingSubimageFftSize611;
-		case 651: 
-			return phasingSubimageFftSize651;
-		case 852: 
-			return phasingSubimageFftSize852;
-		case 870: 
-			return phasingSubimageFftSize870;
-		case 891: 
-			return phasingSubimageFftSize891;
-			
-		default: 
-			return -1;
-		}
-	}
 
 	
 	/**
@@ -235,11 +177,7 @@ public class PhasingConstants {
 		}
 		
 		buf.append("\nphasingTemplateCount = " + phasingTemplateCount);
-		buf.append("\nphasingSubimageFftSize611 = " + phasingSubimageFftSize611);
-		buf.append("\nphasingSubimageFftSize651 = " + phasingSubimageFftSize651);
-		buf.append("\nphasingSubimageFftSize852 = " + phasingSubimageFftSize852);
-		buf.append("\nphasingSubimageFftSize870 = " + phasingSubimageFftSize870);
-		buf.append("\nphasingSubimageFftSize891 = " + phasingSubimageFftSize891);
+		buf.append("\nphasingSubimageFftSize = " + phasingSubimageFftSize);
 		buf.append("\nbbPhasingFracInterval = " + bbPhasingFracInterval);
 		buf.append("\nringModeCorrectionFactor = " + ringModeCorrectionFactor);
 		buf.append("\nstepSize30 = " + stepSize30);

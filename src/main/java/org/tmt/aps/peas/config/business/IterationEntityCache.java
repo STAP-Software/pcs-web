@@ -194,17 +194,17 @@ public class IterationEntityCache {
 	 * @param iterationListConfigOption
 	 * @param procedureTypeId
 	 */
-	public void populateIterationValueList(IterationListConfigOption iterationListConfigOption, Long procedureTypeId) {
+	public void populateIterationValueList(IterationListConfig iterationListConfig, Long procedureTypeId) {
 		
 		List<String> iterationClassList = procedureTypeToIterationClassList.get(procedureTypeId);
 
 		// we need to decode the iteration value list
-		String encodedValueList = iterationListConfigOption.getIterationValueListEncoded();
+		String encodedValueList = iterationListConfig.getIterationValueListEncoded();
 		
 		// the iterationValueList option has all the information in it to be used within an executor
 		IterationValueList valueList = decodeList(encodedValueList, iterationClassList);
 						
-		iterationListConfigOption.setIterationValueList(valueList);
+		iterationListConfig.setIterationValueList(valueList);
 
 	}
 	

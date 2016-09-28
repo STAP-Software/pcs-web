@@ -30,7 +30,6 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	NbAnalyzeFrameResult nbAnalyzeFrameResult;
 	NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult;
 	PhasingStatsResult phasingStatsResult;
-	Filter filter;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -80,12 +79,7 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	public void setNbAnalyzeStepSequenceResult(NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult) {
 		this.nbAnalyzeStepSequenceResult = nbAnalyzeStepSequenceResult;
 	}
-	public Filter getFilter() {
-		return filter;
-	}
-	public void setFilter(Filter filter) {
-		this.filter = filter;
-	}
+
 	public PhasingStatsResult getPhasingStatsResult() {
 		return phasingStatsResult;
 	}

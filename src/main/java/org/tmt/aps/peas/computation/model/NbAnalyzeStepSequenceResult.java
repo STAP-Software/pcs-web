@@ -11,6 +11,10 @@ public class NbAnalyzeStepSequenceResult {
 	float edgeErrorMicrons;
 	float lineSlopeAvg;
 
+	public NbAnalyzeStepSequenceResult() {
+		
+	}
+	
 	public NbAnalyzeStepSequenceResult(int[] rowFlagOut, float[] stepTable, float[][][] indexTable, 
 			float edgeErrorSteps, float edgeErrorMicrons, float lineSlopeAvg) {
 		

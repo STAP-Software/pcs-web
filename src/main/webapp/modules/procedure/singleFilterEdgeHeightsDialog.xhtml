@@ -344,7 +344,8 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<p:spacer height="15"/><p:spacer height="15"/>
 				
 				<h:outputLabel value="Filter" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.filter.filterName}" style="position:relative; top:2px" />				
+					
+				<h:outputText value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.iterationValueList.findEntityLabelValue(visualizationController.iteration,'Filter')}" style="position:relative; top:2px" />				
 				
 				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel}" />

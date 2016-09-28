@@ -68,8 +68,8 @@
 							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{visualizationController.centroidDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); centroidOffsetDisplayDialog.show()" rendered="#{visualizationController.centroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.sufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
-							<p:menuitem value="Single Filter Edge Heights" action="#{visualizationController.doPopulateSingleFilterEdgeHeightsDisplay(loop.index)}" update="singleFilterEdgeHeightsForm" oncomplete="runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()" rendered="#{visualizationController.singleFilterEdgeHeightsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
-						</p:submenu>
+							<p:menuitem value="Single Filter Edge Heights" action="#{visualizationController.doPopulateSingleFilterEdgeHeightsDisplay(loop.index)}" update=":singleFilterEdgeHeightsForm" oncomplete="runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()" rendered="#{visualizationController.singleFilterEdgeHeightsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>		
+ 						</p:submenu>
 						</c:forEach>
 					
 						<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay}" update=":spotsForm"  oncomplete="runDrawSpots();centroidsDisplayDialog.show();" rendered="#{procedureController.procedure.procedureType.createRefMap}" disabled="#{sessionController.navDisabled}"/>

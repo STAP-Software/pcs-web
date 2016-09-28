@@ -9,6 +9,10 @@ public class NbAnalyzeFrameResult {
     float[] phiFit;
     float[] chisqF;
 
+    public NbAnalyzeFrameResult() {
+    	
+    }
+    
 	public NbAnalyzeFrameResult(float[] coherenceOut, float[] bestCorrelationIndex, float[] aFit, float[] bFit, float[] phiFit, float[] chisqF) {
 		this.coherenceOut = coherenceOut;
 		this.bestCorrelationIndex = bestCorrelationIndex;

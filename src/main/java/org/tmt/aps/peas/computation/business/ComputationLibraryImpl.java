@@ -2565,7 +2565,7 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] xlambda,
+	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[][] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] xlambda,
 			float range, float rInt) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFilterSequence"));
@@ -2578,15 +2578,17 @@ public class ComputationLibraryImpl {
 		
 		float[][] stepTableT = JavaComputations.transpose2dArray(stepTable);
 		float[][][] corrTableT = JavaComputations.transpose3dArray(corrTable);
-		
+		int[][] rowFlagInT = JavaComputations.transpose2dArray(rowFlagIn);
+
 
 		int numEdges = 84;
 
 		float[] chi2nm = new float[numEdges];
 		float[] nbStep = new float[numEdges];
+		int[] rowFlagOut = new int[numEdges];
 
-		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagIn, stepTableT, corrTableT, xlambda, range, 
-				rInt, chi2nm, nbStep);
+		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, corrTableT, xlambda, range, 
+				rInt, chi2nm, nbStep, rowFlagOut);
 	            
 
 		
@@ -2595,7 +2597,7 @@ public class ComputationLibraryImpl {
 			throw new ComputationException("nbAnalyzeFilterSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
-		NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = new NbAnalyzeFilterSequenceResult(chi2nm, nbStep);
+		NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = new NbAnalyzeFilterSequenceResult(chi2nm, nbStep, rowFlagOut);
 
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "nbAnalyzeFilterSequence"));
@@ -2637,14 +2639,10 @@ public class ComputationLibraryImpl {
 		}
 
 		int constrainedSegmentCount = (Integer)result[0];
-		int goodEdgeCount = (Integer)result[1];
-		float edgeResMax = (Float)result[2];
-		float edgeResRms = (Float)result[3];
-		float actRms = (Float)result[4];
+		float segmentPistonRms = (Float)result[1];
 		
 		
-		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actCalc, resid, constrainedSegmentCount, goodEdgeCount, edgeResMax,
-				edgeResRms, actRms);
+		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actCalc, resid, constrainedSegmentCount, segmentPistonRms);
 
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "nbActuators"));
