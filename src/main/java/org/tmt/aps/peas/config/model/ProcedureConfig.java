@@ -440,6 +440,10 @@ public class ProcedureConfig {
 		return frameSource == FRAME_SOURCE_FILE;
 	}
 
+	public boolean isFrameFromCcd() {
+		return frameSource == FRAME_SOURCE_CCD;
+	}
+
 	public List<Float> getIntegrationTimeList() {
 		if (intTimeSelectOptions != null) {
 			integrationTimeList =  FloatListEncoder.decodeList(intTimeSelectOptions);

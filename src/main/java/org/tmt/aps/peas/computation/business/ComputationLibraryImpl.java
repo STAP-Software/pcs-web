@@ -2565,7 +2565,7 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[][] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] xlambda,
+	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[][] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] filterWavelengthMicrons,
 			float range, float rInt) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFilterSequence"));
@@ -2587,7 +2587,7 @@ public class ComputationLibraryImpl {
 		float[] nbStep = new float[numEdges];
 		int[] rowFlagOut = new int[numEdges];
 
-		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, corrTableT, xlambda, range, 
+		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, corrTableT, filterWavelengthMicrons, range, 
 				rInt, chi2nm, nbStep, rowFlagOut);
 	            
 

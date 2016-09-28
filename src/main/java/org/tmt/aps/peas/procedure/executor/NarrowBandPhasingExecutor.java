@@ -212,8 +212,6 @@ public class NarrowBandPhasingExecutor {
 			readyCameraSubflow.execute(procedure);
 			
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
-
-			statusLogger.log("procedure.using_curr_frame");
 			
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
@@ -233,12 +231,18 @@ public class NarrowBandPhasingExecutor {
 			// requirement: a set of predefined lists + advanced options to create a new one
 			IterationListConfig iterationList = procedure.getProcedureConfigSet().getIterationListConfig();
 			
+		    statusLogger.log("nph.loop_starting");
+
+			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
 				
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
+				
+			    statusLogger.log("nph.current_filter", currentFilter.getFilterName());
+
 				
 				// set up integration time for this iteration
 				if (procedureConfig.isLightSourceLed()) {
@@ -260,7 +264,7 @@ public class NarrowBandPhasingExecutor {
 				procedureOutput.addIteration(pio);
 
 				
-				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, procedureConfig.getPhasingSteps());
+				statusLogger.log("procedure.iteration", procedure.getProcedureType().getProcedureTypeName(), index+1, iterationList.getIterationValueList().getSize());
 				
 				procedureExecutionState.incrementIteration();
 				
@@ -268,17 +272,23 @@ public class NarrowBandPhasingExecutor {
 				//       Set the Filter and Reference Beam       //
 				//***********************************************//
 				
-				statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
-				Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
+				if (procedureConfig.isFrameFromCcd()) {
+				
+					statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
+					Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
+	
+					statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
+					Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
+	
+					// wait for all commands to complete
+					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture);
+					statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+					
+				}
 
-				statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
-				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
+			    statusLogger.log("nph.calc_templates");
 
-				// wait for all commands to complete
-				long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture);
-				statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
-
-
+				
 				//***********************************************//
 				//   Make the Phasing Templates for this filter  //
 				//***********************************************//
@@ -290,58 +300,41 @@ public class NarrowBandPhasingExecutor {
 						procedureConfig.getPupilMask(), currentFilter);
 				
 
-		           // Write out the template in a format suitable for display.
-		           // sm - not sure if we need this
-		           // makeTableau(ret_val_makeTableau, template_c)
-
-		           
-						
-		
-				
-					
 				/**********************************************/
 				/*        PupilRegistration Subflow           */
 				/**********************************************/
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
 										
-
-				
 				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
 				CcdFrame ccdFrame = procedure.getLatestProcedureCcdFrame().getCcdFrame();
 
 				//***********************************************//
 				//                 nbAnalyzeFrame                //
 				//***********************************************//
-	            
-	           // frame Analysis
 				
-	           NbAnalyzeFrameResult nbAnalyzeFrameResult = computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
+			    statusLogger.log("nph.analyze_frame");
+
+				
+	            NbAnalyzeFrameResult nbAnalyzeFrameResult = computationLibrary.nbAnalyzeFrame(ccdFrame.getCorrectedFrame(), findCentroidsResult.getCentroidList(), 
 	        		   findCentroidsResult.getFoundSubimageFlags(), 
 	        		   constantsCache.getPrimaryMirrorConstants().getEdgeAngle(), 
 	        		   makeTemplateResult.getTemplateArray(),
 	        		   constantsCache.getTelescopeConstants().getNumberOfSegments());
 				
 
-				// Begin Phase Analysis:  Combine the results from multiple exposures.
-		           
-		        // TODO: what is the logic we need to use to set row_flag_analyze for a particular filter set of exposures
-		        // does this depend on results from other filters?
-				// TODO: the output iteration target is now a bit uncertain.. an embedded loop creates problems for which iteration
-				// this is part of
-				
-
 				//***********************************************//
 				//            nbAnalyzeStepSequence              //
 				//***********************************************//
 		           
-		        // Determine the phases
-	          
 	            // analyze spots for nbPhasing 
 				int[] nphMissingSpotsFlags = subimageDefList.getNphMissingSpotFlags(); 
 							
+			    statusLogger.log("nph.analyze_step_sequence");
+
 				NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult = computationLibrary.nbAnalyzeStepSequence(
 						nbAnalyzeFrameResult.getBestCorrelationIndex(), nbAnalyzeFrameResult.getCoherenceOut(), 
-						currentFilter.getWavelength(), nphMissingSpotsFlags, 
+						currentFilter.getWavelength() * Constants.NM_TO_MICRONS, 
+						nphMissingSpotsFlags, 
 						findCentroidsResult.getFindCentStatusList(), 
 						constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), constantsCache.getTelescopeConstants().getNumberOfSegments());
@@ -357,12 +350,10 @@ public class NarrowBandPhasingExecutor {
 			    		new float[edgeCount]);
 
 			    
-			    
-			    
 			    /**********************************************/
 				/*      Display Measured Edge Heights         */
 				/**********************************************/
-			    // TODO: find a way to have the heading be "edge heights for filter: xxx"
+
 			    if (procedureConfig.isAutoDisplaySingleFilterEdgeHeights()) {
 					graphicDisplayMgmt.displaySingleFilterEdgeHeights(pio, index);
 				}
@@ -372,13 +363,10 @@ public class NarrowBandPhasingExecutor {
 			}      // end Filter Loop
 
 
-			// setup the iteration output as the output target
-
+			// setup the procedure output as the output target
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
-			
 			int filterCount = iterationList.getIterationValueList().getSize();
-			
 			
 			
 			//***********************************************//
@@ -402,7 +390,7 @@ public class NarrowBandPhasingExecutor {
 				}
 			}
 			
-			float xlambda[] = new float[filterCount]; 
+			float filterWavelengthMicrons[] = new float[filterCount]; 
 
 			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
@@ -411,11 +399,13 @@ public class NarrowBandPhasingExecutor {
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 
-				xlambda[index] = currentFilter.getWavelength();
+				filterWavelengthMicrons[index] = currentFilter.getWavelength() * Constants.NM_TO_MICRONS;
 				
 			}
 			
-			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, corrTable, xlambda, 
+			statusLogger.log("nph.analyze_filter_sequence");
+			
+			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, corrTable, filterWavelengthMicrons, 
 					constantsCache.getPhasingConstants().getEdgeHeightSearchRange(filterCount), 
 					constantsCache.getPhasingConstants().getEdgeHeightSearchInterval());
 	        
@@ -429,6 +419,8 @@ public class NarrowBandPhasingExecutor {
 			int[] colFlag = new int[constantsCache.getTelescopeConstants().getNumberOfSegments()];
 			Arrays.fill(colFlag, 1);
 			
+			statusLogger.log("nph.calc_actuators");
+
 			
 			NbActuatorsResult nbActuatorsResult = computationLibrary.nbActuators(nbAnalyzeFilterSequenceResult.getNbStep(), 
 					nbAnalyzeFilterSequenceResult.getRowFlagOut(), colFlag, 
@@ -507,8 +499,6 @@ public class NarrowBandPhasingExecutor {
 			procedureExecutionState.setPercentComplete(98);
 						
 
-			// TODO: is this set of output correct for nph?
-			// FIXME: edge residual RSS is not here, we have the RMS instead
 		    statusLogger.log("calc.phasing_summary",
 					procedureOutput.getFixPistonsResult().getActRms(), 
 					procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
@@ -521,7 +511,6 @@ public class NarrowBandPhasingExecutor {
 								
 				// Display to user and ask if they want to command	
 				// TODO: fix this to be the outputs and sources we want for nph
-				// FIXME: edge residual RSS is not here, we have the RMS instead
 				String phasingSummaryText = MessageGenerator.generateMessage("calc.phasing_summary",
 						procedureOutput.getFixPistonsResult().getActRms(), 
 						procedureOutput.getPhasingStatsResult().getResidualEdgeErrorRss(), 
