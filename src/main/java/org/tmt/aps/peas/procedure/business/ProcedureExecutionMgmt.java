@@ -164,15 +164,20 @@ public class ProcedureExecutionMgmt {
 					procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig().getCoarseMirrorOffsetCurrentY());
 		}
 
-		// create a new iterationListConfig from the option chosen 
 		
-		IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
+		if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			// TODO: generalize to all super-procedures
+			
+			// create a new iterationListConfig from the option chosen 
+			
+			IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
+			
+			// apply integration times set in the UI
+			applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			
+			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 		
-		// apply integration times set in the UI
-		applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
-		
-		procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
-		
+		}
 		
 		logger.info("performProcedureStartup 3");
 
