@@ -97,7 +97,7 @@
 			
 			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
 			
-				<p:tab title="Iteration #{pio.iteration + 1}">
+				<p:tab title="Iteration #{procedureController.findIterationString(pio.iteration)}">
 
 					<h:commandLink>
 						<p:graphicImage value="../../images/excel.png" />

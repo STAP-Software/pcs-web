@@ -1535,6 +1535,14 @@ public class ProcedureController implements Serializable {
 		
 	}
 
-
+	public String findIterationString(int iteration) throws Exception {
+		if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			String filterName = procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().findEntityLabelValue(iteration, "Filter");
+			
+			return (iteration + 1) + ", Filter = " + filterName;
+		} else {
+			return (iteration + 1) + "";
+		}
+	}
 	
 }
