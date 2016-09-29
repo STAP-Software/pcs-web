@@ -49,6 +49,16 @@ public class CameraDefMgmt {
 	}
 
 	/**
+	 * @return all Filters for an instrument defined in the database
+	 */
+	public List<Filter> findAllFiltersForInstrument(Long instrumentId) {
+		Instrument instrument = findInstrument(instrumentId);
+
+		return instrument.getCamera().getFilterWheel().getOrigFilterList();
+
+	}
+
+	/**
 	 * Creates a Filter record in the database
 	 * @param filter the filter to create
 	 */

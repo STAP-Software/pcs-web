@@ -8,6 +8,7 @@ package org.tmt.aps.peas.config.business;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,6 +28,7 @@ import org.tmt.aps.peas.config.model.IterationListConfigOption;
 import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.ProcedureIterationDef;
+import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Filter;
@@ -119,7 +121,7 @@ public class IterationEntityCache {
 		classToEntityMap.put(className, indexToEntityMap);
 		
 		// Filters
-		List<Filter> filterList = cameraDefMgmt.findAllFilters();
+		List<Filter> filterList = cameraDefMgmt.findAllFiltersForInstrument(instrumentId);
 		indexToEntityMap = new HashMap<Long, IterableEntity>();
 		className = null;
 		for (Filter filter : filterList) {
@@ -328,4 +330,64 @@ public class IterationEntityCache {
 		return classToEntityMap.get(className).get(key);
 	}
 	
+	
+	
+	// write a method here that takes a set of filters and compares to the current set of options for this procedure type
+	// TODO - generalize for other procedures when necessary someday
+	public IterationListConfig getOrCreateOptionForFitsList(List<FitsFilename> fitsList, Long procedureTypeId) {
+		
+		Collection<IterableEntity> candidateList = classToEntityMap.get(Filter.class.getName()).values();
+		
+		List<IterableEntity> filterEntityList = new ArrayList<IterableEntity>();
+		
+		// finds an option that matches based on filter for NPH
+		for (FitsFilename fitsFilename : fitsList) {
+			// find the iteration entity for each filter
+			int filter = fitsFilename.getNphFilter();
+			
+			// get the filter entity
+			for (IterableEntity candidateEntity : candidateList) {
+				Filter candidateFilter = (Filter)candidateEntity;
+				
+				if (candidateFilter.getFilterName().equals(filter + "")) {
+					filterEntityList.add(candidateFilter);
+				}
+			}
+		}
+		
+		// now we have a list of IterableEntity to compare to with.  
+		// get the current option list for this procedure type
+		List<IterationListConfig> currentOptionList = getOptionList(procedureTypeId);
+		
+		// test each option
+		for (IterationListConfig iterationListConfig : currentOptionList) {
+			
+			// we only compare filter lists of equal length
+			if (iterationListConfig.getIterationValueList().getSize() == filterEntityList.size()) {
+			
+				// when comparing an option, each element needs to match in sequence
+				boolean sequenceMatch = true;
+				for (int i=0; i<iterationListConfig.getIterationValueList().getSize(); i++) {
+					Filter candidate = (Filter)iterationListConfig.getIterationValueList().getIterationValue(i).getIterableEntity("Filter");
+					Filter filterEntity = (Filter)filterEntityList.get(i);
+					
+					if (!candidate.getFilterId().equals(filterEntity.getFilterId())) {
+						sequenceMatch = false;
+					}
+					
+				}
+				if (sequenceMatch) {
+					// return the option that matched
+					return iterationListConfig;
+				}
+			}
+		}
+		
+		// nothing matched, we need to create a new one
+		// TODO: implement
+		return null;
+		
+		
+		
+	}
 }

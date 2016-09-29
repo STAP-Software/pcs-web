@@ -377,6 +377,14 @@ public class Procedure {
 		this.percentComplete = percentComplete;
 	}
 	
+	@Transient
+	private int iteration;
+	public int getIteration() {
+		return iteration;
+	}
+	public void setIteration(int iteration) {
+		this.iteration = iteration;
+	}
 
 	/**
 	 * @return the associated procedure output if it is an instance of {@link PassiveTiltProcedureOutput}.

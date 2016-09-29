@@ -166,10 +166,11 @@ public class NarrowBandPhasingExecutor {
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
 				// set up procedureConfig each loop so that the create ref map auto subprocedures know how to get this info
+				// TODO: the following statements need to be somewhere else ultimately
 				procedureConfig.setFilter(currentFilter);
 				procedureConfig.setFilterType(currentFilter.getFilterType());
 				procedureConfig.setReferenceBeam(currentRefBeam);
-
+				procedureExecutionMgmt.setupFindCentDefaults(procedure);
 				
 				
 				RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),

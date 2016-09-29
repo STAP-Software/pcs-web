@@ -32,7 +32,6 @@ public class ProcedureExecutionState {
 	private boolean subProcedureStartRequested;
 	private boolean subProcedureEndRequested;
 	
-	private int currentIteration;
 	
 	private boolean executionStatus;
 	private boolean abortRequested;
@@ -49,7 +48,7 @@ public class ProcedureExecutionState {
 		procedureException = null;
 		abortRequested = false;
 		onCompletePerformed = false;
-		currentIteration = 0;
+		procedure.setIteration(0);
 	}
 	
 	public boolean getExecutionStatus() {
@@ -185,15 +184,17 @@ public class ProcedureExecutionState {
 	}
 
 	public int getCurrentIteration() {
-		return currentIteration;
+		return currentProcedure.getIteration();
 	}
 
 	public void setCurrentIteration(int currentIteration) {
-		this.currentIteration = currentIteration;
+		currentProcedure.setIteration(currentIteration);
 	}
 
 	public void incrementIteration() {
+		int currentIteration = getCurrentIteration();
 		currentIteration++;
+		setCurrentIteration(currentIteration);
 	}
 
 }

@@ -295,7 +295,8 @@ public class FitsFilename {
 			candidate.getDate().equals(getDate()) &&
 			candidate.getProcedureNumber().equals(getProcedureNumber()) &&
 			candidate.getProcedureTypeCd().equals(getProcedureTypeCd()) &&
-			candidate.getIteration() == getIteration();
+			(getProcedureTypeCd().equals("NPH") || candidate.getIteration() == getIteration());
+			
 	}
 	
 

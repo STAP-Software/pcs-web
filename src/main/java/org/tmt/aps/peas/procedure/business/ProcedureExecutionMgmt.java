@@ -146,16 +146,10 @@ public class ProcedureExecutionMgmt {
 		procedureConfig.setPupilMaskType(procedureConfig.getPupilMask().getPupilMaskType());
 		procedureConfig.setFilterType(procedureConfig.getFilter().getFilterType());
 		
-		PupilMaskType pupilMaskType = procedureConfig.getPupilMaskType();
-		FilterType filterType = procedureConfig.getFilterType();
 
 		logger.info("performProcedureStartup 2");
 
-		// get FindCentDefaults and create a procedure related copy
-		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR);
-		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
-		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
-		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
+		setupFindCentDefaults(procedure);
 		
 		if (procedure.getProcedureType().isSufs()) {
 			// store the current sufs coarse mirror offsets for this group
@@ -229,6 +223,17 @@ public class ProcedureExecutionMgmt {
 
 	}
 	
+	public void setupFindCentDefaults(Procedure procedure) {
+		// get FindCentDefaults and create a procedure related copy
+		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
+		FilterType filterType = procedure.getProcedureConfigSet().getProcedureConfig().getFilterType();
+		
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR);
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
+		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
+
+	}
 	
 	public void applyIntegrationTimeList(int lightSource, IterationListConfig iterationListConfig) {
 		

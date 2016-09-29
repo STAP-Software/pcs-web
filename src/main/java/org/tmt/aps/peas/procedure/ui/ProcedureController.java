@@ -520,6 +520,13 @@ public class ProcedureController implements Serializable {
 				sufsGroupChangeListener();
 			}
 			
+			if (procedure.getProcedureType().isNarrowBandPhasing()) {
+				// we need to take the list of selected files and create/select a filter set
+				IterationListConfig iterationListConfig = iterationEntityCache.getOrCreateOptionForFitsList(selectedFitsFiles, procedure.getProcedureType().getProcedureTypeId());
+				procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
+				iterationListChangeListener();
+			}
+			
 			
 			FacesMessage msg = new FacesMessage("FITS Frame(s) uploaded successfully");
 			FacesContext.getCurrentInstance().addMessage(null, msg);
