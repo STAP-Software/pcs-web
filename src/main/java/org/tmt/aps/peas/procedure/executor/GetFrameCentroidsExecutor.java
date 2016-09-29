@@ -33,6 +33,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.exception.FandIException;
@@ -170,7 +171,8 @@ public class GetFrameCentroidsExecutor {
 		
 		boolean findAllMaskSpots = procedure.getProcedureType().isCreateRefMap() && !procedureConfig.getPupilMaskType().isPupilMaskTypeSufs();
 		
-		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getRefBeamMap(),
+		
+		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getCurrentRefBeamMap(),
 				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
 
 		logger.info("Find and Identify completed");

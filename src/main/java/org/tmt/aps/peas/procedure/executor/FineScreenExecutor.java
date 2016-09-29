@@ -199,7 +199,7 @@ public class FineScreenExecutor {
 				}
 			}
 
-			procedure.setRefBeamMap(currentRefMap);
+			procedure.addRefBeamMap(currentRefMap);
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			

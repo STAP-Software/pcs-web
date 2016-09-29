@@ -148,90 +148,15 @@ public class NarrowBandPhasingExecutor {
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
-			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
-					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
-							.getFilterTypeId(), -1);
-
-			if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
-
-				boolean autoTakeRefMap = false;
-				if (currentRefMap == null) {
-					autoTakeRefMap = true;
-				} else if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_NO) {
-					autoTakeRefMap = false;
-				} else {
-
-					try {
-						
-						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
-
-					} catch (AutoRefMapCheckException e) {
-
-						statusLogger.log(e.getKey(), e.getArg1(), e.getArg2());
-
-						if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
-							// prompt user
-							autoTakeRefMap = userPromptMgmt.displayYesNoDialog("New Ref Map Needed", e.getText() + "\nTake new Ref Map?");
-
-						} else {
-							autoTakeRefMap = true;
-						}
-					}
-				}
-
-				if (autoTakeRefMap) {
-
-					CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
-					Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
-							ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession, 
-							procedure.getTestNumber(), po);
-
-					procedureExecutionMgmt.performProcedureStartup(subProcedure, null);
-
-					procedureExecutionState.setPendingSubProcedure(subProcedure);
-
-					// execute the subprocedure
-					createRefMapExecutor.executeSynchronousProcedure(subProcedure, currentSession);
-
-					currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), procedureConfig
-							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
-							.getFilterTypeId(), -1);
-
-				}
-			}
-
-			procedure.setRefBeamMap(currentRefMap);
-
-			logger.debug("light source 1 = " + procedureConfig.getLightSource());
-			
-						
-			/**********************************************/
-			/*                 Ready Camera               */
-			/**********************************************/			
-			readyCameraSubflow.execute(procedure);
-			
-			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
-			
-			logger.debug("light source 2 = " + procedureConfig.getLightSource());
-
-			int readyCameraTime = 10;
-			int trialsTime = 70;
-        			
-			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
-
-			
-			//****************************************//
-			//   Start logic for Narrow Band Phasing  //
-			//****************************************//
-			
-			// Begin the filter loop:
-			int edgeCount = constantsCache.getPrimaryMirrorConstants().getEdgeAngle().length;
-				
 			// requirement: a set of predefined lists + advanced options to create a new one
 			IterationListConfig iterationList = procedure.getProcedureConfigSet().getIterationListConfig();
+
 			
-		    statusLogger.log("nph.loop_starting");
+			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId());
+			int edgeCount = constantsCache.getPrimaryMirrorConstants().getEdgeAngle().length;
+
+			int trialsTime = 70;
+			
 
 			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
@@ -239,6 +164,85 @@ public class NarrowBandPhasingExecutor {
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
+				
+				RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
+						procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+						currentFilter.getFilterType().getFilterTypeId(), -1);
+	
+				if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
+	
+					boolean autoTakeRefMap = false;
+					if (currentRefMap == null) {
+						autoTakeRefMap = true;
+					} else if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_NO) {
+						autoTakeRefMap = false;
+					} else {
+	
+						try {
+							
+							computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
+									globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
+	
+						} catch (AutoRefMapCheckException e) {
+	
+							statusLogger.log(e.getKey(), e.getArg1(), e.getArg2());
+	
+							if (procedureConfig.getAutoTakeRefBeam() == Constants.AUTO_TAKE_REF_MAPS_PROMPT) {
+								// prompt user
+								autoTakeRefMap = userPromptMgmt.displayYesNoDialog("New Ref Map Needed", e.getText() + "\nTake new Ref Map?");
+	
+							} else {
+								autoTakeRefMap = true;
+							}
+						}
+					}
+	
+					if (autoTakeRefMap) {
+	
+						CreateRefBeamMapProcedureOutput po = new CreateRefBeamMapProcedureOutput();
+						Procedure subProcedure = procedureExecutionMgmt.performProcedureSetup(
+								ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP, currentSession, 
+								procedure.getTestNumber(), po);
+	
+						procedureExecutionMgmt.performProcedureStartup(subProcedure, null);
+	
+						procedureExecutionState.setPendingSubProcedure(subProcedure);
+	
+						// execute the subprocedure
+						createRefMapExecutor.executeSynchronousProcedure(subProcedure, currentSession);
+	
+						currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), procedureConfig
+								.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
+								currentFilter.getFilterType().getFilterTypeId(), -1);
+	
+					}
+				}
+	
+				procedure.addRefBeamMap(currentRefMap);
+			
+
+				logger.debug("light source 1 = " + procedureConfig.getLightSource());
+				
+							
+				/**********************************************/
+				/*                 Ready Camera               */
+				/**********************************************/			
+				readyCameraSubflow.execute(procedure);
+				
+				procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+				
+				logger.debug("light source 2 = " + procedureConfig.getLightSource());
+	
+				
+				//****************************************//
+				//   Start logic for Narrow Band Phasing  //
+				//****************************************//
+				
+				// Begin the filter loop:
+					
+			    statusLogger.log("nph.loop_starting");
+
+		
 				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
 				
 			    statusLogger.log("nph.current_filter", currentFilter.getFilterName());
@@ -255,7 +259,7 @@ public class NarrowBandPhasingExecutor {
 				}
 
 				
-				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index + readyCameraTime;
+				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index;
 				procedureExecutionState.setPercentComplete(trialTimeDelta);
 				
 				// setup the iteration output as the output target
@@ -471,7 +475,7 @@ public class NarrowBandPhasingExecutor {
 
 			
 	        // TODO: need to fix this
-			procedureExecutionState.setPercentComplete(trialsTime + readyCameraTime);
+			procedureExecutionState.setPercentComplete(trialsTime);
 		      
 
 		    /**********************************************/
@@ -498,7 +502,7 @@ public class NarrowBandPhasingExecutor {
 		    statusLogger.log("procedure.cph.algorithm_complete");
 
 		    
-			procedureExecutionState.setPercentComplete(98);
+			procedureExecutionState.setPercentComplete(90);
 						
 
 		    statusLogger.log("calc.phasing_summary",

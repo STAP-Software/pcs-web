@@ -147,7 +147,7 @@ public class CreateRefMapExecutor {
 			
 			// save the reference beam map
 			RefBeamMap refBeamMap = buildRefMap(procedureCcdFrame.getCentroidMap(), procedure);
-			procedure.setRefBeamMap(refBeamMap);
+			procedure.addRefBeamMap(refBeamMap);
 
 			procedureExecutionState.setPercentComplete(80);
 

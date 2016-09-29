@@ -72,6 +72,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -382,18 +383,19 @@ public class ProcedureExecutionMgmt {
 
 			logger.debug("performProcedureCompletion::all frames and centroid maps completed");
 
-			// associate ref beam map
-			if (procedure.getRefBeamMap() != null) {
+			// associate ref beam maps
+			
+			for (RefBeamMap refBeamMap : procedure.getAllRefBeamMaps()) {
 				
 				// if refBeam map does not exist, then create it
-				if (procedure.getRefBeamMap().isNewRecord()) {
-					centroidMapMgmt.saveRefBeamMap(procedure.getRefBeamMap());
+				if (refBeamMap.isNewRecord()) {
+					centroidMapMgmt.saveRefBeamMap(refBeamMap);
 				}
 
-				centroidMapMgmt.associateRefBeamMap(procedure.getRefBeamMap(), procedure);
+				centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
 			}
 
-			logger.debug("performProcedureCompletion::ref map associated");
+			logger.debug("performProcedureCompletion::ref maps associated");
 
 			// persist the procedure output
 			if (procedure.getProcedureOutput() != null) {

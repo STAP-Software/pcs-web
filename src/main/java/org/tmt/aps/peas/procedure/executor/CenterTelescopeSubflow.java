@@ -22,6 +22,8 @@ import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
@@ -52,6 +54,8 @@ public class CenterTelescopeSubflow {
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
+	@EJB
+	private PhysicalModel physicalModel;
 
 
 	/**
@@ -88,7 +92,7 @@ public class CenterTelescopeSubflow {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), sufsGroup);
 											
 			centroidOffsetsResult = computationLibrary.calculateCentroidOffsets(procedureCcdFrame.getCentroidMap().getFindCentroidsResult().getCentroidList(),
-					procedure.getRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), 
+					procedure.getCurrentRefBeamMap().getCentroidMap().getFindCentroidsResult().getCentroidList(), 
 					procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType(), subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), 
 					findCentroidsResult.getFindCentStatusList());
 

@@ -8,7 +8,9 @@ package org.tmt.aps.peas.procedure.model;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -28,7 +30,6 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -123,8 +124,7 @@ public class Procedure {
 
 	@Transient
 	private ProcedureOutput procedureOutput;
-	@Transient 
-	private RefBeamMap refBeamMap;  // the refBeamMap taken and/or used in this procedure
+	
 	
 	
 	public Procedure() {
@@ -346,13 +346,24 @@ public class Procedure {
 		return procedureId == null;
 	}
 
-	public RefBeamMap getRefBeamMap() {
-		return refBeamMap;
+	
+	@Transient 
+	private List<RefBeamMap> refBeamMapStore = new ArrayList<RefBeamMap>(); 
+
+	public RefBeamMap getCurrentRefBeamMap() {
+		return refBeamMapStore.get(refBeamMapStore.size()-1);
+	}
+	
+	public List<RefBeamMap> getAllRefBeamMaps() {
+		return new ArrayList<RefBeamMap>(refBeamMapStore);
 	}
 
-	public void setRefBeamMap(RefBeamMap refBeamMap) {
-		this.refBeamMap = refBeamMap;
+	public void addRefBeamMap(RefBeamMap refBeamMap) {
+		refBeamMapStore.add(refBeamMap);
 	}
+	
+	
+	
 
 	@Transient
 	private int percentComplete;
