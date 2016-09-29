@@ -351,6 +351,9 @@ public class Procedure {
 	private List<RefBeamMap> refBeamMapStore = new ArrayList<RefBeamMap>(); 
 
 	public RefBeamMap getCurrentRefBeamMap() {
+		if (refBeamMapStore.isEmpty()) {
+			return null;
+		}
 		return refBeamMapStore.get(refBeamMapStore.size()-1);
 	}
 	

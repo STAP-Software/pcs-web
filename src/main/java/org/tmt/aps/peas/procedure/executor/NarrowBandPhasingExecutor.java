@@ -164,10 +164,21 @@ public class NarrowBandPhasingExecutor {
 				IterationValue iterationValue = iterationList.getIterationValueList().getIterationValue(index);
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
+				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
+				// set up procedureConfig each loop so that the create ref map auto subprocedures know how to get this info
+				procedureConfig.setFilter(currentFilter);
+				procedureConfig.setFilterType(currentFilter.getFilterType());
+				procedureConfig.setReferenceBeam(currentRefBeam);
+
+				
 				
 				RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
 						procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
 						currentFilter.getFilterType().getFilterTypeId(), -1);
+				
+				
+				
+				
 	
 				if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD || currentRefMap == null) {
 	
@@ -243,7 +254,6 @@ public class NarrowBandPhasingExecutor {
 			    statusLogger.log("nph.loop_starting");
 
 		
-				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
 				
 			    statusLogger.log("nph.current_filter", currentFilter.getFilterName());
 
@@ -276,6 +286,7 @@ public class NarrowBandPhasingExecutor {
 				//       Set the Filter and Reference Beam       //
 				//***********************************************//
 				
+				/*
 				if (procedureConfig.isFrameFromCcd()) {
 				
 					statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
@@ -289,6 +300,7 @@ public class NarrowBandPhasingExecutor {
 					statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 					
 				}
+				*/
 
 			    statusLogger.log("nph.calc_templates");
 
