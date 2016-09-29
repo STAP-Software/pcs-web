@@ -2501,7 +2501,8 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbAnalyzeStepSequenceResult nbAnalyzeStepSequence(float[] bestCorrelationIndex, float[] coherenceOut, float xlambda0,
-			int[] missingSpotFlags, int[] findCentStatusList, int[] edgeColor, int templateCount, int numberOfSegments) throws Exception {
+			int[] missingSpotFlags, int[] findCentStatusList, int[] edgeColor, int templateCount, int numberOfSegments, 
+			float nbSingleFilterCoherenceThreshold) throws Exception {
 		
 	
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeStepSequence"));
@@ -2532,7 +2533,7 @@ public class ComputationLibraryImpl {
 		float[][][] indexTable = new float[edgeCount][1][2];
 
 		Object[] result = jnbAnalyzeStepSequence.jnbAnalyzeStepSequence(retVal, nbTable, corrTable, xlambda0,
-				goodEdgeSpots, edgeColor, templateCount, rowFlagOut, stepTable, indexTable);
+				goodEdgeSpots, edgeColor, templateCount, nbSingleFilterCoherenceThreshold, rowFlagOut, stepTable, indexTable);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);

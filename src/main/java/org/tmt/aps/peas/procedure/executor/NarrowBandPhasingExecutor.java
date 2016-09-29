@@ -337,7 +337,9 @@ public class NarrowBandPhasingExecutor {
 						nphMissingSpotsFlags, 
 						findCentroidsResult.getFindCentStatusList(), 
 						constantsCache.getPrimaryMirrorConstants().getEdgeColor(), 
-						constantsCache.getPhasingConstants().getPhasingTemplateCount(), constantsCache.getTelescopeConstants().getNumberOfSegments());
+						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
+						constantsCache.getTelescopeConstants().getNumberOfSegments(), 
+						constantsCache.getPhasingConstants().getNbSingleFilterCoherenceThreshold());
 
 				
 			    /**********************************************/

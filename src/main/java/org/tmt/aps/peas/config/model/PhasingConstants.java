@@ -14,6 +14,7 @@ public class PhasingConstants {
 
 	int phasingTemplateCount;
 	int phasingSubimageFftSize;
+	float nbSingleFilterCoherenceThreshold;
 	
 	float edgeHeightSearchInterval;
 	float edgeHeightSearchRange1Filter;
@@ -143,9 +144,15 @@ public class PhasingConstants {
 	public void setEdgeHeightSearchRange4Filter(float edgeHeightSearchRange4Filter) {
 		this.edgeHeightSearchRange4Filter = edgeHeightSearchRange4Filter;
 	}
-
-
 	
+	public float getNbSingleFilterCoherenceThreshold() {
+		return nbSingleFilterCoherenceThreshold;
+	}
+
+	public void setNbSingleFilterCoherenceThreshold(float nbSingleFilterCoherenceThreshold) {
+		this.nbSingleFilterCoherenceThreshold = nbSingleFilterCoherenceThreshold;
+	}
+
 	/**
 	 * Convenience method returning the phasing edgeHeightSearchRange for a given number of filters
 	 * @param filterType the filter type to get the fft size for
@@ -178,6 +185,7 @@ public class PhasingConstants {
 		
 		buf.append("\nphasingTemplateCount = " + phasingTemplateCount);
 		buf.append("\nphasingSubimageFftSize = " + phasingSubimageFftSize);
+		buf.append("\nnbSingleFilterCoherenceThreshold = " + nbSingleFilterCoherenceThreshold);		
 		buf.append("\nbbPhasingFracInterval = " + bbPhasingFracInterval);
 		buf.append("\nringModeCorrectionFactor = " + ringModeCorrectionFactor);
 		buf.append("\nstepSize30 = " + stepSize30);
