@@ -411,6 +411,7 @@ public class NarrowBandPhasingExecutor {
 			
 			float filterWavelengthMicrons[] = new float[filterCount]; 
 
+			String filterNames[] = new String[filterCount];
 			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
 								
@@ -420,12 +421,13 @@ public class NarrowBandPhasingExecutor {
 
 				filterWavelengthMicrons[index] = currentFilter.getWavelength() * Constants.NM_TO_MICRONS;
 				
+				filterNames[index] = currentFilter.getFilterName();
 			}
 			
 			statusLogger.log("nph.analyze_filter_sequence");
 			
 			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, corrTable, filterWavelengthMicrons, 
-					constantsCache.getPhasingConstants().getEdgeHeightSearchRange(filterCount), 
+					constantsCache.getPhasingConstants().getEdgeHeightSearchRange(filterNames), 
 					constantsCache.getPhasingConstants().getEdgeHeightSearchInterval());
 	        
 			//***********************************************//

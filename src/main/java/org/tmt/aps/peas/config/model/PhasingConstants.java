@@ -1,6 +1,8 @@
 package org.tmt.aps.peas.config.model;
 
-import org.tmt.aps.peas.instrument.model.FilterType;
+import java.util.List;
+
+import org.tmt.aps.peas.instrument.model.Filter;
 
 /**
  * Constants data class containing phasing constants.  This class is populated from database data in the {@link Constant} class and is made available to executors and
@@ -17,10 +19,8 @@ public class PhasingConstants {
 	float nbSingleFilterCoherenceThreshold;
 	
 	float edgeHeightSearchInterval;
-	float edgeHeightSearchRange1Filter;
-	float edgeHeightSearchRange2Filter;
-	float edgeHeightSearchRange3Filter;
-	float edgeHeightSearchRange4Filter;
+	float[] edgeHeightSearchRange;
+	String[] edgeHeightSearchRangeFilters;
 	
 	
 	float bbPhasingFracInterval;
@@ -112,39 +112,23 @@ public class PhasingConstants {
 	public void setEdgeHeightSearchInterval(float edgeHeightSearchInterval) {
 		this.edgeHeightSearchInterval = edgeHeightSearchInterval;
 	}
-
-	public float getEdgeHeightSearchRange1Filter() {
-		return edgeHeightSearchRange1Filter;
-	}
-
-	public void setEdgeHeightSearchRange1Filter(float edgeHeightSearchRange1Filter) {
-		this.edgeHeightSearchRange1Filter = edgeHeightSearchRange1Filter;
-	}
-
-	public float getEdgeHeightSearchRange2Filter() {
-		return edgeHeightSearchRange2Filter;
-	}
-
-	public void setEdgeHeightSearchRange2Filter(float edgeHeightSearchRange2Filter) {
-		this.edgeHeightSearchRange2Filter = edgeHeightSearchRange2Filter;
-	}
-
-	public float getEdgeHeightSearchRange3Filter() {
-		return edgeHeightSearchRange3Filter;
-	}
-
-	public void setEdgeHeightSearchRange3Filter(float edgeHeightSearchRange3Filter) {
-		this.edgeHeightSearchRange3Filter = edgeHeightSearchRange3Filter;
-	}
-
-	public float getEdgeHeightSearchRange4Filter() {
-		return edgeHeightSearchRange4Filter;
-	}
-
-	public void setEdgeHeightSearchRange4Filter(float edgeHeightSearchRange4Filter) {
-		this.edgeHeightSearchRange4Filter = edgeHeightSearchRange4Filter;
-	}
 	
+	public float[] getEdgeHeightSearchRange() {
+		return edgeHeightSearchRange;
+	}
+
+	public void setEdgeHeightSearchRange(float[] edgeHeightSearchRange) {
+		this.edgeHeightSearchRange = edgeHeightSearchRange;
+	}
+
+	public String[] getEdgeHeightSearchRangeFilters() {
+		return edgeHeightSearchRangeFilters;
+	}
+
+	public void setEdgeHeightSearchRangeFilters(String[] edgeHeightSearchRangeFilters) {
+		this.edgeHeightSearchRangeFilters = edgeHeightSearchRangeFilters;		
+	}
+
 	public float getNbSingleFilterCoherenceThreshold() {
 		return nbSingleFilterCoherenceThreshold;
 	}
@@ -158,21 +142,27 @@ public class PhasingConstants {
 	 * @param filterType the filter type to get the fft size for
 	 * @return the phasing subimage fft size for the passed filter type
 	 */
-	public float getEdgeHeightSearchRange(int filterCount) {
+	public float getEdgeHeightSearchRange(String[] filterNames) throws Exception {
 		
-		switch (filterCount) {
-		case 1: 
-			return edgeHeightSearchRange1Filter;
-		case 2: 
-			return edgeHeightSearchRange2Filter;
-		case 3: 
-			return edgeHeightSearchRange3Filter;
-		case 4: 
-			return edgeHeightSearchRange4Filter;
-			
-		default: 
+		// we don't care if only one filter
+		if (filterNames.length < 2) {
 			return 0.0f;
 		}
+		
+		// create key
+		StringBuffer buf = new StringBuffer();
+		for (String name : filterNames) {
+			buf.append("_" + name);
+		}
+		buf.deleteCharAt(0);
+		String key = buf.toString();
+		for (int i=0; i<edgeHeightSearchRangeFilters.length; i++) {
+			String candidate = edgeHeightSearchRangeFilters[i];
+			if (candidate.equals(key)) {
+				return edgeHeightSearchRange[i];
+			}
+		}
+		throw new Exception("Edge Height Search Range not found");
 	}
 	
 	public String toString() {

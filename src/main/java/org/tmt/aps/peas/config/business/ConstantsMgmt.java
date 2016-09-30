@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.config.business;
 
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -133,6 +134,12 @@ public class ConstantsMgmt {
 						}
 						method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), float[].class);
 						method.invoke(constantsInstance, (Object) primitiveFloatArray);
+						break;
+
+					case Constant.DATA_TYPE_STRING:
+						String stringArray[] = (String[])Arrays.asList(constant.getData().split("\\s*,\\s*")).toArray();
+						method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), String[].class);
+						method.invoke(constantsInstance, (Object) stringArray);
 						break;
 
 					case Constant.DATA_TYPE_INT_POINT:
