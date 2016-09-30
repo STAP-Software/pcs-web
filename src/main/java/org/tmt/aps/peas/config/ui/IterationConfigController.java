@@ -245,18 +245,19 @@ public class IterationConfigController implements Serializable {
 			// Now build up the iterationValueList
 			List<IterationValue> iterationValues = new ArrayList<IterationValue>();
 			
+			Long procedureTypeId = procedureController.getProcedure().getProcedureType().getProcedureTypeId();
 			// an iteration value is a single pair of filter/refbeam
 			if (elementEnable1) {			
-				iterationValues.add(createIterationValue(filter1, refBeam1));
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter1, refBeam1));
 			}
 			if (elementEnable2) {
-				iterationValues.add(createIterationValue(filter2, refBeam2));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter2, refBeam2));				
 			}
 			if (elementEnable3) {
-				iterationValues.add(createIterationValue(filter3, refBeam3));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter3, refBeam3));				
 			}
 			if (elementEnable4) {
-				iterationValues.add(createIterationValue(filter4, refBeam4));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter4, refBeam4));				
 			}
 			
 		
@@ -280,14 +281,6 @@ public class IterationConfigController implements Serializable {
 		}
 	}
 	
-	private IterationValue createIterationValue(IterableEntity... entityArgs) {
-		List<IterableEntity> entities = new ArrayList<IterableEntity>();
-		for (IterableEntity entity : entityArgs) {
-			entities.add(entity);
-		}
-		IterationValue iterationValue = new IterationValue(entities, iterationEntityCache.getProcedureIterationDefList(procedureController.getProcedure().getProcedureType().getProcedureTypeId()));
-		return iterationValue;
-	}
 
 	/**
 	 * Action method to view iteration configuration values

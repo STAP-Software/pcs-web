@@ -334,7 +334,7 @@ public class IterationEntityCache {
 	
 	// write a method here that takes a set of filters and compares to the current set of options for this procedure type
 	// TODO - generalize for other procedures when necessary someday
-	public IterationListConfig getOrCreateOptionForFitsList(List<FitsFilename> fitsList, Long procedureTypeId) {
+	public IterationListConfig getOrCreateOptionForFitsList(List<FitsFilename> fitsList, Long procedureTypeId) throws Exception {
 		
 		Collection<IterableEntity> candidateList = classToEntityMap.get(Filter.class.getName()).values();
 		
@@ -383,11 +383,20 @@ public class IterationEntityCache {
 			}
 		}
 		
-		// nothing matched, we need to create a new one
-		// TODO: implement
-		return null;
-		
-		
+		// nothing matched - throw an Exception
+		throw new Exception("No Filter set matches selected NPH fits file set");
 		
 	}
+	
+	
+	
+	public IterationValue createIterationValue(Long procedureTypeId, IterableEntity... entityArgs) {
+		List<IterableEntity> entities = new ArrayList<IterableEntity>();
+		for (IterableEntity entity : entityArgs) {
+			entities.add(entity);
+		}
+		IterationValue iterationValue = new IterationValue(entities, getProcedureIterationDefList(procedureTypeId));
+		return iterationValue;
+	}
+
 }

@@ -249,27 +249,34 @@ public class AsyncController implements Serializable {
 			
 			// setup the selected frame
 			int selectedFrameNumber = frameDisplayMgmt.getFrameNumber();
-			procedureController.setSelectedFrameNumber(selectedFrameNumber);
-			ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
-			procedureController.setSelectedFrame(selectedFrame);
-			procedureController.setBlankImage(false); // hack so that new images are never considered overwritten
 			
-			// get the marking to the procedure
-			String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
-			String yList = FloatPointListEncoder.encodeYList(frameDisplayMgmt.getMarkList());
-			
-			procedureController.setFrameCentroidXs(xList);
-			procedureController.setFrameCentroidYs(yList);
-			
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("procedureDetailForm:framePanel");
-			requestContext.update("frameHiddenForm");
-						
-			requestContext.execute("drawFrame()");
-			
-			if (frameDisplayMgmt.getFrameInstructions() != null) {
-				requestContext.update("instructionDialogForm");
-				requestContext.execute("instructionDialog.show()");
+			// if frame from file, and going from create ref map and back, we can loose procedure context, 
+			// so don't display if the procedure does not have that frame number
+			if (procedureController.getProcedure().getProcedureCcdFrameList().size() > selectedFrameNumber) {
+
+				procedureController.setSelectedFrameNumber(selectedFrameNumber);
+				ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
+				procedureController.setSelectedFrame(selectedFrame);
+				procedureController.setBlankImage(false); // hack so that new images are never considered overwritten
+				
+				// get the marking to the procedure
+				String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
+				String yList = FloatPointListEncoder.encodeYList(frameDisplayMgmt.getMarkList());
+				
+				procedureController.setFrameCentroidXs(xList);
+				procedureController.setFrameCentroidYs(yList);
+				
+				RequestContext requestContext = RequestContext.getCurrentInstance();
+				requestContext.update("procedureDetailForm:framePanel");
+				requestContext.update("frameHiddenForm");
+							
+				requestContext.execute("drawFrame()");
+				
+				if (frameDisplayMgmt.getFrameInstructions() != null) {
+					requestContext.update("instructionDialogForm");
+					requestContext.execute("instructionDialog.show()");
+				}
+				
 			}
 			
 			setDisplayNewFrame(false);

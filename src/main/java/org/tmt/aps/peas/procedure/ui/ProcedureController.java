@@ -536,6 +536,9 @@ public class ProcedureController implements Serializable {
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage("Error Loading FITS file(s): " + e.getMessage()));
+
 		}
 
 	}
