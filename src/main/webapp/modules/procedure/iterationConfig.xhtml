@@ -97,6 +97,36 @@
 					<p:ajax update="@form" />
 					</p:selectOneMenu>
 
+
+					<h:outputLabel value="Integration Times (Star)" />
+
+					<p:inputText value="#{iterationConfigController.starIntTime1}" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.starIntTime2}" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.starIntTime3}" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.starIntTime4}" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					
+					<h:outputLabel value="Integration Times (LED)" />
+
+					<p:inputText value="#{iterationConfigController.ledIntTime1}" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.ledIntTime2}" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.ledIntTime3}" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
+					<p:inputText value="#{iterationConfigController.ledIntTime4}" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
+					<p:ajax event="change" update="@this" />
+					</p:inputText>
 					
 					</p:panelGrid>
 

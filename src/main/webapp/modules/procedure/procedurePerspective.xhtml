@@ -142,7 +142,7 @@
 										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
-									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
+									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
 								</p:column>
 							</p:row>
 
@@ -157,7 +157,7 @@
 										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
-									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
+									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
 								</p:column>
 							</p:row>
 

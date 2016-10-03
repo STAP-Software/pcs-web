@@ -23,7 +23,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
-import org.tmt.aps.peas.config.model.IterableEntity;
+import org.tmt.aps.peas.config.model.IntegrationTime;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
 import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
@@ -74,8 +74,19 @@ public class IterationConfigController implements Serializable {
 	ReferenceBeam refBeam3;
 	ReferenceBeam refBeam4;
 	
+	IntegrationTime starIntTime1;
+	IntegrationTime starIntTime2;
+	IntegrationTime starIntTime3;
+	IntegrationTime starIntTime4;
+	
+	IntegrationTime ledIntTime1;
+	IntegrationTime ledIntTime2;
+	IntegrationTime ledIntTime3;
+	IntegrationTime ledIntTime4;
+	
 	List<Filter> filterList;
 	List<ReferenceBeam> refBeamList;
+
 
 	Instrument instrument;
 
@@ -190,6 +201,70 @@ public class IterationConfigController implements Serializable {
 		this.refBeam4 = refBeam4;
 	}
 
+	public IntegrationTime getStarIntTime1() {
+		return starIntTime1;
+	}
+
+	public void setStarIntTime1(IntegrationTime starIntTime1) {
+		this.starIntTime1 = starIntTime1;
+	}
+
+	public IntegrationTime getStarIntTime2() {
+		return starIntTime2;
+	}
+
+	public void setStarIntTime2(IntegrationTime starIntTime2) {
+		this.starIntTime2 = starIntTime2;
+	}
+
+	public IntegrationTime getStarIntTime3() {
+		return starIntTime3;
+	}
+
+	public void setStarIntTime3(IntegrationTime starIntTime3) {
+		this.starIntTime3 = starIntTime3;
+	}
+
+	public IntegrationTime getStarIntTime4() {
+		return starIntTime4;
+	}
+
+	public void setStarIntTime4(IntegrationTime starIntTime4) {
+		this.starIntTime4 = starIntTime4;
+	}
+
+	public IntegrationTime getLedIntTime1() {
+		return ledIntTime1;
+	}
+
+	public void setLedIntTime1(IntegrationTime ledIntTime1) {
+		this.ledIntTime1 = ledIntTime1;
+	}
+
+	public IntegrationTime getLedIntTime2() {
+		return ledIntTime2;
+	}
+
+	public void setLedIntTime2(IntegrationTime ledIntTime2) {
+		this.ledIntTime2 = ledIntTime2;
+	}
+
+	public IntegrationTime getLedIntTime3() {
+		return ledIntTime3;
+	}
+
+	public void setLedIntTime3(IntegrationTime ledIntTime3) {
+		this.ledIntTime3 = ledIntTime3;
+	}
+
+	public IntegrationTime getLedIntTime4() {
+		return ledIntTime4;
+	}
+
+	public void setLedIntTime4(IntegrationTime ledIntTime4) {
+		this.ledIntTime4 = ledIntTime4;
+	}
+
 	public List<Filter> getFilterList() {
 		return filterList;
 	}
@@ -248,16 +323,16 @@ public class IterationConfigController implements Serializable {
 			Long procedureTypeId = procedureController.getProcedure().getProcedureType().getProcedureTypeId();
 			// an iteration value is a single pair of filter/refbeam
 			if (elementEnable1) {			
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter1, refBeam1));
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter1, refBeam1, starIntTime1, ledIntTime1));
 			}
 			if (elementEnable2) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter2, refBeam2));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter2, refBeam2, starIntTime2, ledIntTime2));				
 			}
 			if (elementEnable3) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter3, refBeam3));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter3, refBeam3, starIntTime3, ledIntTime3));				
 			}
 			if (elementEnable4) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter4, refBeam4));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter4, refBeam4, starIntTime4, ledIntTime4));				
 			}
 			
 		
@@ -303,6 +378,16 @@ public class IterationConfigController implements Serializable {
 		refBeam2 = refBeamList.get(0);
 		refBeam3 = refBeamList.get(0);
 		refBeam4 = refBeamList.get(0);	
+		
+		starIntTime1 = null;
+		starIntTime2 = null;
+		starIntTime3 = null;
+		starIntTime4 = null;
+		
+		ledIntTime1 = null;
+		ledIntTime2 = null;
+		ledIntTime3 = null;
+		ledIntTime4 = null;
 
 	}
 	
