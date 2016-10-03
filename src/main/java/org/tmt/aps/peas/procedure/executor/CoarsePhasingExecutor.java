@@ -424,8 +424,8 @@ public class CoarsePhasingExecutor {
 					// send out the commands
 					statusLogger.log("pt.m1_act_cmd_started");
 					
-					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
-						
+					deltaMs = commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+
 					statusLogger.log("pt.m1_act_cmd_success");
 					logger.info("doSendActDeltaCommands: success");
 					commandsSent = true;
@@ -494,26 +494,41 @@ public class CoarsePhasingExecutor {
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 	
+	
 	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
 	
 		try {
 			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
 			return deltaMs;
 		} catch (Exception e) {
-			// ask user what to do
-			
-			String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
-			int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
-			
-			int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
-
-			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-				throw new AbortProcedureException("User Aborted Test");
-			} else {
-				return 0;
-			} 
-			
+			return handleAcsException(e);
 		}
+	}
+	
+	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
+		
+		try {
+			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
+			return deltaMs;
+		} catch (Exception e) {
+			return handleAcsException(e);
+		}
+	}
+	
+	private long handleAcsException(Exception e) throws Exception {
+		
+		// ask user what to do
+		String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
+		int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+		
+		int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
+
+		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+			throw new AbortProcedureException("User Aborted Test");
+		} else {
+			return 0;
+		} 
+
 	}
 
 }
