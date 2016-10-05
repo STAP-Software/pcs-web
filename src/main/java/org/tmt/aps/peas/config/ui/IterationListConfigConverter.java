@@ -68,8 +68,19 @@ public class IterationListConfigConverter implements Converter, Serializable {
 		if (value == null || value.equals("")) {
 			return "";
 		} else {
-			IterationListConfig option = (IterationListConfig) value;
-			return "" + option.getIterationListConfigId();
+			
+			IterationListConfig listConfigValue = (IterationListConfig) value;
+			
+			// get the option that matches the value - even if the value is not an option with the correct id, compare iterationValueListEncoded strings
+			List<IterationListConfig> fullList = procedureController.getIterationListConfigOptions();
+
+			for (IterationListConfig candidate : fullList) {
+				if (listConfigValue.getIterationValueListEncoded().equals(candidate.getIterationValueListEncoded())) {
+					return "" + candidate.getIterationListConfigId();
+				}
+			}
+			
+			return "";
 
 		}
 	}

@@ -170,19 +170,6 @@ public class ProcedureExecutionMgmt {
 		}
 
 		
-		if (procedure.getProcedureType().isNarrowBandPhasing()) {
-			// TODO: generalize to all super-procedures
-			
-			// create a new iterationListConfig from the option chosen 
-			
-			IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
-			
-			// apply integration times set in the UI
-			applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
-			
-			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
-		
-		}
 		
 		logger.info("performProcedureStartup 3");
 
@@ -224,7 +211,21 @@ public class ProcedureExecutionMgmt {
 		}
 		
 		// we need a new IterationlistConfig
+		if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			// TODO: generalize to all super-procedures
+			
+			// create a new iterationListConfig from the option chosen 
+			
+			
+			IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
+			
+			// apply integration times set in the UI
+			applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			
+			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 		
+		}
+
 		procedureMgmt.createProcedure(procedure);
 
 		statusLogger.initLog();

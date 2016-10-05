@@ -69,7 +69,9 @@ public class IterationListConfigOption extends IterationListConfig {
 	public boolean equals(Object obj) {
 		if (obj instanceof IterationListConfig) {
 			IterationListConfig candidate = (IterationListConfig)obj;
-			return (candidate.getIterationListConfigId().longValue() == getIterationListConfigId().longValue());
+			// if the iteration value list encoded are the same, these are the same
+			
+			return (candidate.getIterationValueListEncoded().equals(getIterationValueListEncoded()));
 		}
 		return super.equals(obj);
 	}
