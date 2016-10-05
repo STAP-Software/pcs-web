@@ -51,6 +51,7 @@ public class AcsManualController implements Serializable {
 	double mirrorTemp;
 	boolean acsRunning;
 	double rmsActuatorMove;
+	double sensorRange;
 
 	@PostConstruct
 	public void init() {
@@ -94,8 +95,15 @@ public class AcsManualController implements Serializable {
 	public void setRmsActuatorMove(double rmsActuatorMove) {
 		this.rmsActuatorMove = rmsActuatorMove;
 	}
-
 	
+	public double getSensorRange() {
+		return sensorRange;
+	}
+
+	public void setSensorRange(double sensorRange) {
+		this.sensorRange = sensorRange;
+	}
+
 	public Float[][] getActDeltas() {
 		return actDeltas;
 	}
@@ -305,6 +313,25 @@ public class AcsManualController implements Serializable {
 	}
 
 	/**
+	 * JSF Action method that sends commands to query the sensor range
+	 */
+	public void doQuerySensorRange() {
+		try {
+			sensorRange = acsMgmt.querySensorRange();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query Sensor Range"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying sensor range"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying sensor range"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+
+	/**
 	 * JSF Action method that sends all ACS query commands
 	 */
 	public void doQueryAll() {
@@ -312,6 +339,7 @@ public class AcsManualController implements Serializable {
 			mirrorTemp = acsMgmt.queryMirrorTemp();
 			rmsActuatorMove = acsMgmt.queryRmsActuMove();
 			acsRunning = acsMgmt.queryRunning();
+			sensorRange = acsMgmt.querySensorRange();
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query All"));
 			
 		} catch (CommandFailureException e) {

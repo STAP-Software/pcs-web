@@ -142,4 +142,8 @@ public class AcsMgmt {
 		return deltaMs;
 	}
 
+	public double querySensorRange() throws Exception {
+		return extInfFactory.getAcsCommand().getSensorRange();
+	}
+
 }

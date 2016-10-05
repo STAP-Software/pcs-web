@@ -76,26 +76,34 @@
 					<h:outputLabel style="height: 10px" />
 					<h:outputLabel style="height: 10px" />
 					
-					<h:outputLabel value="Mirror Temp (C)" style="position:relative; top:5px" />
-					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:8px">
+					<h:outputLabel value="Mirror Temp (C)" style="position:relative; top:-3px" />
+					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:0px">
 						<f:convertNumber pattern="#0.000" />
 					</h:outputText>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
 							update=":growl :errorGrowl" />		
 										
-					<h:outputLabel value="Is Running" style="position:relative; top:5px" />
-					<h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:8px"/>
+					<h:outputLabel value="Is Running" style="position:relative; top:-3px" />
+					<h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:0px"/>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryRunning}"
 							update=":growl :errorGrowl" />		
 						
-					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:5px" />
-					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:8px">
+					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:-3px" />
+					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:0px">
 						<f:convertNumber pattern="#0.000" />
 					</h:outputText>
 					<p:commandButton value="Query" icon="ui-icon-refresh"
 							ajax="false" action="#{acsManualController.doQueryRmsActMove}"
+							update=":growl :errorGrowl" />		
+					
+					<h:outputLabel value="Sensor Range (nm)" style="position:relative; top:-3px" />
+					<h:outputText value="#{acsManualController.sensorRange}" style="position:relative; top:0px">
+						<f:convertNumber pattern="#0" />
+					</h:outputText>
+					<p:commandButton value="Query" icon="ui-icon-refresh"
+							ajax="false" action="#{acsManualController.doQuerySensorRange}"
 							update=":growl :errorGrowl" />		
 						
 					<h:outputLabel style="height: 10px" />

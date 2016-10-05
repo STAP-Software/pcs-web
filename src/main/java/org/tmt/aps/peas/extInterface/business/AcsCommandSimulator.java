@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.extInterface.business;
 
+import java.rmi.RemoteException;
+
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
@@ -66,6 +68,14 @@ public class AcsCommandSimulator implements AcsCommand {
 		logger.info(MessageGenerator.generateMessage("command.start", "loadSnap::SIMULATOR"));
 		logger.info(MessageGenerator.generateMessage("command.success", "loadSnap::SIMULATOR"));
 		
+	}
+
+
+	@Override
+	public double getSensorRange() throws CommunicationException, CommandFailureException, RemoteException {
+		logger.info(MessageGenerator.generateMessage("command.start", "getSensorRange::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "getSensorRange::SIMULATOR"));
+		return 999.0;
 	}
 
 
