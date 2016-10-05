@@ -263,7 +263,7 @@ public class CoarsePhasingExecutor {
 				
 				statusLogger.log("acs.colorstep_cmds");
 				
-				long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
+				long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
@@ -298,7 +298,7 @@ public class CoarsePhasingExecutor {
 			
 			statusLogger.log("acs.colorstep_cmds");
 			
-			long deltaMs = commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
+			long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 
 			
@@ -423,7 +423,7 @@ public class CoarsePhasingExecutor {
 				// send out the commands
 				statusLogger.log("pt.m1_act_cmd_started");
 				
-				deltaMs = commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+				deltaMs = procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");
@@ -495,42 +495,6 @@ public class CoarsePhasingExecutor {
 	}
 	
 	
-	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
-	
-		try {
-			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
-			return deltaMs;
-		} catch (Exception e) {
-			return handleAcsException(e);
-		}
-	}
-	
-	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
-		
-		try {
-			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
-			return deltaMs;
-		} catch (Exception e) {
-			statusLogger.log("pt.m1_act_cmd_failed");
-			logger.error(MessageGenerator.generateMessage("command.error"), e);
-			return handleAcsException(e);
-		}
-	}
-	
-	private long handleAcsException(Exception e) throws Exception {
-		
-		// ask user what to do
-		String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
-		int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
-		
-		int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
 
-		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
-			throw new AbortProcedureException("User Aborted Test");
-		} else {
-			return 0;
-		} 
-
-	}
 
 }

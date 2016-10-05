@@ -545,16 +545,16 @@ public class NarrowBandPhasingExecutor {
 			boolean commandsSent = false;
 			if (sendM1Command) {
 	
+				// send out the commands
+				statusLogger.log("pt.m1_act_cmd_started");
+				
+				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+					
+				statusLogger.log("pt.m1_act_cmd_success");
+				logger.info("doSendActDeltaCommands: success");
+				commandsSent = true;
+				
 				try {
-					// send out the commands
-					statusLogger.log("pt.m1_act_cmd_started");
-					
-					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
-						
-					statusLogger.log("pt.m1_act_cmd_success");
-					logger.info("doSendActDeltaCommands: success");
-					commandsSent = true;
-					
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
 					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);

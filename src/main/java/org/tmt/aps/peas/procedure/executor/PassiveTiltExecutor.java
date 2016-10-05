@@ -301,16 +301,16 @@ public class PassiveTiltExecutor {
 			boolean commandsSent = false;
 			if (commandAcs) {
 
-				try {
-					// send out the commands
-					statusLogger.log("pt.m1_act_cmd_started");
+				// send out the commands
+				statusLogger.log("pt.m1_act_cmd_started");
 
-					acsMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
+				procedureExecutionMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
 
-					statusLogger.log("pt.m1_act_cmd_success");
-					logger.info("doSendActDeltaCommands: success");
-					commandsSent = true;
+				statusLogger.log("pt.m1_act_cmd_success");
+				logger.info("doSendActDeltaCommands: success");
+				commandsSent = true;
 					
+				try {
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
 					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);

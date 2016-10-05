@@ -39,7 +39,6 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.config.model.IntegrationTime;
 import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationValue;
@@ -50,6 +49,7 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.StarInfo;
@@ -66,6 +66,7 @@ import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -76,6 +77,8 @@ import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
+import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
+import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 /**
  * Session EJB handling common procedure tasks: setup, startup, completion and exception.
@@ -115,6 +118,10 @@ public class ProcedureExecutionMgmt {
 	private CameraDefMgmt cameraDefMgmt;
 	@EJB
 	private DcsMgmt dcsMgmt;
+	@EJB
+	private AcsMgmt acsMgmt;	
+	@EJB
+	private UserPromptMgmt userPromptMgmt;
 	@EJB
 	private FrameSimulator frameSimulator;
 	@EJB
@@ -739,6 +746,45 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().setPupilRegErrorConfig(pupilRegErrorConfig);
 		}
 	
+	}
+	
+	
+	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
+		
+		try {
+			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
+			return deltaMs;
+		} catch (Exception e) {
+			return handleAcsException(e);
+		}
+	}
+	
+	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
+		
+		try {
+			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
+			return deltaMs;
+		} catch (Exception e) {
+			statusLogger.log("pt.m1_act_cmd_failed");
+			logger.error(MessageGenerator.generateMessage("command.error"), e);
+			return handleAcsException(e);
+		}
+	}
+	
+	private long handleAcsException(Exception e) throws Exception {
+		
+		// ask user what to do
+		String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
+		int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
+		
+		int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);
+
+		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+			throw new AbortProcedureException("User Aborted Test");
+		} else {
+			return 0;
+		} 
+
 	}
 
 }

@@ -567,15 +567,15 @@ public class FineScreenExecutor {
 			boolean commandsSent = false;
 			if (sendM1Command) {
 	
-				try {
-					statusLogger.log("pt.m1_act_cmd_started");
-					// send out the commands
-					acsMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
-	
-					statusLogger.log("pt.m1_act_cmd_success");
-					logger.info("doSendActDeltaCommands: success");
-					commandsSent = true;
+				statusLogger.log("pt.m1_act_cmd_started");
+				// send out the commands
+				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+
+				statusLogger.log("pt.m1_act_cmd_success");
+				logger.info("doSendActDeltaCommands: success");
+				commandsSent = true;
 					
+				try {
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
 					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
