@@ -66,4 +66,12 @@ public class IterationListConfigOption extends IterationListConfig {
 		this.optionOrder = optionOrder;
 	}
 	
+	public boolean equals(Object obj) {
+		if (obj instanceof IterationListConfig) {
+			IterationListConfig candidate = (IterationListConfig)obj;
+			return (candidate.getIterationListConfigId().longValue() == getIterationListConfigId().longValue());
+		}
+		return super.equals(obj);
+	}
+	
 }

@@ -77,6 +77,7 @@ import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
+import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 
@@ -128,6 +129,8 @@ public class ProcedureExecutionMgmt {
 	ExtInfConfigState extInfConfigState;
 	@EJB
 	IterationEntityCache iterationEntityCache;
+	@EJB
+	GraphicDisplayMgmt graphicDisplayMgmt;
 
 	/**
 	 * Derives configuration necessary for procedure execution, creates the procedure entity in the database, initializes status log and frame display. 
@@ -323,6 +326,8 @@ public class ProcedureExecutionMgmt {
 			procedure.setExecutionEndTime(new Date());
 
 			logger.debug("performProcedureCompletion 1");
+			graphicDisplayMgmt.setIteration(0);
+			
 			// this persists the procedure
 			procedureMgmt.updateProcedure(procedure);
 

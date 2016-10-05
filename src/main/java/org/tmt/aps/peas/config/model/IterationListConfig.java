@@ -106,8 +106,17 @@ public class IterationListConfig {
 		buf.deleteCharAt(buf.length()-1);
 		setIntegrationTimeList(buf.toString());
 	}
+
+
+	public boolean equals(Object obj) {
+		if (obj instanceof IterationListConfig) {
+			IterationListConfig candidate = (IterationListConfig)obj;
+			return (candidate.getIterationListConfigId().longValue() == getIterationListConfigId().longValue());
+		}
+		return super.equals(obj);
+	}
 	
-	
+
 
 }
 
