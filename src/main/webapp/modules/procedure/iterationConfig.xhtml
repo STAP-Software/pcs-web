@@ -137,7 +137,7 @@
 
 
 				<f:facet name="footer">
-					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{iterationConfigController.doSaveIterationSet}" oncomplete="iterationDialog.hide();" update=":procedureDetailForm:controlPanel:loopOptions1 :procedureDetailForm:controlPanel:loopOptions2 :growl :errorGrowl" />
+					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{iterationConfigController.doSaveIterationSet}" oncomplete="iterationDialog.hide();" update=":procedureDetailForm:controlPanel:loopOptions2 :growl :errorGrowl" />
 					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl" type="button" onclick="iterationDialog.hide();" />
 					
 				</f:facet>
