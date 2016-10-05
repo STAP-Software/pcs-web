@@ -594,9 +594,12 @@ public class ProcedureController implements Serializable {
 			return false;
 		}
 		
+		if (procedure.getProcedureType().isPupilRegistration() && registerPupilFor == null) {
+			return false;
+		}
+		
 		// if a pupil registration procedure and a phasing mask is selected, then the coarse phasing option needs to be set
-		if (procedure.getProcedureType().isPupilRegistration() &&
-				procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypePh()) {
+		if (procedure.getProcedureType().isPupilRegistration() && registerPupilFor.isCoarsePhasing()) {
 			
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			int option = procedureConfig.getCoarsePhasingOption();			

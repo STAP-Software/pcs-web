@@ -413,10 +413,13 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		
     		</p:panelGrid>
     		<br/>
-			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="singleFilterEdgeHeightsDisplayDialog.hide()" />
-			<p:commandButton value="Abort Procedure" styleClass="dialogbuttonleft" update=":growl :errorGrowl"
+    		
+   			<h:panelGroup styleClass="dialogCommandGroup">
+     			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="singleFilterEdgeHeightsDisplayDialog.hide()" />
+				<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="singleFilterEdgeHeightsDisplayDialog.hide()" />
+			</h:panelGroup>
      		</h:form>
 		</p:dialog> 
 

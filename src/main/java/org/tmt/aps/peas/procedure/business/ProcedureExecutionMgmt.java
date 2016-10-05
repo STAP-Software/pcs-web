@@ -774,7 +774,7 @@ public class ProcedureExecutionMgmt {
 	private long handleAcsException(Exception e) throws Exception {
 		
 		// ask user what to do
-		String[] choicesText = {"Continue with Procedure", "Abort Procedure"};
+		String[] choicesText = {"Continue with Procedure", "Abort"};
 		int[] choicesValues = {UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE, UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT};
 		
 		int response = userPromptMgmt.displayGenericMultiChoiceDialog("ACS Exception", e.getMessage(), choicesText, choicesValues);

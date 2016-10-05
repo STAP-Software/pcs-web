@@ -12,7 +12,7 @@
     		    		
 
     		 
-   			<p:commandButton id="abortButton" value="Abort Procedure" styleClass="dialogbutton" update=":growl :errorGrowl"
+   			<p:commandButton id="abortButton" value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPromptAbort}" oncomplete="userPromptDialog.hide();" rendered="#{!procedureController.currentPrompt.containsAbort and !procedureController.currentPrompt.supressAbort}"/>
     		<p:commandButton id="button3" value="#{procedureController.currentPrompt.button3Text}" styleClass="dialogbutton" update=":growl :errorGrowl"
 					action="#{asyncController.doCloseUserPrompt3}" oncomplete="userPromptDialog.hide();" rendered="#{procedureController.currentPrompt.buttonCount gt 2}" />   	   		  
