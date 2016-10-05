@@ -198,6 +198,10 @@ public class IterationEntityCache {
 	 */
 	public void populateIterationValueList(IterationListConfig iterationListConfig, Long procedureTypeId) {
 		
+		if (iterationListConfig == null) {
+			return;
+		}
+		
 		List<String> iterationClassList = procedureTypeToIterationClassList.get(procedureTypeId);
 
 		// we need to decode the iteration value list
