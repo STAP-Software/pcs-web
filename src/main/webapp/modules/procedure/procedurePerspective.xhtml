@@ -131,6 +131,7 @@
 								</p:column>
 							</p:row>
 
+							<!-- 
 							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Filter(Ref Beam) Set" />
@@ -145,8 +146,9 @@
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
 								</p:column>
 							</p:row>
-
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and procedureController.procedure.procedureConfigSet.procedureConfig.lightSource ne 2}">
+							-->
+							 
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
 								<p:column styleClass="btmsFormLabelColumn">
 									<h:outputLabel value="Filter Set" />
 								</p:column>   
