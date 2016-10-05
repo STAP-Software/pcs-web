@@ -30,7 +30,7 @@ public class AcsCommandSimulator implements AcsCommand {
 		
 		logger.info(MessageGenerator.generateMessage("command.success", "setActuDeltas::SIMULATOR"));
 
-		//throw new TimeoutException(50, "ACS Timed OUT");
+		throw new TimeoutException(50, "ACS Timed OUT");
 	}
 
 	public double getMirrTemp() 

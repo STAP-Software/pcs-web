@@ -420,16 +420,16 @@ public class CoarsePhasingExecutor {
 			boolean commandsSent = false;
 			if (sendM1Command) {
 	
-				try {
-					// send out the commands
-					statusLogger.log("pt.m1_act_cmd_started");
-					
-					deltaMs = commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+				// send out the commands
+				statusLogger.log("pt.m1_act_cmd_started");
+				
+				deltaMs = commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 
-					statusLogger.log("pt.m1_act_cmd_success");
-					logger.info("doSendActDeltaCommands: success");
-					commandsSent = true;
+				statusLogger.log("pt.m1_act_cmd_success");
+				logger.info("doSendActDeltaCommands: success");
+				commandsSent = true;
 					
+				try {
 					// take and store a snapshot
 					int snapNum = acsMgmt.commandTakeSnap();
 					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
@@ -511,6 +511,8 @@ public class CoarsePhasingExecutor {
 			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
 			return deltaMs;
 		} catch (Exception e) {
+			statusLogger.log("pt.m1_act_cmd_failed");
+			logger.error(MessageGenerator.generateMessage("command.error"), e);
 			return handleAcsException(e);
 		}
 	}
