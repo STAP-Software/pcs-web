@@ -108,10 +108,9 @@ body {
 	background: #F2F7FF; !important
 }
 
-.menubar .ui-menu-list .ui-menuitem a {
-	color: #333333; !important;
-	text-decoration: none; !important
-	font-size: 10px; !important
+
+.ui-menubar .ui-menuitem-link {
+	font-size: 1em; !important
 }
 
 
