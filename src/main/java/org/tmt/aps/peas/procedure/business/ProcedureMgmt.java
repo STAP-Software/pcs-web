@@ -60,7 +60,16 @@ public class ProcedureMgmt {
 		
 		Procedure procedure = query.getSingleResult();
 		
-		iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), procedure.getProcedureType().getProcedureTypeId());
+		if (procedure.getProcedureType().isNarrowBandPhasing()) {
+			
+			iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), 
+					procedure.getProcedureType().getProcedureTypeId());
+			
+			procedure.getProcedureConfigSet().getIterationListConfig().updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		
+			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), 
+					procedure.getProcedureConfigSet().getIterationListConfig());
+		}
 		
 		try {
 			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);

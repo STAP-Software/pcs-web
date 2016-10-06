@@ -220,7 +220,7 @@ public class ProcedureExecutionMgmt {
 			IterationListConfig iterationListConfig = new IterationListConfig(procedure.getProcedureConfigSet().getIterationListConfig());
 			
 			// apply integration times set in the UI
-			applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
 			
 			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 		
@@ -246,27 +246,7 @@ public class ProcedureExecutionMgmt {
 
 	}
 	
-	public void applyIntegrationTimeList(int lightSource, IterationListConfig iterationListConfig) {
-		
-		// get the integration times from the String list
-		List<String> items = Arrays.asList(iterationListConfig.getIntegrationTimeList().split("\\s*,\\s*"));
-		
 
-		for (int index=0; index<iterationListConfig.getIterationValueList().getSize(); index++) {
-			float intTime = new Float(items.get(index));
-			IterationValue iterationValue = iterationListConfig.getIterationValueList().getIterationValue(index);
-			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
-				
-				IterableEntity iterableEntity = iterationEntityCache.getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
-				iterationValue.setIterableEntity("LedIntegrationTime", iterableEntity);
-				
-			} else {
-				IterableEntity iterableEntity = iterationEntityCache.getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
-				iterationValue.setIterableEntity("StarIntegrationTime", iterableEntity);
-			}
-		}
-
-	}
 
 	/**
 	 * Performs cleanup functions when a procedure exeception occurs

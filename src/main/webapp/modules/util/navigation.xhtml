@@ -97,7 +97,7 @@
             			<p:selectBooleanButton id="value2" value="#{sessionController.advancedViewMode}" onLabel="#{sessionController.advancedViewModeLabel}" offLabel="OA Mode"  style="margin-right:10px">
             				<p:ajax update="@form" listener="#{sessionController.modeChangeListener}"/> 
         				</p:selectBooleanButton>
-            			<p:commandButton id="endSessionBtn" value="End Session" update=":growl :errorGrowl"
+            			<p:commandButton id="endSessionBtn" value="End Session" update=":growl :errorGrowl :menuForm"
 							action="#{sessionController.doEndSession}" disabled="#{sessionController.extInfSimulationMode}" style="margin-right:10px"
 							onclick="sessionClosingDialog.show();" oncomplete="sessionClosingDialog.hide();"/>
         			</f:facet>

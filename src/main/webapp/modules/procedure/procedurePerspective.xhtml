@@ -113,7 +113,9 @@
 									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />
 								</p:column>
 								<p:column styleClass="btmsFormInputColumn">
-									<p:inputText id="intTimes" size="15" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" /> 
+									<p:inputText id="intTimes" size="15" 
+									value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" 
+									disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
 									<h:message for="intTimes" style="color:red" showSummary="true" showDetail="true" />
 								</p:column>
 							</p:row>
