@@ -19,8 +19,7 @@ public class PhasingConstants {
 	float nbSingleFilterCoherenceThreshold;
 	
 	float edgeHeightSearchInterval;
-	float[] edgeHeightSearchRange;
-	String[] edgeHeightSearchRangeFilters;
+
 	
 	
 	float bbPhasingFracInterval;
@@ -113,21 +112,6 @@ public class PhasingConstants {
 		this.edgeHeightSearchInterval = edgeHeightSearchInterval;
 	}
 	
-	public float[] getEdgeHeightSearchRange() {
-		return edgeHeightSearchRange;
-	}
-
-	public void setEdgeHeightSearchRange(float[] edgeHeightSearchRange) {
-		this.edgeHeightSearchRange = edgeHeightSearchRange;
-	}
-
-	public String[] getEdgeHeightSearchRangeFilters() {
-		return edgeHeightSearchRangeFilters;
-	}
-
-	public void setEdgeHeightSearchRangeFilters(String[] edgeHeightSearchRangeFilters) {
-		this.edgeHeightSearchRangeFilters = edgeHeightSearchRangeFilters;		
-	}
 
 	public float getNbSingleFilterCoherenceThreshold() {
 		return nbSingleFilterCoherenceThreshold;
@@ -137,33 +121,6 @@ public class PhasingConstants {
 		this.nbSingleFilterCoherenceThreshold = nbSingleFilterCoherenceThreshold;
 	}
 
-	/**
-	 * Convenience method returning the phasing edgeHeightSearchRange for a given number of filters
-	 * @param filterType the filter type to get the fft size for
-	 * @return the phasing subimage fft size for the passed filter type
-	 */
-	public float getEdgeHeightSearchRange(String[] filterNames) throws Exception {
-		
-		// we don't care if only one filter
-		if (filterNames.length < 2) {
-			return 0.0f;
-		}
-		
-		// create key
-		StringBuffer buf = new StringBuffer();
-		for (String name : filterNames) {
-			buf.append("_" + name);
-		}
-		buf.deleteCharAt(0);
-		String key = buf.toString();
-		for (int i=0; i<edgeHeightSearchRangeFilters.length; i++) {
-			String candidate = edgeHeightSearchRangeFilters[i];
-			if (candidate.equals(key)) {
-				return edgeHeightSearchRange[i];
-			}
-		}
-		throw new Exception("Edge Height Search Range not found");
-	}
 	
 	public String toString() {
 		

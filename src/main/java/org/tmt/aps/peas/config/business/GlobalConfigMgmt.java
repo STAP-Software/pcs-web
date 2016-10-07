@@ -19,6 +19,7 @@ import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
+import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
@@ -256,5 +257,21 @@ public class GlobalConfigMgmt {
 		em.merge(sufsCoarseOffsetsConfigDefaults);
 		
 	}
+	
+	/**
+	 * Queries the database for NarrowBand Filter Sequence analysis computation configuration default values, given the iteration config for a filter set.
+	 * @param iterationListConfigId the iteration list config id of the filter set option 
+	 * @return Narrow Band Filter Seq analysis computation configuration default values
+	 */
+	public NbFilterSeqConfigDefaults findNbFilterSeqConfig(Long iterationListConfigId) {
+		
+		TypedQuery<NbFilterSeqConfigDefaults> query = em.createNamedQuery("nbFilterSeqConfig.findByFilterSetOption", NbFilterSeqConfigDefaults.class);
+		query.setParameter("iterationListConfigId", iterationListConfigId);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();	
+	}
+
 
 }

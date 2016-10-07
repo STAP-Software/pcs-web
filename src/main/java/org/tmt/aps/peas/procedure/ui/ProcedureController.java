@@ -51,7 +51,8 @@ import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.IterationListConfig;
-import org.tmt.aps.peas.config.model.IterationListConfigOption;
+import org.tmt.aps.peas.config.model.NbFilterSeqConfig;
+import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
@@ -1346,6 +1347,19 @@ public class ProcedureController implements Serializable {
 		iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		
 		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
+		
+		
+		// load up the search range for NB phasing
+		try {
+			NbFilterSeqConfigDefaults nbFilterSeqConfigDefaults = globalConfigMgmt.findNbFilterSeqConfig(iterationListConfig.getIterationListConfigId());
+
+			// add this to the procedure config set
+			procedure.getProcedureConfigSet().setNbFilterSeqConfig(new NbFilterSeqConfig(nbFilterSeqConfigDefaults));
+		} catch (Exception e) {
+			// add an empty one to the procedure config set
+			procedure.getProcedureConfigSet().setNbFilterSeqConfig(new NbFilterSeqConfig());
+		}
+		
 	}
 
 	

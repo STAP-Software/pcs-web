@@ -154,6 +154,16 @@
 				</p:panelGrid>
 				</p:fieldset>
 
+				<p:fieldset legend="Narrowband Phasing Options" style="margin-top:5px; margin-bottom:5px" 
+					rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
+				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					
+					<h:outputLabel value="Edge Height Search Range for Filter Sequence" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.nbFilterSeqConfig.edgeHeightSearchRange}" disabled="#{procedureController.procedure.procedureState gt 1}" />
+       								  
+				</p:panelGrid>
+				</p:fieldset>
+
 				<p:fieldset legend="SUFS Options" style="margin-top:5px; margin-bottom:5px" 
 					rendered="#{procedureController.procedure.procedureType.sufs}">
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">

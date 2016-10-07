@@ -76,6 +76,9 @@ public class ProcedureConfigSet {
 	@JoinColumn(name = "iterationListConfigId")
 	private IterationListConfig iterationListConfig;
 	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "nbFilterSeqConfigId")
+	private NbFilterSeqConfig nbFilterSeqConfig;
 
 
 	public ProcedureConfig getProcedureConfig() {
@@ -180,6 +183,14 @@ public class ProcedureConfigSet {
 
 	public void setIterationListConfig(IterationListConfig iterationListConfig) {
 		this.iterationListConfig = iterationListConfig;
+	}
+
+	public NbFilterSeqConfig getNbFilterSeqConfig() {
+		return nbFilterSeqConfig;
+	}
+
+	public void setNbFilterSeqConfig(NbFilterSeqConfig nbFilterSeqConfig) {
+		this.nbFilterSeqConfig = nbFilterSeqConfig;
 	}
 
 

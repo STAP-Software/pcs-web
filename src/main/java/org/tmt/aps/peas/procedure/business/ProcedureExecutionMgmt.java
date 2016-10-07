@@ -42,6 +42,8 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationValue;
+import org.tmt.aps.peas.config.model.NbFilterSeqConfig;
+import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
@@ -609,7 +611,11 @@ public class ProcedureExecutionMgmt {
 			
 			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 			
-			
+			// load up the search range for NB phasing
+			NbFilterSeqConfigDefaults nbFilterSeqConfigDefaults = globalConfigMgmt.findNbFilterSeqConfig(iterationListConfig.getIterationListConfigId());
+
+			// add this to the procedure config set
+			procedure.getProcedureConfigSet().setNbFilterSeqConfig(new NbFilterSeqConfig(nbFilterSeqConfigDefaults));
 			
 		}
 		
