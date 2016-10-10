@@ -435,6 +435,10 @@
 
 							<h:outputLabel value="Comments" />
 							<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
+							
+							<h:outputLabel value="Operational Data" rendered="#{sessionController.engineeringView}" />
+							<p:selectBooleanCheckbox value="#{procedureController.procedure.operational}" rendered="#{sessionController.engineeringView}" />
+
 
 							<f:facet name="footer">
 								<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{procedureController.doSaveContext}" process="contextPanel" update=":asyncErrorGrowl :asyncGrowl"/>

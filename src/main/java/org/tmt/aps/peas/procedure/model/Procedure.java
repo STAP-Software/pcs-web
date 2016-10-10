@@ -90,6 +90,7 @@ public class Procedure {
 	
 	private String procedureNumber;
 	private int procedureState;
+	private boolean operational;
 
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date executionStartTime;
@@ -129,6 +130,7 @@ public class Procedure {
 	
 	public Procedure() {
 		procedureConfigSet = new ProcedureConfigSet();
+		operational = true;
 	}
 
 	public Long getProcedureId() {
@@ -249,8 +251,15 @@ public class Procedure {
 	public String getStarVmagFormatted() {
 		return starVmag != null && starVmag.trim().length() > 0 ? starVmag : "N/A";
 	}
-
 	
+	public boolean isOperational() {
+		return operational;
+	}
+
+	public void setOperational(boolean operational) {
+		this.operational = operational;
+	}
+
 	public String getComments() {
 		return comments;
 	}

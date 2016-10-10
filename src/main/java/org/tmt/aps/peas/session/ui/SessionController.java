@@ -96,6 +96,7 @@ public class SessionController implements Serializable {
 	boolean runProcedurePermission;
 	boolean ifCommandPermission;
 	boolean configPermission;
+	boolean includeTestData;
 
 	/**
 	 * Initialization method: creates a new current session if one does not exist
@@ -131,6 +132,7 @@ public class SessionController implements Serializable {
 			session = currentSession;
 
 			advancedViewMode = false;
+			includeTestData = false;
 			
 			
 			// setup external interfaces either in simulation mode or production mode
@@ -267,6 +269,15 @@ public class SessionController implements Serializable {
 		return isRunProcedurePermission() && isProcedureExecuting();
 	}
 
+	
+	public boolean isIncludeTestData() {
+		return includeTestData;
+	}
+
+	public void setIncludeTestData(boolean includeTestData) {
+		this.includeTestData = includeTestData;
+	}
+
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;
 		Procedure p2 = (Procedure) o2;
@@ -276,7 +287,7 @@ public class SessionController implements Serializable {
 	
 	public void updateCurrentSession() {
 		try {
-			currentSession = sessionMgmt.findSession(currentSession.getSessionId());
+			currentSession = sessionMgmt.findSession(currentSession.getSessionId(), includeTestData);
 		} catch (Exception e) {
 			// do nothing
 		}
@@ -290,7 +301,7 @@ public class SessionController implements Serializable {
 	public String doViewCurrentSession() {
 		
 		try {
-			session = sessionMgmt.findSession(currentSession.getSessionId());
+			session = sessionMgmt.findSession(currentSession.getSessionId(), includeTestData);
 		} catch (Exception e) {
 			session = currentSession;
 		}
@@ -310,7 +321,7 @@ public class SessionController implements Serializable {
 	public String doViewSession() {
 
 		try {
-			session = sessionMgmt.findSession(session.getSessionId());
+			session = sessionMgmt.findSession(session.getSessionId(), includeTestData);
 	
 			// order procedures by procedure number
 			Collections.sort(session.getProcedureList(), new ProcedureNumberComparator());
@@ -326,6 +337,22 @@ public class SessionController implements Serializable {
 		}
 
 	}
+	
+	public void operationalViewChangeListener() {
+
+		try {
+			session = sessionMgmt.findSession(session.getSessionId(), includeTestData);
+	
+			// order procedures by procedure number
+			Collections.sort(session.getProcedureList(), new ProcedureNumberComparator());
+	
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+
+	}
+	
 
 	/**
 	 * JSF Action method that saves the current session
@@ -343,7 +370,7 @@ public class SessionController implements Serializable {
 		}
 
 		try {
-			currentSession = sessionMgmt.findSession(session.getSessionId());
+			currentSession = sessionMgmt.findSession(session.getSessionId(), includeTestData);
 	
 			breadcrumbMenuBean.addFirstItem("Session: " + session, "/modules/session/sessionDetail.xhtml");
 			return "/modules/session/sessionDetail.xhtml";
@@ -447,7 +474,11 @@ public class SessionController implements Serializable {
 		RequestContext requestContext = RequestContext.getCurrentInstance();
 		if (advancedViewMode == true) {
 			requestContext.execute("loginDialog.show()");
+		} else {
+			requestContext.update("procedureDetailForm");
+			requestContext.update("procedureListForm");			
 		}
+		
 	}
 
 	/**
@@ -472,6 +503,7 @@ public class SessionController implements Serializable {
 			requestContext.update("menuForm");
 		}
 		requestContext.update("procedureDetailForm");
+		requestContext.update("procedureListForm");
 	}
 
 	/**

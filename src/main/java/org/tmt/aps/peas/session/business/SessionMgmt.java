@@ -57,8 +57,18 @@ public class SessionMgmt {
 	 * @param sessionId the night session id
 	 * @return the night session
 	 */
-	public Session findSession(Long sessionId) {
-		TypedQuery<Session> query = em.createNamedQuery("findSession", Session.class);
+	public Session findSession(Long sessionId, boolean includeTestData) {
+		
+		TypedQuery<Session> query = null;
+		if (includeTestData) {
+		
+			query = em.createNamedQuery("findSession", Session.class);
+		
+		} else {
+			query = em.createNamedQuery("findSessionOperationalData", Session.class);
+			
+		}
+		
 		query.setParameter("sessionId", sessionId);
 
 		Session session = query.getSingleResult();

@@ -55,6 +55,15 @@
 						<p:dataExporter type="csv" target="sessionTableExport"
 							fileName="session" />
 					</h:commandLink>
+					
+					<p:spacer width="20px" />
+					
+					<h:panelGroup rendered="#{sessionController.engineeringView}">
+						<h:outputLabel value="Show Non-Operational Procedures: " style="position:relative; top:-10px;"/>
+						<p:selectBooleanCheckbox value="#{sessionController.includeTestData}" style="position:relative;top:-6px;margin-left:2px" >
+						<p:ajax listener="#{sessionController.operationalViewChangeListener}" update="sessionTable"/>
+						</p:selectBooleanCheckbox>
+					</h:panelGroup>
 
 					<p:dataTable id="sessionTable" var="procedure"
 						value="#{sessionController.session.procedureList}">
