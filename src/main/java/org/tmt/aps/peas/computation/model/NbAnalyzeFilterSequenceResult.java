@@ -5,15 +5,17 @@ public class NbAnalyzeFilterSequenceResult {
 	float[] chi2nm;
 	float[] nbStep;
 	int[] rowFlagOut;
+	float[][] nbStepBestFit;
 	
 	public NbAnalyzeFilterSequenceResult() {
 		
 	}
 
-	public NbAnalyzeFilterSequenceResult(float[] chi2nm, float[] nbStep, int[] rowFlagOut) {
+	public NbAnalyzeFilterSequenceResult(float[] chi2nm, float[] nbStep, int[] rowFlagOut, float[][] nbStepBestFit) {
 		this.chi2nm = chi2nm;
 		this.nbStep = nbStep;
 		this.rowFlagOut = rowFlagOut;
+		this.nbStepBestFit = nbStepBestFit;
 	}
 
 	public float[] getChi2nm() {
@@ -38,6 +40,14 @@ public class NbAnalyzeFilterSequenceResult {
 
 	public void setRowFlagOut(int[] rowFlagOut) {
 		this.rowFlagOut = rowFlagOut;
+	}
+
+	public float[][] getNbStepBestFit() {
+		return nbStepBestFit;
+	}
+
+	public void setNbStepBestFit(float[][] nbStepBestFit) {
+		this.nbStepBestFit = nbStepBestFit;
 	}
 
 	

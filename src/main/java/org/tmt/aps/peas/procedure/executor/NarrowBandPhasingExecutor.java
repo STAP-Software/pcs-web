@@ -426,7 +426,7 @@ public class NarrowBandPhasingExecutor {
 			
 			statusLogger.log("nph.analyze_filter_sequence");
 			
-			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, corrTable, filterWavelengthMicrons, 
+			NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = computationLibrary.nbAnalyzeFilterSequence(rowFlagOutFilters, stepTable, filterWavelengthMicrons, 
 					procedure.getProcedureConfigSet().getNbFilterSeqConfig().getEdgeHeightSearchRange(),
 					constantsCache.getPhasingConstants().getEdgeHeightSearchInterval());
 	        

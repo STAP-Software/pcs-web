@@ -2566,7 +2566,7 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[][] rowFlagIn, float[][] stepTable, float[][][] corrTable, float[] filterWavelengthMicrons,
+	public NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequence(int[][] rowFlagIn, float[][] stepTable, float[] filterWavelengthMicrons,
 			float range, float rInt) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbAnalyzeFilterSequence"));
@@ -2578,18 +2578,19 @@ public class ComputationLibraryImpl {
 		// TODO: invert corrTable, stepTable
 		
 		float[][] stepTableT = JavaComputations.transpose2dArray(stepTable);
-		float[][][] corrTableT = JavaComputations.transpose3dArray(corrTable);
 		int[][] rowFlagInT = JavaComputations.transpose2dArray(rowFlagIn);
 
 
-		int numEdges = 84;
+		int numEdges = rowFlagInT.length;
+		int numFilters = rowFlagInT[0].length;
 
 		float[] chi2nm = new float[numEdges];
 		float[] nbStep = new float[numEdges];
 		int[] rowFlagOut = new int[numEdges];
+		float[][] nbStepBestFit = new float[numEdges][numFilters];
 
-		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, corrTableT, filterWavelengthMicrons, range, 
-				rInt, chi2nm, nbStep, rowFlagOut);
+		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, filterWavelengthMicrons, range, 
+				rInt, chi2nm, nbStep, rowFlagOut, nbStepBestFit);
 	            
 
 		
@@ -2598,7 +2599,7 @@ public class ComputationLibraryImpl {
 			throw new ComputationException("nbAnalyzeFilterSequence calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
-		NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = new NbAnalyzeFilterSequenceResult(chi2nm, nbStep, rowFlagOut);
+		NbAnalyzeFilterSequenceResult nbAnalyzeFilterSequenceResult = new NbAnalyzeFilterSequenceResult(chi2nm, nbStep, rowFlagOut, nbStepBestFit);
 
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "nbAnalyzeFilterSequence"));
