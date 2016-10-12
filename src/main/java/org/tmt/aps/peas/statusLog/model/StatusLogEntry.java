@@ -26,7 +26,9 @@ import javax.persistence.TemporalType;
 @Entity
 @Table(name = "StatusLogEntry")
 @NamedQueries({
-	@NamedQuery(name = "findEntriesByProcedureId", query = "SELECT s from StatusLogEntry s where s.procedureId = :procedureId" )
+	@NamedQuery(name = "findEntriesByProcedureId", query = "SELECT s from StatusLogEntry s "
+			+ "where s.procedureId = :procedureId "
+			+ "ORDER BY s.createDate" )
 })
 public class StatusLogEntry {
 

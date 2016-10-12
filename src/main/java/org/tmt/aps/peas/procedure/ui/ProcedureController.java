@@ -733,6 +733,9 @@ public class ProcedureController implements Serializable {
 
 			Procedure lastProcedure = sessionController.getCurrentSessionLastProcedure();
 			String testNumber = (lastProcedure != null) ? lastProcedure.getTestNumber() : "";
+			// reset the UI only variable
+			// FIXME: should this be part of the procedure config and thus persisted?
+			registerPupilFor = null;
 			
 			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession(),
 					testNumber, procedureOutput);
@@ -1003,7 +1006,8 @@ public class ProcedureController implements Serializable {
 			
 			// set up visualization displays
 			visualizationController.initVisualizationDisplays(procedure.getProcedureType().getProcedureTypeId());
-
+			visualizationController.setIteration(0); // to avoid index out of bounds exceptions
+			
 			// in case the values are not in the DB, just dummy some values
 			if (procedure.getProcedureConfigSet().getFiConfig() == null) {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());

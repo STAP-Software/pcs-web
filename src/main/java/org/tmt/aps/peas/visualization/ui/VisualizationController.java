@@ -468,7 +468,9 @@ public class VisualizationController implements Serializable {
 		return graphicDisplayMgmt.getIteration();
 	}
 	
-	public void setIteration(int iteration) {};
+	public void setIteration(int iteration) {
+		graphicDisplayMgmt.setIteration(iteration);
+	};
 	
 	public CentroidOffsetsDisplayValues getCentroidOffsetsDisplayValues() {
 		return graphicDisplayMgmt.getCentroidOffsetsDisplayValues();
