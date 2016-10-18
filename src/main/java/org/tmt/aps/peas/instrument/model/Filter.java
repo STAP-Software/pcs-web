@@ -67,6 +67,9 @@ public class Filter implements IterableEntity {
 		return filterName;
 	}
 
+	public int getFilterNameAsNumber() {
+		return new Integer(filterName);
+	}
 	public void setFilterName(String filterName) {
 		this.filterName = filterName;
 	}

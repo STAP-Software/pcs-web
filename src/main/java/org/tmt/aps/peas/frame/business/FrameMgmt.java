@@ -164,7 +164,7 @@ public class FrameMgmt {
 				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getUfsSegment(),
 				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup(), 
 				procedureCcdFrame.getPhasingStepNumber(),
-				procedureCcdFrame.getPhasingFilterNumber());
+				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getFilter().getFilterNameAsNumber());
 
 		// save the frame to a FITS file
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
