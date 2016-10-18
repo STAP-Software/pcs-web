@@ -118,18 +118,7 @@ public class SessionController implements Serializable {
 
 			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate, searchQuantity);
 
-			currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
-			// do we get our own copy??
-			//currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
-
-			if (currentSession == null) {
-				currentSession = sessionMgmt.createNewSession(instrument, telescope);
-				//currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
-				// the cloneBean will copy the procedure list, we want our own copy
-				//currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
-			}
-
-			session = currentSession;
+			checkCurrentSession();
 
 			advancedViewMode = false;
 			includeTestData = false;
@@ -150,6 +139,23 @@ public class SessionController implements Serializable {
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+	}
+	
+	
+	public void checkCurrentSession() throws Exception {
+		currentSession = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
+		// do we get our own copy??
+		//currentSessionPersisted = sessionMgmt.findCurrentSession(telescope.getTelescopeId());
+
+		if (currentSession == null) {
+			currentSession = sessionMgmt.createNewSession(instrument, telescope);
+			//currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
+			// the cloneBean will copy the procedure list, we want our own copy
+			//currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
+		}
+
+		session = currentSession;
+
 	}
 
 	public List<Session> getSessionList() {

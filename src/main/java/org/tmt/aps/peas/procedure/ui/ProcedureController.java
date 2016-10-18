@@ -738,6 +738,9 @@ public class ProcedureController implements Serializable {
 			// FIXME: should this be part of the procedure config and thus persisted?
 			registerPupilFor = null;
 			
+			// check to see if a new session is required
+			sessionController.checkCurrentSession();
+			
 			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession(),
 					testNumber, operational, procedureOutput);
 
