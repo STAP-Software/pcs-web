@@ -733,12 +733,13 @@ public class ProcedureController implements Serializable {
 
 			Procedure lastProcedure = sessionController.getCurrentSessionLastProcedure();
 			String testNumber = (lastProcedure != null) ? lastProcedure.getTestNumber() : "";
+			boolean operational = (lastProcedure != null) ? lastProcedure.isOperational() : true;
 			// reset the UI only variable
 			// FIXME: should this be part of the procedure config and thus persisted?
 			registerPupilFor = null;
 			
 			procedure = procedureExecutionMgmt.performProcedureSetup(procedureTypeId, sessionController.getCurrentSession(),
-					testNumber, procedureOutput);
+					testNumber, operational, procedureOutput);
 
 			// add the procedure to the session
 			sessionController.addNewProcedure(procedure);

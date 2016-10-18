@@ -55,7 +55,10 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
 			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.procedureConfig "
 			+ "LEFT OUTER JOIN FETCH pcs.globalConfig LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig LEFT OUTER JOIN FETCH p.session "
-			+ "where s.sessionId = :sessionId AND p.operational = true")
+			+ "where s.sessionId = :sessionId AND (p.operational = true OR p.procedureId IS NULL)"),
+	@NamedQuery(name = "findSessionLight", query = "SELECT DISTINCT s from Session s "
+			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument "
+			+ "where s.sessionId = :sessionId")
 })
 public class Session {
 

@@ -71,7 +71,18 @@ public class SessionMgmt {
 		
 		query.setParameter("sessionId", sessionId);
 
-		Session session = query.getSingleResult();
+		Session session = null;
+		
+		try {
+		
+			session = query.getSingleResult();
+		
+		} catch (NoResultException e) {
+			query = em.createNamedQuery("findSessionLight", Session.class);
+			query.setParameter("sessionId", sessionId);
+			session = query.getSingleResult();
+			session.setProcedureList(new ArrayList<Procedure>());
+		}
 		
 		for (Procedure procedure : session.getProcedureList()) {
 			try {

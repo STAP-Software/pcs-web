@@ -461,7 +461,7 @@ public class ProcedureExecutionMgmt {
 	 * @param procedureOutput the procedure output object to assign
 	 * @return the procedure, now set up with default configurations
 	 */
-	public Procedure performProcedureSetup(Long procedureTypeId, Session session, String testNumber, ProcedureOutput procedureOutput)
+	public Procedure performProcedureSetup(Long procedureTypeId, Session session, String testNumber, boolean operational, ProcedureOutput procedureOutput)
 			throws Exception {
 		Procedure procedure = new Procedure();
 
@@ -469,6 +469,7 @@ public class ProcedureExecutionMgmt {
 		ProcedureType procedureType = procedureMgmt.findProcedureType(procedureTypeId);
 		procedure.setProcedureType(procedureType);
 		procedure.setTestNumber(testNumber);
+		procedure.setOperational(operational);
 
 		procedure.setProcedureOutput(procedureOutput);
 		procedure.setSession(session);
