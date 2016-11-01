@@ -104,10 +104,10 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
 		
 		var act1Position = parseFloat(act1PosArray[i]);
 		
-		// parse to float, convert to um, and keep 2 decimal places
-		var actDelta1 = (parseFloat(actDeltasArray[(i*3)+0])/1000.0).toFixed(2);
-		var actDelta2 = (parseFloat(actDeltasArray[(i*3)+1])/1000.0).toFixed(2);
-		var actDelta3 = (parseFloat(actDeltasArray[(i*3)+2])/1000.0).toFixed(2);
+		// parse to float, convert to um, and keep 3 decimal places
+		var actDelta1 = (parseFloat(actDeltasArray[(i*3)+0])/1000.0).toFixed(3);
+		var actDelta2 = (parseFloat(actDeltasArray[(i*3)+1])/1000.0).toFixed(3);
+		var actDelta3 = (parseFloat(actDeltasArray[(i*3)+2])/1000.0).toFixed(3);
 								
 		var heat1 = heatArray[(i*3)+0];
 		var heat2 = heatArray[(i*3)+1];
