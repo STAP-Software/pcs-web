@@ -68,7 +68,12 @@ public class Filter implements IterableEntity {
 	}
 
 	public int getFilterNameAsNumber() {
-		return new Integer(filterName);
+		try {
+			return new Integer(filterName);
+		} catch (Exception e) {
+			// if 'None' then use 0
+			return 0;
+		}
 	}
 	public void setFilterName(String filterName) {
 		this.filterName = filterName;
