@@ -275,7 +275,8 @@ public class FitsFilename {
 			buf.append(iteration);			
 			buf.append((char)(phasingStep + 'A' - 1));
 		} else if (procedureTypeCd.startsWith("NPH")) {
-			buf.append(iteration + "_" + nphFilter);			
+			buf.append(iteration + "_");	
+			buf.append(String.format("%03d", nphFilter));
 		} else {
 			buf.append(String.format("%02d", iteration));			
 		}

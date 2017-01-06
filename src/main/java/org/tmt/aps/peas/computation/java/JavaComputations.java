@@ -689,4 +689,62 @@ public class JavaComputations {
 		
 		return matrix;
 	}
+	
+	
+	/**
+	 * @author gchanan 7/13/2016 Original Version
+	 * @author cohara  9/05/2016 Port to PEAS
+	 * @author smichaels 1/6/17 Rewritten in Java
+	 * 
+	 * Given subaperture centers (XAP,YAP) and segment centers (XSEG,YSEG), 
+	 * determine if the subaperture lies within the hexagonal segment or not.
+	 * 
+	 * Determine whether the subaperture center (XAP, YAP) lies in a
+	 * hexagon with center at (XSEG, YSEG).  The hexagon side length is AHEX.  
+	 * No particular units are assumed, but they must be consistent.  If the 
+	 * subaperture center does lie in the hexagon, then N = 1 will be returned; 
+	 * otherwise N = 0.  Usually this test will only be used for SUFS.  For other
+	 * modes there is a simpler test using circles.
+	 * Note ahex may be oversized for subaps on the boundary of a segment.
+	 * 
+	 * @param xap The X coordinate of the given subaperture center.
+	 * @param yap The Y coordinate of the given subaperture center.
+	 * @param xseg The X coordinate of a hexagonal segment center
+	 * @param xseg The Y coordinate of a hexagonal segment center
+	 * @param ahex Hexagon side length
+	 * 
+	 * @return true if subaperature center lies within the hexagonal segment, false otherwise
+	 * 
+	 */	
+	public boolean doesSubappLieInSeg(float xap, float yap, float xseg, float yseg, float ahex) {
+		
+        // We consider the 3 sets of parallel lines that define the hexagon, but 
+        // extended to infinity.  To pass each of the three tests, the point must
+        // lie between the corresponding set of parallel lines.  If it fails one 
+        // test, it is out.
+
+        float sqrt3 = (float)Math.sqrt(3.0);
+        float bhex = 0.5f * sqrt3 * ahex;
+
+        float y0 = yap;
+        float y1 = 0.5f * (yap + sqrt3 * xap);
+        float y2 = 0.5f * (yap- sqrt3 * xap);
+
+        float zz0 = yseg;
+        float zz1 =  0.5f * (yseg + sqrt3 * xseg);
+        float zz2 =  0.5f * (yseg - sqrt3 * xseg);
+
+        // if lies below bottom or lies above top return false
+        if (y0 < (zz0 - bhex) || y0 >= (zz0 + bhex)) return false;       
+
+        // if outside either side, return false
+        if (y1 < (zz1 - bhex) || y1 >= (zz1 + bhex) || y2 < (zz2 - bhex) || y2 >= (zz2 + bhex)) return false;
+
+		// must be inside the hexagon
+		return true;
+	}
+	
+	
+	
+	
 }
