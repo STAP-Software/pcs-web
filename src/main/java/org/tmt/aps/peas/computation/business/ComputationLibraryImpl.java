@@ -2654,6 +2654,23 @@ public class ComputationLibraryImpl {
 	}    
     
 
+	/**
+	 * 
+	 * determineMissingSegmentSubimgages
+	 * 
+	 * @param subaperatureLocations x,y locations of all subaperatures in m at M1
+	 * @param segmentCenters x,y locations of all segment centers in m at M1
+	 * @param aHex hexagon side length in m at M1
+	 * @param segmentList boolean array numbered according to segment number: true if segment is present, false otherwise
+	 * 
+	 * @return boolean array of length subaperature count: true if subaperature is present, false otherwise
+	 */
+	@Computation
+	public boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, boolean[] segmentList) 
+			throws ComputationException {
+		
+		return JavaComputations.determineMissingSegmentSubaperatures(subaperatureLocations, segmentCenters, aHex, segmentList);
+	}
 
     
 }

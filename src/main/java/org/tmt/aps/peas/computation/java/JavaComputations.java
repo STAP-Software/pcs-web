@@ -707,16 +707,14 @@ public class JavaComputations {
 	 * modes there is a simpler test using circles.
 	 * Note ahex may be oversized for subaps on the boundary of a segment.
 	 * 
-	 * @param xap The X coordinate of the given subaperture center.
-	 * @param yap The Y coordinate of the given subaperture center.
-	 * @param xseg The X coordinate of a hexagonal segment center
-	 * @param xseg The Y coordinate of a hexagonal segment center
+	 * @param aperaturePos The coordinates of the given subaperture center.
+	 * @param segCenter The coordinates of a hexagonal segment center
 	 * @param ahex Hexagon side length
 	 * 
 	 * @return true if subaperature center lies within the hexagonal segment, false otherwise
 	 * 
 	 */	
-	public boolean doesSubappLieInSeg(float xap, float yap, float xseg, float yseg, float ahex) {
+	public static boolean doesSubapLieInSeg(FloatPoint aperaturePos, FloatPoint segCenter, float ahex) {
 		
         // We consider the 3 sets of parallel lines that define the hexagon, but 
         // extended to infinity.  To pass each of the three tests, the point must
@@ -726,13 +724,13 @@ public class JavaComputations {
         float sqrt3 = (float)Math.sqrt(3.0);
         float bhex = 0.5f * sqrt3 * ahex;
 
-        float y0 = yap;
-        float y1 = 0.5f * (yap + sqrt3 * xap);
-        float y2 = 0.5f * (yap- sqrt3 * xap);
+        float y0 = aperaturePos.y;
+        float y1 = 0.5f * (aperaturePos.y + sqrt3 * aperaturePos.x);
+        float y2 = 0.5f * (aperaturePos.y- sqrt3 * aperaturePos.x);
 
-        float zz0 = yseg;
-        float zz1 =  0.5f * (yseg + sqrt3 * xseg);
-        float zz2 =  0.5f * (yseg - sqrt3 * xseg);
+        float zz0 = segCenter.y;
+        float zz1 =  0.5f * (segCenter.y + sqrt3 * segCenter.x);
+        float zz2 =  0.5f * (segCenter.y - sqrt3 * segCenter.x);
 
         // if lies below bottom or lies above top return false
         if (y0 < (zz0 - bhex) || y0 >= (zz0 + bhex)) return false;       
@@ -745,6 +743,52 @@ public class JavaComputations {
 	}
 	
 	
-	
+	/**
+	 * 
+	 * determineMissingSegmentSubimgages
+	 * 
+	 * @param subaperatureLocations x,y locations of all subaperatures in m at M1
+	 * @param segmentCenters x,y locations of all segment centers in m at M1
+	 * @param aHex hexagon side length in m at M1
+	 * @param segmentList boolean array numbered according to segment number: true if segment is present, false otherwise
+	 * 
+	 * @return boolean array of length subaperature count: true if subaperature is present, false otherwise
+	 */
+	public static boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, boolean[] segmentList) {
+		
+		// Start by assuming the subaperture is not there.
+	    // Do NOT test for whether missing segment lies in the SUFS group or not.
+	    // It may be a neighbor to the group still visible on the screen and we
+	    // need to exclude that.  Rather than keeping track of group members
+	    // and their neighbors, just test ALL missing segments.
+
+		boolean[] subaperatureFlgs = new boolean[subaperatureLocations.length];
+		
+		for (int i=0; i<subaperatureLocations.length; i++) {
+			
+			FloatPoint subaperatureLocation = subaperatureLocations[i];
+			
+			for (int j=0; j<segmentList.length; j++) {
+				
+				boolean segmentPresent = segmentList[j];
+				FloatPoint segmentCenter = segmentCenters[j];
+				
+				if (segmentPresent) {
+					
+					
+					// Some subaps are on the boundary. Oversize the radius by 1.02:
+	                if (doesSubapLieInSeg(subaperatureLocation, segmentCenter, 1.02f * aHex)) {
+	                	subaperatureFlgs[i] = true; // The subaperture is there.
+	                	break; // No point testing other segments
+	                }
+				}
+				
+				
+			}
+			
+		}
+		
+		return subaperatureFlgs;
+	}
 	
 }
