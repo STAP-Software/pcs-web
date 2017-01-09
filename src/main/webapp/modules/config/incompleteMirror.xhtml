@@ -1,0 +1,189 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+
+
+
+<ui:composition template="../../template.xhtml">
+
+	<ui:define name="content">
+
+     	<h:form id="incmirForm">
+
+ 			
+			<h:inputHidden id="mirrors" value="#{incompleteMirrorController.mirrors}" />
+
+ 			
+     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentDefXs}" />
+			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentDefYs}" />
+			
+    			
+    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+     		
+    		
+    		<canvas id="incmirCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		   		
+    		
+    		</p:panelGrid>
+    		<br/>
+    		    		
+    		<h:panelGroup styleClass="dialogCommandGroup">
+    		
+			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
+			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
+					
+			</h:panelGroup>
+			
+			<p:remoteCommand name="selectSegment" action="#{incompleteMirrorController.doHandleSelect}" update=":incmirForm" oncomplete="drawIncompleteMirror()" />
+			
+     	</h:form>
+		
+		
+		
+		
+
+<script type="text/javascript">  
+//<![CDATA[
+
+var sideLen = 77
+var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
+           
+
+
+
+function drawIncompleteMirror() {
+   
+	var c = document.getElementById("incmirCanvas");
+	var ctx = c.getContext("2d");
+	ctx.clearRect(0,0,c.width,c.height);
+	ctx.scale(0.61, 0.61);
+
+	refreshIncMirDisplay();
+}
+
+function refreshIncMirDisplay() {
+	
+	var c = document.getElementById("incmirCanvas");
+	var ctx = c.getContext("2d");
+
+	// display coordinates - hex centers
+	var xField1 = document.getElementById('incmirForm:segCentDefXs').value;
+ 	var xHexCenterArray = xField1.split(','); 
+ 	
+	var yField1 = document.getElementById('incmirForm:segCentDefYs').value;
+ 	var yHexCenterArray = yField1.split(','); 
+ 	
+	var field = document.getElementById('incmirForm:mirrors').value;
+ 	var mirrorStatusArray = field.split(','); 
+ 	
+	
+		
+	for (var i = 0; i < xHexCenterArray.length; i++) {
+		
+		var x = parseFloat(xHexCenterArray[i])
+		var y = parseFloat(yHexCenterArray[i])
+								
+		// TODO: pass in the mirror status
+		drawHex(ctx, x, y, sideLen, i+1, mirrorStatusArray[i])
+	}
+		
+	
+	$('#incmirCanvas').click(function (e) {
+		
+		var canvas = document.getElementById("incmirCanvas");
+		var ctx = canvas.getContext("2d");
+
+		mousePos = getIncMirMousePos(canvas, e);
+	     
+	    // alert ('clicked ' + mousePos.x + ', ' + mousePos.y);
+	    
+		selectSegment([{name: 'canvas_x', value: mousePos.x}, {name: 'canvas_y', value: mousePos.y}]);
+
+	});
+}
+
+function drawHex(ctx, x, y, sideLen, number, isPresent) {
+	// draw a hexgon of side sideLen centered on position x, y
+	
+	var a = sideLen
+	var b = a * Math.sqrt(3) / 2;
+
+	// 0 is the left side of hex, b + a/2 is the x center
+	// 0 is the top of the hex, 
+	
+	
+	//       (a/2, 0)
+	//          ______________
+	//         /
+	//        /
+	//       /
+	//      /
+	//     /
+	//    (0,b)
+	
+	// the box is centered at a, b so we subtract these to get the center
+	
+	ctx.beginPath();
+	ctx.strokeStyle = '#888888';
+    ctx.moveTo(x-a,y)	
+	ctx.lineTo(x-a/2,y-b)
+    ctx.lineTo(x+a/2,y-b)
+    ctx.lineTo(x+a,y)
+    ctx.lineTo(x+a/2,y+b)
+    ctx.lineTo(x-a/2,y+b)
+	ctx.closePath();
+	ctx.stroke();
+	
+	if (isPresent == 1) {
+		ctx.fillStyle = "#e8f0f8";
+	} else {
+		ctx.fillStyle = "#ffffff";
+	}
+	
+	ctx.fill();
+	
+	// TODO: what we would do to display if it was not present
+	
+	// draw segment number
+	ctx.fillStyle = '#888888';
+	ctx.font="28px Arial";
+	if (number > 9) {
+		ctx.fillText(number, x-15, y+10);
+	} else {
+		ctx.fillText(number, x-10, y+10);
+	}
+}
+
+
+
+
+function getIncMirMousePos(canvas, evt) {
+	
+    var rect = canvas.getBoundingClientRect();
+    return {
+      x: evt.clientX - rect.left,
+      y: evt.clientY - rect.top
+    };
+  }
+
+
+
+
+$(window).load(function() {
+
+	window.setTimeout("drawIncompleteMirror()", 100);
+
+});
+
+//]]>  
+</script>   
+
+
+
+
+
+	</ui:define>
+</ui:composition>
+</html>

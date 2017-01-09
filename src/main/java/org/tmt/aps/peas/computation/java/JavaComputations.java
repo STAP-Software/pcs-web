@@ -702,9 +702,8 @@ public class JavaComputations {
 	 * Determine whether the subaperture center (XAP, YAP) lies in a
 	 * hexagon with center at (XSEG, YSEG).  The hexagon side length is AHEX.  
 	 * No particular units are assumed, but they must be consistent.  If the 
-	 * subaperture center does lie in the hexagon, then N = 1 will be returned; 
-	 * otherwise N = 0.  Usually this test will only be used for SUFS.  For other
-	 * modes there is a simpler test using circles.
+	 * subaperture center does lie in the hexagon, then true will be returned; 
+	 * otherwise false. 
 	 * Note ahex may be oversized for subaps on the boundary of a segment.
 	 * 
 	 * @param aperaturePos The coordinates of the given subaperture center.

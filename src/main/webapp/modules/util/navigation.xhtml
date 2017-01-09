@@ -37,6 +37,7 @@
 
 					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.configPermission}">
 						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="Incomplete Mirror" action="#{incompleteMirrorController.doViewIncompleteMirror}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.administrationView}"/>
 						<p:menuitem value="SUFS Segment Zernikes" action="#{globalConfigController.doViewSufsZernikes}" disabled="#{sessionController.navDisabled}" update=":growl :errorGrowl"/>
 						<p:separator />

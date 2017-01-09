@@ -2673,6 +2673,32 @@ public class ComputationLibraryImpl {
 	}
 
     
+	/**
+	 * @author gchanan 7/13/2016 Original Version
+	 * @author cohara  9/05/2016 Port to PEAS
+	 * @author smichaels 1/6/17 Rewritten in Java
+	 * 
+	 * Given subaperture centers (XAP,YAP) and segment centers (XSEG,YSEG), 
+	 * determine if the subaperture lies within the hexagonal segment or not.
+	 * 
+	 * Determine whether the subaperture center (XAP, YAP) lies in a
+	 * hexagon with center at (XSEG, YSEG).  The hexagon side length is AHEX.  
+	 * No particular units are assumed, but they must be consistent.  If the 
+	 * subaperture center does lie in the hexagon, then true will be returned; 
+	 * otherwise false. 
+	 * Note ahex may be oversized for subaps on the boundary of a segment.
+	 * 
+	 * @param aperaturePos The coordinates of the given subaperture center.
+	 * @param segCenter The coordinates of a hexagonal segment center
+	 * @param ahex Hexagon side length
+	 * 
+	 * @return true if subaperature center lies within the hexagonal segment, false otherwise
+	 * 
+	 */	
+	public boolean doesSubapLieInSeg(FloatPoint aperaturePos, FloatPoint segCenter, float ahex) {
+		return JavaComputations.doesSubapLieInSeg(aperaturePos, segCenter, ahex);
+	}
+	
 }
 
 
