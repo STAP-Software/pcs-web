@@ -2666,7 +2666,7 @@ public class ComputationLibraryImpl {
 	 * @return boolean array of length subaperature count: true if subaperature is present, false otherwise
 	 */
 	@Computation
-	public boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, boolean[] segmentList) 
+	public boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, Integer[] segmentList) 
 			throws ComputationException {
 		
 		return JavaComputations.determineMissingSegmentSubaperatures(subaperatureLocations, segmentCenters, aHex, segmentList);

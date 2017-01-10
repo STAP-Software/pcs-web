@@ -753,7 +753,7 @@ public class JavaComputations {
 	 * 
 	 * @return boolean array of length subaperature count: true if subaperature is present, false otherwise
 	 */
-	public static boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, boolean[] segmentList) {
+	public static boolean[] determineMissingSegmentSubaperatures(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, Integer[] segmentList) {
 		
 		// Start by assuming the subaperture is not there.
 	    // Do NOT test for whether missing segment lies in the SUFS group or not.
@@ -769,7 +769,7 @@ public class JavaComputations {
 			
 			for (int j=0; j<segmentList.length; j++) {
 				
-				boolean segmentPresent = segmentList[j];
+				boolean segmentPresent = segmentList[j].intValue() == 1;
 				FloatPoint segmentCenter = segmentCenters[j];
 				
 				if (segmentPresent) {

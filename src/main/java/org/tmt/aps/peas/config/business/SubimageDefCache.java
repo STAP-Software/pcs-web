@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.config.business;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,25 +40,41 @@ public class SubimageDefCache {
 	@EJB
 	CentroidMapMgmt centroidMapMgmt;
 	@EJB
-	PeasProperties peasProperties;
+	PeasProperties peasProperties;	
+	@EJB
+	ConstantsCache constantsCache;
 		
 	private Map<Long, SubimageDefList> subimageDefMap;
 	private Map<Integer, SubimageDefList> sufsSubimageDefMap;
+	private Long telescopeId;
 
 	@PostConstruct
 	public void init() throws Exception {
 
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		Long telescopeId = new Long(telescopeIdStr);
+		telescopeId = new Long(telescopeIdStr);
 
+		
+		List<Integer> mirrors = new ArrayList<Integer>();
+		
+		for (int i=0; i<constantsCache.getTelescopeConstants().getNumberOfSegments(); i++) {
+			mirrors.add(new Integer(1));
+		}
+
+		refreshCache(mirrors);
+	}
+	
+	
+	public void refreshCache(List<Integer> mirrors) throws Exception {
 		
 		// get ref def maps
 		subimageDefMap = new HashMap<Long, SubimageDefList>();
+
 		
 		// No UFS/SUFS for now, will upgrade later
 		for (int i=1; i<4; i++) {
 			
-			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, new Long(i));
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, new Long(i), mirrors);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
 			subimageDefMap.put(new Long(i), subimageDefList);
@@ -74,14 +91,12 @@ public class SubimageDefCache {
 		
 		for (int i=0; i<7; i++) {
 			
-			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, i);
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, mirrors, i);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
 			sufsSubimageDefMap.put(new Integer(i), subimageDefList);
 		
 		}
-		
-		
 		
 		
 		// add the first one for the reference beam map, which does not require an SUFS group

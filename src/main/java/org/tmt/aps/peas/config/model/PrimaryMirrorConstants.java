@@ -1,6 +1,9 @@
 package org.tmt.aps.peas.config.model;
 
+import java.util.List;
+
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
 
 /**
@@ -103,6 +106,12 @@ public class PrimaryMirrorConstants {
 	public void setCenterSpot(FloatPoint[] centerSpot) {
 		this.centerSpot = centerSpot;
 	}
+	public List<FloatPoint> getCenterSpotInMeters() {
+		
+		return FloatPointListEncoder.multiplyPoints(centerSpot, aHex);
+		
+	}
+	
 	public float[] getAct1Pos() {
 		return act1Pos;
 	}

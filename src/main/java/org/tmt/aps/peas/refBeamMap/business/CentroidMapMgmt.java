@@ -24,6 +24,8 @@ import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.model.M2CalcSpotList;
 import org.tmt.aps.peas.config.model.MissingSpotList;
@@ -49,8 +51,12 @@ public class CentroidMapMgmt {
 
 	@EJB
 	MissingSpotsMgmt missingSpotsMgmt;
+	@EJB
+	ComputationLibraryImpl computationLibrary;
+	@EJB
+	ConstantsCache constantsCache;
 
-	@PersistenceContext
+	@PersistenceContext	
 	private EntityManager em;
 
 	/**
@@ -128,8 +134,8 @@ public class CentroidMapMgmt {
 	 * @param pupilMaskTypeId the pupil mask type
 	 * @return the subimage definition list
 	 */
-	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId) {
-		return getSubimageDefList(telescopeId, pupilMaskTypeId, null);
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, List<Integer> mirrorConfig) throws Exception {
+		return getSubimageDefList(telescopeId, pupilMaskTypeId, mirrorConfig, null);
 	}
 	
 	/**
@@ -139,7 +145,7 @@ public class CentroidMapMgmt {
 	 * @param sufsGroupNumber the SUFS group number
 	 * @return the subimage definition list
 	 */
-	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer sufsGroupNumber) {
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, List<Integer> mirrorConfig, Integer sufsGroupNumber) throws Exception {
 
 		RefBeamMap refBeamMap = null;
 				
@@ -151,7 +157,21 @@ public class CentroidMapMgmt {
 
 		// decode String into transient FloatPoint values
 		List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+		
+		
+		// Query the theoretical subaperatures for the mask type (meters at primary mirror)
+		TypedQuery<RefBeamMap> query2 = em.createNamedQuery("findTheoreticalLocations", RefBeamMap.class);
+		query2.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+	
+		query2.setMaxResults(1);
+		refBeamMap = query2.getSingleResult();
 
+		// decode String into transient FloatPoint values
+		List<FloatPoint> theorecticalSubaperatures = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+
+
+		
+		
 		// to create a list of SubimageDefs
 
 		List<SubimageDef> subimageDefList = new ArrayList<SubimageDef>();
@@ -178,14 +198,41 @@ public class CentroidMapMgmt {
 			missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId, sufsGroupNumber);			
 		}
 		
+		
 		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListAnalysisDecoded) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS);
 		}
-
+		
 		// F&I missing value overrides analysis
 		List<Integer> missingSpotListFandIDecoded = IntegerListEncoder.decodeList(missingSpotListFandI.getMissingSpotListEncoded());
+		
+		// fold in incomplete mirror state.  This will add to the FI missing spots list (decoded)
+		// determine missing spot list based on mirror config and mask type
+		boolean[] mirrorConfigPresentSubaperatures = computationLibrary.determineMissingSegmentSubaperatures(
+				theorecticalSubaperatures.toArray(new FloatPoint[0]), 
+				constantsCache.getPrimaryMirrorConstants().getCenterSpotInMeters().toArray(new FloatPoint[0]), 
+				constantsCache.getPrimaryMirrorConstants().getaHex(), 
+				mirrorConfig.toArray(new Integer[0]));
+		
+		// start to build the composite FandI missing spot list
+		// FIXME: we start numbering here at 1, not zero.  Is this correct?
+		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
+		for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
+			if (!mirrorConfigPresentSubaperatures[j]) {
+				fullFandIMissingSpotList.add(new Integer(i+1));
+			}
+		}
+		// fold in normal missing spots
 		for (Integer spot : missingSpotListFandIDecoded) {
+			if (!fullFandIMissingSpotList.contains(spot)) {
+				fullFandIMissingSpotList.add(spot);
+			}
+		}
+		
+		
+		
+		for (Integer spot : fullFandIMissingSpotList) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);
 			subimageDefList.get(spot - 1).setNphMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);
 		}

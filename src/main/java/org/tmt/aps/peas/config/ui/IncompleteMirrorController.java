@@ -172,8 +172,8 @@ public class IncompleteMirrorController implements Serializable {
 	public void doSave() {
 		try {
 			
-			// TODO: update the SubimageDefCache with new values based on the new incomplete mirror configuration
-			
+			// update the SubimageDefCache with new values based on the new incomplete mirror configuration
+			subimageDefCache.refreshCache(mirrorSegments);
 			
 			
 			mirrorSegmentsSaved = new ArrayList<Integer>(mirrorSegments);
