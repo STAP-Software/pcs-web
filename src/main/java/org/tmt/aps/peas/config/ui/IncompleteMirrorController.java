@@ -17,6 +17,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatPoint;
@@ -35,7 +36,7 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 /**
- * JSF Controller for missing spots configuration user interface
+ * JSF Controller for incomplete mirror configuration user interface
  * @author smichaels
  *
  */
@@ -73,6 +74,7 @@ public class IncompleteMirrorController implements Serializable {
 
 	private List<Integer> mirrorSegments;
 
+	private List<Integer> mirrorSegmentsSaved;
 
 	String mirrors; // for javascript display
 
@@ -98,6 +100,9 @@ public class IncompleteMirrorController implements Serializable {
 									
 			mirrors = IntegerListEncoder.encodeList(mirrorSegments);
 			
+			// the saved version
+			mirrorSegmentsSaved = new ArrayList<Integer>(mirrorSegments);
+			
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -121,11 +126,7 @@ public class IncompleteMirrorController implements Serializable {
 	public String doViewIncompleteMirror() {
 		try {
 		
-			// TODO
-			
 			breadcrumbMenuBean.addFirstItem("Incomplete Mirror Configuration", "/modules/config/incompleteMirror.xhtml");
-
-			//RequestContext.getCurrentInstance().execute("runDrawMissingSpots()");
 			
 			return "/modules/config/incompleteMirror.xhtml?faces-redirect=true";
 
@@ -166,11 +167,17 @@ public class IncompleteMirrorController implements Serializable {
 	
 	
 	/**
-	 * Action method called when user clicks 'Save'.  Updates the list of missing spots in the database.
+	 * Action method called when user clicks 'Save'.  Updates the list of mirrors and the SubimageDefCache.
 	 */
 	public void doSave() {
 		try {
-			// TODO
+			
+			// TODO: update the SubimageDefCache with new values based on the new incomplete mirror configuration
+			
+			
+			
+			mirrorSegmentsSaved = new ArrayList<Integer>(mirrorSegments);
+			
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
@@ -178,6 +185,17 @@ public class IncompleteMirrorController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
+
+	}
+	
+	/**
+	 * Action method called when user clicks 'Reset'.  Updates the list of mirrors.
+	 */
+	public void doReset() {			
+		
+		mirrorSegments = new ArrayList<Integer>(mirrorSegmentsSaved);
+		
+		mirrors = IntegerListEncoder.encodeList(mirrorSegments);
 
 	}
 

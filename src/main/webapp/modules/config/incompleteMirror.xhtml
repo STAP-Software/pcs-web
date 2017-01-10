@@ -8,7 +8,7 @@
 
 	<ui:define name="content">
 
-     	<h:form id="incmirForm">
+     	<h:form id="incmirForm" style="margin: 30px">
 
  			
 			<h:inputHidden id="mirrors" value="#{incompleteMirrorController.mirrors}" />
@@ -18,23 +18,24 @@
 			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentDefYs}" />
 			
     			
-    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+			<p:panelGrid columns="1" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
      		
+    		<f:facet name="header">
+				<h:outputText value="Select Desired Primary Mirror Configuration" />
+			</f:facet>
+    		
     		
     		<canvas id="incmirCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
     		   		
+  
+  			<f:facet name="footer">
+				<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{incompleteMirrorController.doSave}" update=":growl :errorGrowl" />
+				<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true" action="#{incompleteMirrorController.doReset}" update=":incmirForm" oncomplete="drawIncompleteMirror()"/>
+			</f:facet>
     		
     		</p:panelGrid>
     		<br/>
     		    		
-    		<h:panelGroup styleClass="dialogCommandGroup">
-    		
-			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
-			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
-					
-			</h:panelGroup>
 			
 			<p:remoteCommand name="selectSegment" action="#{incompleteMirrorController.doHandleSelect}" update=":incmirForm" oncomplete="drawIncompleteMirror()" />
 			
