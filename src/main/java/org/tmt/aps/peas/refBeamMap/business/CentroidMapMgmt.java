@@ -213,7 +213,7 @@ public class CentroidMapMgmt {
 		// start to build the composite FandI missing spot list
 		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
 		
-		/* disable incomplete mirror fold in for now
+		/* FIXME disable incomplete mirror fold in for now
 		for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
 			if (!mirrorConfigPresentSubaperatures[j]) {
 				fullFandIMissingSpotList.add(new Integer(i+1));

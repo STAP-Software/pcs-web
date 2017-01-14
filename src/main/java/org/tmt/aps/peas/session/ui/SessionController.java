@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.session.ui;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -25,13 +26,16 @@ import org.tmt.aps.peas.ApplicationScopeBean;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.extinf.CameraCommand;
-import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -58,6 +62,10 @@ public class SessionController implements Serializable {
 	TelescopeMgmt telescopeMgmt;
 	@EJB
 	CameraMgmt cameraMgmt;
+	@EJB
+	ConstantsCache constantsCache;
+	@EJB
+	GlobalConfigMgmt globalConfigMgmt;
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
 	@EJB
@@ -152,6 +160,21 @@ public class SessionController implements Serializable {
 			//currentSessionPersisted = (Session) BeanUtils.cloneBean(currentSession);
 			// the cloneBean will copy the procedure list, we want our own copy
 			//currentSessionPersisted.setProcedureList(new ArrayList<Procedure>());
+			
+			// also reset and incomplete mirror settings
+			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescope.getTelescopeId(), instrument.getInstrumentId());
+
+			List<Integer> mirrorList = new ArrayList<Integer>();
+			int segmentCount = constantsCache.getTelescopeConstants().getNumberOfSegments();
+			for (int i=0; i<segmentCount; i++) {
+				mirrorList.add(new Integer(1));
+			}
+			
+			globalConfigDefaults.setMirrorListEncoded(IntegerListEncoder.encodeList(mirrorList));
+			
+			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
+
+			
 		}
 
 		session = currentSession;
