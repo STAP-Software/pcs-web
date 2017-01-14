@@ -7,6 +7,7 @@ package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
@@ -17,7 +18,6 @@ import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatPoint;
@@ -26,9 +26,10 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
-import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
@@ -51,7 +52,7 @@ public class IncompleteMirrorController implements Serializable {
 	@EJB
 	SubimageDefCache subimageDefCache;
 	@EJB
-	CameraDefMgmt cameraDefMgmt;
+	GlobalConfigMgmt globalConfigMgmt;
 	@EJB
 	PeasProperties peasProperties;
 	@EJB
@@ -70,7 +71,8 @@ public class IncompleteMirrorController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 	
-	Telescope telescope;
+	Long telescopeId;
+	Long instrumentId;
 
 	private List<Integer> mirrorSegments;
 
@@ -86,23 +88,16 @@ public class IncompleteMirrorController implements Serializable {
 		try {
 			
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-			telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
+			telescopeId = new Long(telescopeIdStr);
+			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+			instrumentId = new Long(instrumentIdStr);
 
 
-			// TODO: do we want to load up the incomplete mirror config from the database?
-			
-			// for now, these are all defaulted to true
-			mirrorSegments = new ArrayList<Integer>();
-			
-			for (int i=0; i<36; i++) {
-				mirrorSegments.add(1);
-			}
-									
+			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
+			mirrorSegments = Arrays.asList(globalConfigDefaults.getMirrorList());
+
 			mirrors = IntegerListEncoder.encodeList(mirrorSegments);
-			
-			// the saved version
-			mirrorSegmentsSaved = new ArrayList<Integer>(mirrorSegments);
-			
+												
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -173,11 +168,13 @@ public class IncompleteMirrorController implements Serializable {
 		try {
 			
 			// update the SubimageDefCache with new values based on the new incomplete mirror configuration
-			subimageDefCache.refreshCache(mirrorSegments);
+			subimageDefCache.refreshCache();
 			
 			
-			mirrorSegmentsSaved = new ArrayList<Integer>(mirrorSegments);
+			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
 			
+			globalConfigDefaults.setMirrorListEncoded(IntegerListEncoder.encodeList(mirrorSegments));
+			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
@@ -193,7 +190,8 @@ public class IncompleteMirrorController implements Serializable {
 	 */
 	public void doReset() {			
 		
-		mirrorSegments = new ArrayList<Integer>(mirrorSegmentsSaved);
+		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
+		mirrorSegments = Arrays.asList(globalConfigDefaults.getMirrorList());
 		
 		mirrors = IntegerListEncoder.encodeList(mirrorSegments);
 

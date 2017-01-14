@@ -40,6 +40,8 @@ public class SubimageDefCache {
 	@EJB
 	CentroidMapMgmt centroidMapMgmt;
 	@EJB
+	GlobalConfigMgmt globalConfigMgmt;
+	@EJB
 	PeasProperties peasProperties;	
 	@EJB
 	ConstantsCache constantsCache;
@@ -47,12 +49,15 @@ public class SubimageDefCache {
 	private Map<Long, SubimageDefList> subimageDefMap;
 	private Map<Integer, SubimageDefList> sufsSubimageDefMap;
 	private Long telescopeId;
+	private Long instrumentId;
 
 	@PostConstruct
 	public void init() throws Exception {
 
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 		telescopeId = new Long(telescopeIdStr);
+		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+		instrumentId = new Long(instrumentIdStr);
 
 		
 		List<Integer> mirrors = new ArrayList<Integer>();
@@ -61,11 +66,13 @@ public class SubimageDefCache {
 			mirrors.add(new Integer(1));
 		}
 
-		refreshCache(mirrors);
+		refreshCache();
 	}
 	
 	
-	public void refreshCache(List<Integer> mirrors) throws Exception {
+	public void refreshCache() throws Exception {
+		
+		Integer[] mirrors = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId).getMirrorList();
 		
 		// get ref def maps
 		subimageDefMap = new HashMap<Long, SubimageDefList>();
@@ -83,10 +90,6 @@ public class SubimageDefCache {
 		
 		sufsSubimageDefMap = new HashMap<Integer, SubimageDefList>();
 		
-
-
-
-		sufsSubimageDefMap = new HashMap<Integer, SubimageDefList>();
 		
 		
 		for (int i=0; i<7; i++) {

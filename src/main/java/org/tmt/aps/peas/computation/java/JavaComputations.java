@@ -725,7 +725,7 @@ public class JavaComputations {
 
         float y0 = aperaturePos.y;
         float y1 = 0.5f * (aperaturePos.y + sqrt3 * aperaturePos.x);
-        float y2 = 0.5f * (aperaturePos.y- sqrt3 * aperaturePos.x);
+        float y2 = 0.5f * (aperaturePos.y - sqrt3 * aperaturePos.x);
 
         float zz0 = segCenter.y;
         float zz1 =  0.5f * (segCenter.y + sqrt3 * segCenter.x);

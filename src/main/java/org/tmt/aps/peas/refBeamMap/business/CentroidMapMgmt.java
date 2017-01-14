@@ -134,7 +134,7 @@ public class CentroidMapMgmt {
 	 * @param pupilMaskTypeId the pupil mask type
 	 * @return the subimage definition list
 	 */
-	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, List<Integer> mirrorConfig) throws Exception {
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer[] mirrorConfig) throws Exception {
 		return getSubimageDefList(telescopeId, pupilMaskTypeId, mirrorConfig, null);
 	}
 	
@@ -145,7 +145,7 @@ public class CentroidMapMgmt {
 	 * @param sufsGroupNumber the SUFS group number
 	 * @return the subimage definition list
 	 */
-	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, List<Integer> mirrorConfig, Integer sufsGroupNumber) throws Exception {
+	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer[] mirrorConfig, Integer sufsGroupNumber) throws Exception {
 
 		RefBeamMap refBeamMap = null;
 				
@@ -159,15 +159,10 @@ public class CentroidMapMgmt {
 		List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
 		
 		
-		// Query the theoretical subaperatures for the mask type (meters at primary mirror)
-		TypedQuery<RefBeamMap> query2 = em.createNamedQuery("findTheoreticalLocations", RefBeamMap.class);
-		query2.setParameter("pupilMaskTypeId", pupilMaskTypeId);
-	
-		query2.setMaxResults(1);
-		refBeamMap = query2.getSingleResult();
+		// get the theoretical subaperatures for the mask type (meters at primary mirror)
 
-		// decode String into transient FloatPoint values
-		List<FloatPoint> theorecticalSubaperatures = FloatPointListEncoder.decodeList(refBeamMap.getCentroidMap().getCentroidMapData());
+		// TODO: generalize for mask type
+		FloatPoint[] theorecticalSubaperatures = constantsCache.getMaskConstants().getPassiveTiltTheoreticalLocations();
 
 
 		
@@ -210,19 +205,21 @@ public class CentroidMapMgmt {
 		// fold in incomplete mirror state.  This will add to the FI missing spots list (decoded)
 		// determine missing spot list based on mirror config and mask type
 		boolean[] mirrorConfigPresentSubaperatures = computationLibrary.determineMissingSegmentSubaperatures(
-				theorecticalSubaperatures.toArray(new FloatPoint[0]), 
+				theorecticalSubaperatures, 
 				constantsCache.getPrimaryMirrorConstants().getCenterSpotInMeters().toArray(new FloatPoint[0]), 
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
-				mirrorConfig.toArray(new Integer[0]));
+				mirrorConfig);
 		
 		// start to build the composite FandI missing spot list
-		// FIXME: we start numbering here at 1, not zero.  Is this correct?
 		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
+		
+		/* disable incomplete mirror fold in for now
 		for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
 			if (!mirrorConfigPresentSubaperatures[j]) {
 				fullFandIMissingSpotList.add(new Integer(i+1));
 			}
 		}
+		*/
 		// fold in normal missing spots
 		for (Integer spot : missingSpotListFandIDecoded) {
 			if (!fullFandIMissingSpotList.contains(spot)) {

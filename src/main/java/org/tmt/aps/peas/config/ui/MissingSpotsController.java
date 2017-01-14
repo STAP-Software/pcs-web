@@ -374,7 +374,7 @@ public class MissingSpotsController implements Serializable {
 				missingSpotsMgmt.updateMissingSpotList(missingSpotList);
 				
 				// update the cache
-				subimageDefCache.init();
+				subimageDefCache.refreshCache();
 				
 			}
 			

@@ -50,10 +50,9 @@ public class GlobalConfig {
 	int fineMirrorY;
 
 	String sufsZernikeOrderListEncoded;
+	String mirrorListEncoded;
 
 	
-
-
 	public GlobalConfig() {
 		
 	}
@@ -128,6 +127,18 @@ public class GlobalConfig {
 	
 
 	
+	public String getMirrorListEncoded() {
+		return mirrorListEncoded;
+	}
+
+	public void setMirrorListEncoded(String mirrorListEncoded) {
+		this.mirrorListEncoded = mirrorListEncoded;
+	}
+	
+	public Integer[] getMirrorList() {
+		return IntegerListEncoder.decodeListToObjectArray(mirrorListEncoded);
+	}
+
 	public Date getUpdateDate() {
 		return updateDate;
 	}

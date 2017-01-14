@@ -15,6 +15,7 @@ import javax.ejb.Startup;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.model.MaskConstants;
 import org.tmt.aps.peas.config.model.PhasingConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorSegmentConstants;
@@ -44,6 +45,7 @@ public class ConstantsCache {
 	private PhasingConstants phasingConstants;
 	private SufsConstants sufsConstants;
 	private TelescopeConstants telescopeConstants;
+	private MaskConstants maskConstants;
 	
 
 	@PostConstruct
@@ -53,6 +55,7 @@ public class ConstantsCache {
 		phasingConstants = new PhasingConstants();
 		sufsConstants = new SufsConstants();
 		telescopeConstants = new TelescopeConstants();
+		maskConstants = new MaskConstants();
 		
 		List<Object> instances = new ArrayList<Object>();
 		instances.add(primaryMirrorConstants);
@@ -60,6 +63,7 @@ public class ConstantsCache {
 		instances.add(phasingConstants);
 		instances.add(sufsConstants);
 		instances.add(telescopeConstants);
+		instances.add(maskConstants);
 		
 		// populate constants
 		constantsMgmt.loadConstants(instances);
@@ -69,6 +73,7 @@ public class ConstantsCache {
 		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
 		logger.info("\n\nSUFS Constants: \n" + sufsConstants);
 		logger.info("\n\nTelescope Constants: \n" + telescopeConstants);
+		logger.info("\n\nMask Constants: \n" + maskConstants);
 		
 
 	}
@@ -92,6 +97,10 @@ public class ConstantsCache {
 
 	public TelescopeConstants getTelescopeConstants() {
 		return telescopeConstants;
+	}
+
+	public MaskConstants getMaskConstants() {
+		return maskConstants;
 	}
 
 	
