@@ -15,12 +15,14 @@ import javax.ejb.Startup;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.config.model.MaskConstants;
 import org.tmt.aps.peas.config.model.PhasingConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorConstants;
 import org.tmt.aps.peas.config.model.PrimaryMirrorSegmentConstants;
 import org.tmt.aps.peas.config.model.SufsConstants;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 
 /**
@@ -78,6 +80,57 @@ public class ConstantsCache {
 
 	}
 
+	
+	
+	
+	public FloatPoint[] getMaskTheoreticalLocations(Long maskTypeId, Integer sufsGroupNumber) {
+		
+		System.out.println(maskTypeId);
+		
+		if (maskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
+			
+			return maskConstants.getPassiveTiltTheoreticalLocations();
+			
+		} else if (maskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
+			
+			return maskConstants.getPhasingTheoreticalLocations();
+			
+		} else if (maskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_508)) {
+			
+			return maskConstants.getFineScreenTheoreticalLocations();
+			
+		} else if (maskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS)) {
+			
+			return translateToSufsGroup(maskConstants.getSufsTheoreticalLocations(), sufsGroupNumber);
+			
+		} 
+		
+		return null;
+	}
+	
+	private FloatPoint[] translateToSufsGroup(FloatPoint[] subaperatures, Integer sufsGroupNumber) {
+	
+		
+		if (sufsGroupNumber.intValue() == 0) {
+			return subaperatures;
+		}
+		
+		// derive sufs locations for group
+		FloatPoint[] translated = new FloatPoint[subaperatures.length];
+		
+		// translate the locations to be centered over another segment
+		int groupCenterMirror = sufsConstants.getSufsGroupToMirror()[sufsGroupNumber.intValue() - 1][0];
+		FloatPoint groupTranslation = primaryMirrorConstants.getSegmentCenters()[groupCenterMirror]; // position of the segment center of the segment this group is centered over
+		
+		for (int i=0; i<subaperatures.length; i++) {
+			
+			translated[i] = subaperatures[i].add(groupTranslation);
+		}
+		return translated;
+		
+	}	
+	
+	
 
 	public PrimaryMirrorConstants getPrimaryMirrorConstants() {
 		return primaryMirrorConstants;
@@ -103,5 +156,8 @@ public class ConstantsCache {
 		return maskConstants;
 	}
 
+	
+	
+	
 	
 }

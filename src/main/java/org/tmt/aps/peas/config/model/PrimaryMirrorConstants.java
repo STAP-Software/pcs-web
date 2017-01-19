@@ -40,6 +40,8 @@ public class PrimaryMirrorConstants {
 	
 	FloatPoint[][] fineScreenSpotCoords;
 	
+	FloatPoint[] segmentCenters;
+	
 	public int[] getnColor() {
 		return nColor;
 	}
@@ -106,12 +108,13 @@ public class PrimaryMirrorConstants {
 	public void setCenterSpot(FloatPoint[] centerSpot) {
 		this.centerSpot = centerSpot;
 	}
-	public List<FloatPoint> getCenterSpotInMeters() {
-		
-		return FloatPointListEncoder.multiplyPoints(centerSpot, aHex);
-		
-	}
 	
+	public FloatPoint[] getSegmentCenters() {
+		return segmentCenters;
+	}
+	public void setSegmentCenters(FloatPoint[] segmentCenters) {
+		this.segmentCenters = segmentCenters;
+	}
 	public float[] getAct1Pos() {
 		return act1Pos;
 	}

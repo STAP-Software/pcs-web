@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.refBeamMap.business;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -28,6 +29,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.model.M2CalcSpotList;
+import org.tmt.aps.peas.config.model.MaskConstants;
 import org.tmt.aps.peas.config.model.MissingSpotList;
 import org.tmt.aps.peas.config.model.PeripheralSpotList;
 import org.tmt.aps.peas.config.model.SubimageDef;
@@ -146,7 +148,7 @@ public class CentroidMapMgmt {
 	 * @return the subimage definition list
 	 */
 	public List<SubimageDef> getSubimageDefList(Long telescopeId, Long pupilMaskTypeId, Integer[] mirrorConfig, Integer sufsGroupNumber) throws Exception {
-
+		
 		RefBeamMap refBeamMap = null;
 				
 		TypedQuery<RefBeamMap> query = em.createNamedQuery("findRefBeamDefMap", RefBeamMap.class);
@@ -161,11 +163,8 @@ public class CentroidMapMgmt {
 		
 		// get the theoretical subaperatures for the mask type (meters at primary mirror)
 
-		// TODO: generalize for mask type
-		FloatPoint[] theorecticalSubaperatures = constantsCache.getMaskConstants().getPassiveTiltTheoreticalLocations();
-
-
 		
+		FloatPoint[] theorecticalSubaperatures = constantsCache.getMaskTheoreticalLocations(pupilMaskTypeId, sufsGroupNumber);
 		
 		// to create a list of SubimageDefs
 
@@ -204,22 +203,27 @@ public class CentroidMapMgmt {
 		
 		// fold in incomplete mirror state.  This will add to the FI missing spots list (decoded)
 		// determine missing spot list based on mirror config and mask type
+		
 		boolean[] mirrorConfigPresentSubaperatures = computationLibrary.determineMissingSegmentSubaperatures(
 				theorecticalSubaperatures, 
-				constantsCache.getPrimaryMirrorConstants().getCenterSpotInMeters().toArray(new FloatPoint[0]), 
+				constantsCache.getPrimaryMirrorConstants().getSegmentCenters(), 
 				constantsCache.getPrimaryMirrorConstants().getaHex(), 
 				mirrorConfig);
+		
 		
 		// start to build the composite FandI missing spot list
 		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
 		
-		/* FIXME disable incomplete mirror fold in for now
+		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
+		System.out.println(Arrays.toString(mirrorConfigPresentSubaperatures));
+		}
+		
 		for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
 			if (!mirrorConfigPresentSubaperatures[j]) {
-				fullFandIMissingSpotList.add(new Integer(i+1));
+				fullFandIMissingSpotList.add(new Integer(j+1));
 			}
 		}
-		*/
+		
 		// fold in normal missing spots
 		for (Integer spot : missingSpotListFandIDecoded) {
 			if (!fullFandIMissingSpotList.contains(spot)) {
@@ -228,6 +232,9 @@ public class CentroidMapMgmt {
 		}
 		
 		
+		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
+		System.out.println("full list = " + fullFandIMissingSpotList + ", sufsGroup = " + sufsGroupNumber);
+		}
 		
 		for (Integer spot : fullFandIMissingSpotList) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_EXPECTED);

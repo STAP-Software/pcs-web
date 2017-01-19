@@ -166,15 +166,16 @@ public class IncompleteMirrorController implements Serializable {
 	 */
 	public void doSave() {
 		try {
-			
-			// update the SubimageDefCache with new values based on the new incomplete mirror configuration
-			subimageDefCache.refreshCache();
-			
-			
+				
 			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
 			
 			globalConfigDefaults.setMirrorListEncoded(IntegerListEncoder.encodeList(mirrorSegments));
 			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
+			
+			
+			// update the SubimageDefCache with new values based on the new incomplete mirror configuration
+			subimageDefCache.refreshCache();
+
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
