@@ -117,17 +117,22 @@ public class ConstantsCache {
 		
 		// derive sufs locations for group
 		FloatPoint[] translated = new FloatPoint[subaperatures.length];
+		FloatPoint[] transformed = new FloatPoint[subaperatures.length];
 		
 		// translate the locations to be centered over another segment
 		int groupCenterMirror = sufsConstants.getSufsGroupToMirror()[sufsGroupNumber.intValue() - 1][0];
-		FloatPoint groupTranslation = primaryMirrorConstants.getSegmentCenters()[groupCenterMirror]; // position of the segment center of the segment this group is centered over
+		FloatPoint groupTranslation = primaryMirrorConstants.getSegmentCenters()[groupCenterMirror-1]; // position of the segment center of the segment this group is centered over
+		
+		//System.out.println("groupTranslation = " + groupTranslation);
 		
 		for (int i=0; i<subaperatures.length; i++) {
 			
-			translated[i] = subaperatures[i].add(groupTranslation);
+			transformed[i] = new FloatPoint(-subaperatures[i].x, -subaperatures[i].y);
+			translated[i] = transformed[i].add(groupTranslation);
+			
 		}
-		return translated;
 		
+		return translated;
 	}	
 	
 	

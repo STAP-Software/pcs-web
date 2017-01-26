@@ -648,12 +648,22 @@ public class ComputationLibraryImpl {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculateCentroidStats"));
 
+		
+		for (int i=0; i<centroidOffsets.length; i++) {
+			if (centroidOffsets[i].mag() == 0.0f && goodSpots[i] == 1) {
+				System.out.println("divide by zero anticipated: " + i);
+			}
+		}
+		
+		
+		
 		JcalculateCentroidStats jcalculateCentroidStats = new JcalculateCentroidStats();
 		RetVal retVal = new RetVal();
 
 		float[][] offsets = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroidOffsets));
 
 		Object output[] = jcalculateCentroidStats.jcalculateCentroidStats(retVal, offsets, goodSpots, nspotTypes);
+		//Object output[] = {1, 2.0f, 3.0f, 4.0f, 5.0f};
 
 		logger.info("Fortran call completed");
 		if (retVal.getCode() > 0) {

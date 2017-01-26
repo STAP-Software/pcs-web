@@ -215,12 +215,15 @@ public class CentroidMapMgmt {
 		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
 		
 		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
-		System.out.println(Arrays.toString(mirrorConfigPresentSubaperatures));
+			System.out.println(Arrays.toString(mirrorConfigPresentSubaperatures));
 		}
 		
-		for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
-			if (!mirrorConfigPresentSubaperatures[j]) {
-				fullFandIMissingSpotList.add(new Integer(j+1));
+		// fold in incomplete mirror segments - do not do this for Sufs ref maps
+		if (sufsGroupNumber == null || sufsGroupNumber.intValue() > 0) {
+			for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
+				if (!mirrorConfigPresentSubaperatures[j]) {
+					fullFandIMissingSpotList.add(new Integer(j+1));
+				}
 			}
 		}
 		
