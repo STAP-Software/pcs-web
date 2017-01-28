@@ -569,7 +569,7 @@ public class FineScreenExecutor {
 	
 				statusLogger.log("pt.m1_act_cmd_started");
 				// send out the commands
-				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas(), globalConfig.getMirrorList());
 
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");

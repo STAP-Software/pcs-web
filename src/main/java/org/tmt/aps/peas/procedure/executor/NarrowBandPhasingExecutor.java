@@ -548,7 +548,7 @@ public class NarrowBandPhasingExecutor {
 				// send out the commands
 				statusLogger.log("pt.m1_act_cmd_started");
 				
-				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
+				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas(), globalConfig.getMirrorList());
 					
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");
