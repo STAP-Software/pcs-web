@@ -298,6 +298,8 @@ public class FrameController implements Serializable {
 				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
 	
 				// order typeFitsList by telescope
+				Collections.sort(typeFitsList, new BeanComparator("procedureNumber"));
+				Collections.sort(typeFitsList, new BeanComparator("date"));
 				Collections.sort(typeFitsList, new BeanComparator("telescope"));
 				for (FitsFilename fitsFile : typeFitsList) {
 					TreeNode sessionNode00 = new DefaultTreeNode("picture",
