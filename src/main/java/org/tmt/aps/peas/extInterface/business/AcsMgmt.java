@@ -5,6 +5,8 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.Arrays;
+
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -57,6 +59,9 @@ public class AcsMgmt {
 	 */
 	public long commandActuatorDelta(double[] actDeltas) throws Exception {
 		
+		logger.info("commandActuatorDelta: actDeltaCmds = " + Arrays.toString(actDeltas));
+
+		
 		// check if all commands are zero, if so do not send commands
 		boolean nonZero = false;
 		for (double delta: actDeltas) {
@@ -65,6 +70,7 @@ public class AcsMgmt {
 		
 		long start = System.currentTimeMillis();
 		if (nonZero) {
+			
 			extInfFactory.getAcsCommand().setActuDeltas(actDeltas);
 		}
 		long end = System.currentTimeMillis();
@@ -107,10 +113,6 @@ public class AcsMgmt {
 			for (int j = 0; j < 3; j++) {
 				actDeltaCmds[1 + i * 3 + j] = actDeltas[i][j];
 			}
-		}
-		logger.info("doSendActDeltaCommands: actDeltaCmds = ");
-		for (int i=0; i<109; i++) {
-			logger.info(actDeltaCmds[i]);
 		}
 
 		long deltaMs = commandActuatorDelta(actDeltaCmds);
