@@ -327,7 +327,7 @@ public class FineScreenExecutor {
 				// lpz = local piston zeroed on a segment
 				// TODO: the result here should be a TtOffsetsToActsResult object
 				float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-						calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCartesian());
+						calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCartesian(), globalConfig.getMirrorList());
 		
 				// Decompose the calculated actuators into pure tip/tilt and pure piston.
 				// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -502,7 +502,7 @@ public class FineScreenExecutor {
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					calcSegmentMeanTipTiltsResultCartesian.getSegmentMeanTipTiltErrors());
+					calcSegmentMeanTipTiltsResultCartesian.getSegmentMeanTipTiltErrors(), globalConfig.getMirrorList());
 	
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -569,7 +569,7 @@ public class FineScreenExecutor {
 	
 				statusLogger.log("pt.m1_act_cmd_started");
 				// send out the commands
-				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas(), globalConfig.getMirrorList());
+				procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");

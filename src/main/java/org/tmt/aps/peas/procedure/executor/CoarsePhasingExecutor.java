@@ -263,7 +263,7 @@ public class CoarsePhasingExecutor {
 				
 				statusLogger.log("acs.colorstep_cmds");
 				
-				long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas(), globalConfig.getMirrorList());
+				long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
@@ -298,7 +298,7 @@ public class CoarsePhasingExecutor {
 			
 			statusLogger.log("acs.colorstep_cmds");
 			
-			long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas(), globalConfig.getMirrorList());
+			long deltaMs = procedureExecutionMgmt.commandActuatorDeltas(colorStepToActuatorsResult.getM1ActuatorDeltas());
 			statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 
 			
@@ -423,7 +423,7 @@ public class CoarsePhasingExecutor {
 				// send out the commands
 				statusLogger.log("pt.m1_act_cmd_started");
 				
-				deltaMs = procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas(), globalConfig.getMirrorList());
+				deltaMs = procedureExecutionMgmt.commandActuatorDeltas(procedureOutput.getCalcDesiredActCommandsResult().getDesiredActDeltas());
 
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");

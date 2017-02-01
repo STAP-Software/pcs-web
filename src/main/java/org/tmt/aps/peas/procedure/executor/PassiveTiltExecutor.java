@@ -263,7 +263,7 @@ public class PassiveTiltExecutor {
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
 			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
-					centroidOffsetsResult.getCartesianCentroidOffsets());
+					centroidOffsetsResult.getCartesianCentroidOffsets(), globalConfig.getMirrorList());
 
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
 			// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -280,11 +280,13 @@ public class PassiveTiltExecutor {
 			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
 			
 			
-			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(controlMatrix, decomposeActResult.getTipTiltActs());
+			float[][] incompleteMirrorControlMatrix = computationLibrary.generateIncompleteMirrorAMatrix(controlMatrix, globalConfig.getMirrorList());
+			
+			
+			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(incompleteMirrorControlMatrix, decomposeActResult.getTipTiltActs());
 			
 			// fill the procedure output
 			procedureOutput.addPassiveTiltIterationOutput(pio);
-
 
 			// display the pistonDeltas
 			if (procedureConfig.isAutoDisplayActuatorDeltas()) {
@@ -304,7 +306,7 @@ public class PassiveTiltExecutor {
 				// send out the commands
 				statusLogger.log("pt.m1_act_cmd_started");
 
-				procedureExecutionMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas(), globalConfig.getMirrorList());
+				procedureExecutionMgmt.commandActuatorDeltas(calcDesiredActCommandsResult.getDesiredActDeltas());
 
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");

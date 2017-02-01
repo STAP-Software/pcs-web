@@ -742,7 +742,7 @@ public class ProcedureExecutionMgmt {
 	}
 	
 	
-	public long commandActuatorDeltas(float[] actDeltas, Integer[] mirrorList) throws Exception {
+	public long commandActuatorDeltas(float[] actDeltas) throws Exception {
 		
 		float[][] actDeltasBySeg = new float[36][3];
 
@@ -752,17 +752,15 @@ public class ProcedureExecutionMgmt {
 			}
 		}
 
-		return commandActuatorDeltas(actDeltasBySeg, mirrorList);
+		return commandActuatorDeltas(actDeltasBySeg);
 		
 	}
 	
-	public long commandActuatorDeltas(float[][] actDeltas, Integer[] mirrorList) throws Exception {
+	public long commandActuatorDeltas(float[][] actDeltas) throws Exception {
 		
 		try {
 			
-			float[][] actDeltasModified = applyIncompleteMirrorToActDeltas(actDeltas, mirrorList);
-			
-			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltasModified);
+			long deltaMs = acsMgmt.commandActuatorDeltas(actDeltas);
 			return deltaMs;
 		} catch (Exception e) {
 			statusLogger.log("pt.m1_act_cmd_failed");
@@ -771,30 +769,6 @@ public class ProcedureExecutionMgmt {
 		}
 	}
 	
-	private float[][] applyIncompleteMirrorToActDeltas(float[][] actDeltas, Integer[] mirrorList) {
-		
-		float[][] actDeltasModified = new float[36][3];
-		
-		for (int i=0; i<36; i++) {
-			if (mirrorList[i].intValue() == 1) {
-				
-				actDeltasModified[i][0] = actDeltas[i][0];
-				actDeltasModified[i][1] = actDeltas[i][1];
-				actDeltasModified[i][2] = actDeltas[i][2];
-				
-			} else {
-				
-				// mirror not present, set commands to zero
-				actDeltasModified[i][0] = 0.0f;
-				actDeltasModified[i][1] = 0.0f;
-				actDeltasModified[i][2] = 0.0f;
-
-			}
-		}
-		
-		return actDeltasModified;
-		
-	}
 	
 	private long handleAcsException(Exception e) throws Exception {
 		

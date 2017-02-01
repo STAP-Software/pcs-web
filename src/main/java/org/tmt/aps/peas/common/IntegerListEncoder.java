@@ -137,6 +137,15 @@ public class IntegerListEncoder {
 		return buf.toString();
 	}
 	
+	public static int[] convertObjectArrayToPrimitive(Integer[] input) throws Exception {
+		
+		int[] output = new int[input.length];
+		for (int i=0; i<input.length; i++) {
+			output[i] = input[i];
+		}
+
+		return output;
+	}
 
 	
 }

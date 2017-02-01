@@ -789,5 +789,37 @@ public class JavaComputations {
 		
 		return subaperatureFlgs;
 	}
+
+	/**
+	 * Generates an a-Matrix for incomplete mirror configurations given the complete mirror a-matrix and incomplete mirror config
+	 * @param aMatrix
+	 * @param mirrorConfig boolean array numbered according to segment number: true if segment is present, false otherwise
+	 * @return a modified control matrix where elements corresponding to missing segments are set to zero
+	 */
+	public static float[][] generateIncompleteMirrorAMatrix(float[][] aMatrix, Integer[] mirrorConfig) {
+		
+		// modify the aMatrix for an incomplete mirror (168/108)
+		float[][] modifiedControlMatrix = new float[168][108];
+		for (int i=0; i<168; i++) {
+			
+			for (int j=0; j<36; j++) {
+				
+				if (mirrorConfig[j].intValue() == 1) {
+				
+					modifiedControlMatrix[i][j*3] = aMatrix[i][j*3];
+					modifiedControlMatrix[i][j*3+1] = aMatrix[i][j*3+1];
+					modifiedControlMatrix[i][j*3+2] = aMatrix[i][j*3+2];
+					
+				} else {
+					
+					modifiedControlMatrix[i][j*3] = 0.0f;
+					modifiedControlMatrix[i][j*3+1] = 0.0f;
+					modifiedControlMatrix[i][j*3+2] = 0.0f;
+					
+				}
+			}
+		}
+		return modifiedControlMatrix;
+	}
 	
 }

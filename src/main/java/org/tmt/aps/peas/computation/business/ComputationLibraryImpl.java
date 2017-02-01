@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
+import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Rect;
@@ -760,11 +761,12 @@ public class ComputationLibraryImpl {
 	 * @param actuatorPositions array of coordinates of the actuators in microns, numbered consecutively.
 	 * @param imageScale Image scale in arcseconds per pixel.
 	 * @param centroidOffsets array of centroid offsets for each segment
+	 * @param mirrorConfig the incomplete mirror configuration (1=present, 0=missing)
 	 * @return array of actuator deltas to add to each actuator in order to correct the PT errors
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
-	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, FloatPoint[] centroidOffsets)
-			throws ComputationException {
+	public float[][] ttOffsetsToActs(List<FloatPoint> actuatorPositions, float imageScale, FloatPoint[] centroidOffsets, Integer[] mirrorConfig)
+			throws ComputationException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "ttOffsetsToActs"));
 
@@ -777,12 +779,17 @@ public class ComputationLibraryImpl {
 		float[] x_offsets = FloatPointListEncoder.extractXArray(Arrays.asList(centroidOffsets));
 		float[] y_offsets = FloatPointListEncoder.extractYArray(Arrays.asList(centroidOffsets));
 
+		// FIXME: this should be performed in a general function
+		
+		int[] mirror_config = IntegerListEncoder.convertObjectArrayToPrimitive(mirrorConfig);
+
+		
 		// output arrays
 		float[] desired_act_deltas = new float[actuatorPositions.size()];
 		float[] x_offsets_out = new float[centroidOffsets.length];
 		float[] y_offsets_out = new float[centroidOffsets.length];
 
-		Object output[] = jttOffsetsToActs.jttOffsetsToActs(retVal, x_act_pos, y_act_pos, imageScale, x_offsets, y_offsets, x_offsets_out,
+		Object output[] = jttOffsetsToActs.jttOffsetsToActs(retVal, x_act_pos, y_act_pos, imageScale, x_offsets, y_offsets, mirror_config, x_offsets_out,
 				y_offsets_out, desired_act_deltas);
 
 		if (retVal.getCode() > 0) {
@@ -810,7 +817,7 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException {
+	public DecomposeActsResult decomposeActs(float[][] actuatorPositions) throws ComputationException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "decomposeActs"));
 
@@ -818,7 +825,7 @@ public class ComputationLibraryImpl {
 		RetVal retVal = new RetVal();
 
 		float[] actPos = JavaComputations.flatten2dArray(actuatorPositions, 1);
-
+		
 		// output arrays
 		float[] act_tt = new float[actPos.length];
 		float[] act_p = new float[actPos.length];
@@ -1319,6 +1326,8 @@ public class ComputationLibraryImpl {
 	public CalcDesiredActCommandsResult calcDesiredActCommands(float[][] controlMatrix, float[][] tipTiltActs) throws Exception {
 		
 		float[][] pistonActs = optimalPistons(controlMatrix, tipTiltActs);
+		
+		// TODO: print out pistonActs
 
 		// calculate RMS of the actuator cmds
 		float pistonActsRms = calcRms(pistonActs);
@@ -2708,6 +2717,17 @@ public class ComputationLibraryImpl {
 	public boolean doesSubapLieInSeg(FloatPoint aperaturePos, FloatPoint segCenter, float ahex) {
 		return JavaComputations.doesSubapLieInSeg(aperaturePos, segCenter, ahex);
 	}
+	
+	/**
+	 * Generates an a-Matrix for incomplete mirror configurations given the complete mirror a-matrix and incomplete mirror config
+	 * @param aMatrix
+	 * @param mirrorConfig boolean array numbered according to segment number: true if segment is present, false otherwise
+	 * @return a modified control matrix where elements corresponding to missing segments are set to zero
+	 */
+	public float[][] generateIncompleteMirrorAMatrix(float[][] aMatrix, Integer[] mirrorConfig) {
+		return JavaComputations.generateIncompleteMirrorAMatrix(aMatrix, mirrorConfig);
+	}
+	
 	
 }
 
