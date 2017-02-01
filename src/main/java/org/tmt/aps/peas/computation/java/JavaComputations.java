@@ -1,8 +1,10 @@
 package org.tmt.aps.peas.computation.java;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.log4j.Logger;
@@ -798,6 +800,7 @@ public class JavaComputations {
 	 */
 	public static float[][] generateIncompleteMirrorAMatrix(float[][] aMatrix, Integer[] mirrorConfig) {
 		
+		
 		// modify the aMatrix for an incomplete mirror (168/108)
 		float[][] modifiedControlMatrix = new float[168][108];
 		for (int i=0; i<168; i++) {
@@ -812,13 +815,23 @@ public class JavaComputations {
 					
 				} else {
 					
-					modifiedControlMatrix[i][j*3] = 0.0f;
-					modifiedControlMatrix[i][j*3+1] = 0.0f;
-					modifiedControlMatrix[i][j*3+2] = 0.0f;
+					// if any sensor is to be zeroed as a result of missing actuators, then its edge is now peripheral as a result of the missing segment
+					// and the sensor must be ignored for all actuators
 					
+					if (aMatrix[i][j*3] != 0.0f || aMatrix[i][j*3+1] != 0.0f || aMatrix[i][j*3+2] != 0.0f) {
+					
+						// zero the entire row to ignore the sensor
+						for (int k=0; k<36; k++) {
+							modifiedControlMatrix[i][k*3] = 0.0f;
+							modifiedControlMatrix[i][k*3+1] = 0.0f;
+							modifiedControlMatrix[i][k*3+2] = 0.0f;
+						}
+					}
+
 				}
 			}
 		}
+				
 		return modifiedControlMatrix;
 	}
 	
