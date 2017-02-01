@@ -23,6 +23,7 @@
 			<h:inputHidden id="markedDisplayMode" value="#{procedureController.markedDisplayMode}" />
 			<h:inputHidden id="pixelValue" value="#{procedureController.pixelValue}" />
 			<h:inputHidden id="blankImage" value="#{procedureController.blankImage}" />
+			<h:inputHidden id="mirrorConfig" value="#{procedureController.mirrorConfigString}" />
 		</h:form>
 
 		<h:form id="audioForm">
@@ -569,6 +570,8 @@
 	 	var yArray = yField.split(','); 
 		var spotRad = document.getElementById('frameHiddenForm:spotRadius').value;
 		var handMark = document.getElementById('frameHiddenForm:handMark').value;
+		var sField = document.getElementById('frameHiddenForm:mirrorConfig').value;
+		var presentSegments = sField.split(',');
 		
 		ctx.font = "12px Arial";
 	 	ctx.fillStyle = "red";
@@ -579,6 +582,8 @@
 	 	if (xField != null && xField.length > 0) {
 	 	
 			for (var i = 0; i < xArray.length; i++) {
+				
+				var segmentNum = presentSegments[i];
 				
 				if (xArray[i] != 0.0 && yArray[i] != 0.0) {
 
@@ -591,7 +596,7 @@
 					ctx.lineWidth = 2;
 					ctx.stroke();
 					if (handMark == "true") {
-						ctx.fillText("" + (i+1), xArray[i]/2 - 14, yArray[i]/2 - 15);
+						ctx.fillText("" + (segmentNum), xArray[i]/2 - 14, yArray[i]/2 - 15);
 					}
 				}
 			}

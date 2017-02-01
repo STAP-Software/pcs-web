@@ -494,6 +494,9 @@ public class GetFrameCentroidsExecutor {
 		List<FloatPoint> handMarked = null;
 		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+		int mirrorCount = procedure.getProcedureConfigSet().getGlobalConfig().getMirrorCount();
+		Integer[] mirrorConfig = procedure.getProcedureConfigSet().getGlobalConfig().getMirrorList();
+		
 
 		while (true) {
 			frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.pt_hand_mark"), "PTNumbering.jpg");
@@ -516,14 +519,14 @@ public class GetFrameCentroidsExecutor {
 				throw new AbortProcedureException("User Aborted Procedure");
 			}
 			
-			if (handMarked.size() == 36) {
+			if (handMarked.size() == mirrorCount) {
 				break;
 			} else {
 				userPromptMgmt.displayInfoDialog("Frame Marking Error", MessageGenerator.generateMessage("frame.mark_incorrect_number"));
 			}
 		}
 
-		return new FIResult(handMarked, ccdFrame.getCorrectedFrame());
+		return new FIResult(handMarked, ccdFrame.getCorrectedFrame(), mirrorConfig);
 
 	}
 }

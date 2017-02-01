@@ -138,6 +138,14 @@ public class GlobalConfig {
 	public Integer[] getMirrorList() {
 		return IntegerListEncoder.decodeListToObjectArray(mirrorListEncoded);
 	}
+	
+	public int getMirrorCount() {
+		int count = 0;
+		for (Integer mirror : getMirrorList()) {
+			if (mirror.intValue() == 1) count++;
+		}
+		return count;
+	}
 
 	public Date getUpdateDate() {
 		return updateDate;

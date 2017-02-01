@@ -330,7 +330,27 @@ public class ProcedureController implements Serializable {
 	public void setFrameSearchRadius(String searchRadius) {
 
 	}
+	
+	public String getMirrorConfigString() {
+		Integer[] mirrorList = procedure.getProcedureConfigSet().getGlobalConfig().getMirrorList();
+		
+		StringBuffer buf = new StringBuffer();
+		int i=1;
+		for (Integer mirrorStatus : mirrorList) {
+			if (mirrorStatus.intValue() == 1) {
+				buf.append(i +",");
+			}
+			i++;
+		}
+		buf.delete(buf.length()-1, buf.length());
+		
+		return buf.toString();
+	}
 
+	public void setMirrorConfigString(String mirrorConfigString) {
+		
+	}
+	
 	public UserPrompt getCurrentPrompt() {
 		return currentPrompt;
 	}

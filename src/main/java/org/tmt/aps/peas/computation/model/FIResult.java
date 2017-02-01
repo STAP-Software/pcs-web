@@ -64,22 +64,43 @@ public class FIResult {
 	 * @param frame used for array initialization sizing only
 	 * @see org.tmt.aps.peas.procedure.executor.GetFrameCentroidsExecutor
 	 */
-	public FIResult(List<FloatPoint> handMarks, float[][] frame) {
-		int numSpots = handMarks.size();
-		xiRst = new float[numSpots]; 
-		yiRst = new float[numSpots];
-		xPeak = new float[numSpots];
-		yPeak = new float[numSpots];
-		nDetect = new int[numSpots]; 
+	public FIResult(List<FloatPoint> handMarks, float[][] frame, Integer[] mirrorConfig) {
+		
+		
+		int numSpotsFullMirror = mirrorConfig.length;
+		xiRst = new float[numSpotsFullMirror]; 
+		yiRst = new float[numSpotsFullMirror];
+		xPeak = new float[numSpotsFullMirror];
+		yPeak = new float[numSpotsFullMirror];
+		nDetect = new int[numSpotsFullMirror]; 
 		n0123 = new int[4];
 		ccdBoxesAll = new float[frame.length][frame[0].length];
 		ccdBoxesSha = new float[frame.length][frame[0].length];
 		ccdBoxesNum = new float[frame.length][frame[0].length];
 		
 		// set all nDetect to one and fill x and y peak with the handmarking
-		xPeak = FloatPointListEncoder.extractXArray(handMarks);
-		yPeak = FloatPointListEncoder.extractYArray(handMarks);
-		for (int i=0; i<nDetect.length; i++) nDetect[i] = 1;
+		float[] xPeakPresent = FloatPointListEncoder.extractXArray(handMarks);
+		float[] yPeakPresent = FloatPointListEncoder.extractYArray(handMarks);
+		
+		int presentIndex = 0;
+		for (int i=0; i<numSpotsFullMirror; i++) {
+			
+			if (mirrorConfig[i].intValue() == 1) {
+				
+				xPeak[i] = xPeakPresent[presentIndex];
+				yPeak[i] = yPeakPresent[presentIndex];
+				nDetect[i] = 1;
+				
+				presentIndex++;
+				
+			} else {
+				nDetect[i] = 0;
+				
+			}
+			
+		}
+	
+		
 		
 		translation = new FloatPoint(0.0f, 0.0f);
 		

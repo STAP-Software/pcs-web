@@ -491,7 +491,12 @@ public class ProcedureExecutionMgmt {
 		// and associate it with the procedure
 		procedure.getProcedureConfigSet().setProcedureConfig(procedureConfig);
 
-		
+		// add the global config defaults
+		GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(),
+				physicalModel.getInstrument().getInstrumentId());
+		// store with procedure config set
+		procedure.getProcedureConfigSet().setGlobalConfig(new GlobalConfig(globalConfigDefaults));
+
 		
 		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask, filter and sufsGroup
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
