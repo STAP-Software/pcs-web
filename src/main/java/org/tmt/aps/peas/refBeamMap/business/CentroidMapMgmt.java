@@ -271,7 +271,12 @@ public class CentroidMapMgmt {
 				M2CalcSpotList m2CalcSpotList = findM2CalcSpotList(telescopeId);
 				List<Integer> m2CalcSpotListDecoded = IntegerListEncoder.decodeList(m2CalcSpotList.getM2CalcSpotListEncoded());
 				for (Integer spot : m2CalcSpotListDecoded) {
-					subimageDefList.get(spot - 1).setUseForM2Calc(1);
+					
+					if (mirrorConfigPresentSubaperatures[spot - 1]) {
+						// use for M2 calc if it is in the list and is not missing due to an incomplete mirror
+						subimageDefList.get(spot - 1).setUseForM2Calc(1);
+					
+					}
 				}
 			} catch (NoResultException e) {
 				// if no M2Calcs, then do nothing
