@@ -1,10 +1,8 @@
 package org.tmt.aps.peas.computation.java;
 
 import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
-import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.log4j.Logger;
