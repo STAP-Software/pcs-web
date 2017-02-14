@@ -10,7 +10,7 @@
 
 			<p:submenu label="File" icon="ui-icon-disk"> 
 				<!-- TODO update loadPanel -->
-				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":growl :errorGrowl"/>
+				<p:menuitem value="Save" ajax="true" action="#{frameController.doSaveFrame}" disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" update=":frameDisplayForm:loadPanel:fitsBrowser :growl :errorGrowl"/>
 				<p:menuitem value="Save Current Displayed Image As ..." disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl" onclick="saveCanvasPng();" />
 			</p:submenu>
 			<p:submenu id="displayModeMenu" label="Display Mode" icon="ui-icon-image">

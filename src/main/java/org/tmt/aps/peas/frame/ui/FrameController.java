@@ -252,6 +252,21 @@ public class FrameController implements Serializable {
 		long end = System.currentTimeMillis();
 		logger.info("Frame Tree loaded in " + (end - start) + " ms");
 	}
+	
+	public void reload() {
+
+		// dummy for session root
+		sessionRoot = new DefaultTreeNode(new FrameTreeElement("Sessions", "-"), null);
+		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
+
+		try {
+			reloadFits();
+
+		} catch (Exception e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+
+	}
 
 	/**
 	 * Reloads all fits files and creates maps for tree browser
@@ -496,7 +511,8 @@ public class FrameController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 
 			// update tree list
-			init();
+			reload();
+
 
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));

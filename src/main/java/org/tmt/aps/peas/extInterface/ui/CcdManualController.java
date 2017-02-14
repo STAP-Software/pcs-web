@@ -199,7 +199,7 @@ public class CcdManualController implements Serializable {
 						}
 					}
 					if (buf.length() > 0) {
-					logger.debug(buf);
+					//logger.debug(buf);
 					}
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);

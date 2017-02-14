@@ -379,7 +379,7 @@ public class AsyncController implements Serializable {
 			statusLogController.refreshProcedureStatusLog();
 			
 			// update the fits frames to be available to the rest of the application
-			frameController.reloadFits();
+			frameController.reload();
 			
 			
 			// display frame
