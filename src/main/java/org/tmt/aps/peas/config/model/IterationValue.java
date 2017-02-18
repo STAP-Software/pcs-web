@@ -71,7 +71,15 @@ public class IterationValue {
 
 	public void setIterableEntity(String accessName, IterableEntity iterableEntity) {
 		
+		// FIXME: dumb logic to retain order.  We need to change the map instead
+		IterableEntity entityToReplace = accessNameToEntity.get(accessName); 
+		for (int i=0; i<entities.size(); i++) {
+			if (entities.get(i).equals(entityToReplace)) {
+				entities.remove(i);
+				entities.add(i, iterableEntity);
+			}
+		}
+		
 		accessNameToEntity.put(accessName,  iterableEntity);
-		entities = new ArrayList<IterableEntity>(accessNameToEntity.values());
 	}
 }

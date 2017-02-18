@@ -1000,14 +1000,15 @@ public class ProcedureController implements Serializable {
 
 					loadedFitsFile = frameMgmt.loadFitsFrame(filename);
 					procedureCcdFrame.getCcdFrame().setRawFrame(loadedFitsFile.getRawFrame());
+					
+					// if a png file for display exists, read it in. Otherwise create it.
+					falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
+					procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 				} catch (Exception e) {
 					logger.error(MessageGenerator.generateMessage("generic.error"), e);
 				}
 
-				// if a png file for display exists, read it in. Otherwise create it.
-				falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
-				procedureCcdFrame.getCcdFrame().setFalseColorPng(falseColorPng);
 
 			}
 			

@@ -20,7 +20,7 @@ import javax.inject.Named;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.IterationListConfig;
-import org.tmt.aps.peas.config.model.IterationListConfigOption;
+import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 
 /**
@@ -75,9 +75,36 @@ public class IterationListConfigConverter implements Converter, Serializable {
 			List<IterationListConfig> fullList = procedureController.getIterationListConfigOptions();
 
 			for (IterationListConfig candidate : fullList) {
-				if (listConfigValue.getIterationValueListEncoded().equals(candidate.getIterationValueListEncoded())) {
-					return "" + candidate.getIterationListConfigId();
+							
+				if (listConfigValue.getIterationValueList().getSize() == candidate.getIterationValueList().getSize()) {
+					
+					boolean match = true;
+					
+					// both have the same number of iterations, check that the filters match
+					for (int i=0; i<listConfigValue.getIterationValueList().getSize(); i++) {
+						
+						try {
+						
+							String matchString = listConfigValue.getIterationValueList().findEntityLabelValue(i, "Filter");
+							String candidateString = candidate.getIterationValueList().findEntityLabelValue(i, "Filter");
+						
+							if (!matchString.equals(candidateString)) {
+								match = false;
+							}
+						
+						
+						} catch (Exception e) {
+							match = false;
+						}
+						
+					}
+					
+					if (match) {
+						return "" + candidate.getIterationListConfigId();
+					}
+										
 				}
+				
 			}
 			
 			return "";

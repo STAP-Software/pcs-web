@@ -42,6 +42,7 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
 import org.tmt.aps.peas.config.model.IterationValue;
+import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfig;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -223,6 +224,11 @@ public class ProcedureExecutionMgmt {
 			
 			// apply integration times set in the UI
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+						
+			// re-encode list for saving
+			IterationValueList iterationValueList = iterationListConfig.getIterationValueList();
+			String iterationValueListEncoded = iterationEntityCache.encodeList(iterationValueList);
+			iterationListConfig.setIterationValueListEncoded(iterationValueListEncoded);
 			
 			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 		

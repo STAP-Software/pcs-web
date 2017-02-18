@@ -113,9 +113,38 @@ public class IterationListConfig {
 			IterationListConfig candidate = (IterationListConfig)obj;
 			// if the iteration value list encoded are the same, these are the same
 			
-			return (candidate.getIterationValueListEncoded().equals(getIterationValueListEncoded()));
+			if (this.getIterationValueList().getSize() == candidate.getIterationValueList().getSize()) {
+				
+				boolean match = true;
+				
+				// both have the same number of iterations, check that the filters match
+				for (int i=0; i<this.getIterationValueList().getSize(); i++) {
+					
+					try {
+					
+						String matchString = this.getIterationValueList().findEntityLabelValue(i, "Filter");
+						String candidateString = candidate.getIterationValueList().findEntityLabelValue(i, "Filter");
+					
+						if (!matchString.equals(candidateString)) {
+							match = false;
+						}
+					
+					
+					} catch (Exception e) {
+						match = false;
+					}
+					
+				}
+				
+				if (match) {
+					return true;
+				}
+									
+			}
+			
+			
 		}
-		return super.equals(obj);
+		return false;
 	}
 	
 

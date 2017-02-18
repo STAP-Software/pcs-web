@@ -789,6 +789,76 @@ public class JavaComputations {
 		
 		return subaperatureFlgs;
 	}
+	
+	/**
+	 * 
+	 * This method returns subimages that are missing for analysis only due to an incomplete mirror.  These are edge subimages
+	 * for which there should be two adjoining segments, but one is missing.  Note: if both segments sharing an edge are missing
+	 * then the spot will already be accounted for in F&I missing spots
+	 * 
+	 * @param subaperatureLocations x,y locations of all subaperatures in m at M1
+	 * @param segmentCenters x,y locations of all segment centers in m at M1
+	 * @param aHex hexagon side length in m at M1
+	 * @param segmentList boolean array numbered according to segment number: true if segment is present, false otherwise
+	 * 
+	 * @return boolean array of length subaperature count: true if subaperature is present, false otherwise
+	 */
+	public static boolean[] determineMissingSegmentAnalysisSubimages(FloatPoint[] subaperatureLocations, FloatPoint[] segmentCenters, float aHex, Integer[] segmentList) {
+		
+		// spots which are not intersegment edges are flagged 'true'
+		// each edge is tested for all theoretical segments, if it is contained in two segments, 
+		// it is then tested against the incomplete mirror segments.  If that test result in only 
+		// one segment then return false for that subimage, this is the case where a subimage will 
+		// be found by F&I but needs to be removed from analysis
+
+		boolean[] subaperatureFlgs = new boolean[subaperatureLocations.length];
+		
+		for (int i=0; i<subaperatureLocations.length; i++) {
+			
+			FloatPoint subaperatureLocation = subaperatureLocations[i];
+			
+			// determine if this is an edge spot.  It must be contained by exactly two segments in a complete mirror
+			int segmentCount = 0;
+			for (int j=0; j<segmentList.length; j++) {
+				
+				FloatPoint segmentCenter = segmentCenters[j];
+							
+				// Some subaps are on the boundary. Oversize the radius by 1.02:
+                if (doesSubapLieInSeg(subaperatureLocation, segmentCenter, 1.02f * aHex)) {
+                	segmentCount++;
+                }
+				
+			}
+			
+			if (segmentCount == 2) {
+			
+				for (int j=0; j<segmentList.length; j++) {
+					
+					boolean segmentPresent = segmentList[j].intValue() == 1;
+					FloatPoint segmentCenter = segmentCenters[j];
+					
+					if (segmentPresent) {
+											
+						// Some subaps are on the boundary. Oversize the radius by 1.02:
+		                if (doesSubapLieInSeg(subaperatureLocation, segmentCenter, 1.02f * aHex)) {
+		                	segmentCount--;
+		                }
+					}					
+				}
+				
+				// if segmentCount is one, then this spot is missing for analysis
+				subaperatureFlgs[i] = segmentCount != 1;
+				
+			
+			} else {
+				// not an intersegment edge
+				subaperatureFlgs[i] = true;
+			}
+			
+		}
+		
+		return subaperatureFlgs;
+	}
 
 	/**
 	 * Generates an a-Matrix for incomplete mirror configurations given the complete mirror a-matrix and incomplete mirror config
