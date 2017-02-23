@@ -23,6 +23,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
@@ -51,6 +52,8 @@ public class SessionMgmt {
 	PeasProperties peasProperties;
 	@EJB
 	ProcedureOutputMgmt procedureOutputMgmt;
+	@EJB
+	IterationEntityCache iterationEntityCache;
 
 	/**
 	 * Returns a night session given its id
@@ -95,6 +98,13 @@ public class SessionMgmt {
 				
 				List<ProcedureCcdFrame> procedureCcdFrameList = query2.getResultList();
 				procedure.setProcedureCcdFrameList(procedureCcdFrameList);
+				
+				// also process the iteration list config to get the integration time list for the row expansion values
+				if (procedure.getProcedureConfigSet().getIterationListConfig() != null) {
+					iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), procedure.getProcedureType().getProcedureTypeId());
+					int lightSource = procedure.getProcedureConfigSet().getProcedureConfig().getLightSource();
+					procedure.getProcedureConfigSet().getIterationListConfig().updateIntegrationTimeList(lightSource);
+				}
 				
 			} catch (Exception e) {
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);

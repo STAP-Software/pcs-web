@@ -148,11 +148,15 @@
 
 									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
 									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px" >
+									
+									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px"  
+										rendered="#{not procedure.procedureType.narrowBandPhasing}">
 										<f:converter converterId="DynamicNumberConverter" />
 										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 									</h:outputText>
-	
+									<h:outputText value="#{procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" style="position:relative; top:4px"  
+										rendered="#{procedure.procedureType.narrowBandPhasing}" />
+									
 									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeEl')}" />				
 									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px" >
