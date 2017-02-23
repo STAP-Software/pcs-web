@@ -162,8 +162,6 @@ public class CentroidMapMgmt {
 		
 		
 		// get the theoretical subaperatures for the mask type (meters at primary mirror)
-
-		
 		FloatPoint[] theorecticalSubaperatures = constantsCache.getMaskTheoreticalLocations(pupilMaskTypeId, sufsGroupNumber);
 		
 		// to create a list of SubimageDefs
@@ -192,9 +190,32 @@ public class CentroidMapMgmt {
 			missingSpotListAnalysis = missingSpotsMgmt.findMissingSpotList(2, telescopeId, pupilMaskTypeId, sufsGroupNumber);			
 		}
 		
+		boolean[] mirrorConfigAnalysisSubaperatures = computationLibrary.determineMissingSegmentAnalysisSubimages(theorecticalSubaperatures, 
+				constantsCache.getPrimaryMirrorConstants().getSegmentCenters(), 
+				constantsCache.getPrimaryMirrorConstants().getaHex(), 
+				mirrorConfig);
+
+		// start to build the composite FandI missing spot list
+		List<Integer> fullAnalysisMissingSpotList = new ArrayList<Integer>();
+	
+		// fold in incomplete mirror segments - this only applies to Phasing spots
+		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
+			for (int j=0; j<mirrorConfigAnalysisSubaperatures.length; j++) {
+				if (!mirrorConfigAnalysisSubaperatures[j]) {
+					fullAnalysisMissingSpotList.add(new Integer(j+1));
+				}
+			}
+		}
 		
+		// fold in normal analysis missing spots
 		List<Integer> missingSpotListAnalysisDecoded = IntegerListEncoder.decodeList(missingSpotListAnalysis.getMissingSpotListEncoded());
 		for (Integer spot : missingSpotListAnalysisDecoded) {
+			if (!fullAnalysisMissingSpotList.contains(spot)) {
+				fullAnalysisMissingSpotList.add(spot);
+			}
+		}
+
+		for (Integer spot : fullAnalysisMissingSpotList) {
 			subimageDefList.get(spot - 1).setMissingSpotType(Constants.MISSING_SPOT_TYPE_NOT_FOR_ANALYSIS);
 		}
 		
