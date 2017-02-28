@@ -339,13 +339,10 @@ public class FineScreenExecutor {
 				
 				/*****************************************************/
 				/*                  optimalPistons                   */
-				/*****************************************************/
+				/*****************************************************/	
 				
-				float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();	
-				
-				float[][] incompleteMirrorControlMatrix = computationLibrary.generateIncompleteMirrorAMatrix(controlMatrix, globalConfig.getMirrorList());
-
-				computationLibrary.calcDesiredActCommands(incompleteMirrorControlMatrix, decomposeActResult.getTipTiltActs());			
+				computationLibrary.calcDesiredActCommands(constantsCache.getPrimaryMirrorConstants().getaMatrix(), 
+						decomposeActResult.getTipTiltActs(), globalConfig.getMirrorListInt());			
 
 			} // end of iteration loop
 			
@@ -519,9 +516,8 @@ public class FineScreenExecutor {
 			/*                  optimalPistons                   */
 			/*****************************************************/
 			
-			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();	
-			float[][] incompleteMirrorControlMatrix = computationLibrary.generateIncompleteMirrorAMatrix(controlMatrix, globalConfig.getMirrorList());
-			computationLibrary.calcDesiredActCommands(incompleteMirrorControlMatrix, decomposeActResult.getTipTiltActs());			
+			computationLibrary.calcDesiredActCommands(constantsCache.getPrimaryMirrorConstants().getaMatrix(), 
+					decomposeActResult.getTipTiltActs(), globalConfig.getMirrorListInt());			
 
 			
 			// display the pistonDeltas

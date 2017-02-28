@@ -855,7 +855,7 @@ public class ComputationLibraryImpl {
 	 * @return pure piston actuators as a 2-d array (36 x 3)
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
-	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs) throws ComputationException {
+	public float[][] optimalPistons(float[][] controlMatrix, float[][] tipTiltActs, int[] mirrorConfig) throws ComputationException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "optimalPistons"));
 		
@@ -869,7 +869,7 @@ public class ComputationLibraryImpl {
 		float[] act_p = new float[ttActs.length];
 
 
-		Object output[] = joptimalPistons.joptimalPistons(retVal, controlMatrix, ttActs, testArray, 0, act_p);
+		Object output[] = joptimalPistons.joptimalPistons(retVal, controlMatrix, ttActs, mirrorConfig, testArray, 0, act_p);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -1323,9 +1323,9 @@ public class ComputationLibraryImpl {
 	 * @return result object containing piston actuators, desired actuator deltas, rms values for both plus rms of focus mode and no focus mode
 	 */
 	@Computation
-	public CalcDesiredActCommandsResult calcDesiredActCommands(float[][] controlMatrix, float[][] tipTiltActs) throws Exception {
+	public CalcDesiredActCommandsResult calcDesiredActCommands(float[][] controlMatrix, float[][] tipTiltActs, int[] mirrorConfig) throws Exception {
 		
-		float[][] pistonActs = optimalPistons(controlMatrix, tipTiltActs);
+		float[][] pistonActs = optimalPistons(controlMatrix, tipTiltActs, mirrorConfig);
 		
 		// TODO: print out pistonActs
 

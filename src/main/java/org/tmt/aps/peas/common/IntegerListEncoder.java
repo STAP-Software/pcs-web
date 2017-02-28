@@ -147,5 +147,13 @@ public class IntegerListEncoder {
 		return output;
 	}
 
+	public static int[] decodeToIntArray(String mirrorListEncoded) throws Exception {
+		
+		Integer[] objectArray = decodeListToObjectArray(mirrorListEncoded);
+		
+		return convertObjectArrayToPrimitive(objectArray);
+		
+	}
+
 	
 }

@@ -277,13 +277,9 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			/*                  optimalPistons                   */
 			/*****************************************************/
-			float[][] controlMatrix = constantsCache.getPrimaryMirrorConstants().getaMatrix();
-			
-			
-			float[][] incompleteMirrorControlMatrix = computationLibrary.generateIncompleteMirrorAMatrix(controlMatrix, globalConfig.getMirrorList());
-			
-			
-			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(incompleteMirrorControlMatrix, decomposeActResult.getTipTiltActs());
+
+			CalcDesiredActCommandsResult calcDesiredActCommandsResult = computationLibrary.calcDesiredActCommands(constantsCache.getPrimaryMirrorConstants().getaMatrix(), 
+					decomposeActResult.getTipTiltActs(), globalConfig.getMirrorListInt());
 			
 			// fill the procedure output
 			procedureOutput.addPassiveTiltIterationOutput(pio);

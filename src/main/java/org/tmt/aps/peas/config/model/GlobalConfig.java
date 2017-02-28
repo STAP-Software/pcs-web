@@ -139,6 +139,10 @@ public class GlobalConfig {
 		return IntegerListEncoder.decodeListToObjectArray(mirrorListEncoded);
 	}
 	
+	public int[] getMirrorListInt() throws Exception {
+		return IntegerListEncoder.decodeToIntArray(mirrorListEncoded);
+	}
+	
 	public int getMirrorCount() {
 		int count = 0;
 		for (Integer mirror : getMirrorList()) {
