@@ -6,6 +6,7 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
@@ -30,6 +31,7 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
 	FindCentroidsResult findCentroidsResult;
+	DecomposeActsResult  decomposeActsResult;
 	
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
@@ -88,9 +90,16 @@ public class FineScreenIterationOutput extends ProcedureIterationOutput implemen
 		this.findCentroidsResult = findCentroidsResult;
 	}
 	
+	public DecomposeActsResult getDecomposeActsResult() {
+		return decomposeActsResult;
+	}
+	public void setDecomposeActsResult(DecomposeActsResult decomposeActsResult) {
+		this.decomposeActsResult = decomposeActsResult;
+	}
+	
 	// actuator deltas display values
 
-	public float[][] getDesiredActDeltas() {
+    public float[][] getDesiredActDeltas() {
 		return calcDesiredActCommandsResult.getDesiredActDeltas();
 	}
 	public float getDesiredActDeltasRms() {

@@ -10,6 +10,7 @@ import org.tmt.aps.peas.computation.model.CalcM2PttErrorsMeanEomResult;
 import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
@@ -31,6 +32,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	CalcM2PttErrorsMeanEomResult calcM2PttErrorsMeanEomResult;
 	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
 	AvgCentroidStatsResult avgCentroidStatsResult;
+	DecomposeActsResult  decomposeActsResult;
 	
 	
 	public CentroidOffsetsResult getCentroidOffsetsResult() {
@@ -90,8 +92,15 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 		this.calcSegmentMeanTipTiltsResult = calcSegmentMeanTipTiltsResult;
 	}
 	
-	// actuator deltas display values
+	public DecomposeActsResult getDecomposeActsResult() {
+		return decomposeActsResult;
+	}
+	public void setDecomposeActsResult(DecomposeActsResult decomposeActsResult) {
+		this.decomposeActsResult = decomposeActsResult;
+	}
 
+	// actuator deltas display values
+	
 	public float[][] getDesiredActDeltas() {
 		return calcDesiredActCommandsResult.getDesiredActDeltas();
 	}
