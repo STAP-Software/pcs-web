@@ -470,6 +470,16 @@ public class GetFrameCentroidsExecutor {
 			// if PassiveTilt ask the user if the correct centroids have been found
 			if (procedure.getProcedureType().isPassiveTilt()) {
 			
+				// inform the user if the number of spots found is different than the expected total
+				if (findCentroidsResult.foundSpotCount() != procedure.getProcedureConfigSet().getGlobalConfig().getMirrorCount()) {
+					
+					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_count_warning", findCentroidsResult.foundSpotCount(), 
+							procedure.getProcedureConfigSet().getGlobalConfig().getMirrorCount());
+					userPromptMgmt.displayInfoDialog("Centroid Count Warning", warningMessage);
+					
+				}
+				
+				
 				boolean userResponse = graphicDisplayMgmt.displaySubimageCentroids(centroidMap, UserPrompt.PROMPT_TYPE_YES_NO,
 						"Have the correct centroids been found?");
 		

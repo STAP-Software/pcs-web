@@ -276,6 +276,20 @@ public class FindCentroidsResult {
 		return missedSpots;
 	}
 	
+	public int foundSpotCount() {
+		int foundSpots = 0;
+		for (Subimage subimage : subimageList) {
+			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y ||
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS) {
+				
+				foundSpots++;				
+			}
+		}	
+		return foundSpots;
+	}
+	
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
