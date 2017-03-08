@@ -156,15 +156,20 @@ public class FrameMgmt {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
 		// determine FITS file name
+		
+		ProcedureConfig procedureConfig = procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig();
+		
 		FitsFilename fitsFilename = new FitsFilename(
 				procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), 
 				procedureCcdFrame.getProcedure().getProcedureType().getProcedureTypeCd(), 
 				procedureCcdFrame.getProcedure().getProcedureNumber(),
 				procedureCcdFrame.getProcedureIterationNumber(), 
-				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getUfsSegment(),
-				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getSufsGroup(), 
+				procedureConfig.getUfsSegment(),
+				procedureConfig.getSufsGroup(), 
 				procedureCcdFrame.getPhasingStepNumber(),
-				procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig().getFilter().getFilterNameAsNumber());
+				procedureConfig.getFilter().getFilterNameAsNumber(),
+				procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeName(),
+				procedureConfig.getFilter().getFilterName());
 
 		// save the frame to a FITS file
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();

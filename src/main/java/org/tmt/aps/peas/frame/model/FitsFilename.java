@@ -7,6 +7,7 @@ package org.tmt.aps.peas.frame.model;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.NoSuchElementException;
 import java.util.StringTokenizer;
 import java.util.TimeZone;
 
@@ -35,13 +36,16 @@ public class FitsFilename {
 	int phasingStep;  // A-K = 1-11 for phasing
 	int nphFilter;
 	String fileName;
+	
+	String filter; // only used for ref maps and pupil registration 
+	String maskType;  // only used for ref maps and pupil registration
 
 	/**
 	 * Constructor for Phasing frames or SUFS
 	 * @param procedureTypeCd FS, PT, PH, SUFS, CT, RB, PR
 	 */
 	public FitsFilename(Long telescopeId, String procedureTypeCd, String procedureNumber, int iteration,
-			int ufsSegment, int sufsGroup, int phasingStep, int nphFilter) {
+			int ufsSegment, int sufsGroup, int phasingStep, int nphFilter, String maskType, String filter) {
 		
 		this.telescope = (int)telescopeId.longValue();
 		this.date = new Date();
@@ -52,6 +56,8 @@ public class FitsFilename {
 		this.sufsGroup = sufsGroup;
 		this.phasingStep = phasingStep;
 		this.nphFilter = nphFilter;
+		this.filter = filter;
+		this.maskType = maskType;
 		
 		this.fileName = generateFileName();
 	}
@@ -129,6 +135,20 @@ public class FitsFilename {
 				iteration = new Integer(sequenceCd.substring(0,2));
 			}
 			
+			if (procedureTypeCd.startsWith("RB") || procedureTypeCd.startsWith("PR")) {
+				
+				// there is an legacy optional mask and filter to parse
+				
+				try {
+				
+					maskType = st.nextToken();
+					filter = st.nextToken();
+
+				} catch (NoSuchElementException e) {
+					// do nothing, it is optional
+				}
+				
+			}
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -208,7 +228,21 @@ public class FitsFilename {
 		this.nphFilter = nphFilter;
 	}
 
+	public String getFilter() {
+		return filter;
+	}
 
+	public void setFilter(String filter) {
+		this.filter = filter;
+	}
+
+	public String getMaskType() {
+		return maskType;
+	}
+
+	public void setMaskType(String maskType) {
+		this.maskType = maskType;
+	}
 
 	public String getFileName() {
 		return fileName;
@@ -280,6 +314,15 @@ public class FitsFilename {
 		} else {
 			buf.append(String.format("%02d", iteration));			
 		}
+		
+		// RB and PR filter and mask
+		if (procedureTypeCd.startsWith("RB") || procedureTypeCd.startsWith("PR")) {
+			
+			buf.append("_" + maskType + "_" + filter);
+			
+		}
+		
+		
 		buf.append(".FTS");
 		return buf.toString();
 		
