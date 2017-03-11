@@ -463,7 +463,8 @@ public class NarrowBandPhasingExecutor {
 			/**********************************************/		
 		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
-		    		nbActuatorsResult.getActCalc());
+		    		nbActuatorsResult.getActCalc(),
+		    		globalConfig.getMirrorListInt());
 
 		    /**********************************************/
 			/*          CalculatePhasingStats             */

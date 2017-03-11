@@ -331,12 +331,14 @@ public class CoarsePhasingExecutor {
 		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
 		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
 		    		constantsCache.getPhasingConstants().getRingModeCorrectionFactor(),
+		    		globalConfig.getMirrorListInt(),
 		    		procedureConfig.getFilter(),
  					constantsCache.getPhasingConstants().getBbPhasingFracInterval(),
  					constantsCache.getPhasingConstants().getRingMode(),
 					procedureConfig.getPhasingSteps(), 
 		    		subimageDefList.useForAnalysis(), goodSpots);
 		
+		    /* TODO: Compare this to the number of active segments */
 		    
 		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
 		    	
@@ -353,7 +355,8 @@ public class CoarsePhasingExecutor {
 			/**********************************************/		
 		    FixPistonsResult fixPistonsResult = computationLibrary.fixPistons(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(), 
-		    		bbAnalyzeSequenceResult.getActCalc());
+		    		bbAnalyzeSequenceResult.getActCalc(),
+		    		globalConfig.getMirrorListInt());
 
 		    /**********************************************/
 			/*          CalculatePhasingStats             */

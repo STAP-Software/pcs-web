@@ -852,6 +852,7 @@ public class ComputationLibraryImpl {
 	 * Given pure tip/tilt actuators, calculate the pure piston actuators that minimize the changes to the sensor readings
 	 * @param controlMatrix primary mirror A matrix
 	 * @param tipTiltActs pure tip/tilt actuators
+	 * @param mirrorConfig logical array indicating active segments
 	 * @return pure piston actuators as a 2-d array (36 x 3)
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
@@ -1699,6 +1700,7 @@ public class ComputationLibraryImpl {
 	 * @param plusPiston used to create the phasing control matrix (nedges x nsegments)
 	 * @param minusPiston used to create the phasing control matrix (nedges x nsegments)
 	 * @param ringModeCorrectionFactor the magnitude of ring-mode correction to apply to the measured edge heights
+	 * @param mirrorConfig logical array indicating active segments
 	 * @param filter contains the input sigma of coherence parameter
 	 * @param bbPhasingFracInterval the fractional interval size to use for chi-square analysis
 	 * @param ringMode array of ring-mode edges with unit rms (where the averaging is over the 78 edges from 7 thru 84).
@@ -1713,7 +1715,7 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public BbAnalyzeSequenceResult bbAnalyzeSequence(int[] edgeAngle, int[] edgeColor, float[][] coherenceArraySet, float stepSize, int numSegments, 
-			int[] plusPiston, int[] minusPiston, float ringModeCorrectionFactor, Filter filter, float bbPhasingFracInterval,
+			int[] plusPiston, int[] minusPiston, float ringModeCorrectionFactor, int[] mirrorConfig,  Filter filter, float bbPhasingFracInterval,
 			float[] ringMode, int numSteps, int[] useForAnalysis, int[] goodSpots) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "jbbAnalyzeSequence"));
@@ -1754,7 +1756,7 @@ public class ComputationLibraryImpl {
 		
 		
 		Object[] result = jbbAnalyzeSequence.jbbAnalyzeSequence(retVal, coherenceTable, sigmaMicrons, stepSize, bbPhasingFracInterval, asca, edgeAngle, edgeColor, 
-				rowFlagIn, ringMode, ringModeCorrectionFactor, stepCorr, actCalc, resid, rowFlagOut);
+				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, stepCorr, actCalc, resid, rowFlagOut);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1779,12 +1781,13 @@ public class ComputationLibraryImpl {
 	 * Given a vactor of segment pistons remove the best fit plane.  Return the actuator values and RMS of them.
 	 * @param actuatorPositions coordinates of the segment actuators 
 	 * @param actCalc input segment piston values
+	 * @param mirrorConfig logical array of active segments
 	 * @return result object containing the pistonRaw values expanded to 3*numSegment values, the actRaw values with the 
 	 * best fit plane removed and RMS of the actuator values with the best fit plane removed
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public FixPistonsResult fixPistons(FloatPoint[] actuatorPositions, float[] actCalc) throws Exception {
+	public FixPistonsResult fixPistons(FloatPoint[] actuatorPositions, float[] actCalc, int[] mirrorConfig) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "fixPistons"));
 
@@ -1800,7 +1803,7 @@ public class ComputationLibraryImpl {
 		float[] actFixed = new float[actuatorPositions.length];
 		
 		
-		Object[] result = jfixPistons.jfixPistons(retVal, pistonRaw, actuatorPositionsX, actuatorPositionsY, actRaw, actFixed);
+		Object[] result = jfixPistons.jfixPistons(retVal, pistonRaw, actuatorPositionsX, actuatorPositionsY, mirrorConfig, actRaw, actFixed);
 
 		
 		if (retVal.getCode() > 0) {
