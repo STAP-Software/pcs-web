@@ -447,7 +447,8 @@ public class NarrowBandPhasingExecutor {
 					nbAnalyzeFilterSequenceResult.getRowFlagOut(), colFlag, 
 		    		constantsCache.getPrimaryMirrorConstants().getSavePlusPiston(),
 		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
-		    		constantsCache.getTelescopeConstants().getNumberOfSegments());
+		    		constantsCache.getTelescopeConstants().getNumberOfSegments(),
+		    		globalConfig.getMirrorListInt());
 
 			
 		    if (nbActuatorsResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
