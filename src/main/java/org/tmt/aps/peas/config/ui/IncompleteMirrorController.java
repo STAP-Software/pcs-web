@@ -90,14 +90,7 @@ public class IncompleteMirrorController implements Serializable {
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 			telescopeId = new Long(telescopeIdStr);
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			instrumentId = new Long(instrumentIdStr);
-
-
-			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
-			mirrorSegments = Arrays.asList(globalConfigDefaults.getMirrorList());
-
-			mirrors = IntegerListEncoder.encodeList(mirrorSegments);
-												
+			instrumentId = new Long(instrumentIdStr);						
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -121,6 +114,12 @@ public class IncompleteMirrorController implements Serializable {
 	public String doViewIncompleteMirror() {
 		try {
 		
+			GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
+			
+			mirrorSegments = Arrays.asList(globalConfigDefaults.getMirrorList());
+
+			mirrors = IntegerListEncoder.encodeList(mirrorSegments);
+			
 			breadcrumbMenuBean.addFirstItem("Incomplete Mirror Configuration", "/modules/config/incompleteMirror.xhtml");
 			
 			return "/modules/config/incompleteMirror.xhtml?faces-redirect=true";

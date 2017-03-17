@@ -390,11 +390,14 @@ public class GetFrameCentroidsExecutor {
 						procedure.getProcedureConfigSet().getFindCentConfigPeripheral(), 
 						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
 				
-				// if passive tilt hand-mark, we want to use the hand-marked location for any spots that failed
+				// if passive tilt hand-mark, we want to use the hand-marked location for any spots that failed - as long as it is not missing due to incomplete mirror
 				if (fiResult.isHandMarked()) {
 					// fiResult is a hand-marked result
+					
 					for (int i=0; i<findCentroidsResult.getCentroidList().length; i++) {
-						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0) {
+						// if the findCent result is zero and the mirror is actually there, use the hand-marked location
+						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0 && 
+								procedure.getProcedureConfigSet().getGlobalConfig().getMirrorListInt()[i] != 0) {
 							
 							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
 							findCentroidsResult.setSubimage(i, markedSubimage);
