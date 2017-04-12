@@ -2639,7 +2639,7 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag,
-			int[] plusPiston, int[] minusPiston, int numSegments) throws Exception {
+			int[] plusPiston, int[] minusPiston, int numSegments, int[] mirrorConfig) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbActuators"));
 
@@ -2654,7 +2654,7 @@ public class ComputationLibraryImpl {
 		
 		float[][] acsa = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
 		
-		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, actCalc,  resid);
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, actCalc,  resid);
 
 		
 		if (retVal.getCode() > 0) {
