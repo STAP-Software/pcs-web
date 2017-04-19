@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.Hashtable;
 import java.util.concurrent.Future;
 
 import javax.ejb.EJB;
@@ -14,7 +15,9 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CameraMgmtAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -39,8 +42,34 @@ public class ReadyCameraSubflow {
 	@EJB
 	private CameraMgmt cameraMgmt;
 	@EJB
+	private CameraMgmtAsync cameraMgmtAsync;
+	@EJB
 	private UserPromptMgmt userPromptMgmt;
 
+	private static final int X_TILT_MOTOR = 1;
+	private static final int Y_TILT_MOTOR = 2;
+	private static final int X_STEERING_MOTOR = 3;
+	private static final int Y_STEERING_MOTOR = 4;
+
+	
+	private static Hashtable<Integer, Integer> errorCodeToMechanism = new Hashtable<Integer, Integer>();
+	
+	static {
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, Y_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_STEERING_MOTOR);
+	}
+	
+	
 	/**
 	 * Executor method: this method is the Ready Camera sub-flow
 	 */
@@ -77,6 +106,19 @@ public class ReadyCameraSubflow {
 			} 
 			
 			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+				
+				// home the appropriate mirror if affected
+				if (internalException instanceof CommandFailureException) {
+					int failureCode = ((CommandFailureException)internalException).getFailureCode();
+					
+					// check if failureCode is anything we can try to correct by homing a motor/stage
+					Integer mechanism = errorCodeToMechanism.get(new Integer(failureCode));
+					if (mechanism != null) {
+						homeMechanism(mechanism);
+					}
+					
+				}
+				
 				// retry recursively
 				readyCameraFlow(procedure);
 			}
@@ -144,7 +186,39 @@ public class ReadyCameraSubflow {
 
 	}
 	
-	
+	private void homeMechanism(int mechanism) throws Exception {
+		
+		Future<Integer> commandFuture = null;
+		
+		switch (mechanism) {
+		
+		case X_TILT_MOTOR:
+			statusLogger.log("camera.cmd.homing", "tilt plate X");
+			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
+			break;
+			
+		case Y_TILT_MOTOR:
+			statusLogger.log("camera.cmd.homing", "tilt plate Y");
+			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
+			break;
+			
+		case X_STEERING_MOTOR:
+			statusLogger.log("camera.cmd.homing", "steering mirror X");
+			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
+			break;
+			
+		case Y_STEERING_MOTOR:
+			statusLogger.log("camera.cmd.homing", "steering mirror Y");
+			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
+			break;
+		}
+				
+		// wait for all commands to complete
+		long waitPeriodMs = Utils.waitForComplete(commandFuture);
+		statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+
+		
+	}
 
 
 }
