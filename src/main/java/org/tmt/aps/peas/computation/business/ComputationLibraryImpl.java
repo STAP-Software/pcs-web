@@ -1710,7 +1710,8 @@ public class ComputationLibraryImpl {
 	 * @return result object containing: measured edge heights after correcting for the dispersion effect of the prisms, 
 	 * computed segment piston commands, Predicted residual edge heights that are expected after applying the calculated 
 	 * segment piston commands, array of flags specifying which edges had good edge height measurements (0=bad, 1=good), 
-	 * number of constrained segments and RMS of segment piston commands
+	 * number of constrained segments and RMS of segment piston commands, Best fit coherences for each edge (microns),
+	 * Mean of the best fit coherences for good edges (microns) 
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
@@ -1753,10 +1754,12 @@ public class ComputationLibraryImpl {
 		float[] resid = new float[numEdges];
 		
 		int[] rowFlagOut = new int[numEdges];
-		
+
+		float[] bestFitCoherences = new float[numEdges];
+
 		
 		Object[] result = jbbAnalyzeSequence.jbbAnalyzeSequence(retVal, coherenceTable, sigmaMicrons, stepSize, bbPhasingFracInterval, asca, edgeAngle, edgeColor, 
-				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, stepCorr, actCalc, resid, rowFlagOut);
+				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, stepCorr, actCalc, resid, rowFlagOut, bestFitCoherences);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1766,8 +1769,10 @@ public class ComputationLibraryImpl {
 
 		int  constrainedSegmentCount = (Integer)result[0];
 		float segmentPistonRms = (Float)result[1]; 
-
-		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut, constrainedSegmentCount, segmentPistonRms);
+		float meanBestFitCoherence = (Float)result[2];
+		
+		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut, constrainedSegmentCount, segmentPistonRms,
+				bestFitCoherences, meanBestFitCoherence);
 
 
 		// End of code for findCent unit testing
@@ -2639,7 +2644,7 @@ public class ComputationLibraryImpl {
 	 */
 	@Computation
 	public NbActuatorsResult nbActuators(float[] nbStep, int[] rowFlag, int[] colFlag,
-			int[] plusPiston, int[] minusPiston, int numSegments) throws Exception {
+			int[] plusPiston, int[] minusPiston, int numSegments, int[] mirrorConfig) throws Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "nbActuators"));
 
@@ -2654,13 +2659,16 @@ public class ComputationLibraryImpl {
 		
 		float[][] acsa = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
 		
-		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, actCalc,  resid);
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, actCalc,  resid);
 
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("nbActuators calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
+		
+		
+		
 
 		int constrainedSegmentCount = (Integer)result[0];
 		float segmentPistonRms = (Float)result[1];

@@ -1,14 +1,15 @@
 package org.tmt.aps.peas.lang.interop; 
 public class JbbAnalyzeSequence
 {
-	public native void bbAnalyzeSequence(RetVal retVal, float coherence_table[], int coherence_table_size_1, int coherence_table_size_2, float sigma_microns, float step_size, float g_interval, float acsa[], int acsa_size_1, int acsa_size_2, int edge_angle[], int edge_angle_size_1, int edge_color[], int edge_color_size_1, int row_flag_in[], int row_flag_in_size_1, float ring_mode[], int ring_mode_size_1, float keckPhRingModeCorrectionFactor, int activeSegments[], int activeSegments_size_1, float step_corr[], int step_corr_size_1, float act_calc[], int act_calc_size_1, float resid[], int resid_size_1, int row_flag_out[], int row_flag_out_size_1, int constrainedSegmentCount[], float segmentPistonRms[] );
+	public native void bbAnalyzeSequence(RetVal retVal, float coherence_table[], int coherence_table_size_1, int coherence_table_size_2, float sigma_microns, float step_size, float g_interval, float acsa[], int acsa_size_1, int acsa_size_2, int edge_angle[], int edge_angle_size_1, int edge_color[], int edge_color_size_1, int row_flag_in[], int row_flag_in_size_1, float ring_mode[], int ring_mode_size_1, float keckPhRingModeCorrectionFactor, int activeSegments[], int activeSegments_size_1, float step_corr[], int step_corr_size_1, float act_calc[], int act_calc_size_1, float resid[], int resid_size_1, int row_flag_out[], int row_flag_out_size_1, int constrainedSegmentCount[], float segmentPistonRms[], float bestFitCoherences[], int bestFitCoherences_size_1, float meanBestFitCoherence[] );
 	static { System.loadLibrary("peas"); }
 	// TODO: We need to write the public method that calls the private and unpacks output arrays
 
-	public Object[] jbbAnalyzeSequence(RetVal retVal, float coherence_table[][], float sigma_microns, float step_size, float g_interval, float acsa[][], int edge_angle[], int edge_color[], int row_flag_in[], float ring_mode[], float keckPhRingModeCorrectionFactor, int activeSegments[], float step_corr[], float act_calc[], float resid[], int row_flag_out[] ) {
+	public Object[] jbbAnalyzeSequence(RetVal retVal, float coherence_table[][], float sigma_microns, float step_size, float g_interval, float acsa[][], int edge_angle[], int edge_color[], int row_flag_in[], float ring_mode[], float keckPhRingModeCorrectionFactor, int activeSegments[], float step_corr[], float act_calc[], float resid[], int row_flag_out[], float bestFitCoherences[] ) {
 		// Output variable definitions
 		int constrainedSegmentCount_outArray[] = new int[1];
 		float segmentPistonRms_outArray[] = new float[1];
+		float meanBestFitCoherence_outArray[] = new float[1];
 		// Deal with Array Lengths
 		int coherence_table_len1 = coherence_table.length;
 		int coherence_table_len2 = coherence_table[0].length;
@@ -25,6 +26,7 @@ public class JbbAnalyzeSequence
 		int act_calc_len1 = act_calc.length;
 		int resid_len1 = resid.length;
 		int row_flag_out_len1 = row_flag_out.length;
+		int bestFitCoherences_len1 = bestFitCoherences.length;
 		// collapse array to one dimension
 		for (int i=0; i<coherence_table_len1; i++) { 
 			for (int j=0; j<coherence_table_len2; j++) { 
@@ -38,7 +40,7 @@ public class JbbAnalyzeSequence
 			} 
 		} 
 		// Call native method
-		bbAnalyzeSequence(retVal, coherence_table_collapse,coherence_table_len1,coherence_table_len2,sigma_microns,step_size,g_interval,acsa_collapse,acsa_len1,acsa_len2,edge_angle,edge_angle_len1,edge_color,edge_color_len1,row_flag_in,row_flag_in_len1,ring_mode,ring_mode_len1,keckPhRingModeCorrectionFactor,activeSegments,activeSegments_len1,step_corr,step_corr_len1,act_calc,act_calc_len1,resid,resid_len1,row_flag_out,row_flag_out_len1,constrainedSegmentCount_outArray,segmentPistonRms_outArray);
+		bbAnalyzeSequence(retVal, coherence_table_collapse,coherence_table_len1,coherence_table_len2,sigma_microns,step_size,g_interval,acsa_collapse,acsa_len1,acsa_len2,edge_angle,edge_angle_len1,edge_color,edge_color_len1,row_flag_in,row_flag_in_len1,ring_mode,ring_mode_len1,keckPhRingModeCorrectionFactor,activeSegments,activeSegments_len1,step_corr,step_corr_len1,act_calc,act_calc_len1,resid,resid_len1,row_flag_out,row_flag_out_len1,constrainedSegmentCount_outArray,segmentPistonRms_outArray,bestFitCoherences,bestFitCoherences_len1,meanBestFitCoherence_outArray);
 		// expand array to two dimensions
 		for (int i=0; i<coherence_table_len1; i++) { 
 			for (int j=0; j<coherence_table_len2; j++) { 
@@ -52,9 +54,10 @@ public class JbbAnalyzeSequence
 			} 
 		} 
 		// Assign output variables
-		Object[] out = new Object[2];
+		Object[] out = new Object[3];
 		out[0] = constrainedSegmentCount_outArray[0];
 		out[1] = segmentPistonRms_outArray[0];
+		out[2] = meanBestFitCoherence_outArray[0];
 		return out;
 	}
 }
