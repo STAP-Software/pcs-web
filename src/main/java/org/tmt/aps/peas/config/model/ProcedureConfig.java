@@ -94,6 +94,7 @@ public class ProcedureConfig {
 	boolean removeBadPixels;
 	
 	int autoPointTelescopeSufsGroup;
+	private int ccdGainNumber;
 
 	
 	@Column(nullable=false, length=255)
@@ -434,6 +435,14 @@ public class ProcedureConfig {
 
 	public void setNumTrialsSelectOptions(String numTrialsSelectOptions) {
 		this.numTrialsSelectOptions = numTrialsSelectOptions;
+	}
+
+	public int getCcdGainNumber() {
+		return ccdGainNumber;
+	}
+
+	public void setCcdGainNumber(int ccdGainNumber) {
+		this.ccdGainNumber = ccdGainNumber;
 	}
 
 	public boolean isFrameFromFile() {
