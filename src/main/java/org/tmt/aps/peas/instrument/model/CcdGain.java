@@ -31,9 +31,9 @@ public class CcdGain {
 	private Long ccdGainId;
 	
 	private int gainNumber; 
-	private float gainValue; 		// units?
-	private int gainOffsetChannel1; // units? (pixels?)
-	private int gainOffsetChannel2; // units? (pixels?)
+	private float gainValue; 		// counts/photoelectron
+	private int gainOffsetChannel1; // counts
+	private int gainOffsetChannel2; // counts
 	
 	public CcdGain() {
 	

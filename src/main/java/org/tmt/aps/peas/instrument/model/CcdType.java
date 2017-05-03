@@ -33,7 +33,7 @@ public class CcdType {
 	private Long ccdTypeId;
 	private String ccdTypeName;	
 	private String ccdTypeDescription;	
-	private float pixelSize;		    // units?
+	private float pixelSize;		    // meters
 	private int normalReadoutWidth;     // pixels
 	private int normalReadoutHeight;    // pixels
 	private int overscanReadoutWidth;   // pixels
