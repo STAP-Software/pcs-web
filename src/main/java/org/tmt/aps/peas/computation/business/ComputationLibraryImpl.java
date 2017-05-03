@@ -62,6 +62,7 @@ import org.tmt.aps.peas.computation.model.SufsSegmentZernikeResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentZernikeStatsResult;
 import org.tmt.aps.peas.computation.model.SufsZernikeResult;
 import org.tmt.aps.peas.computation.model.SufsZernikeStatsResult;
+import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfig;
@@ -2755,6 +2756,18 @@ public class ComputationLibraryImpl {
 	 */
 	public float[][] generateIncompleteMirrorAMatrix(float[][] aMatrix, Integer[] mirrorConfig) {
 		return JavaComputations.generateIncompleteMirrorAMatrix(aMatrix, mirrorConfig);
+	}
+
+	/**
+	 * 
+	 * @param primaryActPos
+	 * @param actCalc
+	 * @param mirrorListInt
+	 * @return
+	 */
+	public TerraceModeComponentsResult terraceModeComponents(FloatPoint[] primaryActPos, float[] actCalc, int[] mirrorListInt) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 	
