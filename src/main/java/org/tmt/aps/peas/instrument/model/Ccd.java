@@ -32,8 +32,11 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where o.ccdId = :ccdId" ),
-	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o LEFT OUTER JOIN o.instrument" )
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
+			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 where o.ccdId = :ccdId" ),
+	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
+			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 "
+			+ " LEFT OUTER JOIN o.instrument" )
 })
 public class Ccd {
 
@@ -47,15 +50,34 @@ public class Ccd {
 	private String ccdDescription;	
 	private String hotPixelListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private String hotColumnListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
-	private int rowCount;
-	private int colCount;
-	private int colOffset;
 	private float nonLinearThreshold;
 	
 	
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
 	private Instrument instrument;
+	
+	@ManyToOne
+	@JoinColumn (name="ccdTypeId")
+	private CcdType ccdType;
+	
+	@ManyToOne
+	@JoinColumn (name="ccdGainId1")
+	private CcdGain ccdGain1;
+	
+	@ManyToOne
+	@JoinColumn (name="ccdGain2")
+	private CcdType ccdGain2;
+	
+	@ManyToOne
+	@JoinColumn (name="ccdGain3")
+	private CcdType ccdGain3;
+	
+	@ManyToOne
+	@JoinColumn (name="ccdGain4")
+	private CcdType ccdGain4;
+	
+	
 	
 	@Transient
 	private int state;
@@ -131,28 +153,52 @@ public class Ccd {
 		this.instrument = instrument;
 	}
 
-	public int getRowCount() {
-		return rowCount;
+	public CcdType getCcdType() {
+		return ccdType;
 	}
 
-	public void setRowCount(int rowCount) {
-		this.rowCount = rowCount;
+	public void setCcdType(CcdType ccdType) {
+		this.ccdType = ccdType;
+	}
+
+	public CcdGain getCcdGain1() {
+		return ccdGain1;
+	}
+	
+	public void setCcdGain1(CcdGain ccdGain1) {
+		this.ccdGain1 = ccdGain1;
+	}
+
+	public CcdType getCcdGain2() {
+		return ccdGain2;
+	}
+
+	public void setCcdGain2(CcdType ccdGain2) {
+		this.ccdGain2 = ccdGain2;
+	}
+
+	public CcdType getCcdGain3() {
+		return ccdGain3;
+	}
+
+	public void setCcdGain3(CcdType ccdGain3) {
+		this.ccdGain3 = ccdGain3;
+	}
+
+	public CcdType getCcdGain4() {
+		return ccdGain4;
+	}
+
+	public void setCcdGain4(CcdType ccdGain4) {
+		this.ccdGain4 = ccdGain4;
+	}
+
+	public int getRowCount() {
+		return ccdType.getNormalReadoutHeight();
 	}
 
 	public int getColCount() {
-		return colCount;
-	}
-
-	public void setColCount(int colCount) {
-		this.colCount = colCount;
-	}
-
-	public int getColOffset() {
-		return colOffset;
-	}
-
-	public void setColOffset(int colOffset) {
-		this.colOffset = colOffset;
+		return ccdType.getNormalReadoutWidth();
 	}
 
 	public int getState() {
