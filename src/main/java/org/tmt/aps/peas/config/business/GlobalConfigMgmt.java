@@ -70,11 +70,12 @@ public class GlobalConfigMgmt {
 	 * @param lightSource star or reference beam
 	 * @return the find and identify computation configuration default values
 	 */
-	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource) {
+	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource, Long ccdTypeId) {
 		TypedQuery<FIConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("lightSource", lightSource);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		
@@ -89,12 +90,13 @@ public class GlobalConfigMgmt {
 	 * @param spotType interior or peripheral spot
 	 * @return the find centroid computation configuration default values
 	 */
-	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, Long filterTypeId, int spotType) {
+	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, Long filterTypeId, int spotType, Long ccdTypeId) {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
 		query.setParameter("spotType", spotType);
+		query.setParameter("ccdTypeId", ccdTypeId);
 				
 		query.setMaxResults(1);
 		
@@ -137,10 +139,11 @@ public class GlobalConfigMgmt {
 	 * @param procedureTypeId fine screen, etc
 	 * @return the centroid offsets computation default values
 	 */
-	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId) {
+	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId, Long ccdTypeId) {
 		
 		TypedQuery<CentroidOffsetsConfigDefaults> query = em.createNamedQuery("findByProcedureType", CentroidOffsetsConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		
@@ -202,9 +205,10 @@ public class GlobalConfigMgmt {
 	 * @param procedureTypeId the procedure type, e.g. passive tilt, fine screen, etc.
 	 * @return the automatic reference beam taking criteria
 	 */
-	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId) {
+	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId, Long ccdTypeId) {
 		TypedQuery<AutoRefMapConfigDefaults> query = em.createNamedQuery("findAutoByProcedureType", AutoRefMapConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		

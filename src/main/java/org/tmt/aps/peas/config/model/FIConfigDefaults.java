@@ -25,7 +25,7 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Table(name = "FIConfigDefaults")
 @PrimaryKeyJoinColumn(name="fiConfigId")
 @NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
-		+ "INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t"
+		+ "INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t "
 		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and "
 		+ "t.ccdTypeId = :ccdTypeId and o.lightSource = :lightSource") })
 public class FIConfigDefaults extends FIConfig {

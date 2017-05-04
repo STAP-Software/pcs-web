@@ -48,6 +48,7 @@ import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.MarkedSubimage;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -580,8 +581,9 @@ public class FrameController implements Serializable {
 		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
 
 		// load up defaults for mask type
+		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId(), FilterType.FILTER_TYPE_ID_611,
-				Constants.SPOT_TYPE_INTERIOR);
+				Constants.SPOT_TYPE_INTERIOR, ccdType.getCcdTypeId());
 
 		// then set the search radius for hand marking
 		findCentConfig.setIrad(searchRadius);

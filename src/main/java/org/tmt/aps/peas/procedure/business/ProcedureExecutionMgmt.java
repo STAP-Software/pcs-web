@@ -7,7 +7,6 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -39,9 +38,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
-import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfig;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
@@ -64,6 +61,7 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
@@ -246,9 +244,10 @@ public class ProcedureExecutionMgmt {
 		// get FindCentDefaults and create a procedure related copy
 		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 		FilterType filterType = procedure.getProcedureConfigSet().getProcedureConfig().getFilterType();
+		CcdType ccdType = procedure.getInstrument().getCcd().getCcdType();
 		
-		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR);
-		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR, ccdType.getCcdTypeId());
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL, ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 
@@ -503,6 +502,8 @@ public class ProcedureExecutionMgmt {
 		// store with procedure config set
 		procedure.getProcedureConfigSet().setGlobalConfig(new GlobalConfig(globalConfigDefaults));
 
+		// extract CcdType for use later
+		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		
 		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask, filter and sufsGroup
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
@@ -568,9 +569,10 @@ public class ProcedureExecutionMgmt {
 		// select defaults based on mask and light source
 		reloadFIConfig(procedure, physicalModel.getInstrument().getInstrumentId());
 
-		// set centroid offsets calculation defaults based on procedure type
+		// set centroid offsets calculation defaults based on procedure type and ccdType
+		
 		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt
-				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
+				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId(), ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
 
 		// select defaults based on pupil mask
@@ -594,7 +596,7 @@ public class ProcedureExecutionMgmt {
 
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
-				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
+				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId(), ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
 
 		// get AutoCenterTelDefaults
@@ -722,11 +724,12 @@ public class ProcedureExecutionMgmt {
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
 			PupilMask selectedMask = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+			CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		
 			// reload FI Config Defaults when pupil mask changes
 			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(instrumentId, 
 					selectedMask.getPupilMaskType().getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), ccdType.getCcdTypeId());
 		
 			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
 		}

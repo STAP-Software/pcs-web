@@ -34,6 +34,9 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @NamedQueries({
 	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
 			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 where o.ccdId = :ccdId" ),
+	@NamedQuery(name = "findInstrumentCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
+			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 INNER JOIN FETCH o.instrument i"
+			+ " where i.instrumentId = :instrumentId" ),
 	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
 			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 "
 			+ " LEFT OUTER JOIN o.instrument" )
@@ -66,16 +69,16 @@ public class Ccd {
 	private CcdGain ccdGain1;
 	
 	@ManyToOne
-	@JoinColumn (name="ccdGain2")
-	private CcdType ccdGain2;
+	@JoinColumn (name="ccdGainId2")
+	private CcdGain ccdGain2;
 	
 	@ManyToOne
-	@JoinColumn (name="ccdGain3")
-	private CcdType ccdGain3;
+	@JoinColumn (name="ccdGainId3")
+	private CcdGain ccdGain3;
 	
 	@ManyToOne
-	@JoinColumn (name="ccdGain4")
-	private CcdType ccdGain4;
+	@JoinColumn (name="ccdGainId4")
+	private CcdGain ccdGain4;
 	
 	
 	
@@ -169,29 +172,30 @@ public class Ccd {
 		this.ccdGain1 = ccdGain1;
 	}
 
-	public CcdType getCcdGain2() {
+	public CcdGain getCcdGain2() {
 		return ccdGain2;
 	}
 
-	public void setCcdGain2(CcdType ccdGain2) {
+	public void setCcdGain2(CcdGain ccdGain2) {
 		this.ccdGain2 = ccdGain2;
 	}
 
-	public CcdType getCcdGain3() {
+	public CcdGain getCcdGain3() {
 		return ccdGain3;
 	}
 
-	public void setCcdGain3(CcdType ccdGain3) {
+	public void setCcdGain3(CcdGain ccdGain3) {
 		this.ccdGain3 = ccdGain3;
 	}
 
-	public CcdType getCcdGain4() {
+	public CcdGain getCcdGain4() {
 		return ccdGain4;
 	}
 
-	public void setCcdGain4(CcdType ccdGain4) {
+	public void setCcdGain4(CcdGain ccdGain4) {
 		this.ccdGain4 = ccdGain4;
 	}
+
 
 	public int getRowCount() {
 		return ccdType.getNormalReadoutHeight();

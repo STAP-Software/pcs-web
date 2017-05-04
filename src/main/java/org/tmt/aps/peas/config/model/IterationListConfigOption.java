@@ -14,6 +14,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
@@ -26,8 +27,9 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @PrimaryKeyJoinColumn(name="iterationListConfigId")
 @NamedQueries({
 	@NamedQuery(name = "findIterationListConfigOptions", query = "SELECT o from IterationListConfigOption o INNER JOIN FETCH o.procedureType p "
-			+ "INNER JOIN FETCH o.instrument inst "
-			+ "where p.procedureTypeId = :procedureTypeId AND inst.instrumentId = :instrumentId ORDER BY o.optionOrder" )
+			+ "INNER JOIN FETCH o.instrument inst INNER JOIN FETCH o.ccdType t "
+			+ "where p.procedureTypeId = :procedureTypeId AND inst.instrumentId = :instrumentId "
+			+ "AND t.ccdTypeId = :ccdTypeId ORDER BY o.optionOrder" )
 })
 public class IterationListConfigOption extends IterationListConfig {
 	
@@ -40,6 +42,10 @@ public class IterationListConfigOption extends IterationListConfig {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "instrumentId")
 	private Instrument instrument;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "ccdTypeId")
+	private CcdType ccdType;
 
 	
 	public ProcedureType getProcedureType() {
@@ -56,6 +62,14 @@ public class IterationListConfigOption extends IterationListConfig {
 
 	public void setInstrument(Instrument instrument) {
 		this.instrument = instrument;
+	}
+
+	public CcdType getCcdType() {
+		return ccdType;
+	}
+
+	public void setCcdType(CcdType ccdType) {
+		this.ccdType = ccdType;
 	}
 
 	public int getOptionOrder() {
