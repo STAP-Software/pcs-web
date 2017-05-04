@@ -22,6 +22,7 @@ import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -59,6 +60,8 @@ public class PupilRegistrationSubflow {
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	ReadyCameraSubflow readyCameraSubflow;
 
 
 	/**
@@ -229,6 +232,19 @@ public class PupilRegistrationSubflow {
 			} 
 			
 			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+				
+				// home the appropriate mirror if affected
+				if (internalException instanceof CommandFailureException) {
+					int failureCode = ((CommandFailureException)internalException).getFailureCode();
+					
+					// check if failureCode is anything we can try to correct by homing a motor/stage
+					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(new Integer(failureCode));
+					if (mechanism != null) {
+						readyCameraSubflow.homeMechanism(mechanism);
+					}
+					
+				}
+				
 				// retry recursively
 				correctPupil(calcPrCommandsResult);
 			}

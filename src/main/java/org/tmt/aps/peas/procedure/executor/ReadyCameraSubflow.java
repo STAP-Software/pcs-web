@@ -46,29 +46,7 @@ public class ReadyCameraSubflow {
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 
-	private static final int X_TILT_MOTOR = 1;
-	private static final int Y_TILT_MOTOR = 2;
-	private static final int X_STEERING_MOTOR = 3;
-	private static final int Y_STEERING_MOTOR = 4;
 
-	
-	private static Hashtable<Integer, Integer> errorCodeToMechanism = new Hashtable<Integer, Integer>();
-	
-	static {
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, X_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, Y_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_TILT_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, X_STEERING_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_STEERING_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_STEERING_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, Y_STEERING_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_STEERING_MOTOR);
-		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_STEERING_MOTOR);
-	}
-	
 	
 	/**
 	 * Executor method: this method is the Ready Camera sub-flow
@@ -112,7 +90,7 @@ public class ReadyCameraSubflow {
 					int failureCode = ((CommandFailureException)internalException).getFailureCode();
 					
 					// check if failureCode is anything we can try to correct by homing a motor/stage
-					Integer mechanism = errorCodeToMechanism.get(new Integer(failureCode));
+					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(new Integer(failureCode));
 					if (mechanism != null) {
 						homeMechanism(mechanism);
 					}
@@ -185,29 +163,29 @@ public class ReadyCameraSubflow {
 
 
 	}
-	
-	private void homeMechanism(int mechanism) throws Exception {
+
+	public void homeMechanism(int mechanism) throws Exception {
 		
 		Future<Integer> commandFuture = null;
 		
 		switch (mechanism) {
 		
-		case X_TILT_MOTOR:
+		case CameraMgmt.X_TILT_MOTOR:
 			statusLogger.log("camera.cmd.homing", "tilt plate X");
 			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
 			break;
 			
-		case Y_TILT_MOTOR:
+		case CameraMgmt.Y_TILT_MOTOR:
 			statusLogger.log("camera.cmd.homing", "tilt plate Y");
 			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
 			break;
 			
-		case X_STEERING_MOTOR:
+		case CameraMgmt.X_STEERING_MOTOR:
 			statusLogger.log("camera.cmd.homing", "steering mirror X");
 			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
 			break;
 			
-		case Y_STEERING_MOTOR:
+		case CameraMgmt.Y_STEERING_MOTOR:
 			statusLogger.log("camera.cmd.homing", "steering mirror Y");
 			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
 			break;
@@ -219,6 +197,8 @@ public class ReadyCameraSubflow {
 
 		
 	}
+
+	
 
 
 }
