@@ -7,6 +7,7 @@ import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
+import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 
@@ -23,6 +24,7 @@ public class CoarsePhasingProcedureOutput extends ProcedureOutput implements Edg
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
 	ColorStepResult colorStepResult;
 	ColorStepToActuatorsResult colorStepToActuatorsResult;
+	TerraceModeComponentsResult terraceModeComponentsResult;
 
 	public BbAnalyzeSequenceResult getBbAnalyzeSequenceResult() {
 		return bbAnalyzeSequenceResult;
@@ -73,6 +75,14 @@ public class CoarsePhasingProcedureOutput extends ProcedureOutput implements Edg
 		this.colorStepToActuatorsResult = colorStepToActuatorsResult;
 	}
 	
+	public TerraceModeComponentsResult getTerraceModeComponentsResult() {
+		return terraceModeComponentsResult;
+	}
+
+	public void setTerraceModeComponentsResult(TerraceModeComponentsResult terraceModeComponentsResult) {
+		this.terraceModeComponentsResult = terraceModeComponentsResult;
+	}
+
 	// actuator deltas display values
 
 	public float[][] getDesiredActDeltas() {

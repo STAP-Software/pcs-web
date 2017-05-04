@@ -100,6 +100,7 @@ import org.tmt.aps.peas.lang.interop.JnbAnalyzeStepSequence;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
+import org.tmt.aps.peas.lang.interop.JterraceModeComponents;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
@@ -2759,15 +2760,44 @@ public class ComputationLibraryImpl {
 	}
 
 	/**
+	 * Given the segment raw piston values (not the plane-removed actuators), calculate the x and y terrace mode components in piston space 
+	 * and in plane-removed actuator space.
+	 * NOTE:  Unit TM is defined to be 1 in actuator space; It will be 7.6 in piston space.
 	 * 
-	 * @param primaryActPos
-	 * @param actCalc
-	 * @param mirrorListInt
-	 * @return
+	 * @param primaryActPos coordinates of the M1 actuators
+	 * @param actCalc Segment raw pistons (not plane removed)
+	 * @param mirrorListInt list of mirrors present (1=present, 0=missing)
+	 * @return Terrace Mode components in piston space and actuator space
 	 */
-	public TerraceModeComponentsResult terraceModeComponents(FloatPoint[] primaryActPos, float[] actCalc, int[] mirrorListInt) {
-		// TODO Auto-generated method stub
-		return null;
+	@Computation
+	public TerraceModeComponentsResult terraceModeComponents(FloatPoint[] primaryActPos, float[] actCalc, int[] mirrorListInt) throws ComputationException {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "terraceModeComponents"));
+
+		JterraceModeComponents jterraceModeComponents = new JterraceModeComponents();
+		RetVal retVal = new RetVal();
+		
+		
+		float[] xact = FloatPointListEncoder.extractXArray(Arrays.asList(primaryActPos));
+		float[] yact = FloatPointListEncoder.extractYArray(Arrays.asList(primaryActPos));
+		
+		Object[] result = jterraceModeComponents.jterraceModeComponents(retVal, xact, yact, actCalc, mirrorListInt);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("terraceModeComponents calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+		
+		float xTerracePiston = (Float)result[0];
+		float yTerracePiston = (Float)result[1];
+		float xTerraceActuator = (Float)result[2];
+		float yTerraceActuator = (Float)result[3];
+		
+		TerraceModeComponentsResult terraceModeComponentsResult = new TerraceModeComponentsResult(new FloatPoint(xTerracePiston, yTerracePiston), new FloatPoint(xTerraceActuator, yTerraceActuator));
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "terraceModeComponents"));
+
+		return terraceModeComponentsResult;
 	}
 	
 	
