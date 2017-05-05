@@ -45,8 +45,8 @@ public class PupilMask {
 	private float spotDiamPeripheral;
 	private float crossHairDiam;
 
-	private float radPerPixel;
-	private float secPerPixel;
+	private float arcsecPerMeter;
+
 	private float pcsFocusToAcs;
 
 	@ManyToOne
@@ -130,20 +130,12 @@ public class PupilMask {
 		this.crossHairDiam = crossHairDiam;
 	}
 
-	public float getRadPerPixel() {
-		return radPerPixel;
+	public float getArcsecPerMeter() {
+		return arcsecPerMeter;
 	}
 
-	public void setRadPerPixel(float radPerPixel) {
-		this.radPerPixel = radPerPixel;
-	}
-
-	public float getSecPerPixel() {
-		return secPerPixel;
-	}
-
-	public void setSecPerPixel(float secPerPixel) {
-		this.secPerPixel = secPerPixel;
+	public void setArcsecPerMeter(float arcsecPerMeter) {
+		this.arcsecPerMeter = arcsecPerMeter;
 	}
 
 	public float getPcsFocusToAcs() {

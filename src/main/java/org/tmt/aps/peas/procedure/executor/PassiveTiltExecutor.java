@@ -27,6 +27,7 @@ import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -211,6 +212,15 @@ public class PassiveTiltExecutor {
 
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
+			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
+			
 			// Set up the only iteration as the current output target
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
 			procedureExecutionState.setCurrentOutputTarget(pio);
@@ -262,7 +272,7 @@ public class PassiveTiltExecutor {
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
-			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, startupComputationsResult.getArcsecPerPixel(),
 					centroidOffsetsResult.getCartesianCentroidOffsets(), globalConfig.getMirrorList());
 
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.

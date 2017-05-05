@@ -54,6 +54,7 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
@@ -1595,7 +1596,8 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, PupilMask pupilMask, Filter filter) throws Exception {
+	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, 
+			PupilMask pupilMask, Filter filter, float arcsecPerPixel) throws Exception {
 		
 		/*
 		 * -output array is a 4 dim, array with the following size allocations:
@@ -1615,7 +1617,7 @@ public class ComputationLibraryImpl {
 
 		
 		Object[] result = jmakeTemplate.jmakeTemplate(retVal, phasingSubimageFftSize, phasingSubimageFftSize, findCentConfig.getItermax(), findCentConfig.getImargin(), findCentConfig.getNgauss(), 
-				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, pupilMask.getSecPerPixel(), filter.getWavelength() * Constants.NM_TO_MICRONS, 
+				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, arcsecPerPixel, filter.getWavelength() * Constants.NM_TO_MICRONS, 
 				pupilMask.getCrossHairDiam() * Constants.METERS_TO_UM,
 				pupilMask.getSpotDiamInterior() * Constants.METERS_TO_UM/2.0f, templateArray);
 
@@ -2749,6 +2751,19 @@ public class ComputationLibraryImpl {
 		return JavaComputations.generateIncompleteMirrorAMatrix(aMatrix, mirrorConfig);
 	}
 	
+	
+	/**
+	 * Generates startup values that depend upon the procedure, ccd, pupil mask and other factors
+	 * 
+	 * @param arcsecPerMeter
+	 * @param pixelSize
+	 * @return value containing arcsecPerPixel 
+	 */
+	@Computation
+	public StartupComputationsResult startupComputations(float arcsecPerMeter, float pixelSize) {
+		float arcsecPerPixel = JavaComputations.calcArcSecPerPixel(arcsecPerMeter, pixelSize);
+		return new StartupComputationsResult(arcsecPerPixel);
+	}
 	
 }
 
