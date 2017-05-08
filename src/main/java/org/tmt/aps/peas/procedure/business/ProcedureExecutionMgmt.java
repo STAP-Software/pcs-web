@@ -195,7 +195,7 @@ public class ProcedureExecutionMgmt {
 			}
 
 		}
-
+		
 		procedure.setExecutionStartTime(new Date());
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_EXECUTING);
 

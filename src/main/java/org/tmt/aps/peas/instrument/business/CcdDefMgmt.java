@@ -16,6 +16,7 @@ import javax.persistence.TypedQuery;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.model.Ccd;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 
 /**
  * Session EJB managing database queries/updates for CCD configuration records
@@ -84,9 +85,6 @@ public class CcdDefMgmt {
 		logger.info(MessageGenerator.generateMessage("record.create", "ccd"));
 		em.merge(ccd);
 	}
-
-
-
 	
 	
 }

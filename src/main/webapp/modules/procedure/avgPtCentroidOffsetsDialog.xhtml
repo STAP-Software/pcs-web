@@ -286,14 +286,14 @@ function drawHex(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				<h:outputLabel value="Segment with Max Offset"/>
 				<h:outputText value="#{visualizationController.avgPtCentroidOffsetsDisplayValues.avgPtCentroidStatsResult.maxSpotNum}" style="position:relative; top:2px" />
 				
-			
 				<p:spacer height="15"/><p:spacer height="15"/>
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','secPerPixel')}" />				
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('StartupComputationsResult','arcsecPerPixel')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-				<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" >
+				<h:outputText value="#{procedureController.procedure.procedureOutput.startupComputationsResult.arcsecPerPixel}" style="position:relative; top:2px" >
 					<f:converter converterId="DynamicNumberConverter" />
 					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				</h:outputText>
+				
 				
 				<p:spacer width="1" height="120"/><p:spacer width="1" height="120"/>
 				<h:outputLabel value="Show Segments" />

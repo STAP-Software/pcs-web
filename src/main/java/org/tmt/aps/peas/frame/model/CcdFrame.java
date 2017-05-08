@@ -68,6 +68,13 @@ public class CcdFrame {
 	private float intTime;
 	private Integer sufsGroupNumber;
 	
+	private float ccdGainValue;
+	
+	private String ccdName;
+
+	private int ccdGainOffsetChannel1; 
+	private int ccdGainOffsetChannel2;
+	
 	@Transient
 	protected int noOfAxes;
 	@Transient
@@ -261,6 +268,38 @@ public class CcdFrame {
 			}
 		}
 		return correctedFrame;
+	}
+
+	public float getCcdGainValue() {
+		return ccdGainValue;
+	}
+
+	public void setCcdGainValue(float ccdGainValue) {
+		this.ccdGainValue = ccdGainValue;
+	}
+
+	public String getCcdName() {
+		return ccdName;
+	}
+
+	public void setCcdName(String ccdName) {
+		this.ccdName = ccdName;
+	}
+
+	public int getCcdGainOffsetChannel1() {
+		return ccdGainOffsetChannel1;
+	}
+
+	public void setCcdGainOffsetChannel1(int ccdGainOffsetChannel1) {
+		this.ccdGainOffsetChannel1 = ccdGainOffsetChannel1;
+	}
+
+	public int getCcdGainOffsetChannel2() {
+		return ccdGainOffsetChannel2;
+	}
+
+	public void setCcdGainOffsetChannel2(int ccdGainOffsetChannel2) {
+		this.ccdGainOffsetChannel2 = ccdGainOffsetChannel2;
 	}
 
 	@Transient

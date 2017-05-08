@@ -44,6 +44,7 @@ import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -175,6 +176,8 @@ public class FrameMgmt {
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 		ccdFrame.setInstrumentId(procedureCcdFrame.getProcedure().getInstrument().getInstrumentId());
+		
+		
 		boolean overwritten = saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
@@ -326,6 +329,13 @@ public class FrameMgmt {
 			
 			ccdFrame.setIntTime((float)exposureTime);
 			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
+			
+			Ccd ccd = physicalModel.getInstrument().getCcd();
+			
+			ccdFrame.setCcdName(ccd.getCcdName());
+			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
+			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
 
 		} else {
 		
@@ -378,6 +388,13 @@ public class FrameMgmt {
 			
 			ccdFrame.setIntTime((float)exposureTime);
 			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
+
+			Ccd ccd = physicalModel.getInstrument().getCcd();
+			
+			ccdFrame.setCcdName(ccd.getCcdName());
+			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
+			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
 
 		}
 
@@ -674,6 +691,7 @@ public class FrameMgmt {
 				myFits.getHDU(0).getHeader().addIntValue("SUFS_GRP", procedureConfig.getSufsGroup(), "SUFS Group Number");
 			}
 			myFits.getHDU(0).getHeader().addStringValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
+			
 		}
 		
 		myFits.getHDU(0).getHeader().addStringValue("FILTER", camera.getFilterWheel().getSelectedFilter().getFilterName(), "Filter Name");
@@ -683,7 +701,13 @@ public class FrameMgmt {
 		myFits.getHDU(0).getHeader().addFloatValue("AZ", telescope.getTelPosition().x, "Telescope Az");
 		myFits.getHDU(0).getHeader().addFloatValue("EL", telescope.getTelPosition().y, "Telescope El");
 		
-
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		
+		myFits.getHDU(0).getHeader().addStringValue("CCD", ccd.getCcdName(), "CCD Name");
+		myFits.getHDU(0).getHeader().addFloatValue("CCD Gain", 0.0f, "CCD Name");
+		myFits.getHDU(0).getHeader().addIntValue("CCD", 0, "CCD Name");
+		myFits.getHDU(0).getHeader().addIntValue("CCD", 0, "CCD Name");
+		
 		
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);

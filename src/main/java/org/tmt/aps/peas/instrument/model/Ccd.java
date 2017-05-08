@@ -86,6 +86,8 @@ public class Ccd {
 	private int state;
 	@Transient
 	private float temperature;
+	@Transient
+	private int currentGainNumber = 1;
 
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
@@ -97,9 +99,10 @@ public class Ccd {
 	}
 	
 	
-	public Ccd(int state, float temperature) {
+	public Ccd(int state, float temperature, int currentGainNumber) {
 		this.state = state;
 		this.temperature = temperature;
+		this.currentGainNumber = currentGainNumber;
 	}
 	
 	public Ccd() {
@@ -320,5 +323,19 @@ public class Ccd {
 		
 		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
 	}
-
+	
+	public CcdGain getCcdGain() {
+		if (currentGainNumber == 1) {
+			return ccdGain1;
+		} else if (currentGainNumber == 2) {
+			return ccdGain2;
+		} else if (currentGainNumber == 3) {
+			return ccdGain3;
+		} else if (currentGainNumber == 4) {
+			return ccdGain4;
+		} else {
+			return null;
+		}
+	}
+	
 }
