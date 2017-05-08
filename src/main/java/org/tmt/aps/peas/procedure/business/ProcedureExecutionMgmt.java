@@ -706,6 +706,8 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
 		}
 		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
+		// set the ccdGain number to the value in refMapConfigDefaults
+		procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
 
 		// make the list of possible int times equal to the 'one' we have
 		List<Float> integrationTimeList = new ArrayList<Float>();
