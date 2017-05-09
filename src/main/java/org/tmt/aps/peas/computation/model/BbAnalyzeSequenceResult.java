@@ -12,10 +12,11 @@ public class BbAnalyzeSequenceResult {
 	float[] resid;
 	int[] rowFlagIn;
 	int[] rowFlagOut;
-
+	float[] bestFitCoherences;
+	
 	int  constrainedSegmentCount;
 	float segmentPistonRms; 
-	
+	float meanBestFitCoherence;
 	
 
 	
@@ -23,7 +24,8 @@ public class BbAnalyzeSequenceResult {
 		
 	}
 	
-	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut, int constrainedSegmentCount, float segmentPistonRms) {
+	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut, int constrainedSegmentCount, float segmentPistonRms, 
+			float[] bestFitCoherences, float meanBestFitCoherence) {
 		this.stepCorr = stepCorr;
 		this.actCalc = actCalc;
 		this.resid = resid;
@@ -31,6 +33,8 @@ public class BbAnalyzeSequenceResult {
 		this.rowFlagOut = rowFlagOut;
 		this.constrainedSegmentCount = constrainedSegmentCount;
 		this.segmentPistonRms = segmentPistonRms;
+		this.bestFitCoherences = bestFitCoherences;
+		this.meanBestFitCoherence = meanBestFitCoherence;
 	}
 
 	public float[] getStepCorr() {
@@ -89,7 +93,21 @@ public class BbAnalyzeSequenceResult {
 		this.segmentPistonRms = segmentPistonRms;
 	}
 
+	public float[] getBestFitCoherences() {
+		return bestFitCoherences;
+	}
 
+	public void setBestFitCoherences(float[] bestFitCoherences) {
+		this.bestFitCoherences = bestFitCoherences;
+	}
+
+	public float getMeanBestFitCoherence() {
+		return meanBestFitCoherence;
+	}
+
+	public void setMeanBestFitCoherence(float meanBestFitCoherence) {
+		this.meanBestFitCoherence = meanBestFitCoherence;
+	}
 
 
 	

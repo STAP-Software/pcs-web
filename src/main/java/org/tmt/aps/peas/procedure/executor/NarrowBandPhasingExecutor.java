@@ -30,6 +30,7 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -358,7 +359,6 @@ public class NarrowBandPhasingExecutor {
 						constantsCache.getTelescopeConstants().getNumberOfSegments(), 
 						constantsCache.getPhasingConstants().getNbSingleFilterCoherenceThreshold());
 
-				
 			    /**********************************************/
 				/*          CalculatePhasingStats             */
 				/**********************************************/		
@@ -449,7 +449,6 @@ public class NarrowBandPhasingExecutor {
 		    		constantsCache.getPrimaryMirrorConstants().getSaveMinusPiston(),
 		    		constantsCache.getTelescopeConstants().getNumberOfSegments(),
 		    		globalConfig.getMirrorListInt());
-
 			
 		    if (nbActuatorsResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
 		    	
@@ -467,6 +466,15 @@ public class NarrowBandPhasingExecutor {
 		    		nbActuatorsResult.getActCalc(),
 		    		globalConfig.getMirrorListInt());
 
+		    /**********************************************/
+			/*          TerraceModeComponents             */
+			/**********************************************/		
+		    TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
+		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(),
+		    		nbActuatorsResult.getActCalc(),
+		    		globalConfig.getMirrorListInt());
+
+		    
 		    /**********************************************/
 			/*          CalculatePhasingStats             */
 			/**********************************************/		
