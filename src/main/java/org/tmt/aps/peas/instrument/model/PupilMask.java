@@ -46,6 +46,7 @@ public class PupilMask {
 	private float crossHairDiam;
 
 	private float arcsecPerMeter;
+	private float m1ToCcdScale;
 
 	private float pcsFocusToAcs;
 
@@ -146,7 +147,14 @@ public class PupilMask {
 		this.pcsFocusToAcs = pcsFocusToAcs;
 	}
 
-	
+	public float getM1ToCcdScale() {
+		return m1ToCcdScale;
+	}
+
+	public void setM1ToCcdScale(float m1ToCcdScale) {
+		this.m1ToCcdScale = m1ToCcdScale;
+	}
+
 	
 	public boolean isNewRecord() {
 		return pupilMaskId == null;

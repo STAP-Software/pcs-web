@@ -81,7 +81,7 @@ public class SubimageDefCache {
 		// No UFS/SUFS for now, will upgrade later
 		for (int i=1; i<4; i++) {
 			
-			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, new Long(i), mirrors);
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, instrumentId, new Long(i), mirrors);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
 			subimageDefMap.put(new Long(i), subimageDefList);
@@ -94,7 +94,7 @@ public class SubimageDefCache {
 		
 		for (int i=0; i<7; i++) {
 			
-			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, mirrors, i);
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, instrumentId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, mirrors, i);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
 			sufsSubimageDefMap.put(new Integer(i), subimageDefList);
