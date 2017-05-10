@@ -238,6 +238,7 @@ public class ProcedureExecutionMgmt {
 
 		frameDisplayMgmt.init();
 
+
 	}
 	
 	public void setupFindCentDefaults(Procedure procedure) {
