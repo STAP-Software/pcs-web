@@ -169,6 +169,11 @@ public class IterationEntityCache {
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
+		
+		// TODO: ADD ALL GAIN RECORDS (for this instrument)
+		
+		
+		
 		// TODO: implement SimpleIteratorValue
 		// Simple Iterator Values
 		//List<SimpleIteratorValue> simpleIteratorValueList = ???;

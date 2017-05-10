@@ -201,10 +201,6 @@ public class CentroidMapMgmt {
 		logger.debug("Number of spots: " + ccdSubaperatureLocations.length);
 		logger.debug("Max pixel difference is: " + max);
 		
-		// FIXME - temp fix to use old spots for SUFS
-		if (sufsGroupNumber != null) {
-			ccdSubaperatureLocations = originalList;
-		}
 		
 		// to create a list of SubimageDefs
 
