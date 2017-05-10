@@ -198,6 +198,7 @@ public class CentroidMapMgmt {
 			max = Math.max(Math.abs(delta), max);
 		}
 		
+		logger.debug("Number of spots: " + ccdSubaperatureLocations.length);
 		logger.debug("Max pixel difference is: " + max);
 		
 		// FIXME - temp fix to use old spots for SUFS
