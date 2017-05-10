@@ -624,7 +624,7 @@ public class ProcedureExecutionMgmt {
 			
 			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 			
-			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 			
 			// load up the search range for NB phasing
 			NbFilterSeqConfigDefaults nbFilterSeqConfigDefaults = globalConfigMgmt.findNbFilterSeqConfig(iterationListConfig.getIterationListConfigId());

@@ -103,7 +103,7 @@ public class SessionMgmt {
 				if (procedure.getProcedureConfigSet().getIterationListConfig() != null) {
 					iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), procedure.getProcedureType().getProcedureTypeId());
 					int lightSource = procedure.getProcedureConfigSet().getProcedureConfig().getLightSource();
-					procedure.getProcedureConfigSet().getIterationListConfig().updateIntegrationTimeList(lightSource);
+					procedure.getProcedureConfigSet().getIterationListConfig().updateDisplayLists(lightSource);
 				}
 				
 			} catch (Exception e) {

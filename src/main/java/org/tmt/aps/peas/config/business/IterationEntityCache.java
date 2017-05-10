@@ -170,7 +170,15 @@ public class IterationEntityCache {
 		classToEntityMap.put(className, indexToEntityMap);
 		
 		
-		// TODO: ADD ALL GAIN RECORDS (for this instrument)
+		
+		// Ccd Gains
+		indexToEntityMap = new HashMap<Long, IterableEntity>();
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain1()), ccd.getCcdGain1());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain2()), ccd.getCcdGain2());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain3()), ccd.getCcdGain3());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain4()), ccd.getCcdGain4());
+		className = ccd.getCcdGain1().getClassName();
+		classToEntityMap.put(className, indexToEntityMap);
 		
 		
 		

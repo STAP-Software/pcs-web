@@ -14,6 +14,8 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.config.model.IterableEntity;
+
 /**
  * Instrument configuration Entity class representing the CcdType database table.  
  * @author smichaels
@@ -24,7 +26,7 @@ import javax.persistence.Table;
 @NamedQueries({
 	@NamedQuery(name = "findCcdGain", query = "SELECT o from CcdGain o where o.ccdGainId = :ccdGainId" )
 })
-public class CcdGain {
+public class CcdGain implements IterableEntity {
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -80,4 +82,30 @@ public class CcdGain {
 		this.gainOffsetChannel2 = gainOffsetChannel2;
 	}
 
+
+	@Override
+	public String getClassName() {
+		return this.getClass().getName();
+	}
+
+
+	@Override
+	public String getKeyFieldName() {
+		return "ccdGainId";
+	}
+
+
+	@Override
+	public String getLabelFieldName() {
+
+		return "gainNumber";
+	}
+
+
+	@Override
+	public String getLabel() {
+		return "Gain";
+	}
+
+	
 }

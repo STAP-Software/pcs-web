@@ -45,6 +45,7 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -270,10 +271,16 @@ public class NarrowBandPhasingExecutor {
 				if (procedureConfig.isLightSourceLed()) {
 					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
 					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
 				} else {
 					
 					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
 					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
 				}
 
 				

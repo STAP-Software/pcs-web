@@ -30,7 +30,7 @@
 						disabled="#{(procedureController.procedure.procedureState gt 1) or procedureController.procedure.procedureType.createRefMap}" >
 					<f:selectItem itemLabel="Star" itemValue="1"/> 
 					<f:selectItem itemLabel="Reference Beam" itemValue="2"/>
-					<p:ajax update="advancedForm :procedureDetailForm:controlPanel:intTimes" listener="#{procedureController.lightSourceSelectListener}" />
+					<p:ajax update="advancedForm :procedureDetailForm:controlPanel:intTimes :procedureDetailForm:controlPanel:ccdGainNumbers" listener="#{procedureController.lightSourceSelectListener}" />
 					</p:selectOneMenu>
 					
 					<h:outputLabel value="Reference Beam" rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}" />

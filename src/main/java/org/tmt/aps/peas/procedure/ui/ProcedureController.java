@@ -1285,7 +1285,7 @@ public class ProcedureController implements Serializable {
 		// FIXME: generalize this
 		if (procedure.getProcedureType().isNarrowBandPhasing()) {
 			IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
-			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		}
 	}
 		
@@ -1373,7 +1373,7 @@ public class ProcedureController implements Serializable {
 		
 		// change the associated integration times when the option changes (in procedure controller)
 		IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
-		iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		
 		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
 		
