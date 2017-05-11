@@ -348,4 +348,22 @@ public class Ccd {
 		return ccdGainList;
 	}
 	
+	public boolean isNewRecord() {
+		return ccdId == null;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (obj instanceof Ccd) {
+			Ccd candidate = (Ccd)obj;
+			return candidate.getCcdId().longValue() == getCcdId().longValue();
+		}
+		
+		
+		return false;
+	}
+
+	
 }

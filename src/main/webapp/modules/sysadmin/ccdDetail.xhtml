@@ -16,21 +16,56 @@
 
 					<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-						<h:outputLabel value="CCD Name" for="ccdName" />
+						<h:outputLabel value="Name" for="ccdName" />
 						<p:inputText id="ccdName" value="#{ccdDefController.ccd.ccdName}" required="true"/>
 
+						<h:outputLabel value="CCD Type" for="ccdType" />
+						<h:outputText id="ccdType" value="#{ccdDefController.ccd.ccdType.ccdTypeName}" required="true"/>
 
-						<h:outputLabel value="CCD Description" />
+						<h:outputLabel value="Description" />
 						<p:inputTextarea value="#{ccdDefController.ccd.ccdDescription}" rows="2" cols="70" />
 						
-						<h:outputLabel value="CCD Rows" for="rowCount" />
-						<p:inputText id="rowCount" value="#{ccdDefController.ccd.rowCount}" size="3" required="true" />
+						<h:outputLabel value="Rows" for="rowCount" />
+						<h:outputText id="rowCount" value="#{ccdDefController.ccd.rowCount}" size="3" required="true" />
 
-						<h:outputLabel value="CCD Columns" for="colCount" />
-						<p:inputText id="colCount" value="#{ccdDefController.ccd.colCount}" size="3" required="true"/>
+						<h:outputLabel value="Columns" for="colCount" />
+						<h:outputText id="colCount" value="#{ccdDefController.ccd.colCount}" size="3" required="true"/>
 
-						<h:outputLabel value="CCD Column Offset" for="colOffset"/>
-						<p:inputText id="colOffset" value="#{ccdDefController.ccd.colOffset}" size="3" required="true" />
+						<h:outputLabel value="Non Linear Threshold" for="nonLinearThresh" />
+						<h:outputText id="nonLinearThresh" value="#{ccdDefController.ccd.nonLinearThreshold}" size="3" required="true"/>
+
+						
+						<p:spacer height="10" /> <p:spacer height="10" />
+						<h:outputLabel value="Gain Setting 1 Value (electrons/DN)" for="gain1" />
+						<h:outputText id="gain1" value="#{ccdDefController.ccd.ccdGain1.gainValue}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 1 Channel1 Offset" for="gain1Offset1" />
+						<h:outputText id="gain1Offset1" value="#{ccdDefController.ccd.ccdGain1.gainOffsetChannel1}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 1 Channel2 Offset" for="gain1Offset2" />
+						<h:outputText id="gain1Offset2" value="#{ccdDefController.ccd.ccdGain1.gainOffsetChannel2}" size="3" required="true"/>
+
+						<p:spacer height="10" /> <p:spacer height="10" />
+						<h:outputLabel value="Gain Setting 2 Value (electrons/DN)" for="gain2" />
+						<h:outputText id="gain2" value="#{ccdDefController.ccd.ccdGain2.gainValue}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 2 Channel1 Offset" for="gain2Offset1" />
+						<h:outputText id="gain2Offset1" value="#{ccdDefController.ccd.ccdGain2.gainOffsetChannel1}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 2 Channel2 Offset" for="gain2Offset2" />
+						<h:outputText id="gain2Offset2" value="#{ccdDefController.ccd.ccdGain2.gainOffsetChannel2}" size="3" required="true"/>
+
+						<p:spacer height="10" /> <p:spacer height="10" />
+						<h:outputLabel value="Gain Setting 3 Value (electrons/DN)" for="gain3" />
+						<h:outputText id="gain3" value="#{ccdDefController.ccd.ccdGain3.gainValue}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 3 Channel1 Offset" for="gain3Offset1" />
+						<h:outputText id="gain3Offset1" value="#{ccdDefController.ccd.ccdGain3.gainOffsetChannel1}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 3 Channel2 Offset" for="gain3Offset2" />
+						<h:outputText id="gain3Offset2" value="#{ccdDefController.ccd.ccdGain3.gainOffsetChannel2}" size="3" required="true"/>
+
+						<p:spacer height="10" /> <p:spacer height="10" />
+						<h:outputLabel value="Gain Setting 4 Value (electrons/DN)" for="gain4" />
+						<h:outputText id="gain4" value="#{ccdDefController.ccd.ccdGain4.gainValue}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 4 Channel1 Offset" for="gain4Offset1" />
+						<h:outputText id="gain4Offset1" value="#{ccdDefController.ccd.ccdGain4.gainOffsetChannel1}" size="3" required="true"/>
+						<h:outputLabel value="Gain Setting 4 Channel2 Offset" for="gain4Offset2" />
+						<h:outputText id="gain4Offset2" value="#{ccdDefController.ccd.ccdGain4.gainOffsetChannel2}" size="3" required="true"/>
 
 						<f:facet name="footer">
 							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
