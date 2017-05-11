@@ -128,6 +128,61 @@
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
 					
+					
+					<h:outputLabel value="CCD Gain Values (Star)" />
+
+					<p:selectOneMenu value="#{iterationConfigController.starGain1}"
+						disabled="#{not iterationConfigController.elementEnable1}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.starGain2}"
+						disabled="#{not iterationConfigController.elementEnable2}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.starGain3}"
+						disabled="#{not iterationConfigController.elementEnable3}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.starGain4}"
+						disabled="#{not iterationConfigController.elementEnable4}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+					
+					<h:outputLabel value="CCD Gain Values (LED)" />
+
+					<p:selectOneMenu value="#{iterationConfigController.ledGain1}"
+						disabled="#{not iterationConfigController.elementEnable1}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.ledGain2}"
+						disabled="#{not iterationConfigController.elementEnable2}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.ledGain3}"
+						disabled="#{not iterationConfigController.elementEnable3}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+
+					<p:selectOneMenu value="#{iterationConfigController.ledGain4}"
+						disabled="#{not iterationConfigController.elementEnable4}" converter="#{ccdGainConverter}">
+					<f:selectItems value="#{iterationConfigController.ccdGainList}" var="ccdGain" itemLabel="#{ccdGain.gainNumber}" itemValue="#{ccdGain}" />
+					<p:ajax update="@form" />
+					</p:selectOneMenu>
+					
+					
+					
 					</p:panelGrid>
 
 				</p:fieldset>

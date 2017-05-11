@@ -337,5 +337,15 @@ public class Ccd {
 			return null;
 		}
 	}
+
+
+	public List<CcdGain> getCcdGainList() {
+		List<CcdGain> ccdGainList = new ArrayList<CcdGain>();
+		ccdGainList.add(ccdGain1);
+		ccdGainList.add(ccdGain2);
+		ccdGainList.add(ccdGain3);
+		ccdGainList.add(ccdGain4);
+		return ccdGainList;
+	}
 	
 }

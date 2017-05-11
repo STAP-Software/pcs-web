@@ -82,6 +82,15 @@ public class CcdGain implements IterableEntity {
 		this.gainOffsetChannel2 = gainOffsetChannel2;
 	}
 
+	public boolean equals(Object obj) {
+		if (obj instanceof CcdGain) {
+			CcdGain candidate = (CcdGain)obj;
+			if (candidate.getCcdGainId().longValue() == this.getCcdGainId().longValue()) {
+				return true;
+			}
+		}
+		return false;
+	}
 
 	@Override
 	public String getClassName() {

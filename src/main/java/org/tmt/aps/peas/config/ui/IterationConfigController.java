@@ -29,6 +29,7 @@ import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.ProcedureIterationDef;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
@@ -84,9 +85,20 @@ public class IterationConfigController implements Serializable {
 	IntegrationTime ledIntTime3;
 	IntegrationTime ledIntTime4;
 	
+	CcdGain starGain1;
+	CcdGain starGain2;
+	CcdGain starGain3;
+	CcdGain starGain4;
+	
+	CcdGain ledGain1;
+	CcdGain ledGain2;
+	CcdGain ledGain3;
+	CcdGain ledGain4;
+
+	
 	List<Filter> filterList;
 	List<ReferenceBeam> refBeamList;
-
+	List<CcdGain> ccdGainList;
 
 	Instrument instrument;
 
@@ -103,6 +115,8 @@ public class IterationConfigController implements Serializable {
 
 		// set up the ref beam list
 		refBeamList = cameraDefMgmt.findAllRefBeams(instrument.getInstrumentId());
+		
+		ccdGainList = sessionController.getInstrument().getCcd().getCcdGainList();
 	}
 
 	public boolean isElementEnable1() {
@@ -265,6 +279,70 @@ public class IterationConfigController implements Serializable {
 		this.ledIntTime4 = ledIntTime4;
 	}
 
+	public CcdGain getStarGain1() {
+		return starGain1;
+	}
+
+	public void setStarGain1(CcdGain starGain1) {
+		this.starGain1 = starGain1;
+	}
+
+	public CcdGain getStarGain2() {
+		return starGain2;
+	}
+
+	public void setStarGain2(CcdGain starGain2) {
+		this.starGain2 = starGain2;
+	}
+
+	public CcdGain getStarGain3() {
+		return starGain3;
+	}
+
+	public void setStarGain3(CcdGain starGain3) {
+		this.starGain3 = starGain3;
+	}
+
+	public CcdGain getStarGain4() {
+		return starGain4;
+	}
+
+	public void setStarGain4(CcdGain starGain4) {
+		this.starGain4 = starGain4;
+	}
+
+	public CcdGain getLedGain1() {
+		return ledGain1;
+	}
+
+	public void setLedGain1(CcdGain ledGain1) {
+		this.ledGain1 = ledGain1;
+	}
+
+	public CcdGain getLedGain2() {
+		return ledGain2;
+	}
+
+	public void setLedGain2(CcdGain ledGain2) {
+		this.ledGain2 = ledGain2;
+	}
+
+	public CcdGain getLedGain3() {
+		return ledGain3;
+	}
+
+	public void setLedGain3(CcdGain ledGain3) {
+		this.ledGain3 = ledGain3;
+	}
+
+	public CcdGain getLedGain4() {
+		return ledGain4;
+	}
+
+	public void setLedGain4(CcdGain ledGain4) {
+		this.ledGain4 = ledGain4;
+	}
+
 	public List<Filter> getFilterList() {
 		return filterList;
 	}
@@ -279,6 +357,14 @@ public class IterationConfigController implements Serializable {
 
 	public void setRefBeamList(List<ReferenceBeam> refBeamList) {
 		this.refBeamList = refBeamList;
+	}
+
+	public List<CcdGain> getCcdGainList() {
+		return ccdGainList;
+	}
+
+	public void setCcdGainList(List<CcdGain> ccdGainList) {
+		this.ccdGainList = ccdGainList;
 	}
 
 	/**
@@ -323,20 +409,21 @@ public class IterationConfigController implements Serializable {
 			Long procedureTypeId = procedureController.getProcedure().getProcedureType().getProcedureTypeId();
 			// an iteration value is a single pair of filter/refbeam
 			if (elementEnable1) {			
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter1, refBeam1, starIntTime1, ledIntTime1));
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter1, refBeam1, starIntTime1, ledIntTime1, starGain1, ledGain1));
 			}
 			if (elementEnable2) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter2, refBeam2, starIntTime2, ledIntTime2));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter2, refBeam2, starIntTime2, ledIntTime2, starGain2, ledGain2));				
 			}
 			if (elementEnable3) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter3, refBeam3, starIntTime3, ledIntTime3));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter3, refBeam3, starIntTime3, ledIntTime3, starGain3, ledGain3));				
 			}
 			if (elementEnable4) {
-				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter4, refBeam4, starIntTime4, ledIntTime4));				
+				iterationValues.add(iterationEntityCache.createIterationValue(procedureTypeId, filter4, refBeam4, starIntTime4, ledIntTime4, starGain4, ledGain4));				
 			}
 			
 		
 			IterationValueList iterationValueList = new IterationValueList(iterationValues);
+			
 			
 			option.setIterationValueList(iterationValueList);
 			
@@ -344,6 +431,8 @@ public class IterationConfigController implements Serializable {
 			String iterationValueListEncoded = iterationEntityCache.encodeList(iterationValueList);
 			
 			option.setIterationValueListEncoded(iterationValueListEncoded);
+			
+			option.updateDisplayLists(procedureController.getProcedure().getProcedureConfigSet().getProcedureConfig().getLightSource());
 
 			// add to the iterationEntityCache option list for the current procedure type
 			iterationEntityCache.addOption(procedureType.getProcedureTypeId(), option);			
@@ -383,11 +472,22 @@ public class IterationConfigController implements Serializable {
 		starIntTime2 = null;
 		starIntTime3 = null;
 		starIntTime4 = null;
-		
+		ledGain1 = null;
+
 		ledIntTime1 = null;
 		ledIntTime2 = null;
 		ledIntTime3 = null;
 		ledIntTime4 = null;
+		
+		starGain1 = null;
+		starGain2 = null;
+		starGain3 = null;
+		starGain4 = null;
+		
+		ledGain1 = null;
+		ledGain2 = null;
+		ledGain3 = null;
+		ledGain4 = null;
 
 	}
 	
