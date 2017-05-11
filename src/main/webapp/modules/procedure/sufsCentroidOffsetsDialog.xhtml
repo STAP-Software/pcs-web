@@ -252,16 +252,16 @@ function drawSufsCentroidOffsets() {
 			<h:outputLabel value="Subimage with Max Offset"/>
 			<h:outputText value="#{visualizationController.sufsCentroidOffsetsDisplayValues.sufsCentroidStatsResult.maxSpotNum[visualizationController.sufsGroupSegmentNumber]}" style="position:relative; top:2px" />
 			
-		
+								
 			<p:spacer height="15"/><p:spacer height="15"/>
-			
-			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','secPerPixel')}" />				
-			<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-			<h:outputText value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask.secPerPixel}" style="position:relative; top:2px" >
-				<f:converter converterId="DynamicNumberConverter" />
-				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('StartupComputationsResult','arcsecPerPixel')}" />				
+				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+				<h:outputText value="#{procedureController.procedure.procedureOutput.startupComputationsResult.arcsecPerPixel}" style="position:relative; top:2px" >
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 			</h:outputText>
-						
+				
+			
    			
    			<p:spacer height="10"/><p:spacer height="10"/>
 				 

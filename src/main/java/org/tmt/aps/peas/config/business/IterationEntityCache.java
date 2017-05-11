@@ -32,6 +32,7 @@ import org.tmt.aps.peas.config.model.ProcedureIterationDef;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -85,6 +86,10 @@ public class IterationEntityCache {
 		
 		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 		Long instrumentId = new Long(instrumentIdStr);
+		
+		// find the ccd for this instrument
+		Ccd ccd = cameraDefMgmt.findInstrumentCcd(instrumentId);
+		 
 
 		// load up the procedureTypeToIterationDefList map
 		iterationDefs = iterationMgmt.findProcedureIterationDefs();
@@ -164,6 +169,19 @@ public class IterationEntityCache {
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
+		
+		
+		// Ccd Gains
+		indexToEntityMap = new HashMap<Long, IterableEntity>();
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain1()), ccd.getCcdGain1());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain2()), ccd.getCcdGain2());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain3()), ccd.getCcdGain3());
+		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain4()), ccd.getCcdGain4());
+		className = ccd.getCcdGain1().getClassName();
+		classToEntityMap.put(className, indexToEntityMap);
+		
+		
+		
 		// TODO: implement SimpleIteratorValue
 		// Simple Iterator Values
 		//List<SimpleIteratorValue> simpleIteratorValueList = ???;
@@ -175,7 +193,7 @@ public class IterationEntityCache {
 		
 			
 			// query iteration list config option lists
-			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId, instrumentId);
+			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId, instrumentId, ccd.getCcdType().getCcdTypeId());
 			
 			List<IterationListConfig> options = new ArrayList<IterationListConfig>();
 			for (IterationListConfigOption iterationListConfigOption : iterationListConfigList) {

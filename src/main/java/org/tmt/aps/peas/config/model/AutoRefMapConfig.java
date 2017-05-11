@@ -34,6 +34,7 @@ public class AutoRefMapConfig {
 	private float coarseTiltChangeThresh;
 	private float fineTiltChangeThresh;
 	private float ccdTempChangeThresh;
+
 	
 	public AutoRefMapConfig() {
 		
@@ -93,8 +94,6 @@ public class AutoRefMapConfig {
 	public void setFineTiltChangeThresh(float fineTiltChangeThresh) {
 		this.fineTiltChangeThresh = fineTiltChangeThresh;
 	}
-
-
 	
 	
 }

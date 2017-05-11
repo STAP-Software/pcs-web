@@ -902,5 +902,16 @@ public class JavaComputations {
 				
 		return modifiedControlMatrix;
 	}
+
+	/**
+	 * Calculates arcsecPerPixel for a pupil mask given the arcsecPerMeter pupil mask factor and the ccd pixel size
+	 * @param arcsecPerMeter
+	 * @param pixelSize for the CCD in meters
+	 * @return arcsec per pixel
+	 */
+	public static float calcArcSecPerPixel(float arcsecPerMeter, float pixelSize) {
+		
+		return arcsecPerMeter * pixelSize;
+	}
 	
 }

@@ -29,13 +29,10 @@
 				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
 				<p:inputText value="#{pupilMaskController.pupilMask.maskRotation}" />
 
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','RadPerPixel')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.radPerPixel}" />
 
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SecPerPixel')}" />				
+				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','ArcsecPerMeter')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.secPerPixel}" />
+				<p:inputText value="#{pupilMaskController.pupilMask.arcsecPerMeter}" />
 
 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SpotDiamInterior')}" />				
 				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />

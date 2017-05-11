@@ -120,6 +120,19 @@
 									<h:message for="intTimes" style="color:red" showSummary="true" showDetail="true" />
 								</p:column>
 							</p:row>
+							
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}" >
+								<p:column styleClass="btmsFormLabelColumn">
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','CcdGain')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />
+								</p:column>
+								<p:column styleClass="btmsFormInputColumn">
+									<p:inputText id="ccdGainNumbers" size="15" 
+									value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.ccdGainList}" 
+									disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
+									<h:message for="ccdGainNumbers" style="color:red" showSummary="true" showDetail="true" />
+								</p:column>
+							</p:row>
 
 							<p:row rendered="#{procedureController.renderNumTrials}">
 								<p:column styleClass="btmsFormLabelColumn">
@@ -143,7 +156,7 @@
 									<p:selectOneMenu id="loopOptions1" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.fullDisplayString}" itemValue="#{option}" />
-										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
+										<p:ajax update="startButton intTimes ccdGainNumbers" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
@@ -159,7 +172,7 @@
 									<p:selectOneMenu id="loopOptions2" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.displayString}" itemValue="#{option}" />
-										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
+										<p:ajax update="startButton intTimes ccdGainNumbers" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />

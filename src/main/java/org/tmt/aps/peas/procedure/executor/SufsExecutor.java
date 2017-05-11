@@ -26,6 +26,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentOffsetsResult.SufsSegmentSpot;
@@ -210,6 +211,15 @@ public class SufsExecutor {
 
 			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 
+			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
+			
 			/**********************************************/
 			/*    Move Telescope to compensate for SUFS   */
 			/*        group coarse mirror steering        */
@@ -336,7 +346,7 @@ public class SufsExecutor {
 
 				computationLibrary.calculateSufsZernikes(constantsCache.getPrimaryMirrorSegmentConstants().getSufsSpotCoordinates(),
 						sufsCentroidOffsets.getCartesianCentroidOffsets(), constantsCache.getPrimaryMirrorConstants().getaHex(),
-						procedureConfig.getPupilMask().getSecPerPixel(), sufsCentroidOffsets.getValidOffsets(),
+						startupComputationsResult.getArcsecPerPixel(), sufsCentroidOffsets.getValidOffsets(),
 						sufsGroupSegmentToMask,
 						procedure.getProcedureConfigSet().getGlobalConfig().getSufsZernikeOrderArray(),
 						constantsCache.getSufsConstants().getSufsGroupToMirror()[procedureConfig.getSufsGroup() - 1]);

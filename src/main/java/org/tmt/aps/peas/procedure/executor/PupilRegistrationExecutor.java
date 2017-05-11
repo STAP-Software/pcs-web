@@ -23,6 +23,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -178,6 +179,13 @@ public class PupilRegistrationExecutor {
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
 			procedureExecutionState.setPercentComplete(20);
+
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			computationLibrary.startupComputations(
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			
 			// Set up the only iteration as the current output target

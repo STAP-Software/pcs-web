@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -135,6 +136,13 @@ public class CenterTelescopeExecutor {
 			// setup procedure output logging
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);			
 			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+			
 			statusLogger.log("frame.get");
 
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), 
@@ -183,7 +191,7 @@ public class CenterTelescopeExecutor {
 						
 			// get Az, El deltas
 			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
-			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, mask.getSecPerPixel());
+			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, startupComputationsResult.getArcsecPerPixel());
 			
 			procedureExecutionState.setPercentComplete(90);
 			

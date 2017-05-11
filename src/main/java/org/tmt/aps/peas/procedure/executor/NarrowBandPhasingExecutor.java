@@ -29,6 +29,7 @@ import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -44,6 +45,7 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -157,6 +159,12 @@ public class NarrowBandPhasingExecutor {
 
 			int trialsTime = 70;
 			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
@@ -263,10 +271,16 @@ public class NarrowBandPhasingExecutor {
 				if (procedureConfig.isLightSourceLed()) {
 					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
 					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
 				} else {
 					
 					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
 					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
 				}
 
 				
@@ -314,7 +328,8 @@ public class NarrowBandPhasingExecutor {
 						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(),
-						procedureConfig.getPupilMask(), currentFilter);
+						procedureConfig.getPupilMask(), currentFilter, 
+						startupComputationsResult.getArcsecPerPixel());
 				
 
 				/**********************************************/

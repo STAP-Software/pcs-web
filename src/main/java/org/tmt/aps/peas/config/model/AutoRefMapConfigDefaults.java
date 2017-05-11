@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 /**
@@ -23,8 +24,9 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "AutoRefMapConfigDefaults")
 @PrimaryKeyJoinColumn(name="autoRefMapConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findAutoByProcedureType", query = "SELECT o from AutoRefMapConfigDefaults o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId" )
+	@NamedQuery(name = "findAutoByProcedureType", query = "SELECT o from AutoRefMapConfigDefaults o "
+			+ "INNER JOIN FETCH o.procedureType p INNER JOIN FETCH o.ccdType t "
+			+ "where p.procedureTypeId = :procedureTypeId and t.ccdTypeId = :ccdTypeId" )
 })
 public class AutoRefMapConfigDefaults extends AutoRefMapConfig {
 
@@ -32,6 +34,10 @@ public class AutoRefMapConfigDefaults extends AutoRefMapConfig {
 	@ManyToOne
 	@JoinColumn(name = "procedureTypeId")
 	private ProcedureType procedureType;
+
+	@ManyToOne
+	@JoinColumn(name = "ccdTypeId")
+	private CcdType ccdType;
 
 	public ProcedureType getProcedureType() {
 		return procedureType;

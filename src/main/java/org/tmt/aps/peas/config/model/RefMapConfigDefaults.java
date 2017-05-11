@@ -43,6 +43,7 @@ public class RefMapConfigDefaults {
 
 	float integrationTime; 
 	int referenceBeamNum;
+	int ccdGainNumber;
 	
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
@@ -106,6 +107,14 @@ public class RefMapConfigDefaults {
 
 	public void setReferenceBeam(ReferenceBeam referenceBeam) {
 		this.referenceBeam = referenceBeam;
+	}
+
+	public int getCcdGainNumber() {
+		return ccdGainNumber;
+	}
+
+	public void setCcdGainNumber(int ccdGainNumber) {
+		this.ccdGainNumber = ccdGainNumber;
 	}
 	
 	

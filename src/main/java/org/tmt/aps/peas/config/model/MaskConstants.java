@@ -84,15 +84,14 @@ public class MaskConstants {
 		}
 		buf.append("\n");
 		
-		/*
-		for (int i=0; i<6; i++) {
-		buf.append("\nsufsTheoreticalLocations, group " + i + " = ");
-		for (FloatPoint location : sufsTheoreticalLocations[i]) {
+
+		buf.append("\nsufsTheoreticalLocations = ");
+		buf.append("\nsize = " + sufsTheoreticalLocations.length + "\n");
+		for (FloatPoint location : sufsTheoreticalLocations) {
 			buf.append(location + ", ");
 		}
 		buf.append("\n");
-		}
-		*/
+
 		
 		
 		return buf.toString();

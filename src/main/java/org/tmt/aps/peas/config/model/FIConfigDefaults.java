@@ -6,8 +6,6 @@
 package org.tmt.aps.peas.config.model;
 
 import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
@@ -15,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
@@ -25,8 +24,10 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Entity
 @Table(name = "FIConfigDefaults")
 @PrimaryKeyJoinColumn(name="fiConfigId")
-@NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfigDefaults o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.instrument i "
-		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and o.lightSource = :lightSource") })
+@NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
+		+ "INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t "
+		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and "
+		+ "t.ccdTypeId = :ccdTypeId and o.lightSource = :lightSource") })
 public class FIConfigDefaults extends FIConfig {
 
 	
@@ -39,6 +40,10 @@ public class FIConfigDefaults extends FIConfig {
 	@ManyToOne
 	@JoinColumn(name = "instrumentId")
 	private Instrument instrument;
+
+	@ManyToOne
+	@JoinColumn(name = "ccdTypeId")
+	private CcdType ccdType;
 
 	public int getLightSource() {
 		return lightSource;

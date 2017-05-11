@@ -11,6 +11,7 @@ import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
+import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -193,7 +194,11 @@ public class CcdDefController implements Serializable {
 
 		try {
 
-			ccdDefMgmt.createCcd(ccd);
+			if (ccd.isNewRecord()) {
+				ccdDefMgmt.createCcd(ccd);
+			} else {
+				ccdDefMgmt.updateCcd(ccd);
+			}
 
 			ccdList = ccdDefMgmt.findAllCcds();
 
@@ -282,6 +287,11 @@ public class CcdDefController implements Serializable {
 		try {
 			ccdList = ccdDefMgmt.findAllCcds();
 	
+			
+			selectedCcd = physicalModel.getInstrument().getCcd();
+			
+			logger.debug("selected ccd is: " + selectedCcd);
+			
 			breadcrumbMenuBean.addFirstItem("Select a CCD", "/modules/sysadmin/ccdSelectList.xhtml");
 	
 			return "/modules/sysadmin/ccdSelectList.xhtml?faces-redirect=true";
@@ -301,13 +311,26 @@ public class CcdDefController implements Serializable {
 	public void doSaveCcdSelection() {
 
 		try {
+			
 			ccdDefMgmt.assignCcdToInstrument(selectedCcd);
+			
+			physicalModel.refresh();
 
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+			
+			if (selectedCcd == null) {
+				
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "You must select an existing CCD", 
+						"The system will not run without a CCD associated with this instrument"));
+				logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+
+			} else {
+			
+				FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
+				logger.error(MessageGenerator.generateMessage("crud.failure"), e);
+			}
 		}
 
 

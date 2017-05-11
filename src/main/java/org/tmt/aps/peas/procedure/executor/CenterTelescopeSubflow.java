@@ -97,8 +97,9 @@ public class CenterTelescopeSubflow {
 					findCentroidsResult.getFindCentStatusList());
 
 			// go from centroidOffsetsResult.imageTranslation to deltaAz,El
+			// secPerPixel value can be extracted from the procedureOutput object
 			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroidOffsetsResult.getImageTranslation(), 
-					new FloatPoint(0,0), procedureConfig.getPupilMask().getSecPerPixel());
+					new FloatPoint(0,0), procedure.getProcedureOutput().getStartupComputationsResult().getArcsecPerPixel());
 
 			// test deltaAzEl against thresholds for telescope move
 			AutoCenterTelConfig autoCenterTelConfig = procedure.getProcedureConfigSet().getAutoCenterTelConfig();
