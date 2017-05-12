@@ -15,6 +15,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 
 import org.tmt.aps.peas.config.model.IterableEntity;
+import org.tmt.aps.peas.extinf.Gain;
 
 /**
  * Instrument configuration Entity class representing the CcdType database table.  
@@ -40,7 +41,6 @@ public class CcdGain implements IterableEntity {
 	public CcdGain() {
 	
 	}
-
 	
 	public Long getCcdGainId() {
 		return ccdGainId;
@@ -115,6 +115,7 @@ public class CcdGain implements IterableEntity {
 	public String getLabel() {
 		return "Gain";
 	}
+
 
 	
 }

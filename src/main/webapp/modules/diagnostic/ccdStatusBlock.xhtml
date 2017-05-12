@@ -1,0 +1,44 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
+
+
+	<p:panelGrid id="ccdStatusPanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+		<h:outputLabel value="Image Size (x,y)" />		
+		<h:panelGroup style="position:relative; top:3px">
+		<h:outputText value="#{ccdManualController.ccdState.imageWidth}"  />
+		<h:outputText value=", " />
+		<h:outputText value="#{ccdManualController.ccdState.imageHeight}"  />
+		</h:panelGroup>
+
+		<h:outputLabel value="Overscanned Image Size" />
+		<h:panelGroup style="position:relative; top:3px">
+		<h:outputText value="#{ccdManualController.ccdState.overscannedImageWidth}"  />
+		<h:outputText value=", " />
+		<h:outputText value="#{ccdManualController.ccdState.overscannedImageHeight}"  />
+		</h:panelGroup>
+
+		<h:outputLabel value="Gain Number" />
+		<h:outputText value="#{ccdManualController.ccdState.gainNumber}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Gain Value" />
+		<h:outputText value="#{ccdManualController.ccdState.gainValue}" style="position:relative; top:2px" />
+
+		<h:outputLabel value="Channel 0 Offset" />
+		<h:outputText value="#{ccdManualController.ccdState.channelOffset1}" style="position:relative; top:2px" />
+		
+		<h:outputLabel value="Channel 1 Offset" />
+		<h:outputText value="#{ccdManualController.ccdState.channelOffset2}" style="position:relative; top:2px" />
+
+
+
+
+		<f:facet name="footer">
+			<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefresh}" update="ccdStatusPanel :growl :errorGrowl" />
+		</f:facet>
+
+	</p:panelGrid>
+
+
+
+</ui:composition>

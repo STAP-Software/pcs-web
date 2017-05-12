@@ -245,13 +245,14 @@ public class FrameMgmt {
 		// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
 		boolean ccdSimulator = !extInfConfigState.getExtInfConnectConfig().isCameraEnabled();
 		
-		// get the frame from CCD or from file, depending on the called type
-		ccdMgmt.fastWipeCcd();
-					
+		// get the frame from CCD or from file, depending on the called type			
 			
+		
+		int[][] frame = null;
+		
 		try {
 			
-			cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
+			ccdMgmt.getImage(exposureTime);
 		
 		} catch (TimeoutException e) {
 			
@@ -269,9 +270,8 @@ public class FrameMgmt {
 			} 
 		}
 		
-		Thread.sleep(1000);
 		
-		int[][] frame = ccdMgmt.getImage();
+		
 		
 		CcdFrame ccdFrame = null;
 		

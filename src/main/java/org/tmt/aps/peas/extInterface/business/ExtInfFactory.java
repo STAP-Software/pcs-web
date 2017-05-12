@@ -5,6 +5,9 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.AccessTimeout;
 import javax.ejb.DependsOn;
@@ -26,11 +29,11 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.DcsRsk;
-import org.tmt.aps.peas.extinf.InstrumentInterface;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 
 /**
  * EJB Singleton managing external interface command delegation, either to the RPC client or a simulator.
- * If an interface is a simultor or not is determined by {@link ExtInfConfigState} 
+ * If an interface is a simulator or not is determined by {@link ExtInfConfigState} 
  * @author smichaels
  *
  */
@@ -44,6 +47,8 @@ public class ExtInfFactory {
 	PeasProperties peasProperties;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	PhysicalModel physicalModel;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -54,6 +59,7 @@ public class ExtInfFactory {
 	CCD ccd = null;
 	ACS acs = null;
 	
+	CcdCommandSimulator ccdCommandSimulator = null;
 	
 	int telescopeId;
 	
@@ -116,7 +122,8 @@ public class ExtInfFactory {
 			if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
 				return getCcdCommandRemote(telescopeId);
 			} else {
-				return new CcdCommandSimulator();
+				return getCcdCommandSimulator();
+				
 			}
 			
 		} catch (Exception e) {
@@ -138,27 +145,6 @@ public class ExtInfFactory {
 				return dcsCommandSimulator;
 			}
 
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			throw e;
-		}
-	}
-	
-	/**
-	 * @return a reference to the PCS Instrument RPC client, or a simulator depending on current interface connection configuration
-	 */
-	public InstrumentInterface getInstrumentCommand() throws Exception {
-
-		try {
-			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
-			boolean instrumentEnabled = new Boolean(instrumentEnabledStr);
-
-			if (instrumentEnabled) {
-				return getInstrumentCommandRemote();
-			} else {
-				return new InstrumentCommandSimulator();
-			}
-			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			throw e;
@@ -233,15 +219,37 @@ public class ExtInfFactory {
 		}
 	}
 
-	private InstrumentInterface getInstrumentCommandRemote() throws Exception {
+	private CcdCommand getCcdCommandSimulator() throws Exception {
 		try {
-			
-			throw new UnsupportedOperationException("Not Implemented");
+			if (ccdCommandSimulator == null) {
+				
+				int imageHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageHeight"));
+				int imageWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageWidth"));
+				int overscanHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanHeight"));
+				int overscanWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanWidth"));
+				int gainNumber = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainNumber"));
+				int[] offsetCalibration = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.offsetCalibration"));
+				int[] gainOffset = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainOffset"));
+				
+				ccdCommandSimulator = new CcdCommandSimulator(physicalModel.getInstrument().getCcd(), imageHeight, imageWidth, 
+						overscanWidth, overscanHeight, gainNumber, offsetCalibration, gainOffset);
+			}
+			return ccdCommandSimulator;
+
 		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Ccd Command Exception:: ", e);
 			throw e;
 		}
 	}
-
+	
+	private int[] decodePropIntList(String input) {
+		List<String> items = Arrays.asList(input.split("\\s*,\\s*"));
+		int[] output = new int[items.size()];
+		int i=0;
+		for (String item : items) {
+			output[i++] = new Integer(item);
+		}
+		return output;
+	}
 	
 }

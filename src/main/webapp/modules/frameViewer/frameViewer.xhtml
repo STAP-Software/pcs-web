@@ -23,25 +23,14 @@
 					<p:tab id="fitsBrowser" title="FITS File Browsing">
 						<ui:include src="fitsBrowserBlock.xhtml"/>
 					</p:tab>
-					
-					<p:tab title="FITS File Manual Upload">
-						<ui:include src="fitsManualBlock.xhtml"/>
+										
+					<p:tab title="CCD Status" rendered="#{sessionController.ifCommandPermission}">
+						<ui:include src="../diagnostic/ccdStatusBlock.xhtml"/>
 					</p:tab>
-					
 					<p:tab title="CCD Manual Control" rendered="#{sessionController.ifCommandPermission}">
-						<h:form id="ccdManualControlForm">
-							<ui:include src="../diagnostic/ccdManualBlock.xhtml"/>
-						</h:form>
+						<ui:include src="../diagnostic/ccdManualBlock.xhtml"/>
 					</p:tab>
-					
-					<p:tab id="advTab" title="Advanced Instrument Status"  rendered="#{sessionController.ifCommandPermission}">
-						<ui:include src="../diagnostic/instrumentStatusBlock.xhtml"/>
-					</p:tab>
-					
-					<p:tab title="Advanced Instrument Control"  rendered="#{sessionController.ifCommandPermission}">
-						<ui:include src="../diagnostic/instrumentControlBlock.xhtml"/>
-					</p:tab>
-					
+										
 				</p:accordionPanel>
 
 				<h:panelGroup>

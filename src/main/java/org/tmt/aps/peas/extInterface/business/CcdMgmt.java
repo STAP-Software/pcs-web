@@ -5,81 +5,92 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
-
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.extinf.TimeoutException;
+import org.tmt.aps.peas.extInterface.model.GainImpl;
+import org.tmt.aps.peas.extinf.Gain;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 
 /**
- * EJB Session bean for the PCS CCD command interface. 
- * This EJB is the single entry point to the PCS CCD interface called from executors and diagnostic user interfaces. 
- * All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client interface or a simulator.
+ * EJB Session bean for the PCS CCD command interface. This EJB is the single entry point to the PCS CCD interface called from executors and
+ * diagnostic user interfaces. All calls are delegated to the {@link ExtInfFactory} which will delegate to either the actual RPC client
+ * interface or a simulator.
+ * 
  * @author smichaels
  */
 @Stateless
 public class CcdMgmt {
 
 	Logger logger = Logger.getLogger(this.getClass());
-	
+
 	@EJB
 	ExtInfFactory extInfFactory;
+	@EJB
+	PhysicalModel physicalModel;
 
 	// All Camera Commands should be defined here
 
+	public int[][] getImage(double t) throws Exception {
 
-
-	public void fastWipeCcd() throws Exception {
-		extInfFactory.getCcdCommand().fastWipe();
+		short[][] result =  extInfFactory.getCcdCommand().getImage(t);
+		int[][] intResult = new int[result.length][result[0].length];
+		for (int i=0; i<result.length; i++) {
+			for (int j=0; j<result[0].length; j++) {
+				intResult[i][j] = result[i][j];
+			}
+		}
+		return intResult;
 	}
 
-	public void wipeOn() throws Exception {
-		extInfFactory.getCcdCommand().wipeOn();
+	public int[][] getOverscannedImage(double t) throws Exception {
+		
+		short[][] result =   extInfFactory.getCcdCommand().getOverscannedImage(t);
+		int[][] intResult = new int[result.length][result[0].length];
+		for (int i=0; i<result.length; i++) {
+			for (int j=0; j<result[0].length; j++) {
+				intResult[i][j] = result[i][j];
+			}
+		}
+		return intResult;
 	}
 
-	
-	public int[][] getImage() throws Exception {
-		return extInfFactory.getCcdCommand().getImage();	
+	public int[] getImageSize() throws Exception {
+		return extInfFactory.getCcdCommand().getImageSize();
 	}
 
-	public void setGain(int channel, double gain) throws Exception {
-		extInfFactory.getInstrumentCommand().setGain(channel, gain);
-		
+	public int[] getOverscannedImageSize() throws Exception {
+		return extInfFactory.getCcdCommand().getOverscannedImageSize();
 	}
 
-	public void setOffset(int channel, double offset) throws Exception {
-		
-		extInfFactory.getInstrumentCommand().setOffset(channel, offset);
+	public Gain getGain() throws Exception {
+		return extInfFactory.getCcdCommand().getGain();
 	}
 
-	public int getImageWidth() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getImageWidth();
+	public void setGain(int gainNumber) throws Exception {
+		Gain gain = new GainImpl(gainNumber);
+		extInfFactory.getCcdCommand().setGain(gain);
 	}
 
-	public int getImageHeight() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getImageHeight();
+	public int[] triggerOffsetCalibration() throws Exception {
+		return extInfFactory.getCcdCommand().triggerOffsetCalibration();
 	}
 
-	public double getPlateScale() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getPlateScale();
+	public int getOffset(int channel) throws Exception {
+		return extInfFactory.getCcdCommand().getOffset(channel);
 	}
 
-	public void setBinning(int x, int y) throws Exception {
-		
-		extInfFactory.getInstrumentCommand().setBinning(x, y);
+	public int[] getOffset() throws Exception {
+		return extInfFactory.getCcdCommand().getOffset();
 	}
 
-	public int[][] getImage(double exposureTime, boolean useShutter) throws Exception,
-			TimeoutException {
-		
-		
-		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
-		
-		
+	public void setOffset(int channel, int offset) throws Exception {
+		extInfFactory.getCcdCommand().setOffset(channel, offset);
+	}
+
+	public void setOffset(int[] offset) throws Exception {
+		extInfFactory.getCcdCommand().setOffset(offset);
 	}
 
 }

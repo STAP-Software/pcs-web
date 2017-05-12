@@ -23,7 +23,9 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
+import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.frame.ui.FrameController;
+import org.tmt.aps.peas.instrument.model.CcdState;
 
 /**
  * JSF Controller class for PCS CCD manual/diagnostic user interface.
@@ -49,29 +51,19 @@ public class CcdManualController implements Serializable {
 	FrameController frameController;
 	
 	int commandSelection;
-	int integrationTime;
-	
-	int advCommandSelection;
-	int channel;
-	double gain;
-	double offset;
-	int binning[];
-	double exposureTime;
-	boolean useShutter;
-	
-	double plateScale;
-	int imageSize[];
 
+	int gainNumber;
+	int channelOffset;
+	int channelOffset1;
+	int channelOffset2;
+	double exposureTime;
+	int channel;
+
+	CcdState ccdState;
 	
 	@PostConstruct
 	public void init() {
-		imageSize = new int[2];
-		imageSize[0] = 1024;
-		imageSize[1] = 1024;
-		binning = new int[2];
-		binning[0] = 1;
-		binning[1] = 1;
-		advCommandSelection = 1;
+		ccdState = new CcdState();
 	}
 	
 	public int getCommandSelection() {
@@ -82,44 +74,36 @@ public class CcdManualController implements Serializable {
 		this.commandSelection = commandSelection;
 	}
 
-	public int getAdvCommandSelection() {
-		return advCommandSelection;
+	public int getGainNumber() {
+		return gainNumber;
 	}
 
-	public void setAdvCommandSelection(int advCommandSelection) {
-		this.advCommandSelection = advCommandSelection;
+	public void setGainNumber(int gainNumber) {
+		this.gainNumber = gainNumber;
 	}
 
-	public int getChannel() {
-		return channel;
+	public int getChannelOffset() {
+		return channelOffset;
 	}
 
-	public void setChannel(int channel) {
-		this.channel = channel;
+	public void setChannelOffset(int channelOffset) {
+		this.channelOffset = channelOffset;
 	}
 
-	public double getGain() {
-		return gain;
+	public int getChannelOffset1() {
+		return channelOffset1;
 	}
 
-	public void setGain(double gain) {
-		this.gain = gain;
+	public void setChannelOffset1(int channelOffset1) {
+		this.channelOffset1 = channelOffset1;
 	}
 
-	public double getOffset() {
-		return offset;
+	public int getChannelOffset2() {
+		return channelOffset2;
 	}
 
-	public void setOffset(double offset) {
-		this.offset = offset;
-	}
-
-	public int[] getBinning() {
-		return binning;
-	}
-
-	public void setBinning(int[] binning) {
-		this.binning = binning;
+	public void setChannelOffset2(int channelOffset2) {
+		this.channelOffset2 = channelOffset2;
 	}
 
 	public double getExposureTime() {
@@ -130,28 +114,21 @@ public class CcdManualController implements Serializable {
 		this.exposureTime = exposureTime;
 	}
 
-	public boolean isUseShutter() {
-		return useShutter;
+	public int getChannel() {
+		return channel;
 	}
 
-	public void setUseShutter(boolean useShutter) {
-		this.useShutter = useShutter;
+	public void setChannel(int channel) {
+		this.channel = channel;
 	}
 
-	public double getPlateScale() {
-		return plateScale;
+	
+	public CcdState getCcdState() {
+		return ccdState;
 	}
 
-	public void setPlateScale(double plateScale) {
-		this.plateScale = plateScale;
-	}
-
-	public int[] getImageSize() {
-		return imageSize;
-	}
-
-	public void setImageSize(int[] imageSize) {
-		this.imageSize = imageSize;
+	public void setCcdState(CcdState ccdState) {
+		this.ccdState = ccdState;
 	}
 
 	/**
@@ -174,21 +151,12 @@ public class CcdManualController implements Serializable {
 		try {
 
 			String commandType = null;
+			RequestContext requestContext = RequestContext.getCurrentInstance();
 			
 			switch (commandSelection) {
 
-			case 1: // FastWipe
-				ccdMgmt.fastWipeCcd();
-				commandType = "Fast Wipe CCD";
-				break;
-
-			case 2: // Continuous Wipe on
-				ccdMgmt.wipeOn();
-				commandType = "Continuous Wipe On";
-				break;
-
-			case 3: // Read CCD Raw
-				int[][] frame = ccdMgmt.getImage();
+			case 1: // Take exposure
+				int[][] frame = ccdMgmt.getImage(exposureTime);
 				short[][] rawFrame = new short[frame.length][frame[0].length];
 				for (int i=0; i< frame.length; i++) {
 					StringBuffer buf = new StringBuffer();
@@ -204,88 +172,55 @@ public class CcdManualController implements Serializable {
 				}
 				frameController.setupFrameToolFrameDisplay(rawFrame);
 				
-				RequestContext requestContext = RequestContext.getCurrentInstance();
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
-				commandType = "Read CCD Raw";
+				commandType = "Take Exposure";
 				break;
 
-
-			default:
-
-			}
-
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
-			
-		} catch (CommandFailureException e) {
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		}
-
-	}
-	
-	/**
-	 * JSF Action method called when the user clicks on the 'Send Command' button from the advanced 'Instrument' panel 
-	 */
-	public void doSendAdvCommand() {
-		try {
-			
-			//cameraPoller.setDoPoll(false);
-			//Thread.sleep(5000);
-			//cameraMgmt.resetCamera();
-
-			String commandType = null;
-			
-			switch (advCommandSelection) {
-
-			case 1: // Set Gain
-				ccdMgmt.setGain(channel, gain);
-				commandType = "Set Gain";
-				break;
-
-			case 2: // Set Offset
-				ccdMgmt.setOffset(channel, offset);
-				commandType = "Set Offset";
-				break;
-
-			case 3: // Set Binning
-				ccdMgmt.setBinning(binning[0], binning[1]);
-				commandType = "Set Binning";
-				break;
-
-			case 4: // Get Image
-				int[][] frame = ccdMgmt.getImage(exposureTime * 1000.0, useShutter);
-				short[][] rawFrame = new short[frame.length][frame[0].length];
-				for (int i=0; i< frame.length; i++) {
-					for (int j=0; j<frame[i].length; j++) {
-						rawFrame[j][i] = (short)frame[i][j];
+			case 2: // Take Overscanned Exposure
+				int[][] overscanFrame = ccdMgmt.getOverscannedImage(exposureTime);
+				short[][] overscanRawFrame = new short[overscanFrame.length][overscanFrame[0].length];
+				for (int i=0; i< overscanFrame.length; i++) {
+					StringBuffer buf = new StringBuffer();
+					for (int j=0; j<overscanFrame[i].length; j++) {
+						overscanRawFrame[i][j] = (short)overscanFrame[j][i];
+						if (overscanRawFrame[i][j] > 400) {
+							buf.append("[" + overscanRawFrame[i][j] + "]");
+						}
+					}
+					if (buf.length() > 0) {
+					//logger.debug(buf);
 					}
 				}
-				frameController.setupFrameToolFrameDisplay(rawFrame);
-				RequestContext requestContext = RequestContext.getCurrentInstance();
+				frameController.setupFrameToolFrameDisplay(overscanRawFrame);
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				
-				commandType = "Get Image";
+				
+				commandType = "Take Overscanned Exposure";
 				break;
+
+			case 3: // Set Gain
+				
+				ccdMgmt.setGain(gainNumber);
+				
+				commandType = "Set Gain = " + gainNumber;
+				break;
+
 
 			default:
 
 			}
 
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
-			
+		
+			/*
 		} catch (CommandFailureException e) {
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			
+			*/
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -293,17 +228,19 @@ public class CcdManualController implements Serializable {
 
 	}
 	
+
 	/**
-	 * JSF Action method called when the user clicks on the 'Refresh' button in the advanced 'Instrument' panel
+	 * JSF Action method called when the user clicks on the 'Refresh' button
 	 */
 	public void doRefresh() {
 		try {
 
-			imageSize[0] = ccdMgmt.getImageWidth();
-			imageSize[1] = ccdMgmt.getImageHeight();
-			//plateScale = ccdMgmt.getPlateScale();
-			imageSize[0] = 1024;
-			imageSize[1] = 1024;
+			Gain gain = ccdMgmt.getGain();
+			int[] offsets = ccdMgmt.getOffset();
+			int[] imageSize = ccdMgmt.getImageSize();
+			int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
+			
+			ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize);
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Refresh"));
 			
