@@ -69,6 +69,7 @@ public class CcdMgmt {
 	}
 
 	public void setGain(int gainNumber) throws Exception {
+		
 		Gain gain = new GainImpl(gainNumber);
 		extInfFactory.getCcdCommand().setGain(gain);
 	}

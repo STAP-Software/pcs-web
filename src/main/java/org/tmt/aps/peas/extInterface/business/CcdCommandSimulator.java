@@ -96,17 +96,20 @@ public class CcdCommandSimulator implements CcdCommand {
 
 	public Gain getGain() throws CommandFailureException {
 		
-		if (gain == null) {
-			CcdGain ccdGain = ccd.getCcdGainList().get(gainNumber-1);
 		
-			gain = new GainImpl(ccdGain.getGainNumber());
-			gain.setElectronsPerAdu(ccdGain.getGainValue());
-		}
+		CcdGain ccdGain = ccd.getCcdGainList().get(gainNumber);
+		
+		gain = new GainImpl(ccdGain.getGainNumber());
+		gain.setElectronsPerAdu(ccdGain.getGainValue());
+		
 		
 		return gain;
 	}
 
 	public void setGain(Gain newGain) throws IllegalArgumentException, CommandFailureException {
+		
+		gainNumber = newGain.getProgramNumber();
+		
 		gain = new GainImpl(newGain.getProgramNumber());
 		gain.setElectronsPerAdu(newGain.getElectronsPerAdu());
 		

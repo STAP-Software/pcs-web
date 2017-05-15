@@ -14,7 +14,7 @@
 				<f:selectItem itemLabel="Set One Channel Offset" itemValue="5" />
 				<f:selectItem itemLabel="Set Both Channel Offsets" itemValue="6" />
 				
-				<p:ajax update="ccdCommandPanel" />
+				<p:ajax listener="#{ccdManualController.updateCommandListener}" update="ccdCommandPanel" />
 			</p:selectOneMenu>
 		</h:panelGroup>
 		<h:outputLabel value="" />
@@ -41,18 +41,21 @@
 			<h:outputText value="&#160;&#160;&#160;&#160; Offset 1 &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 6}" />
 			<p:inputText value="#{ccdManualController.channelOffset2}" size="5" rendered="#{ccdManualController.commandSelection eq 6}" />			
 
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 0: &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />
+			<h:outputText value="#{ccdManualController.offsetCalibration[0]}" size="5" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />			
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 1: &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />
+			<h:outputText value="#{ccdManualController.offsetCalibration[1]}" size="5" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />			
+
 
 		</h:panelGroup>
 
 		<p:spacer height="1px" />
 		<p:spacer height="1px" />
 
- 		<!-- // create a text area where returned values can be displayed -->
-
 
 		<f:facet name="footer">
 			<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-				update=":growl :errorGrowl ccdStatusPanel" />
+				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel" />
 		</f:facet>
 
 	</p:panelGrid>

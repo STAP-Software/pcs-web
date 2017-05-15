@@ -58,6 +58,8 @@ public class CcdManualController implements Serializable {
 	int channelOffset2;
 	double exposureTime;
 	int channel;
+	boolean cmdExecuted;
+	int[] offsetCalibration;
 
 	CcdState ccdState;
 	
@@ -121,8 +123,23 @@ public class CcdManualController implements Serializable {
 	public void setChannel(int channel) {
 		this.channel = channel;
 	}
-
 	
+	public boolean isCmdExecuted() {
+		return cmdExecuted;
+	}
+
+	public void setCmdExecuted(boolean cmdExecuted) {
+		this.cmdExecuted = cmdExecuted;
+	}
+
+	public int[] getOffsetCalibration() {
+		return offsetCalibration;
+	}
+
+	public void setOffsetCalibration(int[] offsetCalibration) {
+		this.offsetCalibration = offsetCalibration;
+	}
+
 	public CcdState getCcdState() {
 		return ccdState;
 	}
@@ -208,19 +225,46 @@ public class CcdManualController implements Serializable {
 				commandType = "Set Gain = " + gainNumber;
 				break;
 
+			case 4: // Trigger Offset Calibration
+				
+				offsetCalibration = ccdMgmt.triggerOffsetCalibration();
+				
+				commandType = "Trigger OffsetCalibration";
+				break;
+
+			case 5: // Set one channel offset
+				
+				ccdMgmt.setOffset(channel, channelOffset);
+				
+				commandType = "Set One Channel Offset";
+				break;
+
+			case 6: // Set both channel offsets
+				
+				int[] channelOffsets = {channelOffset1, channelOffset2};
+				
+				ccdMgmt.setOffset(channelOffsets);
+				
+				commandType = "Set Both Channel Offsets";
+				break;
+
 
 			default:
 
 			}
 
+			cmdExecuted = true;
+			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
 		
-			/*
+			refresh();
+			
+			
 		} catch (CommandFailureException e) {
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			*/
+			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -229,18 +273,17 @@ public class CcdManualController implements Serializable {
 	}
 	
 
+	public void updateCommandListener() {
+		cmdExecuted = false;
+	}
+	
 	/**
 	 * JSF Action method called when the user clicks on the 'Refresh' button
 	 */
 	public void doRefresh() {
 		try {
 
-			Gain gain = ccdMgmt.getGain();
-			int[] offsets = ccdMgmt.getOffset();
-			int[] imageSize = ccdMgmt.getImageSize();
-			int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
-			
-			ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize);
+			refresh();
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Refresh"));
 			
@@ -253,6 +296,17 @@ public class CcdManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
+
+	}
+	
+	private void refresh() throws CommandFailureException, Exception {
+		
+		Gain gain = ccdMgmt.getGain();
+		int[] offsets = ccdMgmt.getOffset();
+		int[] imageSize = ccdMgmt.getImageSize();
+		int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
+		
+		ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize);
 
 	}
 

@@ -13,7 +13,7 @@ public class GainImpl extends Gain {
 	@Override
 	public double getElectronsPerAdu() {
 		// TODO Auto-generated method stub
-		return 0;
+		return electronsPerAdu;
 	}
 	
 	public void setElectronsPerAdu(double electronsPerAdu) {
