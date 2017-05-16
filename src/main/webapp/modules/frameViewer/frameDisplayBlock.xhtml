@@ -28,6 +28,43 @@
 		
 		<!--   -->
 		
+		<!-- additions for new ccd type -->
+		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
+			<p:row>
+				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
+					<h:outputLabel value="CCD:" />
+				</p:column>
+				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:2px">
+					<h:outputText value="#{frameController.ccdFrame.ccdName}" />
+				</p:column>
+				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
+					<h:outputLabel value="Gain:" />
+				</p:column>
+				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:2px">
+					<h:outputText value="#{frameController.ccdFrame.ccdGainValue}" />
+				</p:column>
+			</p:row>
+			<p:row>
+				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
+					<h:outputLabel value="Image Size:" />
+				</p:column>
+				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:4px">
+					<h:outputText value="#{frameController.ccdFrame.axes1}" />
+					<h:outputText value=", " />
+					<h:outputText value="#{frameController.ccdFrame.axes2}" />
+				</p:column>
+				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
+					<h:outputLabel value="Channel Offsets:" />
+				</p:column>
+				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:4px">
+					<h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel1}" />
+					<h:outputText value=", " />
+					<h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel2}" />
+				</p:column>
+			</p:row>
+		</p:panelGrid>		
+		
+		
 		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="1024px" width="1024px" style="position: absolute;left:-10000px" />
 
 		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
@@ -35,13 +72,12 @@
 		<p:spacer height="1px"/>
 		<div id="pngImageDiv" />
 		<canvas id="infoCanvas" width="512px" height="15px" ></canvas>
-		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
-
+		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
 			<p:row>
-				<p:column styleClass="peasFormLabelColumn" style="width:35%">
+				<p:column styleClass="btmsFormLabelColumn" style="width:35%">
 					<h:outputLabel value="Search Radius (pixels):" />
 				</p:column>
-				<p:column styleClass="peasFormInputColumn" style="width:15%">
+				<p:column styleClass="btmsFormInputColumn" style="width:15%">
 					<p:selectOneMenu value="#{frameController.searchRadius}">
 						<f:selectItem itemLabel="6" itemValue="6" />
 						<f:selectItem itemLabel="7" itemValue="7" />
@@ -52,14 +88,17 @@
 						<p:ajax update=":frameHiddenForm" oncomplete="markFrame();" />
 					</p:selectOneMenu>
 				</p:column>
-				<p:column styleClass="peasFormLabelColumn" style="width:15%">
+				<p:column styleClass="btmsFormLabelColumn" style="width:15%">
 					<h:outputLabel value="SNR:" />
 				</p:column>
-				<p:column styleClass="peasFormOutputColumn" style="width:35%">
+				<p:column styleClass="btmsFormOutputColumn" style="width:35%; position:relative; top:2px">
 					<h:outputText value="10.8" />
 				</p:column>
 			</p:row>
 		</p:panelGrid>
+		
+
+		
 		<f:facet name="footer">
 			<a id="saveAsPngId" href="#" download="frame.png" />
 		

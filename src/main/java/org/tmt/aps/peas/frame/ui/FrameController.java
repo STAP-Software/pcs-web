@@ -183,6 +183,14 @@ public class FrameController implements Serializable {
 		this.frameEditMode = frameEditMode;
 	}
 
+	public CcdFrame getCcdFrame() {
+		return ccdFrame;
+	}
+
+	public void setCcdFrame(CcdFrame ccdFrame) {
+		this.ccdFrame = ccdFrame;
+	}
+
 	public String getSelectedFitsFilename() {
 		if (selectedNode == null) {
 			return null;
