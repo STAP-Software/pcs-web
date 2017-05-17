@@ -334,8 +334,8 @@ public class FrameMgmt {
 			
 			ccdFrame.setCcdName(ccd.getCcdName());
 			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+			ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
 			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
-			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
 
 		} else {
 		
@@ -363,40 +363,53 @@ public class FrameMgmt {
 				}
 			}
 
-			ccdFrame = new CcdFrame();
-			ccdFrame.setAxes1(1024);
-			ccdFrame.setAxes2(1024);
-			ccdFrame.setRawFrame(rawFrame);
-			ccdFrame.setCreateDate(new Date());
-			ccdFrame.setNoOfAxes(2);
+			ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup());
+		}
+
+		return ccdFrame;
+	}
+	
+	// FIXME - simulated frames should use this too
+	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup) {
+		
+		CcdFrame ccdFrame = new CcdFrame();
+		ccdFrame.setAxes1(rawFrame.length);
+		ccdFrame.setAxes2(rawFrame[0].length);
+		ccdFrame.setRawFrame(rawFrame);
+		ccdFrame.setCreateDate(new Date());
+		ccdFrame.setNoOfAxes(2);
 
 
-			// save the camera state when the ccd frame was taken
-			Instrument instrument = physicalModel.getInstrument();
-			CameraState cameraState = new CameraState(instrument);
-			ccdFrame.setCameraState(cameraState);
-			ccdFrame.setInstrumentId(instrument.getInstrumentId());
-			Telescope telescope = physicalModel.getTelescope();
+		// save the camera state when the ccd frame was taken
+		Instrument instrument = physicalModel.getInstrument();
+		CameraState cameraState = new CameraState(instrument);
+		ccdFrame.setCameraState(cameraState);
+		ccdFrame.setInstrumentId(instrument.getInstrumentId());
+		Telescope telescope = physicalModel.getTelescope();
 
-			// store telescope information with frame when it is taken
-			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+		// store telescope information with frame when it is taken
+		ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+		
+		if (telescope.getM2Position() != null) {
 			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
 			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
 			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+		}
+		
+		if (telescope.getTelPosition() != null) {
 			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
-			
-			ccdFrame.setIntTime((float)exposureTime);
-			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
-
-			Ccd ccd = physicalModel.getInstrument().getCcd();
-			
-			ccdFrame.setCcdName(ccd.getCcdName());
-			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
-			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
-			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
-
 		}
+		
+		ccdFrame.setIntTime((float)exposureTime);
+		ccdFrame.setSufsGroupNumber(sufsGroup);
+
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		
+		ccdFrame.setCcdName(ccd.getCcdName());
+		ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+		ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
+		ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
 
 		return ccdFrame;
 	}
@@ -632,6 +645,12 @@ public class FrameMgmt {
 				
 				String filter = imhdu.getHeader().getStringValue("FILTER");
 				System.out.println("FILTER = " + filter);
+				
+				ccdFrame.setCcdName(imhdu.getHeader().getStringValue("CCD"));
+				ccdFrame.setCcdGainValue(imhdu.getHeader().getFloatValue("CCDGAIN"));
+				ccdFrame.setCcdGainOffsetChannel0(imhdu.getHeader().getIntValue("OFFSET0"));
+				ccdFrame.setCcdGainOffsetChannel1(imhdu.getHeader().getIntValue("OFFSET1"));
+				
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
@@ -704,9 +723,9 @@ public class FrameMgmt {
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		
 		myFits.getHDU(0).getHeader().addStringValue("CCD", ccd.getCcdName(), "CCD Name");
-		myFits.getHDU(0).getHeader().addFloatValue("CCD Gain", 0.0f, "CCD Name");
-		myFits.getHDU(0).getHeader().addIntValue("CCD", 0, "CCD Name");
-		myFits.getHDU(0).getHeader().addIntValue("CCD", 0, "CCD Name");
+		myFits.getHDU(0).getHeader().addFloatValue("CCDGAIN", ccd.getCcdGain().getGainValue(), "CCD Name");
+		myFits.getHDU(0).getHeader().addIntValue("OFFSET0", ccd.getCcdGain().getGainOffsetChannel0(), "CCD Gain Offset Channel 0");
+		myFits.getHDU(0).getHeader().addIntValue("OFFSET1", ccd.getCcdGain().getGainOffsetChannel1(), "CCD Gain Offset Channel 1");
 		
 		
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);

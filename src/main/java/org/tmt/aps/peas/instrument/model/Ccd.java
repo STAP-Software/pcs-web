@@ -87,7 +87,7 @@ public class Ccd {
 	@Transient
 	private float temperature;
 	@Transient
-	private int currentGainNumber = 1;
+	private int currentGainNumber = 0;
 
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
@@ -322,6 +322,10 @@ public class Ccd {
 		hotColumnList.add(hotColumn);
 		
 		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
+	}
+	
+	public void setGain(int gainNumber) {
+		this.currentGainNumber = gainNumber;
 	}
 	
 	public CcdGain getCcdGain() {

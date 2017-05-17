@@ -19,12 +19,16 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.Gain;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CcdState;
 
 /**
@@ -41,11 +45,17 @@ public class CcdManualController implements Serializable {
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
 	@EJB
-	CcdMgmt ccdMgmt;
+	CcdMgmt ccdMgmt;	
+	@EJB
+	PhysicalModel physicalModel;	
+	@EJB
+	FrameMgmt frameMgmt;
 	@EJB
 	CameraMgmt cameraMgmt;
 	@EJB
 	CameraPoller cameraPoller;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 	@Inject
 	FrameController frameController;
@@ -66,6 +76,7 @@ public class CcdManualController implements Serializable {
 	@PostConstruct
 	public void init() {
 		ccdState = new CcdState();
+		commandSelection = 1;
 	}
 	
 	public int getCommandSelection() {
@@ -148,6 +159,29 @@ public class CcdManualController implements Serializable {
 		this.ccdState = ccdState;
 	}
 
+	public String getStatusPanelTitle() {
+		
+		String title = "CCD (" + physicalModel.getInstrument().getCcd().getCcdName() + ") Status";
+		
+		if (!extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+			title += " - SIMULATOR";
+		}
+		
+		return title;
+	}
+	
+	public String getCommandPanelTitle() {
+		
+		String title = "CCD (" + physicalModel.getInstrument().getCcd().getCcdName() + ") Manual Control";
+		
+		if (!extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+			title += " - SIMULATOR";
+		}
+		
+		return title;
+
+	}
+	
 	/**
 	 * JSF Action method to render the PCS CCD manual/diagnostic user interface
 	 * @return the JSF page to render
@@ -187,7 +221,10 @@ public class CcdManualController implements Serializable {
 					//logger.debug(buf);
 					}
 				}
-				frameController.setupFrameToolFrameDisplay(rawFrame);
+				
+				CcdFrame ccdFrame = frameMgmt.populateCcdFrame(rawFrame, exposureTime, 0);
+				
+				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
@@ -210,7 +247,10 @@ public class CcdManualController implements Serializable {
 					//logger.debug(buf);
 					}
 				}
-				frameController.setupFrameToolFrameDisplay(overscanRawFrame);
+				
+				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0);
+
+				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
 				

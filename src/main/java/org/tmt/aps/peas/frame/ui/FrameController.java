@@ -404,12 +404,12 @@ public class FrameController implements Serializable {
 	 * Sets up a raw frame for display (one that has been manually taken)
 	 * @param rawFrame the raw frame
 	 */
-	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
+	public void setupFrameToolFrameDisplay(CcdFrame ccdFrame) {
 
 		try {
-		ccdFrame = new CcdFrame();
-		ccdFrame.setRawFrame(rawFrame);
-
+			
+		this.ccdFrame = ccdFrame;
+		
 		byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, false);
 
 		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");

@@ -24,10 +24,10 @@
 						<ui:include src="fitsBrowserBlock.xhtml"/>
 					</p:tab>
 										
-					<p:tab title="CCD Status" rendered="#{sessionController.ifCommandPermission}">
+					<p:tab title="#{ccdManualController.statusPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/ccdStatusBlock.xhtml"/>
 					</p:tab>
-					<p:tab title="CCD Manual Control" rendered="#{sessionController.ifCommandPermission}">
+					<p:tab title="#{ccdManualController.commandPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/ccdManualBlock.xhtml"/>
 					</p:tab>
 										

@@ -229,10 +229,9 @@ public class ExtInfFactory {
 				int overscanWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanWidth"));
 				int gainNumber = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainNumber"));
 				int[] offsetCalibration = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.offsetCalibration"));
-				int[] gainOffset = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainOffset"));
 				
 				ccdCommandSimulator = new CcdCommandSimulator(physicalModel.getInstrument().getCcd(), imageHeight, imageWidth, 
-						overscanWidth, overscanHeight, gainNumber, offsetCalibration, gainOffset);
+						overscanWidth, overscanHeight, gainNumber, offsetCalibration);
 			}
 			return ccdCommandSimulator;
 

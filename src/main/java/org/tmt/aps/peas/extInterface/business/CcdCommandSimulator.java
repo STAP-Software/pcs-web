@@ -19,7 +19,6 @@ public class CcdCommandSimulator implements CcdCommand {
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	private Ccd ccd;
-	private int[] gainOffset;
 	private int imageHeight;
 	private int imageWidth;
 	private int overscanWidth;
@@ -30,7 +29,7 @@ public class CcdCommandSimulator implements CcdCommand {
 	
 	
 	public CcdCommandSimulator(Ccd ccd, int imageHeight, int imageWidth, int overscanWidth, int overscanHeight, int gainNumber, 
-			int[] offsetCalibration, int[] gainOffset) {
+			int[] offsetCalibration) {
 		this.ccd = ccd;
 		this.imageHeight = imageHeight;
 		this.imageWidth = imageWidth;
@@ -38,7 +37,8 @@ public class CcdCommandSimulator implements CcdCommand {
 		this.overscanHeight = overscanHeight;
 		this.gainNumber = gainNumber;
 		this.offsetCalibration = offsetCalibration;
-		this.gainOffset = gainOffset;
+		
+		ccd.setGain(gainNumber);
 	}
 
 	public short[][] getImage(double t) throws IllegalArgumentException, TimeoutException, CommandFailureException {
@@ -110,6 +110,8 @@ public class CcdCommandSimulator implements CcdCommand {
 		
 		gainNumber = newGain.getProgramNumber();
 		
+		ccd.setGain(gainNumber);
+		
 		gain = new GainImpl(newGain.getProgramNumber());
 		gain.setElectronsPerAdu(newGain.getElectronsPerAdu());
 		
@@ -121,21 +123,27 @@ public class CcdCommandSimulator implements CcdCommand {
 	}
 
 	public int getOffset(int channel) throws IllegalArgumentException, CommandFailureException {
-		return gainOffset[channel];
+		if (channel == 0)
+			return ccd.getCcdGain().getGainOffsetChannel0();
+		if (channel == 1)
+			return ccd.getCcdGain().getGainOffsetChannel1();
+		
+		throw new IllegalArgumentException("Bad channel number = " + channel);
 	}
 
 
-	public int[] getOffset() throws CommandFailureException {		
-		return gainOffset;
+	public int[] getOffset() throws CommandFailureException {	
+		int[] result = {ccd.getCcdGain().getGainOffsetChannel0(), ccd.getCcdGain().getGainOffsetChannel1()};
+		return result;
 	}
 
 	public void setOffset(int channel, int offset) throws IllegalArgumentException, CommandFailureException {
-		gainOffset[channel] = offset;
+		// does nothing
 		
 	}
 
 	public void setOffset(int[] offset) throws IllegalArgumentException, CommandFailureException {
-		gainOffset = offset;
+		// does nothing
 	}
 	
 	

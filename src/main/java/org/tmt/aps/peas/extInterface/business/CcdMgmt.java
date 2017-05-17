@@ -41,6 +41,9 @@ public class CcdMgmt {
 				intResult[i][j] = result[i][j];
 			}
 		}
+		
+		getGain(); // populates the physicalModel
+		
 		return intResult;
 	}
 
@@ -53,6 +56,9 @@ public class CcdMgmt {
 				intResult[i][j] = result[i][j];
 			}
 		}
+		
+		getGain(); // populates the physicalModel
+
 		return intResult;
 	}
 
@@ -69,9 +75,12 @@ public class CcdMgmt {
 	}
 
 	public void setGain(int gainNumber) throws Exception {
-		
+			
 		Gain gain = new GainImpl(gainNumber);
 		extInfFactory.getCcdCommand().setGain(gain);
+		
+		physicalModel.getInstrument().getCcd().setGain(gainNumber);
+	
 	}
 
 	public int[] triggerOffsetCalibration() throws Exception {
@@ -88,10 +97,19 @@ public class CcdMgmt {
 
 	public void setOffset(int channel, int offset) throws Exception {
 		extInfFactory.getCcdCommand().setOffset(channel, offset);
+		
+		if (channel == 0) {
+			physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel0(offset);
+		} else if (channel == 1) {
+			physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel1(offset);
+		}
 	}
 
 	public void setOffset(int[] offset) throws Exception {
 		extInfFactory.getCcdCommand().setOffset(offset);
+		
+		physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel0(offset[0]);
+		physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel1(offset[1]);
 	}
 
 }
