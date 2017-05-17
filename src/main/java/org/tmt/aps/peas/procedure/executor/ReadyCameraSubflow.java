@@ -14,6 +14,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
@@ -37,7 +38,9 @@ public class ReadyCameraSubflow {
 	@EJB
 	private StatusLogger statusLogger;
 	@EJB
-	private CameraMgmt cameraMgmt;
+	private CameraMgmt cameraMgmt;	
+	@EJB
+	private CcdMgmt ccdMgmt;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
 
@@ -132,10 +135,12 @@ public class ReadyCameraSubflow {
 				statusLogger.log("camera.cmd.two_pos_device", "extend");
 				twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 			}
+			
+			Future<Integer> ccdGainFuture = ccdMgmt.setGain(procedureConfig.getCcdGainNumber());
 
 			// wait for all commands to complete
 			long waitPeriodMs = Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-					coarseMirrorCommandFuture, fineMirrorCommandFuture);
+					coarseMirrorCommandFuture, fineMirrorCommandFuture, ccdGainFuture);
 			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 
 			

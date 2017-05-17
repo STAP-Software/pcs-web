@@ -305,38 +305,10 @@ public class FrameMgmt {
 			byte[] falseColorPng = loadPng(ccdFrame, true);
 			ccdFrame.setFalseColorPng(falseColorPng);
 			
-			// simulate camera state too
-			Instrument instrument = physicalModel.getInstrument();
-			CameraState cameraState = new CameraState(instrument);
-			//cameraState.setCcdTemp(44.4f);
-			//cameraState.setSteeringMirrorX(234);
-			//cameraState.setSteeringMirrorY(2);
-			//cameraState.setTiltPlateX(35);
-			//cameraState.setTiltPlateY(-7);
-			ccdFrame.setCameraState(cameraState);
-			ccdFrame.setInstrumentId(instrument.getInstrumentId());
-
 			telescopeMgmt.refreshStatus();
-			
-			// store telescope information with frame when it is taken
-			Telescope telescope = physicalModel.getTelescope();
-			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
-			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
-			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
-			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
-			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
-			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
-			
-			ccdFrame.setIntTime((float)exposureTime);
-			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
-			
-			Ccd ccd = physicalModel.getInstrument().getCcd();
-			
-			ccdFrame.setCcdName(ccd.getCcdName());
-			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
-			ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
-			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
 
+			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup());
+			
 		} else {
 		
 			// TODO: does this need to be done in parallel with getting the exposure?
@@ -369,7 +341,7 @@ public class FrameMgmt {
 		return ccdFrame;
 	}
 	
-	// FIXME - simulated frames should use this too
+	
 	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup) {
 		
 		CcdFrame ccdFrame = new CcdFrame();
@@ -378,7 +350,11 @@ public class FrameMgmt {
 		ccdFrame.setRawFrame(rawFrame);
 		ccdFrame.setCreateDate(new Date());
 		ccdFrame.setNoOfAxes(2);
+		
+		return populateCcdFrame(rawFrame, exposureTime, sufsGroup);
+	}
 
+	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup) {
 
 		// save the camera state when the ccd frame was taken
 		Instrument instrument = physicalModel.getInstrument();

@@ -40,6 +40,7 @@ import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -74,6 +75,8 @@ public class NarrowBandPhasingExecutor {
 
 	@EJB
 	private CameraMgmt cameraMgmt;
+	@EJB
+	private CcdMgmt ccdMgmt;
 	@EJB
 	private AcsMgmt acsMgmt;
 	@EJB
@@ -173,6 +176,7 @@ public class NarrowBandPhasingExecutor {
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
+				
 				// set up procedureConfig each loop so that the create ref map auto subprocedures know how to get this info
 				// TODO: the following statements need to be somewhere else ultimately
 				procedureConfig.setFilter(currentFilter);
@@ -301,7 +305,7 @@ public class NarrowBandPhasingExecutor {
 				//       Set the Filter and Reference Beam       //
 				//***********************************************//
 				
-				/*
+				
 				if (procedureConfig.isFrameFromCcd()) {
 				
 					statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
@@ -310,12 +314,15 @@ public class NarrowBandPhasingExecutor {
 					statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
 					Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
 	
+					statusLogger.log("camera.cmd.ref_beam", procedureConfig.getCcdGainNumber());
+					Future<Integer> ccdGainFuture = ccdMgmt.setGain(procedureConfig.getCcdGainNumber());
+	
 					// wait for all commands to complete
-					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture);
+					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture, ccdGainFuture);
 					statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 					
 				}
-				*/
+				
 
 			    statusLogger.log("nph.calc_templates");
 

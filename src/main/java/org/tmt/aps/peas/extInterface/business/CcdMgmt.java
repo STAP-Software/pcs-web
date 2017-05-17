@@ -5,6 +5,10 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.concurrent.Future;
+
+import javax.ejb.AsyncResult;
+import javax.ejb.Asynchronous;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
@@ -62,6 +66,8 @@ public class CcdMgmt {
 		return intResult;
 	}
 
+	
+	
 	public int[] getImageSize() throws Exception {
 		return extInfFactory.getCcdCommand().getImageSize();
 	}
@@ -74,13 +80,16 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getGain();
 	}
 
-	public void setGain(int gainNumber) throws Exception {
+	
+	@Asynchronous
+	public Future<Integer> setGain(int gainNumber) throws Exception {
 			
 		Gain gain = new GainImpl(gainNumber);
 		extInfFactory.getCcdCommand().setGain(gain);
 		
 		physicalModel.getInstrument().getCcd().setGain(gainNumber);
 	
+		return new AsyncResult<Integer>(gainNumber);
 	}
 
 	public int[] triggerOffsetCalibration() throws Exception {

@@ -6,6 +6,7 @@
 package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
+import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
@@ -259,9 +260,14 @@ public class CcdManualController implements Serializable {
 				break;
 
 			case 3: // Set Gain
+					
+				Future<Integer> gainFuture = ccdMgmt.setGain(gainNumber);
 				
-				ccdMgmt.setGain(gainNumber);
-				
+				while (!gainFuture.isDone()) {
+					Thread.sleep(500);
+				}
+				gainFuture.get();
+
 				commandType = "Set Gain = " + gainNumber;
 				break;
 
