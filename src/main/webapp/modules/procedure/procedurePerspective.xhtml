@@ -121,7 +121,7 @@
 								</p:column>
 							</p:row>
 							
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}" >
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}" >
 								<p:column styleClass="btmsFormLabelColumn">
 									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','CcdGain')}" />				
 									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />

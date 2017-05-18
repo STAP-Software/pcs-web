@@ -247,7 +247,26 @@ public class NarrowBandPhasingExecutor {
 
 				logger.debug("light source 1 = " + procedureConfig.getLightSource());
 				
-							
+						
+				
+				// set up integration time for this iteration
+				if (procedureConfig.isLightSourceLed()) {
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
+				} else {
+					
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
+				}
+
+				
+				
 				/**********************************************/
 				/*                 Ready Camera               */
 				/**********************************************/			
@@ -271,21 +290,6 @@ public class NarrowBandPhasingExecutor {
 			    statusLogger.log("nph.current_filter", currentFilter.getFilterName());
 
 				
-				// set up integration time for this iteration
-				if (procedureConfig.isLightSourceLed()) {
-					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
-					procedureConfig.setIntegrationTime(intTime);
-					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
-					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
-
-				} else {
-					
-					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
-					procedureConfig.setIntegrationTime(intTime);
-					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
-					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
-
-				}
 
 				
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index;
