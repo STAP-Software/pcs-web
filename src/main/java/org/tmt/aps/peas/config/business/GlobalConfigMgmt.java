@@ -157,11 +157,12 @@ public class GlobalConfigMgmt {
 	 * @param instrumentId PCS1 or PCS2
 	 * @return the reference map configuration default values
 	 */	
-	public RefMapConfigDefaults findRefMapConfigDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
+	public RefMapConfigDefaults findRefMapConfigDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, Long ccdTypeId) {
 		TypedQuery<RefMapConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapConfigDefaults.class);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		

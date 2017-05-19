@@ -564,7 +564,8 @@ public class ProcedureExecutionMgmt {
 			// these get set into procedure config
 			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(),
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedureConfig.getFilter().getFilterType().getFilterTypeId());
+					procedureConfig.getFilter().getFilterType().getFilterTypeId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		}
 
 		// select defaults based on mask and light source
@@ -680,8 +681,8 @@ public class ProcedureExecutionMgmt {
 	 * @param pupilMaskTypeId the pupil mask type currently selected
 	 * @param filterTypeId the filter type currently selected
 	 */
-	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
-		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
+	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, Long ccdTypeId) {
+		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId, ccdTypeId);
 
 		// Set up default ref beam and int time
 
