@@ -41,13 +41,13 @@
 						<h:outputLabel value="Gain Setting 0 Channel0 Offset" for="gain0Offset0" />
 						<p:inputText id="gain0Offset0" value="#{ccdDefController.ccd.ccdGain0.gainOffsetChannel0}" size="3" required="true"/>
 						<h:outputLabel value="Gain Setting 0 Channel1 Offset" for="gain0Offset1" />
-						<p:inputText id="gain0Offset1" value="#{ccdDefController.ccd.ccdGain1.gainOffsetChannel1}" size="3" required="true"/>
+						<p:inputText id="gain0Offset1" value="#{ccdDefController.ccd.ccdGain0.gainOffsetChannel1}" size="3" required="true"/>
 
 						<p:spacer height="10" /> <p:spacer height="10" />
 						<h:outputLabel value="Gain Setting 1 Value (electrons/DN)" for="gain1" />
 						<h:outputText id="gain1" value="#{ccdDefController.ccd.ccdGain1.gainValue}" size="3" required="true"/>
 						<h:outputLabel value="Gain Setting 1 Channel0 Offset" for="gain1Offset0" />
-						<p:inputText id="gain1Offset0" value="#{ccdDefController.ccd.ccdGain2.gainOffsetChannel0}" size="3" required="true"/>
+						<p:inputText id="gain1Offset0" value="#{ccdDefController.ccd.ccdGain1.gainOffsetChannel0}" size="3" required="true"/>
 						<h:outputLabel value="Gain Setting 1 Channel1 Offset" for="gain1Offset1" />
 						<p:inputText id="gain1Offset1" value="#{ccdDefController.ccd.ccdGain1.gainOffsetChannel1}" size="3" required="true"/>
 

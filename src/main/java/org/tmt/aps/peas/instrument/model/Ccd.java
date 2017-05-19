@@ -9,7 +9,9 @@ package org.tmt.aps.peas.instrument.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -64,19 +66,19 @@ public class Ccd {
 	@JoinColumn (name="ccdTypeId")
 	private CcdType ccdType;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn (name="ccdGainId0")
 	private CcdGain ccdGain0;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn (name="ccdGainId1")
 	private CcdGain ccdGain1;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn (name="ccdGainId2")
 	private CcdGain ccdGain2;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
 	@JoinColumn (name="ccdGainId3")
 	private CcdGain ccdGain3;
 	
