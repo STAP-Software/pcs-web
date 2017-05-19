@@ -1197,7 +1197,8 @@ public class ProcedureController implements Serializable {
 		// change int time and selected ref beam settings in procedure config
 		procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 				.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-				.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+				.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+				physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 						
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
@@ -1260,7 +1261,8 @@ public class ProcedureController implements Serializable {
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		}
 	}	
 
@@ -1337,7 +1339,8 @@ public class ProcedureController implements Serializable {
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		} 
 		
 	}
