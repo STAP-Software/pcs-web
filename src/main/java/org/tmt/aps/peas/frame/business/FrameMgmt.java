@@ -699,7 +699,7 @@ public class FrameMgmt {
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		
 		myFits.getHDU(0).getHeader().addStringValue("CCD", ccd.getCcdName(), "CCD Name");
-		myFits.getHDU(0).getHeader().addFloatValue("CCDGAIN", ccd.getCcdGain().getGainValue(), "CCD Name");
+		myFits.getHDU(0).getHeader().addFloatValue("CCDGAIN", ccd.getCcdGain().getGainValue(), "CCD Gain");
 		myFits.getHDU(0).getHeader().addIntValue("OFFSET0", ccd.getCcdGain().getGainOffsetChannel0(), "CCD Gain Offset Channel 0");
 		myFits.getHDU(0).getHeader().addIntValue("OFFSET1", ccd.getCcdGain().getGainOffsetChannel1(), "CCD Gain Offset Channel 1");
 		
