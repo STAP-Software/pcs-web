@@ -34,8 +34,8 @@ import org.tmt.aps.peas.extinf.CameraStatus;
 			+ "INNER JOIN FETCH c.pupilWheel pw INNER JOIN FETCH c.filterWheel fw "
 			+ "LEFT OUTER JOIN FETCH pw.pupilMaskSet pml "
 			+ "LEFT OUTER JOIN FETCH fw.filterSet "
-			+ "LEFT OUTER JOIN FETCH o.ccd d LEFT OUTER JOIN d.ccdType LEFT OUTER JOIN d.ccdGain0 "
-			+ "LEFT OUTER JOIN d.ccdGain1 LEFT OUTER JOIN d.ccdGain2 LEFT OUTER JOIN d.ccdGain3 "
+			+ "LEFT OUTER JOIN FETCH o.ccd d LEFT OUTER JOIN FETCH d.ccdType LEFT OUTER JOIN FETCH d.ccdGain0 "
+			+ "LEFT OUTER JOIN FETCH d.ccdGain1 LEFT OUTER JOIN FETCH d.ccdGain2 LEFT OUTER JOIN FETCH d.ccdGain3 "
 			+ "where o.instrumentId = :instrumentId" )
 })
 
