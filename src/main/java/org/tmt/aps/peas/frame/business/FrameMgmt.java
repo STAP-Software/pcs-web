@@ -702,7 +702,7 @@ public class FrameMgmt {
 		myFits.getHDU(0).getHeader().addFloatValue("CCDGAIN", ccd.getCcdGain().getGainValue(), "CCD Gain");
 		myFits.getHDU(0).getHeader().addIntValue("OFFSET0", ccd.getCcdGain().getGainOffsetChannel0(), "CCD Gain Offset Channel 0");
 		myFits.getHDU(0).getHeader().addIntValue("OFFSET1", ccd.getCcdGain().getGainOffsetChannel1(), "CCD Gain Offset Channel 1");
-		
+		myFits.getHDU(0).getHeader().addFloatValue("PIXELSIZ", ccd.getCcdType().getPixelSize(), "CCD Pixel Size");
 		
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
 		BufferedDataOutputStream o = new BufferedDataOutputStream(fo);
