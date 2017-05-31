@@ -114,11 +114,14 @@ public class CcdMgmt {
 		}
 	}
 
-	public void setOffset(int[] offset) throws Exception {
+	@Asynchronous
+	public Future<Integer> setOffset(int[] offset) throws Exception {
 		extInfFactory.getCcdCommand().setOffset(offset);
 		
 		physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel0(offset[0]);
 		physicalModel.getInstrument().getCcd().getCcdGain().setGainOffsetChannel1(offset[1]);
+		
+		return new AsyncResult<Integer>(1);
 	}
 
 }

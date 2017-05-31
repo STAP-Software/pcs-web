@@ -81,6 +81,11 @@ public class CcdGain implements IterableEntity {
 	public void setGainOffsetChannel1(int gainOffsetChannel1) {
 		this.gainOffsetChannel1 = gainOffsetChannel1;
 	}
+	
+	public int[] getGainOffsets() {
+		int[] offsets = {gainOffsetChannel0, gainOffsetChannel1};
+		return offsets;
+	}
 
 
 	public boolean equals(Object obj) {

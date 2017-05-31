@@ -343,6 +343,21 @@ public class Ccd {
 			return null;
 		}
 	}
+	
+	public CcdGain getCcdGain(int gainNumber) {
+		if (gainNumber == 0) {
+			return ccdGain0;
+		} else if (gainNumber == 1) {
+			return ccdGain1;
+		} else if (gainNumber == 2) {
+			return ccdGain2;
+		} else if (gainNumber == 3) {
+			return ccdGain3;
+		} else {
+			return null;
+		}
+
+	}
 
 
 	public List<CcdGain> getCcdGainList() {

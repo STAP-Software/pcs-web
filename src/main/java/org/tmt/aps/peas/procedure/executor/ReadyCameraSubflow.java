@@ -16,6 +16,8 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -43,6 +45,8 @@ public class ReadyCameraSubflow {
 	private CcdMgmt ccdMgmt;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
+	@EJB
+	private PhysicalModel physicalModel;
 
 	/**
 	 * Executor method: this method is the Ready Camera sub-flow
@@ -136,11 +140,18 @@ public class ReadyCameraSubflow {
 				twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 			}
 			
+		
+			statusLogger.log("ccd.cmd.gain", procedureConfig.getCcdGainNumber());
 			Future<Integer> ccdGainFuture = ccdMgmt.setGain(procedureConfig.getCcdGainNumber());
+			
+			// get the gain we will have if successful to set the offsets right now without having to wait
+			CcdGain ccdGain = physicalModel.getInstrument().getCcd().getCcdGain(procedureConfig.getCcdGainNumber());
+			statusLogger.log("ccd.cmd.offset", ccdGain.getGainOffsetChannel0(), ccdGain.getGainOffsetChannel1());
+			Future<Integer> ccdOffsetFuture = ccdMgmt.setOffset(ccdGain.getGainOffsets());
 
 			// wait for all commands to complete
 			long waitPeriodMs = Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-					coarseMirrorCommandFuture, fineMirrorCommandFuture, ccdGainFuture);
+					coarseMirrorCommandFuture, fineMirrorCommandFuture, ccdGainFuture, ccdOffsetFuture);
 			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 
 			

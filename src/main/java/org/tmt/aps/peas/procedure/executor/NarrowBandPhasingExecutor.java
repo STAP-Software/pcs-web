@@ -318,11 +318,16 @@ public class NarrowBandPhasingExecutor {
 					statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
 					Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
 	
-					statusLogger.log("camera.cmd.ref_beam", procedureConfig.getCcdGainNumber());
+					statusLogger.log("ccd.cmd.gain", procedureConfig.getCcdGainNumber());
 					Future<Integer> ccdGainFuture = ccdMgmt.setGain(procedureConfig.getCcdGainNumber());
 	
+					// get the gain we will have if successful to set the offsets right now without having to wait
+					CcdGain ccdGain = physicalModel.getInstrument().getCcd().getCcdGain(procedureConfig.getCcdGainNumber());
+					statusLogger.log("ccd.cmd.offset", ccdGain.getGainOffsetChannel0(), ccdGain.getGainOffsetChannel1());
+					Future<Integer> ccdOffsetFuture = ccdMgmt.setOffset(ccdGain.getGainOffsets());
+	
 					// wait for all commands to complete
-					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture, ccdGainFuture);
+					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture, ccdGainFuture, ccdOffsetFuture);
 					statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 					
 				}
