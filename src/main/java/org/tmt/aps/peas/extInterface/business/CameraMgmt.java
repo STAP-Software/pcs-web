@@ -14,11 +14,13 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
-import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
+import org.tmt.aps.peas.extinf.CameraStatusListener;
+import org.tmt.aps.peas.extinf.VoltageListener;
+import org.tmt.aps.peas.extinf.Voltages;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
@@ -144,8 +146,8 @@ public class CameraMgmt {
 	 * @return achieved CCD Power State (0 = off, 1 = on)
 	 */
 	@Asynchronous
-	public Future<Integer> commandCcdPowerState(int ccdPowerState) throws Exception {
-		int result =  extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
+	public Future<Integer> commandCcdControllerPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandCcdControllerPowerState(ccdPowerState);
 		return new AsyncResult<Integer>(result);
 	}
 
@@ -176,6 +178,119 @@ public class CameraMgmt {
 	}
 
 
+	
+	
+	
+	public void addCameraQueryListener(int deviceCode, CameraQueryListener l) throws Exception {
+		extInfFactory.getCameraCommand().addCameraQueryListener(deviceCode, l);
+	}
+
+	public void addCameraQueryListener(int deviceCode, int period, CameraQueryListener l) throws Exception {
+		extInfFactory.getCameraCommand().addCameraQueryListener(deviceCode, period, l);
+		
+	}
+
+	public void addPeriodicCameraQueryListener(int deviceCode, int period, CameraQueryListener l) throws Exception {
+		extInfFactory.getCameraCommand().addPeriodicCameraQueryListener(deviceCode, period, l);
+	}
+
+	public void removeCameraQueryListener(int deviceCode, CameraQueryListener l) throws Exception {
+		extInfFactory.getCameraCommand().removeCameraQueryListener(deviceCode, l);
+	}
+
+	public void addCameraStatusListener(CameraStatusListener l) throws Exception {
+		extInfFactory.getCameraCommand().addCameraStatusListener(l);
+	}
+
+	public void addCameraStatusListener(CameraStatusListener l, int period) throws Exception {
+		extInfFactory.getCameraCommand().addCameraStatusListener(l, period);
+	}
+
+	public void addPeriodicCameraStatusListener(CameraStatusListener l, int period) throws Exception {
+		extInfFactory.getCameraCommand().addPeriodicCameraStatusListener(l, period);
+	}
+
+	public void removeCameraStatusListener(CameraStatusListener l) throws Exception {
+		extInfFactory.getCameraCommand().removeCameraStatusListener(l);
+	}
+
+
+	public int commandOverallPowerState(int powerState) throws Exception {
+
+		return extInfFactory.getCameraCommand().commandOverallPowerState(powerState);
+	}
+
+
+
+	public int commandNetworkControllerPowerState(int powerState) throws Exception {
+
+		return extInfFactory.getCameraCommand().commandNetworkControllerPowerState(powerState);
+	}
+
+
+
+	public int commandFanPowerState(int powerState) throws Exception {
+
+		return extInfFactory.getCameraCommand().commandFanPowerState(powerState);
+	}
+
+
+	
+	public int commandGalilPowerState(int powerState) throws Exception {
+
+		return extInfFactory.getCameraCommand().commandGalilPowerState(powerState);
+	}
+
+
+
+	public int commandPowerSuppliesPowerState(int powerState) throws Exception {
+
+		return extInfFactory.getCameraCommand().commandPowerSuppliesPowerState(powerState);
+	}
+
+
+	public void setPurgeAirState(int purgeAirState) throws Exception {
+
+		extInfFactory.getCameraCommand().setPurgeAirState(purgeAirState);
+		
+	}
+
+
+	public Voltages getVoltages() throws Exception {
+		
+		return extInfFactory.getCameraCommand().getVoltages();
+	}
+
+
+	public void addVoltageListener(VoltageListener l) throws Exception {
+		
+		extInfFactory.getCameraCommand().addVoltageListener(l);
+		
+	}
+
+
+	public void addVoltageListener(VoltageListener l, int period) throws Exception  {
+		
+		extInfFactory.getCameraCommand().addVoltageListener(l, period);
+		
+	}
+
+
+	public void addPeriodicVoltageListener(VoltageListener l, int period) throws Exception {
+		
+		extInfFactory.getCameraCommand().addPeriodicVoltageListener(l, period);
+		
+	}
+
+
+	public void removeVoltageListener(CameraStatusListener l) throws Exception  {
+		
+		extInfFactory.getCameraCommand().removeVoltageListener(l);
+		
+	}
+	
+	
+	
 	/**
 	 * Refreshes the camera status values into the {@link Instrument} state of the {@link PhysicalModel}.
 	 */

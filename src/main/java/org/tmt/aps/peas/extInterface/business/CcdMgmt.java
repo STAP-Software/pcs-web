@@ -43,43 +43,8 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getImage();	
 	}
 
-	public void setGain(int channel, double gain) throws Exception {
-		extInfFactory.getInstrumentCommand().setGain(channel, gain);
-		
-	}
 
-	public void setOffset(int channel, double offset) throws Exception {
-		
-		extInfFactory.getInstrumentCommand().setOffset(channel, offset);
-	}
 
-	public int getImageWidth() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getImageWidth();
-	}
 
-	public int getImageHeight() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getImageHeight();
-	}
-
-	public double getPlateScale() throws Exception {
-		
-		return extInfFactory.getInstrumentCommand().getPlateScale();
-	}
-
-	public void setBinning(int x, int y) throws Exception {
-		
-		extInfFactory.getInstrumentCommand().setBinning(x, y);
-	}
-
-	public int[][] getImage(double exposureTime, boolean useShutter) throws Exception,
-			TimeoutException {
-		
-		
-		return extInfFactory.getInstrumentCommand().getImage(exposureTime, useShutter);
-		
-		
-	}
 
 }

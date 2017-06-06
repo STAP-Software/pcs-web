@@ -323,7 +323,7 @@ public class CameraManualController implements Serializable {
 
 			case 8: // CCD Power
 
-				Future<Integer> ccdPowerFuture = cameraMgmt.commandCcdPowerState(ccdPowerCmd == Ccd.POWER_STATE_ON ? 1 : 0);
+				Future<Integer> ccdPowerFuture = cameraMgmt.commandCcdControllerPowerState(ccdPowerCmd == Ccd.POWER_STATE_ON ? 1 : 0);
 				while (!ccdPowerFuture.isDone()) {
 					Thread.sleep(500);
 				}
@@ -332,6 +332,8 @@ public class CameraManualController implements Serializable {
 				commandType = "Ccd Power";
 				break;
 
+				
+				
 			default:
 
 			}

@@ -48,6 +48,7 @@ public class ExtInfFactory {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	DcsCommandSimulator dcsCommandSimulator;
+	CameraCommandSimulator cameraCommandSimulator;
 
 	CamAsync camAsync = null;
 	DcsRsk dcsRsk = null;
@@ -60,6 +61,7 @@ public class ExtInfFactory {
 	@PostConstruct
 	void init() throws Exception {
 		dcsCommandSimulator = new DcsCommandSimulator();
+		cameraCommandSimulator = new CameraCommandSimulator();
 		
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 		telescopeId = new Integer(telescopeIdStr);
@@ -97,7 +99,7 @@ public class ExtInfFactory {
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 				return getCameraCommandRemote(telescopeId);
 			} else {
-				return new CameraCommandSimulator();
+				return cameraCommandSimulator;
 			}
 			
 		} catch (Exception e) {
@@ -144,26 +146,7 @@ public class ExtInfFactory {
 		}
 	}
 	
-	/**
-	 * @return a reference to the PCS Instrument RPC client, or a simulator depending on current interface connection configuration
-	 */
-	public InstrumentInterface getInstrumentCommand() throws Exception {
 
-		try {
-			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
-			boolean instrumentEnabled = new Boolean(instrumentEnabledStr);
-
-			if (instrumentEnabled) {
-				return getInstrumentCommandRemote();
-			} else {
-				return new InstrumentCommandSimulator();
-			}
-			
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			throw e;
-		}
-	}
 
 	/**
 	 * Resets all RPC client instances so that the next command will instantiate new ones.
@@ -233,15 +216,6 @@ public class ExtInfFactory {
 		}
 	}
 
-	private InstrumentInterface getInstrumentCommandRemote() throws Exception {
-		try {
-			
-			throw new UnsupportedOperationException("Not Implemented");
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
-			throw e;
-		}
-	}
 
 	
 }
