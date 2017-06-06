@@ -64,6 +64,13 @@ public class CameraManualController implements Serializable {
 	Point coarseTiltCmd = new Point(0, 0);
 	int twoPosCmd = 0;
 	int ccdPowerCmd = 0;
+	int overallPowerStateCmd = 0;
+	int networkControllerPowerStateCmd = 0;	
+	int fanPowerStateCmd = 0;
+	int galilPowerStateCmd = 0;
+	int powerSuppliesPowerStateCmd = 0;
+	int purgeAirStateCmd;
+	
 
 	@PostConstruct
 	public void init() throws Exception {
@@ -175,6 +182,55 @@ public class CameraManualController implements Serializable {
 		this.ccdPowerCmd = ccdPowerCmd;
 	}
 
+
+	public int getOverallPowerStateCmd() {
+		return overallPowerStateCmd;
+	}
+
+	public void setOverallPowerStateCmd(int overallPowerStateCmd) {
+		this.overallPowerStateCmd = overallPowerStateCmd;
+	}
+
+	public int getNetworkControllerPowerStateCmd() {
+		return networkControllerPowerStateCmd;
+	}
+
+	public void setNetworkControllerPowerStateCmd(int networkControllerPowerStateCmd) {
+		this.networkControllerPowerStateCmd = networkControllerPowerStateCmd;
+	}
+
+	public int getFanPowerStateCmd() {
+		return fanPowerStateCmd;
+	}
+
+	public void setFanPowerStateCmd(int fanPowerStateCmd) {
+		this.fanPowerStateCmd = fanPowerStateCmd;
+	}
+
+	public int getGalilPowerStateCmd() {
+		return galilPowerStateCmd;
+	}
+
+	public void setGalilPowerStateCmd(int galilPowerStateCmd) {
+		this.galilPowerStateCmd = galilPowerStateCmd;
+	}
+
+	public int getPowerSuppliesPowerStateCmd() {
+		return powerSuppliesPowerStateCmd;
+	}
+
+	public void setPowerSuppliesPowerStateCmd(int powerSuppliesPowerStateCmd) {
+		this.powerSuppliesPowerStateCmd = powerSuppliesPowerStateCmd;
+	}
+
+	public int getPurgeAirStateCmd() {
+		return purgeAirStateCmd;
+	}
+
+	public void setPurgeAirStateCmd(int purgeAirStateCmd) {
+		this.purgeAirStateCmd = purgeAirStateCmd;
+	}
+
 	public boolean getRenderExposureTime() {
 		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
 	}
@@ -211,136 +267,251 @@ public class CameraManualController implements Serializable {
 	 * JSF Action method handling when the user clicks the 'Send Command' button
 	 */
 	public void doSendCommand() {
+			
+		logger.info("command selection = " + commandSelection);
+		
+		switch (commandSelection) {
 
+		case 1: // Pupil Mask
+			doSendPupilMaskCommand();
+			break;
+
+		case 2: // Filter
+			doSendFilterCommand();
+			break;
+
+		case 3: // Ref Beam
+			doSendRefBeamCommand();
+			break;
+
+		case 4: // Shutter
+			doSendShutterCommand();
+			break;
+
+		case 5: // Fine Tilt
+			doSendFineCommand();
+			break;
+
+		case 6: // Coarse Tilt
+			doSendCoarseCommand();
+			break;
+
+		case 7: // Two Position Mech
+			doSendTwoPosMechCommand();
+			break;
+
+		case 8: // CCD Power
+			doSendCcdPowerCommand();				
+			break;
+
+		default:
+
+		}
+	}
+
+	
+	public void doSendPupilMaskCommand() {
+		
 		try {
 
-			//cameraPoller.setDoPoll(false);
-			//Thread.sleep(5000);
-			//cameraMgmt.resetCamera();
-			
-			String commandType = null;
-			
-			logger.info("command selection = " + commandSelection);
-			switch (commandSelection) {
-
-			case 1: // Pupil Mask
-				Future<Integer> pupilCmdFuture = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
-				while (!pupilCmdFuture.isDone()) {
-					logger.debug("Thread waiting");
-					Thread.sleep(500);
-				}
-				logger.debug("PupilCmdFuture is Done");
-				int maskNumber = pupilCmdFuture.get();
-				
-				// update position
-				getCamera().getPupilWheel().setState(DeviceStates.STATE_IN_POSITION);
-				getCamera().getPupilWheel().setSelectedPupilMaskNumber(maskNumber);
-				commandType = "Pupil Mask";
-				break;
-
-			case 2: // Filter
-				Future<Integer> filterCmdFuture = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
-				while (!filterCmdFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				int filterNumber = filterCmdFuture.get(); 
-				// update position
-				getCamera().getFilterWheel().setState(DeviceStates.STATE_IN_POSITION);
-				getCamera().getFilterWheel().setSelectedFilterNumber(filterNumber);
-				commandType = "Filter";
-				break;
-
-			case 3: // Ref Beam
-				Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(selectedRefBeam);
-				
-				while (!refBeamFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				refBeamFuture.get();
-				
-				
-				getCamera().setCurrentRefBeam(selectedRefBeam);
-				commandType = "Ref Beam";
-				break;
-
-			case 4: // Shutter
-
-				if (shutterCmd == Shutter.STATE_CLOSE) {
-					int state = cameraMgmt.commandCcdShutterState(0);
-					getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
-				} else if (shutterCmd == Shutter.STATE_OPEN) {
-					int state = cameraMgmt.commandCcdShutterState(1);
-					getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
-				} else {
-					// timed exposure
-					cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime * 1000));
-					getCamera().getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
-				}
-				commandType = "Shutter";
-				break;
-
-			case 5: // Fine Tilt
-				
-				Future<Point> fineFuture = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
-				while (!fineFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				Point fineResult = fineFuture.get();
-				
-				getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
-
-				getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-				getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
-				commandType = "Fine Tilt";
-				break;
-
-			case 6: // Coarse Tilt
-				Future<Point> coarseFuture = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
-				while (!coarseFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				Point coarseResult = coarseFuture.get();
-
-				getCamera().getCoarseTiltMirror().setCurrentPosition(coarseResult);
-
-				getCamera().getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-				getCamera().getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
-				commandType = "Coarse Tilt";
-				break;
-
-			case 7: // Two Position Mech
-				int command = (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) ? 1 : 0;
-				Future<Integer> twoPosFuture = cameraMgmt.commandTwoPositionDevice(command);
-				while (!twoPosFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				int twoPosState = twoPosFuture.get();
-				getCamera().getTwoPosMechanism().setState(
-						twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-
-				commandType = "Two Pos Mech";
-				break;
-
-			case 8: // CCD Power
-
-				Future<Integer> ccdPowerFuture = cameraMgmt.commandCcdControllerPowerState(ccdPowerCmd == Ccd.POWER_STATE_ON ? 1 : 0);
-				while (!ccdPowerFuture.isDone()) {
-					Thread.sleep(500);
-				}
-				int ccdState = ccdPowerFuture.get();
-				getCcd().setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-				commandType = "Ccd Power";
-				break;
-
-				
-				
-			default:
-
+			Future<Integer> pupilCmdFuture = cameraMgmt.commandPupilMask(selectedPupilMaskPos);
+			while (!pupilCmdFuture.isDone()) {
+				logger.debug("Thread waiting");
+				Thread.sleep(500);
 			}
-
-			//cameraPoller.setDoPoll(true);
+			logger.debug("PupilCmdFuture is Done");
 			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandType));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Pupil Mask"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendFilterCommand() {
+		
+		try {
+
+			Future<Integer> future = cameraMgmt.commandFilterWheel(selectedFilterWheelPos);
+			while (!future.isDone()) {
+				logger.debug("Thread waiting");
+				Thread.sleep(500);
+			}
+			logger.debug("FilterCmdFuture is Done");
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Filter"));
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	
+	public void doSendRefBeamCommand() {
+		
+		try {
+
+			Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(selectedRefBeam);
+			
+			while (!refBeamFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			refBeamFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Ref Beam"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendShutterCommand() {
+		
+		try {
+
+			if (shutterCmd == Shutter.STATE_CLOSE) {
+				int state = cameraMgmt.commandCcdShutterState(0);
+				//getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			} else if (shutterCmd == Shutter.STATE_OPEN) {
+				int state = cameraMgmt.commandCcdShutterState(1);
+				//getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			} else {
+				// timed exposure
+				cameraMgmt.commandCcdShutterExposure((int) (ccdExposureTime * 1000));
+				//getCamera().getShutter().setState(Shutter.STATE_TIMED_EXPOSURE);
+			}
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Shutter"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendFineCommand() {
+		
+		try {
+
+			Future<Point> future = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Point result = future.get();
+			
+			//getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
+
+			//getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+			//getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendCoarseCommand() {
+		
+		try {
+
+			Future<Point> future = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Point result = future.get();
+			
+			//getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
+
+			//getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
+			//getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendTwoPosMechCommand() {
+		
+		try {
+
+			int command = (twoPosCmd == TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND) ? 1 : 0;
+			Future<Integer> twoPosFuture = cameraMgmt.commandTwoPositionDevice(command);
+			while (!twoPosFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			int twoPosState = twoPosFuture.get();
+			//getCamera().getTwoPosMechanism().setState(
+			//		twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Two Pos Mech"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendCcdPowerCommand() {
+		
+		try {
+
+			Future<Integer> ccdPowerFuture = cameraMgmt.commandCcdControllerPowerState(ccdPowerCmd == Ccd.POWER_STATE_ON ? 1 : 0);
+			while (!ccdPowerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			int ccdState = ccdPowerFuture.get();
+			//getCcd().setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Ccd Power"));
+
 			
 		} catch (CommandFailureException e) {
 			
@@ -353,6 +524,158 @@ public class CameraManualController implements Serializable {
 		}
 		
 	}
+	
+	public void doSendOverallPowerStateCommand() {
+		
+		try {
 
+			Future<Integer> powerFuture = cameraMgmt.commandOverallPowerState(overallPowerStateCmd);
+			while (!powerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			powerFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Overall Power State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	public void doSendNetworkControllerPowerStateCommand() {
+		
+		try {
+
+			Future<Integer> powerFuture = cameraMgmt.commandNetworkControllerPowerState(networkControllerPowerStateCmd);
+			while (!powerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			powerFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Network Power State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	public void doSendFanPowerStateCommand() {
+		
+		try {
+
+			Future<Integer> powerFuture = cameraMgmt.commandFanPowerState(fanPowerStateCmd);
+			while (!powerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			powerFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fan Power State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	public void doSendGalilPowerStateCommand() {
+		
+		try {
+
+			Future<Integer> powerFuture = cameraMgmt.commandGalilPowerState(galilPowerStateCmd);
+			while (!powerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			powerFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Galil Power State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	public void doSendPowerSuppliesPowerStateCommand() {
+		
+		try {
+
+			Future<Integer> powerFuture = cameraMgmt.commandPowerSuppliesPowerState(powerSuppliesPowerStateCmd);
+			while (!powerFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			powerFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Power Supplies Power State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	public void doSendPurgeAirStateCommand() {
+		
+		try {
+
+			Future<Integer> future = cameraMgmt.commandPowerSuppliesPowerState(purgeAirStateCmd);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			future.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Purge Air State"));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
+	
+	
 
 }

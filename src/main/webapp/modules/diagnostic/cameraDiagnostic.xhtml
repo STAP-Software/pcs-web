@@ -7,7 +7,7 @@
 		
 			<p:spacer height="10px" />
 
-			<p:panelGrid id="cameraPanel" columns="2" style="margin:10" styleClass="pcsExecutionPanel">
+			<p:panelGrid id="cameraPanel" columns="3" style="margin:10" styleClass="pcsExecutionPanel">
 
 				<p:panelGrid columns="1" style="margin:0" styleClass="pcsForm">
 
@@ -15,7 +15,7 @@
 					Camera Status
 					</f:facet>
 				
-					<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/> 
+					<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/> 
 
 				</p:panelGrid>
 				
@@ -25,12 +25,23 @@
 					Camera Manual Control
 					</f:facet>
 					
-						<ui:include src="../diagnostic/cameraControlBlock.xhtml"/>
+						<ui:include src="../diagnostic/cameraDiagnosticControlBlock.xhtml"/>
 
 				</p:panelGrid>
 
 
+				<p:panelGrid columns="1" style="margin:0" styleClass="pcsForm">
+
+					<f:facet name="header">
+					Camera Voltages
+					</f:facet>
+				
+					<ui:include src="../diagnostic/voltagesDiagnosticStatusBlock.xhtml"/> 
+
+				</p:panelGrid>
+
 			</p:panelGrid>
+			
 		</h:form>
 
 	</ui:define>

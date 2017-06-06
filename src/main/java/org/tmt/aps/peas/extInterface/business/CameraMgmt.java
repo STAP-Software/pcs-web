@@ -215,44 +215,41 @@ public class CameraMgmt {
 	}
 
 
-	public int commandOverallPowerState(int powerState) throws Exception {
-
-		return extInfFactory.getCameraCommand().commandOverallPowerState(powerState);
+	@Asynchronous
+	public Future<Integer> commandOverallPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandOverallPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
-
-
-	public int commandNetworkControllerPowerState(int powerState) throws Exception {
-
-		return extInfFactory.getCameraCommand().commandNetworkControllerPowerState(powerState);
+	@Asynchronous
+	public Future<Integer> commandNetworkControllerPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandNetworkControllerPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
-
-
-	public int commandFanPowerState(int powerState) throws Exception {
-
-		return extInfFactory.getCameraCommand().commandFanPowerState(powerState);
+	@Asynchronous
+	public Future<Integer> commandFanPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandFanPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
-
-	
-	public int commandGalilPowerState(int powerState) throws Exception {
-
-		return extInfFactory.getCameraCommand().commandGalilPowerState(powerState);
+	@Asynchronous
+	public Future<Integer> commandGalilPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandGalilPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
-
-
-	public int commandPowerSuppliesPowerState(int powerState) throws Exception {
-
-		return extInfFactory.getCameraCommand().commandPowerSuppliesPowerState(powerState);
+	@Asynchronous
+	public Future<Integer> commandPowerSuppliesPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandPowerSuppliesPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
 	}
 
-
-	public void setPurgeAirState(int purgeAirState) throws Exception {
-
+	@Asynchronous
+	public Future<Integer> setPurgeAirState(int purgeAirState) throws Exception {
 		extInfFactory.getCameraCommand().setPurgeAirState(purgeAirState);
 		
+		return new AsyncResult<Integer>(purgeAirState);
 	}
 
 

@@ -334,8 +334,8 @@ public class FrameMgmt {
 			
 			ccdFrame.setCcdName(ccd.getCcdName());
 			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+			ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
 			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
-			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
 
 		} else {
 		
@@ -393,8 +393,8 @@ public class FrameMgmt {
 			
 			ccdFrame.setCcdName(ccd.getCcdName());
 			ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+			ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
 			ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
-			ccdFrame.setCcdGainOffsetChannel2(ccd.getCcdGain().getGainOffsetChannel2());
 
 		}
 

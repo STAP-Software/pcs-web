@@ -98,6 +98,16 @@ public class FilterWheel implements DeviceStates {
 		return (state == STATE_IN_TRANSIT) ? "In Transit" : selectedFilter.getWheelPosition() + " (" + selectedFilter.getFilterName() + ")";
 	}
 
+	public String getRawStateDisplayString() {
+		if (selectedFilter == null && state != STATE_IN_TRANSIT) {
+			return "Unknown";
+		} else {
+			return (state == STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
+
+	
 	public int getState() {
 		return state;
 	}

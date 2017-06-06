@@ -72,8 +72,8 @@ public class CcdFrame {
 	
 	private String ccdName;
 
-	private int ccdGainOffsetChannel1; 
-	private int ccdGainOffsetChannel2;
+	private int ccdGainOffsetChannel0; 
+	private int ccdGainOffsetChannel1;
 	
 	@Transient
 	protected int noOfAxes;
@@ -286,6 +286,14 @@ public class CcdFrame {
 		this.ccdName = ccdName;
 	}
 
+	public int getCcdGainOffsetChannel0() {
+		return ccdGainOffsetChannel0;
+	}
+
+	public void setCcdGainOffsetChannel0(int ccdGainOffsetChannel0) {
+		this.ccdGainOffsetChannel0 = ccdGainOffsetChannel0;
+	}
+
 	public int getCcdGainOffsetChannel1() {
 		return ccdGainOffsetChannel1;
 	}
@@ -294,13 +302,6 @@ public class CcdFrame {
 		this.ccdGainOffsetChannel1 = ccdGainOffsetChannel1;
 	}
 
-	public int getCcdGainOffsetChannel2() {
-		return ccdGainOffsetChannel2;
-	}
-
-	public void setCcdGainOffsetChannel2(int ccdGainOffsetChannel2) {
-		this.ccdGainOffsetChannel2 = ccdGainOffsetChannel2;
-	}
 
 	@Transient
 	byte[] falseColorPng;

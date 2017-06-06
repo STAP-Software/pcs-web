@@ -21,7 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.extinf.Voltages;
 
 /**
  * Instrument configuration Entity class representing the Camera table.  Contains <code>@Transient</code> fields used to store current state information for
@@ -53,6 +53,19 @@ public class Camera {
 	private float instrumentTemperature;
 	@Transient
 	private float electronicsBoxTemperature;
+	@Transient
+	private float instrumentHumidity;
+	@Transient
+	private float electronicsBoxHumidity;
+	@Transient
+	private boolean temperatureInterlock;
+	@Transient
+	private boolean purgeState;
+	@Transient
+	private boolean glycolFlow;
+	@Transient 
+	private Voltages voltages = new Voltages();
+	
 
 	@OneToOne
 	@JoinColumn(name="instrumentId")
@@ -141,6 +154,54 @@ public class Camera {
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
 	}
 
+	public float getInstrumentHumidity() {
+		return instrumentHumidity;
+	}
+
+	public void setInstrumentHumidity(float instrumentHumidity) {
+		this.instrumentHumidity = instrumentHumidity;
+	}
+
+	public float getElectronicsBoxHumidity() {
+		return electronicsBoxHumidity;
+	}
+
+	public void setElectronicsBoxHumidity(float electronicsBoxHumidity) {
+		this.electronicsBoxHumidity = electronicsBoxHumidity;
+	}
+
+	public boolean isTemperatureInterlock() {
+		return temperatureInterlock;
+	}
+
+	public void setTemperatureInterlock(boolean temperatureInterlock) {
+		this.temperatureInterlock = temperatureInterlock;
+	}
+
+	public boolean isPurgeState() {
+		return purgeState;
+	}
+
+	public void setPurgeState(boolean purgeState) {
+		this.purgeState = purgeState;
+	}
+
+	public boolean isGlycolFlow() {
+		return glycolFlow;
+	}
+
+	public void setGlycolFlow(boolean glycolFlow) {
+		this.glycolFlow = glycolFlow;
+	}
+
+	public Voltages getVoltages() {
+		return voltages;
+	}
+
+	public void setVoltages(Voltages voltages) {
+		this.voltages = voltages;
+	}
+
 	public Instrument getInstrument() {
 		return instrument;
 	}
@@ -215,4 +276,32 @@ public class Camera {
 		return refBeamList;
 	}
 	
+	public double getCamera12Supply() {
+		return voltages.getVoltage(Voltages.CAMERA_12_SUPPLY);
+	}
+	public double getCamera5Supply() {
+		return voltages.getVoltage(Voltages.CAMERA_5_SUPPLY);
+	}
+	public double getCameraN12Supply() {
+		return voltages.getVoltage(Voltages.CAMERA_N12_SUPPLY);
+	}
+	public double getLedDraw() {
+		return voltages.getVoltage(Voltages.LED_DRAW);
+	}
+	public double getRefBeamSupply() {
+		return voltages.getVoltage(Voltages.REFBEAM_SUPPLY);
+	}
+	public double getStandbySupply() {
+		return voltages.getVoltage(Voltages.STANDBY_SUPPLY);
+	}
+	public double getVicor5Supply() {
+		return voltages.getVoltage(Voltages.VICOR_5_SUPPLY);
+	}
+	public double getVicor12Supply() {
+		return voltages.getVoltage(Voltages.VICOR_12_SUPPLY);
+	}
+	
+	
+
+
 }

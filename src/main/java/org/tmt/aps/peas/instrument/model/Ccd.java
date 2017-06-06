@@ -32,13 +32,13 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
-			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 where o.ccdId = :ccdId" ),
-	@NamedQuery(name = "findInstrumentCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
-			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 INNER JOIN FETCH o.instrument i"
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 where o.ccdId = :ccdId" ),
+	@NamedQuery(name = "findInstrumentCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 INNER JOIN FETCH o.instrument i"
 			+ " where i.instrumentId = :instrumentId" ),
-	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain1 "
-			+ " INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3  INNER JOIN FETCH o.ccdGain4 "
+	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 "
 			+ " LEFT OUTER JOIN o.instrument" )
 })
 public class Ccd {
@@ -77,8 +77,8 @@ public class Ccd {
 	private CcdGain ccdGain3;
 	
 	@ManyToOne
-	@JoinColumn (name="ccdGainId4")
-	private CcdGain ccdGain4;
+	@JoinColumn (name="ccdGainId0")
+	private CcdGain ccdGain0;
 	
 	
 	
@@ -191,12 +191,12 @@ public class Ccd {
 		this.ccdGain3 = ccdGain3;
 	}
 
-	public CcdGain getCcdGain4() {
-		return ccdGain4;
+	public CcdGain getCcdGain0() {
+		return ccdGain0;
 	}
 
-	public void setCcdGain4(CcdGain ccdGain4) {
-		this.ccdGain4 = ccdGain4;
+	public void setCcdGain4(CcdGain ccdGain0) {
+		this.ccdGain0 = ccdGain0;
 	}
 
 
@@ -325,14 +325,14 @@ public class Ccd {
 	}
 	
 	public CcdGain getCcdGain() {
-		if (currentGainNumber == 1) {
+		if (currentGainNumber == 0) {
 			return ccdGain1;
-		} else if (currentGainNumber == 2) {
+		} else if (currentGainNumber == 1) {
 			return ccdGain2;
-		} else if (currentGainNumber == 3) {
+		} else if (currentGainNumber == 2) {
 			return ccdGain3;
-		} else if (currentGainNumber == 4) {
-			return ccdGain4;
+		} else if (currentGainNumber == 3) {
+			return ccdGain0;
 		} else {
 			return null;
 		}
@@ -341,10 +341,10 @@ public class Ccd {
 
 	public List<CcdGain> getCcdGainList() {
 		List<CcdGain> ccdGainList = new ArrayList<CcdGain>();
+		ccdGainList.add(ccdGain0);
 		ccdGainList.add(ccdGain1);
 		ccdGainList.add(ccdGain2);
 		ccdGainList.add(ccdGain3);
-		ccdGainList.add(ccdGain4);
 		return ccdGainList;
 	}
 	

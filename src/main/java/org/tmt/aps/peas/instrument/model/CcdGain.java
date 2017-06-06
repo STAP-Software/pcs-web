@@ -34,8 +34,8 @@ public class CcdGain implements IterableEntity {
 	
 	private int gainNumber; 
 	private float gainValue; 		// counts/photoelectron
+	private int gainOffsetChannel0; // counts
 	private int gainOffsetChannel1; // counts
-	private int gainOffsetChannel2; // counts
 	
 	public CcdGain() {
 	
@@ -66,6 +66,14 @@ public class CcdGain implements IterableEntity {
 		this.gainValue = gainValue;
 	}
 
+	public int getGainOffsetChannel0() {
+		return gainOffsetChannel0;
+	}
+
+	public void setGainOffsetChannel0(int gainOffsetChannel0) {
+		this.gainOffsetChannel0 = gainOffsetChannel0;
+	}
+	
 	public int getGainOffsetChannel1() {
 		return gainOffsetChannel1;
 	}
@@ -74,13 +82,6 @@ public class CcdGain implements IterableEntity {
 		this.gainOffsetChannel1 = gainOffsetChannel1;
 	}
 
-	public int getGainOffsetChannel2() {
-		return gainOffsetChannel2;
-	}
-
-	public void setGainOffsetChannel2(int gainOffsetChannel2) {
-		this.gainOffsetChannel2 = gainOffsetChannel2;
-	}
 
 	public boolean equals(Object obj) {
 		if (obj instanceof CcdGain) {

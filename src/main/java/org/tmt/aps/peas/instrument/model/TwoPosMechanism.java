@@ -45,4 +45,12 @@ public class TwoPosMechanism {
 		return "";
 	}
 
+	public String getRawStateDisplayString() {
+		if (state > 3 || state < 1) {
+			return "Unknown";
+		} else {
+			return (state == TWO_POS_MECH_STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
 }

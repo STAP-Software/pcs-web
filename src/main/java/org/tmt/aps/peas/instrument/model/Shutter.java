@@ -43,5 +43,15 @@ public class Shutter {
 		}
 		return "";
 	}
+	
+	public String getRawStateDisplayString() {
+		if (state > 4 || state < 1) {
+			return "Unknown";
+		} else {
+			return (state == STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
+
 
 }
