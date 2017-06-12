@@ -6,6 +6,8 @@
 package org.tmt.aps.peas.extInterface.ui;
 
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Future;
 
 import javax.annotation.PostConstruct;
@@ -23,11 +25,11 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
+import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.Ccd;
-import org.tmt.aps.peas.instrument.model.DeviceStates;
 import org.tmt.aps.peas.instrument.model.Shutter;
 import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 
@@ -55,6 +57,19 @@ public class CameraManualController implements Serializable {
 	//Camera camera;
 	//Ccd ccd;
 	int commandSelection;
+	int statusUpdateMethod = 0;
+	int voltageUpdateMethod = 0;
+	String[] queryUpdateMethod;
+	int selectedQueryUpdateMethod = 0;
+	int cameraQueryListenerDeviceCode = 1;
+	int voltagePeriod = 2;
+	int statusPeriod = 2;
+	// use this listener to update the instrument physical model
+	DiagnosticCameraStatusListener dcsl;
+	DiagnosticCameraVoltageListener dcvl;
+	// listeners for each device code
+	Map<Integer, CameraQueryListener> device2cameraQueryListener = new HashMap<Integer, CameraQueryListener>();
+
 	int selectedPupilMaskPos = 1;
 	int selectedFilterWheelPos = 1;
 	int selectedRefBeam = 1;
@@ -84,6 +99,21 @@ public class CameraManualController implements Serializable {
 		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
 
 		//ccd = physicalModel.getInstrument().getCcd();
+		
+		 dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
+		 dcvl = new DiagnosticCameraVoltageListener(physicalModel.getInstrument());
+		 
+		 queryUpdateMethod = new String[23];
+		 
+		// create all the cameraQueryListeners for each device code
+		for (int deviceCode = 1; deviceCode < 23; deviceCode++) {
+			
+			DiagnosticCameraQueryListener dcql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
+		
+			device2cameraQueryListener.put(new Integer(deviceCode), dcql);
+			
+		}
+		
 	}
 
 	public Camera getCamera() {
@@ -231,8 +261,153 @@ public class CameraManualController implements Serializable {
 		this.purgeAirStateCmd = purgeAirStateCmd;
 	}
 
+	public int getStatusUpdateMethod() {
+		return statusUpdateMethod;
+	}
+
+	public void setStatusUpdateMethod(int statusUpdateMethod) {
+		this.statusUpdateMethod = statusUpdateMethod;
+	}
+
+	public int getVoltageUpdateMethod() {
+		return voltageUpdateMethod;
+	}
+
+	public void setVoltageUpdateMethod(int voltageUpdateMethod) {
+		this.voltageUpdateMethod = voltageUpdateMethod;
+	}
+
+	public String[] getQueryUpdateMethod() {
+		return queryUpdateMethod;
+	}
+
+	public void setQueryUpdateMethod(String[] queryUpdateMethod) {
+		this.queryUpdateMethod = queryUpdateMethod;
+	}
+
+	public int getSelectedQueryUpdateMethod() {
+		return selectedQueryUpdateMethod;
+	}
+
+	public void setSelectedQueryUpdateMethod(int selectedQueryUpdateMethod) {
+		this.selectedQueryUpdateMethod = selectedQueryUpdateMethod;
+	}
+
+	public int getCameraQueryListenerDeviceCode() {
+		return cameraQueryListenerDeviceCode;
+	}
+
+	public void setCameraQueryListenerDeviceCode(int cameraQueryListenerDeviceCode) {
+		this.cameraQueryListenerDeviceCode = cameraQueryListenerDeviceCode;
+	}
+
+	public int getStatusPeriod() {
+		return statusPeriod;
+	}
+
+	public void setStatusPeriod(int statusPeriod) {
+		this.statusPeriod = statusPeriod;
+	}
+
+	public int getVoltagePeriod() {
+		return voltagePeriod;
+	}
+
+	public void setVoltagePeriod(int voltagePeriod) {
+		this.voltagePeriod = voltagePeriod;
+	}
+
 	public boolean getRenderExposureTime() {
 		return (commandSelection == 4) && (shutterCmd == Shutter.STATE_TIMED_EXPOSURE);
+	}
+	
+	// Listener methods
+	
+	public void statusUpdateMethodChangeListener() throws Exception {
+		
+		// clear status listeners
+		cameraMgmt.removeCameraStatusListener(dcsl);
+		// clear camera query listeners
+		removeAllCameraQueryListeners();
+		
+		switch (statusUpdateMethod) {
+		case 1: // Status Change Listener
+			cameraMgmt.addCameraStatusListener(dcsl);
+			break;
+		case 2: // Status Periodic Listener
+			cameraMgmt.addPeriodicCameraStatusListener(dcsl, statusPeriod);
+			break;
+		case 3: // Status Change and Periodic Listener
+			cameraMgmt.addCameraStatusListener(dcsl, statusPeriod);
+			break;
+		case 4: // Individual Camera Query Calls
+			break;
+		case 5: // getStatus() call
+			break;
+		default: // no method
+			break;
+		}
+	}
+	
+	public void voltageUpdateMethodChangeListener() throws Exception {
+		
+		// clear status listeners
+		cameraMgmt.removeVoltageListener(dcvl);
+		
+		switch (statusUpdateMethod) {
+		case 1: // Status Change Listener
+			cameraMgmt.addVoltageListener(dcvl);
+			break;
+		case 2: // Status Periodic Listener
+			cameraMgmt.addPeriodicVoltageListener(dcvl, voltagePeriod);
+			break;
+		case 3: // Status Change and Periodic Listener
+			cameraMgmt.addVoltageListener(dcvl, voltagePeriod);
+			break;
+		case 4: // getVoltage() call
+			break;
+		default: // no method
+			break;
+		}
+	}
+	
+	private void removeAllCameraQueryListeners() throws Exception {
+		for (Integer deviceCode : device2cameraQueryListener.keySet()) {
+			CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
+			cameraMgmt.removeCameraQueryListener(deviceCode, cql);
+		}
+	}
+	
+	public void queryUpdateMethodChangeListener() throws Exception {
+		
+		// TODO: allow user to specify period 
+		
+		int deviceCode = cameraQueryListenerDeviceCode;
+				
+		// 1. remove current listener from all listeners
+		CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
+		cameraMgmt.removeCameraQueryListener(deviceCode, cql);
+		
+		int method = new Integer(queryUpdateMethod[deviceCode]);
+		
+		// 2. add the device code to the selected listener type
+		switch (method) {
+		case 1: // Query Change Listener
+			cameraMgmt.addCameraQueryListener(deviceCode, cql);
+			break;
+		case 2: // Query Periodic Listener
+			cameraMgmt.addCameraQueryListener(deviceCode, 2, cql);
+			break;
+		case 3: // Query Change and Periodic Listener
+			cameraMgmt.addPeriodicCameraQueryListener(deviceCode, 2, cql);
+			break;
+		case 4: // queryCamera() call
+			break;
+		default: // no method
+			break;
+			
+		}
+
 	}
 
 	/**
@@ -255,6 +430,18 @@ public class CameraManualController implements Serializable {
 		
 	}
 
+	public void doGetStatus() {
+		//TODO: implement
+	}
+	
+	public void doGetVoltage() {
+		//TODO: implement
+	}
+	
+	public void doCallQueryCamera(int deviceCode) {
+		// TODO: implement
+	}
+	
 	/**
 	 * JSF Action method handling user pressing the 'cancel' button
 	 */

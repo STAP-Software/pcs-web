@@ -14,7 +14,7 @@
 				<f:selectItem itemLabel="Position 5" itemValue="5" />
 				<f:selectItem itemLabel="Position 6" itemValue="6" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendPupilMaskCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPupilMaskCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		<h:outputLabel value="Filter" />
@@ -26,7 +26,7 @@
 				<f:selectItem itemLabel="Position 5" itemValue="5" />
 				<f:selectItem itemLabel="Position 6" itemValue="6" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendFilterCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFilterCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		
@@ -43,7 +43,7 @@
 				<f:selectItem itemLabel="Ref. Beam 9" itemValue="9" />
 				<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendRefBeamCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendRefBeamCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		
@@ -59,7 +59,7 @@
 			<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" rendered="#{cameraManualController.renderExposureTime}" />
 			<p:inputText value="#{cameraManualController.ccdExposureTime}" size="5" rendered="#{cameraManualController.renderExposureTime}" />
 		</h:panelGroup>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendShutterCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendShutterCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		<h:outputLabel value="Fine Pupil Adj (microns)" />
@@ -69,7 +69,7 @@
 			<h:outputText value="&#160;&#160;y &#160;&#160;" />
 			<p:inputText value="#{cameraManualController.fineTiltCmd.y}" size="3"  />
 		</h:panelGroup>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendFineCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFineCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		
@@ -80,7 +80,7 @@
 			<h:outputText value="&#160;&#160;y &#160;&#160;"  />
 			<p:inputText value="#{cameraManualController.coarseTiltCmd.y}" size="3"  />
 		</h:panelGroup>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendCoarseCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCoarseCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		<h:outputLabel value="Two Position Mech" />
@@ -88,56 +88,56 @@
 				<f:selectItem itemLabel="Extend" itemValue="1" />
 				<f:selectItem itemLabel="Retract" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendTwoPosMechCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendTwoPosMechCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		<h:outputLabel value="CCD Power State" />
 		<p:selectOneMenu value="#{cameraManualController.ccdPowerCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendCcdPowerCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCcdPowerCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Overall Power State" />
 		<p:selectOneMenu value="#{cameraManualController.overallPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Network Controller Power State" />
 		<p:selectOneMenu value="#{cameraManualController.networkControllerPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendNetworkControllerPowerStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendNetworkControllerPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Fan Power State" />
 		<p:selectOneMenu value="#{cameraManualController.fanPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendFanPowerStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFanPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Galil Power State" />
 		<p:selectOneMenu value="#{cameraManualController.galilPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendGalilPowerStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendGalilPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Power Supplies Power State" />
 		<p:selectOneMenu value="#{cameraManualController.powerSuppliesPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendPowerSuppliesPowerStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPowerSuppliesPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 		<h:outputLabel value="Purge Air State" />
 		<p:selectOneMenu value="#{cameraManualController.purgeAirStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
 				<f:selectItem itemLabel="Off" itemValue="2" />
 		</p:selectOneMenu>
-		<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{cameraManualController.doSendPurgeAirStateCommand}" update="cameraPanel :growl :errorGrowl" style="top:8px" />
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPurgeAirStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
 
 

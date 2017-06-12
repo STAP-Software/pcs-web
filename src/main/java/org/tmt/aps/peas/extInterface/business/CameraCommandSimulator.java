@@ -519,7 +519,7 @@ public class CameraCommandSimulator implements CameraCommand {
 
 
 	@Override
-	public void removeVoltageListener(CameraStatusListener l) {
+	public void removeVoltageListener(VoltageListener l) {
 		
 		voltageChangeListenerList.remove(l);
 		voltageChangePeriodicListenerList.remove(l);

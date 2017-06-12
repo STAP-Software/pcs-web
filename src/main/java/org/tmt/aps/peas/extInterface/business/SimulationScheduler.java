@@ -42,6 +42,8 @@ public class SimulationScheduler {
 
 		try {
 
+			if (true) return;
+			
 			CameraCommand cameraCommand = extInfFactory.getCameraCommand();
 			if (cameraCommand instanceof CameraCommandSimulator) {
 				

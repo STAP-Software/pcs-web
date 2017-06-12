@@ -44,6 +44,16 @@
 	padding: 1px !important;
 }
 
+.thinButton .ui-button-text {
+	padding: 1px 5px !important;
+	position: static;
+}
+
+.thinButton  {
+	position: relative;
+	top: -3px;
+}
+
 .logo-style {
 	position: absolute;
 	top: 9px;
@@ -192,13 +202,23 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	vertical-align: top;
 }
 
-.btmsForm tbody tr td, .pcsForm tbody tr td, .pcsFormNoBorder tbody tr td {
+.topAlignPanel tbody tr td {
+	vertical-align: top;
 	border: 0px;
 }
-.btmsForm tbody tr, .pcsForm tbody tr, .pcsFormNoBorder tbody tr {
+
+.topAlignPanel {
+	border-colapse: separate;
+	border: none;
+}
+
+.btmsForm tbody tr td, .pcsForm tbody tr td, .pcsFormNoBorder tbody tr td, .topAlignPanel tbody tr td {
 	border: 0px;
 }
-.btmsForm tbody, .pcsFormNoBorder tbody {
+.btmsForm tbody tr, .pcsForm tbody tr, .pcsFormNoBorder tbody tr, .topAlignPanel tbody tr {
+	border: 0px;
+}
+.btmsForm tbody, .pcsFormNoBorder tbody, .topAlignPanel tbody {
 	border: 0px;
 }
 

@@ -280,7 +280,7 @@ public class CameraMgmt {
 	}
 
 
-	public void removeVoltageListener(CameraStatusListener l) throws Exception  {
+	public void removeVoltageListener(VoltageListener l) throws Exception  {
 		
 		extInfFactory.getCameraCommand().removeVoltageListener(l);
 		
@@ -312,5 +312,7 @@ public class CameraMgmt {
 				
 		return new AsyncResult<Boolean>(true);
 	}
+
+
 
 }
