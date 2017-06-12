@@ -13,19 +13,22 @@
 			<f:selectItem itemLabel="getStatus() call" itemValue="5" />
 			<p:ajax listener="#{cameraManualController.statusUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
 		</p:selectOneMenu>
-		<h:outputLabel value="Period: " rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}"/>
-		<p:inputText value="#{cameraManualController.statusPeriod}" size="3" rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}" />
-		<p:commandButton value="getStatus()" action="#{cameraManualController.doGetStatus}" icon="ui-icon-refresh" ajax="true" update="cameraStatusPanel :growl :errorGrowl" rendered="#{cameraManualController.statusUpdateMethod eq 5}" />
+		<h:outputLabel value="Period (sec): " style="position:relative; top:2px" rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}"/>
+		<p:inputText value="#{cameraManualController.statusPeriod}" size="3" style="position:relative; top:3px" rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}" />
+		<p:commandButton value="getStatus()" action="#{cameraManualController.doGetStatus}" ajax="true" update="cameraStatusPanel :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 5}"  style="position: relative; top:-2px;" />
 		
 		
 	</p:panelGrid>
+	
+	<p:spacer width="400px" height="1px" />
 
 	<p:panelGrid id="cameraStatusPanel" columns="5" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
 
 		<h:outputLabel value="Pupil Mask" />	
-		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.selectedPupilMask.wheelPosition} (#{cameraManualController.camera.pupilWheel.selectedPupilMask.maskName})" style="position:relative; top:0px" />
-		<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:0px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.selectedPupilMask.wheelPosition} (#{cameraManualController.camera.pupilWheel.selectedPupilMask.maskName})" style="position:relative; top:2px" />
+		<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -41,9 +44,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[1] eq 4}" styleClass="thinButton"/>
 		
 		<h:outputLabel value="Filter" />
-		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.selectedFilter.wheelPosition} (#{cameraManualController.camera.filterWheel.selectedFilter.filterName})" style="position:relative; top:0px" />
-		<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:0px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.selectedFilter.wheelPosition} (#{cameraManualController.camera.filterWheel.selectedFilter.filterName})" style="position:relative; top:2px" />
+		<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -59,9 +62,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[2] eq 4}"  styleClass="thinButton"/>
 
 		<h:outputLabel value="Ref. Beam" />
-		<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:0px" />
+		<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
 		<h:outputText id="refBeamStatus" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -77,9 +80,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[7] eq 4}"  styleClass="thinButton"/>
 
 		<h:outputLabel value="Shutter" />
-		<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" style="position:relative; top:0px" />
-		<h:outputText value="#{cameraManualController.camera.shutter.rawStateDisplayString}" style="position:relative; top:0px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[6]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.shutter.shutterDisplayString}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.shutter.rawStateDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[6]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -97,9 +100,9 @@
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
 		<h:outputLabel value="Fine Pupil Adj (x) (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" />
-		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -116,9 +119,9 @@
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
 		<h:outputLabel value="Fine Pupil Adj (y) (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" />
-		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -135,9 +138,9 @@
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
 		<h:outputLabel value="Coarse Pupil Adj (x) (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" />
-		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -154,9 +157,9 @@
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
 		<h:outputLabel value="Coarse Pupil Adj (y) (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" />
-		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -172,9 +175,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[10] eq 4}"  styleClass="thinButton"/>
 
 		<h:outputLabel value="Two Position Mech" />
-		<h:outputText value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:0px" />
-		<h:outputText value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" style="position:relative; top:0px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<h:outputText value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
+		<h:outputText value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -190,9 +193,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[5] eq 4}"  styleClass="thinButton"/>
 
 		<h:outputLabel value="CCD Power" />
-		<h:outputText value="#{cameraManualController.ccd.displayString}" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.ccd.displayString}" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -209,12 +212,12 @@
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
 		<h:outputLabel value="CCD Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.ccd.temperature}" style="position:relative; top:0px" >
+		<h:outputText value="#{cameraManualController.ccd.temperature}" style="position:relative; top:3px" >
 			<f:converter converterId="DynamicNumberConverter" />
 			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 		</h:outputText>
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[11]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[11]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -231,12 +234,12 @@
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
 		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.instrumentTemperature}" style="position:relative; top:0px" >
+		<h:outputText value="#{cameraManualController.camera.instrumentTemperature}" style="position:relative; top:2px" >
 			<f:converter converterId="DynamicNumberConverter" />
 			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 		</h:outputText>
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[13]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[13]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -253,12 +256,12 @@
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />				
 		<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{cameraManualController.camera.electronicsBoxTemperature}" style="position:relative; top:0px" >
+		<h:outputText value="#{cameraManualController.camera.electronicsBoxTemperature}" style="position:relative; top:2px" >
 			<f:converter converterId="DynamicNumberConverter" />
 			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 		</h:outputText>
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[12]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[12]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -274,9 +277,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[12] eq 4}"  styleClass="thinButton"/>
 
 		<h:outputLabel value="Instrument Humidity" />
-		<h:outputText value="#{cameraManualController.camera.instrumentHumidity}%" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.camera.instrumentHumidity}%" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[15]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[15]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -292,9 +295,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[15] eq 4}"  styleClass="thinButton"/>
 		
 		<h:outputLabel value="Electronics Box Humidity" />
-		<h:outputText value="#{cameraManualController.camera.electronicsBoxHumidity}%" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.camera.electronicsBoxHumidity}%" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[14]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[14]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -310,9 +313,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[14] eq 4}"  styleClass="thinButton"/>
 		
 		<h:outputLabel value="Temperature Interlock" />
-		<h:outputText value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -331,9 +334,9 @@
 		<!-- FIXME: these statuses do not yet have device codes, temporarily assigning 21 and 22 -->
 		
 		<h:outputLabel value="Purge State" />
-		<h:outputText value="#{cameraManualController.camera.purgeState}" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.camera.purgeState}" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
@@ -349,9 +352,9 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}"  styleClass="thinButton"/>
 		
 		<h:outputLabel value="Glycol Flow" />
-		<h:outputText value="#{cameraManualController.camera.glycolFlow}" style="position:relative; top:0px" />
+		<h:outputText value="#{cameraManualController.camera.glycolFlow}" style="position:relative; top:2px" />
 		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[22]}" style="top:-2px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[22]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
 			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 

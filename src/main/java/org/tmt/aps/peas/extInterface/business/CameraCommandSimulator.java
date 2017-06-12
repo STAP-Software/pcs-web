@@ -71,6 +71,9 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatusChangeListenerList = new ArrayList<CameraStatusListener>();
 		cameraStatusChangePeriodicListenerList = new ArrayList<CameraStatusListener>();
 		cameraStatusPeriodicListenerList = new ArrayList<CameraStatusListener>();
+		voltageChangeListenerList = new ArrayList<VoltageListener>();
+		voltageChangePeriodicListenerList = new ArrayList<VoltageListener>();
+		voltagePeriodicListenerList = new ArrayList<VoltageListener>();
 		
 		voltages = new Voltages();
 		

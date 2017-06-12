@@ -12,12 +12,14 @@
 			<f:selectItem itemLabel="getVoltages() call" itemValue="4" />
 			<p:ajax listener="#{cameraManualController.voltageUpdateMethodChangeListener}" update="voltageUpdateMethodPanel voltageStatusPanel" />
 		</p:selectOneMenu>
-		<h:outputLabel value="Period: " rendered="#{cameraManualController.voltageUpdateMethod eq 2 or cameraManualController.voltageUpdateMethod eq 3}"/>
-		<p:inputText value="#{cameraManualController.voltagePeriod}" size="3" rendered="#{cameraManualController.voltageUpdateMethod eq 2 or cameraManualController.voltageUpdateMethod eq 3}" />
-		<p:commandButton value="getVoltage()" action="#{cameraManualController.doGetVoltage}" icon="ui-icon-refresh" ajax="true" update="voltageStatusPanel :growl :errorGrowl" rendered="#{cameraManualController.voltageUpdateMethod eq 4}" />
+		<h:outputLabel value="Period (sec): " style="position:relative; top:2px" rendered="#{cameraManualController.voltageUpdateMethod eq 2 or cameraManualController.voltageUpdateMethod eq 3}"/>
+		<p:inputText value="#{cameraManualController.voltagePeriod}" size="3" style="position:relative; top:3px" rendered="#{cameraManualController.voltageUpdateMethod eq 2 or cameraManualController.voltageUpdateMethod eq 3}" />
+		<p:commandButton value="getVoltage()" action="#{cameraManualController.doGetVoltage}" icon="ui-icon-refresh" ajax="true" update="voltageStatusPanel :growl :errorGrowl" 
+			rendered="#{cameraManualController.voltageUpdateMethod eq 4}" style="position: relative; top:-2px;"/>
 		
 	</p:panelGrid>
 
+	<p:spacer width="400px" height="1px" />
 
 	<p:panelGrid id="voltageStatusPanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
@@ -45,6 +47,8 @@
 		<h:outputLabel value="StandBy Supply" />
 		<h:outputText value="#{cameraManualController.camera.standbySupply}" style="position:relative; top:2px" />
 			
+		<p:spacer width="180px" height="1px" />
+		<p:spacer width="180px" height="1px" />
 		
 
 		<f:facet name="footer">
