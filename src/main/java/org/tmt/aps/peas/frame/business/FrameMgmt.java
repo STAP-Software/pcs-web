@@ -460,14 +460,20 @@ public class FrameMgmt {
 
 			if (filename.toLowerCase().endsWith(".fts")) {
 
-				FitsFilename fitsFile = new FitsFilename(filename);
-
-				fitsFileList.add(fitsFile);
-
-				// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
-				// logger.info("file: " + filename);
-				// CcdFrame ccdFrame = loadFitsFrame(filename);
-				// loadPng(ccdFrame, true);
+				try {
+				
+					FitsFilename fitsFile = new FitsFilename(filename);
+	
+					fitsFileList.add(fitsFile);
+	
+					// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
+					// logger.info("file: " + filename);
+					// CcdFrame ccdFrame = loadFitsFrame(filename);
+					// loadPng(ccdFrame, true);
+				
+				} catch (Exception e) {
+					logger.error("Incorrect FITS filename format, file not added to list: " + filename + "  " + e.getMessage());
+				}
 			}
 		}
 
