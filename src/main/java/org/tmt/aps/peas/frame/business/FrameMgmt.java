@@ -15,6 +15,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
+import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -460,19 +461,21 @@ public class FrameMgmt {
 
 			if (filename.toLowerCase().endsWith(".fts")) {
 
-				try {
 				
-					FitsFilename fitsFile = new FitsFilename(filename);
-	
+				FitsFilename fitsFile = new FitsFilename(filename);
+				
+				if (fitsFile.isValid()) {
+
 					fitsFileList.add(fitsFile);
 	
 					// one time only conversion - UNCOMMENT TO GENERATE PNG FILES FOR ALL FITS FILES
 					// logger.info("file: " + filename);
 					// CcdFrame ccdFrame = loadFitsFrame(filename);
 					// loadPng(ccdFrame, true);
-				
-				} catch (Exception e) {
-					logger.error("Incorrect FITS filename format, file not added to list: " + filename + "  " + e.getMessage());
+			
+				} else {
+					
+					logger.error("Incorrect FITS filename format, file not added to list: " + filename);
 				}
 			}
 		}

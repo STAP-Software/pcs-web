@@ -39,6 +39,7 @@ public class FitsFilename {
 	
 	String filter; // only used for ref maps and pupil registration 
 	String maskType;  // only used for ref maps and pupil registration
+	boolean valid = true;
 
 	/**
 	 * Constructor for Phasing frames or SUFS
@@ -150,8 +151,9 @@ public class FitsFilename {
 				
 			}
 
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		} catch (Throwable e) {
+			logger.error("Error: " + "FITS Filename = " + fitsFileName, e);
+			valid = false;
 		}
 
 	}
@@ -251,6 +253,11 @@ public class FitsFilename {
 	public void setFileName(String fileName) {
 		this.fileName = fileName;
 	}
+
+	public boolean isValid() {
+		return valid;
+	}
+
 
 	/**
 	 * @return the procedure name long text derived form the procedure type code
