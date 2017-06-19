@@ -10,14 +10,14 @@
 			<p:panelGrid id="cameraPanel" columns="2" style="margin:0" styleClass="topAlignPanel">
 
 
-				<p:tabView>
-        			<p:tab title="Camera Status">
+				<p:tabView id="cameraStatusTabView">
+        			<p:tab id="cameraStatusBlock" title="Camera Status">
 
 					<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/> 
 					
 					</p:tab>
 					
-					<p:tab title="Camera Voltages">
+					<p:tab id="cameraVoltageBlock" title="Camera Voltages">
 					
 						<ui:include src="../diagnostic/voltagesDiagnosticStatusBlock.xhtml"/> 
 						

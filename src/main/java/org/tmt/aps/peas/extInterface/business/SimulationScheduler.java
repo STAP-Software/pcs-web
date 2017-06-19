@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.Arrays;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.DependsOn;
 import javax.ejb.EJB;
@@ -41,8 +43,6 @@ public class SimulationScheduler {
 	public void emitEvents() {
 
 		try {
-
-			if (true) return;
 			
 			CameraCommand cameraCommand = extInfFactory.getCameraCommand();
 			if (cameraCommand instanceof CameraCommandSimulator) {
@@ -77,6 +77,8 @@ public class SimulationScheduler {
 				}
 				
 				// Camera Query
+				
+				System.out.println(Arrays.toString(simulator.deviceCodeToCameraChangeListenerList.keySet().toArray()));
 				
 				for (Integer deviceKey : simulator.deviceCodeToCameraChangeListenerList.keySet()) {
 					// get the value CameraQueryResult for this device

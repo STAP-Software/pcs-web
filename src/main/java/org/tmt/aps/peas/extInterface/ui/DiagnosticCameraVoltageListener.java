@@ -8,9 +8,11 @@ public class DiagnosticCameraVoltageListener implements VoltageListener {
 
 	
 	Instrument instrument;
+	boolean updateRequested;
 	
 	public DiagnosticCameraVoltageListener(Instrument instrument) {
 		this.instrument = instrument; 
+		this.updateRequested = false;
 	}
 
 	@Override
@@ -18,6 +20,16 @@ public class DiagnosticCameraVoltageListener implements VoltageListener {
 		
 		// TODO: implement
 		//instrument.updateVoltages(voltages);
+		
+		updateRequested = true;
+	}
+
+	public boolean isUpdateRequested() {
+		return updateRequested;
+	}
+
+	public void setUpdateRequested(boolean updateRequested) {
+		this.updateRequested = updateRequested;
 	}
 	
 	

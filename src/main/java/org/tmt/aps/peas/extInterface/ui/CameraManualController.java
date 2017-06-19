@@ -15,16 +15,18 @@ import javax.ejb.EJB;
 import javax.enterprise.context.SessionScoped;
 import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
+import javax.faces.event.AjaxBehaviorEvent;
 import javax.inject.Inject;
 import javax.inject.Named;
 
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
-import org.tmt.aps.peas.extInterface.business.CameraPoller;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -48,8 +50,8 @@ public class CameraManualController implements Serializable {
 
 	@EJB
 	CameraMgmt cameraMgmt;
-	@EJB
-	CameraPoller cameraPoller;
+
+
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
@@ -61,7 +63,7 @@ public class CameraManualController implements Serializable {
 	int voltageUpdateMethod = 0;
 	String[] queryUpdateMethod;
 	int selectedQueryUpdateMethod = 0;
-	int cameraQueryListenerDeviceCode = 1;
+	String cameraQueryListenerDeviceCode = null;
 	int voltagePeriod = 2;
 	int statusPeriod = 2;
 	// use this listener to update the instrument physical model
@@ -69,7 +71,9 @@ public class CameraManualController implements Serializable {
 	DiagnosticCameraVoltageListener dcvl;
 	// listeners for each device code
 	Map<Integer, CameraQueryListener> device2cameraQueryListener = new HashMap<Integer, CameraQueryListener>();
-
+	Map<Integer, String> device2fieldNamePrefix = new HashMap<Integer, String>();
+	
+	
 	int selectedPupilMaskPos = 1;
 	int selectedFilterWheelPos = 1;
 	int selectedRefBeam = 1;
@@ -113,6 +117,30 @@ public class CameraManualController implements Serializable {
 			device2cameraQueryListener.put(new Integer(deviceCode), dcql);
 			
 		}
+		
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_POWER, "ccdPower");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_SHUTTER, "shutter");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE, "boxTemp");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FAN_POWER, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_NETWORK_POWER, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH, "instHumid");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE, "instTemp");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_POWER_SUPPLIES, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PUPIL_WHEEL, "pupilMask");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS, "refBeam");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK, "tempInterlock");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE, "twoPos");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_STEERING_MIRROR, "coarseX");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_TILT_PLATE, "fineX");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR, "coarseY");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_TILT_PLATE, "fineY");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_STATE, "purge");
+		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
+			
 		
 	}
 
@@ -293,11 +321,11 @@ public class CameraManualController implements Serializable {
 		this.selectedQueryUpdateMethod = selectedQueryUpdateMethod;
 	}
 
-	public int getCameraQueryListenerDeviceCode() {
+	public String getCameraQueryListenerDeviceCode() {
 		return cameraQueryListenerDeviceCode;
 	}
 
-	public void setCameraQueryListenerDeviceCode(int cameraQueryListenerDeviceCode) {
+	public void setCameraQueryListenerDeviceCode(String cameraQueryListenerDeviceCode) {
 		this.cameraQueryListenerDeviceCode = cameraQueryListenerDeviceCode;
 	}
 
@@ -378,11 +406,15 @@ public class CameraManualController implements Serializable {
 		}
 	}
 	
-	public void queryUpdateMethodChangeListener() throws Exception {
+	public void queryUpdateMethodChangeListener(AjaxBehaviorEvent event) throws Exception {
 		
 		// TODO: allow user to specify period 
 		
-		int deviceCode = cameraQueryListenerDeviceCode;
+		//int deviceCode = new Integer(cameraQueryListenerDeviceCode);
+		
+		String deviceCd = (String)event.getComponent().getAttributes().get("deviceCode");
+		
+		int deviceCode = new Integer(deviceCd);
 				
 		// 1. remove current listener from all listeners
 		CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
@@ -409,6 +441,49 @@ public class CameraManualController implements Serializable {
 		}
 
 	}
+	
+	/**
+	 * Checks all listeners to see if they have changes that require view updates
+	 * and update the view if needed.
+	 */
+	public void pollListener() {
+		
+		RequestContext requestContext = RequestContext.getCurrentInstance();
+		
+		
+		// check each listener to see if it is asking for an update of the view
+		
+		if (dcvl.isUpdateRequested()) {
+			requestContext.update("cameraDiagForm:cameraStatusTabView:cameraVoltagePanel");
+			dcvl.setUpdateRequested(false);
+		}
+		
+		if (dcsl.isUpdateRequested()) {
+			requestContext.update("cameraDiagForm:cameraStatusTabView:cameraStatusPanel");
+			dcsl.setUpdateRequested(false);
+			
+			return; // don't need to update by device if we are updating all of them
+		}
+		
+		
+		// listeners for each device code
+		for (Integer deviceCode : device2cameraQueryListener.keySet()) {
+			
+			DiagnosticCameraQueryListener dcql = (DiagnosticCameraQueryListener)device2cameraQueryListener.get(deviceCode);
+						
+			if (dcql.isUpdateRequested()) {
+				
+				String prefix = device2fieldNamePrefix.get(deviceCode);
+				
+				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Value"); 
+				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Status"); 
+									
+				dcql.setUpdateRequested(false);
+			}
+			
+		}
+
+	}
 
 	/**
 	 * JSF Action method to render the Camera I/F manual/diagnostic user interface
@@ -431,15 +506,15 @@ public class CameraManualController implements Serializable {
 	}
 
 	public void doGetStatus() {
-		//TODO: implement
+		// page updates from the Physical model
 	}
 	
 	public void doGetVoltage() {
-		//TODO: implement
+		// page updates from the Physical model
 	}
 	
 	public void doCallQueryCamera(int deviceCode) {
-		// TODO: implement
+		// page updates from the Physical model
 	}
 	
 	/**

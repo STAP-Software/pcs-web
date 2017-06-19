@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 
 /**
@@ -225,5 +226,101 @@ public class Instrument {
 	
 	}
 	}
+	
+	
+	/**
+	 * Given a deviceCode and CameraQueryResult object, updates the appropriate device with the query result.
+	 * @param deviceCode the device code
+	 * @param cameraQueryResult the query result to apply to the instrument
+	 */
+	public void updateDevice(int deviceCode, CameraQueryResult cameraQueryResult) {
+		
+		switch(deviceCode) {
+		case CameraCommand.DEVICE_CODE_PUPIL_WHEEL:
+			// Pupil Mask
+			camera.getPupilWheel().setState(cameraQueryResult.getState());
+			camera.getPupilWheel().setSelectedPupilMaskNumber(cameraQueryResult.getStateValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_FILTER_WHEEL:
+			// Filter
+			camera.getFilterWheel().setState(cameraQueryResult.getState());
+			camera.getFilterWheel().setSelectedFilterNumber(cameraQueryResult.getStateValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_REFERENCE_BEAMS:
+			// Ref Beam
+			camera.setCurrentRefBeam(cameraQueryResult.getStateValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_SHUTTER:
+			// Shutter
+			camera.getShutter().setState(cameraQueryResult.getState() == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_X_TILT_PLATE:
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getFineTiltMirror().getStateY()));
+			camera.getFineTiltMirror().setStateX(cameraQueryResult.getState());
+
+			break;
+			
+		case CameraCommand.DEVICE_CODE_Y_TILT_PLATE:
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getStateY(), cameraQueryResult.getStateValue()));
+			camera.getFineTiltMirror().setStateY(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_X_STEERING_MIRROR:
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getCoarseTiltMirror().getStateY()));
+			camera.getCoarseTiltMirror().setStateX(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR:
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getStateY(), cameraQueryResult.getStateValue()));
+			camera.getCoarseTiltMirror().setStateY(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE:
+			// Two Position Mech
+			camera.getTwoPosMechanism().setState(cameraQueryResult.getState() == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_POWER:
+			// CCD Power
+			ccd.setState(cameraQueryResult.getState() == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_TEMPERATURE:
+			// CCD Temperature
+			ccd.setTemperature(((float) cameraQueryResult.getDoubleVal()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
+			// Instrument Temperature
+			camera.setInstrumentTemperature(((float) cameraQueryResult.getDoubleVal()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE:
+			// Electronics Box Temperature
+			camera.setElectronicsBoxTemperature(((float) cameraQueryResult.getDoubleVal()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_ELECTRONICS_RH:
+			// Electronics Box Temperature
+			camera.setElectronicsBoxHumidity(((float) cameraQueryResult.getDoubleVal()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH:
+			// Electronics Box Temperature
+			camera.setInstrumentHumidity(((float) cameraQueryResult.getDoubleVal()));
+			break;
+			
+		}
+		
+	}
+	
 	
 }
