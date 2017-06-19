@@ -126,10 +126,10 @@ public class CameraCommandSimulator implements CameraCommand {
 		switch (deviceCode) {
 		
 		case DEVICE_CODE_CCD_POWER:
-			result =  new CameraQueryResult(1, overallPowerState | ccdControllerPowerState);
+			result =  new CameraQueryResult(overallPowerState | ccdControllerPowerState, 0);
 			break;
 		case DEVICE_CODE_CCD_SHUTTER:
-			result =  new CameraQueryResult(0, ccdShutterState);
+			result =  new CameraQueryResult(ccdShutterState, 0);
 			break;
 		case DEVICE_CODE_CCD_TEMPERATURE:
 			result =  new CameraQueryResult(random(-33.0, -14.0));
@@ -150,7 +150,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			result =  new CameraQueryResult(0, referenceBeamCommand);
 			break;
 		case DEVICE_CODE_TWO_POSITION_DEVICE:
-			result =  new CameraQueryResult(0, twoPositionDevicePosition);
+			result =  new CameraQueryResult(twoPositionDevicePosition, 0);
 			break;
 		case DEVICE_CODE_X_STEERING_MIRROR:
 			result =  new CameraQueryResult(1, xSteeringMirrorPosition);
@@ -558,7 +558,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.steeringMirrorXIsInTransit = false;
 		
 		cameraStatus.benchHumidity = random(10.0, 80.0);
-		cameraStatus.boxHumidty = random(10.0, 80.0);
+		cameraStatus.boxHumidity = random(10.0, 80.0);
 		cameraStatus.glycolFlowStatus = randomBool();
 		cameraStatus.purgeIsActive = (purgeAirState == 1);
 		cameraStatus.tempInterlockActive = randomBool();

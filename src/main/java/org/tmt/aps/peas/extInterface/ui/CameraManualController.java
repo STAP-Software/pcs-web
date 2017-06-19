@@ -475,6 +475,10 @@ public class CameraManualController implements Serializable {
 				
 				String prefix = device2fieldNamePrefix.get(deviceCode);
 				
+				
+				System.out.println(" Updating: cameraDiagForm:cameraStatusTabView:" + prefix + "Value");
+				System.out.println(" Updating: cameraDiagForm:cameraStatusTabView:" + prefix + "Status");
+				
 				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Value"); 
 				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Status"); 
 									
@@ -916,7 +920,7 @@ public class CameraManualController implements Serializable {
 		
 		try {
 
-			Future<Integer> future = cameraMgmt.commandPowerSuppliesPowerState(purgeAirStateCmd);
+			Future<Integer> future = cameraMgmt.setPurgeAirState(purgeAirStateCmd);
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}

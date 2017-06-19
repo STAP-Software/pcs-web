@@ -135,6 +135,21 @@ public class Instrument {
 
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
+		
+		// instrument RH
+		camera.setInstrumentHumidity((float)cameraStatus.benchHumidity);
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity((float)cameraStatus.boxHumidity);
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(cameraStatus.tempInterlockActive);
+		
+		// Purge State
+		camera.setPurgeState(cameraStatus.purgeIsActive);
+		
+		// Glycol Flow
+		camera.setGlycolFlow(cameraStatus.glycolFlowStatus);
 	}
 	
 	/**
@@ -185,6 +200,23 @@ public class Instrument {
 
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(((float) cameraState.getBoxTemp()));
+		
+		// instrument RH
+		camera.setInstrumentHumidity((float)cameraState.getBenchHumidity());
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity((float)cameraState.getBoxHumidity());
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(cameraState.isTemperatureInterlock());
+		
+		// Purge State
+		camera.setPurgeState(cameraState.isPurgeState());
+		
+		// Glycol Flow
+		camera.setGlycolFlow(cameraState.isGlycolFlow());
+
+
 	} else {
 		camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);
 		camera.getPupilWheel().setSelectedPupilMaskNumber(0);
@@ -224,6 +256,22 @@ public class Instrument {
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(0.0f);
 	
+		// instrument RH
+		camera.setInstrumentHumidity(0.0f);
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity(0.0f);
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(false);
+		
+		// Purge State
+		camera.setPurgeState(false);
+		
+		// Glycol Flow
+		camera.setGlycolFlow(false);
+
+
 	}
 	}
 	
@@ -260,26 +308,26 @@ public class Instrument {
 			
 		case CameraCommand.DEVICE_CODE_X_TILT_PLATE:
 			// Fine Tilt
-			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getFineTiltMirror().getStateY()));
+			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getFineTiltMirror().getCurrentPosition().y));
 			camera.getFineTiltMirror().setStateX(cameraQueryResult.getState());
 
 			break;
 			
 		case CameraCommand.DEVICE_CODE_Y_TILT_PLATE:
 			// Fine Tilt
-			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getStateY(), cameraQueryResult.getStateValue()));
+			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getCurrentPosition().x, cameraQueryResult.getStateValue()));
 			camera.getFineTiltMirror().setStateY(cameraQueryResult.getState());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_X_STEERING_MIRROR:
 			// Coarse Tilt
-			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getCoarseTiltMirror().getStateY()));
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getCoarseTiltMirror().getCurrentPosition().y));
 			camera.getCoarseTiltMirror().setStateX(cameraQueryResult.getState());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR:
 			// Coarse Tilt
-			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getStateY(), cameraQueryResult.getStateValue()));
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getCurrentPosition().x, cameraQueryResult.getStateValue()));
 			camera.getCoarseTiltMirror().setStateY(cameraQueryResult.getState());
 			break;
 			
@@ -318,6 +366,23 @@ public class Instrument {
 			camera.setInstrumentHumidity(((float) cameraQueryResult.getDoubleVal()));
 			break;
 			
+		case CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK:
+			// Temperature Interlock
+			camera.setTemperatureInterlock(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+		
+			/*
+		case CameraCommand.DEVICE_CODE_PURGE_STATE:
+			// Purge State
+			camera.setPurgeState(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_GLYCOL_FLOW:
+			// Glycol Flow
+			camera.setGlycolFlow(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+			*/
+
 		}
 		
 	}
