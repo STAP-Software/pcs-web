@@ -382,7 +382,7 @@ public class CameraManualController implements Serializable {
 		// clear status listeners
 		cameraMgmt.removeVoltageListener(dcvl);
 		
-		switch (statusUpdateMethod) {
+		switch (voltageUpdateMethod) {
 		case 1: // Status Change Listener
 			cameraMgmt.addVoltageListener(dcvl);
 			break;
@@ -454,7 +454,7 @@ public class CameraManualController implements Serializable {
 		// check each listener to see if it is asking for an update of the view
 		
 		if (dcvl.isUpdateRequested()) {
-			requestContext.update("cameraDiagForm:cameraStatusTabView:cameraVoltagePanel");
+			requestContext.update("cameraDiagForm:cameraStatusTabView:voltageStatusPanel");
 			dcvl.setUpdateRequested(false);
 		}
 		

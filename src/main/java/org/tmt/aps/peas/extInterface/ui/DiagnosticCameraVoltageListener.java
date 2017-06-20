@@ -18,8 +18,8 @@ public class DiagnosticCameraVoltageListener implements VoltageListener {
 	@Override
 	public void updateVoltages(Voltages voltages) {
 		
-		// TODO: implement
-		//instrument.updateVoltages(voltages);
+		// update the voltage states in the camera
+		instrument.getCamera().setVoltages(voltages);
 		
 		updateRequested = true;
 	}

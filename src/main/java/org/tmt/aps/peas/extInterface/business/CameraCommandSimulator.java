@@ -76,6 +76,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		voltagePeriodicListenerList = new ArrayList<VoltageListener>();
 		
 		voltages = new Voltages();
+		updateVoltages();
 		
 		resetCamera();
 	}
@@ -83,36 +84,36 @@ public class CameraCommandSimulator implements CameraCommand {
 	
 	private void updateVoltages() {
 		
-		if (overallPowerState == 0) {
-			voltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.LED_DRAW, 0.0);
-			voltages.setVoltage(Voltages.REFBEAM_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.VICOR_12_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.VICOR_5_SUPPLY, 0.0);
-			voltages.setVoltage(Voltages.STANDBY_SUPPLY, 0.0);
+		Voltages tempVoltages = new Voltages();
 		
-		} else {
-			
-			if (ccdControllerPowerState == 1)
-				voltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 12.0);
-			if (networkControllerPowerState == 1) 
-				voltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 5.0);
-			if (fanPowerState == 1) 
-				voltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 12.0);
-			if (galilPowerState == 1) {
-				voltages.setVoltage(Voltages.LED_DRAW, 6.0);
-				voltages.setVoltage(Voltages.REFBEAM_SUPPLY, 7.0);	
-			}
-			if (powerSuppliesPowerState == 1)
-				voltages.setVoltage(Voltages.STANDBY_SUPPLY, 8.0);
-			if (galilPowerState == 1) {
-				voltages.setVoltage(Voltages.VICOR_12_SUPPLY, 12.0);
-				voltages.setVoltage(Voltages.VICOR_5_SUPPLY, 5.0);
-			}
+		tempVoltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.LED_DRAW, 0.0);
+		tempVoltages.setVoltage(Voltages.REFBEAM_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.VICOR_12_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.VICOR_5_SUPPLY, 0.0);
+		tempVoltages.setVoltage(Voltages.STANDBY_SUPPLY, 0.0);
+	
+		
+		if (ccdControllerPowerState == 1)
+			tempVoltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 12.0);
+		if (networkControllerPowerState == 1) 
+			tempVoltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 5.0);
+		if (fanPowerState == 1) 
+			tempVoltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 12.0);
+		if (galilPowerState == 1) {
+			tempVoltages.setVoltage(Voltages.LED_DRAW, 6.0);
+			tempVoltages.setVoltage(Voltages.REFBEAM_SUPPLY, 7.0);	
+		}
+		if (powerSuppliesPowerState == 1)
+			tempVoltages.setVoltage(Voltages.STANDBY_SUPPLY, 8.0);
+		if (galilPowerState == 1) {
+			tempVoltages.setVoltage(Voltages.VICOR_12_SUPPLY, 12.0);
+			tempVoltages.setVoltage(Voltages.VICOR_5_SUPPLY, 5.0);
 		}
 
+		voltages = tempVoltages;
 	}
 		
 	

@@ -17,6 +17,7 @@ import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
+import org.tmt.aps.peas.extinf.Voltages;
 
 /**
  * Entity class representing the Instrument class.  Query defined on this class joins instrument with Ccd, Camera, referenceBeamSet, coarseTiltMirror, 
@@ -386,6 +387,5 @@ public class Instrument {
 		}
 		
 	}
-	
 	
 }
