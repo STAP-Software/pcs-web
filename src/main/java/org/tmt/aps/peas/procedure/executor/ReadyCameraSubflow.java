@@ -149,6 +149,11 @@ public class ReadyCameraSubflow {
 			statusLogger.log("ccd.cmd.offset", ccdGain.getGainOffsetChannel0(), ccdGain.getGainOffsetChannel1());
 			Future<Integer> ccdOffsetFuture = ccdMgmt.setOffset(ccdGain.getGainOffsets());
 
+			// open shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			cameraMgmt.commandCcdShutterState(CameraCommand.OPEN);
+
+			
 			// wait for all commands to complete
 			long waitPeriodMs = Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
 					coarseMirrorCommandFuture, fineMirrorCommandFuture, ccdGainFuture, ccdOffsetFuture);

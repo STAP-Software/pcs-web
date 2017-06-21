@@ -465,6 +465,11 @@ public class CoarsePhasingExecutor {
 				long waitPeriodMs =  Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+			
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 	
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 	

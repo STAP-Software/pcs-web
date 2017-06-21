@@ -218,6 +218,10 @@ public class CenterTelescopeExecutor {
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
 
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 			procedureExecutionState.setPercentComplete(95);
 			
 			statusLogger.log("procedure.success",  procedure.getProcedureType().getProcedureTypeName());
