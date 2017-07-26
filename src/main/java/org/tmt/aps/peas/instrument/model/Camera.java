@@ -21,7 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.extinf.Voltages;
+
 
 /**
  * Instrument configuration Entity class representing the Camera table.  Contains <code>@Transient</code> fields used to store current state information for
@@ -63,8 +63,7 @@ public class Camera {
 	private boolean purgeState;
 	@Transient
 	private boolean glycolFlow;
-	@Transient 
-	private Voltages voltages = new Voltages();
+
 	
 
 	@OneToOne
@@ -194,13 +193,6 @@ public class Camera {
 		this.glycolFlow = glycolFlow;
 	}
 
-	public Voltages getVoltages() {
-		return voltages;
-	}
-
-	public void setVoltages(Voltages voltages) {
-		this.voltages = voltages;
-	}
 
 	public Instrument getInstrument() {
 		return instrument;
@@ -275,32 +267,6 @@ public class Camera {
 		
 		return refBeamList;
 	}
-	
-	public double getCamera12Supply() {
-		return voltages.getVoltage(Voltages.CAMERA_12_SUPPLY);
-	}
-	public double getCamera5Supply() {
-		return voltages.getVoltage(Voltages.CAMERA_5_SUPPLY);
-	}
-	public double getCameraN12Supply() {
-		return voltages.getVoltage(Voltages.CAMERA_N12_SUPPLY);
-	}
-	public double getLedDraw() {
-		return voltages.getVoltage(Voltages.LED_DRAW);
-	}
-	public double getRefBeamSupply() {
-		return voltages.getVoltage(Voltages.REFBEAM_SUPPLY);
-	}
-	public double getStandbySupply() {
-		return voltages.getVoltage(Voltages.STANDBY_SUPPLY);
-	}
-	public double getVicor5Supply() {
-		return voltages.getVoltage(Voltages.VICOR_5_SUPPLY);
-	}
-	public double getVicor12Supply() {
-		return voltages.getVoltage(Voltages.VICOR_12_SUPPLY);
-	}
-	
 	
 
 

@@ -8,22 +8,18 @@
 			<p:spacer height="5px" />
 
 			<p:panelGrid id="cameraPanel" columns="2" style="margin:0" styleClass="topAlignPanel">
+			
+				<p:panelGrid columns="1" style="margin:0; align:top" styleClass="pcsForm">
 
-
-				<p:tabView id="cameraStatusTabView">
-        			<p:tab id="cameraStatusBlock" title="Camera Status">
-
-					<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/> 
-					
-					</p:tab>
-					
-					<p:tab id="cameraVoltageBlock" title="Camera Voltages">
-					
-						<ui:include src="../diagnostic/voltagesDiagnosticStatusBlock.xhtml"/> 
+					<f:facet name="header">
+					Camera Status
+					</f:facet>
+				
 						
-					</p:tab>
-					
-				</p:tabView>
+					<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/>
+
+				
+				</p:panelGrid>
 					
 
 
@@ -36,8 +32,7 @@
 				
 						
 					<ui:include src="../diagnostic/cameraDiagnosticControlBlock.xhtml"/>
-
-					
+		
 
 				</p:panelGrid>
 

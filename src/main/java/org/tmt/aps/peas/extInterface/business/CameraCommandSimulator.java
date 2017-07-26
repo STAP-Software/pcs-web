@@ -17,8 +17,7 @@ import org.tmt.aps.peas.extinf.CameraStatusListener;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.TimeoutException;
-import org.tmt.aps.peas.extinf.VoltageListener;
-import org.tmt.aps.peas.extinf.Voltages;
+
 
 /**
  * PCS Camera command simulator.  Generates dummy values for queries.
@@ -34,9 +33,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	List<CameraStatusListener> cameraStatusChangeListenerList;
 	List<CameraStatusListener> cameraStatusChangePeriodicListenerList;
 	List<CameraStatusListener> cameraStatusPeriodicListenerList;
-	List<VoltageListener> voltageChangeListenerList;
-	List<VoltageListener> voltageChangePeriodicListenerList;
-	List<VoltageListener> voltagePeriodicListenerList;
+
 	
 	
 	private int overallPowerState;
@@ -47,7 +44,6 @@ public class CameraCommandSimulator implements CameraCommand {
 	private int powerSuppliesPowerState;
 	private int purgeAirState;
 
-	private Voltages voltages;
 	
 	private int pupilWheelPosition;
 	private int filterWheelPosition;
@@ -71,50 +67,12 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatusChangeListenerList = new ArrayList<CameraStatusListener>();
 		cameraStatusChangePeriodicListenerList = new ArrayList<CameraStatusListener>();
 		cameraStatusPeriodicListenerList = new ArrayList<CameraStatusListener>();
-		voltageChangeListenerList = new ArrayList<VoltageListener>();
-		voltageChangePeriodicListenerList = new ArrayList<VoltageListener>();
-		voltagePeriodicListenerList = new ArrayList<VoltageListener>();
-		
-		voltages = new Voltages();
-		updateVoltages();
+
 		
 		resetCamera();
 	}
 
-	
-	private void updateVoltages() {
-		
-		Voltages tempVoltages = new Voltages();
-		
-		tempVoltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.LED_DRAW, 0.0);
-		tempVoltages.setVoltage(Voltages.REFBEAM_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.VICOR_12_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.VICOR_5_SUPPLY, 0.0);
-		tempVoltages.setVoltage(Voltages.STANDBY_SUPPLY, 0.0);
-	
-		
-		if (ccdControllerPowerState == 1)
-			tempVoltages.setVoltage(Voltages.CAMERA_12_SUPPLY, 12.0);
-		if (networkControllerPowerState == 1) 
-			tempVoltages.setVoltage(Voltages.CAMERA_5_SUPPLY, 5.0);
-		if (fanPowerState == 1) 
-			tempVoltages.setVoltage(Voltages.CAMERA_N12_SUPPLY, 12.0);
-		if (galilPowerState == 1) {
-			tempVoltages.setVoltage(Voltages.LED_DRAW, 6.0);
-			tempVoltages.setVoltage(Voltages.REFBEAM_SUPPLY, 7.0);	
-		}
-		if (powerSuppliesPowerState == 1)
-			tempVoltages.setVoltage(Voltages.STANDBY_SUPPLY, 8.0);
-		if (galilPowerState == 1) {
-			tempVoltages.setVoltage(Voltages.VICOR_12_SUPPLY, 12.0);
-			tempVoltages.setVoltage(Voltages.VICOR_5_SUPPLY, 5.0);
-		}
 
-		voltages = tempVoltages;
-	}
 		
 	
 	@Override
@@ -409,7 +367,6 @@ public class CameraCommandSimulator implements CameraCommand {
 		}
 		overallPowerState = powerState;
 		
-		updateVoltages();
 		
 		return overallPowerState;
 	}
@@ -423,7 +380,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
 		}
 		ccdControllerPowerState = powerState;
-		updateVoltages();
+
 
 		return ccdControllerPowerState;
 	}
@@ -436,7 +393,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
 		}
 		fanPowerState = powerState;
-		updateVoltages();
+
 
 		return fanPowerState;
 	}
@@ -449,7 +406,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
 		}
 		galilPowerState = powerState;
-		updateVoltages();
+
 
 		return galilPowerState;
 	}
@@ -462,7 +419,7 @@ public class CameraCommandSimulator implements CameraCommand {
 			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
 		}
 		powerSuppliesPowerState = powerState;
-		updateVoltages();
+
 
 		return powerSuppliesPowerState;
 	}
@@ -481,45 +438,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 
-	@Override
-	public Voltages getVoltages() throws CommunicationException, CommandFailureException {
-		
-		return voltages;
-	}
-
-
-	@Override
-	public void addVoltageListener(VoltageListener l) {
-		
-		voltageChangeListenerList.add(l);
-		
-	}
-
-
-	@Override
-	public void addVoltageListener(VoltageListener l, int period) {
-		
-		voltageChangePeriodicListenerList.add(l);
-		
-	}
-
-
-	@Override
-	public void addPeriodicVoltageListener(VoltageListener l, int period) throws IllegalArgumentException {
-		
-		voltagePeriodicListenerList.add(l);
-		
-	}
-
-
-	@Override
-	public void removeVoltageListener(VoltageListener l) {
-		
-		voltageChangeListenerList.remove(l);
-		voltageChangePeriodicListenerList.remove(l);
-		voltagePeriodicListenerList.remove(l);
-		
-	}
+	
 
 
 	@Override

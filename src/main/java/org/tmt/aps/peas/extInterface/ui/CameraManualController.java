@@ -68,7 +68,7 @@ public class CameraManualController implements Serializable {
 	int statusPeriod = 2;
 	// use this listener to update the instrument physical model
 	DiagnosticCameraStatusListener dcsl;
-	DiagnosticCameraVoltageListener dcvl;
+
 	// listeners for each device code
 	Map<Integer, CameraQueryListener> device2cameraQueryListener = new HashMap<Integer, CameraQueryListener>();
 	Map<Integer, String> device2fieldNamePrefix = new HashMap<Integer, String>();
@@ -105,7 +105,7 @@ public class CameraManualController implements Serializable {
 		//ccd = physicalModel.getInstrument().getCcd();
 		
 		 dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
-		 dcvl = new DiagnosticCameraVoltageListener(physicalModel.getInstrument());
+
 		 
 		 queryUpdateMethod = new String[23];
 		 
@@ -377,27 +377,7 @@ public class CameraManualController implements Serializable {
 		}
 	}
 	
-	public void voltageUpdateMethodChangeListener() throws Exception {
-		
-		// clear status listeners
-		cameraMgmt.removeVoltageListener(dcvl);
-		
-		switch (voltageUpdateMethod) {
-		case 1: // Status Change Listener
-			cameraMgmt.addVoltageListener(dcvl);
-			break;
-		case 2: // Status Periodic Listener
-			cameraMgmt.addPeriodicVoltageListener(dcvl, voltagePeriod);
-			break;
-		case 3: // Status Change and Periodic Listener
-			cameraMgmt.addVoltageListener(dcvl, voltagePeriod);
-			break;
-		case 4: // getVoltage() call
-			break;
-		default: // no method
-			break;
-		}
-	}
+
 	
 	private void removeAllCameraQueryListeners() throws Exception {
 		for (Integer deviceCode : device2cameraQueryListener.keySet()) {
@@ -452,11 +432,6 @@ public class CameraManualController implements Serializable {
 		
 		
 		// check each listener to see if it is asking for an update of the view
-		
-		if (dcvl.isUpdateRequested()) {
-			requestContext.update("cameraDiagForm:cameraStatusTabView:voltageStatusPanel");
-			dcvl.setUpdateRequested(false);
-		}
 		
 		if (dcsl.isUpdateRequested()) {
 			requestContext.update("cameraDiagForm:cameraStatusTabView:cameraStatusPanel");

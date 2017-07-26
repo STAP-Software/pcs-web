@@ -19,8 +19,6 @@ import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.CameraStatusListener;
-import org.tmt.aps.peas.extinf.VoltageListener;
-import org.tmt.aps.peas.extinf.Voltages;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
@@ -247,38 +245,7 @@ public class CameraMgmt {
 	}
 
 
-	public Voltages getVoltages() throws Exception {
-		
-		return extInfFactory.getCameraCommand().getVoltages();
-	}
-
-
-	public void addVoltageListener(VoltageListener l) throws Exception {
-		
-		extInfFactory.getCameraCommand().addVoltageListener(l);
-		
-	}
-
-
-	public void addVoltageListener(VoltageListener l, int period) throws Exception  {
-		
-		extInfFactory.getCameraCommand().addVoltageListener(l, period);
-		
-	}
-
-
-	public void addPeriodicVoltageListener(VoltageListener l, int period) throws Exception {
-		
-		extInfFactory.getCameraCommand().addPeriodicVoltageListener(l, period);
-		
-	}
-
-
-	public void removeVoltageListener(VoltageListener l) throws Exception  {
-		
-		extInfFactory.getCameraCommand().removeVoltageListener(l);
-		
-	}
+	
 	
 	
 	

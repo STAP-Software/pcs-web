@@ -18,8 +18,7 @@ import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.CameraStatusListener;
-import org.tmt.aps.peas.extinf.VoltageListener;
-import org.tmt.aps.peas.extinf.Voltages;
+
 
 /**
  * Scheduled Singleton EJB that supplies Camera I/F listeners with values periodically.  
@@ -62,19 +61,6 @@ public class SimulationScheduler {
 					listener.cameraStatusUpdate(cameraStatus);
 				}
 				
-				// Voltages
-				
-				Voltages voltages = simulator.getVoltages();
-	
-				for (VoltageListener listener : simulator.voltageChangeListenerList) {
-					listener.updateVoltages(voltages);
-				}
-				for (VoltageListener listener : simulator.voltageChangePeriodicListenerList) {
-					listener.updateVoltages(voltages);
-				}
-				for (VoltageListener listener : simulator.voltagePeriodicListenerList) {
-					listener.updateVoltages(voltages);
-				}
 				
 				// Camera Query
 				
