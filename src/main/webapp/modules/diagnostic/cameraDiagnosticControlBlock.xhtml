@@ -104,13 +104,6 @@
 		</p:selectOneMenu>
 		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
-		<h:outputLabel value="Network Controller Power State" />
-		<p:selectOneMenu value="#{cameraManualController.networkControllerPowerStateCmd}" style="top:2px" >
-				<f:selectItem itemLabel="On" itemValue="1" />
-				<f:selectItem itemLabel="Off" itemValue="0" />
-		</p:selectOneMenu>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendNetworkControllerPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
-
 		<h:outputLabel value="Fan Power State" />
 		<p:selectOneMenu value="#{cameraManualController.fanPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />

@@ -222,12 +222,6 @@ public class CameraMgmt {
 	}
 
 	@Asynchronous
-	public Future<Integer> commandNetworkControllerPowerState(int ccdPowerState) throws Exception {
-		int result =  extInfFactory.getCameraCommand().commandNetworkControllerPowerState(ccdPowerState);
-		return new AsyncResult<Integer>(result);
-	}
-
-	@Asynchronous
 	public Future<Integer> commandFanPowerState(int ccdPowerState) throws Exception {
 		int result =  extInfFactory.getCameraCommand().commandFanPowerState(ccdPowerState);
 		return new AsyncResult<Integer>(result);

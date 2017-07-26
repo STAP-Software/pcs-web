@@ -816,30 +816,6 @@ public class CameraManualController implements Serializable {
 		
 	}
 	
-	public void doSendNetworkControllerPowerStateCommand() {
-		
-		try {
-
-			Future<Integer> powerFuture = cameraMgmt.commandNetworkControllerPowerState(networkControllerPowerStateCmd);
-			while (!powerFuture.isDone()) {
-				Thread.sleep(500);
-			}
-			powerFuture.get();
-						
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Network Power State"));
-
-			
-		} catch (CommandFailureException e) {
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		}
-		
-	}
 	
 	public void doSendFanPowerStateCommand() {
 		

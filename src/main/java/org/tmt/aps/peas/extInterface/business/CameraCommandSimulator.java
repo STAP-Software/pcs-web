@@ -287,12 +287,14 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 	@Override
-	public void commandReferenceBeamState(int referenceBeamCommand) throws CommunicationException, TimeoutException,
+	public int commandReferenceBeamState(int referenceBeamCommand) throws CommunicationException, TimeoutException,
 			CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandReferenceBeamState::SIMULATOR"));
 		Utils.waitFor(750);		
 		this.referenceBeamCommand = referenceBeamCommand;
 		logger.info(MessageGenerator.generateMessage("command.success", "commandReferenceBeamState::SIMULATOR"));
+		
+		return referenceBeamCommand;
 	}
 
 	@Override
@@ -428,20 +430,6 @@ public class CameraCommandSimulator implements CameraCommand {
 
 
 	@Override
-	public int commandNetworkControllerPowerState(int powerState)
-			throws IllegalArgumentException, CommunicationException, CommandFailureException {
-
-		if (powerState != 0 && powerState != 1) {
-			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
-		}
-		networkControllerPowerState = powerState;
-		updateVoltages();
-
-		return networkControllerPowerState;
-	}
-
-
-	@Override
 	public int commandFanPowerState(int powerState) throws IllegalArgumentException, CommunicationException, CommandFailureException {
 
 		if (powerState != 0 && powerState != 1) {
@@ -481,12 +469,14 @@ public class CameraCommandSimulator implements CameraCommand {
 
 
 	@Override
-	public void setPurgeAirState(int purgeAirState) throws IllegalArgumentException, CommunicationException, CommandFailureException {
+	public int setPurgeAirState(int purgeAirState) throws IllegalArgumentException, CommunicationException, CommandFailureException {
 
 		if (purgeAirState != 0 && purgeAirState != 1) {
 			throw new IllegalArgumentException("passed purge air state " + purgeAirState + " must be either zero or one"); 
 		}
 		this.purgeAirState = purgeAirState;
+		
+		return purgeAirState;
 		
 	}
 
