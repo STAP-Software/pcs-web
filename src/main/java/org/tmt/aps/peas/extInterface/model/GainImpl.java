@@ -6,8 +6,8 @@ public class GainImpl extends Gain {
 
 	double electronsPerAdu;
 	
-	public GainImpl(int programNumber) {
-		super(programNumber);
+	public GainImpl(int gain) {
+		super(gain);
 	}
 	
 	@Override
@@ -21,9 +21,9 @@ public class GainImpl extends Gain {
 	}
 
 	@Override
-	public int getProgramNumber() {
+	public int getGain() {
 		// TODO Auto-generated method stub
-		return super.getProgramNumber();
+		return super.getGain();
 	}
 
 }

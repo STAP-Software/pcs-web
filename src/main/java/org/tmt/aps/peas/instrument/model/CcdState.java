@@ -18,7 +18,7 @@ public class CcdState {
 	}
 	
 	public CcdState(Gain gain, int[] offsets, int[] imageSize, int[] overscannedImageSize) {
-		gainNumber = gain.getProgramNumber();
+		gainNumber = gain.getGain();
 		gainValue = (float)gain.getElectronsPerAdu();
 		channelOffset1 = offsets[0];
 		channelOffset2 = offsets[1];

@@ -5,6 +5,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.extInterface.model.GainImpl;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.CommandFailureException;
+import org.tmt.aps.peas.extinf.CommunicationException;
 import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.extinf.TimeoutException;
 import org.tmt.aps.peas.instrument.model.Ccd;
@@ -108,11 +109,11 @@ public class CcdCommandSimulator implements CcdCommand {
 
 	public void setGain(Gain newGain) throws IllegalArgumentException, CommandFailureException {
 		
-		gainNumber = newGain.getProgramNumber();
+		gainNumber = newGain.getGain();
 		
 		ccd.setGain(gainNumber);
 		
-		gain = new GainImpl(newGain.getProgramNumber());
+		gain = new GainImpl(newGain.getGain());
 		gain.setElectronsPerAdu(newGain.getElectronsPerAdu());
 		
 	}
@@ -144,6 +145,24 @@ public class CcdCommandSimulator implements CcdCommand {
 
 	public void setOffset(int[] offset) throws IllegalArgumentException, CommandFailureException {
 		// does nothing
+	}
+
+	@Override
+	public double getExposureTime() throws CommandFailureException {
+		// TODO Auto-generated method stub
+		return 0;
+	}
+
+	@Override
+	public double[] getTemperatures() throws CommunicationException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public void setTemp(double temp) throws IllegalArgumentException, CommandFailureException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 	
