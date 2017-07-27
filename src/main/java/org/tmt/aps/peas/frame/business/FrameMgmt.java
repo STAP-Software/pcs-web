@@ -351,7 +351,7 @@ public class FrameMgmt {
 		ccdFrame.setCreateDate(new Date());
 		ccdFrame.setNoOfAxes(2);
 		
-		return populateCcdFrame(rawFrame, exposureTime, sufsGroup);
+		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup);
 	}
 
 	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup) {
