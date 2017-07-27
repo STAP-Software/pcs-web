@@ -56,6 +56,7 @@ public class Ccd {
 	private String hotPixelListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private String hotColumnListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private float nonLinearThreshold;
+	private float defaultTemperature;
 	
 	
 	@ManyToOne
@@ -201,6 +202,14 @@ public class Ccd {
 
 	public void setCcdGain0(CcdGain ccdGain0) {
 		this.ccdGain0 = ccdGain0;
+	}
+
+	public float getDefaultTemperature() {
+		return defaultTemperature;
+	}
+
+	public void setDefaultTemperature(float defaultTemperature) {
+		this.defaultTemperature = defaultTemperature;
 	}
 
 
