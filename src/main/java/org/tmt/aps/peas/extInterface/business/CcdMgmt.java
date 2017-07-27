@@ -123,5 +123,24 @@ public class CcdMgmt {
 		
 		return new AsyncResult<Integer>(1);
 	}
+	
+	@Asynchronous
+	public Future<Integer> setTemp(double temp) throws Exception {
+		
+		extInfFactory.getCcdCommand().setTemp(temp);
+		
+		physicalModel.getInstrument().getCcd().setTemperatureSetting(temp);
+		
+		return new AsyncResult<Integer>(1);
+	}
+	
+	public double[] getTemperatures() throws Exception {
+		return extInfFactory.getCcdCommand().getTemperatures();
+	}
+
+	public double getExposureTime() throws Exception {
+		return extInfFactory.getCcdCommand().getExposureTime();
+	}
+
 
 }

@@ -90,6 +90,8 @@ public class Ccd {
 	private float temperature;
 	@Transient
 	private int currentGainNumber = 0;
+	@Transient
+	private double temperatureSetting;
 
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
@@ -226,6 +228,16 @@ public class Ccd {
 		this.temperature = temperature;
 	}
 	
+	public double getTemperatureSetting() {
+		return temperatureSetting;
+	}
+
+
+	public void setTemperatureSetting(double temperatureSetting) {
+		this.temperatureSetting = temperatureSetting;
+	}
+
+
 	public float getNonLinearThreshold() {
 		return nonLinearThreshold;
 	}

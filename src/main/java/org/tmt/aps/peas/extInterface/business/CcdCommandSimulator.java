@@ -27,7 +27,9 @@ public class CcdCommandSimulator implements CcdCommand {
 	private int gainNumber;
 	private int[] offsetCalibration;
 	private GainImpl gain;
-	
+	private double exposureTime = 12.4;
+
+	 private double[] ccdTemps = {-19.0, -24.3, -25.1};
 	
 	public CcdCommandSimulator(Ccd ccd, int imageHeight, int imageWidth, int overscanWidth, int overscanHeight, int gainNumber, 
 			int[] offsetCalibration) {
@@ -45,6 +47,8 @@ public class CcdCommandSimulator implements CcdCommand {
 	public short[][] getImage(double t) throws IllegalArgumentException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getImage::SIMULATOR"));
 
+		exposureTime = t;
+		
 		int[] imageSize = getImageSize();
 		int imageWidth = imageSize[0];
 		int imageHeight = imageSize[1];
@@ -64,6 +68,8 @@ public class CcdCommandSimulator implements CcdCommand {
 	public short[][] getOverscannedImage(double t) throws IllegalArgumentException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "getOverscannedImage::SIMULATOR"));
 
+		exposureTime = t;
+		
 		int[] imageSize = getOverscannedImageSize();
 		int imageWidth = imageSize[0];
 		int imageHeight = imageSize[1];
@@ -150,18 +156,18 @@ public class CcdCommandSimulator implements CcdCommand {
 	@Override
 	public double getExposureTime() throws CommandFailureException {
 		// TODO Auto-generated method stub
-		return 0;
+		return exposureTime;
 	}
 
 	@Override
 	public double[] getTemperatures() throws CommunicationException {
 		// TODO Auto-generated method stub
-		return null;
+		return ccdTemps;
 	}
 
 	@Override
 	public void setTemp(double temp) throws IllegalArgumentException, CommandFailureException {
-		// TODO Auto-generated method stub
+		// does nothing
 		
 	}
 	

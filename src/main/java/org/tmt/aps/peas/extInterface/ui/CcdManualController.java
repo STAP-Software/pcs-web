@@ -71,6 +71,7 @@ public class CcdManualController implements Serializable {
 	int channel;
 	boolean cmdExecuted;
 	int[] offsetCalibration;
+	double desiredTemp;
 
 	CcdState ccdState;
 	
@@ -158,6 +159,14 @@ public class CcdManualController implements Serializable {
 
 	public void setCcdState(CcdState ccdState) {
 		this.ccdState = ccdState;
+	}
+
+	public double getDesiredTemp() {
+		return desiredTemp;
+	}
+
+	public void setDesiredTemp(double desiredTemp) {
+		this.desiredTemp = desiredTemp;
 	}
 
 	public String getStatusPanelTitle() {
@@ -294,6 +303,13 @@ public class CcdManualController implements Serializable {
 				commandType = "Set Both Channel Offsets";
 				break;
 
+			case 7: // Set Temperature
+				
+				ccdMgmt.setTemp(desiredTemp);
+				
+				commandType = "Set CCD Temperature";
+				break;
+
 
 			default:
 
@@ -351,9 +367,13 @@ public class CcdManualController implements Serializable {
 		int[] offsets = ccdMgmt.getOffset();
 		int[] imageSize = ccdMgmt.getImageSize();
 		int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
+		double[] temperatures = ccdMgmt.getTemperatures();
+		double exposureTime = ccdMgmt.getExposureTime();
 		
-		ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize);
-
+		double temperatureSetting = physicalModel.getInstrument().getCcd().getTemperatureSetting();
+		
+		ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize, temperatureSetting, temperatures, exposureTime);
+		
 	}
 
 	/**

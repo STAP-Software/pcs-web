@@ -12,12 +12,17 @@ public class CcdState {
 	float gainValue;
 	int channelOffset1;
 	int channelOffset2;
+	double temperatureSetting;
+	double caseTemperature;
+	double rightTemperature;
+	double leftTemperature;
+	double exposureTime;
 	
 	public CcdState() {
 		
 	}
 	
-	public CcdState(Gain gain, int[] offsets, int[] imageSize, int[] overscannedImageSize) {
+	public CcdState(Gain gain, int[] offsets, int[] imageSize, int[] overscannedImageSize, double temperatureSetting, double[] temperatures, double exposureTime) {
 		gainNumber = gain.getGain();
 		gainValue = (float)gain.getElectronsPerAdu();
 		channelOffset1 = offsets[0];
@@ -26,6 +31,11 @@ public class CcdState {
 		imageHeight = imageSize[1];
 		overscannedImageWidth = overscannedImageSize[0];
 		overscannedImageHeight = overscannedImageSize[1];
+		this.temperatureSetting = temperatureSetting;
+		caseTemperature = temperatures[0];
+		leftTemperature = temperatures[1];
+		rightTemperature = temperatures[2];
+		this.exposureTime = exposureTime;
 	}
 	
 	public int getImageWidth() {
@@ -90,6 +100,46 @@ public class CcdState {
 	
 	public void setChannelOffset2(int channelOffset2) {
 		this.channelOffset2 = channelOffset2;
+	}
+
+	public double getTemperatureSetting() {
+		return temperatureSetting;
+	}
+
+	public void setTemperatureSetting(double temperatureSetting) {
+		this.temperatureSetting = temperatureSetting;
+	}
+
+	public double getCaseTemperature() {
+		return caseTemperature;
+	}
+
+	public void setCaseTemperature(double caseTemperature) {
+		this.caseTemperature = caseTemperature;
+	}
+
+	public double getRightTemperature() {
+		return rightTemperature;
+	}
+
+	public void setRightTemperature(double rightTemperature) {
+		this.rightTemperature = rightTemperature;
+	}
+
+	public double getLeftTemperature() {
+		return leftTemperature;
+	}
+
+	public void setLeftTemperature(double leftTemperature) {
+		this.leftTemperature = leftTemperature;
+	}
+
+	public double getExposureTime() {
+		return exposureTime;
+	}
+
+	public void setExposureTime(double exposureTime) {
+		this.exposureTime = exposureTime;
 	}
 	
 	
