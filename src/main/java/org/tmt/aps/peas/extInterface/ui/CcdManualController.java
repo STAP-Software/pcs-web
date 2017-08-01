@@ -246,15 +246,26 @@ public class CcdManualController implements Serializable {
 
 			case 2: // Take Overscanned Exposure
 				int[][] overscanFrame = ccdMgmt.getOverscannedImage(exposureTime);
-				short[][] overscanRawFrame = new short[overscanFrame.length][overscanFrame[0].length];
+				short[][] overscanRawFrame = new short[overscanFrame.length][overscanFrame[0].length-(2*OVERSCAN_COL_COUNT)];
+				
+				System.out.println("overscanFrame.length = " + overscanFrame.length + ", " + overscanFrame[0].length);
+				
+				
 				for (int i=0; i< overscanFrame.length; i++) {
 					StringBuffer buf = new StringBuffer();
+					
+					int k=0;
 					for (int j=0; j<overscanFrame[i].length; j++) {
 						
 						// hack fix for now: remove center 48 columns
 						if (j < 512-OVERSCAN_COL_COUNT || j >= 512 + OVERSCAN_COL_COUNT) {
-							overscanRawFrame[i][j] = (short)overscanFrame[j][i];
+							
+							//System.out.println("i: " + i + ", j: " + j + ", k: " + k);
+							
+							overscanRawFrame[k][i] = (short)overscanFrame[i][j];
+							k++;
 						}
+						
 												
 					}
 					if (buf.length() > 0) {
