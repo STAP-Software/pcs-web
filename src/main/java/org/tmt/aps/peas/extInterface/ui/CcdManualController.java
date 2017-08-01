@@ -75,6 +75,8 @@ public class CcdManualController implements Serializable {
 
 	CcdState ccdState;
 	
+	private static final int OVERSCAN_COL_COUNT = 24;
+	
 	@PostConstruct
 	public void init() {
 		ccdState = new CcdState();
@@ -248,10 +250,12 @@ public class CcdManualController implements Serializable {
 				for (int i=0; i< overscanFrame.length; i++) {
 					StringBuffer buf = new StringBuffer();
 					for (int j=0; j<overscanFrame[i].length; j++) {
-						overscanRawFrame[i][j] = (short)overscanFrame[j][i];
-						if (overscanRawFrame[i][j] > 400) {
-							buf.append("[" + overscanRawFrame[i][j] + "]");
+						
+						// hack fix for now: remove center 48 columns
+						if (i < 512-OVERSCAN_COL_COUNT || i >= 512 + OVERSCAN_COL_COUNT) {
+							overscanRawFrame[i][j] = (short)overscanFrame[j][i];
 						}
+												
 					}
 					if (buf.length() > 0) {
 					//logger.debug(buf);
