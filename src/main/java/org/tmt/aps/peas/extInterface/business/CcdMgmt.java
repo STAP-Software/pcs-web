@@ -127,7 +127,7 @@ public class CcdMgmt {
 	@Asynchronous
 	public Future<Integer> setTemp(double temp) throws Exception {
 		
-		extInfFactory.getCcdCommand().setTemp(temp);
+		extInfFactory.getCcdCommand().setTemperature(temp);
 		
 		physicalModel.getInstrument().getCcd().setTemperatureSetting(temp);
 		

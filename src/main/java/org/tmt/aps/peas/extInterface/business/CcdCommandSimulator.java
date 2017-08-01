@@ -166,7 +166,7 @@ public class CcdCommandSimulator implements CcdCommand {
 	}
 
 	@Override
-	public void setTemp(double temp) throws IllegalArgumentException, CommandFailureException {
+	public void setTemperature(double temp) throws IllegalArgumentException, CommandFailureException {
 		// does nothing
 		
 	}
