@@ -170,6 +170,18 @@ public class CcdCommandSimulator implements CcdCommand {
 		// does nothing
 		
 	}
+
+	@Override
+	public void refreshCameraInfo() throws CommandFailureException {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public int[] triggerOffsetCalibration(int refValue) throws TimeoutException, CommandFailureException {
+		// TODO Auto-generated method stub
+		return null;
+	}
 	
 	
 	

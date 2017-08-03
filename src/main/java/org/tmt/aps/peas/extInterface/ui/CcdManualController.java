@@ -378,6 +378,27 @@ public class CcdManualController implements Serializable {
 	
 	private void refresh() throws CommandFailureException, Exception {
 		
+		// refresh the status cache in the CCD client
+		try {
+				
+			Future<Integer> refreshFuture = ccdMgmt.refreshCcdStatus();
+			
+			while (!refreshFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			refreshFuture.get();
+					
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+				
 		Gain gain = ccdMgmt.getGain();
 		int[] offsets = ccdMgmt.getOffset();
 		int[] imageSize = ccdMgmt.getImageSize();

@@ -142,5 +142,9 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getExposureTime();
 	}
 
-
+	public Future<Integer> refreshCcdStatus() throws Exception {
+		extInfFactory.getCcdCommand().refreshCameraInfo();
+		return new AsyncResult<Integer>(1);
+	}
+	
 }
