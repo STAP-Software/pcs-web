@@ -40,6 +40,7 @@ import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -72,6 +73,8 @@ public class FrameController implements Serializable {
 
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	CcdMgmt ccdMgmt;
 	@EJB
 	ProcedureMgmt procedureMgmt;
 	@EJB
@@ -514,6 +517,11 @@ public class FrameController implements Serializable {
 			// refresh status for fits header
 			telescopeMgmt.refreshStatus();
 
+			
+			// get integration time here
+			double intTime = ccdMgmt.getExposureTime();
+			ccdFrame.setIntTime((float)intTime);
+			
 			ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 			frameMgmt.saveFitsFrame(ccdFrame);
 

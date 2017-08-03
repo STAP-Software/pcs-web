@@ -687,6 +687,9 @@ public class FrameMgmt {
 			}
 			myFits.getHDU(0).getHeader().addStringValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
 			
+		} else {
+			// manually taken frame
+			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", ccdFrame.getIntTime(), "Integration Time (sec)");
 		}
 		
 		myFits.getHDU(0).getHeader().addStringValue("FILTER", camera.getFilterWheel().getSelectedFilter().getFilterName(), "Filter Name");
