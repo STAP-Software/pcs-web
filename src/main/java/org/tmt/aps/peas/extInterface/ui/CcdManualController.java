@@ -252,43 +252,24 @@ public class CcdManualController implements Serializable {
 
 			case 2: // Take Overscanned Exposure
 				int[][] overscanFrame = ccdMgmt.getOverscannedImage(exposureTime);
-				short[][] overscanRawFrame = new short[overscanFrame.length][overscanFrame[0].length-(2*OVERSCAN_COL_COUNT)];
-				
-				System.out.println("overscanFrame.length = " + overscanFrame.length + ", " + overscanFrame[0].length);
-				
+				short[][] overscanRawFrame = new short[overscanFrame[0].length][overscanFrame.length];
 				
 				for (int i=0; i< overscanFrame.length; i++) {
 					StringBuffer buf = new StringBuffer();
 					
-					int k=0;
 					for (int j=0; j<overscanFrame[i].length; j++) {
-						
-						// hack fix for now: remove center 48 columns
-						if (j < 512-OVERSCAN_COL_COUNT || j >= 512 + OVERSCAN_COL_COUNT) {
-							
-							//System.out.println("i: " + i + ", j: " + j + ", k: " + k);
-							
-							overscanRawFrame[k][i] = (short)overscanFrame[i][j];
-							k++;
-						}
-						
-												
+							overscanRawFrame[j][i] = (short)overscanFrame[i][j];
 					}
 					if (buf.length() > 0) {
 					//logger.debug(buf);
 					}
 				}
 				
-
-				
 				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1);
 				
-				
-
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				requestContext.update("frameDisplayForm:framePanel");
 				requestContext.execute("drawFrame()");
-				
 				
 				commandType = "Take Overscanned Exposure";
 				break;

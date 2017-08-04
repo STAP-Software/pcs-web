@@ -23,6 +23,7 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -559,6 +560,10 @@ public class FrameController implements Serializable {
 
 		setupFrameToolFrameDisplay(correctedFrame);
 		
+		//RequestContext requestContext = RequestContext.getCurrentInstance();
+		//requestContext.update("frameDisplayForm:framePanel");
+		//requestContext.execute("drawFrame()");
+
 	}
 	
 

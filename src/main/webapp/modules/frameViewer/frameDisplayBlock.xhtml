@@ -21,7 +21,7 @@
 			</p:submenu>
 			<p:submenu label="Tools" icon="ui-icon-pencil">
 				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doUpdateMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
-				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm" oncomplete="reload();" />
+				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm :frameDisplayForm:framePanel" oncomplete="drawFrame();" />
 			</p:submenu>
 
 
@@ -66,13 +66,13 @@
 		</p:panelGrid>		
 		
 		
-		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="1024px" width="1024px" style="position: absolute;left:-10000px" />
+		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="#{frameController.ccdFrame.frameHeight}" width="#{frameController.ccdFrame.frameWidth}" style="position: absolute;left:-10000px" />
 
-		<canvas id="frameCanvas" width="512px" height="512px" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
+		<canvas id="frameCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="#{frameController.ccdFrame.frameHeight / 2}" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
 		tag.</canvas>
 		<p:spacer height="1px"/>
 		<div id="pngImageDiv" />
-		<canvas id="infoCanvas" width="512px" height="15px" ></canvas>
+		<canvas id="infoCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="15px" ></canvas>
 		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
 			<p:row>
 				<p:column styleClass="btmsFormLabelColumn" style="width:35%">
@@ -185,7 +185,10 @@
 
 		var img = document.getElementById("frameDisplayForm:frameImage");
 		
-		ctx.drawImage(img, 0, 0, 1024, 1024);
+		var frameWidth = document.getElementById('frameHiddenForm:frameWidth').value;
+		var frameHeight = document.getElementById('frameHiddenForm:frameHeight').value;
+		
+		ctx.drawImage(img, 0, 0, frameWidth, frameHeight);
 				
 		var xField = document.getElementById('frameHiddenForm:centroidXs').value;
 		var xArray = xField.split(',');

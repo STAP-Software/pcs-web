@@ -356,5 +356,16 @@ public class CcdFrame {
 		this.headerPupilMaskType = headerPupilMaskType;
 	}
 	
+	public int getFrameWidth() {
+		return (rawFrame == null) ? 1024 : rawFrame.length;
+	}
+	public void setFrameWidth(int width) {}
+	
+	public int getFrameHeight() {
+		return (rawFrame == null) ? 1024 : rawFrame[0].length;
+	}
+	
+	public void setFrameHeight(int height) {}
+	
 	
 }

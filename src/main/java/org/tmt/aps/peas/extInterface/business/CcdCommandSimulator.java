@@ -81,8 +81,36 @@ public class CcdCommandSimulator implements CcdCommand {
 				frame[i][j] = (short)(j + i);
 			}
 		}
+		
+		
+		int overscanAreaWidth = (this.overscanWidth - this.imageWidth) / 2;
+		
+		// put in the overscan columns as random values
+		for (int i=0; i<overscanAreaWidth; i++) {
+			for (int j=0; j<imageHeight; j++) {
+				frame[i][j] = (short)(Math.random() * 500);
+			}
+		}
+		
+		for (int i=imageWidth-overscanAreaWidth; i<imageWidth; i++) {
+			for (int j=0; j<imageHeight; j++) {
+				frame[i][j] = (short)(Math.random() * 550);
+			}
+		}
+		
+		// reverse x and y because it is expected
+		
+		short[][] result = new short[frame[0].length][frame.length];
+		for (int i=0; i<frame.length; i++) {
+			for (int j=0; j<frame[0].length; j++) {
+				result[j][i] = frame[i][j];
+			}
+		}
+		
+		
+		
 		logger.info(MessageGenerator.generateMessage("command.success", "getOverscannedImage::SIMULATOR"));
-		return frame;
+		return result;
 	}
 
 

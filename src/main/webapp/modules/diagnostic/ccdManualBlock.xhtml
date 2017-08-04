@@ -59,7 +59,7 @@
 
 		<f:facet name="footer">
 			<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel" />
+				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel :frameHiddenForm" oncomplete="redraw();" />
 		</f:facet>
 
 	</p:panelGrid>

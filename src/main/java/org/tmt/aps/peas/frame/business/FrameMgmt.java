@@ -684,10 +684,10 @@ public class FrameMgmt {
 
 		// Now create three extensions.
 		// reverse the frame to match legacy frames
-		short[][] reversedFrame = new short[ccdFrame.getRawFrame().length][ccdFrame.getRawFrame()[0].length];
+		short[][] reversedFrame = new short[ccdFrame.getRawFrame()[0].length][ccdFrame.getRawFrame().length];
 		for (int i = 0; i < ccdFrame.getRawFrame().length; i++) {
 			for (int j = 0; j < ccdFrame.getRawFrame()[i].length; j++) {
-				reversedFrame[i][j] = ccdFrame.getRawFrame()[j][i];
+				reversedFrame[j][i] = ccdFrame.getRawFrame()[i][j];
 			}
 		}
 
