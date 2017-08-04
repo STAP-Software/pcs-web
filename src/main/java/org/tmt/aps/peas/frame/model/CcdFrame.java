@@ -75,6 +75,9 @@ public class CcdFrame {
 	private int ccdGainOffsetChannel0; 
 	private int ccdGainOffsetChannel1;
 	
+	private int darkMedianLeft;
+	private int darkMedianRight;
+	
 	@Transient
 	protected int noOfAxes;
 	@Transient
@@ -250,6 +253,22 @@ public class CcdFrame {
 
 	public void setSufsGroupNumber(Integer sufsGroupNumber) {
 		this.sufsGroupNumber = sufsGroupNumber;
+	}
+
+	public int getDarkMedianLeft() {
+		return darkMedianLeft;
+	}
+
+	public void setDarkMedianLeft(int darkMedianLeft) {
+		this.darkMedianLeft = darkMedianLeft;
+	}
+
+	public int getDarkMedianRight() {
+		return darkMedianRight;
+	}
+
+	public void setDarkMedianRight(int darkMedianRight) {
+		this.darkMedianRight = darkMedianRight;
 	}
 
 	public void setCorrectedFrame(float[][] correctedFrame) {

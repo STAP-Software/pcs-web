@@ -19,8 +19,9 @@
 				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(false)}" icon="ui-icon-check" rendered="#{frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 				<p:menuitem value="Marking" update="frameMenu :frameHiddenForm" action="#{frameController.doSetMarkingDisplayMode(true)}" rendered="#{not frameController.markingDisplayMode}"  oncomplete="setupListeners()" />				  
 			</p:submenu>
-			<p:submenu label="Marking" icon="ui-icon-pencil">
+			<p:submenu label="Tools" icon="ui-icon-pencil">
 				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doUpdateMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
+				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm" oncomplete="reload();" />
 			</p:submenu>
 
 

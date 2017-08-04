@@ -36,6 +36,7 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
@@ -49,6 +50,7 @@ import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.MarkedSubimage;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
@@ -537,6 +539,28 @@ public class FrameController implements Serializable {
 		}
 
 	}
+	
+	public void doCorrectDarkCurrent() {
+		
+		// get overscan results for testing
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+
+		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(ccdFrame.getRawFrame(), 
+				ccd.getDarkOvscnLeftColStart(), 
+				ccd.getDarkOvscnLeftColEnd(), 
+				ccd.getDarkOvscnRightColStart(), 
+				ccd.getDarkOvscnRightColEnd(),
+				overscanSize);
+		
+		// overwrite ccdFrame with corrected frame
+		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(result.getCorrectedFrame(), ccdFrame.getIntTime(), 0, 
+				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
+
+		setupFrameToolFrameDisplay(correctedFrame);
+		
+	}
+	
 
 	/**
 	 * JSF Action method to set the frame display mode to allow panning and zooming into the frame

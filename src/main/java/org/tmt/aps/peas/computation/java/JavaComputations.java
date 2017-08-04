@@ -15,6 +15,7 @@ import org.tmt.aps.peas.common.TriState;
 import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
@@ -913,5 +914,98 @@ public class JavaComputations {
 		
 		return arcsecPerMeter * pixelSize;
 	}
+	
+	/**
+	 * Calculates mean of frame between left and right dark current overscan areas
+	 * 
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize the size of the overscan area in pixels for a half detector
+	 * @return FloatPoint containing left and right overscans
+	 */
+	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) {
+		
+		// frame is [x][y] so first element is the column
+		
+		short leftMedian = calcMedianDarkOffset(frame, leftStartCol, leftEndCol);
+		short rightMedian = calcMedianDarkOffset(frame, rightStartCol, rightEndCol);
+	
+		
+		int totalOverscanFrameCols = frame.length;
+		int totalCorrectedFrameCols = totalOverscanFrameCols - (overscanSize * 2);
+		
+		int deltaMedian = Math.abs(leftMedian - rightMedian);
+		
+		int correctionStartCol = (leftMedian < rightMedian) ? 0 : totalCorrectedFrameCols/2;
+		int correctionEndCol = (leftMedian < rightMedian) ? totalCorrectedFrameCols/2 : totalCorrectedFrameCols;
+		
+		// cut off the frame overscan columns into newFrame
+		short[][] newFrame = new short[totalCorrectedFrameCols][frame[0].length];
+		System.arraycopy(frame, overscanSize, newFrame, 0, newFrame.length);
+		
+		// apply the correction median delta to the lower side
+		for (int i=correctionStartCol; i<correctionEndCol; i++) {
+			for (int j=0; j<newFrame[i].length; j++) {
+
+				int sum =  newFrame[i][j] + deltaMedian;
+				
+				// so that saturated frames do not exceed max short values
+				newFrame[i][j] = (short)Math.min(sum, Short.MAX_VALUE);
+			}
+		}
+		
+		return new CorrectOverscanDarkResult(newFrame, leftMedian, rightMedian);
+	}
+	
+	
+	/**
+	 * Calculates the median value of pixels in a set of columns from startCol to endCol inclusive
+	 * 
+	 * @param frame
+	 * @param startCol
+	 * @param endCol
+	 * @return
+	 */
+	public static short calcMedianDarkOffset(short[][] frame, int startCol, int endCol) {
+		
+		int columnCount = endCol - startCol + 1;
+		short[] allPixels = new short[frame[0].length * columnCount];
+		for (int colIndex = startCol; colIndex <= endCol; colIndex++) {
+			allPixels = combine(allPixels, frame[colIndex]);
+		}
+		return getMedianValue(allPixels);
+	}
+	
+	
+	
+	public static short[] combine(short[] a, short[] b){
+        int length = a.length + b.length;
+        short[] result = new short[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+  
+
+	public static short getMedianValue(short[] inputs) {
+		
+		// clone the array 
+		short[] values = inputs.clone();
+		
+		Arrays.sort(values);
+		float median;
+		if (values.length % 2 == 0)
+		    median = ((float)values[values.length/2] + (float)values[values.length/2 - 1])/2;
+		else
+		    median = (float) values[values.length/2];
+		
+		return (short)Math.round(median);
+	}
+
+
+	
 	
 }

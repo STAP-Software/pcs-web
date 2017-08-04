@@ -57,7 +57,10 @@ public class Ccd {
 	private String hotColumnListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private float nonLinearThreshold;
 	private float defaultTemperature;
-	
+	private int darkOvscnLeftColStart;
+	private int darkOvscnLeftColEnd;
+	private int darkOvscnRightColStart;
+	private int darkOvscnRightColEnd;
 	
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
@@ -256,6 +259,37 @@ public class Ccd {
 		this.nonLinearThreshold = nonLinearThreshold;
 	}
 
+	public int getDarkOvscnLeftColStart() {
+		return darkOvscnLeftColStart;
+	}
+
+	public void setDarkOvscnLeftColStart(int darkOvscnLeftColStart) {
+		this.darkOvscnLeftColStart = darkOvscnLeftColStart;
+	}
+
+	public int getDarkOvscnLeftColEnd() {
+		return darkOvscnLeftColEnd;
+	}
+
+	public void setDarkOvscnLeftColEnd(int darkOvscnLeftColEnd) {
+		this.darkOvscnLeftColEnd = darkOvscnLeftColEnd;
+	}
+
+	public int getDarkOvscnRightColStart() {
+		return darkOvscnRightColStart;
+	}
+
+	public void setDarkOvscnRightColStart(int darkOvscnRightColStart) {
+		this.darkOvscnRightColStart = darkOvscnRightColStart;
+	}
+
+	public int getDarkOvscnRightColEnd() {
+		return darkOvscnRightColEnd;
+	}
+
+	public void setDarkOvscnRightColEnd(int darkOvscnRightColEnd) {
+		this.darkOvscnRightColEnd = darkOvscnRightColEnd;
+	}
 
 	public String getDisplayString() {
 		switch (state) {

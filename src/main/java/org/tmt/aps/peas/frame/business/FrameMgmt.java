@@ -31,6 +31,7 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -252,7 +253,7 @@ public class FrameMgmt {
 		
 		try {
 			
-			ccdMgmt.getImage(exposureTime);
+			ccdMgmt.getOverscannedImage(exposureTime);
 		
 		} catch (TimeoutException e) {
 			
@@ -307,7 +308,7 @@ public class FrameMgmt {
 			
 			telescopeMgmt.refreshStatus();
 
-			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup());
+			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
 			
 		} else {
 		
@@ -334,15 +335,35 @@ public class FrameMgmt {
 					rawFrame[i][j] = (short) swapFrame[i][j];
 				}
 			}
+			
+			// correct the overscan image into a corrected image without overscan columns
+			Ccd ccd = physicalModel.getInstrument().getCcd();
+			int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+			
+			// FIXME: the return value needs to include the left and right dark median values
+			
+			CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(rawFrame, 
+					ccd.getDarkOvscnLeftColStart(), 
+					ccd.getDarkOvscnLeftColEnd(), 
+					ccd.getDarkOvscnRightColStart(), 
+					ccd.getDarkOvscnRightColEnd(),
+					overscanSize);
+			
+			
 
-			ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup());
+			ccdFrame = populateCcdFrame(result.getCorrectedFrame(), exposureTime, procedureConfig.getSufsGroup(), 
+					result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
 		}
 
 		return ccdFrame;
 	}
 	
-	
 	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup) {
+		return populateCcdFrame(rawFrame, exposureTime, sufsGroup, 0, 0);
+	}
+	
+	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight) {
+
 		
 		CcdFrame ccdFrame = new CcdFrame();
 		ccdFrame.setAxes1(rawFrame.length);
@@ -351,11 +372,14 @@ public class FrameMgmt {
 		ccdFrame.setCreateDate(new Date());
 		ccdFrame.setNoOfAxes(2);
 		
-		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup);
+		// TODO: ccdFrame needs darkMedian left and right fields.  Add values right here.
+		
+		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup, darkMedianLeft, darkMedianRight);
 	}
 
-	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup) {
+	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight) {
 
+		
 		// save the camera state when the ccd frame was taken
 		Instrument instrument = physicalModel.getInstrument();
 		CameraState cameraState = new CameraState(instrument);
@@ -379,6 +403,8 @@ public class FrameMgmt {
 		
 		ccdFrame.setIntTime((float)exposureTime);
 		ccdFrame.setSufsGroupNumber(sufsGroup);
+		ccdFrame.setDarkMedianLeft(darkMedianLeft);
+		ccdFrame.setDarkMedianRight(darkMedianRight);
 
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		

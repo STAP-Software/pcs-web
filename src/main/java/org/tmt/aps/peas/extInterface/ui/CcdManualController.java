@@ -20,6 +20,8 @@ import org.primefaces.context.RequestContext;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -30,6 +32,7 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdState;
 
 /**
@@ -57,6 +60,9 @@ public class CcdManualController implements Serializable {
 	CameraPoller cameraPoller;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	private ComputationLibraryImpl computationLibrary;
+
 
 	@Inject
 	FrameController frameController;
@@ -273,7 +279,11 @@ public class CcdManualController implements Serializable {
 					}
 				}
 				
-				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0);
+
+				
+				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1);
+				
+				
 
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				requestContext.update("frameDisplayForm:framePanel");

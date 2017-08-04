@@ -41,6 +41,7 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
@@ -2764,6 +2765,21 @@ public class ComputationLibraryImpl {
 		float arcsecPerPixel = JavaComputations.calcArcSecPerPixel(arcsecPerMeter, pixelSize);
 		return new StartupComputationsResult(arcsecPerPixel);
 	}
+
+	/**
+	 * Corrects an overscanned frame using the median dark pixel values from right and left sides of the image.
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize
+	 * @return
+	 */
+	public CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) {
+		return JavaComputations.correctOverscanFrameDarkOffsets(frame, leftStartCol, leftEndCol, rightStartCol, rightEndCol, overscanSize);
+	}
+
 	
 }
 
