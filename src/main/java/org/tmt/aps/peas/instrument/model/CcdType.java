@@ -27,6 +27,10 @@ import javax.persistence.Table;
 })
 public class CcdType {
 
+	
+	public static final Long CCD_TYPE_ID_ORIG = new Long(1);
+	public static final Long CCD_TYPE_ID_SCIMEAS = new Long(2);
+	
 
 	@Id
 	@GeneratedValue(strategy=GenerationType.AUTO)
@@ -108,5 +112,12 @@ public class CcdType {
 	public void setOverscanReadoutHeight(int overscanReadoutHeight) {
 		this.overscanReadoutHeight = overscanReadoutHeight;
 	}
+	
+	public boolean isTypeOrig() {
+		return ccdTypeId.longValue() == CCD_TYPE_ID_ORIG;
+	}
 
+	public boolean isTypeSciMeas() {
+		return ccdTypeId.longValue() == CCD_TYPE_ID_SCIMEAS;
+	}
 }

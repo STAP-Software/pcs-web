@@ -336,23 +336,26 @@ public class FrameMgmt {
 				}
 			}
 			
-			// correct the overscan image into a corrected image without overscan columns
+			// if the image is an overscan image, then correct for overscan
 			Ccd ccd = physicalModel.getInstrument().getCcd();
-			int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+			if (ccd.getCcdType().isTypeSciMeas() && rawFrame.length == ccd.getCcdType().getOverscanReadoutWidth()) {
 			
-			// FIXME: the return value needs to include the left and right dark median values
+				// correct the overscan image into a corrected image without overscan columns
+				int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+				
+				CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(rawFrame, 
+						ccd.getDarkOvscnLeftColStart(), 
+						ccd.getDarkOvscnLeftColEnd(), 
+						ccd.getDarkOvscnRightColStart(), 
+						ccd.getDarkOvscnRightColEnd(),
+						overscanSize);			
+	
+				ccdFrame = populateCcdFrame(result.getCorrectedFrame(), exposureTime, procedureConfig.getSufsGroup(), 
+						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
 			
-			CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(rawFrame, 
-					ccd.getDarkOvscnLeftColStart(), 
-					ccd.getDarkOvscnLeftColEnd(), 
-					ccd.getDarkOvscnRightColStart(), 
-					ccd.getDarkOvscnRightColEnd(),
-					overscanSize);
-			
-			
-
-			ccdFrame = populateCcdFrame(result.getCorrectedFrame(), exposureTime, procedureConfig.getSufsGroup(), 
-					result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
+			} else {
+				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
+			}
 		}
 
 		return ccdFrame;

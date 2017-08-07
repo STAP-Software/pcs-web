@@ -94,7 +94,7 @@ public class CcdCommandSimulator implements CcdCommand {
 		
 		for (int i=imageWidth-overscanAreaWidth; i<imageWidth; i++) {
 			for (int j=0; j<imageHeight; j++) {
-				frame[i][j] = (short)(Math.random() * 550);
+				frame[i][j] = (short)(Math.random() * 1000);
 			}
 		}
 		

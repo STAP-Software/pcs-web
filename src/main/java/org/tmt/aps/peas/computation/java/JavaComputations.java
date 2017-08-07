@@ -971,8 +971,7 @@ public class JavaComputations {
 	 */
 	public static short calcMedianDarkOffset(short[][] frame, int startCol, int endCol) {
 		
-		int columnCount = endCol - startCol + 1;
-		short[] allPixels = new short[frame[0].length * columnCount];
+		short[] allPixels = new short[0];
 		for (int colIndex = startCol; colIndex <= endCol; colIndex++) {
 			allPixels = combine(allPixels, frame[colIndex]);
 		}
