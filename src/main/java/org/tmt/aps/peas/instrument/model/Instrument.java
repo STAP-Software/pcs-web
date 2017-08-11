@@ -149,7 +149,10 @@ public class Instrument {
 		camera.setPurgeState(cameraStatus.purgeIsActive);
 		
 		// Glycol Flow
-		camera.setGlycolFlow(cameraStatus.glycolFlowStatus);
+		camera.setGlycolFlow(cameraStatus.glycolIsFlowing);
+		
+		// Overall Status
+		camera.setOverallStatus(cameraStatus.overallStatus);
 	}
 	
 	/**
@@ -287,18 +290,18 @@ public class Instrument {
 		case CameraCommand.DEVICE_CODE_PUPIL_WHEEL:
 			// Pupil Mask
 			camera.getPupilWheel().setState(cameraQueryResult.getState());
-			camera.getPupilWheel().setSelectedPupilMaskNumber(cameraQueryResult.getStateValue());
+			camera.getPupilWheel().setSelectedPupilMaskNumber(cameraQueryResult.getIntValue());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_FILTER_WHEEL:
 			// Filter
 			camera.getFilterWheel().setState(cameraQueryResult.getState());
-			camera.getFilterWheel().setSelectedFilterNumber(cameraQueryResult.getStateValue());
+			camera.getFilterWheel().setSelectedFilterNumber(cameraQueryResult.getIntValue());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_REFERENCE_BEAMS:
 			// Ref Beam
-			camera.setCurrentRefBeam(cameraQueryResult.getStateValue());
+			camera.setCurrentRefBeam(cameraQueryResult.getIntValue());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_CCD_SHUTTER:
@@ -308,26 +311,26 @@ public class Instrument {
 			
 		case CameraCommand.DEVICE_CODE_X_TILT_PLATE:
 			// Fine Tilt
-			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getFineTiltMirror().getCurrentPosition().y));
+			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getIntValue(), camera.getFineTiltMirror().getCurrentPosition().y));
 			camera.getFineTiltMirror().setStateX(cameraQueryResult.getState());
 
 			break;
 			
 		case CameraCommand.DEVICE_CODE_Y_TILT_PLATE:
 			// Fine Tilt
-			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getCurrentPosition().x, cameraQueryResult.getStateValue()));
+			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getCurrentPosition().x, cameraQueryResult.getIntValue()));
 			camera.getFineTiltMirror().setStateY(cameraQueryResult.getState());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_X_STEERING_MIRROR:
 			// Coarse Tilt
-			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getStateValue(), camera.getCoarseTiltMirror().getCurrentPosition().y));
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getIntValue(), camera.getCoarseTiltMirror().getCurrentPosition().y));
 			camera.getCoarseTiltMirror().setStateX(cameraQueryResult.getState());
 			break;
 			
 		case CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR:
 			// Coarse Tilt
-			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getCurrentPosition().x, cameraQueryResult.getStateValue()));
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getCurrentPosition().x, cameraQueryResult.getIntValue()));
 			camera.getCoarseTiltMirror().setStateY(cameraQueryResult.getState());
 			break;
 			
@@ -343,27 +346,27 @@ public class Instrument {
 			
 		case CameraCommand.DEVICE_CODE_CCD_TEMPERATURE:
 			// CCD Temperature
-			ccd.setTemperature(((float) cameraQueryResult.getDoubleVal()));
+			ccd.setTemperature(((float) cameraQueryResult.getDoubleValue()));
 			break;
 			
 		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
 			// Instrument Temperature
-			camera.setInstrumentTemperature(((float) cameraQueryResult.getDoubleVal()));
+			camera.setInstrumentTemperature(((float) cameraQueryResult.getDoubleValue()));
 			break;
 			
-		case CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE:
+		case CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE:
 			// Electronics Box Temperature
-			camera.setElectronicsBoxTemperature(((float) cameraQueryResult.getDoubleVal()));
+			camera.setElectronicsBoxTemperature(((float) cameraQueryResult.getDoubleValue()));
 			break;
 			
 		case CameraCommand.DEVICE_CODE_ELECTRONICS_RH:
 			// Electronics Box Temperature
-			camera.setElectronicsBoxHumidity(((float) cameraQueryResult.getDoubleVal()));
+			camera.setElectronicsBoxHumidity(((float) cameraQueryResult.getDoubleValue()));
 			break;
 			
 		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH:
 			// Electronics Box Temperature
-			camera.setInstrumentHumidity(((float) cameraQueryResult.getDoubleVal()));
+			camera.setInstrumentHumidity(((float) cameraQueryResult.getDoubleValue()));
 			break;
 			
 		case CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK:

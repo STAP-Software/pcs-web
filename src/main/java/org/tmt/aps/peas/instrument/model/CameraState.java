@@ -93,9 +93,8 @@ public class CameraState {
 		this.benchHumidity = (float)cameraStatus.benchHumidity; 
 		this.temperatureInterlock = cameraStatus.tempInterlockActive;
 		this.purgeState = cameraStatus.purgeIsActive;
-		this.glycolFlow = cameraStatus.glycolFlowStatus;
+		this.glycolFlow = cameraStatus.glycolIsFlowing;
 
-		
 		
 		this.prismWheelIsInTransit = cameraStatus.prismWheelIsInTransit;
 		this.filterWheelIsInTransit = cameraStatus.filterWheelIsInTransit;

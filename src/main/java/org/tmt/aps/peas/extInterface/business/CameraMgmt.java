@@ -183,33 +183,21 @@ public class CameraMgmt {
 		extInfFactory.getCameraCommand().addCameraQueryListener(deviceCode, l);
 	}
 
-	public void addCameraQueryListener(int deviceCode, int period, CameraQueryListener l) throws Exception {
-		extInfFactory.getCameraCommand().addCameraQueryListener(deviceCode, period, l);
-		
-	}
-
-	public void addPeriodicCameraQueryListener(int deviceCode, int period, CameraQueryListener l) throws Exception {
-		extInfFactory.getCameraCommand().addPeriodicCameraQueryListener(deviceCode, period, l);
-	}
-
-	public void removeCameraQueryListener(int deviceCode, CameraQueryListener l) throws Exception {
-		extInfFactory.getCameraCommand().removeCameraQueryListener(deviceCode, l);
-	}
 
 	public void addCameraStatusListener(CameraStatusListener l) throws Exception {
 		extInfFactory.getCameraCommand().addCameraStatusListener(l);
 	}
 
-	public void addCameraStatusListener(CameraStatusListener l, int period) throws Exception {
-		extInfFactory.getCameraCommand().addCameraStatusListener(l, period);
+	@Asynchronous
+	public Future<Integer> initializeCamera() throws Exception {
+		extInfFactory.getCameraCommand().initializeCamera();
+		return new AsyncResult<Integer>(1);
 	}
 
-	public void addPeriodicCameraStatusListener(CameraStatusListener l, int period) throws Exception {
-		extInfFactory.getCameraCommand().addPeriodicCameraStatusListener(l, period);
-	}
-
-	public void removeCameraStatusListener(CameraStatusListener l) throws Exception {
-		extInfFactory.getCameraCommand().removeCameraStatusListener(l);
+	@Asynchronous
+	public Future<Integer> stowCamera() throws Exception {
+		extInfFactory.getCameraCommand().stowCamera();
+		return new AsyncResult<Integer>(1);
 	}
 
 
@@ -273,6 +261,7 @@ public class CameraMgmt {
 				
 		return new AsyncResult<Boolean>(true);
 	}
+
 
 
 

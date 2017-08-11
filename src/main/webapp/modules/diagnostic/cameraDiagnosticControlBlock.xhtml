@@ -4,6 +4,13 @@
 
 	<p:panelGrid columns="3" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+		<h:outputLabel value="Instrument State" />
+		<p:selectOneMenu value="#{cameraManualController.instrumentStateCmd}" style="top:2px" >
+				<f:selectItem itemLabel="Init Camera" itemValue="1" />
+				<f:selectItem itemLabel="Stow Camera" itemValue="0" />
+		</p:selectOneMenu>
+		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendInstrumentStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+
 		
 		<h:outputLabel value="Pupil Mask" />
 		<p:selectOneMenu value="#{cameraManualController.selectedPupilMaskPos}" style="top:2px">
@@ -97,6 +104,10 @@
 		</p:selectOneMenu>
 		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCcdPowerCommand}" update=":growl :errorGrowl" style="top:8px" />
 
+
+
+
+		<!-- 
 		<h:outputLabel value="Overall Power State" />
 		<p:selectOneMenu value="#{cameraManualController.overallPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
@@ -124,6 +135,8 @@
 				<f:selectItem itemLabel="Off" itemValue="0" />
 		</p:selectOneMenu>
 		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPowerSuppliesPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+
+ 		-->
 
 		<h:outputLabel value="Purge Air State" />
 		<p:selectOneMenu value="#{cameraManualController.purgeAirStateCmd}" style="top:2px" >

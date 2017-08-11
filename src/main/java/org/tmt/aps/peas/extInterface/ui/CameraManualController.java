@@ -89,6 +89,8 @@ public class CameraManualController implements Serializable {
 	int galilPowerStateCmd = 0;
 	int powerSuppliesPowerStateCmd = 0;
 	int purgeAirStateCmd;
+
+	int instrumentStateCmd = 0;
 	
 
 	@PostConstruct
@@ -121,7 +123,7 @@ public class CameraManualController implements Serializable {
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_POWER, "ccdPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_SHUTTER, "shutter");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE, "boxTemp");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE, "boxTemp");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
 		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FAN_POWER, "");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
@@ -138,11 +140,13 @@ public class CameraManualController implements Serializable {
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_TILT_PLATE, "fineX");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR, "coarseY");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_TILT_PLATE, "fineY");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_STATE, "purge");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
-			
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_AIR, "purge");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_STATUS, "overallStat");
 		
 	}
+	
+	
 
 	public Camera getCamera() {
 		return physicalModel.getInstrument().getCamera();
@@ -239,6 +243,15 @@ public class CameraManualController implements Serializable {
 	public void setCcdPowerCmd(int ccdPowerCmd) {
 		this.ccdPowerCmd = ccdPowerCmd;
 	}
+
+	public int getInstrumentStateCmd() {
+		return instrumentStateCmd;
+	}
+
+	public void setInstrumentStateCmd(int instrumentStateCmd) {
+		this.instrumentStateCmd = instrumentStateCmd;
+	}
+
 
 
 	public int getOverallPowerStateCmd() {
@@ -353,20 +366,15 @@ public class CameraManualController implements Serializable {
 	
 	public void statusUpdateMethodChangeListener() throws Exception {
 		
-		// clear status listeners
-		cameraMgmt.removeCameraStatusListener(dcsl);
+		// clear status listeners: disconnect reference
+		dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
+		
 		// clear camera query listeners
 		removeAllCameraQueryListeners();
 		
 		switch (statusUpdateMethod) {
 		case 1: // Status Change Listener
 			cameraMgmt.addCameraStatusListener(dcsl);
-			break;
-		case 2: // Status Periodic Listener
-			cameraMgmt.addPeriodicCameraStatusListener(dcsl, statusPeriod);
-			break;
-		case 3: // Status Change and Periodic Listener
-			cameraMgmt.addCameraStatusListener(dcsl, statusPeriod);
 			break;
 		case 4: // Individual Camera Query Calls
 			break;
@@ -382,7 +390,11 @@ public class CameraManualController implements Serializable {
 	private void removeAllCameraQueryListeners() throws Exception {
 		for (Integer deviceCode : device2cameraQueryListener.keySet()) {
 			CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
-			cameraMgmt.removeCameraQueryListener(deviceCode, cql);
+			
+			// Kill reference - weak reference will take care of removeListener
+			cql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
+			device2cameraQueryListener.put(new Integer(deviceCode), cql);
+
 		}
 	}
 	
@@ -398,7 +410,10 @@ public class CameraManualController implements Serializable {
 				
 		// 1. remove current listener from all listeners
 		CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
-		cameraMgmt.removeCameraQueryListener(deviceCode, cql);
+		// Kill reference - weak reference will take care of removeListener
+		cql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
+		device2cameraQueryListener.put(new Integer(deviceCode), cql);
+
 		
 		int method = new Integer(queryUpdateMethod[deviceCode]);
 		
@@ -406,12 +421,6 @@ public class CameraManualController implements Serializable {
 		switch (method) {
 		case 1: // Query Change Listener
 			cameraMgmt.addCameraQueryListener(deviceCode, cql);
-			break;
-		case 2: // Query Periodic Listener
-			cameraMgmt.addCameraQueryListener(deviceCode, 2, cql);
-			break;
-		case 3: // Query Change and Periodic Listener
-			cameraMgmt.addPeriodicCameraQueryListener(deviceCode, 2, cql);
 			break;
 		case 4: // queryCamera() call
 			break;
@@ -434,7 +443,7 @@ public class CameraManualController implements Serializable {
 		// check each listener to see if it is asking for an update of the view
 		
 		if (dcsl.isUpdateRequested()) {
-			requestContext.update("cameraDiagForm:cameraStatusTabView:cameraStatusPanel");
+			requestContext.update("cameraDiagForm:cameraStatusPanel");
 			dcsl.setUpdateRequested(false);
 			
 			return; // don't need to update by device if we are updating all of them
@@ -451,11 +460,11 @@ public class CameraManualController implements Serializable {
 				String prefix = device2fieldNamePrefix.get(deviceCode);
 				
 				
-				System.out.println(" Updating: cameraDiagForm:cameraStatusTabView:" + prefix + "Value");
-				System.out.println(" Updating: cameraDiagForm:cameraStatusTabView:" + prefix + "Status");
+				System.out.println(" Updating: cameraDiagForm:" + prefix + "Value");
+				System.out.println(" Updating: cameraDiagForm:" + prefix + "Status");
 				
-				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Value"); 
-				requestContext.update("cameraDiagForm:cameraStatusTabView:" + prefix + "Status"); 
+				requestContext.update("cameraDiagForm:" + prefix + "Value"); 
+				requestContext.update("cameraDiagForm:" + prefix + "Status"); 
 									
 				dcql.setUpdateRequested(false);
 			}
@@ -765,6 +774,45 @@ public class CameraManualController implements Serializable {
 		}
 		
 	}
+	
+	
+	
+	
+	public void doSendInstrumentStateCommand() {
+		
+		try {
+
+			Future<Integer> instFuture = null;
+			String commandName = null;
+			if (instrumentStateCmd == 1) {
+				// init
+				instFuture = cameraMgmt.initializeCamera();
+				commandName = "Initialize Camera";
+			} else if (instrumentStateCmd == 0) {
+				// stow
+				instFuture = cameraMgmt.stowCamera();
+				commandName = "Stow Camera";
+			}
+			while (!instFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			instFuture.get();
+						
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage(commandName));
+
+			
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+	}
+	
 	
 	public void doSendOverallPowerStateCommand() {
 		

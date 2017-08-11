@@ -8,14 +8,10 @@
 		<p:selectOneMenu value="#{cameraManualController.statusUpdateMethod}" style="top:2px">
 			<f:selectItem itemLabel="Select update method" itemValue="0" />
 			<f:selectItem itemLabel="Status Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Status Periodic Listener" itemValue="2" />
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="Query per Device" itemValue="4" />
 			<f:selectItem itemLabel="getStatus() call" itemValue="5" />
 			<p:ajax listener="#{cameraManualController.statusUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
 		</p:selectOneMenu>
-		<h:outputLabel value="Period (sec): " style="position:relative; top:2px" rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}"/>
-		<p:inputText value="#{cameraManualController.statusPeriod}" size="3" style="position:relative; top:3px" rendered="#{cameraManualController.statusUpdateMethod eq 2 or cameraManualController.statusUpdateMethod eq 3}" />
 		<p:commandButton value="getStatus()" action="#{cameraManualController.doGetStatus}" ajax="true" update="cameraStatusPanel :growl :errorGrowl" 
 			rendered="#{cameraManualController.statusUpdateMethod eq 5}"  style="position: relative; top:-2px;" />
 		
@@ -26,14 +22,27 @@
 
 	<p:panelGrid id="cameraStatusPanel" columns="5" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
 
+		<h:outputLabel value="Overall Status" />	
+		<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
+		<h:outputText id="overallStatStatus" value="" style="position:relative; top:2px" />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[22]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+			<f:selectItem itemLabel="Select method" itemValue="0" />
+			<f:selectItem itemLabel="Change Listener" itemValue="1" />
+			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+			<f:attribute name="deviceCode" value="1"/>
+			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+		</p:selectOneMenu>
+		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[22] ne 4}" />
+		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((22).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
+		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[22] eq 4}" styleClass="thinButton"/>
+		
 		<h:outputLabel value="Pupil Mask" />	
 		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.selectedPupilMask.wheelPosition} (#{cameraManualController.camera.pupilWheel.selectedPupilMask.maskName})" style="position:relative; top:2px" />
 		<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="1"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -49,8 +58,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="2"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -66,8 +73,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="7"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -83,8 +88,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[6]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="6"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -102,8 +105,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="3"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -120,8 +121,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="4"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -138,8 +137,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="9"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -156,8 +153,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="10"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -173,8 +168,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="5"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -190,8 +183,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="8"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -211,8 +202,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[11]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="11"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -232,8 +221,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[13]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="13"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -253,8 +240,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[12]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="12"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -274,8 +259,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[15]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="15"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -295,8 +278,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[14]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="14"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -312,8 +293,6 @@
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="16"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
@@ -324,41 +303,36 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[16] eq 4}"  styleClass="thinButton"/>
 		
 		
-		<!-- FIXME: these statuses do not yet have device codes, temporarily assigning 21 and 22 -->
 		
 		<h:outputLabel value="Purge State" />
 		<h:outputText id="purgeValue" value="#{cameraManualController.camera.purgeState}" style="position:relative; top:2px" />
 		<h:outputText />
+		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[20]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+			<f:selectItem itemLabel="Select method" itemValue="0" />
+			<f:selectItem itemLabel="Change Listener" itemValue="1" />
+			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+			<f:attribute name="deviceCode" value="20"/>
+			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+		</p:selectOneMenu>
+		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[20] ne 4}" />
+		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((20).intValue())}" update="purgeValue :growl :errorGrowl" 
+		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[20] eq 4}"  styleClass="thinButton"/>
+		
+		<h:outputLabel value="Glycol Flow" />
+		<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow}" style="position:relative; top:2px" />
+		<h:outputText />
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
 			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
 			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
 			<f:attribute name="deviceCode" value="21"/>
 			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
 		</p:selectOneMenu>
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[21] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((21).intValue())}" update="purgeValue :growl :errorGrowl" 
+		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((21).intValue())}" update="glycolValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}"  styleClass="thinButton"/>
-		
-		<h:outputLabel value="Glycol Flow" />
-		<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[22]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="Periodic Listener" itemValue="2" /> 
-			<f:selectItem itemLabel="Both" itemValue="3" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="22"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[22] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((22).intValue())}" update="glycolValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[22] eq 4}"  styleClass="thinButton"/>
 		
 	</p:panelGrid>
 

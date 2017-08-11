@@ -21,6 +21,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 
 
 /**
@@ -63,6 +64,8 @@ public class Camera {
 	private boolean purgeState;
 	@Transient
 	private boolean glycolFlow;
+	@Transient
+	private int overallStatus;
 
 	
 
@@ -97,12 +100,31 @@ public class Camera {
 		}
 	}
 	
+	public String getOverallStatusDisplayString() {
+		if (overallStatus == CameraQueryResult.READY) {
+			return "Ready";
+		} else if (overallStatus == CameraQueryResult.NOT_READY) {
+			return "Not Ready";
+		} else {
+			return "Unknown";
+		}
+	}
+	
+	
 	public int getCurrentRefBeam() {
 		return currentRefBeam;
 	}
 
 	public void setCurrentRefBeam(int currentRefBeam) {
 		this.currentRefBeam = currentRefBeam;
+	}
+
+	public int getOverallStatus() {
+		return overallStatus;
+	}
+
+	public void setOverallStatus(int overallStatus) {
+		this.overallStatus = overallStatus;
 	}
 
 	public Shutter getShutter() {

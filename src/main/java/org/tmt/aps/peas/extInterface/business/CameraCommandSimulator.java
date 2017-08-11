@@ -38,7 +38,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	
 	private int overallPowerState;
 	private int ccdControllerPowerState;
-	private int networkControllerPowerState;
+	private int overallStatus;
 	private int fanPowerState;
 	private int galilPowerState;
 	private int powerSuppliesPowerState;
@@ -93,7 +93,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_CCD_TEMPERATURE:
 			result =  new CameraQueryResult(random(-33.0, -14.0));
 			break;
-		case DEVICE_CODE_ELECTONICS_BOX_TEMPERATURE:
+		case DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE:
 			result =  new CameraQueryResult(random(0.0, 25.0));
 			break;
 		case DEVICE_CODE_FILTER_WHEEL: 
@@ -132,9 +132,6 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_GALIL_POWER:
 			result = null;
 			break;
-		case DEVICE_CODE_NETWORK_POWER:
-			result = null;
-			break;
 		case DEVICE_CODE_OPTICAL_BENCH_RH:						
 			result = new CameraQueryResult(random(10.0, 80.0));
 			break;
@@ -144,17 +141,19 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_TEMPERATURE_INTERLOCK:
 			result = new CameraQueryResult(randomBool() ? 1 : 0);
 			break;
+		case DEVICE_CODE_GLYCOL_FLOW:
+			result = new CameraQueryResult(randomBool() ? 1 : 0);
+			break;
+		case DEVICE_CODE_PURGE_AIR:
+			result = new CameraQueryResult(purgeAirState);
+			break;
+		case DEVICE_CODE_OVERALL_STATUS:
+			result = new CameraQueryResult(overallStatus);
+			break;
 		default:
 			result =  new CameraQueryResult(0,0);
 		}
-		
-		// FIXME:these should have device codes
-		//cameraStatus.glycolFlowStatus = randomBool();
-		//cameraStatus.purgeIsActive = (purgeAirState == 1);
-
-		
-		
-		
+	
 		logger.info(MessageGenerator.generateMessage("command.success", "queryCamera::SIMULATOR"));
 
 		return result;
@@ -175,6 +174,8 @@ public class CameraCommandSimulator implements CameraCommand {
 		referenceBeamCommand = 0;
 		xSteeringMirrorPosition = 1;
 		ySteeringMirrorPosition = 2;
+		
+		overallStatus = CameraQueryResult.NOT_READY;
 
 		logger.info(MessageGenerator.generateMessage("command.success", "resetCamera::SIMULATOR"));
 		
@@ -286,76 +287,11 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 
-	@Override
-	public void addCameraQueryListener(int deviceCode, int period, CameraQueryListener l) throws IllegalArgumentException {
-		// maintain a list of listeners for each device code
-		List<CameraQueryListener> listenerList = deviceCodeToCameraChangePeriodicListenerList.get(deviceCode);
-		if (listenerList == null) {
-			listenerList = new ArrayList<CameraQueryListener>();
-			deviceCodeToCameraChangePeriodicListenerList.put(deviceCode, listenerList);
-		}
-		listenerList.add(l);
-		
-	}
-
-
-	@Override
-	public void addPeriodicCameraQueryListener(int deviceCode, int period, CameraQueryListener l) {
-
-		List<CameraQueryListener> listenerList = deviceCodeToCameraPeriodicListenerList.get(deviceCode);
-		if (listenerList == null) {
-			listenerList = new ArrayList<CameraQueryListener>();
-			deviceCodeToCameraPeriodicListenerList.put(deviceCode, listenerList);
-		}
-		listenerList.add(l);
-
-	}
-
-
-	@Override
-	public void removeCameraQueryListener(int deviceCode, CameraQueryListener l) throws IllegalArgumentException {
-		List<CameraQueryListener> changeListenerList = deviceCodeToCameraChangeListenerList.get(deviceCode);
-		if (changeListenerList != null) {
-			changeListenerList.remove(l);
-		}
-		List<CameraQueryListener> changePeriodicListenerList = deviceCodeToCameraChangePeriodicListenerList.get(deviceCode);
-		if (changePeriodicListenerList != null) {
-			changePeriodicListenerList.remove(l);
-		}
-		List<CameraQueryListener> periodicListenerList = deviceCodeToCameraPeriodicListenerList.get(deviceCode);
-		if (periodicListenerList != null) {
-			periodicListenerList.remove(l);
-		}
-		
-		
-	}
-
 
 	@Override
 	public void addCameraStatusListener(CameraStatusListener l) {
 		cameraStatusChangeListenerList.add(l);
 		
-	}
-
-
-	@Override
-	public void addCameraStatusListener(CameraStatusListener l, int period) {
-		cameraStatusChangePeriodicListenerList.add(l);
-		
-	}
-
-
-	@Override
-	public void addPeriodicCameraStatusListener(CameraStatusListener l, int period) throws IllegalArgumentException {
-		cameraStatusPeriodicListenerList.add(l);
-	}
-
-
-	@Override
-	public void removeCameraStatusListener(CameraStatusListener l) {
-		cameraStatusChangeListenerList.remove(l);
-		cameraStatusChangePeriodicListenerList.remove(l);
-		cameraStatusPeriodicListenerList.remove(l);
 	}
 
 
@@ -438,7 +374,18 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 
-	
+	@Override
+	public void initializeCamera() throws CommunicationException, CommandFailureException {
+		overallStatus = CameraQueryResult.READY;
+		
+	}
+
+	@Override
+	public void stowCamera() throws CommunicationException, CommandFailureException {
+		overallStatus = CameraQueryResult.NOT_READY;
+	}
+
+
 
 
 	@Override
@@ -469,11 +416,13 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		cameraStatus.benchHumidity = random(10.0, 80.0);
 		cameraStatus.boxHumidity = random(10.0, 80.0);
-		cameraStatus.glycolFlowStatus = randomBool();
+
 		cameraStatus.purgeIsActive = (purgeAirState == 1);
 		cameraStatus.tempInterlockActive = randomBool();
 		
+		cameraStatus.glycolIsFlowing = randomBool();
 		
+		cameraStatus.overallStatus = overallStatus;
 		
 		logger.trace(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
 		return cameraStatus;
