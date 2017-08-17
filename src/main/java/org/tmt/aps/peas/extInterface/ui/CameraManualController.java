@@ -109,10 +109,10 @@ public class CameraManualController implements Serializable {
 		 dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
 
 		 
-		 queryUpdateMethod = new String[23];
+		 queryUpdateMethod = new String[CameraCommand.DEVICE_CODE_MAX];
 		 
 		// create all the cameraQueryListeners for each device code
-		for (int deviceCode = 1; deviceCode < 23; deviceCode++) {
+		for (int deviceCode = 1; deviceCode < CameraCommand.DEVICE_CODE_MAX; deviceCode++) {
 			
 			DiagnosticCameraQueryListener dcql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
 		
@@ -125,13 +125,12 @@ public class CameraManualController implements Serializable {
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE, "boxTemp");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FAN_POWER, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FAN_POWER, "fanPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_NETWORK_POWER, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "galilPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH, "instHumid");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE, "instTemp");
-		//device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_POWER_SUPPLIES, "");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_POWER_SUPPLIES, "powerSuppliesPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PUPIL_WHEEL, "pupilMask");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS, "refBeam");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK, "tempInterlock");
@@ -143,6 +142,7 @@ public class CameraManualController implements Serializable {
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_AIR, "purge");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_STATUS, "overallStat");
+		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_POWER, "overallPower");
 		
 	}
 	

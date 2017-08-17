@@ -153,6 +153,19 @@ public class Instrument {
 		
 		// Overall Status
 		camera.setOverallStatus(cameraStatus.overallStatus);
+		
+		// Overall Power State
+		camera.setOverallPowerState(cameraStatus.overallPowerState);
+		
+		// Fan Power State
+		camera.setFanPowerState(cameraStatus.fanPowerState);
+		
+		// Galil Power State
+		camera.setGalilPowerState(cameraStatus.galilPowerState);
+		
+		// Power Supplies Power State
+		camera.setPowerSuppliesPowerState(cameraStatus.powerSuppliesState);
+
 	}
 	
 	/**
@@ -219,6 +232,19 @@ public class Instrument {
 		// Glycol Flow
 		camera.setGlycolFlow(cameraState.isGlycolFlow());
 
+		// Overall Power State
+		camera.setOverallPowerState(cameraState.getOverallPowerState());
+		
+		// Fan Power State
+		camera.setFanPowerState(cameraState.getFanPowerState());
+		
+		// Galil Power State
+		camera.setGalilPowerState(cameraState.getGalilPowerState());
+		
+		// Power Supplies Power State
+		camera.setPowerSuppliesPowerState(cameraState.getPowerSuppliesPowerState());
+		
+		
 
 	} else {
 		camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);
@@ -274,6 +300,18 @@ public class Instrument {
 		// Glycol Flow
 		camera.setGlycolFlow(false);
 
+
+		// Overall Power State
+		camera.setOverallPowerState(CameraCommand.UNKNOWN);
+
+		// Fan Power State
+		camera.setFanPowerState(CameraCommand.UNKNOWN);
+		
+		// Galil Power State
+		camera.setGalilPowerState(CameraCommand.UNKNOWN);
+		
+		// Power Supplies Power State
+		camera.setPowerSuppliesPowerState(CameraCommand.UNKNOWN);
 
 	}
 	}

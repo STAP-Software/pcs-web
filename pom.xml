@@ -270,6 +270,13 @@
 		<version>1.0</version>
 	</dependency>
 	
+	<!-- -->
+	<dependency>
+		<groupId>org.keck</groupId>
+		<artifactId>KtlJava</artifactId>
+		<version>1.0</version>
+	</dependency>
+	 
 	<dependency>
 		<groupId>org.keck</groupId>
 		<artifactId>oncrpc</artifactId>

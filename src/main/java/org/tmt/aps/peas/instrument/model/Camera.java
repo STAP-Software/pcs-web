@@ -21,7 +21,9 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.extinf.CameraStatus;
 
 
 /**
@@ -66,8 +68,18 @@ public class Camera {
 	private boolean glycolFlow;
 	@Transient
 	private int overallStatus;
-
+	@Transient
+	private int overallPowerState;
+	@Transient
+	private int ccdPowerState;
+	@Transient
+	private int fanPowerState;
+	@Transient
+	private int galilPowerState;
+	@Transient
+	private int powerSuppliesPowerState;
 	
+
 
 	@OneToOne
 	@JoinColumn(name="instrumentId")
@@ -108,6 +120,26 @@ public class Camera {
 		} else {
 			return "Unknown";
 		}
+	}
+	
+	private String powerStateDisplayString(int powerState) {
+		return (powerState == CameraCommand.ON) ? "On" : ((powerState == CameraCommand.OFF) ? "Off" : "Unknown");
+	}
+	
+	public String getOverallPowerStateDisplayString() {
+		return powerStateDisplayString(overallPowerState);
+	}
+	public String getCcdPowerStateDisplayString() {
+		return powerStateDisplayString(ccdPowerState);
+	}
+	public String getFanPowerStateDisplayString() {
+		return powerStateDisplayString(fanPowerState);
+	}
+	public String getGalilPowerStateDisplayString() {
+		return powerStateDisplayString(galilPowerState);
+	}
+	public String getPowerSuppliesPowerStateDisplayString() {
+		return powerStateDisplayString(powerSuppliesPowerState);
 	}
 	
 	
@@ -215,6 +247,45 @@ public class Camera {
 		this.glycolFlow = glycolFlow;
 	}
 
+	public int getOverallPowerState() {
+		return overallPowerState;
+	}
+
+	public void setOverallPowerState(int overallPowerState) {
+		this.overallPowerState = overallPowerState;
+	}
+
+	public int getCcdPowerState() {
+		return ccdPowerState;
+	}
+
+	public void setCcdPowerState(int ccdPowerState) {
+		this.ccdPowerState = ccdPowerState;
+	}
+
+	public int getFanPowerState() {
+		return fanPowerState;
+	}
+
+	public void setFanPowerState(int fanPowerState) {
+		this.fanPowerState = fanPowerState;
+	}
+
+	public int getGalilPowerState() {
+		return galilPowerState;
+	}
+
+	public void setGalilPowerState(int galilPowerState) {
+		this.galilPowerState = galilPowerState;
+	}
+
+	public int getPowerSuppliesPowerState() {
+		return powerSuppliesPowerState;
+	}
+
+	public void setPowerSuppliesPowerState(int powerSuppliesPowerState) {
+		this.powerSuppliesPowerState = powerSuppliesPowerState;
+	}
 
 	public Instrument getInstrument() {
 		return instrument;

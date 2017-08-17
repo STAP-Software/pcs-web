@@ -177,6 +177,13 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		overallStatus = CameraQueryResult.NOT_READY;
 
+		overallPowerState = CameraCommand.UNKNOWN;
+		ccdControllerPowerState = CameraCommand.UNKNOWN;
+		fanPowerState = CameraCommand.UNKNOWN;
+		galilPowerState = CameraCommand.UNKNOWN;
+		powerSuppliesPowerState = CameraCommand.UNKNOWN;
+	
+		
 		logger.info(MessageGenerator.generateMessage("command.success", "resetCamera::SIMULATOR"));
 		
 	}
@@ -423,6 +430,15 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.glycolIsFlowing = randomBool();
 		
 		cameraStatus.overallStatus = overallStatus;
+		
+		
+		cameraStatus.overallPowerState = overallPowerState;
+		cameraStatus.ccdPowerState = ccdControllerPowerState;
+		cameraStatus.fanPowerState = fanPowerState;
+		cameraStatus.galilPowerState = galilPowerState;
+		cameraStatus.powerSuppliesState = powerSuppliesPowerState;
+
+		
 		
 		logger.trace(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));
 		return cameraStatus;
