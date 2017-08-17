@@ -57,6 +57,7 @@
 
 
 		<f:facet name="footer">
+			<p:commandButton value="Requery Server" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefreshFromServer}" update="ccdStatusPanel :growl :errorGrowl" />
 			<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefresh}" update="ccdStatusPanel :growl :errorGrowl" />
 		</f:facet>
 

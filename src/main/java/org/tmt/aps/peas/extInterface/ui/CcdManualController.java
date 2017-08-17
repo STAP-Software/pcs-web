@@ -355,10 +355,6 @@ public class CcdManualController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Refresh"));
 			
-		} catch (CommandFailureException e) {
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
@@ -366,8 +362,10 @@ public class CcdManualController implements Serializable {
 		}
 
 	}
-	
-	private void refresh() throws CommandFailureException, Exception {
+	/**
+	 * JSF Action method called when the user clicks on the 'Refresh From Server' button
+	 */
+	public void doRefreshFromServer() {
 		
 		// refresh the status cache in the CCD client
 		try {
@@ -379,6 +377,10 @@ public class CcdManualController implements Serializable {
 			}
 			refreshFuture.get();
 					
+			refresh();
+
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Refresh from Server"));
+			
 			
 		} catch (CommandFailureException e) {
 			
@@ -389,17 +391,35 @@ public class CcdManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
-				
-		Gain gain = ccdMgmt.getGain();
-		int[] offsets = ccdMgmt.getOffset();
-		int[] imageSize = ccdMgmt.getImageSize();
-		int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
-		double[] temperatures = ccdMgmt.getTemperatures();
-		double exposureTime = ccdMgmt.getExposureTime();
 		
-		double temperatureSetting = physicalModel.getInstrument().getCcd().getTemperatureSetting();
+
+	}
 		
-		ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize, temperatureSetting, temperatures, exposureTime);
+	private void refresh() {
+		
+		try {
+		
+			Gain gain = ccdMgmt.getGain();
+			int[] offsets = ccdMgmt.getOffset();
+			int[] imageSize = ccdMgmt.getImageSize();
+			int[] overscannedImageSize = ccdMgmt.getOverscannedImageSize();
+			double[] temperatures = ccdMgmt.getTemperatures();
+			double exposureTime = ccdMgmt.getExposureTime();
+			
+			double temperatureSetting = physicalModel.getInstrument().getCcd().getTemperatureSetting();
+			
+			ccdState = new CcdState(gain, offsets, imageSize, overscannedImageSize, temperatureSetting, temperatures, exposureTime);
+		
+		} catch (CommandFailureException e) {
+			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
 		
 	}
 
