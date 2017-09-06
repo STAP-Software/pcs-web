@@ -836,10 +836,13 @@ public class FrameMgmt {
 				}
 				dateFitsList.add(fitsFile);
 
-				List<FitsFilename> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
+				String procedureTypeCd = fitsFile.getProcedureTypeCd() == null ? "Other" : fitsFile.getProcedureTypeCd();
+				
+				
+				List<FitsFilename> typeFitsList = type2Fits.get(procedureTypeCd);
 				if (typeFitsList == null) {
 					typeFitsList = new ArrayList<FitsFilename>();
-					type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
+					type2Fits.put(procedureTypeCd, typeFitsList);
 				}
 				typeFitsList.add(fitsFile);					
 
