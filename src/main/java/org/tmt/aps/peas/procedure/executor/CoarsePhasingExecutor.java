@@ -30,6 +30,7 @@ import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfig;
@@ -42,10 +43,9 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
-import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
-import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.CoarsePhasingIterationOutput;
 import org.tmt.aps.peas.procedure.model.CoarsePhasingProcedureOutput;
+import org.tmt.aps.peas.procedure.model.CreateRefBeamMapProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -54,7 +54,6 @@ import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
 import org.tmt.aps.peas.visualization.business.UserPromptMgmt;
-import org.tmt.aps.peas.visualization.model.UserPrompt;
 
 /**
  * Executor for the broadband Phasing procedure
@@ -369,6 +368,16 @@ public class CoarsePhasingExecutor {
 		    		bbAnalyzeSequenceResult.getActCalc(),
 		    		globalConfig.getMirrorListInt());
 
+		    
+		    /**********************************************/
+			/*          TerraceModeComponents             */
+			/**********************************************/		
+		    TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
+		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(),
+		    		bbAnalyzeSequenceResult.getActCalc(),
+		    		globalConfig.getMirrorListInt());
+		    
+		    
 		    /**********************************************/
 			/*          CalculatePhasingStats             */
 			/**********************************************/		

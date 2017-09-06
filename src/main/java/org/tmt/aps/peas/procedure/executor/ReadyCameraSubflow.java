@@ -1,5 +1,6 @@
 package org.tmt.aps.peas.procedure.executor;
 
+import java.util.Hashtable;
 import java.util.concurrent.Future;
 
 import javax.ejb.EJB;
@@ -15,9 +16,11 @@ import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
+import org.tmt.aps.peas.extInterface.business.CameraMgmtAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CcdGain;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -44,10 +47,14 @@ public class ReadyCameraSubflow {
 	@EJB
 	private CcdMgmt ccdMgmt;
 	@EJB
+	private CameraMgmtAsync cameraMgmtAsync;
+	@EJB
 	private UserPromptMgmt userPromptMgmt;
 	@EJB
 	private PhysicalModel physicalModel;
 
+
+	
 	/**
 	 * Executor method: this method is the Ready Camera sub-flow
 	 */
@@ -84,6 +91,19 @@ public class ReadyCameraSubflow {
 			} 
 			
 			if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+				
+				// home the appropriate mirror if affected
+				if (internalException instanceof CommandFailureException) {
+					int failureCode = ((CommandFailureException)internalException).getFailureCode();
+					
+					// check if failureCode is anything we can try to correct by homing a motor/stage
+					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(new Integer(failureCode));
+					if (mechanism != null) {
+						homeMechanism(mechanism);
+					}
+					
+				}
+				
 				// retry recursively
 				readyCameraFlow(procedure);
 			}
@@ -164,7 +184,41 @@ public class ReadyCameraSubflow {
 
 
 	}
-	
+
+	public void homeMechanism(int mechanism) throws Exception {
+		
+		Future<Integer> commandFuture = null;
+		
+		switch (mechanism) {
+		
+		case CameraMgmt.X_TILT_MOTOR:
+			statusLogger.log("camera.cmd.homing", "tilt plate X");
+			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
+			break;
+			
+		case CameraMgmt.Y_TILT_MOTOR:
+			statusLogger.log("camera.cmd.homing", "tilt plate Y");
+			commandFuture = cameraMgmtAsync.commandFineTiltMirrorX(0);
+			break;
+			
+		case CameraMgmt.X_STEERING_MOTOR:
+			statusLogger.log("camera.cmd.homing", "steering mirror X");
+			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
+			break;
+			
+		case CameraMgmt.Y_STEERING_MOTOR:
+			statusLogger.log("camera.cmd.homing", "steering mirror Y");
+			commandFuture = cameraMgmtAsync.commandCoarseTiltMirrorX(0);
+			break;
+		}
+				
+		// wait for all commands to complete
+		long waitPeriodMs = Utils.waitForComplete(commandFuture);
+		statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
+
+		
+	}
+
 	
 
 
