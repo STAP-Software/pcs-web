@@ -126,17 +126,11 @@ public class CameraCommandSimulator implements CameraCommand {
 		case DEVICE_CODE_ELECTRONICS_RH:
 			result = new CameraQueryResult(random(10.0, 80.0));
 			break;
-		case DEVICE_CODE_FAN_POWER:
-			result = null;
-			break;
 		case DEVICE_CODE_GALIL_POWER:
 			result = null;
 			break;
 		case DEVICE_CODE_OPTICAL_BENCH_RH:						
 			result = new CameraQueryResult(random(10.0, 80.0));
-			break;
-		case DEVICE_CODE_POWER_SUPPLIES:
-			result = null;
 			break;
 		case DEVICE_CODE_TEMPERATURE_INTERLOCK:
 			result = new CameraQueryResult(randomBool() ? 1 : 0);
@@ -329,17 +323,7 @@ public class CameraCommandSimulator implements CameraCommand {
 	}
 
 
-	@Override
-	public int commandFanPowerState(int powerState) throws IllegalArgumentException, CommunicationException, CommandFailureException {
 
-		if (powerState != 0 && powerState != 1) {
-			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
-		}
-		fanPowerState = powerState;
-
-
-		return fanPowerState;
-	}
 
 
 	@Override
@@ -354,18 +338,6 @@ public class CameraCommandSimulator implements CameraCommand {
 		return galilPowerState;
 	}
 
-
-	@Override
-	public int commandPowerSuppliesPowerState(int powerState) {
-
-	    if (powerState != 0 && powerState != 1) {
-			throw new IllegalArgumentException("passed power state " + powerState + " must be either zero or one"); 
-		}
-		powerSuppliesPowerState = powerState;
-
-
-		return powerSuppliesPowerState;
-	}
 
 
 	@Override
@@ -434,9 +406,7 @@ public class CameraCommandSimulator implements CameraCommand {
 		
 		cameraStatus.overallPowerState = overallPowerState;
 		cameraStatus.ccdPowerState = ccdControllerPowerState;
-		cameraStatus.fanPowerState = fanPowerState;
 		cameraStatus.galilPowerState = galilPowerState;
-		cameraStatus.powerSuppliesState = powerSuppliesPowerState;
 
 		
 		

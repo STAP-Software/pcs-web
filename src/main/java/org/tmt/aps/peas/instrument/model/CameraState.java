@@ -51,9 +51,7 @@ public class CameraState {
 	private boolean glycolFlow;
 	
 	private int overallPowerState;
-	private int fanPowerState;
 	private int galilPowerState;
-	private int powerSuppliesPowerState;
 	
 	private int tiltPlateX; // microns
 	private int tiltPlateY; // microns
@@ -100,9 +98,7 @@ public class CameraState {
 		this.purgeState = cameraStatus.purgeIsActive;
 		this.glycolFlow = cameraStatus.glycolIsFlowing;
 		this.overallPowerState = cameraStatus.overallPowerState;
-		this.fanPowerState = cameraStatus.fanPowerState;
 		this.galilPowerState = cameraStatus.galilPowerState;
-		this.powerSuppliesPowerState = cameraStatus.powerSuppliesState;
 
 		
 		this.prismWheelIsInTransit = cameraStatus.prismWheelIsInTransit;
@@ -184,15 +180,10 @@ public class CameraState {
 
 		// Overall Power State
 		this.overallPowerState = camera.getOverallPowerState();
-		
-		// Fan Power State
-		this.fanPowerState = camera.getFanPowerState();
-		
+				
 		// Galil Power State
 		this.galilPowerState = camera.getGalilPowerState();
 		
-		// Power Supplies Power State
-		this.powerSuppliesPowerState = camera.getPowerSuppliesPowerState();
 
 
 				
@@ -406,28 +397,12 @@ public class CameraState {
 		this.overallPowerState = overallPowerState;
 	}
 
-	public int getFanPowerState() {
-		return fanPowerState;
-	}
-
-	public void setFanPowerState(int fanPowerState) {
-		this.fanPowerState = fanPowerState;
-	}
-
 	public int getGalilPowerState() {
 		return galilPowerState;
 	}
 
 	public void setGalilPowerState(int galilPowerState) {
 		this.galilPowerState = galilPowerState;
-	}
-
-	public int getPowerSuppliesPowerState() {
-		return powerSuppliesPowerState;
-	}
-
-	public void setPowerSuppliesPowerState(int powerSuppliesPowerState) {
-		this.powerSuppliesPowerState = powerSuppliesPowerState;
 	}
 
 

@@ -73,11 +73,7 @@ public class Camera {
 	@Transient
 	private int ccdPowerState;
 	@Transient
-	private int fanPowerState;
-	@Transient
 	private int galilPowerState;
-	@Transient
-	private int powerSuppliesPowerState;
 	
 
 
@@ -132,14 +128,8 @@ public class Camera {
 	public String getCcdPowerStateDisplayString() {
 		return powerStateDisplayString(ccdPowerState);
 	}
-	public String getFanPowerStateDisplayString() {
-		return powerStateDisplayString(fanPowerState);
-	}
 	public String getGalilPowerStateDisplayString() {
 		return powerStateDisplayString(galilPowerState);
-	}
-	public String getPowerSuppliesPowerStateDisplayString() {
-		return powerStateDisplayString(powerSuppliesPowerState);
 	}
 	
 	
@@ -263,13 +253,7 @@ public class Camera {
 		this.ccdPowerState = ccdPowerState;
 	}
 
-	public int getFanPowerState() {
-		return fanPowerState;
-	}
 
-	public void setFanPowerState(int fanPowerState) {
-		this.fanPowerState = fanPowerState;
-	}
 
 	public int getGalilPowerState() {
 		return galilPowerState;
@@ -277,14 +261,6 @@ public class Camera {
 
 	public void setGalilPowerState(int galilPowerState) {
 		this.galilPowerState = galilPowerState;
-	}
-
-	public int getPowerSuppliesPowerState() {
-		return powerSuppliesPowerState;
-	}
-
-	public void setPowerSuppliesPowerState(int powerSuppliesPowerState) {
-		this.powerSuppliesPowerState = powerSuppliesPowerState;
 	}
 
 	public Instrument getInstrument() {

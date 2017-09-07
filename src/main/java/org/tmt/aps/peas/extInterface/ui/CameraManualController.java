@@ -125,12 +125,10 @@ public class CameraManualController implements Serializable {
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE, "boxTemp");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FAN_POWER, "fanPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "galilPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH, "instHumid");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE, "instTemp");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_POWER_SUPPLIES, "powerSuppliesPower");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PUPIL_WHEEL, "pupilMask");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS, "refBeam");
 		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK, "tempInterlock");
@@ -840,31 +838,7 @@ public class CameraManualController implements Serializable {
 	}
 	
 	
-	public void doSendFanPowerStateCommand() {
-		
-		try {
 
-			Future<Integer> powerFuture = cameraMgmt.commandFanPowerState(fanPowerStateCmd);
-			while (!powerFuture.isDone()) {
-				Thread.sleep(500);
-			}
-			powerFuture.get();
-						
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fan Power State"));
-
-			
-		} catch (CommandFailureException e) {
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		}
-		
-	}
-	
 	public void doSendGalilPowerStateCommand() {
 		
 		try {
@@ -890,30 +864,6 @@ public class CameraManualController implements Serializable {
 		
 	}
 	
-	public void doSendPowerSuppliesPowerStateCommand() {
-		
-		try {
-
-			Future<Integer> powerFuture = cameraMgmt.commandPowerSuppliesPowerState(powerSuppliesPowerStateCmd);
-			while (!powerFuture.isDone()) {
-				Thread.sleep(500);
-			}
-			powerFuture.get();
-						
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Power Supplies Power State"));
-
-			
-		} catch (CommandFailureException e) {
-			
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
-			logger.error(MessageGenerator.generateMessage("command.failure"), e);
-			
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		}
-		
-	}
 	
 	public void doSendPurgeAirStateCommand() {
 		

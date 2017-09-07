@@ -156,16 +156,10 @@ public class Instrument {
 		
 		// Overall Power State
 		camera.setOverallPowerState(cameraStatus.overallPowerState);
-		
-		// Fan Power State
-		camera.setFanPowerState(cameraStatus.fanPowerState);
-		
+				
 		// Galil Power State
 		camera.setGalilPowerState(cameraStatus.galilPowerState);
 		
-		// Power Supplies Power State
-		camera.setPowerSuppliesPowerState(cameraStatus.powerSuppliesState);
-
 	}
 	
 	/**
@@ -235,14 +229,8 @@ public class Instrument {
 		// Overall Power State
 		camera.setOverallPowerState(cameraState.getOverallPowerState());
 		
-		// Fan Power State
-		camera.setFanPowerState(cameraState.getFanPowerState());
-		
 		// Galil Power State
 		camera.setGalilPowerState(cameraState.getGalilPowerState());
-		
-		// Power Supplies Power State
-		camera.setPowerSuppliesPowerState(cameraState.getPowerSuppliesPowerState());
 		
 		
 
@@ -304,14 +292,8 @@ public class Instrument {
 		// Overall Power State
 		camera.setOverallPowerState(CameraCommand.UNKNOWN);
 
-		// Fan Power State
-		camera.setFanPowerState(CameraCommand.UNKNOWN);
-		
 		// Galil Power State
 		camera.setGalilPowerState(CameraCommand.UNKNOWN);
-		
-		// Power Supplies Power State
-		camera.setPowerSuppliesPowerState(CameraCommand.UNKNOWN);
 
 	}
 	}

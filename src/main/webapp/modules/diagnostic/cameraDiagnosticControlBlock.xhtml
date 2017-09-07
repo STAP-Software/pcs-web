@@ -112,13 +112,6 @@
 		</p:selectOneMenu>
 		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
-		<h:outputLabel value="Fan Power State" />
-		<p:selectOneMenu value="#{cameraManualController.fanPowerStateCmd}" style="top:2px" >
-				<f:selectItem itemLabel="On" itemValue="1" />
-				<f:selectItem itemLabel="Off" itemValue="0" />
-		</p:selectOneMenu>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFanPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
-
 		<h:outputLabel value="Galil Power State" />
 		<p:selectOneMenu value="#{cameraManualController.galilPowerStateCmd}" style="top:2px" >
 				<f:selectItem itemLabel="On" itemValue="1" />
@@ -126,14 +119,6 @@
 		</p:selectOneMenu>
 		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendGalilPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
 
-		<h:outputLabel value="Power Supplies Power State" />
-		<p:selectOneMenu value="#{cameraManualController.powerSuppliesPowerStateCmd}" style="top:2px" >
-				<f:selectItem itemLabel="On" itemValue="1" />
-				<f:selectItem itemLabel="Off" itemValue="0" />
-		</p:selectOneMenu>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPowerSuppliesPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
-
- 		
 
 		<h:outputLabel value="Purge Air State" />
 		<p:selectOneMenu value="#{cameraManualController.purgeAirStateCmd}" style="top:2px" >
