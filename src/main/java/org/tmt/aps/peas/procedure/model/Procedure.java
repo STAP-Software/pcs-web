@@ -454,4 +454,9 @@ public class Procedure {
 			return new SufsProcedureOutput();
 		}
 	}
+
+	public boolean isProcedureStateAborted() {
+		return procedureState == Procedure.PROCEDURE_STATE_ABORTED;
+		
+	}
 }

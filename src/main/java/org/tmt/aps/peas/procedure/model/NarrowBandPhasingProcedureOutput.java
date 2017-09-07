@@ -1,13 +1,13 @@
 package org.tmt.aps.peas.procedure.model;
 
 import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
+import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 
@@ -25,6 +25,7 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	FixPistonsResult fixPistonsResult;
 	PhasingStatsResult phasingStatsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
+	TerraceModeComponentsResult terraceModeComponentsResult;
 	
 	
 	public MakeTemplateResult getMakeTemplateResult() {
@@ -65,7 +66,12 @@ public class NarrowBandPhasingProcedureOutput extends ProcedureOutput implements
 	public void setCalcDesiredActCommandsResult(CalcDesiredActCommandsResult calcDesiredActCommandsResult) {
 		this.calcDesiredActCommandsResult = calcDesiredActCommandsResult;
 	}
-
+	public TerraceModeComponentsResult getTerraceModeComponentsResult() {
+		return terraceModeComponentsResult;
+	}
+	public void setTerraceModeComponentsResult(TerraceModeComponentsResult terraceModeComponentsResult) {
+		this.terraceModeComponentsResult = terraceModeComponentsResult;
+	}
 	
 	public float[][] getDesiredActDeltas() {
 		

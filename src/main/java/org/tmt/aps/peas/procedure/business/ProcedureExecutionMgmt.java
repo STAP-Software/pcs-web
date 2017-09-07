@@ -331,10 +331,11 @@ public class ProcedureExecutionMgmt {
 			Point finePosition = physicalModel.getInstrument().getCamera().getFineTiltMirror().getCurrentPosition();
 			logger.debug("performProcedureCompletion::persist procedure");
 
+						
 			// if not running with simulated camera I/F, save the current coarse mirror positions in global config defaults
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled() && 
 					!procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType().isPupilMaskTypeSufs() &&
-					!procedure.getProcedureType().isCreateRefMap()) {
+					!procedure.getProcedureType().isCreateRefMap() && !procedure.isProcedureStateAborted()) {
 				// create a config defaults object to save back
 				GlobalConfigDefaults globalConfigDefaults = globalConfigMgmt
 						.findDefaultConfig(physicalModel.getTelescope().getTelescopeId(), physicalModel.getInstrument().getInstrumentId());

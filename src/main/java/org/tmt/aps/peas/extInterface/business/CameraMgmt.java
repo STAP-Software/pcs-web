@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.Hashtable;
 import java.util.concurrent.Future;
 
 import javax.ejb.AsyncResult;
@@ -19,6 +20,7 @@ import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.CameraStatusListener;
+import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 
@@ -42,6 +44,32 @@ public class CameraMgmt {
 	@EJB
 	ExtInfConfigState extInfConfigState;
 
+	
+	public static final int X_TILT_MOTOR = 1;
+	public static final int Y_TILT_MOTOR = 2;
+	public static final int X_STEERING_MOTOR = 3;
+	public static final int Y_STEERING_MOTOR = 4;
+
+	
+	public static Hashtable<Integer, Integer> errorCodeToMechanism = new Hashtable<Integer, Integer>();
+	
+	static {
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_CONTROLLER_NOT_RESPONDING, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_TILT_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_TILT_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_X_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, X_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_CONTROLLER_NOT_RESPONDING, Y_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_FIND_HOME_POSITION, Y_STEERING_MOTOR);
+		errorCodeToMechanism.put(CommandFailureException.FAILURE_CODE_Y_STEERING_MOTOR_FAILED_TO_REACH_COMMANDED_POSITION, Y_STEERING_MOTOR);
+	}
+	
+	
+	
 	// All Camera Commands should be defined here
 
 	public CameraQueryResult queryCamera(int deviceCode) throws Exception {
@@ -261,6 +289,9 @@ public class CameraMgmt {
 				
 		return new AsyncResult<Boolean>(true);
 	}
+	
+	
+
 
 
 
