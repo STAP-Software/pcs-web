@@ -124,25 +124,58 @@ public class VisualizationController implements Serializable {
 		SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
 		return subimageDefList.getInteriorCentroidYsAsString();
 	}
+	
+	/**
+	 * 
+	 * @return x coordinates of the segment centers in units of edge length 
+	 */
+	public String getSegCentersX() {
+		
+		float factor =  1.0f/constantsCache.getPrimaryMirrorConstants().getaHex();
+		List<FloatPoint> segCenters = FloatPointListEncoder.multiplyPoints(constantsCache.getPrimaryMirrorConstants().getSegmentCenters(), factor);
+		
+		return FloatPointListEncoder.encodeXList(segCenters);
+	}
+	
+	public String getSegCentersY() {
+		float factor =  1.0f/constantsCache.getPrimaryMirrorConstants().getaHex();
+		List<FloatPoint> segCenters = FloatPointListEncoder.multiplyPoints(constantsCache.getPrimaryMirrorConstants().getSegmentCenters(), factor);
+		
+		return FloatPointListEncoder.encodeYList(segCenters);
+	}
 
 	/**
-	 * @return the x coordinates of segment edge centers
+	 * @return the x coordinates of segment edge centers in units of edge length
 	 */
 	public String getEdgeXs() {
-		// determine which procedure type we are in
+		
+		float factor =  0.75f;
+		
 		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
-		return PointListEncoder.encodeXList(nEdges);
+		
+		List<FloatPoint> edges = FloatPointListEncoder.multiplyIntPoints(nEdges, factor);
+		
+		return FloatPointListEncoder.encodeXList(edges);
 	}
 	
 	/**
-	 * @return the y coordinates of segment edge centers
+	 * @return the y coordinates of segment edge centers in units of edge length
 	 */
 	public String getEdgeYs() {
-		// determine which procedure type we are in
+		
+		
+		
+		float factor =  (float)(Math.sqrt(3.0)/4.0f);
+		
 		List<Point> nEdges = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getnEdge());
-		return PointListEncoder.encodeYList(nEdges);
+		
+		List<FloatPoint> edges = FloatPointListEncoder.multiplyIntPoints(nEdges, factor);
+		
+		return FloatPointListEncoder.encodeYList(edges);
 	}
 
+	
+	
 	/**
 	 * @return the angle of the normal to the edge for each segment edge
 	 */
@@ -201,6 +234,9 @@ public class VisualizationController implements Serializable {
 	public void setSegCentDefXs(String str) {}
 	public void setSegCentDefYs(String str) {}
 
+	public void setSegCentersX(String str) {}
+	public void setSegCentersY(String str) {}
+	
 	public boolean isShowSegments() {
 		return showSegments;
 	}
