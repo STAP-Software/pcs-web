@@ -191,25 +191,6 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[8] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((8).intValue())}" update="ccdPowerValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[8] eq 4}"  styleClass="thinButton"/>
-
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
-		<h:outputLabel value="CCD Temp (#{fieldMetaData.units})" />
-		<h:outputText id="ccdTempValue" value="#{cameraManualController.ccd.temperature}" style="position:relative; top:3px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[11]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="11"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[11] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((11).intValue())}" update="ccdTempValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[11] eq 4}"  styleClass="thinButton"/>
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
 		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
