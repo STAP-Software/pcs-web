@@ -537,11 +537,11 @@ public class CameraManualController implements Serializable {
 			break;
 
 		case 5: // Fine Tilt
-			doSendFineCommand();
+			doSendFineCommandBoth();
 			break;
 
 		case 6: // Coarse Tilt
-			doSendCoarseCommand();
+			doSendCoarseCommandBoth();
 			break;
 
 		case 7: // Two Position Mech
@@ -662,26 +662,69 @@ public class CameraManualController implements Serializable {
 		}
 	}
 	
-	public void doSendFineCommand() {
+	public void doSendFineCommandBoth() {
 		
 		try {
-
 			Future<Point> future = cameraMgmt.commandFineTiltMirror(fineTiltCmd);
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
 			Point result = future.get();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt"));			
+		} catch (CommandFailureException e) {			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	public void doSendFineCommandX() {
+		
+		try {
+			Future<Integer> future = cameraMgmt.commandFineTiltMirrorX(fineTiltCmd.x);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Integer result = future.get();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt X"));			
+		} catch (CommandFailureException e) {			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	public void doSendFineCommandY() {
+		
+		try {
+			Future<Integer> future = cameraMgmt.commandFineTiltMirrorY(fineTiltCmd.y);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Integer result = future.get();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt Y"));			
+		} catch (CommandFailureException e) {			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendCoarseCommandX() {
+		
+		try {
+			Future<Integer> future = cameraMgmt.commandCoarseTiltMirrorX(coarseTiltCmd.x);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Integer result = future.get();									
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt X"));
 			
-			//getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
-
-			//getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-			//getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
-						
-			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt"));
-
-			
-		} catch (CommandFailureException e) {
-			
+		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			
@@ -691,26 +734,37 @@ public class CameraManualController implements Serializable {
 		}
 	}
 	
-	public void doSendCoarseCommand() {
+	public void doSendCoarseCommandY() {
 		
 		try {
-
+			Future<Integer> future = cameraMgmt.commandCoarseTiltMirrorY(coarseTiltCmd.y);
+			while (!future.isDone()) {
+				Thread.sleep(500);
+			}
+			Integer result = future.get();									
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt Y"));
+			
+		} catch (CommandFailureException e) {			
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+			
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+	}
+	
+	public void doSendCoarseCommandBoth() {
+		
+		try {
 			Future<Point> future = cameraMgmt.commandCoarseTiltMirror(coarseTiltCmd);
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Point result = future.get();
-			
-			//getCamera().getFineTiltMirror().setCurrentPosition(fineResult);
-
-			//getCamera().getFineTiltMirror().setStateX(DeviceStates.STATE_IN_POSITION);
-			//getCamera().getFineTiltMirror().setStateY(DeviceStates.STATE_IN_POSITION);
-						
+			Point result = future.get();									
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt"));
-
 			
-		} catch (CommandFailureException e) {
-			
+		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			

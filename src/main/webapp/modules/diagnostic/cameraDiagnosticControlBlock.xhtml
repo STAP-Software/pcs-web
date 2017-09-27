@@ -76,7 +76,13 @@
 			<h:outputText value="&#160;&#160;y &#160;&#160;" />
 			<p:inputText value="#{cameraManualController.fineTiltCmd.y}" size="3"  />
 		</h:panelGroup>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFineCommand}" update=":growl :errorGrowl" style="top:8px" />
+		<h:panelGroup>
+		<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendFineCommandX}" update=":growl :errorGrowl" style="top:8px" />
+		<h:outputText value="&#160;&#160;" />
+		<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendFineCommandY}" update=":growl :errorGrowl" style="top:8px" />
+		<h:outputText value="&#160;&#160;" />
+		<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendFineCommandBoth}" update=":growl :errorGrowl" style="top:8px" />
+		</h:panelGroup>
 		
 		
 		
@@ -87,8 +93,13 @@
 			<h:outputText value="&#160;&#160;y &#160;&#160;"  />
 			<p:inputText value="#{cameraManualController.coarseTiltCmd.y}" size="3"  />
 		</h:panelGroup>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCoarseCommand}" update=":growl :errorGrowl" style="top:8px" />
-		
+		<h:panelGroup>
+		<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendCoarseCommandX}" update=":growl :errorGrowl" style="top:8px" />
+		<h:outputText value="&#160;&#160;" />
+		<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendCoarseCommandY}" update=":growl :errorGrowl" style="top:8px" />
+		<h:outputText value="&#160;&#160;" />
+		<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendCoarseCommandBoth}" update=":growl :errorGrowl" style="top:8px" />
+		</h:panelGroup>
 		
 		<h:outputLabel value="Two Position Mech" />
 		<p:selectOneMenu value="#{cameraManualController.twoPosCmd}" style="top:2px" >

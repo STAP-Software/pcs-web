@@ -196,7 +196,8 @@ public class CameraCommandSimulator implements CameraCommand {
 	@Override
 	public int commandFilterWheel(int filterWheelPosition) throws CommunicationException, TimeoutException, CommandFailureException {
 		logger.info(MessageGenerator.generateMessage("command.start", "commandFilterWheel::SIMULATOR"));
-		Utils.waitFor(750);
+		this.filterWheelPosition = -1;
+		Utils.waitFor(4000);
 		this.filterWheelPosition = filterWheelPosition;
 		logger.info(MessageGenerator.generateMessage("command.success", "commandFilterWheel::SIMULATOR"));
 		return filterWheelPosition;

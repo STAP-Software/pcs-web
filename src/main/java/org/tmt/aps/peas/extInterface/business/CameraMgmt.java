@@ -191,6 +191,30 @@ public class CameraMgmt {
 	}
 
 	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorX(Integer fineTiltCmdX) throws Exception {
+
+		Future<Integer> xFuture = cameraMgmtAsync.commandFineTiltMirrorX(fineTiltCmdX);
+
+		while (!xFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(xFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorY(Integer fineTiltCmdY) throws Exception {
+
+		Future<Integer> yFuture = cameraMgmtAsync.commandFineTiltMirrorY(fineTiltCmdY);
+
+		while (!yFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(yFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
 	public Future<Point> commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
 		Future<Integer> xFuture = cameraMgmtAsync.commandCoarseTiltMirrorX((int) coarseTiltCmd.x);
 		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int) coarseTiltCmd.y);
@@ -201,6 +225,30 @@ public class CameraMgmt {
 		}
 		Point result = new Point(xFuture.get(), yFuture.get());
 		return new AsyncResult<Point>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorX(Integer coarseTiltCmdX) throws Exception {
+		Future<Integer> xFuture = cameraMgmtAsync.commandCoarseTiltMirrorX((int) coarseTiltCmdX);
+
+		while (!xFuture.isDone()) {
+			logger.debug("waiting on coarse Tilt Mirror xDone = " + xFuture.isDone());
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(xFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorY(Integer coarseTiltCmdY) throws Exception {
+		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int) coarseTiltCmdY);
+
+		while (!yFuture.isDone()) {
+			logger.debug("waiting on coarse Tilt Mirror yDone = " + yFuture.isDone());
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(yFuture.get());
+		return new AsyncResult<Integer>(result);
 	}
 
 
