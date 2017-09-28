@@ -38,7 +38,7 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}" styleClass="thinButton"/>
 		
 		<h:outputLabel value="Pupil Mask" />	
-		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.selectedPupilMask.wheelPosition} (#{cameraManualController.camera.pupilWheel.selectedPupilMask.maskName})" style="position:relative; top:2px" />
+		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 		<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -53,7 +53,7 @@
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[1] eq 4}" styleClass="thinButton"/>
 		
 		<h:outputLabel value="Filter" />
-		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.selectedFilter.wheelPosition} (#{cameraManualController.camera.filterWheel.selectedFilter.filterName})" style="position:relative; top:2px" />
+		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
 		<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:2px" />
 		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 			<f:selectItem itemLabel="Select method" itemValue="0" />
