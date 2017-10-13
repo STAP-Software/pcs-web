@@ -30,11 +30,16 @@
     		
     		<br/>
     		<br/>
-    		</div>   
+    		</div>  
+    	
+    		
     		<p:commandButton id="button1" value="Cancel" style="float:right" update=":growl :errorGrowl :menuForm"
 					action="#{sessionController.doExtInfChange(false)}" oncomplete="extInfDialog.hide();" />
 			<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
-					action="#{sessionController.doExtInfChange(true)}" oncomplete="extInfDialog.hide();"  />
+					action="#{sessionController.doExtInfChange(true)}" oncomplete="extInfDialog.hide();waitingPopup();"   />
+					
+			<p:remoteCommand name="startSession" action="#{sessionController.doStartSession}" update=":growl :errorGrowl" />
+			
 			</h:form>
 		</p:dialog> 
 		
@@ -48,7 +53,20 @@
 		acsCheck.check();
 		dcsCheck.check();
 	}
-           
+         
+	function waitingPopup() {
+		// popup a waiting popup if camera check is checked and execute a call to a JSF action
+		
+		if (cameraCheck.input.is(':checked')) {
+			
+			// Maybe no dialog but instead the Camera Status should be "Initializing" in the header section
+			// still execute call to JSF action here
+			startSession();
+			
+		}
+		
+	}
+	
            
 //]]>
 	

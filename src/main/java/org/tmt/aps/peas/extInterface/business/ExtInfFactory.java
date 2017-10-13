@@ -21,12 +21,11 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extinf.ACS;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CCD;
-import org.tmt.aps.peas.extinf.CameraKtl;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraKtl;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.DcsRsk;
-import org.tmt.aps.peas.extinf.InstrumentInterface;
 
 /**
  * EJB Singleton managing external interface command delegation, either to the RPC client or a simulator.
@@ -44,6 +43,8 @@ public class ExtInfFactory {
 	PeasProperties peasProperties;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	CameraMgmt cameraMgmt;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -187,6 +188,7 @@ public class ExtInfFactory {
 			throw e;
 		}
 	}
+	
 	
 
 
