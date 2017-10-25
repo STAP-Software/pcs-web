@@ -19,6 +19,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
@@ -136,6 +137,11 @@ public class CreateRefMapExecutor {
 			readyCameraSubflow.execute(procedure);
 			
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+			
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
 
 			procedureExecutionState.setPercentComplete(25);
 			

@@ -186,8 +186,8 @@ public class PupilRegistrationExecutor {
 			/***********************************************/
 			/*             Startup Computations            */
 			/***********************************************/
-			computationLibrary.startupComputations(
-					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
 					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			

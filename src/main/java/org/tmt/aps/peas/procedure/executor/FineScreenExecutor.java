@@ -223,7 +223,7 @@ public class FineScreenExecutor {
 			/*             Startup Computations            */
 			/***********************************************/
 			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
-					physicalModel.getInstrument().getCamera().getPupilWheel().getSelectedPupilMask().getArcsecPerMeter(),
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
 					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			
