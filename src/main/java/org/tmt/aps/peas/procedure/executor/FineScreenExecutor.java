@@ -210,7 +210,9 @@ public class FineScreenExecutor {
 			/*                 Ready Camera               */
 			/**********************************************/			
 			readyCameraSubflow.execute(procedure);
-			
+						
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 

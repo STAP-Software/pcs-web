@@ -212,6 +212,9 @@ public class SufsExecutor {
 			logger.debug("calcM2M1Config = " + procedure.getProcedureConfigSet().getCalcM2M1Config());
 
 			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
+			
 			/***********************************************/
 			/*             Startup Computations            */
 			/***********************************************/

@@ -163,6 +163,9 @@ public class NarrowBandPhasingExecutor {
 
 			int trialsTime = 70;
 			
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
 			/***********************************************/
 			/*             Startup Computations            */
 			/***********************************************/

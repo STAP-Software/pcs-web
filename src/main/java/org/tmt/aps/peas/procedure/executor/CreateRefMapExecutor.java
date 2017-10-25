@@ -134,6 +134,8 @@ public class CreateRefMapExecutor {
 			/*                 Ready Camera               */
 			/**********************************************/			
 			readyCameraSubflow.execute(procedure);
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			procedureExecutionState.setPercentComplete(25);
 			
