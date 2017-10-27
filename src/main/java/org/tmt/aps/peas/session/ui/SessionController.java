@@ -36,6 +36,7 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -77,6 +78,7 @@ public class SessionController implements Serializable {
 
 
 
+
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
@@ -105,7 +107,9 @@ public class SessionController implements Serializable {
 	boolean ifCommandPermission;
 	boolean configPermission;
 	boolean includeTestData;
-
+	
+	boolean sessionStartChecked = false;
+	
 	/**
 	 * Initialization method: creates a new current session if one does not exist
 	 * Sets up external interfaces to start up either in simulation or operational mode
@@ -141,7 +145,11 @@ public class SessionController implements Serializable {
 				getExtInfConnectConfig().setCcdEnabled(true);
 				getExtInfConnectConfig().setAcsEnabled(true);
 				getExtInfConnectConfig().setDcsEnabled(true);
+				
+				// initialize the camera once the page is loaded
+				sessionStartChecked = false;
 			}
+						
 			
 
 		} catch (Exception e) {
@@ -306,6 +314,8 @@ public class SessionController implements Serializable {
 	public void setIncludeTestData(boolean includeTestData) {
 		this.includeTestData = includeTestData;
 	}
+
+
 
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;
@@ -569,6 +579,7 @@ public class SessionController implements Serializable {
 		if (ok) {
 			extInfSimulationMode = false;
 			requestContext.update("menuForm");
+						
 		} else {
 			extInfSimulationMode = true;
 			// turn off all the ext interfaces
@@ -579,6 +590,7 @@ public class SessionController implements Serializable {
 		
 		requestContext.update("extInfMode");
 
+		
 	}
 	
 	/**
@@ -593,10 +605,16 @@ public class SessionController implements Serializable {
 			Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 
 			Utils.waitForComplete(twoPosCommandFuture);
+			
+			Future<Integer> stowFuture = cameraMgmt.stowCamera();
+			
+			Utils.waitForComplete(stowFuture);
 						
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 		}
+		
+		
 		
 		// turn off all the ext interfaces
 		getExtInfConnectConfig().reset();
@@ -605,6 +623,51 @@ public class SessionController implements Serializable {
 		requestContext.update("extInfMode");
 
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session Ended", ""));
+	}
+	
+	public void doCheckStartSession() {
+		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			if (!sessionStartChecked) {
+				sessionStartChecked = true;
+				doStartSession();
+			}
+		}
+	}
+	
+	public void doStartSession() {
+		
+		try {
+			
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
+
+			// check if the camera overall status is ready
+			CameraQueryResult queryResult = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OVERALL_STATUS);
+			
+			// if status is not ready, init camera
+			if (queryResult.getIntValue() == CameraQueryResult.NOT_READY) {
+			
+				// initialize camera
+				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
+				Utils.waitForComplete(instFuture);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
+			} 
+			
+		} catch (Throwable t) {
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
+		} finally {
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);
+		}
+		
+		
 	}
 
 	/**

@@ -24,8 +24,8 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extinf.ACS;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CCD;
-import org.tmt.aps.peas.extinf.CamAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraKtl;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
 import org.tmt.aps.peas.extinf.DcsRsk;
@@ -49,12 +49,15 @@ public class ExtInfFactory {
 	ExtInfConfigState extInfConfigState;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	CameraMgmt cameraMgmt;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
 	DcsCommandSimulator dcsCommandSimulator;
+	CameraCommandSimulator cameraCommandSimulator;
 
-	CamAsync camAsync = null;
+	CameraKtl cameraKtl = null;
 	DcsRsk dcsRsk = null;
 	CCD ccd = null;
 	ACS acs = null;
@@ -66,6 +69,7 @@ public class ExtInfFactory {
 	@PostConstruct
 	void init() throws Exception {
 		dcsCommandSimulator = new DcsCommandSimulator();
+		cameraCommandSimulator = new CameraCommandSimulator();
 		
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 		telescopeId = new Integer(telescopeIdStr);
@@ -103,7 +107,7 @@ public class ExtInfFactory {
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 				return getCameraCommandRemote(telescopeId);
 			} else {
-				return new CameraCommandSimulator();
+				return cameraCommandSimulator;
 			}
 			
 		} catch (Exception e) {
@@ -157,7 +161,7 @@ public class ExtInfFactory {
 	public void resetAll() {
 		acs = null;
 		dcsRsk = null;
-		camAsync = null;
+		cameraKtl = null;
 		ccd = null;
 	}
 
@@ -179,10 +183,10 @@ public class ExtInfFactory {
 	private CameraCommand getCameraCommandRemote(int telescopeId) throws Exception {
 		try {
 			
-			if (camAsync == null) {
-				camAsync = new CamAsync(telescopeId);
+			if (cameraKtl == null) {
+				cameraKtl = new CameraKtl(telescopeId);
 			}
-			return camAsync;
+			return cameraKtl;
 			
 			
 		} catch (Exception e) {

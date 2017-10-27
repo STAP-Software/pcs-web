@@ -15,6 +15,7 @@ import javax.persistence.Table;
 
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
 
 /**
@@ -134,6 +135,31 @@ public class Instrument {
 
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
+		
+		// instrument RH
+		camera.setInstrumentHumidity((float)cameraStatus.benchHumidity);
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity((float)cameraStatus.boxHumidity);
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(cameraStatus.tempInterlockActive);
+		
+		// Purge State
+		camera.setPurgeState(cameraStatus.purgeIsActive);
+		
+		// Glycol Flow
+		camera.setGlycolFlow(cameraStatus.glycolIsFlowing);
+		
+		// Overall Status
+		camera.setOverallStatus(cameraStatus.overallStatus);
+		
+		// Overall Power State
+		camera.setOverallPowerState(cameraStatus.overallPowerState);
+				
+		// Galil Power State
+		camera.setGalilPowerState(cameraStatus.galilPowerState);
+		
 	}
 	
 	/**
@@ -184,6 +210,30 @@ public class Instrument {
 
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(((float) cameraState.getBoxTemp()));
+		
+		// instrument RH
+		camera.setInstrumentHumidity((float)cameraState.getBenchHumidity());
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity((float)cameraState.getBoxHumidity());
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(cameraState.isTemperatureInterlock());
+		
+		// Purge State
+		camera.setPurgeState(cameraState.isPurgeState());
+		
+		// Glycol Flow
+		camera.setGlycolFlow(cameraState.isGlycolFlow());
+
+		// Overall Power State
+		camera.setOverallPowerState(cameraState.getOverallPowerState());
+		
+		// Galil Power State
+		camera.setGalilPowerState(cameraState.getGalilPowerState());
+		
+		
+
 	} else {
 		camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);
 		camera.getPupilWheel().setSelectedPupilMaskNumber(0);
@@ -223,7 +273,141 @@ public class Instrument {
 		// Electronics Box Temperature
 		camera.setElectronicsBoxTemperature(0.0f);
 	
+		// instrument RH
+		camera.setInstrumentHumidity(0.0f);
+		
+		// Electronics box RH
+		camera.setElectronicsBoxHumidity(0.0f);
+		
+		// Temperature Interlock
+		camera.setTemperatureInterlock(false);
+		
+		// Purge State
+		camera.setPurgeState(false);
+		
+		// Glycol Flow
+		camera.setGlycolFlow(false);
+
+
+		// Overall Power State
+		camera.setOverallPowerState(CameraCommand.UNKNOWN);
+
+		// Galil Power State
+		camera.setGalilPowerState(CameraCommand.UNKNOWN);
+
 	}
+	}
+	
+	
+	/**
+	 * Given a deviceCode and CameraQueryResult object, updates the appropriate device with the query result.
+	 * @param deviceCode the device code
+	 * @param cameraQueryResult the query result to apply to the instrument
+	 */
+	public void updateDevice(int deviceCode, CameraQueryResult cameraQueryResult) {
+		
+		switch(deviceCode) {
+		case CameraCommand.DEVICE_CODE_PUPIL_WHEEL:
+			// Pupil Mask
+			camera.getPupilWheel().setState(cameraQueryResult.getState());
+			camera.getPupilWheel().setSelectedPupilMaskNumber(cameraQueryResult.getIntValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_FILTER_WHEEL:
+			// Filter
+			camera.getFilterWheel().setState(cameraQueryResult.getState());
+			camera.getFilterWheel().setSelectedFilterNumber(cameraQueryResult.getIntValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_REFERENCE_BEAMS:
+			// Ref Beam
+			camera.setCurrentRefBeam(cameraQueryResult.getIntValue());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_SHUTTER:
+			// Shutter
+			camera.getShutter().setState(cameraQueryResult.getState() == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_X_TILT_PLATE:
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getIntValue(), camera.getFineTiltMirror().getCurrentPosition().y));
+			camera.getFineTiltMirror().setStateX(cameraQueryResult.getState());
+
+			break;
+			
+		case CameraCommand.DEVICE_CODE_Y_TILT_PLATE:
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(camera.getFineTiltMirror().getCurrentPosition().x, cameraQueryResult.getIntValue()));
+			camera.getFineTiltMirror().setStateY(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_X_STEERING_MIRROR:
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraQueryResult.getIntValue(), camera.getCoarseTiltMirror().getCurrentPosition().y));
+			camera.getCoarseTiltMirror().setStateX(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR:
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point( camera.getCoarseTiltMirror().getCurrentPosition().x, cameraQueryResult.getIntValue()));
+			camera.getCoarseTiltMirror().setStateY(cameraQueryResult.getState());
+			break;
+			
+		case CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE:
+			// Two Position Mech
+			camera.getTwoPosMechanism().setState(cameraQueryResult.getState() == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_POWER:
+			// CCD Power
+			ccd.setState(cameraQueryResult.getState() == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_CCD_TEMPERATURE:
+			// CCD Temperature
+			ccd.setTemperature(((float) cameraQueryResult.getDoubleValue()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE:
+			// Instrument Temperature
+			camera.setInstrumentTemperature(((float) cameraQueryResult.getDoubleValue()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE:
+			// Electronics Box Temperature
+			camera.setElectronicsBoxTemperature(((float) cameraQueryResult.getDoubleValue()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_ELECTRONICS_RH:
+			// Electronics Box Temperature
+			camera.setElectronicsBoxHumidity(((float) cameraQueryResult.getDoubleValue()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH:
+			// Electronics Box Temperature
+			camera.setInstrumentHumidity(((float) cameraQueryResult.getDoubleValue()));
+			break;
+			
+		case CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK:
+			// Temperature Interlock
+			camera.setTemperatureInterlock(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+		
+			/*
+		case CameraCommand.DEVICE_CODE_PURGE_STATE:
+			// Purge State
+			camera.setPurgeState(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+			
+		case CameraCommand.DEVICE_CODE_GLYCOL_FLOW:
+			// Glycol Flow
+			camera.setGlycolFlow(cameraQueryResult.getState() == CameraCommand.ON);
+			break;
+			*/
+
+		}
+		
 	}
 	
 }

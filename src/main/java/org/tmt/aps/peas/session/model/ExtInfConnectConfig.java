@@ -14,6 +14,7 @@ public class ExtInfConnectConfig {
 	private boolean dcsEnabled;
 	
 	private boolean cameraHeartbeatStatus;
+	private boolean cameraInitializing;
 	
 	public ExtInfConnectConfig() {
 		reset();
@@ -62,9 +63,17 @@ public class ExtInfConnectConfig {
 		return cameraHeartbeatStatus;
 	}
 	
+	public boolean isCameraInitializing() {
+		return cameraInitializing;
+	}
+
+	public void setCameraInitializing(boolean cameraInitializing) {
+		this.cameraInitializing = cameraInitializing;
+	}
+
 	public String getCameraStatus() {
 		if (cameraEnabled) {
-			return cameraHeartbeatStatus ? "Connected" : "Communication Failure";
+			return cameraHeartbeatStatus ? (cameraInitializing ? "Initializing" : "Connected") : "Communication Failure";
 		}
 		return cameraHeartbeatStatus ? "Disconnected" : "Disconnecting";
 	}

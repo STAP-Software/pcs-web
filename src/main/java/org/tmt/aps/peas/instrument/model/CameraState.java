@@ -43,6 +43,16 @@ public class CameraState {
 	private float ccdTemp; // deg C
 	private float boxTemp; // deg C
 	private float benchTemp; // deg C
+	private float boxHumidity; // deg C
+	private float benchHumidity; // deg C
+	
+	private boolean temperatureInterlock;
+	private boolean purgeState;
+	private boolean glycolFlow;
+	
+	private int overallPowerState;
+	private int galilPowerState;
+	
 	private int tiltPlateX; // microns
 	private int tiltPlateY; // microns
 	private int steeringMirrorX; // microns
@@ -76,10 +86,20 @@ public class CameraState {
 		this.ccdTemp = (float)cameraStatus.ccdTemp; 
 		this.boxTemp = (float)cameraStatus.boxTemp; 
 		this.benchTemp = (float)cameraStatus.benchTemp; 
+		
 		this.tiltPlateX = cameraStatus.tiltPlateX; 
 		this.tiltPlateY = cameraStatus.tiltPlateY; 
 		this.steeringMirrorX = cameraStatus.steeringMirrorX; 
 		this.steeringMirrorY = cameraStatus.steeringMirrorY; 
+	
+		this.boxHumidity = (float)cameraStatus.boxHumidity; 
+		this.benchHumidity = (float)cameraStatus.benchHumidity; 
+		this.temperatureInterlock = cameraStatus.tempInterlockActive;
+		this.purgeState = cameraStatus.purgeIsActive;
+		this.glycolFlow = cameraStatus.glycolIsFlowing;
+		this.overallPowerState = cameraStatus.overallPowerState;
+		this.galilPowerState = cameraStatus.galilPowerState;
+
 		
 		this.prismWheelIsInTransit = cameraStatus.prismWheelIsInTransit;
 		this.filterWheelIsInTransit = cameraStatus.filterWheelIsInTransit;
@@ -142,6 +162,30 @@ public class CameraState {
 
 		// Electronics Box Temperature
 		this.benchTemp = (float)camera.getElectronicsBoxTemperature(); 
+		
+		// Instrument Humidity
+		this.benchHumidity = (float)camera.getInstrumentHumidity();
+		
+		// Electronics Box Humidity
+		this.boxHumidity = (float)camera.getElectronicsBoxHumidity();
+		
+		// Temperature Interlock
+		this.temperatureInterlock = camera.isTemperatureInterlock();
+		
+		// Purge State
+		this.purgeState = camera.isPurgeState();
+		
+		// Glycol Flow
+		this.glycolFlow = camera.isGlycolFlow();
+
+		// Overall Power State
+		this.overallPowerState = camera.getOverallPowerState();
+				
+		// Galil Power State
+		this.galilPowerState = camera.getGalilPowerState();
+		
+
+
 				
 	}
 
@@ -304,4 +348,64 @@ public class CameraState {
 	public void setSteeringMirrorYIsInTransit(boolean steeringMirrorYIsInTransit) {
 		this.steeringMirrorYIsInTransit = steeringMirrorYIsInTransit;
 	}
+
+	public float getBoxHumidity() {
+		return boxHumidity;
+	}
+
+	public void setBoxHumidity(float boxHumidity) {
+		this.boxHumidity = boxHumidity;
+	}
+
+	public float getBenchHumidity() {
+		return benchHumidity;
+	}
+
+	public void setBenchHumidity(float benchHumidity) {
+		this.benchHumidity = benchHumidity;
+	}
+
+	public boolean isTemperatureInterlock() {
+		return temperatureInterlock;
+	}
+
+	public void setTemperatureInterlock(boolean temperatureInterlock) {
+		this.temperatureInterlock = temperatureInterlock;
+	}
+
+	public boolean isPurgeState() {
+		return purgeState;
+	}
+
+	public void setPurgeState(boolean purgeState) {
+		this.purgeState = purgeState;
+	}
+
+	public boolean isGlycolFlow() {
+		return glycolFlow;
+	}
+
+	public void setGlycolFlow(boolean glycolFlow) {
+		this.glycolFlow = glycolFlow;
+	}
+
+	public int getOverallPowerState() {
+		return overallPowerState;
+	}
+
+	public void setOverallPowerState(int overallPowerState) {
+		this.overallPowerState = overallPowerState;
+	}
+
+	public int getGalilPowerState() {
+		return galilPowerState;
+	}
+
+	public void setGalilPowerState(int galilPowerState) {
+		this.galilPowerState = galilPowerState;
+	}
+
+
+	
+	
 }

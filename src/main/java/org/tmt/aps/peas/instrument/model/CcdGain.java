@@ -121,7 +121,5 @@ public class CcdGain implements IterableEntity {
 	public String getLabel() {
 		return "Gain";
 	}
-
-
 	
 }

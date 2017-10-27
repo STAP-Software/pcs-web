@@ -108,6 +108,15 @@ public class PupilWheel implements DeviceStates {
 		}
 	}
 	
+	public String getRawStateDisplayString() {
+		if (selectedPupilMask == null && state != STATE_IN_TRANSIT) {
+			return "Unknown";
+		} else {
+			return (state == STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
+	
 	/**
 	 * @return sorted list of pupil masks from the database field: maskList, ordered by mask name
 	 */
