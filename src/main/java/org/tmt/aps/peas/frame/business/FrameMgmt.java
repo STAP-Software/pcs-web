@@ -254,7 +254,7 @@ public class FrameMgmt {
 		
 		try {
 			
-			ccdMgmt.getOverscannedImage(exposureTime);
+			frame = ccdMgmt.getOverscannedImage(exposureTime);
 		
 		} catch (TimeoutException e) {
 			
