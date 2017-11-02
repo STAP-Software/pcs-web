@@ -926,12 +926,12 @@ public class JavaComputations {
 	 * @param overscanSize the size of the overscan area in pixels for a half detector
 	 * @return FloatPoint containing left and right overscans
 	 */
-	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
+	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(int[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
 		
 		// frame is [x][y] so first element is the column
 		
-		short leftMedian = calcMedianDarkOffset(frame, leftStartCol, leftEndCol);
-		short rightMedian = calcMedianDarkOffset(frame, rightStartCol, rightEndCol);
+		int leftMedian = calcMedianDarkOffset(frame, leftStartCol, leftEndCol);
+		int rightMedian = calcMedianDarkOffset(frame, rightStartCol, rightEndCol);
 	
 		
 		int totalOverscanFrameCols = frame.length;
@@ -943,7 +943,7 @@ public class JavaComputations {
 		int correctionEndCol = (leftMedian < rightMedian) ? totalCorrectedFrameCols/2 : totalCorrectedFrameCols;
 		
 		// cut off the frame overscan columns into newFrame
-		short[][] newFrame = new short[totalCorrectedFrameCols][frame[0].length];
+		int[][] newFrame = new int[totalCorrectedFrameCols][frame[0].length];
 		System.arraycopy(frame, overscanSize, newFrame, 0, newFrame.length);
 		
 		// apply the correction median delta to the lower side
@@ -953,7 +953,7 @@ public class JavaComputations {
 				int sum =  newFrame[i][j] + deltaMedian;
 				
 				// so that saturated frames do not exceed max short values
-				newFrame[i][j] = (short)Math.min(sum, Short.MAX_VALUE);
+				newFrame[i][j] = (int)Math.min(sum, Short.MAX_VALUE);
 			}
 		}
 				
@@ -969,9 +969,9 @@ public class JavaComputations {
 	 * @param endCol
 	 * @return
 	 */
-	public static short calcMedianDarkOffset(short[][] frame, int startCol, int endCol) throws ComputationException  {
+	public static int calcMedianDarkOffset(int[][] frame, int startCol, int endCol) throws ComputationException  {
 		
-		short[] allPixels = new short[0];
+		int[] allPixels = new int[0];
 		for (int colIndex = startCol; colIndex <= endCol; colIndex++) {
 			allPixels = combine(allPixels, frame[colIndex]);
 		}
@@ -980,19 +980,19 @@ public class JavaComputations {
 	
 	
 	
-	public static short[] combine(short[] a, short[] b) throws ComputationException {
+	public static int[] combine(int[] a, int[] b) throws ComputationException {
         int length = a.length + b.length;
-        short[] result = new short[length];
+        int[] result = new int[length];
         System.arraycopy(a, 0, result, 0, a.length);
         System.arraycopy(b, 0, result, a.length, b.length);
         return result;
     }
   
 
-	public static short getMedianValue(short[] inputs) throws ComputationException  {
+	public static int getMedianValue(int[] inputs) throws ComputationException  {
 		
 		// clone the array 
-		short[] values = inputs.clone();
+		int[] values = inputs.clone();
 		
 		Arrays.sort(values);
 		float median;
@@ -1001,7 +1001,7 @@ public class JavaComputations {
 		else
 		    median = (float) values[values.length/2];
 		
-		return (short)Math.round(median);
+		return (int)Math.round(median);
 	}
 
 

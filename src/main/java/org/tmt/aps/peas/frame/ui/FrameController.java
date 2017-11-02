@@ -548,15 +548,33 @@ public class FrameController implements Serializable {
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
 
-		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(ccdFrame.getRawFrame(), 
+		short[][] frame = ccdFrame.getRawFrame();
+		int[][] intFrame = new int[frame.length][frame[0].length];
+		for (int i = 0; i < frame.length; i++) {
+			for (int j = 0; j < frame[0].length; j++) {
+				intFrame[i][j] = (int)frame[i][j];
+			}
+		}
+
+		
+		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(intFrame, 
 				ccd.getDarkOvscnLeftColStart(), 
 				ccd.getDarkOvscnLeftColEnd(), 
 				ccd.getDarkOvscnRightColStart(), 
 				ccd.getDarkOvscnRightColEnd(),
 				overscanSize);
 		
+		int[][] corrected = result.getCorrectedFrame();
+		short[][] shortFrame = new short[frame.length][frame[0].length];
+		for (int i = 0; i < frame.length; i++) {
+			for (int j = 0; j < frame[0].length; j++) {
+				intFrame[i][j] = (int)frame[i][j];
+			}
+		}
+	
+		
 		// overwrite ccdFrame with corrected frame
-		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(result.getCorrectedFrame(), ccdFrame.getIntTime(), 0, 
+		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(shortFrame, ccdFrame.getIntTime(), 0, 
 				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
 
 		setupFrameToolFrameDisplay(correctedFrame);

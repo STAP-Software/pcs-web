@@ -325,36 +325,51 @@ public class FrameMgmt {
 			}
 			
 			
-			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
-				//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
-				swapFrame = computationLibrary.removeBadPixels(swapFrame, badPixelList);
-			}
-			
-			short[][] rawFrame = new short[frame.length][frame[0].length];
-			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[i].length; j++) {
-					rawFrame[i][j] = (short) swapFrame[i][j];
-				}
-			}
-			
 			// if the image is an overscan image, then correct for overscan
 			Ccd ccd = physicalModel.getInstrument().getCcd();
-			if (ccd.getCcdType().isTypeSciMeas() && rawFrame.length == ccd.getCcdType().getOverscanReadoutWidth()) {
+			if (ccd.getCcdType().isTypeSciMeas() && swapFrame.length == ccd.getCcdType().getOverscanReadoutWidth()) {
 			
 				// correct the overscan image into a corrected image without overscan columns
 				int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
 				
-				CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(rawFrame, 
+				CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(swapFrame, 
 						ccd.getDarkOvscnLeftColStart(), 
 						ccd.getDarkOvscnLeftColEnd(), 
 						ccd.getDarkOvscnRightColStart(), 
 						ccd.getDarkOvscnRightColEnd(),
-						overscanSize);			
+						overscanSize);		
+				
+				
+				int[][] correctedFrame = result.getCorrectedFrame();
+				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
+					//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+					correctedFrame = computationLibrary.removeBadPixels(correctedFrame, badPixelList);
+				}
+				
+				
+				short[][] rawFrame = new short[frame.length][frame[0].length];
+				for (int i = 0; i < frame.length; i++) {
+					for (int j = 0; j < frame[0].length; j++) {
+						rawFrame[i][j] = (short) correctedFrame[i][j];
+					}
+				}
+				
+
+
 	
-				ccdFrame = populateCcdFrame(result.getCorrectedFrame(), exposureTime, procedureConfig.getSufsGroup(), 
+				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), 
 						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
 			
 			} else {
+				
+				short[][] rawFrame = new short[frame.length][frame[0].length];
+				for (int i = 0; i < frame.length; i++) {
+					for (int j = 0; j < frame[0].length; j++) {
+						rawFrame[i][j] = (short) swapFrame[i][j];
+					}
+				}
+
+				
 				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
 			}
 		}
