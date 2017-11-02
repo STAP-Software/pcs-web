@@ -317,9 +317,9 @@ public class FrameMgmt {
 			// get the telescope status
 			telescopeMgmt.refreshStatus();
 			
-			int[][] swapFrame = new int[frame.length][frame[0].length];
+			int[][] swapFrame = new int[frame[0].length][frame.length];
 			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[i].length; j++) {
+				for (int j = 0; j < frame[0].length; j++) {
 					swapFrame[i][j] = frame[j][i];
 				}
 			}
