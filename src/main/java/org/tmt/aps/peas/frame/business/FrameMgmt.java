@@ -318,8 +318,8 @@ public class FrameMgmt {
 			telescopeMgmt.refreshStatus();
 			
 			int[][] swapFrame = new int[frame[0].length][frame.length];
-			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[0].length; j++) {
+			for (int i = 0; i < frame[0].length; i++) {
+				for (int j = 0; j < frame.length; j++) {
 					swapFrame[i][j] = frame[j][i];
 				}
 			}
