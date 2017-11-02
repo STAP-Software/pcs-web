@@ -926,7 +926,7 @@ public class JavaComputations {
 	 * @param overscanSize the size of the overscan area in pixels for a half detector
 	 * @return FloatPoint containing left and right overscans
 	 */
-	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) {
+	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
 		
 		// frame is [x][y] so first element is the column
 		
@@ -956,7 +956,7 @@ public class JavaComputations {
 				newFrame[i][j] = (short)Math.min(sum, Short.MAX_VALUE);
 			}
 		}
-		
+				
 		return new CorrectOverscanDarkResult(newFrame, leftMedian, rightMedian);
 	}
 	
@@ -969,7 +969,7 @@ public class JavaComputations {
 	 * @param endCol
 	 * @return
 	 */
-	public static short calcMedianDarkOffset(short[][] frame, int startCol, int endCol) {
+	public static short calcMedianDarkOffset(short[][] frame, int startCol, int endCol) throws ComputationException  {
 		
 		short[] allPixels = new short[0];
 		for (int colIndex = startCol; colIndex <= endCol; colIndex++) {
@@ -980,7 +980,7 @@ public class JavaComputations {
 	
 	
 	
-	public static short[] combine(short[] a, short[] b){
+	public static short[] combine(short[] a, short[] b) throws ComputationException {
         int length = a.length + b.length;
         short[] result = new short[length];
         System.arraycopy(a, 0, result, 0, a.length);
@@ -989,7 +989,7 @@ public class JavaComputations {
     }
   
 
-	public static short getMedianValue(short[] inputs) {
+	public static short getMedianValue(short[] inputs) throws ComputationException  {
 		
 		// clone the array 
 		short[] values = inputs.clone();

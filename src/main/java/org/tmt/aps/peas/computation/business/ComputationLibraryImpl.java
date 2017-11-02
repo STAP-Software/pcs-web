@@ -2827,7 +2827,7 @@ public class ComputationLibraryImpl {
 	 * @param overscanSize
 	 * @return
 	 */
-	public CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) {
+	public CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(short[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
 		return JavaComputations.correctOverscanFrameDarkOffsets(frame, leftStartCol, leftEndCol, rightStartCol, rightEndCol, overscanSize);
 	}
 
