@@ -347,9 +347,9 @@ public class FrameMgmt {
 				}
 				
 				
-				short[][] rawFrame = new short[frame.length][frame[0].length];
-				for (int i = 0; i < frame.length; i++) {
-					for (int j = 0; j < frame[0].length; j++) {
+				short[][] rawFrame = new short[correctedFrame.length][correctedFrame[0].length];
+				for (int i = 0; i < correctedFrame.length; i++) {
+					for (int j = 0; j < correctedFrame[0].length; j++) {
 						rawFrame[i][j] = (short) correctedFrame[i][j];
 					}
 				}
