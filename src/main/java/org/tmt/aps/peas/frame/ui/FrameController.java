@@ -542,7 +542,8 @@ public class FrameController implements Serializable {
 	}
 	
 	public void doCorrectDarkCurrent() {
-		
+		try 
+		{
 		// get overscan results for testing
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
@@ -564,6 +565,11 @@ public class FrameController implements Serializable {
 		//requestContext.update("frameDisplayForm:framePanel");
 		//requestContext.execute("drawFrame()");
 
+	} catch (Exception e) {
+		FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+		logger.error(MessageGenerator.generateMessage("generic.error"), e);
+	}
+		
 	}
 	
 
