@@ -565,10 +565,10 @@ public class FrameController implements Serializable {
 				overscanSize);
 		
 		int[][] corrected = result.getCorrectedFrame();
-		short[][] shortFrame = new short[frame.length][frame[0].length];
-		for (int i = 0; i < frame.length; i++) {
-			for (int j = 0; j < frame[0].length; j++) {
-				intFrame[i][j] = (int)frame[i][j];
+		short[][] shortFrame = new short[corrected.length][corrected[0].length];
+		for (int i = 0; i < corrected.length; i++) {
+			for (int j = 0; j < corrected[0].length; j++) {
+				shortFrame[i][j] = (short)corrected[i][j];
 			}
 		}
 	
