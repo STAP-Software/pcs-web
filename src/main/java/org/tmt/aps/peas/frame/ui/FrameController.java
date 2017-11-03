@@ -582,8 +582,6 @@ public class FrameController implements Serializable {
 		//RequestContext requestContext = RequestContext.getCurrentInstance();
 		//requestContext.update("frameDisplayForm:framePanel");
 		//requestContext.execute("drawFrame()");
-		
-		throw new Exception("Test only");
 
 	} catch (Exception e) {
 		FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
