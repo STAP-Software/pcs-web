@@ -196,7 +196,7 @@ public class ExtInfFactory {
 	private CcdCommand getCcdCommandRemote(int telescopeId) throws Exception {
 		try {
 			if (ccd == null) {
-				String host = peasProperties.getProp("org.tmt.aps.peas.ccdHost");
+				String host = peasProperties.getProp("org.tmt.aps.peas.ccdHost").trim();
 				int port = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdPort"));
 				
 				logger.info("Creating CCD Command, host = " + host + ", port = " + port);
