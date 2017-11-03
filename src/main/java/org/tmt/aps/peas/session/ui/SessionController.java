@@ -34,9 +34,11 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -64,6 +66,8 @@ public class SessionController implements Serializable {
 	@EJB
 	CameraMgmt cameraMgmt;
 	@EJB
+	CcdMgmt ccdMgmt;
+	@EJB
 	ConstantsCache constantsCache;
 	@EJB
 	GlobalConfigMgmt globalConfigMgmt;
@@ -75,6 +79,8 @@ public class SessionController implements Serializable {
 	ExtInfConfigState extInfConfigState;
 	@EJB
 	ExtInfFactory extInfFactory;
+	@EJB
+	PhysicalModel physicalModel;
 
 
 
@@ -648,7 +654,9 @@ public class SessionController implements Serializable {
 			
 				// initialize camera
 				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
-				Utils.waitForComplete(instFuture);
+				// set CCD temperature
+				Future<Integer> ccdTempFuture = ccdMgmt.setTemp(physicalModel.getInstrument().getCcd().getDefaultTemperature());
+				Utils.waitForComplete(instFuture, ccdTempFuture);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
 			} 
 			
