@@ -97,6 +97,14 @@ public class Ccd {
 	@Transient
 	private double temperatureSetting;
 
+	@Transient
+	private float leftTemperature;
+	@Transient
+	private float rightTemperature;
+	@Transient
+	private float headTemperature;
+	
+	
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
 		this.ccdName = ccdName;
