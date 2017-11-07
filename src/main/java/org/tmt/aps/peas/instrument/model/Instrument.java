@@ -136,6 +136,7 @@ public class Instrument {
 		camera.setElectronicsBoxTemperature(((float) cameraStatus.boxTemp));
 	}
 	
+	
 	/**
 	 * Given a CameraState object, descends the reference chain to the PupilMask, Filter, Ref Beam, Shutter, fine and coarse tilt mirrors,
 	 * two position mechanism, CCD power and temperatures and populates each of these with current states.
@@ -226,4 +227,12 @@ public class Instrument {
 	}
 	}
 	
+	public void updateState(CcdState ccdState) {
+		ccd.setCaseTemperature((float)ccdState.getCaseTemperature());
+		ccd.setLeftTemperature((float)ccdState.getLeftTemperature());
+		ccd.setRightTemperature((float)ccdState.getRightTemperature());
+		ccd.setCurrentGainNumber(ccdState.getGainNumber());
+		ccd.setChannelOffset0(ccdState.getChannelOffset0());
+		ccd.setChannelOffset1(ccdState.getChannelOffset1());
+	}
 }

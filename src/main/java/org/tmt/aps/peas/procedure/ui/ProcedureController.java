@@ -67,6 +67,7 @@ import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -1025,7 +1026,8 @@ public class ProcedureController implements Serializable {
 				}
 
 				// set up display of camera state values for first frame
-				loadCameraState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState());
+				loadInstrumentState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState(),
+						procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCcdState());
 
 			}
 			
@@ -1146,8 +1148,9 @@ public class ProcedureController implements Serializable {
 	 * method to load a passed camera state into the view
 	 * @param cameraState the camera state to view
 	 */
-	public void loadCameraState(CameraState cameraState) {
+	public void loadInstrumentState(CameraState cameraState, CcdState ccdState) {
 		frameInstrument.updateState(cameraState);
+		frameInstrument.updateState(ccdState);
 	}
 
 	// ====================================================================================== //
@@ -1161,7 +1164,7 @@ public class ProcedureController implements Serializable {
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
-		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
+		loadInstrumentState(selectedFrame.getCcdFrame().getCameraState(), selectedFrame.getCcdFrame().getCcdState());
 		
 		if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
 			ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);

@@ -14,8 +14,11 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.extInterface.model.GainImpl;
+import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdState;
+import org.tmt.aps.peas.instrument.model.Instrument;
 
 /**
  * EJB Session bean for the PCS CCD command interface. This EJB is the single entry point to the PCS CCD interface called from executors and
@@ -147,5 +150,41 @@ public class CcdMgmt {
 		return new AsyncResult<Integer>(1);
 	}
 	
+	public CcdState getCcdState() throws Exception {
+		
+		Gain gain = getGain();
+		int[] offsets = getOffset();
+		int[] imageSize = getImageSize();
+		int[] overscannedImageSize = getOverscannedImageSize();
+		double[] temperatures = getTemperatures();
+		double exposureTime = getExposureTime();
+		
+		double temperatureSetting = physicalModel.getInstrument().getCcd().getTemperatureSetting();
+		
+		return new CcdState(gain, offsets, imageSize, overscannedImageSize, temperatureSetting, temperatures, exposureTime);
+
+	}
 	
+	@Asynchronous
+	public Future<Boolean> refreshStatus() throws Exception {
+
+		try {
+		
+			Instrument instrument = physicalModel.getInstrument();
+			
+			CcdState ccdState = getCcdState();
+	
+			instrument.updateState(ccdState);
+
+			// set heartbeat status to true
+			//extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);
+			
+		} catch (Throwable t) {
+			// set heartbeat status to false
+			//extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(false);
+		}
+				
+		return new AsyncResult<Boolean>(true);
+	}
+
 }

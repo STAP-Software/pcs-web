@@ -24,6 +24,7 @@ import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
@@ -374,7 +375,8 @@ public class AsyncController implements Serializable {
 			// update camera state to be the one associated with the first frame.  We do it here because it is the 'last' asynchronous thing we do
 			if (procedureController.getProcedure().getProcedureCcdFrameList() != null ) {
 				CameraState cameraState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState();
-				procedureController.loadCameraState(cameraState);
+				CcdState ccdState = procedureController.getProcedure().getProcedureCcdFrameList().get(0).getCcdFrame().getCcdState();
+				procedureController.loadInstrumentState(cameraState, ccdState);
 			}
 			statusLogController.refreshProcedureStatusLog();
 			

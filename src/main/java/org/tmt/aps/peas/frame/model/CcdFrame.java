@@ -23,7 +23,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
@@ -77,6 +79,11 @@ public class CcdFrame {
 	
 	private int darkMedianLeft;
 	private int darkMedianRight;
+	
+	private float caseTemperature;
+	private float leftTemperature;
+	private float rightTemperature;
+	private int ccdGainNumber;
 	
 	@Transient
 	protected int noOfAxes;
@@ -289,6 +296,14 @@ public class CcdFrame {
 		return correctedFrame;
 	}
 
+	public int getCcdGainNumber() {
+		return ccdGainNumber;
+	}
+
+	public void setCcdGainNumber(int ccdGainNumber) {
+		this.ccdGainNumber = ccdGainNumber;
+	}
+
 	public float getCcdGainValue() {
 		return ccdGainValue;
 	}
@@ -320,6 +335,32 @@ public class CcdFrame {
 	public void setCcdGainOffsetChannel0(int ccdGainOffsetChannel0) {
 		this.ccdGainOffsetChannel0 = ccdGainOffsetChannel0;
 	}
+
+
+	public float getCaseTemperature() {
+		return caseTemperature;
+	}
+
+	public void setCaseTemperature(float caseTemperature) {
+		this.caseTemperature = caseTemperature;
+	}
+
+	public float getLeftTemperature() {
+		return leftTemperature;
+	}
+
+	public void setLeftTemperature(float leftTemperature) {
+		this.leftTemperature = leftTemperature;
+	}
+
+	public float getRightTemperature() {
+		return rightTemperature;
+	}
+
+	public void setRightTemperature(float rightTemperature) {
+		this.rightTemperature = rightTemperature;
+	}
+
 
 	@Transient
 	byte[] falseColorPng;
@@ -367,5 +408,14 @@ public class CcdFrame {
 	
 	public void setFrameHeight(int height) {}
 	
+	
+	public CcdState getCcdState() {
+		
+		return new CcdState(getCcdGainNumber(), getCcdGainValue(), 
+				getCcdGainOffsetChannel0(), getCcdGainOffsetChannel1(), 
+				getCaseTemperature(), getLeftTemperature(), getRightTemperature(),
+				getIntTime()); 
+
+	}
 	
 }
