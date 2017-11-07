@@ -209,7 +209,8 @@ public class NarrowBandPhasingExecutor {
 						try {
 							
 							computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-									globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
+									globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getLeftTemperature(), 
+									physicalModel.getInstrument().getCcd().getRightTemperature(),procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
 	
 						} catch (AutoRefMapCheckException e) {
 	

@@ -1013,12 +1013,12 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if there is a problem in {@link JavaComputations#autoRefMapCheck(AutoRefMapConfig, Point, Point, float, int, Date, RefBeamMap)}
 	 * @throws AutoRefMapCheckException thrown if a new reference map needs to be taken
 	 */
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdLeftTemperature, float ccdRightTemperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
 		
-		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, temperature,  
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, ccdLeftTemperature, ccdRightTemperature,  
 				numIterations, currentDate, currentRefMap);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));

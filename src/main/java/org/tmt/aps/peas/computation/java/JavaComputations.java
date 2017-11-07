@@ -20,7 +20,9 @@ import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
@@ -75,17 +77,23 @@ public class JavaComputations {
 		}
 	}
 
-	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdTemperature, int numIterations,
+	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, 
+			float ccdLeftTemperature, float ccdRightTemperature, int numIterations,
 			Date currentDate, RefBeamMap currentRefMap) throws AutoRefMapCheckException {
 
-		CameraState cameraState = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame()
-				.getCameraState();
+		CcdFrame refMapFrame = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame();
+		
+		CameraState cameraState = refMapFrame.getCameraState();
+		CcdState ccdState = refMapFrame.getCcdState();
 
-		if (Math.abs(ccdTemperature - cameraState.getCcdTemp()) > autoRefMapConfig.getCcdTempChangeThresh()) {
-			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdTemperature, cameraState.getCcdTemp());
-
+		if (Math.abs(ccdLeftTemperature - ccdState.getLeftTemperature()) > autoRefMapConfig.getCcdTempChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdLeftTemperature, ccdState.getLeftTemperature());
 		}
 
+		if (Math.abs(ccdRightTemperature - ccdState.getRightTemperature()) > autoRefMapConfig.getCcdTempChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdRightTemperature, ccdState.getRightTemperature());
+		}
+		
 		if (numIterations >= autoRefMapConfig.getNumTrialsLimit()) {
 			throw new AutoRefMapCheckException("autorefmap.num_trials_limit_exceeded", numIterations, autoRefMapConfig.getNumTrialsLimit());
 
