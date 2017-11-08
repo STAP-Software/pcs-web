@@ -612,7 +612,7 @@ public class SessionController implements Serializable {
 	 */
 	public boolean getRenderSimulationMode() {
 		//return false;
-		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
+		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus() && getExtInfConnectConfig().isCcdHeartbeatStatus();
 	}
 
 	/**

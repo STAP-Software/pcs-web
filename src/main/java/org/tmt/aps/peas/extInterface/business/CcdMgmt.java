@@ -13,6 +13,7 @@ import javax.ejb.EJB;
 import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.model.GainImpl;
 import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.Gain;
@@ -36,6 +37,9 @@ public class CcdMgmt {
 	ExtInfFactory extInfFactory;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	ExtInfConfigState extInfConfigState;
+
 
 	// All Camera Commands should be defined here
 
@@ -184,11 +188,11 @@ public class CcdMgmt {
 			instrument.updateState(ccdState);
 
 			// set heartbeat status to true
-			//extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);
+			extInfConfigState.getExtInfConnectConfig().setCcdHeartbeatStatus(true);
 			
 		} catch (Throwable t) {
 			// set heartbeat status to false
-			//extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(false);
+			extInfConfigState.getExtInfConnectConfig().setCcdHeartbeatStatus(false);
 		}
 				
 		return new AsyncResult<Boolean>(true);
