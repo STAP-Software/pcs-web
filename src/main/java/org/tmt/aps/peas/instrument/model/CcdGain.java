@@ -106,7 +106,7 @@ public class CcdGain implements IterableEntity {
 
 	@Override
 	public String getKeyFieldName() {
-		return "ccdGainId";
+		return "gainNumber";
 	}
 
 
