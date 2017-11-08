@@ -216,9 +216,14 @@ public class Utils {
 	 * @param e the exception thrown by the procedure
 	 * @return the message to display
 	 */
-	public static FacesMessage procedureFailedMessage(Throwable e) {
+	public static FacesMessage procedureFailedMessageCheckLogs(Throwable e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
+	}
+
+	public static FacesMessage procedureFailedMessage(Throwable e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
+				Utils.createExceptionMessage(e));
 	}
 
 	/**

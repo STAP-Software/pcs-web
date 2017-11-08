@@ -68,6 +68,7 @@ import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -282,6 +283,8 @@ public class ProcedureExecutionMgmt {
 				procedureException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
 			}
 
+		} catch (BadDarkMedianValueException e) {
+			procedureException = e;
 		} catch (Throwable e) {
 			procedureException = e;
 		}

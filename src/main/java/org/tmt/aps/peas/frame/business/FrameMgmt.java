@@ -51,6 +51,7 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -311,6 +312,8 @@ public class FrameMgmt {
 
 			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
 			
+			throw new BadDarkMedianValueException("CCD left or right median bias is zero!  Adjust CCD bias offsets values     ");
+			
 		} else {
 		
 			// TODO: does this need to be done in parallel with getting the exposure?
@@ -339,6 +342,10 @@ public class FrameMgmt {
 						ccd.getDarkOvscnRightColEnd(),
 						overscanSize);		
 				
+				
+				if (result.getDarkMedianValueLeft() == 0 || result.getDarkMedianValueRight() == 0) {
+					throw new BadDarkMedianValueException("CCD left or right median bias is zero!  Adjust CCD bias offsets values");
+				}
 				
 				int[][] correctedFrame = result.getCorrectedFrame();
 				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
