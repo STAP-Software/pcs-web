@@ -311,9 +311,7 @@ public class FrameMgmt {
 			telescopeMgmt.refreshStatus();
 
 			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
-			
-			throw new BadDarkMedianValueException("CCD left or right median bias is zero!  Adjust CCD bias offsets values     ");
-			
+						
 		} else {
 		
 			// TODO: does this need to be done in parallel with getting the exposure?
