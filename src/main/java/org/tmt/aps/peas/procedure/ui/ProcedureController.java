@@ -1371,6 +1371,7 @@ public class ProcedureController implements Serializable {
 			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 		
+			// TODO: the integration time should change when the ref beam changes
 		}
 		
 	}

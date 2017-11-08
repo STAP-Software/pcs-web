@@ -169,6 +169,13 @@ public class CcdMgmt {
 	public Future<Boolean> refreshStatus() throws Exception {
 
 		try {
+			
+			Future<Integer> refreshFuture = refreshCcdStatus();
+			
+			while (!refreshFuture.isDone()) {
+				Thread.sleep(500);
+			}
+			refreshFuture.get();
 		
 			Instrument instrument = physicalModel.getInstrument();
 			
