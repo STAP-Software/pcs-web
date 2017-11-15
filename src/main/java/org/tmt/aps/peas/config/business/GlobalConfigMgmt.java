@@ -23,6 +23,7 @@ import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 /**
@@ -180,6 +181,28 @@ public class GlobalConfigMgmt {
 		refMapConfigDefaults.setReferenceBeam(referenceBeam);
 		
 		return refMapConfigDefaults;
+
+	}
+	
+	/**
+	 * Queries the database for the reference map configuration default values, for a given instrument, pupil mask type, and filter type
+	 * @param pupilMaskTypeId the pupil mask type, such as phasing or fine screen, etc
+	 * @param filterTypeId the filter type e.g. 611, 891, etc
+	 * @param instrumentId PCS1 or PCS2
+	 * @return the reference map configuration default values
+	 */	
+	public SufsRefMapConfigDefaults findSufsRefMapConfigDefaults(Long instrumentId, Long ccdTypeId, int referenceBeamNum) {
+		TypedQuery<SufsRefMapConfigDefaults> query = em.createNamedQuery("findByRefBeamNum", SufsRefMapConfigDefaults.class);
+		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("ccdTypeId", ccdTypeId);
+		query.setParameter("referenceBeamNum", referenceBeamNum);
+		
+		query.setMaxResults(1);
+		
+		SufsRefMapConfigDefaults sufsRefMapConfigDefaults = query.getSingleResult();
+		
+		
+		return sufsRefMapConfigDefaults;
 
 	}
 	

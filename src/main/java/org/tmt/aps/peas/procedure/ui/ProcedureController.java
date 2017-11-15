@@ -56,6 +56,7 @@ import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -1371,7 +1372,14 @@ public class ProcedureController implements Serializable {
 			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 		
-			// TODO: the integration time should change when the ref beam changes
+			// the integration time should change when the ref beam changes
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+			
 		}
 		
 	}
