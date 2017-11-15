@@ -535,7 +535,7 @@ public class ProcedureExecutionMgmt {
 				
 				// use reference beam based on SUFS group of super procedure
 				int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroupNumber).getDefaultRefBeamNum();
-				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum,  physicalModel.getInstrument().getInstrumentId());
 				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
 			}
@@ -700,7 +700,7 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(sufsGroup);
 			
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, instrumentId);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(

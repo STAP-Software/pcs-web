@@ -187,7 +187,7 @@
 									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
 									disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
-										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime" listener="#{procedureController.sufsGroupChangeListener}" />
+										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
 									</p:selectOneMenu>
 									
 								</p:column>

@@ -1369,7 +1369,7 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().isCreateRefMap()) {
 		
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, physicalModel.getInstrument().getInstrumentId());
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 		
 			// the integration time should change when the ref beam changes

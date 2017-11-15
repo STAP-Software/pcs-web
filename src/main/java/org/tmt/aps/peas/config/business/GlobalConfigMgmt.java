@@ -211,11 +211,12 @@ public class GlobalConfigMgmt {
 	 * @param refBeamNum the reference beam number
 	 * @return the matching reference beam
 	 */
-	public ReferenceBeam findReferenceBeamByNumber(int refBeamNum) {
+	public ReferenceBeam findReferenceBeamByNumber(int refBeamNum, Long instrumentId) {
 		
 		// get the reference beam by ref beam number
 		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
 		query2.setParameter("refBeamNum", refBeamNum);
+		query2.setParameter("cameraId", instrumentId);
 		
 		query2.setMaxResults(1);
 		
