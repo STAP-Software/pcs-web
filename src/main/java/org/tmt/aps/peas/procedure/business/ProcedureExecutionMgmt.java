@@ -539,13 +539,6 @@ public class ProcedureExecutionMgmt {
 				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum,  physicalModel.getInstrument().getInstrumentId());
 				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
-				// the integration time should change when the ref beam changes
-				SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
-						physicalModel.getInstrument().getInstrumentId(), 
-						physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
-				
-				procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
-				procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
 
 			}
 			
@@ -712,6 +705,15 @@ public class ProcedureExecutionMgmt {
 			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, instrumentId);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
+			// the integration time depends on ref beam 
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+
+			
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
 					physicalModel.getInstrument().getInstrumentId(), new Long(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
@@ -719,10 +721,11 @@ public class ProcedureExecutionMgmt {
 
 		} else {
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
+			// set the ccdGain number to the value in refMapConfigDefaults
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
 		}
-		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
-		// set the ccdGain number to the value in refMapConfigDefaults
-		procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
+
 
 		// make the list of possible int times equal to the 'one' we have
 		List<Float> integrationTimeList = new ArrayList<Float>();
