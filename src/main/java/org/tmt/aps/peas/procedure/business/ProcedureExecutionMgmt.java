@@ -49,6 +49,7 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -538,6 +539,14 @@ public class ProcedureExecutionMgmt {
 				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum,  physicalModel.getInstrument().getInstrumentId());
 				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
+				// the integration time should change when the ref beam changes
+				SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+						physicalModel.getInstrument().getInstrumentId(), 
+						physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+				
+				procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+				procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+
 			}
 			
 			
