@@ -84,6 +84,7 @@ public class CcdFrame {
 	private float leftTemperature;
 	private float rightTemperature;
 	private int ccdGainNumber;
+	private float temperatureSetting;
 	
 	@Transient
 	protected int noOfAxes;
@@ -361,6 +362,13 @@ public class CcdFrame {
 		this.rightTemperature = rightTemperature;
 	}
 
+	public float getTemperatureSetting() {
+		return temperatureSetting;
+	}
+
+	public void setTemperatureSetting(float temperatureSetting) {
+		this.temperatureSetting = temperatureSetting;
+	}
 
 	@Transient
 	byte[] falseColorPng;

@@ -441,6 +441,7 @@ public class FrameMgmt {
 		ccdFrame.setCaseTemperature(ccd.getCaseTemperature());
 		ccdFrame.setLeftTemperature(ccd.getLeftTemperature());
 		ccdFrame.setRightTemperature(ccd.getRightTemperature());
+		ccdFrame.setTemperatureSetting((float)ccd.getTemperatureSetting());
 
 		return ccdFrame;
 	}
