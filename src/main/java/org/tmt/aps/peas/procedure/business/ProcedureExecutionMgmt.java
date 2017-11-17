@@ -224,6 +224,8 @@ public class ProcedureExecutionMgmt {
 			
 			// apply integration times set in the UI
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			// apply ccd gains set in the UI
+			iterationEntityCache.applyCcdGainList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
 						
 			// re-encode list for saving
 			IterationValueList iterationValueList = iterationListConfig.getIterationValueList();
