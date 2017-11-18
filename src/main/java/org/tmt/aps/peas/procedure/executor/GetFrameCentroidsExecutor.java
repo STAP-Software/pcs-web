@@ -418,11 +418,13 @@ public class GetFrameCentroidsExecutor {
 					graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
 				}
 
+				// use median peak intensity converted to ADU
+				float medianPeakIntensityAdu = centroidMap.getMedianPeakIntensity() * physicalModel.getInstrument().getCcd().getCcdGain().getGainValue();
 				
 				// display warning if subimageIntensityThreshold is not reached
-				if (centroidMap.getMedianPeakIntensity() < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
+				if (medianPeakIntensityAdu < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
 						procedureConfig.isAutoDisplaySubimageIntensityWarning()) {
-					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_intensity_warning", centroidMap.getMedianPeakIntensity(), 
+					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_intensity_warning", medianPeakIntensityAdu, 
 							procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold());
 					userPromptMgmt.displayInfoDialog("Subimage Intensity Warning", warningMessage);
 				}
