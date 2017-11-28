@@ -15,6 +15,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdGain;
 
@@ -64,6 +65,40 @@ public class CcdDefMgmt {
 		em.merge(ccd);
 		
 	}
+	
+	/**
+	 * Updates ccd gain channel offsets in database and in the Ccd object in the Physical Model
+	 * @param offsets
+	 */
+	public void updateCcdGainOffsets(int[] offsets) {
+
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		int gainNumber = ccd.getCcdGain().getGainNumber();
+		
+		CcdGain ccdGain = findCcdGainByNumber(gainNumber);
+		ccdGain.setGainOffsetChannel0(offsets[0]);
+		ccdGain.setGainOffsetChannel1(offsets[1]);
+		em.merge(ccdGain);
+		
+		// transient fields 
+		ccd.setChannelOffset0(offsets[0]);
+		ccd.setChannelOffset1(offsets[1]);
+		
+		// current gain reference in ccd model object
+		ccd.getCcdGain().setGainOffsetChannel0(offsets[0]);
+		ccd.getCcdGain().setGainOffsetChannel1(offsets[1]);
+		
+	}
+	
+	public CcdGain findCcdGainByNumber(int gainNumber) {
+		TypedQuery<CcdGain> query = em.createNamedQuery("findCcdGainByNumber", CcdGain.class);
+		query.setParameter("gainNumber", gainNumber);
+	
+		query.setMaxResults(1);
+	
+		return query.getSingleResult();
+	}
+
 	
 	/**
 	 * Links a CCD record to an instrument record, removing any previous link to another CCD record.

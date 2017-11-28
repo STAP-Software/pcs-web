@@ -25,7 +25,7 @@ import org.tmt.aps.peas.extinf.Gain;
 @Entity
 @Table(name = "CcdGain")
 @NamedQueries({
-	@NamedQuery(name = "findCcdGain", query = "SELECT o from CcdGain o where o.ccdGainId = :ccdGainId" )
+	@NamedQuery(name = "findCcdGainByNumber", query = "SELECT o from CcdGain o where o.gainNumber = :gainNumber" )
 })
 public class CcdGain implements IterableEntity {
 

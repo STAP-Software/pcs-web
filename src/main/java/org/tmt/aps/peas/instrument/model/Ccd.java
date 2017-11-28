@@ -214,6 +214,7 @@ public class Ccd {
 	public void setCcdGain0(CcdGain ccdGain0) {
 		this.ccdGain0 = ccdGain0;
 	}
+	
 
 	public float getDefaultTemperature() {
 		return defaultTemperature;

@@ -18,6 +18,7 @@ import org.tmt.aps.peas.config.model.CalcM2M1ConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
@@ -252,6 +253,18 @@ public class GlobalConfigMgmt {
 		query.setMaxResults(1);
 		
 		return query.getSingleResult();	
+	}
+
+	/**
+	 * Queries the database for automatic frame correction criteria
+	 * @return the automatic frame correction criteria
+	 */
+	public FrameCorrectionConfigDefaults findFrameCorrectionConfig() {
+		TypedQuery<FrameCorrectionConfigDefaults> query = em.createNamedQuery("findFrameCorrectionConfigDefaults", FrameCorrectionConfigDefaults.class);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();
 	}
 
 	/**

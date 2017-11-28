@@ -80,6 +80,10 @@ public class ProcedureConfigSet {
 	@JoinColumn(name = "nbFilterSeqConfigId")
 	private NbFilterSeqConfig nbFilterSeqConfig;
 
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "frameCorrectionConfigId")
+	private FrameCorrectionConfig frameCorrectionConfig;
+
 
 	public ProcedureConfig getProcedureConfig() {
 		return procedureConfig;
@@ -191,6 +195,14 @@ public class ProcedureConfigSet {
 
 	public void setNbFilterSeqConfig(NbFilterSeqConfig nbFilterSeqConfig) {
 		this.nbFilterSeqConfig = nbFilterSeqConfig;
+	}
+
+	public FrameCorrectionConfig getFrameCorrectionConfig() {
+		return frameCorrectionConfig;
+	}
+
+	public void setFrameCorrectionConfig(FrameCorrectionConfig frameCorrectionConfig) {
+		this.frameCorrectionConfig = frameCorrectionConfig;
 	}
 
 

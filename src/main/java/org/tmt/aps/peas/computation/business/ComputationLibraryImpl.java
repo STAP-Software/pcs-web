@@ -73,6 +73,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -106,6 +107,7 @@ import org.tmt.aps.peas.lang.interop.JterraceModeComponents;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.CcdLeftRightBiasException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
@@ -2829,6 +2831,23 @@ public class ComputationLibraryImpl {
 	 */
 	public CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(int[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
 		return JavaComputations.correctOverscanFrameDarkOffsets(frame, leftStartCol, leftEndCol, rightStartCol, rightEndCol, overscanSize);
+	}
+	
+	
+	/**
+	 * Corrects an overscanned frame using the median dark pixel values from right and left sides of the image.
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize
+	 * @return
+	 */
+	public void checkFrameLeftRightBias(CcdFrame ccdFrame, int threshold) throws CcdLeftRightBiasException{
+		if (Math.abs(ccdFrame.getDarkMedianLeft() - ccdFrame.getDarkMedianRight()) > threshold) {
+			throw new CcdLeftRightBiasException();
+		}
 	}
 
 	

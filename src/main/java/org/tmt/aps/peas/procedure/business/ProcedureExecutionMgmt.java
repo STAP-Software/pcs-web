@@ -36,6 +36,8 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.IterationListConfig;
@@ -614,6 +616,10 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		// get FrameCorrectionDefaults
+		FrameCorrectionConfigDefaults frameCorrectionDefaults = globalConfigMgmt.findFrameCorrectionConfig();
+		procedure.getProcedureConfigSet().setFrameCorrectionConfig(new FrameCorrectionConfig(frameCorrectionDefaults));
+		
 		
 		if (procedureType.isSufs()) {
 		
