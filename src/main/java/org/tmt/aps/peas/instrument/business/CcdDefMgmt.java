@@ -18,6 +18,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdGain;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
  * Session EJB managing database queries/updates for CCD configuration records
@@ -72,10 +73,9 @@ public class CcdDefMgmt {
 	 */
 	public void updateCcdGainOffsets(int[] offsets) {
 
-		Ccd ccd = physicalModel.getInstrument().getCcd();
-		int gainNumber = ccd.getCcdGain().getGainNumber();
+		Ccd ccd = physicalModel.getInstrument().getCcd();		
 		
-		CcdGain ccdGain = findCcdGainByNumber(gainNumber);
+		CcdGain ccdGain = findCcdGain(ccd.getCcdGain().getCcdGainId());
 		ccdGain.setGainOffsetChannel0(offsets[0]);
 		ccdGain.setGainOffsetChannel1(offsets[1]);
 		em.merge(ccdGain);
@@ -90,16 +90,13 @@ public class CcdDefMgmt {
 		
 	}
 	
-	public CcdGain findCcdGainByNumber(int gainNumber) {
-		TypedQuery<CcdGain> query = em.createNamedQuery("findCcdGainByNumber", CcdGain.class);
-		query.setParameter("gainNumber", gainNumber);
-	
-		query.setMaxResults(1);
-	
-		return query.getSingleResult();
+	public CcdGain findCcdGain(Long ccdGainId) {
+
+		return em.find(CcdGain.class, ccdGainId);
 	}
 
 	
+
 	/**
 	 * Links a CCD record to an instrument record, removing any previous link to another CCD record.
 	 * The instrument is found in the {@link PhysicalModel} which is initialized when PEAS-PCS is started up
