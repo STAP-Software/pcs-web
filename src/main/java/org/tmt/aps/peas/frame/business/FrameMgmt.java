@@ -434,8 +434,8 @@ public class FrameMgmt {
 		
 		ccdFrame.setCcdName(ccd.getCcdName());
 		ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
-		ccdFrame.setCcdGainOffsetChannel0(ccd.getCcdGain().getGainOffsetChannel0());
-		ccdFrame.setCcdGainOffsetChannel1(ccd.getCcdGain().getGainOffsetChannel1());
+		ccdFrame.setCcdGainOffsetChannel0(ccd.getChannelOffset0());
+		ccdFrame.setCcdGainOffsetChannel1(ccd.getChannelOffset1());
 		
 		ccdFrame.setCcdGainNumber(ccd.getCurrentGainNumber());
 		ccdFrame.setCaseTemperature(ccd.getCaseTemperature());

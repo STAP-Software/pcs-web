@@ -105,9 +105,9 @@ public class Ccd {
 	@Transient
 	private float caseTemperature;
 	@Transient
-	private float channelOffset0;
+	private int channelOffset0;
 	@Transient
-	private float channelOffset1;
+	private int channelOffset1;
 	
 	
 	
@@ -332,19 +332,27 @@ public class Ccd {
 		this.caseTemperature = caseTemperature;
 	}
 
-	public float getChannelOffset0() {
+
+
+	public int getChannelOffset0() {
 		return channelOffset0;
 	}
 
-	public void setChannelOffset0(float channelOffset0) {
+
+
+	public void setChannelOffset0(int channelOffset0) {
 		this.channelOffset0 = channelOffset0;
 	}
 
-	public float getChannelOffset1() {
+
+
+	public int getChannelOffset1() {
 		return channelOffset1;
 	}
 
-	public void setChannelOffset1(float channelOffset1) {
+
+
+	public void setChannelOffset1(int channelOffset1) {
 		this.channelOffset1 = channelOffset1;
 	}
 
