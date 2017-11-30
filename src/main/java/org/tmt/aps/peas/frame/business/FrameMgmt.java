@@ -226,7 +226,7 @@ public class FrameMgmt {
 			}
 			logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
 			em.persist(ccdFrame);
-		}
+		} 
 	
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 

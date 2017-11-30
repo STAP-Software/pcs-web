@@ -159,13 +159,13 @@ public class IterationEntityCache {
 		indexToEntityMap = new HashMap<Long, IterableEntity>();
 		// Integration Time - just create all possible times here	
 		
-		float intTime = 0.1f;
-		while (intTime < 61.0f) {
+		int intTimeIdx = 1;
+		while (intTimeIdx < 610) {
 		
-			IntegrationTime integrationTime = new IntegrationTime(new Long((int)(intTime*10)), intTime);
+			IntegrationTime integrationTime = new IntegrationTime(new Long(intTimeIdx), (((float)intTimeIdx)/10.0f));
 			indexToEntityMap.put(getKeyFieldValue(integrationTime), integrationTime);
 			className = integrationTime.getClassName();		
-			intTime += (intTime < 1.0) ? 0.1f : 1.0f; 
+			intTimeIdx += (intTimeIdx < 100) ? 1 : 10; 
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
