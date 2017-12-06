@@ -14,8 +14,8 @@
 			<h:inputHidden id="mirrors" value="#{incompleteMirrorController.mirrors}" />
 
  			
-     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentDefXs}" />
-			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentDefYs}" />
+     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentersX}" />
+			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentersY}" />
 			
     			
 			<p:panelGrid columns="1" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
@@ -79,12 +79,14 @@ function refreshIncMirDisplay() {
 	var field = document.getElementById('incmirForm:mirrors').value;
  	var mirrorStatusArray = field.split(','); 
  	
-	
+	var centerX = 512;
+	var centerY = 512;
+
 		
 	for (var i = 0; i < xHexCenterArray.length; i++) {
 		
-		var x = parseFloat(xHexCenterArray[i])
-		var y = parseFloat(yHexCenterArray[i])
+		var x = centerX + parseFloat(xHexCenterArray[i]) * sideLen;
+		var y = centerY - parseFloat(yHexCenterArray[i]) * sideLen;
 								
 		// TODO: pass in the mirror status
 		drawHex(ctx, x, y, sideLen, i+1, mirrorStatusArray[i])
