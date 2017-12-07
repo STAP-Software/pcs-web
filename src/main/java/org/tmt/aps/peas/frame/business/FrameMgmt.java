@@ -743,7 +743,7 @@ public class FrameMgmt {
 		
 		Camera camera = physicalModel.getInstrument().getCamera();
 		Telescope telescope = physicalModel.getTelescope();
-		if (procedureExecutionState.getCurrentProcedure() != null) {
+		if (procedureExecutionState.getExecutionStatus() && procedureExecutionState.getCurrentProcedure() != null) {
 			ProcedureConfig procedureConfig = procedureExecutionState.getCurrentProcedure().getProcedureConfigSet().getProcedureConfig();
 			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", procedureConfig.getIntegrationTime(), "Integration Time (sec)");
 			if (procedureConfig.getSufsGroup() != null) {
