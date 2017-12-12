@@ -366,7 +366,7 @@ public class ProcedureExecutionMgmt {
 						procedureCcdFrame.setCentroidMap(centroidMap);
 					}
 					
-					frameMgmt.associateCcdFrame(procedureCcdFrame);
+					frameMgmt.associateCcdFrame(procedureCcdFrame, procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource());
 
 					logger.debug("performProcedureCompletion::persisting frame");
 

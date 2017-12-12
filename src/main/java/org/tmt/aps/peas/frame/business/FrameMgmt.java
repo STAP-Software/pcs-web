@@ -201,15 +201,19 @@ public class FrameMgmt {
 	 * @param procedureCcdFrame the procedure CcdFrame structure.  This may not be fully populated with a raw frame, but must at least have a FITS Filename
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
+	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame, int frameSource) {
 		// create a ProcedureCcdRecord
 
 		// the passed CcdFrame will only have a filename
 		// we need to read from the DB to get the real record
 
 		CcdFrame ccdFrame = findCcdFrame(procedureCcdFrame.getCcdFrame().getFitsFilename());
+		
+		// add a new frame record if the frame source is CCD, 
+		// or if the FITS file used as a frame from file has no CCD record yet in this database
+		if (frameSource == Constants.FRAME_SOURCE_CCD || ccdFrame == null) {
+			
 
-		if (ccdFrame == null) {
 			// we have to save it for the first time ourselves. This is how we avoid having to
 			// populate the database with legacy values using a script, just do it as needed.
 			//ccdFrame = new CcdFrame();
