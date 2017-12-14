@@ -316,7 +316,7 @@ public class FrameMgmt {
 			
 			telescopeMgmt.refreshStatus();
 
-			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
+			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1, null);
 						
 		} else {
 		
@@ -368,7 +368,7 @@ public class FrameMgmt {
 				}
 				
 				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), 
-						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
+						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), removeBadPixelsResult);
 			
 			} else {
 				
@@ -380,7 +380,7 @@ public class FrameMgmt {
 				}
 
 				
-				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1);
+				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1, null);
 			}
 		}
 
@@ -388,10 +388,10 @@ public class FrameMgmt {
 	}
 	
 	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup) {
-		return populateCcdFrame(rawFrame, exposureTime, sufsGroup, 0, 0);
+		return populateCcdFrame(rawFrame, exposureTime, sufsGroup, 0, 0, null);
 	}
 	
-	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight) {
+	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
 
 		
 		CcdFrame ccdFrame = new CcdFrame();
@@ -403,10 +403,10 @@ public class FrameMgmt {
 		
 		// TODO: ccdFrame needs darkMedian left and right fields.  Add values right here.
 		
-		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup, darkMedianLeft, darkMedianRight);
+		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup, darkMedianLeft, darkMedianRight, removeBadPixelsResult);
 	}
 
-	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight) {
+	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
 
 		
 		// save the camera state when the ccd frame was taken
@@ -447,6 +447,13 @@ public class FrameMgmt {
 		ccdFrame.setLeftTemperature(ccd.getLeftTemperature());
 		ccdFrame.setRightTemperature(ccd.getRightTemperature());
 		ccdFrame.setTemperatureSetting((float)ccd.getTemperatureSetting());
+		
+		if (removeBadPixelsResult != null) {
+			
+			ccdFrame.setBadPixelListEncoded(removeBadPixelsResult.getBadPixelListEncoded());
+			ccdFrame.setBadPixelCount(removeBadPixelsResult.getBadPixelCount());
+			ccdFrame.setBadPixelsRemoved(removeBadPixelsResult.isBadPixelsRemoved());
+		}
 
 		return ccdFrame;
 	}

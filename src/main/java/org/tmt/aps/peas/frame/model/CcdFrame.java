@@ -60,6 +60,9 @@ public class CcdFrame {
 	@Column(length = 8192)
 	private String badPixelListEncoded;
 	
+	private int badPixelCount;
+	private boolean badPixelsRemoved;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
@@ -379,6 +382,22 @@ public class CcdFrame {
 
 	public void setBadPixelListEncoded(String badPixelListEncoded) {
 		this.badPixelListEncoded = badPixelListEncoded;
+	}
+
+	public int getBadPixelCount() {
+		return badPixelCount;
+	}
+
+	public void setBadPixelCount(int badPixelCount) {
+		this.badPixelCount = badPixelCount;
+	}
+
+	public boolean isBadPixelsRemoved() {
+		return badPixelsRemoved;
+	}
+
+	public void setBadPixelsRemoved(boolean badPixelsRemoved) {
+		this.badPixelsRemoved = badPixelsRemoved;
 	}
 
 	@Transient

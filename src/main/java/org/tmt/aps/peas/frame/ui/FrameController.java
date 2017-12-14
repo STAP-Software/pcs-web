@@ -575,7 +575,7 @@ public class FrameController implements Serializable {
 		
 		// overwrite ccdFrame with corrected frame
 		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(shortFrame, ccdFrame.getIntTime(), 0, 
-				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
+				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), null);
 
 		setupFrameToolFrameDisplay(correctedFrame);
 		

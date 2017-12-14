@@ -67,4 +67,10 @@ public class RemoveBadPixelsResult {
 		this.badPixelsRemoved = badPixelsRemoved;
 	}
 
+
+	public String getBadPixelListEncoded() {
+		// TODO Auto-generated method stub
+		return PointListEncoder.encodeList(badPixelLocations);
+	}
+
 }
