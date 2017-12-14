@@ -31,6 +31,8 @@ public class FrameCorrectionConfig {
 	private Long frameCorrectionConfigId;
 
 	int leftRightBiasThreshold;
+	float badPixelIndexThreshold;
+	int badPixelIntensityThreshold;
 	
 	public FrameCorrectionConfig() {
 		
@@ -57,6 +59,22 @@ public class FrameCorrectionConfig {
 
 	public void setLeftRightBiasThreshold(int leftRightBiasThreshold) {
 		this.leftRightBiasThreshold = leftRightBiasThreshold;
+	}
+
+	public float getBadPixelIndexThreshold() {
+		return badPixelIndexThreshold;
+	}
+
+	public void setBadPixelIndexThreshold(float badPixelIndexThreshold) {
+		this.badPixelIndexThreshold = badPixelIndexThreshold;
+	}
+
+	public int getBadPixelIntensityThreshold() {
+		return badPixelIntensityThreshold;
+	}
+
+	public void setBadPixelIntensityThreshold(int badPixelIntensityThreshold) {
+		this.badPixelIntensityThreshold = badPixelIntensityThreshold;
 	}
 
 

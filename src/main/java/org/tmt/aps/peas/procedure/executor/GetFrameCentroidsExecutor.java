@@ -148,7 +148,8 @@ public class GetFrameCentroidsExecutor {
 
 		int iteration = procedureExecutionState.getCurrentIteration();
 		
-		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(),
+		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureConfigSet().getFrameCorrectionConfig(), 
+				procedure.getProcedureType(), procedure.getProcedureNumber(),
 				iteration, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(),
 				procedureConfig.isRemoveBadPixels());
 		

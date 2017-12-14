@@ -55,6 +55,7 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
+import org.tmt.aps.peas.computation.model.RemoveBadPixelsResult;
 import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
@@ -102,6 +103,7 @@ import org.tmt.aps.peas.lang.interop.JnbAnalyzeFrame;
 import org.tmt.aps.peas.lang.interop.JnbAnalyzeStepSequence;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
+import org.tmt.aps.peas.lang.interop.JremoveDynamicBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
 import org.tmt.aps.peas.lang.interop.JterraceModeComponents;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
@@ -332,49 +334,78 @@ public class ComputationLibraryImpl {
 	}
 
 	/**
-	 * Correct for bad pixels in the CCD image.  This method calls the FORTRAN function in removeBadPixels.f90.
+	 * Correct for bad pixels in the CCD image.  This method calls the FORTRAN function in removeBadPixels.f90 and removeDynamicBadPixels.f90
 	 * 
 	 * @param frame Input CCD array
 	 * @param badPixelList list of rectangles specifying all bad pixels and/or bad columns
 	 * @return output CCD array with corrected bad pixels
 	 */
-	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
+	public RemoveBadPixelsResult removeBadPixels(int[][] frame, List<Rect> badPixelList, boolean removeBadPixels, float indexThreshold, int intensityThreshold) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "removeBadPixels"));
 
-		int[] x1 = new int[badPixelList.size()];
-		int[] x2 = new int[badPixelList.size()];
-		int[] y1 = new int[badPixelList.size()];
-		int[] y2 = new int[badPixelList.size()];
+		int[][] staticBadPixelCorrectedFrame = frame;
+		
+		if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
 
-		logger.debug("removeBadPixels:: ");
-		int i = 0;
-		for (Rect rect : badPixelList) {
-			logger.debug(rect);
-			x1[i] = rect.p1.x;
-			y1[i] = rect.p1.y;
-			x2[i] = rect.p2.x;
-			y2[i] = rect.p2.y;
-			i++;
+			int[] x1 = new int[badPixelList.size()];
+			int[] x2 = new int[badPixelList.size()];
+			int[] y1 = new int[badPixelList.size()];
+			int[] y2 = new int[badPixelList.size()];
+	
+			logger.debug("removeBadPixels:: ");
+			int i = 0;
+			for (Rect rect : badPixelList) {
+				logger.debug(rect);
+				x1[i] = rect.p1.x;
+				y1[i] = rect.p1.y;
+				x2[i] = rect.p2.x;
+				y2[i] = rect.p2.y;
+				i++;
+			}
+	
+			JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
+			RetVal retVal = new RetVal();
+	
+			// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+	
+			staticBadPixelCorrectedFrame = new int[frame.length][frame[0].length];
+	
+			Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, staticBadPixelCorrectedFrame);
+	
+			if (retVal.getCode() > 0) {
+				statusLogger.log(retVal);
+				throw new ComputationException("Bad Pixel remove error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+			}
+
 		}
-
-		JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
+		
+		JremoveDynamicBadPixels jremoveDynamicBadPixels = new JremoveDynamicBadPixels();
 		RetVal retVal = new RetVal();
 
-		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+		int[][] finalCorrectedFrame = new int[frame.length][frame[0].length];
+		int[] badPixelLocationsX = new int[2000];
+		int[] badPixelLocationsY = new int[2000];
 
-		int[][] arrayOut = new int[frame.length][frame[0].length];
-
-		Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, arrayOut);
-
+		
+		Object[] result = jremoveDynamicBadPixels.jremoveDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold,  
+				finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
+			
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Bad Pixel remove error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
+		int badPixelCount = (Integer)result[0];
+		
+		// truncate badPixelLocations arrays to badPixelCount size
+		int[] badLocationsTruncatedX = Arrays.copyOf(badPixelLocationsX, badPixelCount);
+		int[] badLocationsTruncatedY = Arrays.copyOf(badPixelLocationsY, badPixelCount);
+		
+				
 		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
 
-		return arrayOut;
+		return new RemoveBadPixelsResult(staticBadPixelCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels);
 
 	}
 

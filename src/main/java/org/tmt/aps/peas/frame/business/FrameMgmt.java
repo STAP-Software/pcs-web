@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -33,7 +32,9 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
+import org.tmt.aps.peas.computation.model.RemoveBadPixelsResult;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
@@ -246,7 +247,8 @@ public class FrameMgmt {
 	/*
 	 * This should become a subprocedure
 	 */
-	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
+			ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 		
 		
 		// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
@@ -350,22 +352,21 @@ public class FrameMgmt {
 				}
 				
 				int[][] correctedFrame = result.getCorrectedFrame();
-				if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
-					//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
-					correctedFrame = computationLibrary.removeBadPixels(correctedFrame, badPixelList);
-				}
 				
+				//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+								
+				RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(correctedFrame, badPixelList, removeBadPixels, 
+						frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
 				
-				short[][] rawFrame = new short[correctedFrame.length][correctedFrame[0].length];
-				for (int i = 0; i < correctedFrame.length; i++) {
-					for (int j = 0; j < correctedFrame[0].length; j++) {
-						rawFrame[i][j] = (short) correctedFrame[i][j];
+				int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
+				
+				short[][] rawFrame = new short[filteredFrame.length][filteredFrame[0].length];
+				for (int i = 0; i < filteredFrame.length; i++) {
+					for (int j = 0; j < filteredFrame[0].length; j++) {
+						rawFrame[i][j] = (short) filteredFrame[i][j];
 					}
 				}
 				
-
-
-	
 				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), 
 						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
 			
@@ -463,11 +464,12 @@ public class FrameMgmt {
 	 * @return a procedureCcdFrame structure populated with the ccdFrame and procedure.  
 	 * @throws Exception
 	 */
-	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, 
+	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
+			ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
 		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
-			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :
+			readFrameFromCcd(exposureTime, procedureConfig, frameCorrectionConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :
 			frameSimulator.getFrame(frameNumber);
 		
 		

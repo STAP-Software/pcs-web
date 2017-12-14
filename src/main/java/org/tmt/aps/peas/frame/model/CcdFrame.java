@@ -57,6 +57,9 @@ public class CcdFrame {
 	@Column(length = 200)
 	private String fitsFilename;
 	
+	@Column(length = 8192)
+	private String badPixelListEncoded;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
@@ -368,6 +371,14 @@ public class CcdFrame {
 
 	public void setTemperatureSetting(float temperatureSetting) {
 		this.temperatureSetting = temperatureSetting;
+	}
+
+	public String getBadPixelListEncoded() {
+		return badPixelListEncoded;
+	}
+
+	public void setBadPixelListEncoded(String badPixelListEncoded) {
+		this.badPixelListEncoded = badPixelListEncoded;
 	}
 
 	@Transient

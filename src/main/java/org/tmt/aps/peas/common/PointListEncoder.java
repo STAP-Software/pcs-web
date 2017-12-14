@@ -128,5 +128,21 @@ public class PointListEncoder {
 		return pointList;
 	}
 	
-	
+	/**
+	 * Constructs a list of Point coordinates from an array of x-coordinates and an array of y-coordinates.
+	 * @param xArray the array of x-coordinates
+	 * @param yArray the array of y-coordinates
+	 * @return a list of Point coordinate pairs.
+	 */
+	public static List<Point> constructFromXandY(int[] xArray, int[] yArray) {
+		
+		List<Point> resultList = new ArrayList<Point>();
+		
+		for (int i=0; i<xArray.length; i++) {
+			resultList.add(new Point(xArray[i], yArray[i]));
+		}
+		
+		return resultList;
+	}
+
 }
