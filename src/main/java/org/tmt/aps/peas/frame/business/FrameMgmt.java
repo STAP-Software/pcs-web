@@ -475,10 +475,21 @@ public class FrameMgmt {
 			ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
-		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
-			readFrameFromCcd(exposureTime, procedureConfig, frameCorrectionConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :
-			frameSimulator.getFrame(frameNumber);
+		CcdFrame ccdFrame = null;
 		
+		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			ccdFrame = readFrameFromCcd(exposureTime, procedureConfig, frameCorrectionConfig, procedureType, procedureNumber, badPixelList, removeBadPixels);
+		} else {
+			ccdFrame = frameSimulator.getFrame(frameNumber);
+			/*** FIXME -- test code only **/
+			frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
+			/*** FIXME -- test code only **/
+		}
+		
+		
+			
+			
+			
 		
 		procedureExecutionState.setCurrentFrame(ccdFrame);
 		Procedure procedure = procedureExecutionState.getCurrentProcedure();

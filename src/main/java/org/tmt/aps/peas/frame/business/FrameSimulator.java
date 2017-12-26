@@ -14,7 +14,10 @@ import javax.ejb.Singleton;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
-import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.common.Rect;
+import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.RemoveBadPixelsResult;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -35,6 +38,9 @@ public class FrameSimulator {
 	FrameMgmt frameMgmt;
 	@EJB
 	PhysicalModel physicalModel;
+	@EJB
+	private ComputationLibraryImpl computationLibrary;
+
 	
 	private List<CcdFrame> frameList;
 	
@@ -61,6 +67,7 @@ public class FrameSimulator {
 		}
 	}
 	
+	
 	/**
 	 * Returns the frame with the given sequence index 
 	 * @param index the index of the frame in the frame sequence 
@@ -82,6 +89,48 @@ public class FrameSimulator {
 		
 		return ccdFrame;
 	}
+	
+	
+	/*** FIXME -- TEST CODE **/
+	public void filterFrame(CcdFrame ccdFrame, List<Rect> badPixelList, boolean removeBadPixels, FrameCorrectionConfig frameCorrectionConfig) {
+		
+		
+		try {
+			
+		// replace the raw frame with one filtered for bad pixels
+		
+		short[][] origFrame = ccdFrame.getRawFrame();
+		
+		int[][] intFrame = new int[origFrame.length][origFrame[0].length];
+		for (int i = 0; i < origFrame.length; i++) {
+			for (int j = 0; j < origFrame[0].length; j++) {
+				intFrame[i][j] = (int) origFrame[i][j];
+			}
+		}
+		
+		//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+						
+		RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(intFrame, badPixelList, removeBadPixels, 
+				frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
+		
+		int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
+		
+		short[][] rawFrame = new short[filteredFrame.length][filteredFrame[0].length];
+		for (int i = 0; i < filteredFrame.length; i++) {
+			for (int j = 0; j < filteredFrame[0].length; j++) {
+				rawFrame[i][j] = (short) filteredFrame[i][j];
+			}
+		}
+
+		
+		ccdFrame.setRawFrame(rawFrame);
+		
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	/*** FIXME -- TEST CODE **/
 
 
 
