@@ -1,11 +1,11 @@
 package org.tmt.aps.peas.lang.interop; 
 public class JremoveDynamicBadPixels
 {
-	public native void removeDynamicBadPixels(RetVal retVal, int arrayIn[], int arrayIn_size_1, int arrayIn_size_2, int removeBadPixelsFlag, float indexThreshold, int intensityThreshold, int arrayOut[], int arrayOut_size_1, int arrayOut_size_2, int badPixelLocationsX[], int badPixelLocationsX_size_1, int badPixelLocationsy[], int badPixelLocationsy_size_1, int badPixelCount[] );
+	public native void removeDynamicBadPixels(RetVal retVal, int arrayIn[], int arrayIn_size_1, int arrayIn_size_2, int removeBadPixelsFlag, float indexThreshold, int intensityThreshold, int arrayOut[], int arrayOut_size_1, int arrayOut_size_2, int badPixelLocationsX[], int badPixelLocationsX_size_1, int badPixelLocationsY[], int badPixelLocationsY_size_1, int badPixelCount[] );
 	static { System.loadLibrary("peas"); }
 	// TODO: We need to write the public method that calls the private and unpacks output arrays
 
-	public Object[] jremoveDynamicBadPixels(RetVal retVal, int arrayIn[][], int removeBadPixelsFlag, float indexThreshold, int intensityThreshold, int arrayOut[][], int badPixelLocationsX[], int badPixelLocationsy[] ) {
+	public Object[] jremoveDynamicBadPixels(RetVal retVal, int arrayIn[][], int removeBadPixelsFlag, float indexThreshold, int intensityThreshold, int arrayOut[][], int badPixelLocationsX[], int badPixelLocationsY[] ) {
 		// Output variable definitions
 		int badPixelCount_outArray[] = new int[1];
 		// Deal with Array Lengths
@@ -16,7 +16,7 @@ public class JremoveDynamicBadPixels
 		int arrayOut_len2 = arrayOut[0].length;
 		int[] arrayOut_collapse = new int[arrayOut_len1 * arrayOut_len2];
 		int badPixelLocationsX_len1 = badPixelLocationsX.length;
-		int badPixelLocationsy_len1 = badPixelLocationsy.length;
+		int badPixelLocationsY_len1 = badPixelLocationsY.length;
 		// collapse array to one dimension
 		for (int i=0; i<arrayIn_len1; i++) { 
 			for (int j=0; j<arrayIn_len2; j++) { 
@@ -30,7 +30,7 @@ public class JremoveDynamicBadPixels
 			} 
 		} 
 		// Call native method
-		removeDynamicBadPixels(retVal, arrayIn_collapse,arrayIn_len1,arrayIn_len2,removeBadPixelsFlag,indexThreshold,intensityThreshold,arrayOut_collapse,arrayOut_len1,arrayOut_len2,badPixelLocationsX,badPixelLocationsX_len1,badPixelLocationsy,badPixelLocationsy_len1,badPixelCount_outArray);
+		removeDynamicBadPixels(retVal, arrayIn_collapse,arrayIn_len1,arrayIn_len2,removeBadPixelsFlag,indexThreshold,intensityThreshold,arrayOut_collapse,arrayOut_len1,arrayOut_len2,badPixelLocationsX,badPixelLocationsX_len1,badPixelLocationsY,badPixelLocationsY_len1,badPixelCount_outArray);
 		// expand array to two dimensions
 		for (int i=0; i<arrayIn_len1; i++) { 
 			for (int j=0; j<arrayIn_len2; j++) { 
