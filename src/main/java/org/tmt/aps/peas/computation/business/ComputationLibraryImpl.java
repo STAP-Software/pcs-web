@@ -405,7 +405,7 @@ public class ComputationLibraryImpl {
 				
 		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
 
-		return new RemoveBadPixelsResult(staticBadPixelCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels);
+		return new RemoveBadPixelsResult(finalCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels);
 
 	}
 
