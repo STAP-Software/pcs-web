@@ -481,9 +481,9 @@ public class FrameMgmt {
 			ccdFrame = readFrameFromCcd(exposureTime, procedureConfig, frameCorrectionConfig, procedureType, procedureNumber, badPixelList, removeBadPixels);
 		} else {
 			ccdFrame = frameSimulator.getFrame(frameNumber);
-			/*** FIXME -- test code only **/
-			frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
-			/*** FIXME -- test code only **/
+			/*** FIXME -- uncomment to test code only **/
+			// frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
+			/*** FIXME -- uncomment to test code only **/
 		}
 		
 		
