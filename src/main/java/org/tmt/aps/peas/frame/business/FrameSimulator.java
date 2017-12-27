@@ -97,33 +97,40 @@ public class FrameSimulator {
 		
 		try {
 			
-		// replace the raw frame with one filtered for bad pixels
-		
-		short[][] origFrame = ccdFrame.getRawFrame();
-		
-		int[][] intFrame = new int[origFrame.length][origFrame[0].length];
-		for (int i = 0; i < origFrame.length; i++) {
-			for (int j = 0; j < origFrame[0].length; j++) {
-				intFrame[i][j] = (int) origFrame[i][j];
+			// replace the raw frame with one filtered for bad pixels
+			
+			short[][] origFrame = ccdFrame.getRawFrame();
+			
+			int[][] intFrame = new int[origFrame.length][origFrame[0].length];
+			for (int i = 0; i < origFrame.length; i++) {
+				for (int j = 0; j < origFrame[0].length; j++) {
+					intFrame[i][j] = (int) origFrame[i][j];
+				}
 			}
-		}
-		
-		//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
-						
-		RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(intFrame, badPixelList, removeBadPixels, 
-				frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
-		
-		int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
-		
-		short[][] rawFrame = new short[filteredFrame.length][filteredFrame[0].length];
-		for (int i = 0; i < filteredFrame.length; i++) {
-			for (int j = 0; j < filteredFrame[0].length; j++) {
-				rawFrame[i][j] = (short) filteredFrame[i][j];
+			
+			//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+							
+			RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(intFrame, badPixelList, removeBadPixels, 
+					frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
+			
+			int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
+			
+			short[][] rawFrame = new short[filteredFrame.length][filteredFrame[0].length];
+			for (int i = 0; i < filteredFrame.length; i++) {
+				for (int j = 0; j < filteredFrame[0].length; j++) {
+					rawFrame[i][j] = (short) filteredFrame[i][j];
+				}
 			}
-		}
+	
+			ccdFrame.setRawFrame(rawFrame);
+		
+			if (removeBadPixelsResult != null) {
+				
+				ccdFrame.setBadPixelListEncoded(removeBadPixelsResult.getBadPixelListEncoded());
+				ccdFrame.setBadPixelCount(removeBadPixelsResult.getBadPixelCount());
+				ccdFrame.setBadPixelsRemoved(removeBadPixelsResult.isBadPixelsRemoved());
+			}
 
-		
-		ccdFrame.setRawFrame(rawFrame);
 		
 		} catch (Exception e) {
 			e.printStackTrace();
