@@ -15,14 +15,16 @@ public class RemoveBadPixelsResult {
 	int[][] filteredFrame; 
 	List<Point> badPixelLocations;  
 	int badPixelCount;
-	boolean badPixelsRemoved;
+	boolean badPixelsRemoved;  
+	boolean allBadPixelsFound; 
 	
 
-	public RemoveBadPixelsResult(int[][] filteredFrame, int[] badPixelLocationsX, int[] badPixelLocationsY, int badPixelCount, boolean badPixelsRemoved) {
+	public RemoveBadPixelsResult(int[][] filteredFrame, int[] badPixelLocationsX, int[] badPixelLocationsY, int badPixelCount, boolean badPixelsRemoved, boolean allBadPixelsFound) {
 		
 		this.filteredFrame = filteredFrame;
 		this.badPixelCount = badPixelCount;
 		this.badPixelsRemoved = badPixelsRemoved;
+		this.allBadPixelsFound = allBadPixelsFound;
 		
 		this.badPixelLocations = PointListEncoder.constructFromXandY(badPixelLocationsX, badPixelLocationsY);
 	}
@@ -65,6 +67,16 @@ public class RemoveBadPixelsResult {
 
 	public void setBadPixelsRemoved(boolean badPixelsRemoved) {
 		this.badPixelsRemoved = badPixelsRemoved;
+	}
+
+
+	public boolean isAllBadPixelsFound() {
+		return allBadPixelsFound;
+	}
+
+
+	public void setAllBadPixelsFound(boolean allBadPixelsFound) {
+		this.allBadPixelsFound = allBadPixelsFound;
 	}
 
 

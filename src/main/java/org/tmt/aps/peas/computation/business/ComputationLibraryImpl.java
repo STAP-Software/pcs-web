@@ -340,7 +340,8 @@ public class ComputationLibraryImpl {
 	 * @param badPixelList list of rectangles specifying all bad pixels and/or bad columns
 	 * @return output CCD array with corrected bad pixels
 	 */
-	public RemoveBadPixelsResult removeBadPixels(int[][] frame, List<Rect> badPixelList, boolean removeBadPixels, float indexThreshold, int intensityThreshold) throws ComputationException {
+	public RemoveBadPixelsResult removeBadPixels(int[][] frame, List<Rect> badPixelList, boolean removeBadPixels, float indexThreshold, int intensityThreshold,
+			int badPixelIterationLimit) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "removeBadPixels"));
 
@@ -380,15 +381,20 @@ public class ComputationLibraryImpl {
 
 		}
 		
+		// FIXME - uncomment and replace next line to call new function
+		//JremoveAllDynamicBadPixels jremoveAllDynamicBadPixels = new JremoveAllDynamicBadPixels();
 		JremoveDynamicBadPixels jremoveDynamicBadPixels = new JremoveDynamicBadPixels();
+		
 		RetVal retVal = new RetVal();
 
 		int[][] finalCorrectedFrame = new int[frame.length][frame[0].length];
 		int[] badPixelLocationsX = new int[2000];
 		int[] badPixelLocationsY = new int[2000];
 
-		
-		Object[] result = jremoveDynamicBadPixels.jremoveDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold,  
+		// FIXME - uncomment and replace next statement to call new function
+		//Object[] result = jremoveAllDynamicBadPixels.jremoveAllDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
+		//		badPixelIterationLimit, finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
+		Object[] result = jremoveDynamicBadPixels.jremoveDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
 				finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
 			
 		if (retVal.getCode() > 0) {
@@ -398,6 +404,10 @@ public class ComputationLibraryImpl {
 
 		int badPixelCount = (Integer)result[0];
 		
+		// FIXME: uncomment and replace next line to complete implementation
+		//boolean allBadPixelsFound = ((Integer)result[1]) == 1 ? true : false;
+		boolean allBadPixelsFound = true;
+		
 		// truncate badPixelLocations arrays to badPixelCount size
 		int[] badLocationsTruncatedX = Arrays.copyOf(badPixelLocationsX, badPixelCount);
 		int[] badLocationsTruncatedY = Arrays.copyOf(badPixelLocationsY, badPixelCount);
@@ -405,7 +415,7 @@ public class ComputationLibraryImpl {
 				
 		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
 
-		return new RemoveBadPixelsResult(finalCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels);
+		return new RemoveBadPixelsResult(finalCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels, allBadPixelsFound);
 
 	}
 

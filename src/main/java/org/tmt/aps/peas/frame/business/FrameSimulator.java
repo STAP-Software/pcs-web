@@ -76,7 +76,7 @@ public class FrameSimulator {
 	public CcdFrame getFrame(int index) {
 		
 		CcdFrame ccdFrame = frameList.get(index);
-		
+				
 		// simulate the camera state too
 		CameraState cameraState = new CameraState();
 		cameraState.setCcdTemp(44.4f);
@@ -111,7 +111,8 @@ public class FrameSimulator {
 			//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
 							
 			RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(intFrame, badPixelList, removeBadPixels, 
-					frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
+					frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold(),
+					frameCorrectionConfig.getBadPixelIterationLimit());
 			
 			int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
 			
@@ -129,6 +130,7 @@ public class FrameSimulator {
 				ccdFrame.setBadPixelListEncoded(removeBadPixelsResult.getBadPixelListEncoded());
 				ccdFrame.setBadPixelCount(removeBadPixelsResult.getBadPixelCount());
 				ccdFrame.setBadPixelsRemoved(removeBadPixelsResult.isBadPixelsRemoved());
+				ccdFrame.setAllBadPixelsFound(removeBadPixelsResult.isAllBadPixelsFound());
 			}
 
 		

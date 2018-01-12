@@ -62,6 +62,7 @@ public class CcdFrame {
 	
 	private int badPixelCount;
 	private boolean badPixelsRemoved;
+	private boolean allBadPixelsFound;
 	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
@@ -398,7 +399,17 @@ public class CcdFrame {
 
 	public void setBadPixelsRemoved(boolean badPixelsRemoved) {
 		this.badPixelsRemoved = badPixelsRemoved;
+	}	
+
+	public boolean isAllBadPixelsFound() {
+		return allBadPixelsFound;
 	}
+
+	public void setAllBadPixelsFound(boolean allBadPixelsFound) {
+		this.allBadPixelsFound = allBadPixelsFound;
+	}
+
+
 
 	@Transient
 	byte[] falseColorPng;
@@ -455,5 +466,6 @@ public class CcdFrame {
 				getIntTime()); 
 
 	}
+
 	
 }

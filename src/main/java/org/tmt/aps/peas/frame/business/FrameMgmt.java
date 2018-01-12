@@ -356,7 +356,8 @@ public class FrameMgmt {
 				//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
 								
 				RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(correctedFrame, badPixelList, removeBadPixels, 
-						frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold());
+						frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold(),
+						frameCorrectionConfig.getBadPixelIterationLimit());
 				
 				int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
 				
@@ -453,6 +454,7 @@ public class FrameMgmt {
 			ccdFrame.setBadPixelListEncoded(removeBadPixelsResult.getBadPixelListEncoded());
 			ccdFrame.setBadPixelCount(removeBadPixelsResult.getBadPixelCount());
 			ccdFrame.setBadPixelsRemoved(removeBadPixelsResult.isBadPixelsRemoved());
+			ccdFrame.setAllBadPixelsFound(removeBadPixelsResult.isAllBadPixelsFound());
 		}
 
 		return ccdFrame;
@@ -482,7 +484,7 @@ public class FrameMgmt {
 		} else {
 			ccdFrame = frameSimulator.getFrame(frameNumber);
 			/*** FIXME -- uncomment to test code only **/
-			// frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
+			//frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
 			/*** FIXME -- uncomment to test code only **/
 		}
 		
