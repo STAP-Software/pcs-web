@@ -607,6 +607,53 @@ public class SessionController implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session Ended", ""));
 	}
 
+	public void doCheckStartSession() {
+		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			if (!sessionStartChecked) {
+				sessionStartChecked = true;
+				doStartSession();
+			}
+		}
+	}
+	
+	public void doStartSession() {
+		
+		try {
+			/*
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
+
+			// check if the camera overall status is ready
+			CameraQueryResult queryResult = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OVERALL_STATUS);
+			
+			// if status is not ready, init camera
+			if (queryResult.getIntValue() == CameraQueryResult.NOT_READY) {
+			
+				// initialize camera
+				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
+				Utils.waitForComplete(instFuture);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
+			} 
+			*/
+			
+		} catch (Throwable t) {
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
+		} finally {
+			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);
+		}
+		
+		
+	}
+	
+	
 	/**
 	 * @return true if simulation mode should be rendered to the screen
 	 */
