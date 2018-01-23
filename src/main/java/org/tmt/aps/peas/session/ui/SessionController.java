@@ -105,6 +105,8 @@ public class SessionController implements Serializable {
 	boolean ifCommandPermission;
 	boolean configPermission;
 	boolean includeTestData;
+	
+	boolean sessionStartChecked = false;
 
 	/**
 	 * Initialization method: creates a new current session if one does not exist
@@ -141,6 +143,10 @@ public class SessionController implements Serializable {
 				getExtInfConnectConfig().setCcdEnabled(true);
 				getExtInfConnectConfig().setAcsEnabled(true);
 				getExtInfConnectConfig().setDcsEnabled(true);
+				
+				// initialize the camera once the page is loaded
+				sessionStartChecked = false;
+
 			}
 			
 
@@ -619,6 +625,7 @@ public class SessionController implements Serializable {
 	public void doStartSession() {
 		
 		try {
+			
 			/*
 			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
 
@@ -647,7 +654,30 @@ public class SessionController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
 		} finally {
-			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);
+			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
+		}
+		
+		try {
+			
+			// command CCD to initialize
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(true);
+			
+			// set default temperature
+			
+
+		} catch (Throwable t) {
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CCD Initialization Failed: "  + buf, ""));
+		} finally {
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(false);
 		}
 		
 		
