@@ -16,6 +16,9 @@ public class ExtInfConnectConfig {
 	private boolean cameraHeartbeatStatus;
 	private boolean ccdHeartbeatStatus;
 	
+	private boolean ccdInitializing;
+	
+	
 	public ExtInfConnectConfig() {
 		reset();
 	}
@@ -71,6 +74,14 @@ public class ExtInfConnectConfig {
 		this.ccdHeartbeatStatus = ccdHeartbeatStatus;
 	}
 
+	public boolean isCcdInitializing() {
+		return ccdInitializing;
+	}
+
+	public void setCcdInitializing(boolean ccdInitializing) {
+		this.ccdInitializing = ccdInitializing;
+	}
+
 	public String getCameraStatus() {
 		if (cameraEnabled) {
 			return cameraHeartbeatStatus ? "Connected" : "Communication Failure";
@@ -80,7 +91,7 @@ public class ExtInfConnectConfig {
 	
 	public String getCcdStatus() {
 		if (ccdEnabled) {
-			return ccdHeartbeatStatus ? "Connected" : "Communication Failure";
+			return ccdHeartbeatStatus ? (ccdInitializing  ? "Initializing" : "Connected") : "Communication Failure";
 		}
 		return ccdHeartbeatStatus ? "Disconnected" : "Disconnecting";
 
@@ -97,3 +108,29 @@ public class ExtInfConnectConfig {
 
 	
 }
+
+
+
+
+
+	
+
+
+	
+
+	
+
+
+
+
+
+	
+
+	
+
+	
+	
+
+
+
+
