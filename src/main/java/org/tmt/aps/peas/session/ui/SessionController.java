@@ -34,6 +34,7 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -62,6 +63,8 @@ public class SessionController implements Serializable {
 	TelescopeMgmt telescopeMgmt;
 	@EJB
 	CameraMgmt cameraMgmt;
+	@EJB
+	CcdMgmt ccdMgmt;
 	@EJB
 	ConstantsCache constantsCache;
 	@EJB
@@ -106,7 +109,8 @@ public class SessionController implements Serializable {
 	boolean configPermission;
 	boolean includeTestData;
 	
-	boolean sessionStartChecked = false;
+	boolean cameraInitialized = false;
+	boolean ccdInitialized = false;
 
 	/**
 	 * Initialization method: creates a new current session if one does not exist
@@ -145,7 +149,8 @@ public class SessionController implements Serializable {
 				getExtInfConnectConfig().setDcsEnabled(true);
 				
 				// initialize the camera once the page is loaded
-				sessionStartChecked = false;
+				cameraInitialized = false;
+				ccdInitialized = false;
 
 			}
 			
@@ -615,14 +620,20 @@ public class SessionController implements Serializable {
 
 	public void doCheckStartSession() {
 		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
-			if (!sessionStartChecked) {
-				sessionStartChecked = true;
-				doStartSession();
+			if (!cameraInitialized) {
+				cameraInitialized = true;
+				doInitCamera();
+			}
+		}
+		if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+			if (!ccdInitialized) {
+				ccdInitialized = true;
+				doInitCcd();
 			}
 		}
 	}
 	
-	public void doStartSession() {
+	public void doInitCamera() {
 		
 		try {
 			
@@ -656,13 +667,21 @@ public class SessionController implements Serializable {
 		} finally {
 			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
 		}
-		
+	}
+	
+	
+	public void doInitCcd() {
+
 		try {
 			
 			// command CCD to initialize
 			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(true);
 			
 			// set default temperature
+			float defaultTemperature = instrument.getCcd().getDefaultTemperature();
+			Future<Integer> temperatureFuture = ccdMgmt.setTemp(defaultTemperature);
+			Utils.waitForComplete(temperatureFuture);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "CCD Initialized", ""));
 			
 
 		} catch (Throwable t) {
