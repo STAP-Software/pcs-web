@@ -102,8 +102,8 @@ import org.tmt.aps.peas.lang.interop.JnbAnalyzeFilterSequence;
 import org.tmt.aps.peas.lang.interop.JnbAnalyzeFrame;
 import org.tmt.aps.peas.lang.interop.JnbAnalyzeStepSequence;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
+import org.tmt.aps.peas.lang.interop.JremoveAllDynamicBadPixels;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
-import org.tmt.aps.peas.lang.interop.JremoveDynamicBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
 import org.tmt.aps.peas.lang.interop.JterraceModeComponents;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
@@ -381,9 +381,7 @@ public class ComputationLibraryImpl {
 
 		}
 		
-		// FIXME - uncomment and replace next line to call new function
-		//JremoveAllDynamicBadPixels jremoveAllDynamicBadPixels = new JremoveAllDynamicBadPixels();
-		JremoveDynamicBadPixels jremoveDynamicBadPixels = new JremoveDynamicBadPixels();
+		JremoveAllDynamicBadPixels jremoveAllDynamicBadPixels = new JremoveAllDynamicBadPixels();
 		
 		RetVal retVal = new RetVal();
 
@@ -391,11 +389,8 @@ public class ComputationLibraryImpl {
 		int[] badPixelLocationsX = new int[2000];
 		int[] badPixelLocationsY = new int[2000];
 
-		// FIXME - uncomment and replace next statement to call new function
-		//Object[] result = jremoveAllDynamicBadPixels.jremoveAllDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
-		//		badPixelIterationLimit, finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
-		Object[] result = jremoveDynamicBadPixels.jremoveDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
-				finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
+		Object[] result = jremoveAllDynamicBadPixels.jremoveAllDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
+				badPixelIterationLimit, finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
 			
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -404,9 +399,7 @@ public class ComputationLibraryImpl {
 
 		int badPixelCount = (Integer)result[0];
 		
-		// FIXME: uncomment and replace next line to complete implementation
-		//boolean allBadPixelsFound = ((Integer)result[1]) == 1 ? true : false;
-		boolean allBadPixelsFound = true;
+		boolean allBadPixelsFound = ((Integer)result[1]) == 1 ? true : false;
 		
 		// truncate badPixelLocations arrays to badPixelCount size
 		int[] badLocationsTruncatedX = Arrays.copyOf(badPixelLocationsX, badPixelCount);
