@@ -238,6 +238,19 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	width: 100%;
 }
 
+.pcsNoPad {
+	border-collapse: separate;
+	border: none;
+	width: 100%;
+	margin: 0px;
+	padding: 0px;
+}
+
+.pcsNoPad tr td {
+	margin: 0px !important;
+	padding: 0px !important;
+}
+
 .pcsForm tbody tr td {
 	vertical-align: bottom !important;
 }

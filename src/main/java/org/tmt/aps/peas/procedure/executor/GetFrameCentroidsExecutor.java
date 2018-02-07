@@ -28,14 +28,16 @@ import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
+import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.CcdLeftRightBiasException;
 import org.tmt.aps.peas.procedure.exception.FandIException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
@@ -60,6 +62,10 @@ public class GetFrameCentroidsExecutor {
 
 	@EJB
 	private FrameMgmt frameMgmt;
+	@EJB
+	private CcdMgmt ccdMgmt;
+	@EJB
+	private CcdDefMgmt ccdDefMgmt;
 	@EJB
 	private GraphicDisplayMgmt graphicDisplayMgmt;
 	@EJB
@@ -142,7 +148,8 @@ public class GetFrameCentroidsExecutor {
 
 		int iteration = procedureExecutionState.getCurrentIteration();
 		
-		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), procedure.getProcedureNumber(),
+		procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureConfigSet().getFrameCorrectionConfig(), 
+				procedure.getProcedureType(), procedure.getProcedureNumber(),
 				iteration, frameNumber, procedureConfig.getIntegrationTime(), physicalModel.getInstrument().getCcd().getAllHotPixelRects(),
 				procedureConfig.isRemoveBadPixels());
 		
@@ -186,6 +193,10 @@ public class GetFrameCentroidsExecutor {
 			// test for non-linear subimage maximums
 			computationLibrary.checkSubimageIntensities(centroidMap, physicalModel.getInstrument().getCcd()
 					.getNonLinearThreshold());
+			
+			// test for ccd gain offset bias threshold exceeded
+			int leftRightBiasThreshold = procedure.getProcedureConfigSet().getFrameCorrectionConfig().getLeftRightBiasThreshold();
+			computationLibrary.checkFrameLeftRightBias(ccdFrame, leftRightBiasThreshold);
 
 		} catch (FandIException e) {
 			handleExceptionCases(e);
@@ -201,6 +212,8 @@ public class GetFrameCentroidsExecutor {
 			handleUserAssistRequiredException(e1);
 		} catch (NonLinearIntensitiesException e1) {
 			handleNonLinearIntensitiesException(e1);
+		} catch (CcdLeftRightBiasException e1) {
+			handleCcdLeftRightBiasException(e1);
 		} catch (HandMarkRequiredException e1) {
 			handleHandMarking();
 		} catch (FandIException e1) {
@@ -280,6 +293,38 @@ public class GetFrameCentroidsExecutor {
 
 	}
 
+	private void handleCcdLeftRightBiasException(CcdLeftRightBiasException e) throws AbortProcedureException, Exception {
+
+		String text = MessageGenerator.generateMessage("frame.bias.threshold");
+
+		// user interaction
+		statusLogger.log("procedure.exception", text);
+
+		int response = userPromptMgmt.displayFlowControlTriFlowDialog("Procedure Exception", text);
+
+		if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_ABORT) {
+			throw new AbortProcedureException("User Aborted Test");
+		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_RETRY) {
+
+			// we get here if we are going to trigger calibration and re-take frame (Retry)
+
+			// trigger the offset calibration and get the new gain offsets
+			statusLogger.log("ccd.cmd.calibration.start");
+
+			int[] offsets = ccdMgmt.triggerOffsetCalibration();
+			
+			statusLogger.log("ccd.cmd.calibration.end", offsets[0], offsets[1]);
+			
+			// 2. store these values in CcdGain for the current gain value
+			ccdDefMgmt.updateCcdGainOffsets(offsets);
+				
+			// retake frame
+			takeFrameAndFindCentroids();
+		}
+		
+
+	}
+
 	private void handleHandMarking() throws AbortProcedureException, Exception {
 
 		if (procedure.getProcedureType().isPassiveTilt()) {
@@ -320,6 +365,9 @@ public class GetFrameCentroidsExecutor {
 		
 		String peakMapData = FloatListEncoder.encodeList(findCentroidsResult.getPeakList());
 		centroidMap.setPeakMapData(peakMapData);
+		
+		String rawPeakMapData = FloatListEncoder.encodeList(findCentroidsResult.getRawPeakList());
+		centroidMap.setRawPeakMapData(rawPeakMapData);
 		
 		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.generateGoodPeakList());
 		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
@@ -399,7 +447,7 @@ public class GetFrameCentroidsExecutor {
 						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0 && 
 								procedure.getProcedureConfigSet().getGlobalConfig().getMirrorListInt()[i] != 0) {
 							
-							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
+							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
 							findCentroidsResult.setSubimage(i, markedSubimage);
 						}
 					}
@@ -418,11 +466,13 @@ public class GetFrameCentroidsExecutor {
 					graphicDisplayMgmt.displaySubimageCentroids(centroidMap);
 				}
 
+				// use median peak intensity converted to ADU
+				float medianPeakIntensityAdu = centroidMap.getMedianPeakIntensity() * physicalModel.getInstrument().getCcd().getCcdGain().getGainValue();
 				
 				// display warning if subimageIntensityThreshold is not reached
-				if (centroidMap.getMedianPeakIntensity() < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
+				if (medianPeakIntensityAdu < procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold() && 
 						procedureConfig.isAutoDisplaySubimageIntensityWarning()) {
-					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_intensity_warning", centroidMap.getMedianPeakIntensity(), 
+					String warningMessage = MessageGenerator.generateMessage("find_cent.subimage_intensity_warning", medianPeakIntensityAdu, 
 							procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold());
 					userPromptMgmt.displayInfoDialog("Subimage Intensity Warning", warningMessage);
 				}

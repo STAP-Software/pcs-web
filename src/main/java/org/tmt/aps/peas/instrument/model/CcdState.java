@@ -10,8 +10,8 @@ public class CcdState {
 	int overscannedImageHeight;
 	int gainNumber;
 	float gainValue;
+	int channelOffset0;
 	int channelOffset1;
-	int channelOffset2;
 	double temperatureSetting;
 	double caseTemperature;
 	double rightTemperature;
@@ -25,8 +25,8 @@ public class CcdState {
 	public CcdState(Gain gain, int[] offsets, int[] imageSize, int[] overscannedImageSize, double temperatureSetting, double[] temperatures, double exposureTime) {
 		gainNumber = gain.getGain();
 		gainValue = (float)gain.getElectronsPerAdu();
-		channelOffset1 = offsets[0];
-		channelOffset2 = offsets[1];
+		channelOffset0 = offsets[0];
+		channelOffset1 = offsets[1];
 		imageWidth = imageSize[0];
 		imageHeight = imageSize[1];
 		overscannedImageWidth = overscannedImageSize[0];
@@ -35,6 +35,18 @@ public class CcdState {
 		caseTemperature = temperatures[0];
 		leftTemperature = temperatures[1];
 		rightTemperature = temperatures[2];
+		this.exposureTime = exposureTime;
+	}
+	
+	public CcdState(int gainNumber, float gainValue, int channelOffset0, int channelOffset1, double caseTemperature, double leftTemperature, double rightTemperature, double exposureTime) {
+		this.gainNumber = gainNumber;
+		this.gainValue = gainValue;
+		this.channelOffset0 = channelOffset0;
+		this.channelOffset1 = channelOffset1;
+
+		this.caseTemperature = caseTemperature;
+		this.leftTemperature = leftTemperature;
+		this.rightTemperature = rightTemperature;
 		this.exposureTime = exposureTime;
 	}
 	
@@ -94,12 +106,12 @@ public class CcdState {
 		this.channelOffset1 = channelOffset1;
 	}
 	
-	public int getChannelOffset2() {
-		return channelOffset2;
+	public int getChannelOffset0() {
+		return channelOffset0;
 	}
 	
-	public void setChannelOffset2(int channelOffset2) {
-		this.channelOffset2 = channelOffset2;
+	public void setChannelOffset0(int channelOffset0) {
+		this.channelOffset0 = channelOffset0;
 	}
 
 	public double getTemperatureSetting() {

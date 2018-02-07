@@ -96,11 +96,13 @@ function drawActDeltas(drawSegments,drawSegNums,drawActVals,drawHeat,drawHeatCir
  	var heatArray = heatField.split(','); 
 
  	
+	var centerX = 512;
+	var centerY = 512;
     	 	
 	for (var i = 0; i < xHexCenterArray.length; i++) {
 		
-		var x = parseFloat(xHexCenterArray[i]);
-		var y = parseFloat(yHexCenterArray[i]);
+		var x = centerX + parseFloat(xHexCenterArray[i]) * sideLen;
+		var y = centerY - parseFloat(yHexCenterArray[i]) * sideLen;
 		
 		var act1Position = parseFloat(act1PosArray[i]);
 		
@@ -418,8 +420,8 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
      		<h:form id="actDeltasForm">
 
 			      		
-     		<h:inputHidden id="centDefXs" value="#{visualizationController.segCentDefXs}" />
-			<h:inputHidden id="centDefYs" value="#{visualizationController.segCentDefYs}" />
+     		<h:inputHidden id="centDefXs" value="#{visualizationController.segCentersX}" />
+			<h:inputHidden id="centDefYs" value="#{visualizationController.segCentersY}" />
 			<h:inputHidden id="act1Pos" value="#{visualizationController.act1Pos}" />
 			<h:inputHidden id="actuatorDeltas" value="#{visualizationController.actuatorDeltas}" />
 			<h:inputHidden id="actDeltaHeats" value="#{visualizationController.actDeltaHeats}" />

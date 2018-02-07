@@ -56,6 +56,7 @@ import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -67,6 +68,7 @@ import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -1025,7 +1027,8 @@ public class ProcedureController implements Serializable {
 				}
 
 				// set up display of camera state values for first frame
-				loadCameraState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState());
+				loadInstrumentState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState(),
+						procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCcdState());
 
 			}
 			
@@ -1146,8 +1149,9 @@ public class ProcedureController implements Serializable {
 	 * method to load a passed camera state into the view
 	 * @param cameraState the camera state to view
 	 */
-	public void loadCameraState(CameraState cameraState) {
+	public void loadInstrumentState(CameraState cameraState, CcdState ccdState) {
 		frameInstrument.updateState(cameraState);
+		frameInstrument.updateState(ccdState);
 	}
 
 	// ====================================================================================== //
@@ -1161,7 +1165,7 @@ public class ProcedureController implements Serializable {
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
-		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
+		loadInstrumentState(selectedFrame.getCcdFrame().getCameraState(), selectedFrame.getCcdFrame().getCcdState());
 		
 		if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
 			ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
@@ -1365,9 +1369,17 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().isCreateRefMap()) {
 		
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, physicalModel.getInstrument().getInstrumentId());
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 		
+			// the integration time should change when the ref beam changes
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+			
 		}
 		
 	}
@@ -1418,7 +1430,7 @@ public class ProcedureController implements Serializable {
 		// call findCent on each centroid
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfigInterior());

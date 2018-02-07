@@ -39,12 +39,19 @@
 		<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" style="position:relative; top:2px" />
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
-		<h:outputLabel value="CCD Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{procedureController.frameInstrument.ccd.temperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-
+	    <h:outputLabel value="CCD Temp (L,R) (#{fieldMetaData.units})" />
+		<h:panelGroup style="position:relative; top:3px">
+			<h:outputText value="#{procedureController.frameInstrument.ccd.leftTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			<h:outputText value=", "  style="position:relative; top:2px" />
+			<h:outputText value="#{procedureController.frameInstrument.ccd.rightTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+		</h:panelGroup>
+		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
 		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
 		<h:outputText value="#{procedureController.frameInstrument.camera.instrumentTemperature}" style="position:relative; top:2px" >

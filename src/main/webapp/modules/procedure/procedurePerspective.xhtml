@@ -187,7 +187,7 @@
 									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
 									disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
-										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton" listener="#{procedureController.sufsGroupChangeListener}" />
+										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
 									</p:selectOneMenu>
 									
 								</p:column>
@@ -400,19 +400,24 @@
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 							
 
-							<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+							<p:panelGrid styleClass="pcsNoPad" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 							<p:row>
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<canvas id="infoCanvas" width="270px" height="15px" ></canvas>
+								<p:column styleClass="peasFormLabelColumn" style="width:25%">
+									<canvas id="infoCanvas" width="180px" height="15px" ></canvas>
 								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<h:outputLabel value="Median Peak Intensity:" />
+								<p:column styleClass="peasFormLabelColumn" style="width:55%">
+									<h:outputLabel value="Median Peak Intensity (counts, e-):  " />
 								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-										<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+								<p:column styleClass="peasFormOutputColumn" style="width:20%">
+									<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
 										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
 									</h:outputText>
+									<h:outputText value=", " rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" />
+									<h:outputText value="#{procedureController.selectedFrame.medianPeakIntensityAdu}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
+									</h:outputText>
+									
 								</p:column>
 							</p:row>
 							</p:panelGrid>
@@ -633,7 +638,7 @@
  	function displayFrameValue() {
  			
  		var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
- 		var message = '    Mouse position: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  value = ' + pixelValue;
+ 		var message = 'pos: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  val = ' + pixelValue;
         var infoCanvas = document.getElementById("infoCanvas");
         writeMessage(infoCanvas, message);
  	}

@@ -82,6 +82,8 @@ public class CentroidMap {
 	@Column
 	String peakMapData;
 	@Column
+	String rawPeakMapData;
+	@Column
 	String findCentStatusData;
 	
 	@Temporal(TemporalType.TIMESTAMP)
@@ -246,6 +248,14 @@ public class CentroidMap {
 		this.peakMapData = peakMapData;
 	}
 
+	public String getRawPeakMapData() {
+		return rawPeakMapData;
+	}
+
+	public void setRawPeakMapData(String rawPeakMapData) {
+		this.rawPeakMapData = rawPeakMapData;
+	}
+
 	public Float getMedianPeakIntensity() {
 		return medianPeakIntensity;
 	}
@@ -335,9 +345,10 @@ public class CentroidMap {
 			List<FloatPoint> centroidList = FloatPointListEncoder.decodeList(getCentroidMapData());
 			List<Float> intensityList = FloatListEncoder.decodeList(getIntensityMapData());
 			List<Float> peakList = FloatListEncoder.decodeList(getPeakMapData());
+			List<Float> rawPeakList = FloatListEncoder.decodeList(getRawPeakMapData());
 			List<Integer> findCentStatus = IntegerListEncoder.decodeList(getFindCentStatusData());
 			
-			findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList, findCentStatus);
+			findCentroidsResult = new FindCentroidsResult(centroidList, intensityList, peakList, rawPeakList, findCentStatus);
 		}
 		
 		return findCentroidsResult;

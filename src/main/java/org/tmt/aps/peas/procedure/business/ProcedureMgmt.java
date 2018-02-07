@@ -69,6 +69,8 @@ public class ProcedureMgmt {
 		
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), 
 					procedure.getProcedureConfigSet().getIterationListConfig());
+			iterationEntityCache.applyCcdGainList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), 
+					procedure.getProcedureConfigSet().getIterationListConfig());
 		}
 		
 		try {

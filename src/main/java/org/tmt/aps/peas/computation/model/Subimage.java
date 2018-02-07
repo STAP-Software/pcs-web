@@ -18,12 +18,14 @@ public class Subimage {
 	
 	float subimageIntensity;
 	float peakIntensity;
+	float rawPeakIntensity;
 	int findCentStatus;
 	
-	public Subimage(FloatPoint centroid, float subimageIntensity, float peakIntensity, int findCentStatus) {
+	public Subimage(FloatPoint centroid, float subimageIntensity, float peakIntensity, float rawPeakIntensity, int findCentStatus) {
 		this.centroid = centroid;
 		this.subimageIntensity = subimageIntensity;
 		this.peakIntensity = peakIntensity;
+		this.rawPeakIntensity = rawPeakIntensity;
 		this.findCentStatus = findCentStatus;
 	}
 	
@@ -44,6 +46,14 @@ public class Subimage {
 	}
 	public void setPeakIntensity(float peakIntensity) {
 		this.peakIntensity = peakIntensity;
+	}
+
+	public float getRawPeakIntensity() {
+		return rawPeakIntensity;
+	}
+
+	public void setRawPeakIntensity(float rawPeakIntensity) {
+		this.rawPeakIntensity = rawPeakIntensity;
 	}
 
 	public int getFindCentStatus() {

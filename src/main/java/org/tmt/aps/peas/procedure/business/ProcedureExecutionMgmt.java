@@ -36,6 +36,8 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.IterationListConfig;
@@ -49,6 +51,7 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -68,6 +71,7 @@ import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -222,6 +226,8 @@ public class ProcedureExecutionMgmt {
 			
 			// apply integration times set in the UI
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			// apply ccd gains set in the UI
+			iterationEntityCache.applyCcdGainList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
 						
 			// re-encode list for saving
 			IterationValueList iterationValueList = iterationListConfig.getIterationValueList();
@@ -282,6 +288,8 @@ public class ProcedureExecutionMgmt {
 				procedureException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
 			}
 
+		} catch (BadDarkMedianValueException e) {
+			procedureException = e;
 		} catch (Throwable e) {
 			procedureException = e;
 		}
@@ -358,7 +366,7 @@ public class ProcedureExecutionMgmt {
 						procedureCcdFrame.setCentroidMap(centroidMap);
 					}
 					
-					frameMgmt.associateCcdFrame(procedureCcdFrame);
+					frameMgmt.associateCcdFrame(procedureCcdFrame, procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource());
 
 					logger.debug("performProcedureCompletion::persisting frame");
 
@@ -532,9 +540,10 @@ public class ProcedureExecutionMgmt {
 				
 				// use reference beam based on SUFS group of super procedure
 				int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroupNumber).getDefaultRefBeamNum();
-				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum,  physicalModel.getInstrument().getInstrumentId());
 				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
+
 			}
 			
 			
@@ -607,6 +616,10 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		// get FrameCorrectionDefaults
+		FrameCorrectionConfigDefaults frameCorrectionDefaults = globalConfigMgmt.findFrameCorrectionConfig();
+		procedure.getProcedureConfigSet().setFrameCorrectionConfig(new FrameCorrectionConfig(frameCorrectionDefaults));
+		
 		
 		if (procedureType.isSufs()) {
 		
@@ -697,8 +710,17 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(sufsGroup);
 			
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, instrumentId);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+			
+			// the integration time depends on ref beam 
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+
 			
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
 					physicalModel.getInstrument().getInstrumentId(), new Long(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
@@ -707,10 +729,11 @@ public class ProcedureExecutionMgmt {
 
 		} else {
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
+			// set the ccdGain number to the value in refMapConfigDefaults
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
 		}
-		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
-		// set the ccdGain number to the value in refMapConfigDefaults
-		procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
+
 
 		// make the list of possible int times equal to the 'one' we have
 		List<Float> integrationTimeList = new ArrayList<Float>();

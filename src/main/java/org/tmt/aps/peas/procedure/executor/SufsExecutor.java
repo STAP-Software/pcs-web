@@ -167,8 +167,10 @@ public class SufsExecutor {
 						// SUFS coarse mirror position pointing to group
 						Point coarseMirrorPosition = Point.add(globalConfig.getCoarseMirrorDefault(),
 								sufsCoarseOffsetsConfig.getCoarseMirrorOffsetCurrent());
+						
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), coarseMirrorPosition,
-								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(),
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getLeftTemperature(),
+								physicalModel.getInstrument().getCcd().getRightTemperature(),
 								procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {

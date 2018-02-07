@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.FloatPoint;
+import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
@@ -141,16 +142,21 @@ public class IncompleteMirrorController implements Serializable {
 		int y = (new Double(yStr)).intValue();
 
 		FloatPoint subapp = new FloatPoint(x/0.61f, y/0.61f); // unscale
-				
-		List<FloatPoint> segCenterList = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36).getInteriorSubimageDefListCentroids();
-		
+						
+		float aHex = 77.0f;
+
+		float factor =  1.0f/constantsCache.getPrimaryMirrorConstants().getaHex();
+		List<FloatPoint> segCenters = FloatPointListEncoder.multiplyPoints(constantsCache.getPrimaryMirrorConstants().getSegmentCenters(), factor);
+
 		
 		for (int i=0; i<36; i++) {
 			
-			FloatPoint segCenter = segCenterList.get(i);
+			FloatPoint segCenter = segCenters.get(i);
+			
+			FloatPoint segCenterPixels = new FloatPoint(512.0f + (segCenter.x * aHex), 512f - (segCenter.y * aHex));
 			
 			// find out which segment was chosen
-			if (computationLibraryImpl.doesSubapLieInSeg(subapp, segCenter, 77.0f)) {
+			if (computationLibraryImpl.doesSubapLieInSeg(subapp, segCenterPixels, aHex)) {
 				mirrorSegments.set(i, mirrorSegments.get(i) == 0 ? 1 : 0);
 			}
 		}

@@ -265,7 +265,7 @@ public class CcdManualController implements Serializable {
 					}
 				}
 				
-				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1);
+				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1, null);
 				
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				requestContext.update("frameDisplayForm:framePanel");

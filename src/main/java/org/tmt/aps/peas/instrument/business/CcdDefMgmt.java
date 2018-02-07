@@ -15,8 +15,10 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdGain;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
  * Session EJB managing database queries/updates for CCD configuration records
@@ -65,6 +67,36 @@ public class CcdDefMgmt {
 		
 	}
 	
+	/**
+	 * Updates ccd gain channel offsets in database and in the Ccd object in the Physical Model
+	 * @param offsets
+	 */
+	public void updateCcdGainOffsets(int[] offsets) {
+
+		Ccd ccd = physicalModel.getInstrument().getCcd();		
+		
+		CcdGain ccdGain = findCcdGain(ccd.getCcdGain().getCcdGainId());
+		ccdGain.setGainOffsetChannel0(offsets[0]);
+		ccdGain.setGainOffsetChannel1(offsets[1]);
+		em.merge(ccdGain);
+		
+		// transient fields 
+		ccd.setChannelOffset0(offsets[0]);
+		ccd.setChannelOffset1(offsets[1]);
+		
+		// current gain reference in ccd model object
+		ccd.getCcdGain().setGainOffsetChannel0(offsets[0]);
+		ccd.getCcdGain().setGainOffsetChannel1(offsets[1]);
+		
+	}
+	
+	public CcdGain findCcdGain(Long ccdGainId) {
+
+		return em.find(CcdGain.class, ccdGainId);
+	}
+
+	
+
 	/**
 	 * Links a CCD record to an instrument record, removing any previous link to another CCD record.
 	 * The instrument is found in the {@link PhysicalModel} which is initialized when PEAS-PCS is started up

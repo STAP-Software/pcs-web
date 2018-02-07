@@ -90,6 +90,7 @@ public class Ccd {
 	
 	@Transient
 	private int state;
+	
 	@Transient
 	private float temperature;
 	@Transient
@@ -97,6 +98,18 @@ public class Ccd {
 	@Transient
 	private double temperatureSetting;
 
+	@Transient
+	private float leftTemperature;
+	@Transient
+	private float rightTemperature;
+	@Transient
+	private float caseTemperature;
+	@Transient
+	private int channelOffset0;
+	@Transient
+	private int channelOffset1;
+	
+	
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
 		this.ccdName = ccdName;
@@ -107,11 +120,6 @@ public class Ccd {
 	}
 	
 	
-	public Ccd(int state, float temperature, int currentGainNumber) {
-		this.state = state;
-		this.temperature = temperature;
-		this.currentGainNumber = currentGainNumber;
-	}
 	
 	public Ccd() {
 		
@@ -206,6 +214,7 @@ public class Ccd {
 	public void setCcdGain0(CcdGain ccdGain0) {
 		this.ccdGain0 = ccdGain0;
 	}
+	
 
 	public float getDefaultTemperature() {
 		return defaultTemperature;
@@ -290,6 +299,64 @@ public class Ccd {
 	public void setDarkOvscnRightColEnd(int darkOvscnRightColEnd) {
 		this.darkOvscnRightColEnd = darkOvscnRightColEnd;
 	}
+
+	public int getCurrentGainNumber() {
+		return currentGainNumber;
+	}
+
+	public void setCurrentGainNumber(int currentGainNumber) {
+		this.currentGainNumber = currentGainNumber;
+	}
+
+	public float getLeftTemperature() {
+		return leftTemperature;
+	}
+
+	public void setLeftTemperature(float leftTemperature) {
+		this.leftTemperature = leftTemperature;
+	}
+
+	public float getRightTemperature() {
+		return rightTemperature;
+	}
+
+	public void setRightTemperature(float rightTemperature) {
+		this.rightTemperature = rightTemperature;
+	}
+
+	public float getCaseTemperature() {
+		return caseTemperature;
+	}
+
+	public void setCaseTemperature(float caseTemperature) {
+		this.caseTemperature = caseTemperature;
+	}
+
+
+
+	public int getChannelOffset0() {
+		return channelOffset0;
+	}
+
+
+
+	public void setChannelOffset0(int channelOffset0) {
+		this.channelOffset0 = channelOffset0;
+	}
+
+
+
+	public int getChannelOffset1() {
+		return channelOffset1;
+	}
+
+
+
+	public void setChannelOffset1(int channelOffset1) {
+		this.channelOffset1 = channelOffset1;
+	}
+
+
 
 	public String getDisplayString() {
 		switch (state) {

@@ -114,9 +114,11 @@ public class IterationListConfig {
 			
 			IterationValue iterationValue = getIterationValueList().getIterationValue(index);
 			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
-				buf.append(((CcdGain)iterationValue.getIterableEntity("LedGain")).getGainNumber() + ", ");
+				CcdGain ccdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+				buf.append(ccdGain.getGainNumber() + ", ");
 			} else {
-				buf.append(((CcdGain)iterationValue.getIterableEntity("StarGain")).getGainNumber() + ", ");					
+				CcdGain ccdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+				buf.append(ccdGain.getGainNumber() + ", ");
 			}
 		}
 		buf.deleteCharAt(buf.length()-1);

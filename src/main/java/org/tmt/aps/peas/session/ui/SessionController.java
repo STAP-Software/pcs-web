@@ -114,7 +114,9 @@ public class SessionController implements Serializable {
 	boolean configPermission;
 	boolean includeTestData;
 	
-	boolean sessionStartChecked = false;
+	boolean cameraInitialized = false;
+	boolean ccdInitialized = false;
+
 	
 	/**
 	 * Initialization method: creates a new current session if one does not exist
@@ -152,8 +154,11 @@ public class SessionController implements Serializable {
 				getExtInfConnectConfig().setAcsEnabled(true);
 				getExtInfConnectConfig().setDcsEnabled(true);
 				
+				
 				// initialize the camera once the page is loaded
-				sessionStartChecked = false;
+				cameraInitialized = false;
+				ccdInitialized = false;
+
 			}
 						
 			
@@ -630,17 +635,24 @@ public class SessionController implements Serializable {
 
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session Ended", ""));
 	}
-	
+
+
 	public void doCheckStartSession() {
 		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
-			if (!sessionStartChecked) {
-				sessionStartChecked = true;
-				doStartSession();
+			if (!cameraInitialized) {
+				cameraInitialized = true;
+				doInitCamera();
+			}
+		}
+		if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+			if (!ccdInitialized) {
+				ccdInitialized = true;
+				doInitCcd();
 			}
 		}
 	}
 	
-	public void doStartSession() {
+	public void doInitCamera() {
 		
 		try {
 			
@@ -654,11 +666,10 @@ public class SessionController implements Serializable {
 			
 				// initialize camera
 				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
-				// set CCD temperature
-				Future<Integer> ccdTempFuture = ccdMgmt.setTemp(physicalModel.getInstrument().getCcd().getDefaultTemperature());
-				Utils.waitForComplete(instFuture, ccdTempFuture);
+				Utils.waitForComplete(instFuture);
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
 			} 
+			
 			
 		} catch (Throwable t) {
 			
@@ -672,18 +683,50 @@ public class SessionController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
 		} finally {
-			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);
+			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
+		}
+	}
+	
+	
+	public void doInitCcd() {
+
+		try {
+			
+			// command CCD to initialize
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(true);
+			
+			// set default temperature
+			float defaultTemperature = instrument.getCcd().getDefaultTemperature();
+			Future<Integer> temperatureFuture = ccdMgmt.setTemp(defaultTemperature);
+			Utils.waitForComplete(temperatureFuture);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "CCD Initialized", ""));
+			
+
+		} catch (Throwable t) {
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CCD Initialization Failed: "  + buf, ""));
+		} finally {
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(false);
 		}
 		
 		
 	}
-
+	
+	
 	/**
 	 * @return true if simulation mode should be rendered to the screen
 	 */
 	public boolean getRenderSimulationMode() {
 		//return false;
-		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
+		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus() && getExtInfConnectConfig().isCcdHeartbeatStatus();
 	}
 
 	/**

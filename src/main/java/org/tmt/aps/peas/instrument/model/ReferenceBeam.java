@@ -26,8 +26,8 @@ import org.tmt.aps.peas.config.model.IterableEntity;
 @NamedQueries({
 	@NamedQuery(name = "findByNumberAndInstrument", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
 			+ "where o.refBeamNum = :refBeamNum and c.cameraId = :instrumentId" ),
-	@NamedQuery(name = "findByNumber", query = "SELECT o from ReferenceBeam o "
-			+ "where o.refBeamNum = :refBeamNum" ),
+	@NamedQuery(name = "findByNumber", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
+			+ "where o.refBeamNum = :refBeamNum and c.cameraId = :cameraId " ),
 	@NamedQuery(name = "findRefBeamByInstrument", query = "SELECT o from ReferenceBeam o INNER JOIN o.camera c "
 			+ "where c.cameraId = :instrumentId" ),
 

@@ -159,13 +159,13 @@ public class IterationEntityCache {
 		indexToEntityMap = new HashMap<Long, IterableEntity>();
 		// Integration Time - just create all possible times here	
 		
-		float intTime = 0.1f;
-		while (intTime < 61.0f) {
+		int intTimeIdx = 1;
+		while (intTimeIdx < 610) {
 		
-			IntegrationTime integrationTime = new IntegrationTime(new Long((int)(intTime*10)), intTime);
+			IntegrationTime integrationTime = new IntegrationTime(new Long(intTimeIdx), (((float)intTimeIdx)/10.0f));
 			indexToEntityMap.put(getKeyFieldValue(integrationTime), integrationTime);
 			className = integrationTime.getClassName();		
-			intTime += (intTime < 1.0) ? 0.1f : 1.0f; 
+			intTimeIdx += (intTimeIdx < 100) ? 1 : 10; 
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
@@ -177,7 +177,7 @@ public class IterationEntityCache {
 		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain1()), ccd.getCcdGain1());
 		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain2()), ccd.getCcdGain2());
 		indexToEntityMap.put(getKeyFieldValue(ccd.getCcdGain3()), ccd.getCcdGain3());
-		className = ccd.getCcdGain1().getClassName();
+		className = ccd.getCcdGain0().getClassName();
 		classToEntityMap.put(className, indexToEntityMap);
 		
 		
@@ -442,6 +442,34 @@ public class IterationEntityCache {
 				iterationValue.setIterableEntity("StarIntegrationTime", iterableEntity);
 			}
 		}
+	}
+	
+	
+	public void applyCcdGainList(int lightSource, IterationListConfig iterationListConfig) {
+		
+		// get the integration times from the String list
+		List<String> items = Arrays.asList(iterationListConfig.getCcdGainList().split("\\s*,\\s*"));
+		
+
+		for (int index=0; index<iterationListConfig.getIterationValueList().getSize(); index++) {
+			int gainNum = new Integer(items.get(index));
+			
+			IterationValue iterationValue = iterationListConfig.getIterationValueList().getIterationValue(index);
+			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
+				
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", new Long(gainNum));				
+				iterationValue.setIterableEntity("LedGain", iterableEntity);
+				
+			} else {
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", new Long(gainNum));				
+				iterationValue.setIterableEntity("StarGain", iterableEntity);
+			}
+		}
+		
+		
+		
+		
+		
 
 	}
 

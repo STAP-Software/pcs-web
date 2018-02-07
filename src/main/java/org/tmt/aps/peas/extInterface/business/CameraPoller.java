@@ -18,11 +18,13 @@ import org.tmt.aps.peas.common.MessageGenerator;
  */
 @Singleton
 @Startup
-@DependsOn({ "CameraMgmt", "PeasProperties" })
+@DependsOn({ "CameraMgmt", "CcdMgmt", "PeasProperties" })
 @Lock(LockType.READ)
 public class CameraPoller {
 	@EJB
 	CameraMgmt cameraMgmt;
+	@EJB
+	CcdMgmt ccdMgmt;
 
 	private boolean doPoll = true;
 
@@ -41,6 +43,10 @@ public class CameraPoller {
 
 				//logger.info("refreshing camera status");
 				cameraMgmt.refreshStatus();
+				
+				// refresh the CCD state
+				ccdMgmt.refreshStatus();
+				
 
 			} catch (Throwable e) {
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);

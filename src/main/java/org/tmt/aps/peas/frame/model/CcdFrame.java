@@ -23,7 +23,9 @@ import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
@@ -55,6 +57,13 @@ public class CcdFrame {
 	@Column(length = 200)
 	private String fitsFilename;
 	
+	@Column(length = 8192)
+	private String badPixelListEncoded;
+	
+	private int badPixelCount;
+	private boolean badPixelsRemoved;
+	private boolean allBadPixelsFound;
+	
 	@Temporal(TemporalType.TIMESTAMP)
 	private Date createDate;
 
@@ -77,6 +86,12 @@ public class CcdFrame {
 	
 	private int darkMedianLeft;
 	private int darkMedianRight;
+	
+	private float caseTemperature;
+	private float leftTemperature;
+	private float rightTemperature;
+	private int ccdGainNumber;
+	private float temperatureSetting;
 	
 	@Transient
 	protected int noOfAxes;
@@ -289,6 +304,14 @@ public class CcdFrame {
 		return correctedFrame;
 	}
 
+	public int getCcdGainNumber() {
+		return ccdGainNumber;
+	}
+
+	public void setCcdGainNumber(int ccdGainNumber) {
+		this.ccdGainNumber = ccdGainNumber;
+	}
+
 	public float getCcdGainValue() {
 		return ccdGainValue;
 	}
@@ -320,6 +343,73 @@ public class CcdFrame {
 	public void setCcdGainOffsetChannel0(int ccdGainOffsetChannel0) {
 		this.ccdGainOffsetChannel0 = ccdGainOffsetChannel0;
 	}
+
+
+	public float getCaseTemperature() {
+		return caseTemperature;
+	}
+
+	public void setCaseTemperature(float caseTemperature) {
+		this.caseTemperature = caseTemperature;
+	}
+
+	public float getLeftTemperature() {
+		return leftTemperature;
+	}
+
+	public void setLeftTemperature(float leftTemperature) {
+		this.leftTemperature = leftTemperature;
+	}
+
+	public float getRightTemperature() {
+		return rightTemperature;
+	}
+
+	public void setRightTemperature(float rightTemperature) {
+		this.rightTemperature = rightTemperature;
+	}
+
+	public float getTemperatureSetting() {
+		return temperatureSetting;
+	}
+
+	public void setTemperatureSetting(float temperatureSetting) {
+		this.temperatureSetting = temperatureSetting;
+	}
+
+	public String getBadPixelListEncoded() {
+		return badPixelListEncoded;
+	}
+
+	public void setBadPixelListEncoded(String badPixelListEncoded) {
+		this.badPixelListEncoded = badPixelListEncoded;
+	}
+
+	public int getBadPixelCount() {
+		return badPixelCount;
+	}
+
+	public void setBadPixelCount(int badPixelCount) {
+		this.badPixelCount = badPixelCount;
+	}
+
+	public boolean isBadPixelsRemoved() {
+		return badPixelsRemoved;
+	}
+
+	public void setBadPixelsRemoved(boolean badPixelsRemoved) {
+		this.badPixelsRemoved = badPixelsRemoved;
+	}	
+
+	public boolean isAllBadPixelsFound() {
+		return allBadPixelsFound;
+	}
+
+	public void setAllBadPixelsFound(boolean allBadPixelsFound) {
+		this.allBadPixelsFound = allBadPixelsFound;
+	}
+
+
 
 	@Transient
 	byte[] falseColorPng;
@@ -367,5 +457,15 @@ public class CcdFrame {
 	
 	public void setFrameHeight(int height) {}
 	
+	
+	public CcdState getCcdState() {
+		
+		return new CcdState(getCcdGainNumber(), getCcdGainValue(), 
+				getCcdGainOffsetChannel0(), getCcdGainOffsetChannel1(), 
+				getCaseTemperature(), getLeftTemperature(), getRightTemperature(),
+				getIntTime()); 
+
+	}
+
 	
 }

@@ -21,7 +21,7 @@
 			</p:submenu>
 			<p:submenu label="Tools" icon="ui-icon-pencil">
 				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doUpdateMarkingInfoDialog}" update=":markingForm" oncomplete="markingDialog.show();" />
-				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm :frameDisplayForm:framePanel" oncomplete="drawFrame();" />
+				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm :frameDisplayForm:framePanel :growl :errorGrowl" oncomplete="drawFrame();" />
 			</p:submenu>
 
 

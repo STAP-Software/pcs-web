@@ -542,21 +542,40 @@ public class FrameController implements Serializable {
 	}
 	
 	public void doCorrectDarkCurrent() {
-		
+		try 
+		{
 		// get overscan results for testing
 		Ccd ccd = physicalModel.getInstrument().getCcd();
 		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
 
-		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(ccdFrame.getRawFrame(), 
+		short[][] frame = ccdFrame.getRawFrame();
+		int[][] intFrame = new int[frame.length][frame[0].length];
+		for (int i = 0; i < frame.length; i++) {
+			for (int j = 0; j < frame[0].length; j++) {
+				intFrame[i][j] = (int)frame[i][j];
+			}
+		}
+
+		
+		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(intFrame, 
 				ccd.getDarkOvscnLeftColStart(), 
 				ccd.getDarkOvscnLeftColEnd(), 
 				ccd.getDarkOvscnRightColStart(), 
 				ccd.getDarkOvscnRightColEnd(),
 				overscanSize);
 		
+		int[][] corrected = result.getCorrectedFrame();
+		short[][] shortFrame = new short[corrected.length][corrected[0].length];
+		for (int i = 0; i < corrected.length; i++) {
+			for (int j = 0; j < corrected[0].length; j++) {
+				shortFrame[i][j] = (short)corrected[i][j];
+			}
+		}
+	
+		
 		// overwrite ccdFrame with corrected frame
-		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(result.getCorrectedFrame(), ccdFrame.getIntTime(), 0, 
-				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight());
+		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(shortFrame, ccdFrame.getIntTime(), 0, 
+				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), null);
 
 		setupFrameToolFrameDisplay(correctedFrame);
 		
@@ -564,6 +583,11 @@ public class FrameController implements Serializable {
 		//requestContext.update("frameDisplayForm:framePanel");
 		//requestContext.execute("drawFrame()");
 
+	} catch (Exception e) {
+		FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+		logger.error(MessageGenerator.generateMessage("generic.error"), e);
+	}
+		
 	}
 	
 
@@ -623,7 +647,7 @@ public class FrameController implements Serializable {
 
 	private MarkedSubimage calcMarkedSubimage(FloatPoint guess, int count, FloatPoint firstCentroid) {
 
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		// load up defaults for mask type
 		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();

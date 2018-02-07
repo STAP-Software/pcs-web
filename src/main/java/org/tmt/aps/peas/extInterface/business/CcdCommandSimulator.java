@@ -190,7 +190,13 @@ public class CcdCommandSimulator implements CcdCommand {
 	@Override
 	public double[] getTemperatures() throws CommunicationException {
 		// TODO Auto-generated method stub
-		return ccdTemps;
+		
+		double[] temps = new double[3];
+		temps[0] = Math.random() * 100;
+		temps[1] = Math.random() * 100;
+		temps[2] = Math.random() * 100;
+		
+		return temps;
 	}
 
 	@Override

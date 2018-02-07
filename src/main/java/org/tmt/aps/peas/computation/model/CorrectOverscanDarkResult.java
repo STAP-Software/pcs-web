@@ -2,38 +2,39 @@ package org.tmt.aps.peas.computation.model;
 
 public class CorrectOverscanDarkResult {
 
-	short[][] correctedFrame;
-	short darkMedianValueLeft;
-	short darkMedianValueRight;
+	int[][] correctedFrame;
+	int darkMedianValueLeft;
+	int darkMedianValueRight;
 	
-	public CorrectOverscanDarkResult(short[][] correctedFrame, short darkMedianValueLeft, short darkMedianValueRight) {
+	public CorrectOverscanDarkResult(int[][] correctedFrame, int darkMedianValueLeft, int darkMedianValueRight) {
 		this.correctedFrame = correctedFrame;
 		this.darkMedianValueLeft = darkMedianValueLeft;
 		this.darkMedianValueRight = darkMedianValueRight;
 	}
 
-	public short[][] getCorrectedFrame() {
+	public int[][] getCorrectedFrame() {
 		return correctedFrame;
 	}
 
-	public void setCorrectedFrame(short[][] correctedFrame) {
+	public void setCorrectedFrame(int[][] correctedFrame) {
 		this.correctedFrame = correctedFrame;
 	}
 
-	public short getDarkMedianValueLeft() {
+	public int getDarkMedianValueLeft() {
 		return darkMedianValueLeft;
 	}
 
-	public void setDarkMedianValueLeft(short darkMedianValueLeft) {
+	public void setDarkMedianValueLeft(int darkMedianValueLeft) {
 		this.darkMedianValueLeft = darkMedianValueLeft;
 	}
 
-	public short getDarkMedianValueRight() {
+	public int getDarkMedianValueRight() {
 		return darkMedianValueRight;
 	}
 
-	public void setDarkMedianValueRight(short darkMedianValueRight) {
+	public void setDarkMedianValueRight(int darkMedianValueRight) {
 		this.darkMedianValueRight = darkMedianValueRight;
 	}
-	
+
+
 }
