@@ -178,9 +178,9 @@ public class JavaComputations {
 
 	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
 		
-		for (int i=0; i< centroidMap.getFindCentroidsResult().getPeakList().length; i++) {
+		for (int i=0; i< centroidMap.getFindCentroidsResult().getRawPeakList().length; i++) {
 
-			if (centroidMap.getFindCentroidsResult().getPeakList()[i] > threshold) {
+			if (centroidMap.getFindCentroidsResult().getRawPeakList()[i] > threshold) {
 				throw new NonLinearIntensitiesException();
 			}
 

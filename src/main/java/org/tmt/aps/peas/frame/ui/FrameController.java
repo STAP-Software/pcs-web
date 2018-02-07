@@ -647,7 +647,7 @@ public class FrameController implements Serializable {
 
 	private MarkedSubimage calcMarkedSubimage(FloatPoint guess, int count, FloatPoint firstCentroid) {
 
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		// load up defaults for mask type
 		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();

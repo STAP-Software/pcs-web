@@ -366,6 +366,9 @@ public class GetFrameCentroidsExecutor {
 		String peakMapData = FloatListEncoder.encodeList(findCentroidsResult.getPeakList());
 		centroidMap.setPeakMapData(peakMapData);
 		
+		String rawPeakMapData = FloatListEncoder.encodeList(findCentroidsResult.getRawPeakList());
+		centroidMap.setRawPeakMapData(rawPeakMapData);
+		
 		float medianPeakIntensity = computationLibrary.getMedianValue(findCentroidsResult.generateGoodPeakList());
 		centroidMap.setMedianPeakIntensity(medianPeakIntensity);
 		
@@ -444,7 +447,7 @@ public class GetFrameCentroidsExecutor {
 						if (findCentroidsResult.getFoundSubimageFlags()[i] == 0 && 
 								procedure.getProcedureConfigSet().getGlobalConfig().getMirrorListInt()[i] != 0) {
 							
-							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
+							Subimage markedSubimage = new Subimage(fiResult.getPeakLocationArray()[i], 0.0f, 0.0f, 0.0f, Constants.FIND_CENT_STATUS_SUCCESS);
 							findCentroidsResult.setSubimage(i, markedSubimage);
 						}
 					}

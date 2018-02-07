@@ -168,7 +168,7 @@ public class ComputationLibraryImpl {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
-		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], 0);
+		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], (Float)result[4], 0);
 		
 		FindCentResult findCentResult = new FindCentResult(guess, subimage);
 
@@ -260,10 +260,11 @@ public class ComputationLibraryImpl {
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
 		float[] peak = new float[arrayLen];
+		float[] rawPeak = new float[arrayLen];
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
-				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
+				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -271,7 +272,7 @@ public class ComputationLibraryImpl {
 		}
 
 		
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, findCentStatus);
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
 		
 
 		// Code for findCent unit testing
@@ -2028,6 +2029,7 @@ public class ComputationLibraryImpl {
 		FloatPoint[] segmentCentroidList = new FloatPoint[NUM_SUFS_SEGMENT_SPOTS];
 		float[] segmentIntensities = new float[NUM_SUFS_SEGMENT_SPOTS];
 		float[] segmentPeaks = new float[NUM_SUFS_SEGMENT_SPOTS];
+		float[] segmentRawPeaks = new float[NUM_SUFS_SEGMENT_SPOTS];
 		int[] findCentStatuses = new int[NUM_SUFS_SEGMENT_SPOTS];
 		
 		// loop over each SUFS group segment
@@ -2040,9 +2042,10 @@ public class ComputationLibraryImpl {
 				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[maskIndex];
 				segmentIntensities[j] = findCentroidsResult.getIntensityList()[maskIndex];
 				segmentPeaks[j] = findCentroidsResult.getPeakList()[maskIndex];
+				segmentRawPeaks[j] = findCentroidsResult.getRawPeakList()[maskIndex];
 				findCentStatuses[j] = findCentroidsResult.getFindCentStatusList()[maskIndex];
 			}
-			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, findCentStatuses);
+			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, segmentRawPeaks, findCentStatuses);
 
 		}
 

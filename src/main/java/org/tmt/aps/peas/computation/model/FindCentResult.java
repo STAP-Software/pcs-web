@@ -28,7 +28,7 @@ public class FindCentResult {
 	}
 	
 	public void setCentroid(FloatPoint centroid) {
-		subimage = new Subimage(centroid, 0.0f, 0.0f, 0);
+		subimage = new Subimage(centroid, 0.0f, 0.0f, 0.0f, 0);
 	}
 	
 	public Subimage getSubimage() {

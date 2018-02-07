@@ -1430,7 +1430,7 @@ public class ProcedureController implements Serializable {
 		// call findCent on each centroid
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfigInterior());
