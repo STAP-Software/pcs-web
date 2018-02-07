@@ -190,6 +190,8 @@ public class JavaComputations {
 
 	public static float getMedianValue(float[] inputs) {
 		
+		if (inputs.length == 0 ) return 0.0f;
+		
 		// clone the array 
 		float[] values = inputs.clone();
 		
