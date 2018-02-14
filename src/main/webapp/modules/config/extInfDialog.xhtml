@@ -61,10 +61,18 @@
 			
 			// Maybe no dialog but instead the Camera Status should be "Initializing" in the header section
 			// still execute call to JSF action here
-			startSession();
+			doCheckStartSession();
 			
 		}
-		
+
+		if (ccdCheck.input.is(':checked')) {
+			
+			// Maybe no dialog but instead the Ccd Status should be "Initializing" in the header section
+			// still execute call to JSF action here
+			doCheckStartSession();
+			
+		}
+
 	}
 	
            
