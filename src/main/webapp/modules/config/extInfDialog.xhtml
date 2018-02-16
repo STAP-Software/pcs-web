@@ -38,7 +38,7 @@
 			<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
 					action="#{sessionController.doExtInfChange(true)}" oncomplete="extInfDialog.hide();waitingPopup();"   />
 					
-			<p:remoteCommand name="startSession" action="#{sessionController.doStartSession}" update=":growl :errorGrowl" />
+			<p:remoteCommand name="startSession" action="#{sessionController.doCheckStartSession}" update=":growl :errorGrowl" />
 			
 			</h:form>
 		</p:dialog> 
@@ -61,7 +61,8 @@
 			
 			// Maybe no dialog but instead the Camera Status should be "Initializing" in the header section
 			// still execute call to JSF action here
-			doCheckStartSession();
+			
+			startSession();
 			
 		}
 
@@ -69,7 +70,7 @@
 			
 			// Maybe no dialog but instead the Ccd Status should be "Initializing" in the header section
 			// still execute call to JSF action here
-			doCheckStartSession();
+			startSession();
 			
 		}
 

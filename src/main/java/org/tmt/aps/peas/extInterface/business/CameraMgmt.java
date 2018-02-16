@@ -144,8 +144,9 @@ public class CameraMgmt {
 	 *            Desired CCD shutter state (0 = closed, 1 = open) 0 or 1
 	 * @return achived CCD Shuter State (0 = closed, 1 = open)
 	 */
-	public int commandCcdShutterState(int ccdShuterState) throws Exception {
-		return extInfFactory.getCameraCommand().commandCcdShutterState(ccdShuterState);
+	public int commandCcdShutterState(int ccdShutterState) throws Exception {
+		//return extInfFactory.getCameraCommand().commandCcdShutterState(ccdShutterState);
+		return ccdShutterState;
 	}
 
 	/**
@@ -314,6 +315,8 @@ public class CameraMgmt {
 			CameraStatus cameraStatus = queryCameraStatus();
 	
 			instrument.updateState(cameraStatus);
+			
+			System.out.println("updating physical model with camera status: " + cameraStatus);
 
 			// set heartbeat status to true
 			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);

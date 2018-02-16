@@ -655,7 +655,7 @@ public class SessionController implements Serializable {
 	public void doInitCamera() {
 		
 		try {
-			
+						
 			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
 
 			// check if the camera overall status is ready
@@ -683,7 +683,7 @@ public class SessionController implements Serializable {
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
 		} finally {
-			//extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
 		}
 	}
 	
