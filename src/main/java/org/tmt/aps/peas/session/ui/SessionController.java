@@ -644,21 +644,13 @@ public class SessionController implements Serializable {
 	public void doCheckStartSession() {
 		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 			if (!cameraInitialized) {
-				cameraInitialized = doInitCamera();
-				
-				
-				if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
-					if (!ccdInitialized) {
-						ccdInitialized = true;
-						doInitCcd();
-					}
-				}
+				cameraInitialized = doInitCamera();				
 			}
 		}
 		if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
 			if (!ccdInitialized && cameraInitialized) {
-				ccdInitialized = true;
-				doInitCcd();
+				ccdInitialized = doInitCcd();
+				
 			}
 		}
 	}
@@ -705,7 +697,7 @@ public class SessionController implements Serializable {
 	}
 	
 	
-	public void doInitCcd() {
+	public boolean doInitCcd() {
 
 		try {
 			
@@ -718,6 +710,7 @@ public class SessionController implements Serializable {
 			Utils.waitForComplete(temperatureFuture);
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "CCD Initialized", ""));
 			
+			return true;
 
 		} catch (Throwable t) {
 			
@@ -730,6 +723,8 @@ public class SessionController implements Serializable {
 			}
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CCD Initialization Failed: "  + buf, ""));
+			
+			return false;
 		} finally {
 			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(false);
 		}
