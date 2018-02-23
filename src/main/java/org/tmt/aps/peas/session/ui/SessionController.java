@@ -620,6 +620,10 @@ public class SessionController implements Serializable {
 			Future<Integer> stowFuture = cameraMgmt.stowCamera();
 			
 			Utils.waitForComplete(stowFuture);
+			
+			cameraInitialized = true;
+			ccdInitialized = true;
+			
 						
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
@@ -642,10 +646,17 @@ public class SessionController implements Serializable {
 			if (!cameraInitialized) {
 				cameraInitialized = true;
 				doInitCamera();
+				
+				if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+					if (!ccdInitialized) {
+						ccdInitialized = true;
+						doInitCcd();
+					}
+				}
 			}
 		}
 		if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
-			if (!ccdInitialized) {
+			if (!ccdInitialized && cameraInitialized) {
 				ccdInitialized = true;
 				doInitCcd();
 			}
