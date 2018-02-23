@@ -665,7 +665,7 @@ public class SessionController implements Serializable {
 			CameraQueryResult queryResult = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OVERALL_STATUS);
 			
 			// if status is not ready, init camera
-			if (queryResult.getIntValue() == CameraQueryResult.NOT_READY) {
+			if (queryResult.getIntValue() != CameraQueryResult.READY) {
 			
 				// initialize camera
 				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
