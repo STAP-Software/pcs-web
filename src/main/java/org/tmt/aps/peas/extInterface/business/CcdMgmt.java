@@ -174,6 +174,7 @@ public class CcdMgmt {
 
 		try {
 			
+			
 			Future<Integer> refreshFuture = refreshCcdStatus();
 			
 			while (!refreshFuture.isDone()) {
@@ -181,6 +182,8 @@ public class CcdMgmt {
 			}
 			refreshFuture.get();
 		
+			
+			
 			Instrument instrument = physicalModel.getInstrument();
 			
 			CcdState ccdState = getCcdState();
