@@ -644,8 +644,8 @@ public class SessionController implements Serializable {
 	public void doCheckStartSession() {
 		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 			if (!cameraInitialized) {
-				cameraInitialized = true;
-				doInitCamera();
+				cameraInitialized = doInitCamera();
+				
 				
 				if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
 					if (!ccdInitialized) {
@@ -663,7 +663,7 @@ public class SessionController implements Serializable {
 		}
 	}
 	
-	public void doInitCamera() {
+	public boolean doInitCamera() {
 		
 		try {
 						
@@ -681,8 +681,11 @@ public class SessionController implements Serializable {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
 			} 
 			
+			return true;
 			
 		} catch (Throwable t) {
+			
+			t.printStackTrace();
 			
 			Throwable next = t;
 			StringBuffer buf = new StringBuffer();
@@ -693,6 +696,9 @@ public class SessionController implements Serializable {
 			}
 			
 			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
+			
+			return false;
+			
 		} finally {
 			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
 		}
