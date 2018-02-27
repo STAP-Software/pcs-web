@@ -661,6 +661,9 @@ public class SessionController implements Serializable {
 						
 			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
 
+			// wait for 2 seconds to allow pollers to complete
+			Thread.sleep(2000);
+			
 			// check if the camera overall status is ready
 			CameraQueryResult queryResult = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OVERALL_STATUS);
 			
