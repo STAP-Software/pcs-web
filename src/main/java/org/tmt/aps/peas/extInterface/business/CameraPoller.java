@@ -50,7 +50,7 @@ public class CameraPoller {
 					cameraMgmt.refreshStatus();
 				}
 				
-				if (!extInfConfigState.getExtInfConnectConfig().isCcdInitializing()) {
+				if (!extInfConfigState.getExtInfConnectConfig().isCcdInitializing() && !extInfConfigState.getExtInfConnectConfig().isCameraInitializing()) {
 
 					// refresh the CCD state
 					ccdMgmt.refreshStatus();
