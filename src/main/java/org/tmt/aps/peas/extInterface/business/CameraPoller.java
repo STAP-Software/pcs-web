@@ -19,7 +19,7 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
  */
 @Singleton
 @Startup
-@DependsOn({ "CameraMgmt", "CcdMgmt", "PeasProperties", "ExtConfigState" })
+@DependsOn({ "CameraMgmt", "CcdMgmt", "PeasProperties", "ExtInfConfigState" })
 @Lock(LockType.READ)
 public class CameraPoller {
 	@EJB

@@ -27,7 +27,7 @@ import org.tmt.aps.peas.extinf.CameraStatusListener;
  */
 @Singleton
 @Startup
-@DependsOn({ "ExtInfFactory", "PeasProperties", "ExtConfigState" })
+@DependsOn({ "ExtInfFactory", "PeasProperties", "ExtInfConfigState" })
 @Lock(LockType.READ)
 public class SimulationScheduler {
 	
