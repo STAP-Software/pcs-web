@@ -324,6 +324,8 @@ public class CameraMgmt {
 		} catch (Throwable t) {
 			// set heartbeat status to false
 			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(false);
+			logger.error(t.getMessage());
+			t.printStackTrace();
 		}
 				
 		return new AsyncResult<Boolean>(true);
