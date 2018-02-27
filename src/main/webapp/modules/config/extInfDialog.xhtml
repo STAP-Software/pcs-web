@@ -57,19 +57,11 @@
 	function waitingPopup() {
 		// popup a waiting popup if camera check is checked and execute a call to a JSF action
 		
-		if (cameraCheck.input.is(':checked')) {
+		if (cameraCheck.input.is(':checked') || ccdCheck.input.is('checked')) {
 			
 			// Maybe no dialog but instead the Camera Status should be "Initializing" in the header section
 			// still execute call to JSF action here
 			
-			startSession();
-			
-		}
-
-		if (ccdCheck.input.is(':checked')) {
-			
-			// Maybe no dialog but instead the Ccd Status should be "Initializing" in the header section
-			// still execute call to JSF action here
 			startSession();
 			
 		}
