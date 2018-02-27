@@ -13,6 +13,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
@@ -26,12 +27,14 @@ import org.tmt.aps.peas.extinf.CameraStatusListener;
  */
 @Singleton
 @Startup
-@DependsOn({ "ExtInfFactory", "PeasProperties" })
+@DependsOn({ "ExtInfFactory", "PeasProperties", "ExtConfigState" })
 @Lock(LockType.READ)
 public class SimulationScheduler {
 	
 	@EJB
 	ExtInfFactory extInfFactory;
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 
 	Logger logger = Logger.getLogger(this.getClass());
@@ -42,6 +45,9 @@ public class SimulationScheduler {
 	public void emitEvents() {
 
 		try {
+			
+			// if camera is enabled, then don't run
+			if (!extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
 			
 			CameraCommand cameraCommand = extInfFactory.getCameraCommand();
 			if (cameraCommand instanceof CameraCommandSimulator) {
@@ -89,6 +95,7 @@ public class SimulationScheduler {
 				}
 				
 				
+			}
 			}
 
 		} catch (Throwable e) {

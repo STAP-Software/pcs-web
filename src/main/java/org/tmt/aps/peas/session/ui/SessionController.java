@@ -621,8 +621,8 @@ public class SessionController implements Serializable {
 			
 			Utils.waitForComplete(stowFuture);
 			
-			cameraInitialized = true;
-			ccdInitialized = true;
+			cameraInitialized = false;
+			ccdInitialized = false;
 			
 						
 		} catch (Exception e) {
