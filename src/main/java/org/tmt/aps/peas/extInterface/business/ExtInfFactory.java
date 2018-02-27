@@ -98,8 +98,8 @@ public class ExtInfFactory {
 	/**
 	 * @return a reference to the PCS Camera RPC client, or a simulator depending on current interface connection configuration
 	 */
-	@Lock(LockType.WRITE)
-	@AccessTimeout(value=2000)  // two seconds
+	//@Lock(LockType.WRITE)
+	//@AccessTimeout(value=2000)  // two seconds
 	public CameraCommand getCameraCommand() throws Exception {
 
 		try {
