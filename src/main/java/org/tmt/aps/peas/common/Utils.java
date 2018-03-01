@@ -415,4 +415,9 @@ public class Utils {
 		return buf.toString();
 
 	}
+
+	public static FacesMessage illegalArgumentMessage(IllegalArgumentException e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, "Illegal Argument Exception: ",
+				e.getMessage());
+	}
 }

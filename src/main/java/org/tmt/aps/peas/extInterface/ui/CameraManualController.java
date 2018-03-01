@@ -690,6 +690,9 @@ public class CameraManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt X"));			
 		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+		} catch (IllegalArgumentException e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.illegalArgumentMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
