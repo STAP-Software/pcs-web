@@ -173,7 +173,7 @@ public class Utils {
 		Throwable iae = findNestedException(e, IllegalArgumentException.class);
 		if (iae != null) {
 			return new FacesMessage(FacesMessage.SEVERITY_ERROR, "Illegal Argument Exception: ",
-					e.getMessage());
+					iae.getMessage());
 		}
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
