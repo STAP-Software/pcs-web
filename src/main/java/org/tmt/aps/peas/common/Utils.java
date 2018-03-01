@@ -125,6 +125,17 @@ public class Utils {
 		}
 	}
 
+	private static Throwable findNestedException(Throwable th, Class clazz) {
+		Throwable current = th;
+		while (current != null) {
+			if (current.getClass() == clazz) {
+				return current;
+			}
+			current = current.getCause();
+		}
+		return null;
+	}
+	
 	/**
 	 * Creates a FacesMessage to print to screen indicating a database record creation success
 	 * @return the message to display
@@ -149,6 +160,21 @@ public class Utils {
 	 * @return the message to display
 	 */
 	public static FacesMessage genericErrorMessage(Throwable e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
+	}
+
+	/**
+	 * Creates a FacesMessage to print to screen indicating a generic error
+	 * @param e the exception thrown 
+	 * @return the message to display
+	 */
+	public static FacesMessage generalErrorMessage(Throwable e) {
+		Throwable iae = findNestedException(e, IllegalArgumentException.class);
+		if (iae != null) {
+			return new FacesMessage(FacesMessage.SEVERITY_ERROR, "Illegal Argument Exception: ",
+					e.getMessage());
+		}
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
@@ -416,8 +442,5 @@ public class Utils {
 
 	}
 
-	public static FacesMessage illegalArgumentMessage(IllegalArgumentException e) {
-		return new FacesMessage(FacesMessage.SEVERITY_ERROR, "Illegal Argument Exception: ",
-				e.getMessage());
-	}
+
 }
