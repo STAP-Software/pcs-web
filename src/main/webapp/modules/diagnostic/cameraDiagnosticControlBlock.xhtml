@@ -149,5 +149,20 @@
 
 	</p:panelGrid>
 
+<script>
+
+//<![CDATA[
+    		
+  // prevent auto submit of form
+  $(document).ready(function() {
+	  $('input,select').keypress(function(event) { return event.keyCode != 13; }); 
+});	
+  
+//]]>
+	
+</script>
+
+
+
 
 </ui:composition>
