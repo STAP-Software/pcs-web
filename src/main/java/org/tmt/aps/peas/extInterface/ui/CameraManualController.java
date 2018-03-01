@@ -675,7 +675,7 @@ public class CameraManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.generalErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
@@ -709,7 +709,7 @@ public class CameraManualController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.generalErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
@@ -729,7 +729,7 @@ public class CameraManualController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.generalErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
@@ -749,7 +749,7 @@ public class CameraManualController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.generalErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
@@ -769,7 +769,7 @@ public class CameraManualController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("command.failure"), e);
 			
 		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			FacesContext.getCurrentInstance().addMessage(null, Utils.generalErrorMessage(e));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
 	}
