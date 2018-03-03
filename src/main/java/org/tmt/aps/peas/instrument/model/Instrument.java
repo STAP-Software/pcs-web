@@ -160,6 +160,9 @@ public class Instrument {
 		// Galil Power State
 		camera.setGalilPowerState(cameraStatus.galilPowerState);
 		
+		// Overall Status
+		camera.setOverallStatus(cameraStatus.overallStatus);
+		
 	}
 	
 	
@@ -233,6 +236,9 @@ public class Instrument {
 		// Galil Power State
 		camera.setGalilPowerState(cameraState.getGalilPowerState());
 		
+		// Overall status
+		camera.setOverallStatus(cameraState.getOverallStatus());
+		
 		
 
 	} else {
@@ -295,6 +301,8 @@ public class Instrument {
 
 		// Galil Power State
 		camera.setGalilPowerState(CameraCommand.UNKNOWN);
+		
+		camera.setOverallStatus(CameraCommand.UNKNOWN);
 
 	}
 	}
@@ -395,6 +403,10 @@ public class Instrument {
 			camera.setTemperatureInterlock(cameraQueryResult.getState() == CameraCommand.ON);
 			break;
 		
+		case CameraCommand.DEVICE_CODE_OVERALL_STATUS: 
+			camera.setOverallStatus(cameraQueryResult.getIntValue());
+			break;
+			
 			/*
 		case CameraCommand.DEVICE_CODE_PURGE_STATE:
 			// Purge State

@@ -52,6 +52,7 @@ public class CameraState {
 	
 	private int overallPowerState;
 	private int galilPowerState;
+	private int overallStatus;
 	
 	private int tiltPlateX; // microns
 	private int tiltPlateY; // microns
@@ -99,6 +100,7 @@ public class CameraState {
 		this.glycolFlow = cameraStatus.glycolIsFlowing;
 		this.overallPowerState = cameraStatus.overallPowerState;
 		this.galilPowerState = cameraStatus.galilPowerState;
+		this.overallStatus = cameraStatus.overallStatus;
 
 		
 		this.prismWheelIsInTransit = cameraStatus.prismWheelIsInTransit;
@@ -184,7 +186,8 @@ public class CameraState {
 		// Galil Power State
 		this.galilPowerState = camera.getGalilPowerState();
 		
-
+		// Overall Status
+		this.overallStatus = camera.getOverallStatus();
 
 				
 	}
@@ -403,6 +406,14 @@ public class CameraState {
 
 	public void setGalilPowerState(int galilPowerState) {
 		this.galilPowerState = galilPowerState;
+	}
+
+	public int getOverallStatus() {
+		return overallStatus;
+	}
+
+	public void setOverallStatus(int overallStatus) {
+		this.overallStatus = overallStatus;
 	}
 
 
