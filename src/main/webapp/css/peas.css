@@ -385,3 +385,7 @@ div.btmsBreadcrumb ul li a.ui-icon {
     left: 15px !important;
 }
 
+.redText {
+	color: red;
+	padding: 10px 0px 0px 20px;
+}

@@ -7,7 +7,11 @@
 <ui:composition template="../../template.xhtml">
 
 	<ui:define name="content">
-
+	
+		<h:form>
+			<p:poll async="true" immediate="true" interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady :procedureDetailForm:miscPanel:cameraStatusPanel" />
+		</h:form>
+		
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
@@ -301,6 +305,13 @@
 							<p:spacer width="30px" />
 							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
 							<br />
+							
+							<h:panelGroup id="cameraNotReady" layout="block" >
+							<h:panelGroup layout="block" styleClass="redText" rendered="#{procedureController.cameraNotReady}">
+								<h:outputText value="Camera not ready" styleClass="redText" />
+							</h:panelGroup>
+							</h:panelGroup>
+							
 							<br />
 							<p:progressBar widgetVar="pbAjax" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated"
 								displayOnly="true" />
@@ -510,6 +521,7 @@
   $(document).ready(function() {
 	  $('input,select').keypress(function(event) { return event.keyCode != 13; }); 
 });	
+  
 
     var mousePos;
     var moving = false;

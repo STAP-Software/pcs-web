@@ -316,7 +316,7 @@ public class CameraMgmt {
 	
 			instrument.updateState(cameraStatus);
 			
-			System.out.println("updating physical model with camera status: " + cameraStatus);
+			//System.out.println("updating physical model with camera status: " + cameraStatus);
 
 			// set heartbeat status to true
 			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);

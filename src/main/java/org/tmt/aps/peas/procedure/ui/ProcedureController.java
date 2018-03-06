@@ -46,6 +46,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -58,6 +59,8 @@ import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
@@ -166,6 +169,8 @@ public class ProcedureController implements Serializable {
 	private ConstantsCache constantsCache;
 	@EJB
 	private IterationEntityCache iterationEntityCache;
+	@EJB
+	private ExtInfConfigState extInfConfigState;
 
 
 	@Inject
@@ -633,8 +638,18 @@ public class ProcedureController implements Serializable {
 			}
 		}
 
+		if (isCameraNotReady()) {
+			return false;
+		}
 		
 		return true;
+	}
+	/**
+	 * 
+	 * @return true if the camera is enabled but not ready
+	 */
+	public boolean isCameraNotReady() {
+		return !extInfConfigState.getExtInfConnectConfig().isCameraUsable(); 
 	}
 
 	public void frameSourceListener() {
@@ -830,6 +845,20 @@ public class ProcedureController implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!", ""));
 
 		}
+		
+		// if the camera is enabled but not ready, then throw an error and do not start the procedure
+		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled() &&
+				physicalModel.getInstrument().getCamera().getOverallStatus() != CameraQueryResult.READY) {
+			
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Starting Procedure, camera was not in a Ready state", ""));
+			return;
+			
+		}
+			
+			
+			
+		
 		// reset marking mode in case of hiccup in previous procedure
 		frameMarkingMode = false;
 		

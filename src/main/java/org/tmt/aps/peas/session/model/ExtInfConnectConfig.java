@@ -91,6 +91,14 @@ public class ExtInfConnectConfig {
 		this.ccdInitializing = ccdInitializing;
 	}
 
+	public boolean isCameraUsable() {
+		if (cameraEnabled) {
+			return cameraHeartbeatStatus ? (cameraInitializing ? false : true) : false;
+		}
+		return cameraHeartbeatStatus;
+		
+	}
+	
 	public String getCameraStatus() {
 		if (cameraEnabled) {
 			return cameraHeartbeatStatus ? (cameraInitializing ? "Initializing" : "Connected") : "Communication Failure";
