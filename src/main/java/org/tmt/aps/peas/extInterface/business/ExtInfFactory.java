@@ -84,7 +84,7 @@ public class ExtInfFactory {
 		try {
 
 			if (extInfConfigState.getExtInfConnectConfig().isAcsEnabled()) {
-				return getAcsCommandRemote(telescopeId);
+				return getAcsCommandRemote();
 			} else {
 				return new AcsCommandSimulator();
 			}
@@ -105,7 +105,7 @@ public class ExtInfFactory {
 		try {
 
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
-				return getCameraCommandRemote(telescopeId);
+				return getCameraCommandRemote();
 			} else {
 				return cameraCommandSimulator;
 			}
@@ -124,7 +124,7 @@ public class ExtInfFactory {
 		try {
 			
 			if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
-				return getCcdCommandRemote(telescopeId);
+				return getCcdCommandRemote();
 			} else {
 				return getCcdCommandSimulator();
 				
@@ -166,11 +166,12 @@ public class ExtInfFactory {
 	}
 
 
-	private AcsCommand getAcsCommandRemote(int telescopeId) throws Exception {
+	private AcsCommand getAcsCommandRemote() throws Exception {
 		try {
 			
 			if (acs == null) {
-				acs = new ACS(telescopeId);
+				String host = peasProperties.getProp("org.tmt.aps.peas.acsRpcServerHost").trim();
+				acs = new ACS(host);
 			}
 			
 			return acs;
@@ -180,7 +181,7 @@ public class ExtInfFactory {
 		}
 	}
 
-	private CameraCommand getCameraCommandRemote(int telescopeId) throws Exception {
+	private CameraCommand getCameraCommandRemote() throws Exception {
 		try {
 			
 			if (cameraKtl == null) {
@@ -197,7 +198,7 @@ public class ExtInfFactory {
 	
 
 
-	private CcdCommand getCcdCommandRemote(int telescopeId) throws Exception {
+	private CcdCommand getCcdCommandRemote() throws Exception {
 		try {
 			if (ccd == null) {
 				String host = peasProperties.getProp("org.tmt.aps.peas.ccdHost").trim();
@@ -218,7 +219,8 @@ public class ExtInfFactory {
 	private DcsCommand getDcsCommandRemote(int telescopeId) throws Exception {
 		try {
 			if (dcsRsk == null) {
-				dcsRsk = new DcsRsk(telescopeId);
+				String host = peasProperties.getProp("org.tmt.aps.peas.dcsRpcServerHost").trim();
+				dcsRsk = new DcsRsk(telescopeId, host);
 			}
 			return dcsRsk;
 			
