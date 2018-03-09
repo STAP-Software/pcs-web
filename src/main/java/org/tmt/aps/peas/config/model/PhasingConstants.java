@@ -29,6 +29,8 @@ public class PhasingConstants {
 	float stepSize300;
 	float stepSize1000;
 	
+	int goodEdgeCountThreshold;
+	
 	public float[] getRingMode() {
 		return ringMode;
 	}
@@ -122,6 +124,14 @@ public class PhasingConstants {
 	}
 
 	
+	public int getGoodEdgeCountThreshold() {
+		return goodEdgeCountThreshold;
+	}
+
+	public void setGoodEdgeCountThreshold(int goodEdgeCountThreshold) {
+		this.goodEdgeCountThreshold = goodEdgeCountThreshold;
+	}
+
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
@@ -139,6 +149,7 @@ public class PhasingConstants {
 		buf.append("\nstepSize100 = " + stepSize100);
 		buf.append("\nstepSize300 = " + stepSize300);
 		buf.append("\nstepSize1000 = " + stepSize1000);
+		buf.append("\ngoodEdgeCountThreshold = " + goodEdgeCountThreshold);
 		
 
 		

@@ -416,6 +416,12 @@ public class CoarsePhasingExecutor {
 
 		    statusLogger.log("procedure.cph.algorithm_complete");
 
+		    if (procedureOutput.getPhasingStatsResult().getGoodEdgeCount() < constantsCache.getPhasingConstants().getGoodEdgeCountThreshold()) {
+		    	String text = MessageGenerator.generateMessage("phasing.good_edge_warning",
+						procedureOutput.getPhasingStatsResult().getGoodEdgeCount(), constantsCache.getPhasingConstants().getGoodEdgeCountThreshold());
+		    	
+		    	userPromptMgmt.displayInfoDialog("Good Edge Count Below Threshold", text);
+		    }
 		    
 			procedureExecutionState.setPercentComplete(98);
 						
