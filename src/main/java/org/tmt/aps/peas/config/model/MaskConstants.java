@@ -14,14 +14,8 @@ public class MaskConstants {
 	FloatPoint[] fineScreenTheoreticalLocations;
 	FloatPoint[] phasingTheoreticalLocations;
 	FloatPoint[] sufsTheoreticalLocations;
-
 	
-
-	
-	
-
-	
-	
+	float maskRotationDifferenceThreshold;
 
 	
 	public FloatPoint[] getPassiveTiltTheoreticalLocations() {
@@ -62,6 +56,13 @@ public class MaskConstants {
 		this.sufsTheoreticalLocations = sufsTheoreticalLocations;
 	}
 
+	public float getMaskRotationDifferenceThreshold() {
+		return maskRotationDifferenceThreshold;
+	}
+
+	public void setMaskRotationDifferenceThreshold(float maskRotationDifferenceThreshold) {
+		this.maskRotationDifferenceThreshold = maskRotationDifferenceThreshold;
+	}
 
 	public String toString() {
 		

@@ -25,6 +25,7 @@ import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
+import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
@@ -43,7 +44,9 @@ import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -82,6 +85,10 @@ public class GetFrameCentroidsExecutor {
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
 	private ProcedureExecutionState procedureExecutionState;
+	@EJB 
+	private CentroidMapMgmt centroidMapMgmt;
+	@EJB
+	private ConstantsCache constantsCache;
 
 	private List<String> logMessages;
 
@@ -476,6 +483,37 @@ public class GetFrameCentroidsExecutor {
 							procedure.getProcedureConfigSet().getFindCentConfigInterior().getSubimageIntensityThreshold());
 					userPromptMgmt.displayInfoDialog("Subimage Intensity Warning", warningMessage);
 				}
+				
+				// display warning if image rotation from most recent ref map exceeds threshold
+				
+				RefBeamMap newestRefBeamMap = null;
+				
+				if (procedureConfig.getPupilMaskType().isPupilMaskTypeSufs()) {
+				
+					newestRefBeamMap = centroidMapMgmt.getNewestRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
+						procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
+				
+				} else {
+					newestRefBeamMap = centroidMapMgmt.getNewestRefBeamMap(physicalModel.getInstrument().getInstrumentId(), 
+							procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), -1);
+					
+				}
+				
+				
+				if (newestRefBeamMap != null) {
+					float delta = Math.abs(newestRefBeamMap.getCentroidMap().getRotation() - centroidMap.getRotation());
+					
+					float threshold = constantsCache.getMaskConstants().getMaskRotationDifferenceThreshold();
+					
+					if (delta > threshold) {
+						
+						String warningMessage = MessageGenerator.generateMessage("find_cent.image_rotation_warning",  delta);
+						userPromptMgmt.displayInfoDialog("Subimage Rotation Warning", warningMessage);
+	
+					}
+				}
+				
+				
 				// test for fracFilledThresh failed because of findCent
 				   int expectedSpotCount = 0;
 

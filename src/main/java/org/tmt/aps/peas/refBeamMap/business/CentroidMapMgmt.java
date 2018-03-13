@@ -136,6 +136,39 @@ public class CentroidMapMgmt {
 	}
 
 	/**
+	 * Returns the newest reference beam map stored in the database, for a given instrument and pupil mask type
+	 * @param instrumentId PCS1 or PCS2
+	 * @param pupilMaskTypeId the pupil mask type id
+	 * @return the reference beam map
+	 */
+	public RefBeamMap getNewestRefBeamMap(Long instrumentId, Long pupilMaskTypeId, int sufsGroupNumber) {
+
+		TypedQuery<RefBeamMap> query = em.createNamedQuery("findNewestRefBeamMap", RefBeamMap.class);
+		if (sufsGroupNumber >= 0) {
+			query = em.createNamedQuery("findNewestSufsRefBeamMap", RefBeamMap.class);
+			query.setParameter("sufsGroupNumber", sufsGroupNumber);
+		} else {
+			query = em.createNamedQuery("findNewestRefBeamMap", RefBeamMap.class);
+		}
+
+		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+
+		query.setMaxResults(1);
+		try {
+			RefBeamMap refBeamMap = query.getSingleResult();
+
+			return refBeamMap;
+
+		} catch (Exception e) {
+			logger.info("No reference beam map found.");
+			return null;
+		}
+
+	}
+	
+	
+	/**
 	 * Retrieves a subimage definition list from the database, for a telecscope and pupil mask type
 	 * @param telescopeId Keck1 or Keck2
 	 * @param pupilMaskTypeId the pupil mask type
