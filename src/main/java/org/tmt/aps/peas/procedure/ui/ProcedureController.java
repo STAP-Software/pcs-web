@@ -59,7 +59,7 @@ import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
-import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
@@ -185,6 +185,7 @@ public class ProcedureController implements Serializable {
 	private FrameController frameController;
 	@Inject
 	private AsyncController asyncController;
+	@Inject CameraManualController cameraManualController;
 
 	// need to exchange when changing from subprocedure and back
 	Procedure procedure;
@@ -649,7 +650,18 @@ public class ProcedureController implements Serializable {
 	 * @return true if the camera is enabled but not ready
 	 */
 	public boolean isCameraNotReady() {
-		return !extInfConfigState.getExtInfConnectConfig().isCameraUsable(); 
+		if (extInfConfigState.getExtInfConnectConfig().isCameraUsable()) {
+			// query overall status if ready
+			if (cameraManualController.getCamera().getOverallStatus() == CameraQueryResult.READY) {
+
+				return false;
+			} else {
+				return true;
+			}
+			
+		} else {
+			return true;
+		}
 	}
 
 	public void frameSourceListener() {
