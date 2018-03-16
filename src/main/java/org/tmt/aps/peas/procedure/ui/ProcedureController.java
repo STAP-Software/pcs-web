@@ -650,6 +650,17 @@ public class ProcedureController implements Serializable {
 	 * @return true if the camera is enabled but not ready
 	 */
 	public boolean isCameraNotReady() {
+		
+		// frame from file, always ready
+		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
+			return false;
+		}
+		
+		// if disconnected, always ready
+		if (!extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			return false;
+		}
+		
 		if (extInfConfigState.getExtInfConnectConfig().isCameraUsable()) {
 			// query overall status if ready
 			if (cameraManualController.getCamera().getOverallStatus() == CameraQueryResult.READY) {
@@ -660,7 +671,7 @@ public class ProcedureController implements Serializable {
 			}
 			
 		} else {
-			return true;
+			return false;
 		}
 	}
 
