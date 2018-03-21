@@ -103,7 +103,7 @@ public class ExtInfConnectConfig {
 		if (cameraEnabled) {
 			
 			// if initializing, we don't poll (thus no heartbeat) so Initializing state predominates			
-			return cameraInitializing ? "Initializing" : (cameraHeartbeatStatus ? "Communication Failure" : "Connected");
+			return cameraInitializing ? "Initializing" : (cameraHeartbeatStatus ? "Connected" : "Communication Failure");
 		}
 		return cameraHeartbeatStatus ? "Disconnected" : "Disconnecting";
 	}
@@ -111,7 +111,7 @@ public class ExtInfConnectConfig {
 	public String getCcdStatus() {
 		if (ccdEnabled) {
 			
-			return ccdInitializing ? "Initializing" : (ccdHeartbeatStatus ? "Communication Failure" : "Connected");
+			return ccdInitializing ? "Initializing" : (ccdHeartbeatStatus ? "Connected" : "Communication Failure");
 			
 		}
 		return ccdHeartbeatStatus ? "Disconnected" : "Disconnecting";
