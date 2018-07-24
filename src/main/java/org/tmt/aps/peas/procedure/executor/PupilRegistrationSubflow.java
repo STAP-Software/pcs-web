@@ -98,6 +98,16 @@ public class PupilRegistrationSubflow {
 					new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
 
 			
+			// Tell user that the rotation exceeds threshold (only if in PR procedure)
+			double pupilRotation = pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD;
+			double threshold = 0.0;
+			
+			if (Math.abs(pupilRotation) > threshold && procedure.getProcedureType().isPupilRegistration()) {
+				statusLogger.log("calc.pupil_rotation_exceeds_threshold", pupilRotation);  // degrees
+				String warningMessage = MessageGenerator.generateMessage("calc.pupil_rotation_exceeds_threshold", pupilRotation);
+				userPromptMgmt.displayInfoDialog("Pupil Rotation Warning", warningMessage);
+			}
+			
 		/*****************************************************/
 		/*           determine fine/coarse PR Commands       */
 		/*****************************************************/

@@ -45,6 +45,7 @@ public class PupilRegErrorConfig {
 	private float smallLargeCommandThreshold; // meters
 	private float frameOkThreshold; // mm
 	private float subProcFrameOkThreshold; // mm - used when PR called from within another procedure
+	private float pupilRotationThreshold;
 
 	public PupilRegErrorConfig() {
 		
@@ -138,6 +139,16 @@ public class PupilRegErrorConfig {
 
 	public void setSubProcFrameOkThreshold(float subProcFrameOkThreshold) {
 		this.subProcFrameOkThreshold = subProcFrameOkThreshold;
+	}
+
+
+	public float getPupilRotationThreshold() {
+		return pupilRotationThreshold;
+	}
+
+
+	public void setPupilRotationThreshold(float pupilRotationThreshold) {
+		this.pupilRotationThreshold = pupilRotationThreshold;
 	}
 
 
