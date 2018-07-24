@@ -9,19 +9,12 @@ import org.tmt.aps.peas.common.FloatPoint;
  */
 public class PrimaryMirrorSegmentConstants {
 
-	FloatPoint fineSpotCoordinates[];  
+	
 	FloatPoint sufsSpotCoordinates[];
 	float peripheralSpotPerp[];
 	float peripheralSpotParallel[];
 	float peripheralSpotTheta[];
 	
-	public FloatPoint[] getFineSpotCoordinates() {
-		return fineSpotCoordinates;
-	}
-	
-	public void setFineSpotCoordinates(FloatPoint[] fineSpotCoordinates) {
-		this.fineSpotCoordinates = fineSpotCoordinates;
-	}
 	
 	public FloatPoint[] getSufsSpotCoordinates() {
 		return sufsSpotCoordinates;
@@ -58,10 +51,6 @@ public class PrimaryMirrorSegmentConstants {
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
-		buf.append("\nfineSpotCoordinates = ");
-		for (int i=0; i<fineSpotCoordinates.length; i++) {
-			buf.append(fineSpotCoordinates[i] + ", ");
-		}
 		
 		buf.append("\nsufsSpotCoordinates = ");
 		for (int i=0; i<sufsSpotCoordinates.length; i++) {
