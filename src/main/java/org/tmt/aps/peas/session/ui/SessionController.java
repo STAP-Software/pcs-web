@@ -514,7 +514,36 @@ public class SessionController implements Serializable {
 		return lastProcedure;
 
 	}
+	
+	/**
+	 * returns the id of the next procedure in the currently viewed session, 
+	 * given the current procedure id.
+	 * @param currentProcedureId
+	 * @return
+	 */
+	public Procedure getSessionNextProcedure(Procedure currentProcedure) {
+		List<Procedure> pList = session.getProcedureList(); // the currently viewed session
 
+		if (pList == null || pList.size() == 0) {
+			return null;
+		}
+				
+		boolean returnNext = false;
+		for (Procedure procedure : pList) {
+			if (returnNext) {
+				return procedure;
+			}
+			
+			Long candidateId = procedure.getProcedureId();
+			if (candidateId.longValue() == currentProcedure.getProcedureId().longValue()) {
+				returnNext = true;
+			}
+			
+		}
+
+		return null;
+	}
+	
 	/**
 	 * JSF event listener called when the User mode button is clicked
 	 * Pops up the login dialog

@@ -1030,6 +1030,15 @@ public class ProcedureController implements Serializable {
 	}
 
 	/**
+	 * view the next archived procedure
+	 */
+	public String doViewNextArchivedProcedure() {
+		Procedure nextProcedure = sessionController.getSessionNextProcedure(procedure);
+		procedure = nextProcedure;
+		return doViewArchivedProcedure();
+	}
+		
+	/**
 	 * JSF Action method to bring up an archived procedure for viewing
 	 * Loads up the procedure, the procedure output, all FITS frames and visualization displays
 	 * @return the JSF page to view a procedure
@@ -1101,7 +1110,10 @@ public class ProcedureController implements Serializable {
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 					+ procedure.getProcedureType().getProcedureTypeName(),
 					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
-
+			
+			if (sessionController.getSessionNextProcedure(procedure) != null) {
+				breadcrumbMenuBean.addItem("Next Procedure", "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true&test=1");
+			}
 			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
