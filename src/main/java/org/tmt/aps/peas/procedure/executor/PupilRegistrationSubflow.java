@@ -180,9 +180,9 @@ public class PupilRegistrationSubflow {
 		
 		// return false if we need to take a new frame
 		// if the error was > thresh (10 mm)and a move was performed, then return false
-		float frameOkThreshold = procedure.getProcedureType().isPupilRegistration() ?
-				procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold() :
-					procedure.getProcedureConfigSet().getPupilRegErrorConfig().getSubProcFrameOkThreshold();
+		float frameOkThreshold = 
+				procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
+					
 	
 		logger.info("frameOkThreshold = " + frameOkThreshold);
 		if ((Math.abs(regErrorMm.x) > frameOkThreshold || Math.abs(regErrorMm.y) > frameOkThreshold) && commandsSent) {
