@@ -6,5 +6,24 @@ package org.tmt.aps.peas.procedure.exception;
  *
  */
 public class NonLinearIntensitiesException extends FandIException {
+	
+	float max;
+	float threshold;
+	
+	public NonLinearIntensitiesException(float max, float threshold) {
+		this.max = max;
+		this.threshold = threshold;
+	}
+	
+	public float getMax() {
+		return max;
+	}
+
+	public float getThreshold() {
+		return threshold;
+	}
+
+	
+	
 
 }

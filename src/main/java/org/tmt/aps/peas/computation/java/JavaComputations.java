@@ -178,12 +178,10 @@ public class JavaComputations {
 
 	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
 		
-		for (int i=0; i< centroidMap.getFindCentroidsResult().getRawPeakList().length; i++) {
-
-			if (centroidMap.getFindCentroidsResult().getRawPeakList()[i] > threshold) {
-				throw new NonLinearIntensitiesException();
-			}
-
+		float max = calcMax(centroidMap.getFindCentroidsResult().getRawPeakList());
+		
+		if (max > threshold) {
+			throw new NonLinearIntensitiesException(max, (float)threshold);
 		}
 
 	}
@@ -425,6 +423,16 @@ public class JavaComputations {
 		}
 		return max;
 	}
+	
+	public static float calcMax(float[] input) {
+		// sum absolute values of inputs
+		float max = 0.0f;
+		for (int i=0; i<input.length; i++) {
+			max = Math.max(max, input[i]);
+		}
+		return max;
+	}
+	
 	
 	public static float calcRss(float[] input, int[] useValue) {
 		// sum absolute values of inputs for which useValue = 1
