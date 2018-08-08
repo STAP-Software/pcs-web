@@ -28,7 +28,8 @@ import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraKtl;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
-import org.tmt.aps.peas.extinf.DcsRsk;
+//import org.tmt.aps.peas.extinf.DcsRsk;
+import org.tmt.aps.peas.extinf.DcsKtl;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 
 /**
@@ -58,7 +59,8 @@ public class ExtInfFactory {
 	CameraCommandSimulator cameraCommandSimulator;
 
 	CameraKtl cameraKtl = null;
-	DcsRsk dcsRsk = null;
+	//DcsRsk dcsRsk = null;
+	DcsKtl dcsKtl = null;
 	CCD ccd = null;
 	ACS acs = null;
 	
@@ -160,7 +162,8 @@ public class ExtInfFactory {
 	 */
 	public void resetAll() {
 		acs = null;
-		dcsRsk = null;
+		//dcsRsk = null;
+		dcsKtl = null;
 		cameraKtl = null;
 		ccd = null;
 	}
@@ -218,11 +221,11 @@ public class ExtInfFactory {
 	
 	private DcsCommand getDcsCommandRemote(int telescopeId) throws Exception {
 		try {
-			if (dcsRsk == null) {
+			if (dcsKtl == null) {
 				String host = peasProperties.getProp("org.tmt.aps.peas.dcsRpcServerHost").trim();
-				dcsRsk = new DcsRsk(telescopeId, host);
+				dcsKtl = new DcsKtl(telescopeId, host);
 			}
-			return dcsRsk;
+			return dcsKtl;
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Dcs Command Exception:: ", e);
