@@ -757,7 +757,8 @@ public class ProcedureExecutionMgmt {
 			// reload FI Config Defaults when pupil mask changes
 			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(instrumentId, 
 					selectedMask.getPupilMaskType().getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), ccdType.getCcdTypeId());
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), ccdType.getCcdTypeId(),
+					procedure.getProcedureType().isPupilRegistration());
 		
 			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
 		}

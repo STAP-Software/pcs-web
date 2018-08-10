@@ -27,11 +27,12 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @NamedQueries({ @NamedQuery(name = "findByMaskTypeAndInstrument", query = "SELECT o from FIConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
 		+ "INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t "
 		+ "where p.pupilMaskTypeId = :pupilMaskTypeId and i.instrumentId = :instrumentId and "
-		+ "t.ccdTypeId = :ccdTypeId and o.lightSource = :lightSource") })
+		+ "t.ccdTypeId = :ccdTypeId and o.lightSource = :lightSource and o.pupilRegProcFlg = :pupilRegProcFlg") })
 public class FIConfigDefaults extends FIConfig {
 
 	
 	private int lightSource;
+	private boolean pupilRegProcFlg;
 
 	@ManyToOne
 	@JoinColumn(name = "pupilMaskTypeId")
@@ -51,6 +52,14 @@ public class FIConfigDefaults extends FIConfig {
 
 	public void setLightSource(int lightSource) {
 		this.lightSource = lightSource;
+	}
+
+	public boolean isPupilRegProcFlg() {
+		return pupilRegProcFlg;
+	}
+
+	public void setPupilRegProcFlg(boolean pupilRegProcFlg) {
+		this.pupilRegProcFlg = pupilRegProcFlg;
 	}
 
 

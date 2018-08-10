@@ -72,12 +72,13 @@ public class GlobalConfigMgmt {
 	 * @param lightSource star or reference beam
 	 * @return the find and identify computation configuration default values
 	 */
-	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource, Long ccdTypeId) {
+	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource, Long ccdTypeId, boolean pupilRegProcFlg) {
 		TypedQuery<FIConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("lightSource", lightSource);
 		query.setParameter("ccdTypeId", ccdTypeId);
+		query.setParameter("pupilRegProcFlg", pupilRegProcFlg);
 		
 		query.setMaxResults(1);
 		
