@@ -55,18 +55,6 @@
 		
 		
 		
-		<h:outputLabel value="Shutter" />
-		<h:panelGroup id="shutterCommandGroup">
-			<p:selectOneMenu value="#{cameraManualController.shutterCmd}" style="top:2px" >
-				<f:selectItem itemLabel="Open" itemValue="1" />
-				<f:selectItem itemLabel="Close" itemValue="2" />
-				<f:selectItem itemLabel="Timed Exposure" itemValue="3" />
-				<p:ajax update="shutterCommandGroup" />
-			</p:selectOneMenu>
-			<h:outputText value="&#160;&#160;&#160;&#160;Exposure Time (sec) &#160;&#160;" rendered="#{cameraManualController.renderExposureTime}" />
-			<p:inputText value="#{cameraManualController.ccdExposureTime}" size="5" rendered="#{cameraManualController.renderExposureTime}" />
-		</h:panelGroup>
-		<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendShutterCommand}" update=":growl :errorGrowl" style="top:8px" />
 		
 		
 		<h:outputLabel value="Fine Pupil Adj (microns)" />

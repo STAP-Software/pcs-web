@@ -171,7 +171,7 @@ public class ReadyCameraSubflow {
 
 			// open shutter
 			// FIXME: remove this call when all shutter usage is deprecated
-			cameraMgmt.commandCcdShutterState(CameraCommand.OPEN);
+			//cameraMgmt.commandCcdShutterState(CameraCommand.OPEN);
 
 			
 			// wait for all commands to complete

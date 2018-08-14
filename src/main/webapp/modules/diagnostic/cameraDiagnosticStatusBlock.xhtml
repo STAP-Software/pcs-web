@@ -82,21 +82,6 @@
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((7).intValue())}" update="refBeamValue refBeamStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[7] eq 4}"  styleClass="thinButton"/>
 
-		<h:outputLabel value="Shutter" />
-		<h:outputText id="shutterValue" value="#{cameraManualController.camera.shutter.shutterDisplayString}" style="position:relative; top:2px" />
-		<h:outputText id="shutterStatus" value="#{cameraManualController.camera.shutter.rawStateDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[6]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="6"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[6] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((6).intValue())}" update="shutterValue shutterStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[6] eq 4}"  styleClass="thinButton"/>
-
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
 		<h:outputLabel value="Fine Pupil Adj (x) (#{fieldMetaData.units})" />

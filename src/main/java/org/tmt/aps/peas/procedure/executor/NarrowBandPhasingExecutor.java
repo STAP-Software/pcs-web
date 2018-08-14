@@ -596,7 +596,7 @@ public class NarrowBandPhasingExecutor {
 			
 			// close shutter
 			// FIXME: remove this call when all shutter usage is deprecated
-			cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
 
 	
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
