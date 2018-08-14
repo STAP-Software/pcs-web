@@ -100,7 +100,7 @@ public class PupilRegistrationSubflow {
 			
 			// Tell user that the rotation exceeds threshold (only if in PR procedure)
 			double pupilRotation = pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD;
-			double threshold = 0.0;
+			double threshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getPupilRotationThreshold();
 			
 			if (Math.abs(pupilRotation) > threshold && procedure.getProcedureType().isPupilRegistration()) {
 				statusLogger.log("calc.pupil_rotation_exceeds_threshold", pupilRotation);  // degrees
