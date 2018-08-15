@@ -1586,6 +1586,7 @@ public class ProcedureController implements Serializable {
 	 */
 	public void doSetMarkedDisplayMode(boolean setting) {
 		
+		
 		markedDisplayMode = setting;
 		
 		try {
