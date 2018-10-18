@@ -33,8 +33,11 @@ public class FIConfig {
 	private Long fiConfigId;
 
 
-	private float horizSubimageSpacing;
-	private float horizSubimageCount;
+	//private float horizSubimageSpacing;
+	//private float horizSubimageCount;
+	private float uEst;
+	private float uDelta0;
+	
 
 	private int matchbox;
 	private int nThresh0;
@@ -77,21 +80,20 @@ public class FIConfig {
 		this.fiConfigId = fiConfigId;
 	}
 
-
-	public float getHorizSubimageSpacing() {
-		return horizSubimageSpacing;
+	public float getuEst() {
+		return uEst;
 	}
 
-	public void setHorizSubimageSpacing(float horizSubimageSpacing) {
-		this.horizSubimageSpacing = horizSubimageSpacing;
+	public void setuEst(float uEst) {
+		this.uEst = uEst;
 	}
 
-	public float getHorizSubimageCount() {
-		return horizSubimageCount;
+	public float getuDelta0() {
+		return uDelta0;
 	}
 
-	public void setHorizSubimageCount(float horizSubimageCount) {
-		this.horizSubimageCount = horizSubimageCount;
+	public void setuDelta0(float uDelta0) {
+		this.uDelta0 = uDelta0;
 	}
 
 	public int getMatchbox() {
@@ -219,8 +221,8 @@ public class FIConfig {
 		
 			StringBuffer buf = new StringBuffer();
 			buf.append("FIConfig:");
-			buf.append("\nhorizSubimageSpacing = " + horizSubimageSpacing);
-			buf.append("\nhorizSubimageCount = " + horizSubimageCount);
+			buf.append("\nuEst = " + uEst);
+			buf.append("\nuDelta0 = " + uDelta0);
 			buf.append("\nmatchbox = " + matchbox);
 			buf.append("\nnThresh0 = " + nThresh0);
 			buf.append("\nmatchFineThresh = " + matchFineThresh);
