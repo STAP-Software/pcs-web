@@ -486,7 +486,8 @@ public class ComputationLibraryImpl {
 		// store scalars
 		fiResult.setNumFilledBoxes((Integer) output[0]);
 		fiResult.setFracFilledBoxes((Float) output[1]);
-		fiResult.setnSolution((Integer) output[2]);
+		fiResult.setFracFilledAnalysisBoxes((Float)(output[2]));
+		fiResult.setnSolution((Integer) output[3]);
 		
 		
 

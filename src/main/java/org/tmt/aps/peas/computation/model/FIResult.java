@@ -31,6 +31,7 @@ public class FIResult {
 	
 	int numFilledBoxes;
 	float fracFilledBoxes;
+	float fracFilledAnalysisBoxes;
 	int nSolution;
 	
 	boolean handMarked = false;
@@ -225,6 +226,14 @@ public class FIResult {
 
 	public void setFracFilledBoxes(float fracFilledBoxes) {
 		this.fracFilledBoxes = fracFilledBoxes;
+	}
+
+	public float getFracFilledAnalysisBoxes() {
+		return fracFilledAnalysisBoxes;
+	}
+
+	public void setFracFilledAnalysisBoxes(float fracFilledAnalysisBoxes) {
+		this.fracFilledAnalysisBoxes = fracFilledAnalysisBoxes;
 	}
 
 	public int getnSolution() {
