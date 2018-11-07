@@ -139,9 +139,11 @@ public class SufsExecutor {
 		Future<Exception> dcsTelMoveFuture = null;
 
 		boolean telescopeMoved = false;
+		FloatPoint telescopeMoveAzEl = null;
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+
 		try {
 
-			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 			SufsCoarseOffsetsConfig sufsCoarseOffsetsConfig = procedure.getProcedureConfigSet().getSufsCoarseOffsetsConfig();
 			CentroidOffsetsConfig centroidOffsetsConfig = procedure.getProcedureConfigSet().getCentroidOffsetsConfig();
@@ -231,7 +233,7 @@ public class SufsExecutor {
 			/**********************************************/
 
 			// determine telescope moves given coarse offsets
-			FloatPoint telescopeMoveAzEl = computationLibrary.coarseOffsetsToTelMoves(
+			telescopeMoveAzEl = computationLibrary.coarseOffsetsToTelMoves(
 					sufsCoarseOffsetsConfig.getCoarseMirrorOffsetCurrent(), constantsCache.getTelescopeConstants().getTelPerCoarseMotion());
 
 			// Auto point logic
@@ -400,6 +402,7 @@ public class SufsExecutor {
 					// send out the negative of the previous commands
 					dcsTelMoveFuture = dcsMgmt.commandTelescopeDeltasAsync(telescopeMoveAzEl.prod(-1.0).asDoubleArray());
 
+					telescopeMoved = false;
 				}
 
 			}
@@ -502,11 +505,42 @@ public class SufsExecutor {
 			procedureExecutionState.setPercentComplete(100);
 
 		} catch (Throwable e) {
+			
+			try {
+			
+				// restore telescope
+				if (telescopeMoved) {
+	
+					statusLogger.log("telescope.desired_move", -telescopeMoveAzEl.x, -telescopeMoveAzEl.y);
+					statusLogger.log("telescope.cmd.start");
+	
+					// send out the negative of the previous commands
+					dcsMgmt.commandTelescopeDeltas(telescopeMoveAzEl.prod(-1.0).asDoubleArray());
+	
+				}
+			
+
+				if (procedureConfig.getLightSource() == ProcedureConfig.LIGHT_SOURCE_LED) {
+					// turn off reference beams - need to wait for response
+					Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(CameraCommand.OFF);
+					procedureExecutionState.setPercentComplete(99);
+					long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
+					statusLogger.log("camera.cmd.complete", waitPeriodMs / 1000.0);
+				}
+	
+			} catch (Exception ex) {
+				statusLogger.log("procedure.exception", ex.getMessage());
+			}
+			
+			
 			procedureExecutionMgmt.handleProcedureException(procedure, e);
-		}
+		} 
 
 		statusLogger.log("procedure.saving");
 		procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
 	}
 
+	
+	
+	
 }
