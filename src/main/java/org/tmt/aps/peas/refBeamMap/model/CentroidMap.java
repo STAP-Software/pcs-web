@@ -56,7 +56,8 @@ public class CentroidMap {
 	float translationY;
 	float fourierQuality;
 	int numFilledBoxes;
-	float fracFilledBoxes;
+	float fracFilledBoxes;	
+	float fracFilledAnalysisBoxes;
 	Float medianPeakIntensity;
 	
 	@Column
@@ -230,6 +231,14 @@ public class CentroidMap {
 
 	public void setFracFilledBoxes(float fracFilledBoxes) {
 		this.fracFilledBoxes = fracFilledBoxes;
+	}
+
+	public float getFracFilledAnalysisBoxes() {
+		return fracFilledAnalysisBoxes;
+	}
+
+	public void setFracFilledAnalysisBoxes(float fracFilledAnalysisBoxes) {
+		this.fracFilledAnalysisBoxes = fracFilledAnalysisBoxes;
 	}
 
 	public String getIntensityMapData() {
