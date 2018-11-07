@@ -396,6 +396,7 @@ public class GetFrameCentroidsExecutor {
 		centroidMap.setTranslationY(fiResult.getTranslation().getY());
 		centroidMap.setNumFilledBoxes(fiResult.getNumFilledBoxes());
 		centroidMap.setFracFilledBoxes(fiResult.getFracFilledBoxes());
+		centroidMap.setFracFilledAnalysisBoxes(fiResult.getFracFilledAnalysisBoxes());
 		
 		centroidMap.setEmptyBoxCount(fiResult.getN0123()[0]);
 		centroidMap.setSingleDetectBoxCount(fiResult.getN0123()[1]);
