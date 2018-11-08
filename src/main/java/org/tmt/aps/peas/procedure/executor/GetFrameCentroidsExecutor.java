@@ -240,6 +240,11 @@ public class GetFrameCentroidsExecutor {
 					fiConfig.getFracFilledThresh()));
 		}
 
+		if (e.isFracThreshExceeded()) {
+			buf.append(MessageGenerator.generateMessage("fandi.frac_analysis_vs_threshold", fiResult.getFracFilledAnalysisBoxes(),
+					fiConfig.getFracFilledAnalysisThresh()));
+		}
+
 		if (e.isFracThreshExceededFindCent()) {
 			buf.append(MessageGenerator.generateMessage("find_cent.frac_vs_threshold", e.getFracThreshExceededFindCent(),
 					fiConfig.getFracFilledThresh()));
@@ -266,7 +271,7 @@ public class GetFrameCentroidsExecutor {
 			throw new AbortProcedureException("User Aborted Test");
 		} else if (response == UserPrompt.PROMPT_VALUE_FLOW_CONTROL_CONTINUE) {
 
-			if (e.isFracThreshExceededPT()) {
+			if (e.isFracThreshExceededPT() || e.isFracAnalysisThreshExceededPT()) {
 				handleHandMarking();
 			} else {
 			

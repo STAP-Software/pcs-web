@@ -528,6 +528,16 @@ public class ComputationLibraryImpl {
 			}
 		
 		}
+		
+		if (fiResult.getFracFilledAnalysisBoxes() < fiConfig.getFracFilledAnalysisThresh()) {
+			userAssistException.setFracAnalysisThreshExceeded(true);
+		
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
+				userAssistException.setFracAnalysisThreshExceededPT(true);
+			}
+		
+		}
+
 
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
 			userAssistException.setFourierThreshExceeded(true);

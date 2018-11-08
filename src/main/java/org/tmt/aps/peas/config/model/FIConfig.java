@@ -51,6 +51,7 @@ public class FIConfig {
 	private boolean forceRotation;
 	
 	private float fracFilledThresh;
+	private float fracFilledAnalysisThresh;
 	private float fourierQualityThresh;
 	
 	private float forceRotationValue;
@@ -174,6 +175,14 @@ public class FIConfig {
 
 	public void setFracFilledThresh(float fracFilledThresh) {
 		this.fracFilledThresh = fracFilledThresh;
+	}
+
+	public float getFracFilledAnalysisThresh() {
+		return fracFilledAnalysisThresh;
+	}
+
+	public void setFracFilledAnalysisThresh(float fracFilledAnalysisThresh) {
+		this.fracFilledAnalysisThresh = fracFilledAnalysisThresh;
 	}
 
 	public float getFourierQualityThresh() {
