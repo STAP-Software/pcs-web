@@ -240,7 +240,7 @@ public class GetFrameCentroidsExecutor {
 					fiConfig.getFracFilledThresh()));
 		}
 
-		if (e.isFracThreshExceeded()) {
+		if (e.isFracAnalysisThreshExceeded()) {
 			buf.append(MessageGenerator.generateMessage("fandi.frac_analysis_vs_threshold", fiResult.getFracFilledAnalysisBoxes(),
 					fiConfig.getFracFilledAnalysisThresh()));
 		}
