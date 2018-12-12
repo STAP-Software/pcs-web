@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -32,11 +33,15 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
+import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.visualization.business.GraphicDisplayMgmt;
@@ -78,6 +83,8 @@ public class CenterTelescopeExecutor {
 	private CameraPoller cameraPoller;
 	@EJB
 	private ReadyCameraSubflow readyCameraSubflow;
+	@EJB
+	private CentroidMapMgmt centroidMapMgmt;
 	
 	private List<String> logMessages;
 
@@ -135,9 +142,18 @@ public class CenterTelescopeExecutor {
 			// setup procedure output logging
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);			
 			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+			
 			statusLogger.log("frame.get");
 
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, procedure.getProcedureType(), 
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.getProcedureCcdFrame(procedureConfig, 
+					procedure.getProcedureConfigSet().getFrameCorrectionConfig(),
+					procedure.getProcedureType(), 
 					procedure.getProcedureNumber(), 
 					0, 0, procedureConfig.getIntegrationTime(), 
 					physicalModel.getInstrument().getCcd().getAllHotPixelRects(), 
@@ -181,9 +197,15 @@ public class CenterTelescopeExecutor {
 			PupilMask mask = procedureConfig.getPupilMask();
 			logger.debug("mask = " + mask);
 						
-			// get Az, El deltas
-			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f, ccdFrame.getAxes2()/2.0f);
-			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, mask.getSecPerPixel());
+			// get most recent ref map - we want the center of the star to be coincident with the center of the ref maps
+			RefBeamMap currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(),
+					PupilMaskType.PUPIL_MASK_TYPE_ID_508, FilterType.FILTER_TYPE_ID_611, -1);
+
+			FloatPoint refMapTranslation = new FloatPoint(currentRefMap.getCentroidMap().getTranslationX(), currentRefMap.getCentroidMap().getTranslationY());
+			
+			// get Az, El deltas.  The desired location is the center of the ref map
+			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f + refMapTranslation.x, ccdFrame.getAxes2()/2.0f + refMapTranslation.y);
+			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, startupComputationsResult.getArcsecPerPixel());
 			
 			procedureExecutionState.setPercentComplete(90);
 			
@@ -209,6 +231,10 @@ public class CenterTelescopeExecutor {
 		        long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
 
 			procedureExecutionState.setPercentComplete(95);
 			

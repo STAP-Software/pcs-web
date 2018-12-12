@@ -125,6 +125,17 @@ public class Utils {
 		}
 	}
 
+	private static Throwable findNestedException(Throwable th, Class clazz) {
+		Throwable current = th;
+		while (current != null) {
+			if (current.getClass() == clazz) {
+				return current;
+			}
+			current = current.getCause();
+		}
+		return null;
+	}
+	
 	/**
 	 * Creates a FacesMessage to print to screen indicating a database record creation success
 	 * @return the message to display
@@ -149,6 +160,21 @@ public class Utils {
 	 * @return the message to display
 	 */
 	public static FacesMessage genericErrorMessage(Throwable e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
+				Utils.createExceptionMessage(e) + "\nCheck logs for details");
+	}
+
+	/**
+	 * Creates a FacesMessage to print to screen indicating a generic error
+	 * @param e the exception thrown 
+	 * @return the message to display
+	 */
+	public static FacesMessage generalErrorMessage(Throwable e) {
+		Throwable iae = findNestedException(e, IllegalArgumentException.class);
+		if (iae != null) {
+			return new FacesMessage(FacesMessage.SEVERITY_ERROR, "Illegal Argument Exception: ",
+					iae.getMessage());
+		}
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("generic.error"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
 	}
@@ -216,9 +242,14 @@ public class Utils {
 	 * @param e the exception thrown by the procedure
 	 * @return the message to display
 	 */
-	public static FacesMessage procedureFailedMessage(Throwable e) {
+	public static FacesMessage procedureFailedMessageCheckLogs(Throwable e) {
 		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
 				Utils.createExceptionMessage(e) + "\nCheck logs for details");
+	}
+
+	public static FacesMessage procedureFailedMessage(Throwable e) {
+		return new FacesMessage(FacesMessage.SEVERITY_ERROR, MessageGenerator.generateMessage("procedure.failure"),
+				Utils.createExceptionMessage(e));
 	}
 
 	/**
@@ -410,4 +441,6 @@ public class Utils {
 		return buf.toString();
 
 	}
+
+
 }

@@ -41,6 +41,7 @@ import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FIResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
@@ -54,6 +55,8 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
+import org.tmt.aps.peas.computation.model.RemoveBadPixelsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.computation.model.SufsCentroidStatsResult;
 import org.tmt.aps.peas.computation.model.SufsSegmentCentroidsResult;
@@ -71,6 +74,7 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -98,12 +102,14 @@ import org.tmt.aps.peas.lang.interop.JnbAnalyzeFilterSequence;
 import org.tmt.aps.peas.lang.interop.JnbAnalyzeFrame;
 import org.tmt.aps.peas.lang.interop.JnbAnalyzeStepSequence;
 import org.tmt.aps.peas.lang.interop.JoptimalPistons;
+import org.tmt.aps.peas.lang.interop.JremoveAllDynamicBadPixels;
 import org.tmt.aps.peas.lang.interop.JremoveBadPixels;
 import org.tmt.aps.peas.lang.interop.JsufsOffsetsToZernikes;
 import org.tmt.aps.peas.lang.interop.JterraceModeComponents;
 import org.tmt.aps.peas.lang.interop.JttOffsetsToActs;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.CcdLeftRightBiasException;
 import org.tmt.aps.peas.procedure.exception.HandMarkRequiredException;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
 import org.tmt.aps.peas.procedure.exception.UserAssistRequiredException;
@@ -162,7 +168,7 @@ public class ComputationLibraryImpl {
 
 		FloatPoint centroid = new FloatPoint((Float) result[0], (Float) result[1]);
 		
-		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], 0);
+		Subimage subimage = new Subimage(centroid, (Float)result[2], (Float)result[3], (Float)result[4], 0);
 		
 		FindCentResult findCentResult = new FindCentResult(guess, subimage);
 
@@ -254,10 +260,11 @@ public class ComputationLibraryImpl {
 		float[] y_cent = new float[arrayLen];
 		float[] intensity = new float[arrayLen];
 		float[] peak = new float[arrayLen];
+		float[] rawPeak = new float[arrayLen];
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
-				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, findCentStatus);
+				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -265,7 +272,7 @@ public class ComputationLibraryImpl {
 		}
 
 		
-		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, findCentStatus);
+		FindCentroidsResult findCentroidsResult = new FindCentroidsResult(x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
 		
 
 		// Code for findCent unit testing
@@ -328,49 +335,81 @@ public class ComputationLibraryImpl {
 	}
 
 	/**
-	 * Correct for bad pixels in the CCD image.  This method calls the FORTRAN function in removeBadPixels.f90.
+	 * Correct for bad pixels in the CCD image.  This method calls the FORTRAN function in removeBadPixels.f90 and removeDynamicBadPixels.f90
 	 * 
 	 * @param frame Input CCD array
 	 * @param badPixelList list of rectangles specifying all bad pixels and/or bad columns
 	 * @return output CCD array with corrected bad pixels
 	 */
-	public int[][] removeBadPixels(int[][] frame, List<Rect> badPixelList) throws ComputationException {
+	public RemoveBadPixelsResult removeBadPixels(int[][] frame, List<Rect> badPixelList, boolean removeBadPixels, float indexThreshold, int intensityThreshold,
+			int badPixelIterationLimit) throws ComputationException {
 
 		logger.info(MessageGenerator.generateMessage("computation.start", "removeBadPixels"));
 
-		int[] x1 = new int[badPixelList.size()];
-		int[] x2 = new int[badPixelList.size()];
-		int[] y1 = new int[badPixelList.size()];
-		int[] y2 = new int[badPixelList.size()];
+		int[][] staticBadPixelCorrectedFrame = frame;
+		
+		if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
 
-		logger.debug("removeBadPixels:: ");
-		int i = 0;
-		for (Rect rect : badPixelList) {
-			logger.debug(rect);
-			x1[i] = rect.p1.x;
-			y1[i] = rect.p1.y;
-			x2[i] = rect.p2.x;
-			y2[i] = rect.p2.y;
-			i++;
+			int[] x1 = new int[badPixelList.size()];
+			int[] x2 = new int[badPixelList.size()];
+			int[] y1 = new int[badPixelList.size()];
+			int[] y2 = new int[badPixelList.size()];
+	
+			logger.debug("removeBadPixels:: ");
+			int i = 0;
+			for (Rect rect : badPixelList) {
+				logger.debug(rect);
+				x1[i] = rect.p1.x;
+				y1[i] = rect.p1.y;
+				x2[i] = rect.p2.x;
+				y2[i] = rect.p2.y;
+				i++;
+			}
+	
+			JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
+			RetVal retVal = new RetVal();
+	
+			// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+	
+			staticBadPixelCorrectedFrame = new int[frame.length][frame[0].length];
+	
+			Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, staticBadPixelCorrectedFrame);
+	
+			if (retVal.getCode() > 0) {
+				statusLogger.log(retVal);
+				throw new ComputationException("Bad Pixel remove error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+			}
+
 		}
-
-		JremoveBadPixels jremoveBadPixels = new JremoveBadPixels();
+		
+		JremoveAllDynamicBadPixels jremoveAllDynamicBadPixels = new JremoveAllDynamicBadPixels();
+		
 		RetVal retVal = new RetVal();
 
-		// add one to each guess to acccount for fortran indicies starting at 1, not zero.
+		int[][] finalCorrectedFrame = new int[frame.length][frame[0].length];
+		int[] badPixelLocationsX = new int[2000];
+		int[] badPixelLocationsY = new int[2000];
 
-		int[][] arrayOut = new int[frame.length][frame[0].length];
-
-		Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, arrayOut);
-
+		Object[] result = jremoveAllDynamicBadPixels.jremoveAllDynamicBadPixels(retVal, staticBadPixelCorrectedFrame, removeBadPixels ? 1 : 0, indexThreshold, intensityThreshold, 
+				badPixelIterationLimit, finalCorrectedFrame, badPixelLocationsX, badPixelLocationsY);
+			
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("Bad Pixel remove error. "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 
+		int badPixelCount = (Integer)result[0];
+		
+		boolean allBadPixelsFound = ((Integer)result[1]) == 1 ? true : false;
+		
+		// truncate badPixelLocations arrays to badPixelCount size
+		int[] badLocationsTruncatedX = Arrays.copyOf(badPixelLocationsX, badPixelCount);
+		int[] badLocationsTruncatedY = Arrays.copyOf(badPixelLocationsY, badPixelCount);
+		
+				
 		logger.info(MessageGenerator.generateMessage("computation.success", "removeBadPixels"));
 
-		return arrayOut;
+		return new RemoveBadPixelsResult(finalCorrectedFrame, badLocationsTruncatedX, badLocationsTruncatedY, badPixelCount, removeBadPixels, allBadPixelsFound);
 
 	}
 
@@ -447,7 +486,8 @@ public class ComputationLibraryImpl {
 		// store scalars
 		fiResult.setNumFilledBoxes((Integer) output[0]);
 		fiResult.setFracFilledBoxes((Float) output[1]);
-		fiResult.setnSolution((Integer) output[2]);
+		fiResult.setFracFilledAnalysisBoxes((Float)(output[2]));
+		fiResult.setnSolution((Integer) output[3]);
 		
 		
 
@@ -488,6 +528,16 @@ public class ComputationLibraryImpl {
 			}
 		
 		}
+		
+		if (fiResult.getFracFilledAnalysisBoxes() < fiConfig.getFracFilledAnalysisThresh()) {
+			userAssistException.setFracAnalysisThreshExceeded(true);
+		
+			if (procedureConfig.getPupilMaskType().isPupilMaskTypePt()) {
+				userAssistException.setFracAnalysisThreshExceededPT(true);
+			}
+		
+		}
+
 
 		if (fiResult.getFourierQuality() < fiConfig.getFourierQualityThresh()) {
 			userAssistException.setFourierThreshExceeded(true);
@@ -1011,12 +1061,12 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if there is a problem in {@link JavaComputations#autoRefMapCheck(AutoRefMapConfig, Point, Point, float, int, Date, RefBeamMap)}
 	 * @throws AutoRefMapCheckException thrown if a new reference map needs to be taken
 	 */
-	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float temperature, 
+	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdLeftTemperature, float ccdRightTemperature, 
 			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
 		
-		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, temperature,  
+		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, ccdLeftTemperature, ccdRightTemperature,  
 				numIterations, currentDate, currentRefMap);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
@@ -1597,7 +1647,8 @@ public class ComputationLibraryImpl {
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
-	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, PupilMask pupilMask, Filter filter) throws Exception {
+	public MakeTemplateResult makeTemplate(int phasingSubimageFftSize, int phasingTemplateCount, FindCentConfig findCentConfig, 
+			PupilMask pupilMask, Filter filter, float arcsecPerPixel) throws Exception {
 		
 		/*
 		 * -output array is a 4 dim, array with the following size allocations:
@@ -1617,7 +1668,7 @@ public class ComputationLibraryImpl {
 
 		
 		Object[] result = jmakeTemplate.jmakeTemplate(retVal, phasingSubimageFftSize, phasingSubimageFftSize, findCentConfig.getItermax(), findCentConfig.getImargin(), findCentConfig.getNgauss(), 
-				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, pupilMask.getSecPerPixel(), filter.getWavelength() * Constants.NM_TO_MICRONS, 
+				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, arcsecPerPixel, filter.getWavelength() * Constants.NM_TO_MICRONS, 
 				pupilMask.getCrossHairDiam() * Constants.METERS_TO_UM,
 				pupilMask.getSpotDiamInterior() * Constants.METERS_TO_UM/2.0f, templateArray);
 
@@ -1989,6 +2040,7 @@ public class ComputationLibraryImpl {
 		FloatPoint[] segmentCentroidList = new FloatPoint[NUM_SUFS_SEGMENT_SPOTS];
 		float[] segmentIntensities = new float[NUM_SUFS_SEGMENT_SPOTS];
 		float[] segmentPeaks = new float[NUM_SUFS_SEGMENT_SPOTS];
+		float[] segmentRawPeaks = new float[NUM_SUFS_SEGMENT_SPOTS];
 		int[] findCentStatuses = new int[NUM_SUFS_SEGMENT_SPOTS];
 		
 		// loop over each SUFS group segment
@@ -2001,9 +2053,10 @@ public class ComputationLibraryImpl {
 				segmentCentroidList[j] = findCentroidsResult.getCentroidList()[maskIndex];
 				segmentIntensities[j] = findCentroidsResult.getIntensityList()[maskIndex];
 				segmentPeaks[j] = findCentroidsResult.getPeakList()[maskIndex];
+				segmentRawPeaks[j] = findCentroidsResult.getRawPeakList()[maskIndex];
 				findCentStatuses[j] = findCentroidsResult.getFindCentStatusList()[maskIndex];
 			}
-			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, findCentStatuses);
+			findSegmentCentroidsResult[i] = new FindCentroidsResult(segmentCentroidList, segmentIntensities, segmentPeaks, segmentRawPeaks, findCentStatuses);
 
 		}
 
@@ -2800,6 +2853,51 @@ public class ComputationLibraryImpl {
 		return terraceModeComponentsResult;
 	}
 	
+	
+	/**
+	 * Generates startup values that depend upon the procedure, ccd, pupil mask and other factors
+	 * 
+	 * @param arcsecPerMeter
+	 * @param pixelSize
+	 * @return value containing arcsecPerPixel 
+	 */
+	@Computation
+	public StartupComputationsResult startupComputations(float arcsecPerMeter, float pixelSize) {
+		float arcsecPerPixel = JavaComputations.calcArcSecPerPixel(arcsecPerMeter, pixelSize);
+		return new StartupComputationsResult(arcsecPerPixel);
+	}
+
+	/**
+	 * Corrects an overscanned frame using the median dark pixel values from right and left sides of the image.
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize
+	 * @return
+	 */
+	public CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(int[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
+		return JavaComputations.correctOverscanFrameDarkOffsets(frame, leftStartCol, leftEndCol, rightStartCol, rightEndCol, overscanSize);
+	}
+	
+	
+	/**
+	 * Corrects an overscanned frame using the median dark pixel values from right and left sides of the image.
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize
+	 * @return
+	 */
+	public void checkFrameLeftRightBias(CcdFrame ccdFrame, int threshold) throws CcdLeftRightBiasException{
+		if (Math.abs(ccdFrame.getDarkMedianLeft() - ccdFrame.getDarkMedianRight()) > threshold) {
+			throw new CcdLeftRightBiasException();
+		}
+	}
+
 	
 }
 

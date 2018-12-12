@@ -4,6 +4,9 @@
 
 	<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+		<h:outputLabel value="Overall Status" />
+		<h:outputText value="#{procedureController.frameInstrument.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
+
 		<h:outputLabel value="Pupil Mask" />
 		<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
 
@@ -12,9 +15,6 @@
 
 		<h:outputLabel value="Ref. Beam" />
 		<h:outputText value="#{procedureController.frameInstrument.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
-
-		<h:outputLabel value="Shutter" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.shutter.shutterDisplayString}" style="position:relative; top:2px" />
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
 		<h:outputLabel value="Fine Pupil Adj (x, y) (#{fieldMetaData.units})" />
@@ -39,12 +39,19 @@
 		<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" style="position:relative; top:2px" />
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
-		<h:outputLabel value="CCD Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{procedureController.frameInstrument.ccd.temperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-
+	    <h:outputLabel value="CCD Temp (L,R) (#{fieldMetaData.units})" />
+		<h:panelGroup style="position:relative; top:3px">
+			<h:outputText value="#{procedureController.frameInstrument.ccd.leftTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			<h:outputText value=", "  style="position:relative; top:2px" />
+			<h:outputText value="#{procedureController.frameInstrument.ccd.rightTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+		</h:panelGroup>
+		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
 		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
 		<h:outputText value="#{procedureController.frameInstrument.camera.instrumentTemperature}" style="position:relative; top:2px" >

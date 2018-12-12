@@ -18,11 +18,13 @@ import org.tmt.aps.peas.config.model.CalcM2M1ConfigDefaults;
 import org.tmt.aps.peas.config.model.CentroidOffsetsConfigDefaults;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 
 /**
@@ -70,11 +72,13 @@ public class GlobalConfigMgmt {
 	 * @param lightSource star or reference beam
 	 * @return the find and identify computation configuration default values
 	 */
-	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource) {
+	public FIConfigDefaults findFIConfigDefaults(Long instrumentId, Long pupilMaskTypeId, int lightSource, Long ccdTypeId, boolean pupilRegProcFlg) {
 		TypedQuery<FIConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndInstrument", FIConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("lightSource", lightSource);
+		query.setParameter("ccdTypeId", ccdTypeId);
+		query.setParameter("pupilRegProcFlg", pupilRegProcFlg);
 		
 		query.setMaxResults(1);
 		
@@ -89,12 +93,13 @@ public class GlobalConfigMgmt {
 	 * @param spotType interior or peripheral spot
 	 * @return the find centroid computation configuration default values
 	 */
-	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, Long filterTypeId, int spotType) {
+	public FindCentConfigDefaults findFindCentConfig(Long pupilMaskTypeId, Long filterTypeId, int spotType, Long ccdTypeId) {
 		
 		TypedQuery<FindCentConfigDefaults> query = em.createNamedQuery("findByMaskType", FindCentConfigDefaults.class);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
 		query.setParameter("spotType", spotType);
+		query.setParameter("ccdTypeId", ccdTypeId);
 				
 		query.setMaxResults(1);
 		
@@ -137,10 +142,11 @@ public class GlobalConfigMgmt {
 	 * @param procedureTypeId fine screen, etc
 	 * @return the centroid offsets computation default values
 	 */
-	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId) {
+	public CentroidOffsetsConfigDefaults findCentroidOffsetsConfig(Long procedureTypeId, Long ccdTypeId) {
 		
 		TypedQuery<CentroidOffsetsConfigDefaults> query = em.createNamedQuery("findByProcedureType", CentroidOffsetsConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		
@@ -154,11 +160,12 @@ public class GlobalConfigMgmt {
 	 * @param instrumentId PCS1 or PCS2
 	 * @return the reference map configuration default values
 	 */	
-	public RefMapConfigDefaults findRefMapConfigDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
+	public RefMapConfigDefaults findRefMapConfigDefaults(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, Long ccdTypeId) {
 		TypedQuery<RefMapConfigDefaults> query = em.createNamedQuery("findByMaskTypeAndFilterType", RefMapConfigDefaults.class);
 		query.setParameter("instrumentId", instrumentId);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
 		query.setParameter("filterTypeId", filterTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		
@@ -180,15 +187,38 @@ public class GlobalConfigMgmt {
 	}
 	
 	/**
+	 * Queries the database for the reference map configuration default values, for a given instrument, pupil mask type, and filter type
+	 * @param pupilMaskTypeId the pupil mask type, such as phasing or fine screen, etc
+	 * @param filterTypeId the filter type e.g. 611, 891, etc
+	 * @param instrumentId PCS1 or PCS2
+	 * @return the reference map configuration default values
+	 */	
+	public SufsRefMapConfigDefaults findSufsRefMapConfigDefaults(Long instrumentId, Long ccdTypeId, int referenceBeamNum) {
+		TypedQuery<SufsRefMapConfigDefaults> query = em.createNamedQuery("findByRefBeamNum", SufsRefMapConfigDefaults.class);
+		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("ccdTypeId", ccdTypeId);
+		query.setParameter("referenceBeamNum", referenceBeamNum);
+		
+		query.setMaxResults(1);
+		
+		SufsRefMapConfigDefaults sufsRefMapConfigDefaults = query.getSingleResult();
+		
+		
+		return sufsRefMapConfigDefaults;
+
+	}
+	
+	/**
 	 * Queries the database for the reference beam that matches the passed reference beam number
 	 * @param refBeamNum the reference beam number
 	 * @return the matching reference beam
 	 */
-	public ReferenceBeam findReferenceBeamByNumber(int refBeamNum) {
+	public ReferenceBeam findReferenceBeamByNumber(int refBeamNum, Long instrumentId) {
 		
 		// get the reference beam by ref beam number
 		TypedQuery<ReferenceBeam> query2 = em.createNamedQuery("findByNumber", ReferenceBeam.class);
 		query2.setParameter("refBeamNum", refBeamNum);
+		query2.setParameter("cameraId", instrumentId);
 		
 		query2.setMaxResults(1);
 		
@@ -202,9 +232,10 @@ public class GlobalConfigMgmt {
 	 * @param procedureTypeId the procedure type, e.g. passive tilt, fine screen, etc.
 	 * @return the automatic reference beam taking criteria
 	 */
-	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId) {
+	public AutoRefMapConfigDefaults findAutoRefMapConfig(Long procedureTypeId, Long ccdTypeId) {
 		TypedQuery<AutoRefMapConfigDefaults> query = em.createNamedQuery("findAutoByProcedureType", AutoRefMapConfigDefaults.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		query.setMaxResults(1);
 		
@@ -223,6 +254,18 @@ public class GlobalConfigMgmt {
 		query.setMaxResults(1);
 		
 		return query.getSingleResult();	
+	}
+
+	/**
+	 * Queries the database for automatic frame correction criteria
+	 * @return the automatic frame correction criteria
+	 */
+	public FrameCorrectionConfigDefaults findFrameCorrectionConfig() {
+		TypedQuery<FrameCorrectionConfigDefaults> query = em.createNamedQuery("findFrameCorrectionConfigDefaults", FrameCorrectionConfigDefaults.class);
+		
+		query.setMaxResults(1);
+		
+		return query.getSingleResult();
 	}
 
 	/**

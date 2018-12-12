@@ -14,6 +14,11 @@ public class ExtInfConnectConfig {
 	private boolean dcsEnabled;
 	
 	private boolean cameraHeartbeatStatus;
+	private boolean cameraInitializing;
+	private boolean ccdHeartbeatStatus;
+	
+	private boolean ccdInitializing;
+	
 	
 	public ExtInfConnectConfig() {
 		reset();
@@ -62,15 +67,55 @@ public class ExtInfConnectConfig {
 		return cameraHeartbeatStatus;
 	}
 	
+	public boolean isCameraInitializing() {
+		return cameraInitializing;
+	}
+
+	public void setCameraInitializing(boolean cameraInitializing) {
+		this.cameraInitializing = cameraInitializing;
+	}
+
+	public boolean isCcdHeartbeatStatus() {
+		return ccdHeartbeatStatus;
+	}
+
+	public void setCcdHeartbeatStatus(boolean ccdHeartbeatStatus) {
+		this.ccdHeartbeatStatus = ccdHeartbeatStatus;
+	}
+
+	public boolean isCcdInitializing() {
+		return ccdInitializing;
+	}
+
+	public void setCcdInitializing(boolean ccdInitializing) {
+		this.ccdInitializing = ccdInitializing;
+	}
+
+	public boolean isCameraUsable() {
+		if (cameraEnabled) {
+			return cameraHeartbeatStatus ? (cameraInitializing ? false : true) : false;
+		}
+		return cameraHeartbeatStatus;
+		
+	}
+	
 	public String getCameraStatus() {
 		if (cameraEnabled) {
-			return cameraHeartbeatStatus ? "Connected" : "Communication Failure";
+			
+			// if initializing, we don't poll (thus no heartbeat) so Initializing state predominates			
+			return cameraInitializing ? "Initializing" : (cameraHeartbeatStatus ? "Connected" : "Communication Failure");
 		}
 		return cameraHeartbeatStatus ? "Disconnected" : "Disconnecting";
 	}
 	
 	public String getCcdStatus() {
-		return ccdEnabled ? "Connected" : "Disconnected";
+		if (ccdEnabled) {
+			
+			return ccdInitializing ? "Initializing" : (ccdHeartbeatStatus ? "Connected" : "Communication Failure");
+			
+		}
+		return ccdHeartbeatStatus ? "Disconnected" : "Disconnecting";
+
 	}
 	
 	public String getAcsStatus() {
@@ -84,3 +129,29 @@ public class ExtInfConnectConfig {
 
 	
 }
+
+
+
+
+
+	
+
+
+	
+
+	
+
+
+
+
+
+	
+
+	
+
+	
+	
+
+
+
+

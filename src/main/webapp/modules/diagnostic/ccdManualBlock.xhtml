@@ -7,16 +7,59 @@
 		<h:outputLabel value="CCD Command" />
 		<h:panelGroup id="commandPanel">
 			<p:selectOneMenu value="#{ccdManualController.commandSelection}" style="top:2px">
-				<f:selectItem itemLabel="Fastwipe CCD" itemValue="1" />
-				<f:selectItem itemLabel="Set Continuous Wipe On" itemValue="2" />
-				<f:selectItem itemLabel="Read CCD Raw" itemValue="3" />
+				<f:selectItem itemLabel="Take Exposure" itemValue="1" />
+				<f:selectItem itemLabel="Take Overscanned Exposure" itemValue="2" />
+				<f:selectItem itemLabel="Set Gain" itemValue="3" />
+				<f:selectItem itemLabel="Trigger Offset Calibration" itemValue="4" />
+				<f:selectItem itemLabel="Set One Channel Offset" itemValue="5" />
+				<f:selectItem itemLabel="Set Both Channel Offsets" itemValue="6" />
+				<f:selectItem itemLabel="Set CCD Temperature" itemValue="7" />
+				
+				<p:ajax listener="#{ccdManualController.updateCommandListener}" update="ccdCommandPanel" />
 			</p:selectOneMenu>
 		</h:panelGroup>
 		<h:outputLabel value="" />
 
+		<h:panelGroup id="ccdCommandPanel">
+			<h:outputText value="&#160;&#160;&#160;&#160; Exposure Time &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 1 or ccdManualController.commandSelection eq 2}" />
+			<p:inputText value="#{ccdManualController.exposureTime}" size="5" rendered="#{ccdManualController.commandSelection eq 1 or ccdManualController.commandSelection eq 2}" />			
+					
+			<h:outputText value="&#160;&#160;&#160;&#160; Gain &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 3}" />
+			<p:inputText value="#{ccdManualController.gainNumber}" size="5" rendered="#{ccdManualController.commandSelection eq 3}" />			
+					
+			<h:outputText value="&#160;&#160;&#160;&#160; Channel &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 5}" />
+			<p:selectOneMenu value="#{ccdManualController.channel}" style="top:2px"
+				rendered="#{ccdManualController.commandSelection eq 5}">
+				<f:selectItem itemLabel="0" itemValue="0" />
+				<f:selectItem itemLabel="1" itemValue="1" />
+			</p:selectOneMenu>
+
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 5}" />
+			<p:inputText value="#{ccdManualController.channelOffset}" size="5" rendered="#{ccdManualController.commandSelection eq 5}" />			
+			
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 0 &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 6}" />
+			<p:inputText value="#{ccdManualController.channelOffset1}" size="5" rendered="#{ccdManualController.commandSelection eq 6}" />			
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 1 &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 6}" />
+			<p:inputText value="#{ccdManualController.channelOffset2}" size="5" rendered="#{ccdManualController.commandSelection eq 6}" />			
+
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 0: &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />
+			<h:outputText value="#{ccdManualController.offsetCalibration[0]}" size="5" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />			
+			<h:outputText value="&#160;&#160;&#160;&#160; Offset 1: &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />
+			<h:outputText value="#{ccdManualController.offsetCalibration[1]}" size="5" rendered="#{ccdManualController.commandSelection eq 4 and ccdManualController.cmdExecuted}" />			
+
+			<h:outputText value="&#160;&#160;&#160;&#160; Temperature &#160;&#160;" rendered="#{ccdManualController.commandSelection eq 7}" />
+			<p:inputText value="#{ccdManualController.desiredTemp}" size="5" rendered="#{ccdManualController.commandSelection eq 7}" />			
+
+
+		</h:panelGroup>
+
+		<p:spacer height="1px" />
+		<p:spacer height="1px" />
+
+
 		<f:facet name="footer">
 			<p:commandButton value="Send Command" icon="ui-icon-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-				update=":growl :errorGrowl" />
+				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel :frameHiddenForm" oncomplete="redraw();" />
 		</f:facet>
 
 	</p:panelGrid>

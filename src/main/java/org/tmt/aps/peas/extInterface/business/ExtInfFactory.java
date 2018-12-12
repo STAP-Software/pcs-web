@@ -5,6 +5,9 @@
  */
 package org.tmt.aps.peas.extInterface.business;
 
+import java.util.Arrays;
+import java.util.List;
+
 import javax.annotation.PostConstruct;
 import javax.ejb.AccessTimeout;
 import javax.ejb.DependsOn;
@@ -21,16 +24,17 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extinf.ACS;
 import org.tmt.aps.peas.extinf.AcsCommand;
 import org.tmt.aps.peas.extinf.CCD;
-import org.tmt.aps.peas.extinf.CamAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraKtl;
 import org.tmt.aps.peas.extinf.CcdCommand;
 import org.tmt.aps.peas.extinf.DcsCommand;
-import org.tmt.aps.peas.extinf.DcsRsk;
-import org.tmt.aps.peas.extinf.InstrumentInterface;
+//import org.tmt.aps.peas.extinf.DcsRsk;
+import org.tmt.aps.peas.extinf.DcsKtl;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 
 /**
  * EJB Singleton managing external interface command delegation, either to the RPC client or a simulator.
- * If an interface is a simultor or not is determined by {@link ExtInfConfigState} 
+ * If an interface is a simulator or not is determined by {@link ExtInfConfigState} 
  * @author smichaels
  *
  */
@@ -44,22 +48,30 @@ public class ExtInfFactory {
 	PeasProperties peasProperties;
 	@EJB
 	ExtInfConfigState extInfConfigState;
+	@EJB
+	PhysicalModel physicalModel;
+	@EJB
+	CameraMgmt cameraMgmt;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
 	DcsCommandSimulator dcsCommandSimulator;
+	CameraCommandSimulator cameraCommandSimulator;
 
-	CamAsync camAsync = null;
-	DcsRsk dcsRsk = null;
+	CameraKtl cameraKtl = null;
+	//DcsRsk dcsRsk = null;
+	DcsKtl dcsKtl = null;
 	CCD ccd = null;
 	ACS acs = null;
 	
+	CcdCommandSimulator ccdCommandSimulator = null;
 	
 	int telescopeId;
 	
 	@PostConstruct
 	void init() throws Exception {
 		dcsCommandSimulator = new DcsCommandSimulator();
+		cameraCommandSimulator = new CameraCommandSimulator();
 		
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 		telescopeId = new Integer(telescopeIdStr);
@@ -74,7 +86,7 @@ public class ExtInfFactory {
 		try {
 
 			if (extInfConfigState.getExtInfConnectConfig().isAcsEnabled()) {
-				return getAcsCommandRemote(telescopeId);
+				return getAcsCommandRemote();
 			} else {
 				return new AcsCommandSimulator();
 			}
@@ -88,16 +100,16 @@ public class ExtInfFactory {
 	/**
 	 * @return a reference to the PCS Camera RPC client, or a simulator depending on current interface connection configuration
 	 */
-	@Lock(LockType.WRITE)
-	@AccessTimeout(value=2000)  // two seconds
+	//@Lock(LockType.WRITE)
+	//@AccessTimeout(value=2000)  // two seconds
 	public CameraCommand getCameraCommand() throws Exception {
 
 		try {
 
 			if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
-				return getCameraCommandRemote(telescopeId);
+				return getCameraCommandRemote();
 			} else {
-				return new CameraCommandSimulator();
+				return cameraCommandSimulator;
 			}
 			
 		} catch (Exception e) {
@@ -114,9 +126,10 @@ public class ExtInfFactory {
 		try {
 			
 			if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
-				return getCcdCommandRemote(telescopeId);
+				return getCcdCommandRemote();
 			} else {
-				return new CcdCommandSimulator();
+				return getCcdCommandSimulator();
+				
 			}
 			
 		} catch (Exception e) {
@@ -143,44 +156,25 @@ public class ExtInfFactory {
 			throw e;
 		}
 	}
-	
-	/**
-	 * @return a reference to the PCS Instrument RPC client, or a simulator depending on current interface connection configuration
-	 */
-	public InstrumentInterface getInstrumentCommand() throws Exception {
-
-		try {
-			String instrumentEnabledStr = peasProperties.getProp("org.tmt.aps.peas.instrument_enabled");
-			boolean instrumentEnabled = new Boolean(instrumentEnabledStr);
-
-			if (instrumentEnabled) {
-				return getInstrumentCommandRemote();
-			} else {
-				return new InstrumentCommandSimulator();
-			}
-			
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			throw e;
-		}
-	}
 
 	/**
 	 * Resets all RPC client instances so that the next command will instantiate new ones.
 	 */
 	public void resetAll() {
 		acs = null;
-		dcsRsk = null;
-		camAsync = null;
+		//dcsRsk = null;
+		dcsKtl = null;
+		cameraKtl = null;
 		ccd = null;
 	}
 
 
-	private AcsCommand getAcsCommandRemote(int telescopeId) throws Exception {
+	private AcsCommand getAcsCommandRemote() throws Exception {
 		try {
 			
 			if (acs == null) {
-				acs = new ACS(telescopeId);
+				String host = peasProperties.getProp("org.tmt.aps.peas.acsRpcServerHost").trim();
+				acs = new ACS(host);
 			}
 			
 			return acs;
@@ -190,13 +184,13 @@ public class ExtInfFactory {
 		}
 	}
 
-	private CameraCommand getCameraCommandRemote(int telescopeId) throws Exception {
+	private CameraCommand getCameraCommandRemote() throws Exception {
 		try {
 			
-			if (camAsync == null) {
-				camAsync = new CamAsync(telescopeId);
+			if (cameraKtl == null) {
+				cameraKtl = new CameraKtl(telescopeId);
 			}
-			return camAsync;
+			return cameraKtl;
 			
 			
 		} catch (Exception e) {
@@ -207,10 +201,15 @@ public class ExtInfFactory {
 	
 
 
-	private CcdCommand getCcdCommandRemote(int telescopeId) throws Exception {
+	private CcdCommand getCcdCommandRemote() throws Exception {
 		try {
 			if (ccd == null) {
-				ccd = new CCD(telescopeId);
+				String host = peasProperties.getProp("org.tmt.aps.peas.ccdHost").trim();
+				int port = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdPort"));
+				
+				logger.info("Creating CCD Command, host = " + host + ", port = " + port);
+				
+				ccd = new CCD(host, port);
 			}
 			return ccd;
 
@@ -222,10 +221,11 @@ public class ExtInfFactory {
 	
 	private DcsCommand getDcsCommandRemote(int telescopeId) throws Exception {
 		try {
-			if (dcsRsk == null) {
-				dcsRsk = new DcsRsk(telescopeId);
+			if (dcsKtl == null) {
+				String host = peasProperties.getProp("org.tmt.aps.peas.dcsRpcServerHost").trim();
+				dcsKtl = new DcsKtl(telescopeId, host);
 			}
-			return dcsRsk;
+			return dcsKtl;
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error") + "Dcs Command Exception:: ", e);
@@ -233,15 +233,36 @@ public class ExtInfFactory {
 		}
 	}
 
-	private InstrumentInterface getInstrumentCommandRemote() throws Exception {
+	private CcdCommand getCcdCommandSimulator() throws Exception {
 		try {
-			
-			throw new UnsupportedOperationException("Not Implemented");
+			if (ccdCommandSimulator == null) {
+				
+				int imageHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageHeight"));
+				int imageWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageWidth"));
+				int overscanHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanHeight"));
+				int overscanWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanWidth"));
+				int gainNumber = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainNumber"));
+				int[] offsetCalibration = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.offsetCalibration"));
+				
+				ccdCommandSimulator = new CcdCommandSimulator(physicalModel.getInstrument().getCcd(), imageHeight, imageWidth, 
+						overscanWidth, overscanHeight, gainNumber, offsetCalibration);
+			}
+			return ccdCommandSimulator;
+
 		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error") + "Instrument Command Exception:: ", e);
+			logger.error(MessageGenerator.generateMessage("generic.error") + "Ccd Command Exception:: ", e);
 			throw e;
 		}
 	}
-
+	
+	private int[] decodePropIntList(String input) {
+		List<String> items = Arrays.asList(input.split("\\s*,\\s*"));
+		int[] output = new int[items.size()];
+		int i=0;
+		for (String item : items) {
+			output[i++] = new Integer(item);
+		}
+		return output;
+	}
 	
 }

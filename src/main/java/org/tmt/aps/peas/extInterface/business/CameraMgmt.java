@@ -15,11 +15,11 @@ import javax.ejb.Stateless;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
-import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryListener;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.extinf.CameraStatus;
+import org.tmt.aps.peas.extinf.CameraStatusListener;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -144,8 +144,9 @@ public class CameraMgmt {
 	 *            Desired CCD shutter state (0 = closed, 1 = open) 0 or 1
 	 * @return achived CCD Shuter State (0 = closed, 1 = open)
 	 */
-	public int commandCcdShutterState(int ccdShuterState) throws Exception {
-		return extInfFactory.getCameraCommand().commandCcdShutterState(ccdShuterState);
+	public int commandCcdShutterState(int ccdShutterState) throws Exception {
+		//return extInfFactory.getCameraCommand().commandCcdShutterState(ccdShutterState);
+		return ccdShutterState;
 	}
 
 	/**
@@ -172,8 +173,8 @@ public class CameraMgmt {
 	 * @return achieved CCD Power State (0 = off, 1 = on)
 	 */
 	@Asynchronous
-	public Future<Integer> commandCcdPowerState(int ccdPowerState) throws Exception {
-		int result =  extInfFactory.getCameraCommand().commandCcdPowerState(ccdPowerState);
+	public Future<Integer> commandCcdControllerPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandCcdControllerPowerState(ccdPowerState);
 		return new AsyncResult<Integer>(result);
 	}
 
@@ -191,6 +192,30 @@ public class CameraMgmt {
 	}
 
 	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorX(Integer fineTiltCmdX) throws Exception {
+
+		Future<Integer> xFuture = cameraMgmtAsync.commandFineTiltMirrorX(fineTiltCmdX);
+
+		while (!xFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(xFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandFineTiltMirrorY(Integer fineTiltCmdY) throws Exception {
+
+		Future<Integer> yFuture = cameraMgmtAsync.commandFineTiltMirrorY(fineTiltCmdY);
+
+		while (!yFuture.isDone()) {
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(yFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
 	public Future<Point> commandCoarseTiltMirror(Point coarseTiltCmd) throws Exception {
 		Future<Integer> xFuture = cameraMgmtAsync.commandCoarseTiltMirrorX((int) coarseTiltCmd.x);
 		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int) coarseTiltCmd.y);
@@ -203,7 +228,80 @@ public class CameraMgmt {
 		return new AsyncResult<Point>(result);
 	}
 
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorX(Integer coarseTiltCmdX) throws Exception {
+		Future<Integer> xFuture = cameraMgmtAsync.commandCoarseTiltMirrorX((int) coarseTiltCmdX);
 
+		while (!xFuture.isDone()) {
+			logger.debug("waiting on coarse Tilt Mirror xDone = " + xFuture.isDone());
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(xFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandCoarseTiltMirrorY(Integer coarseTiltCmdY) throws Exception {
+		Future<Integer> yFuture = cameraMgmtAsync.commandCoarseTiltMirrorY((int) coarseTiltCmdY);
+
+		while (!yFuture.isDone()) {
+			logger.debug("waiting on coarse Tilt Mirror yDone = " + yFuture.isDone());
+			Thread.sleep(300);
+		}
+		Integer result = new Integer(yFuture.get());
+		return new AsyncResult<Integer>(result);
+	}
+
+
+	
+	
+	
+	public void addCameraQueryListener(int deviceCode, CameraQueryListener l) throws Exception {
+		extInfFactory.getCameraCommand().addCameraQueryListener(deviceCode, l);
+	}
+
+
+	public void addCameraStatusListener(CameraStatusListener l) throws Exception {
+		extInfFactory.getCameraCommand().addCameraStatusListener(l);
+	}
+
+	@Asynchronous
+	public Future<Integer> initializeCamera() throws Exception {
+		extInfFactory.getCameraCommand().initializeCamera();
+		return new AsyncResult<Integer>(1);
+	}
+
+	@Asynchronous
+	public Future<Integer> stowCamera() throws Exception {
+		extInfFactory.getCameraCommand().stowCamera();
+		return new AsyncResult<Integer>(1);
+	}
+
+
+	@Asynchronous
+	public Future<Integer> commandOverallPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandOverallPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> commandGalilPowerState(int ccdPowerState) throws Exception {
+		int result =  extInfFactory.getCameraCommand().commandGalilPowerState(ccdPowerState);
+		return new AsyncResult<Integer>(result);
+	}
+
+	@Asynchronous
+	public Future<Integer> setPurgeAirState(int purgeAirState) throws Exception {
+		extInfFactory.getCameraCommand().setPurgeAirState(purgeAirState);
+		
+		return new AsyncResult<Integer>(purgeAirState);
+	}
+
+
+	
+	
+	
+	
 	/**
 	 * Refreshes the camera status values into the {@link Instrument} state of the {@link PhysicalModel}.
 	 */
@@ -217,6 +315,8 @@ public class CameraMgmt {
 			CameraStatus cameraStatus = queryCameraStatus();
 	
 			instrument.updateState(cameraStatus);
+			
+			//System.out.println("updating physical model with camera status: " + cameraStatus);
 
 			// set heartbeat status to true
 			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(true);
@@ -224,12 +324,17 @@ public class CameraMgmt {
 		} catch (Throwable t) {
 			// set heartbeat status to false
 			extInfConfigState.getExtInfConnectConfig().setCameraHeartbeatStatus(false);
+			logger.error(t.getMessage());
+			t.printStackTrace();
 		}
 				
 		return new AsyncResult<Boolean>(true);
 	}
 	
 	
+
+
+
 
 
 }

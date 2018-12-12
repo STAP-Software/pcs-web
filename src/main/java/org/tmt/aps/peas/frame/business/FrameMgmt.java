@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.TreeMap;
 
-import javax.ejb.ApplicationException;
 import javax.ejb.EJB;
 import javax.ejb.Stateless;
 import javax.ejb.TransactionAttribute;
@@ -32,7 +31,10 @@ import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
+import org.tmt.aps.peas.computation.model.RemoveBadPixelsResult;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
@@ -45,10 +47,12 @@ import org.tmt.aps.peas.instrument.business.CameraStateMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Camera;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
@@ -176,6 +180,8 @@ public class FrameMgmt {
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 		ccdFrame.setInstrumentId(procedureCcdFrame.getProcedure().getInstrument().getInstrumentId());
+		
+		
 		boolean overwritten = saveFitsFrame(ccdFrame);
 
 		// save the Ccd record with the fits file name
@@ -196,15 +202,19 @@ public class FrameMgmt {
 	 * @param procedureCcdFrame the procedure CcdFrame structure.  This may not be fully populated with a raw frame, but must at least have a FITS Filename
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
+	public void associateCcdFrame(ProcedureCcdFrame procedureCcdFrame, int frameSource) {
 		// create a ProcedureCcdRecord
 
 		// the passed CcdFrame will only have a filename
 		// we need to read from the DB to get the real record
 
 		CcdFrame ccdFrame = findCcdFrame(procedureCcdFrame.getCcdFrame().getFitsFilename());
+		
+		// add a new frame record if the frame source is CCD, 
+		// or if the FITS file used as a frame from file has no CCD record yet in this database
+		if (frameSource == Constants.FRAME_SOURCE_CCD || ccdFrame == null) {
+			
 
-		if (ccdFrame == null) {
 			// we have to save it for the first time ourselves. This is how we avoid having to
 			// populate the database with legacy values using a script, just do it as needed.
 			//ccdFrame = new CcdFrame();
@@ -221,7 +231,7 @@ public class FrameMgmt {
 			}
 			logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
 			em.persist(ccdFrame);
-		}
+		} 
 	
 		procedureCcdFrame.setCcdFrame(ccdFrame); // now the ccdFrame has a primary key
 
@@ -237,19 +247,21 @@ public class FrameMgmt {
 	/*
 	 * This should become a subprocedure
 	 */
-	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
+	private CcdFrame readFrameFromCcd(double exposureTime, ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
+			ProcedureType procedureType, String procedureNumber, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 		
 		
 		// if this is using a simulator for ccdMgmt, lets get a real frame for use depending on procedureType
 		boolean ccdSimulator = !extInfConfigState.getExtInfConnectConfig().isCameraEnabled();
 		
-		// get the frame from CCD or from file, depending on the called type
-		ccdMgmt.fastWipeCcd();
-					
+		// get the frame from CCD or from file, depending on the called type			
 			
+		
+		int[][] frame = null;
+		
 		try {
 			
-			cameraMgmt.commandCcdShutterExposure((int)(exposureTime * 1000.0));
+			frame = ccdMgmt.getOverscannedImage(exposureTime);
 		
 		} catch (TimeoutException e) {
 			
@@ -267,9 +279,8 @@ public class FrameMgmt {
 			} 
 		}
 		
-		Thread.sleep(1000);
 		
-		int[][] frame = ccdMgmt.getImage();
+		
 		
 		CcdFrame ccdFrame = null;
 		
@@ -303,83 +314,147 @@ public class FrameMgmt {
 			byte[] falseColorPng = loadPng(ccdFrame, true);
 			ccdFrame.setFalseColorPng(falseColorPng);
 			
-			// simulate camera state too
-			Instrument instrument = physicalModel.getInstrument();
-			CameraState cameraState = new CameraState(instrument);
-			//cameraState.setCcdTemp(44.4f);
-			//cameraState.setSteeringMirrorX(234);
-			//cameraState.setSteeringMirrorY(2);
-			//cameraState.setTiltPlateX(35);
-			//cameraState.setTiltPlateY(-7);
-			ccdFrame.setCameraState(cameraState);
-			ccdFrame.setInstrumentId(instrument.getInstrumentId());
-
 			telescopeMgmt.refreshStatus();
-			
-			// store telescope information with frame when it is taken
-			Telescope telescope = physicalModel.getTelescope();
-			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
-			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
-			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
-			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
-			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
-			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
-			
-			ccdFrame.setIntTime((float)exposureTime);
-			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
 
+			ccdFrame = populateCcdFrame(ccdFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1, null);
+						
 		} else {
 		
 			// TODO: does this need to be done in parallel with getting the exposure?
 			// get the telescope status
 			telescopeMgmt.refreshStatus();
 			
-			int[][] swapFrame = new int[frame.length][frame[0].length];
-			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[i].length; j++) {
+			int[][] swapFrame = new int[frame[0].length][frame.length];
+			for (int i = 0; i < frame[0].length; i++) {
+				for (int j = 0; j < frame.length; j++) {
 					swapFrame[i][j] = frame[j][i];
 				}
 			}
 			
 			
-			if (removeBadPixels && badPixelList != null && badPixelList.size() > 0) {
-				//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
-				swapFrame = computationLibrary.removeBadPixels(swapFrame, badPixelList);
-			}
+			// if the image is an overscan image, then correct for overscan
+			Ccd ccd = physicalModel.getInstrument().getCcd();
+			if (ccd.getCcdType().isTypeSciMeas() && swapFrame.length == ccd.getCcdType().getOverscanReadoutWidth()) {
 			
-			short[][] rawFrame = new short[frame.length][frame[0].length];
-			for (int i = 0; i < frame.length; i++) {
-				for (int j = 0; j < frame[i].length; j++) {
-					rawFrame[i][j] = (short) swapFrame[i][j];
+				// correct the overscan image into a corrected image without overscan columns
+				int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+				
+				CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(swapFrame, 
+						ccd.getDarkOvscnLeftColStart(), 
+						ccd.getDarkOvscnLeftColEnd(), 
+						ccd.getDarkOvscnRightColStart(), 
+						ccd.getDarkOvscnRightColEnd(),
+						overscanSize);		
+				
+				
+				if (result.getDarkMedianValueLeft() == 0 || result.getDarkMedianValueRight() == 0) {
+					throw new BadDarkMedianValueException("CCD left or right median bias is zero!  Adjust CCD bias offsets values");
 				}
+				
+				int[][] correctedFrame = result.getCorrectedFrame();
+				
+				//removeBadPixels works on "swaped" frame, X is columns, Y is rows.
+								
+				RemoveBadPixelsResult removeBadPixelsResult = computationLibrary.removeBadPixels(correctedFrame, badPixelList, removeBadPixels, 
+						frameCorrectionConfig.getBadPixelIndexThreshold(), frameCorrectionConfig.getBadPixelIntensityThreshold(),
+						frameCorrectionConfig.getBadPixelIterationLimit());
+				
+				int[][] filteredFrame = removeBadPixelsResult.getFilteredFrame();
+				
+				short[][] rawFrame = new short[filteredFrame.length][filteredFrame[0].length];
+				for (int i = 0; i < filteredFrame.length; i++) {
+					for (int j = 0; j < filteredFrame[0].length; j++) {
+						rawFrame[i][j] = (short) filteredFrame[i][j];
+					}
+				}
+				
+				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), 
+						result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), removeBadPixelsResult);
+			
+			} else {
+				
+				short[][] rawFrame = new short[frame.length][frame[0].length];
+				for (int i = 0; i < frame.length; i++) {
+					for (int j = 0; j < frame[0].length; j++) {
+						rawFrame[i][j] = (short) swapFrame[i][j];
+					}
+				}
+
+				
+				ccdFrame = populateCcdFrame(rawFrame, exposureTime, procedureConfig.getSufsGroup(), -1, -1, null);
 			}
+		}
 
-			ccdFrame = new CcdFrame();
-			ccdFrame.setAxes1(1024);
-			ccdFrame.setAxes2(1024);
-			ccdFrame.setRawFrame(rawFrame);
-			ccdFrame.setCreateDate(new Date());
-			ccdFrame.setNoOfAxes(2);
+		return ccdFrame;
+	}
+	
+	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup) {
+		return populateCcdFrame(rawFrame, exposureTime, sufsGroup, 0, 0, null);
+	}
+	
+	public CcdFrame populateCcdFrame(short[][] rawFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
 
+		
+		CcdFrame ccdFrame = new CcdFrame();
+		ccdFrame.setAxes1(rawFrame.length);
+		ccdFrame.setAxes2(rawFrame[0].length);
+		ccdFrame.setRawFrame(rawFrame);
+		ccdFrame.setCreateDate(new Date());
+		ccdFrame.setNoOfAxes(2);
+		
+		// TODO: ccdFrame needs darkMedian left and right fields.  Add values right here.
+		
+		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup, darkMedianLeft, darkMedianRight, removeBadPixelsResult);
+	}
 
-			// save the camera state when the ccd frame was taken
-			Instrument instrument = physicalModel.getInstrument();
-			CameraState cameraState = new CameraState(instrument);
-			ccdFrame.setCameraState(cameraState);
-			ccdFrame.setInstrumentId(instrument.getInstrumentId());
-			Telescope telescope = physicalModel.getTelescope();
+	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
 
-			// store telescope information with frame when it is taken
-			ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+		
+		// save the camera state when the ccd frame was taken
+		Instrument instrument = physicalModel.getInstrument();
+		CameraState cameraState = new CameraState(instrument);
+		ccdFrame.setCameraState(cameraState);
+		ccdFrame.setInstrumentId(instrument.getInstrumentId());
+		Telescope telescope = physicalModel.getTelescope();
+
+		// store telescope information with frame when it is taken
+		ccdFrame.setAvgMirrorTemp((float)telescope.getMirrorTemp());
+		
+		if (telescope.getM2Position() != null) {
 			ccdFrame.setSecondaryAct1((float)telescope.getM2Position()[0]);
 			ccdFrame.setSecondaryAct2((float)telescope.getM2Position()[1]);
 			ccdFrame.setSecondaryAct3((float)telescope.getM2Position()[2]);
+		}
+		
+		if (telescope.getTelPosition() != null) {
 			ccdFrame.setTelescopeAz(telescope.getTelPosition().x);
 			ccdFrame.setTelescopeEl(telescope.getTelPosition().y);
-			
-			ccdFrame.setIntTime((float)exposureTime);
-			ccdFrame.setSufsGroupNumber(procedureConfig.getSufsGroup());
+		}
+		
+		ccdFrame.setIntTime((float)exposureTime);
+		ccdFrame.setSufsGroupNumber(sufsGroup);
+		ccdFrame.setDarkMedianLeft(darkMedianLeft);
+		ccdFrame.setDarkMedianRight(darkMedianRight);
 
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		
+		ccdFrame.setCcdName(ccd.getCcdName());
+		ccdFrame.setCcdGainValue(ccd.getCcdGain().getGainValue());
+		ccdFrame.setCcdGainOffsetChannel0(ccd.getChannelOffset0());
+		ccdFrame.setCcdGainOffsetChannel1(ccd.getChannelOffset1());
+		
+		ccdFrame.setCcdGainNumber(ccd.getCurrentGainNumber());
+		ccdFrame.setCaseTemperature(ccd.getCaseTemperature());
+		ccdFrame.setLeftTemperature(ccd.getLeftTemperature());
+		ccdFrame.setRightTemperature(ccd.getRightTemperature());
+		ccdFrame.setTemperatureSetting((float)ccd.getTemperatureSetting());
+		
+		if (removeBadPixelsResult != null) {
+			
+			ccdFrame.setBadPixelListEncoded(removeBadPixelsResult.getBadPixelListEncoded());
+			ccdFrame.setBadPixelCount(removeBadPixelsResult.getBadPixelCount());
+			ccdFrame.setBadPixelsRemoved(removeBadPixelsResult.isBadPixelsRemoved());
+			ccdFrame.setAllBadPixelsFound(removeBadPixelsResult.isAllBadPixelsFound());
 		}
 
 		return ccdFrame;
@@ -398,13 +473,25 @@ public class FrameMgmt {
 	 * @return a procedureCcdFrame structure populated with the ccdFrame and procedure.  
 	 * @throws Exception
 	 */
-	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, ProcedureType procedureType, String procedureNumber, 
+	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
+			ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
 
-		CcdFrame ccdFrame = (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) ?
-			readFrameFromCcd(exposureTime, procedureConfig, procedureType, procedureNumber, badPixelList, removeBadPixels) :
-			frameSimulator.getFrame(frameNumber);
+		CcdFrame ccdFrame = null;
 		
+		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			ccdFrame = readFrameFromCcd(exposureTime, procedureConfig, frameCorrectionConfig, procedureType, procedureNumber, badPixelList, removeBadPixels);
+		} else {
+			ccdFrame = frameSimulator.getFrame(frameNumber);
+			/*** FIXME -- uncomment to test code only **/
+			//frameSimulator.filterFrame(ccdFrame, badPixelList, removeBadPixels, frameCorrectionConfig);
+			/*** FIXME -- uncomment to test code only **/
+		}
+		
+		
+			
+			
+			
 		
 		procedureExecutionState.setCurrentFrame(ccdFrame);
 		Procedure procedure = procedureExecutionState.getCurrentProcedure();
@@ -624,6 +711,12 @@ public class FrameMgmt {
 				
 				String filter = imhdu.getHeader().getStringValue("FILTER");
 				System.out.println("FILTER = " + filter);
+				
+				ccdFrame.setCcdName(imhdu.getHeader().getStringValue("CCD"));
+				ccdFrame.setCcdGainValue(imhdu.getHeader().getFloatValue("CCDGAIN"));
+				ccdFrame.setCcdGainOffsetChannel0(imhdu.getHeader().getIntValue("OFFSET0"));
+				ccdFrame.setCcdGainOffsetChannel1(imhdu.getHeader().getIntValue("OFFSET1"));
+				
 
 				// fb.setObsDate(imhdu.getHeader().getStringValue("DATE-OBS"));
 
@@ -655,10 +748,10 @@ public class FrameMgmt {
 
 		// Now create three extensions.
 		// reverse the frame to match legacy frames
-		short[][] reversedFrame = new short[ccdFrame.getRawFrame().length][ccdFrame.getRawFrame()[0].length];
+		short[][] reversedFrame = new short[ccdFrame.getRawFrame()[0].length][ccdFrame.getRawFrame().length];
 		for (int i = 0; i < ccdFrame.getRawFrame().length; i++) {
 			for (int j = 0; j < ccdFrame.getRawFrame()[i].length; j++) {
-				reversedFrame[i][j] = ccdFrame.getRawFrame()[j][i];
+				reversedFrame[j][i] = ccdFrame.getRawFrame()[i][j];
 			}
 		}
 
@@ -676,13 +769,17 @@ public class FrameMgmt {
 		
 		Camera camera = physicalModel.getInstrument().getCamera();
 		Telescope telescope = physicalModel.getTelescope();
-		if (procedureExecutionState.getCurrentProcedure() != null) {
+		if (procedureExecutionState.getExecutionStatus() && procedureExecutionState.getCurrentProcedure() != null) {
 			ProcedureConfig procedureConfig = procedureExecutionState.getCurrentProcedure().getProcedureConfigSet().getProcedureConfig();
 			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", procedureConfig.getIntegrationTime(), "Integration Time (sec)");
 			if (procedureConfig.getSufsGroup() != null) {
 				myFits.getHDU(0).getHeader().addIntValue("SUFS_GRP", procedureConfig.getSufsGroup(), "SUFS Group Number");
 			}
 			myFits.getHDU(0).getHeader().addStringValue("PROC_NUM", procedureExecutionState.getCurrentProcedure().getProcedureNumber(), "Procedure Number");
+			
+		} else {
+			// manually taken frame
+			myFits.getHDU(0).getHeader().addFloatValue("INT_TIME", ccdFrame.getIntTime(), "Integration Time (sec)");
 		}
 		
 		myFits.getHDU(0).getHeader().addStringValue("FILTER", camera.getFilterWheel().getSelectedFilter().getFilterName(), "Filter Name");
@@ -692,6 +789,16 @@ public class FrameMgmt {
 		myFits.getHDU(0).getHeader().addFloatValue("AZ", telescope.getTelPosition().x, "Telescope Az");
 		myFits.getHDU(0).getHeader().addFloatValue("EL", telescope.getTelPosition().y, "Telescope El");
 		
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		
+		myFits.getHDU(0).getHeader().addStringValue("CCD", ccd.getCcdName(), "CCD Name");
+		myFits.getHDU(0).getHeader().addFloatValue("CCDGAIN", ccd.getCcdGain().getGainValue(), "CCD Gain");
+		myFits.getHDU(0).getHeader().addIntValue("OFFSET0", ccd.getCcdGain().getGainOffsetChannel0(), "CCD Gain Offset Channel 0");
+		myFits.getHDU(0).getHeader().addIntValue("OFFSET1", ccd.getCcdGain().getGainOffsetChannel1(), "CCD Gain Offset Channel 1");
+		myFits.getHDU(0).getHeader().addFloatValue("PIXELSIZ", ccd.getCcdType().getPixelSize(), "CCD Pixel Size");
+
+		myFits.getHDU(0).getHeader().addIntValue("DARKMEDL", ccdFrame.getDarkMedianLeft(), "Frame Dark Median Value Left Channel");
+		myFits.getHDU(0).getHeader().addIntValue("DARKMEDR", ccdFrame.getDarkMedianRight(), "Frame Dark Media Value Right Channel");
 
 		
 		java.io.FileOutputStream fo = new java.io.FileOutputStream(path);
@@ -790,10 +897,13 @@ public class FrameMgmt {
 				}
 				dateFitsList.add(fitsFile);
 
-				List<FitsFilename> typeFitsList = type2Fits.get(fitsFile.getProcedureTypeCd());
+				String procedureTypeCd = fitsFile.getProcedureTypeCd() == null ? "Other" : fitsFile.getProcedureTypeCd();
+				
+				
+				List<FitsFilename> typeFitsList = type2Fits.get(procedureTypeCd);
 				if (typeFitsList == null) {
 					typeFitsList = new ArrayList<FitsFilename>();
-					type2Fits.put(fitsFile.getProcedureTypeCd(), typeFitsList);
+					type2Fits.put(procedureTypeCd, typeFitsList);
 				}
 				typeFitsList.add(fitsFile);					
 

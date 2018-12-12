@@ -9,7 +9,9 @@ package org.tmt.aps.peas.instrument.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -32,8 +34,14 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o where o.ccdId = :ccdId" ),
-	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o LEFT OUTER JOIN o.instrument" )
+	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 where o.ccdId = :ccdId" ),
+	@NamedQuery(name = "findInstrumentCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 INNER JOIN FETCH o.instrument i"
+			+ " where i.instrumentId = :instrumentId" ),
+	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
+			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 "
+			+ " LEFT OUTER JOIN o.instrument" )
 })
 public class Ccd {
 
@@ -47,21 +55,61 @@ public class Ccd {
 	private String ccdDescription;	
 	private String hotPixelListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
 	private String hotColumnListEncoded;  // encoded as p1x,p1y,p2x,p2y, etc
-	private int rowCount;
-	private int colCount;
-	private int colOffset;
 	private float nonLinearThreshold;
-	
+	private float defaultTemperature;
+	private int darkOvscnLeftColStart;
+	private int darkOvscnLeftColEnd;
+	private int darkOvscnRightColStart;
+	private int darkOvscnRightColEnd;
 	
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
 	private Instrument instrument;
 	
+	@ManyToOne
+	@JoinColumn (name="ccdTypeId")
+	private CcdType ccdType;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@JoinColumn (name="ccdGainId0")
+	private CcdGain ccdGain0;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@JoinColumn (name="ccdGainId1")
+	private CcdGain ccdGain1;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@JoinColumn (name="ccdGainId2")
+	private CcdGain ccdGain2;
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.MERGE)
+	@JoinColumn (name="ccdGainId3")
+	private CcdGain ccdGain3;
+	
+	
+	
 	@Transient
 	private int state;
+	
 	@Transient
 	private float temperature;
+	@Transient
+	private int currentGainNumber = 0;
+	@Transient
+	private double temperatureSetting;
 
+	@Transient
+	private float leftTemperature;
+	@Transient
+	private float rightTemperature;
+	@Transient
+	private float caseTemperature;
+	@Transient
+	private int channelOffset0;
+	@Transient
+	private int channelOffset1;
+	
+	
 	
 	public Ccd(String ccdName, String ccdDescription, String hotPixelListEncoded, String hotColumnListEncoded, Instrument instrument) {
 		this.ccdName = ccdName;
@@ -72,10 +120,6 @@ public class Ccd {
 	}
 	
 	
-	public Ccd(int state, float temperature) {
-		this.state = state;
-		this.temperature = temperature;
-	}
 	
 	public Ccd() {
 		
@@ -131,28 +175,62 @@ public class Ccd {
 		this.instrument = instrument;
 	}
 
-	public int getRowCount() {
-		return rowCount;
+	public CcdType getCcdType() {
+		return ccdType;
 	}
 
-	public void setRowCount(int rowCount) {
-		this.rowCount = rowCount;
+	public void setCcdType(CcdType ccdType) {
+		this.ccdType = ccdType;
+	}
+
+	public CcdGain getCcdGain1() {
+		return ccdGain1;
+	}
+	
+	public void setCcdGain1(CcdGain ccdGain1) {
+		this.ccdGain1 = ccdGain1;
+	}
+
+	public CcdGain getCcdGain2() {
+		return ccdGain2;
+	}
+
+	public void setCcdGain2(CcdGain ccdGain2) {
+		this.ccdGain2 = ccdGain2;
+	}
+
+	public CcdGain getCcdGain3() {
+		return ccdGain3;
+	}
+
+	public void setCcdGain3(CcdGain ccdGain3) {
+		this.ccdGain3 = ccdGain3;
+	}
+
+	public CcdGain getCcdGain0() {
+		return ccdGain0;
+	}
+
+	public void setCcdGain0(CcdGain ccdGain0) {
+		this.ccdGain0 = ccdGain0;
+	}
+	
+
+	public float getDefaultTemperature() {
+		return defaultTemperature;
+	}
+
+	public void setDefaultTemperature(float defaultTemperature) {
+		this.defaultTemperature = defaultTemperature;
+	}
+
+
+	public int getRowCount() {
+		return ccdType.getNormalReadoutHeight();
 	}
 
 	public int getColCount() {
-		return colCount;
-	}
-
-	public void setColCount(int colCount) {
-		this.colCount = colCount;
-	}
-
-	public int getColOffset() {
-		return colOffset;
-	}
-
-	public void setColOffset(int colOffset) {
-		this.colOffset = colOffset;
+		return ccdType.getNormalReadoutWidth();
 	}
 
 	public int getState() {
@@ -171,6 +249,16 @@ public class Ccd {
 		this.temperature = temperature;
 	}
 	
+	public double getTemperatureSetting() {
+		return temperatureSetting;
+	}
+
+
+	public void setTemperatureSetting(double temperatureSetting) {
+		this.temperatureSetting = temperatureSetting;
+	}
+
+
 	public float getNonLinearThreshold() {
 		return nonLinearThreshold;
 	}
@@ -179,6 +267,95 @@ public class Ccd {
 	public void setNonLinearThreshold(float nonLinearThreshold) {
 		this.nonLinearThreshold = nonLinearThreshold;
 	}
+
+	public int getDarkOvscnLeftColStart() {
+		return darkOvscnLeftColStart;
+	}
+
+	public void setDarkOvscnLeftColStart(int darkOvscnLeftColStart) {
+		this.darkOvscnLeftColStart = darkOvscnLeftColStart;
+	}
+
+	public int getDarkOvscnLeftColEnd() {
+		return darkOvscnLeftColEnd;
+	}
+
+	public void setDarkOvscnLeftColEnd(int darkOvscnLeftColEnd) {
+		this.darkOvscnLeftColEnd = darkOvscnLeftColEnd;
+	}
+
+	public int getDarkOvscnRightColStart() {
+		return darkOvscnRightColStart;
+	}
+
+	public void setDarkOvscnRightColStart(int darkOvscnRightColStart) {
+		this.darkOvscnRightColStart = darkOvscnRightColStart;
+	}
+
+	public int getDarkOvscnRightColEnd() {
+		return darkOvscnRightColEnd;
+	}
+
+	public void setDarkOvscnRightColEnd(int darkOvscnRightColEnd) {
+		this.darkOvscnRightColEnd = darkOvscnRightColEnd;
+	}
+
+	public int getCurrentGainNumber() {
+		return currentGainNumber;
+	}
+
+	public void setCurrentGainNumber(int currentGainNumber) {
+		this.currentGainNumber = currentGainNumber;
+	}
+
+	public float getLeftTemperature() {
+		return leftTemperature;
+	}
+
+	public void setLeftTemperature(float leftTemperature) {
+		this.leftTemperature = leftTemperature;
+	}
+
+	public float getRightTemperature() {
+		return rightTemperature;
+	}
+
+	public void setRightTemperature(float rightTemperature) {
+		this.rightTemperature = rightTemperature;
+	}
+
+	public float getCaseTemperature() {
+		return caseTemperature;
+	}
+
+	public void setCaseTemperature(float caseTemperature) {
+		this.caseTemperature = caseTemperature;
+	}
+
+
+
+	public int getChannelOffset0() {
+		return channelOffset0;
+	}
+
+
+
+	public void setChannelOffset0(int channelOffset0) {
+		this.channelOffset0 = channelOffset0;
+	}
+
+
+
+	public int getChannelOffset1() {
+		return channelOffset1;
+	}
+
+
+
+	public void setChannelOffset1(int channelOffset1) {
+		this.channelOffset1 = channelOffset1;
+	}
+
 
 
 	public String getDisplayString() {
@@ -270,5 +447,66 @@ public class Ccd {
 		
 		hotColumnListEncoded = RectListEncoder.encodeList(hotColumnList);
 	}
+	
+	public void setGain(int gainNumber) {
+		this.currentGainNumber = gainNumber;
+	}
+	
+	public CcdGain getCcdGain() {
+		if (currentGainNumber == 0) {
+			return ccdGain0;
+		} else if (currentGainNumber == 1) {
+			return ccdGain1;
+		} else if (currentGainNumber == 2) {
+			return ccdGain2;
+		} else if (currentGainNumber == 3) {
+			return ccdGain3;
+		} else {
+			return null;
+		}
+	}
+	
+	public CcdGain getCcdGain(int gainNumber) {
+		if (gainNumber == 0) {
+			return ccdGain0;
+		} else if (gainNumber == 1) {
+			return ccdGain1;
+		} else if (gainNumber == 2) {
+			return ccdGain2;
+		} else if (gainNumber == 3) {
+			return ccdGain3;
+		} else {
+			return null;
+		}
 
+	}
+
+
+	public List<CcdGain> getCcdGainList() {
+		List<CcdGain> ccdGainList = new ArrayList<CcdGain>();
+		ccdGainList.add(ccdGain0);
+		ccdGainList.add(ccdGain1);
+		ccdGainList.add(ccdGain2);
+		ccdGainList.add(ccdGain3);
+		return ccdGainList;
+	}
+	
+	public boolean isNewRecord() {
+		return ccdId == null;
+	}
+
+
+	@Override
+	public boolean equals(Object obj) {
+		
+		if (obj instanceof Ccd) {
+			Ccd candidate = (Ccd)obj;
+			return candidate.getCcdId().longValue() == getCcdId().longValue();
+		}
+		
+		
+		return false;
+	}
+
+	
 }

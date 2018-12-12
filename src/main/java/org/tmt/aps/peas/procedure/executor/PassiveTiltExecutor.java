@@ -27,6 +27,7 @@ import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -157,7 +158,8 @@ public class PassiveTiltExecutor {
 					try {
 						
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), 1, new Date(), currentRefMap);
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getLeftTemperature(), 
+								physicalModel.getInstrument().getCcd().getRightTemperature(), 1, new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {
 
@@ -206,11 +208,22 @@ public class PassiveTiltExecutor {
 			readyCameraSubflow.execute(procedure);
 			procedureExecutionState.setPercentComplete(20);
 			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
+			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
+			
 			// Set up the only iteration as the current output target
 			PassiveTiltIterationOutput pio = new PassiveTiltIterationOutput();
 			procedureExecutionState.setCurrentOutputTarget(pio);
@@ -262,7 +275,7 @@ public class PassiveTiltExecutor {
 			List<FloatPoint> actPosList = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getPrimaryActPos());
 			// lpz = local piston zeroed on a segment
 			// TODO: the result here should be a TtOffsetsToActsResult object
-			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, procedureConfig.getPupilMask().getSecPerPixel(),
+			float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, startupComputationsResult.getArcsecPerPixel(),
 					centroidOffsetsResult.getCartesianCentroidOffsets(), globalConfig.getMirrorList());
 
 			// Decompose the calculated actuators into pure tip/tilt and pure piston.
@@ -342,6 +355,10 @@ public class PassiveTiltExecutor {
 				long waitPeriodMs =  Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
 
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 

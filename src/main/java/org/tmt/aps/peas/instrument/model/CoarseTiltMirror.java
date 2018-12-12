@@ -135,4 +135,23 @@ public class CoarseTiltMirror implements DeviceStates {
 		this.stateY = stateY;
 	}
 	
+	public String getRawStateXDisplayString() {
+		if (stateX > 1 || stateX < 0) {
+			return "Unknown";
+		} else {
+			return (stateX == STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
+
+	public String getRawStateYDisplayString() {
+		if (stateY > 1 || stateY < 0) {
+			return "Unknown";
+		} else {
+			return (stateY == STATE_IN_TRANSIT) ? "In Transit" : "In Position";
+		}
+
+	}
+
+	
 }

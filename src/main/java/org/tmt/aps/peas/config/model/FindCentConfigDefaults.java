@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
@@ -24,8 +25,10 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Table(name = "FindCentConfigDefaults")
 @PrimaryKeyJoinColumn(name="findCentConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfigDefaults o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.filterType f "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and f.filterTypeId = :filterTypeId and o.spotType = :spotType" )
+	@NamedQuery(name = "findByMaskType", query = "SELECT o from FindCentConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
+			+ "INNER JOIN FETCH o.filterType f INNER JOIN FETCH o.ccdType t "
+			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and f.filterTypeId = :filterTypeId and "
+			+ "t.ccdTypeId = :ccdTypeId and o.spotType = :spotType" )
 })
 public class FindCentConfigDefaults extends FindCentConfig {
 
@@ -38,6 +41,11 @@ public class FindCentConfigDefaults extends FindCentConfig {
 	@JoinColumn(name = "filterTypeId")
 	private FilterType filterType;
 
+	@ManyToOne
+	@JoinColumn(name = "ccdTypeId")
+	private CcdType ccdType;
+
+	
 	int spotType;
 	
 	public int getSpotType() {

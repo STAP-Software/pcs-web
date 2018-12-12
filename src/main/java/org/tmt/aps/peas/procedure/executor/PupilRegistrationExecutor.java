@@ -23,6 +23,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -31,6 +32,7 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -173,11 +175,20 @@ public class PupilRegistrationExecutor {
 			/*                 Ready Camera               */
 			/**********************************************/			
 			readyCameraSubflow.execute(procedure);
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 
 			statusLogger.log("procedure.using_curr_frame");
 			statusLogger.log("procedure.trials", procedureConfig.getNumberOfTrials());
 
 			procedureExecutionState.setPercentComplete(20);
+
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			
 			// Set up the only iteration as the current output target
@@ -254,6 +265,11 @@ public class PupilRegistrationExecutor {
 			
 			// fill the procedure output
 			procedureOutput.addPupilRegistrationIterationOutput(pio);
+			
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 				
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 

@@ -6,6 +6,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
+
 /**
  * Base procedure output class containing accessor and utility methods
  * @author smichaels
@@ -23,6 +25,8 @@ public class ProcedureOutput implements ProcedureOutputable {
 	Map<String, ProcedureOutputValue> procedureOutputValueMap;
 
 	ProcedureDecisionLog procedureDecisionLog = new ProcedureDecisionLog();
+	
+	StartupComputationsResult startupComputationsResult = new StartupComputationsResult();
 	
 	public Long getProcedureId() {
 		return procedureId;
@@ -130,6 +134,14 @@ public class ProcedureOutput implements ProcedureOutputable {
 		this.procedureDecisionLog = procedureDecisionLog;
 	}
 	
+	public StartupComputationsResult getStartupComputationsResult() {
+		return startupComputationsResult;
+	}
+
+	public void setStartupComputationsResult(StartupComputationsResult startupComputationsResult) {
+		this.startupComputationsResult = startupComputationsResult;
+	}
+
 	/**
 	 * Utility method to return a list of a particular result class type object, over all iterations
 	 * @param resultFieldName the field name of the result class in the procedure iteration class

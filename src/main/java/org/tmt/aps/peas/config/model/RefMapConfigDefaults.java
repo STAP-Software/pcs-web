@@ -16,6 +16,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Transient;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -32,8 +33,8 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 @Table(name = "RefMapConfigDefaults")
 @NamedQueries({
 	@NamedQuery(name = "findByMaskTypeAndFilterType", query = "SELECT o from RefMapConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
-			+ "INNER JOIN FETCH o.filterType ft INNER JOIN FETCH o.instrument i "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and ft.filterTypeId = :filterTypeId and i.instrumentId = :instrumentId " )
+			+ "INNER JOIN FETCH o.filterType ft INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t "
+			+ "where p.pupilMaskTypeId = :pupilMaskTypeId and ft.filterTypeId = :filterTypeId and i.instrumentId = :instrumentId and t.ccdTypeId = :ccdTypeId " )
 })
 public class RefMapConfigDefaults {
 
@@ -43,6 +44,7 @@ public class RefMapConfigDefaults {
 
 	float integrationTime; 
 	int referenceBeamNum;
+	int ccdGainNumber;
 	
 	@ManyToOne
 	@JoinColumn (name="pupilMaskTypeId")
@@ -55,6 +57,10 @@ public class RefMapConfigDefaults {
 	@ManyToOne
 	@JoinColumn (name="instrumentId")
 	private Instrument instrument;
+
+	@ManyToOne
+	@JoinColumn (name="ccdTypeId")
+	private CcdType ccdType;
 
 	@Transient
 	private ReferenceBeam referenceBeam;
@@ -106,6 +112,14 @@ public class RefMapConfigDefaults {
 
 	public void setReferenceBeam(ReferenceBeam referenceBeam) {
 		this.referenceBeam = referenceBeam;
+	}
+
+	public int getCcdGainNumber() {
+		return ccdGainNumber;
+	}
+
+	public void setCcdGainNumber(int ccdGainNumber) {
+		this.ccdGainNumber = ccdGainNumber;
 	}
 	
 	

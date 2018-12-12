@@ -4,7 +4,8 @@
 <script type="text/javascript">  
 //<![CDATA[
 
-var sideLen = 77
+var sideLen = 7
+
 var hexRadius = (Math.sqrt(3.0)/2.0) * sideLen
            
 var resizing = false;   
@@ -107,10 +108,14 @@ function drawEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 	// the max length will then be the length of the hexRadius
 	var scaleFactor = hexRadius / maxLen;  
 	
+	var centerX = 512;
+	var centerY = 512;
+
+	
 	for (var i = 0; i < xHexCenterArray.length; i++) {
 		
-		var x = parseFloat(xHexCenterArray[i])
-		var y = parseFloat(yHexCenterArray[i])
+		var x = centerX + parseFloat(xHexCenterArray[i]) * sideLen
+		var y = centerY - parseFloat(yHexCenterArray[i]) * sideLen
 								
 		drawHexCentered(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
 	}
@@ -119,15 +124,13 @@ function drawEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 	
 	for (var i = 0; i < 84; i++) {
 		
-		var a = sideLen * 3.0 / 4.0;
-		var b = sideLen * Math.sqrt(3.0) / 4.0;
+		//var a = sideLen * 3.0 / 4.0;
+		//var b = sideLen * Math.sqrt(3.0) / 4.0;
 		// The x-coordinates are in units of 0.75a, where a is the hexagon side (eg, 900 mm).  The y-coordinates are in units of sqrt(3)/4 times a
 		
-		var centerX = 512;
-		var centerY = 512;
 		
-		var x = centerX + parseFloat(xEdgeArray[i]) * a;
-		var y = centerY - parseFloat(yEdgeArray[i]) * b;
+		var x = centerX + parseFloat(xEdgeArray[i]) * sideLen;
+		var y = centerY - parseFloat(yEdgeArray[i]) * sideLen;
 						
 		// if useForAnalysis, rowFlagOut are 1, then draw a line, otherwise a circle
 		
@@ -325,8 +328,8 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			
 			<h:inputHidden id="edgeNormAngles" value="#{visualizationController.edgeNormAngles}" />
 			
-     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentDefXs}" />
-			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentDefYs}" />
+     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentersX}" />
+			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentersY}" />
 			
  			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
     			

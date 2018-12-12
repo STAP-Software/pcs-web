@@ -173,6 +173,23 @@ public class FloatPointListEncoder {
 	}
 	
 	/**
+	 * Multiplies all points in a list by a factor
+	 * @param pointList the list to multiply to
+	 * @param factor the factor to multiply the array by
+	 * @return a list of FloatPoints equal to the array of input points multiplied by factor
+	 */
+	public static List<FloatPoint> multiplyIntPoints(List<Point> pointList, float factor) {
+		
+		List<FloatPoint> newList = new ArrayList<FloatPoint>();
+		for (Point point : pointList ) {
+			newList.add(point.prod(factor));
+		}
+		return newList;
+	}
+	
+
+	
+	/**
 	 * Extract the x-coordinates from a list of points
 	 * @param pointList the list to extract from
 	 * @return an array of float containing the extracted x-coordinates

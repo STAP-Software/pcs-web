@@ -46,10 +46,11 @@ public class IterationMgmt {
 	 * @param procedureTypeId the procedure type, e.g. passive tilt, fine screen, etc
 	 * @return the option list
 	 */
-	public List<IterationListConfigOption> findIterationListConfigOptions(Long procedureTypeId, Long instrumentId) {
+	public List<IterationListConfigOption> findIterationListConfigOptions(Long procedureTypeId, Long instrumentId, Long ccdTypeId) {
 		TypedQuery<IterationListConfigOption> query = em.createNamedQuery("findIterationListConfigOptions", IterationListConfigOption.class);
 		query.setParameter("procedureTypeId", procedureTypeId);
 		query.setParameter("instrumentId", instrumentId);
+		query.setParameter("ccdTypeId", ccdTypeId);
 		
 		return query.getResultList();	
 	}	

@@ -14,6 +14,7 @@ import javax.persistence.TypedQuery;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
@@ -185,6 +186,27 @@ public class CameraDefMgmt {
 		query.setParameter("instrumentId", instrumentId);
 
 		return query.getSingleResult();
+	}
+
+	/**
+	 * Returns an ccd record for the instrument id.  
+	 * to that instrument.
+	 * @param instrumentId the instrument id to search Ccds for
+	 * @return the Ccd matching the passed instrument id
+	 */
+	public Ccd findInstrumentCcd(Long instrumentId) throws Exception {
+
+		TypedQuery<Ccd> query = em.createNamedQuery("findInstrumentCcd", Ccd.class);
+		query.setParameter("instrumentId", instrumentId);
+
+		List<Ccd> ccdList = query.getResultList();
+		
+		if (ccdList.isEmpty()) {
+			throw new Exception("No Ccd associated with instrument: " + instrumentId);
+		}
+		
+		return ccdList.iterator().next();
+
 	}
 
 	/**

@@ -11,6 +11,7 @@ import javax.ejb.Startup;
 
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 
 /**
  * Scheduled Singleton EJB that polls PCS camera at two second intervals.  Calls {@link CameraMgmt#refreshStatus()} every two seconds.
@@ -18,11 +19,16 @@ import org.tmt.aps.peas.common.MessageGenerator;
  */
 @Singleton
 @Startup
-@DependsOn({ "CameraMgmt", "PeasProperties" })
+@DependsOn({ "CameraMgmt", "CcdMgmt", "PeasProperties", "ExtInfConfigState" })
 @Lock(LockType.READ)
 public class CameraPoller {
 	@EJB
 	CameraMgmt cameraMgmt;
+	@EJB
+	CcdMgmt ccdMgmt;
+	@EJB
+	ExtInfConfigState extInfConfigState;
+
 
 	private boolean doPoll = true;
 
@@ -39,8 +45,16 @@ public class CameraPoller {
 
 			try {
 
-				//logger.info("refreshing camera status");
-				cameraMgmt.refreshStatus();
+				if (!extInfConfigState.getExtInfConnectConfig().isCameraInitializing()) {
+					//logger.info("refreshing camera status");
+					cameraMgmt.refreshStatus();
+				}
+				
+				if (!extInfConfigState.getExtInfConnectConfig().isCcdInitializing() && !extInfConfigState.getExtInfConnectConfig().isCameraInitializing()) {
+
+					// refresh the CCD state
+					ccdMgmt.refreshStatus();
+				}
 
 			} catch (Throwable e) {
 				logger.error(MessageGenerator.generateMessage("generic.error"), e);

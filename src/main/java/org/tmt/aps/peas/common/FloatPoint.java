@@ -123,12 +123,21 @@ public class FloatPoint {
 	}
 	
 	/**
-	 * Takes the procduct of this FloatPoint and the passed FloatPoint
+	 * Takes the procduct of this FloatPoint and the passed scalar
 	 * @param other coordinate to multiply by
 	 * @return a new FloatPoint that is the product of this FloatPoint and the passed FloatPoint
 	 */
 	public FloatPoint prod(double other) {
 		return new FloatPoint((float)(this.x * other), (float)(this.y * other));
+	}
+
+	/**
+	 * Takes the procduct of this FloatPoint and the passed FloatPoint
+	 * @param other coordinate to multiply by
+	 * @return a new FloatPoint that is the product of this FloatPoint and the passed FloatPoint
+	 */
+	public FloatPoint prod(FloatPoint other) {
+		return new FloatPoint((float)(this.x * other.x), (float)(this.y * other.y));
 	}
 
 	

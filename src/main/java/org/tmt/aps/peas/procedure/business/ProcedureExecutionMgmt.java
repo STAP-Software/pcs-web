@@ -7,7 +7,6 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.UndeclaredThrowableException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
@@ -37,11 +36,11 @@ import org.tmt.aps.peas.config.model.FIConfig;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.FindCentConfigDefaults;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfig;
+import org.tmt.aps.peas.config.model.FrameCorrectionConfigDefaults;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.config.model.IterableEntity;
 import org.tmt.aps.peas.config.model.IterationListConfig;
-import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfig;
 import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
@@ -52,6 +51,7 @@ import org.tmt.aps.peas.config.model.PupilRegErrorConfigDefaults;
 import org.tmt.aps.peas.config.model.RefMapConfigDefaults;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
@@ -64,12 +64,14 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
+import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureIterationOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -197,7 +199,7 @@ public class ProcedureExecutionMgmt {
 			}
 
 		}
-
+		
 		procedure.setExecutionStartTime(new Date());
 		procedure.setProcedureState(Procedure.PROCEDURE_STATE_EXECUTING);
 
@@ -224,6 +226,8 @@ public class ProcedureExecutionMgmt {
 			
 			// apply integration times set in the UI
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
+			// apply ccd gains set in the UI
+			iterationEntityCache.applyCcdGainList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), iterationListConfig);
 						
 			// re-encode list for saving
 			IterationValueList iterationValueList = iterationListConfig.getIterationValueList();
@@ -240,15 +244,17 @@ public class ProcedureExecutionMgmt {
 
 		frameDisplayMgmt.init();
 
+
 	}
 	
 	public void setupFindCentDefaults(Procedure procedure) {
 		// get FindCentDefaults and create a procedure related copy
 		PupilMaskType pupilMaskType = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMaskType();
 		FilterType filterType = procedure.getProcedureConfigSet().getProcedureConfig().getFilterType();
+		CcdType ccdType = procedure.getInstrument().getCcd().getCcdType();
 		
-		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR);
-		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL);
+		FindCentConfigDefaults findCentConfigDefaultsInterior = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_INTERIOR, ccdType.getCcdTypeId());
+		FindCentConfigDefaults findCentConfigDefaultsPeripheral = globalConfigMgmt.findFindCentConfig(pupilMaskType.getPupilMaskTypeId(), filterType.getFilterTypeId(), Constants.SPOT_TYPE_PERIPHERAL, ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setFindCentConfigInterior(new FindCentConfig(findCentConfigDefaultsInterior));
 		procedure.getProcedureConfigSet().setFindCentConfigPeripheral(new FindCentConfig(findCentConfigDefaultsPeripheral));
 
@@ -282,6 +288,8 @@ public class ProcedureExecutionMgmt {
 				procedureException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
 			}
 
+		} catch (BadDarkMedianValueException e) {
+			procedureException = e;
 		} catch (Throwable e) {
 			procedureException = e;
 		}
@@ -358,7 +366,7 @@ public class ProcedureExecutionMgmt {
 						procedureCcdFrame.setCentroidMap(centroidMap);
 					}
 					
-					frameMgmt.associateCcdFrame(procedureCcdFrame);
+					frameMgmt.associateCcdFrame(procedureCcdFrame, procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource());
 
 					logger.debug("performProcedureCompletion::persisting frame");
 
@@ -504,6 +512,8 @@ public class ProcedureExecutionMgmt {
 		// store with procedure config set
 		procedure.getProcedureConfigSet().setGlobalConfig(new GlobalConfig(globalConfigDefaults));
 
+		// extract CcdType for use later
+		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		
 		// if we are a ref map being called as a subprocedure, we want to use the super-procedure's values for mask, filter and sufsGroup
 		if (procedureTypeId.equals(ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP) && isSubProcedure) {
@@ -530,9 +540,10 @@ public class ProcedureExecutionMgmt {
 				
 				// use reference beam based on SUFS group of super procedure
 				int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroupNumber).getDefaultRefBeamNum();
-				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+				ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum,  physicalModel.getInstrument().getInstrumentId());
 				procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 			
+
 			}
 			
 			
@@ -563,15 +574,17 @@ public class ProcedureExecutionMgmt {
 			// these get set into procedure config
 			setupCreateRefMapDefaults(procedure, physicalModel.getInstrument().getInstrumentId(),
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), 
-					procedureConfig.getFilter().getFilterType().getFilterTypeId());
+					procedureConfig.getFilter().getFilterType().getFilterTypeId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		}
 
 		// select defaults based on mask and light source
 		reloadFIConfig(procedure, physicalModel.getInstrument().getInstrumentId());
 
-		// set centroid offsets calculation defaults based on procedure type
+		// set centroid offsets calculation defaults based on procedure type and ccdType
+		
 		CentroidOffsetsConfigDefaults centroidOffsetsConfigDefaults = globalConfigMgmt
-				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId());
+				.findCentroidOffsetsConfig(procedureType.getProcedureTypeId(), ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setCentroidOffsetsConfig(new CentroidOffsetsConfig(centroidOffsetsConfigDefaults));
 
 		// select defaults based on pupil mask
@@ -595,7 +608,7 @@ public class ProcedureExecutionMgmt {
 
 		// get AutoRefMapDefaults based on procedure type
 		AutoRefMapConfigDefaults autoRefMapConfigDefaults = globalConfigMgmt
-				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId());
+				.findAutoRefMapConfig(procedure.getProcedureType().getProcedureTypeId(), ccdType.getCcdTypeId());
 		procedure.getProcedureConfigSet().setAutoRefMapConfig(new AutoRefMapConfig(autoRefMapConfigDefaults));
 
 		// get AutoCenterTelDefaults
@@ -603,6 +616,10 @@ public class ProcedureExecutionMgmt {
 				.findAutoCenterTelConfig(procedure.getProcedureType().getProcedureTypeId());
 		procedure.getProcedureConfigSet().setAutoCenterTelConfig(new AutoCenterTelConfig(autoCenterTelConfigDefaults));
 
+		// get FrameCorrectionDefaults
+		FrameCorrectionConfigDefaults frameCorrectionDefaults = globalConfigMgmt.findFrameCorrectionConfig();
+		procedure.getProcedureConfigSet().setFrameCorrectionConfig(new FrameCorrectionConfig(frameCorrectionDefaults));
+		
 		
 		if (procedureType.isSufs()) {
 		
@@ -622,7 +639,7 @@ public class ProcedureExecutionMgmt {
 			
 			procedure.getProcedureConfigSet().setIterationListConfig(iterationListConfig);
 			
-			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 			
 			// load up the search range for NB phasing
 			NbFilterSeqConfigDefaults nbFilterSeqConfigDefaults = globalConfigMgmt.findNbFilterSeqConfig(iterationListConfig.getIterationListConfigId());
@@ -678,8 +695,8 @@ public class ProcedureExecutionMgmt {
 	 * @param pupilMaskTypeId the pupil mask type currently selected
 	 * @param filterTypeId the filter type currently selected
 	 */
-	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
-		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId);
+	public void setupCreateRefMapDefaults(Procedure procedure, Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, Long ccdTypeId) {
+		RefMapConfigDefaults refMapConfigDefaults = globalConfigMgmt.findRefMapConfigDefaults(instrumentId, pupilMaskTypeId, filterTypeId, ccdTypeId);
 
 		// Set up default ref beam and int time
 
@@ -693,8 +710,17 @@ public class ProcedureExecutionMgmt {
 			procedure.getProcedureConfigSet().getProcedureConfig().setSufsGroup(sufsGroup);
 			
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, instrumentId);
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
+			
+			// the integration time depends on ref beam 
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+
 			
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
 					physicalModel.getInstrument().getInstrumentId(), new Long(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
@@ -703,8 +729,11 @@ public class ProcedureExecutionMgmt {
 
 		} else {
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(refMapConfigDefaults.getReferenceBeam());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
+			// set the ccdGain number to the value in refMapConfigDefaults
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(refMapConfigDefaults.getCcdGainNumber());
 		}
-		procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(refMapConfigDefaults.getIntegrationTime());
+
 
 		// make the list of possible int times equal to the 'one' we have
 		List<Float> integrationTimeList = new ArrayList<Float>();
@@ -723,11 +752,13 @@ public class ProcedureExecutionMgmt {
 		if (!procedure.getProcedureType().isCenterTelescope()) {
 
 			PupilMask selectedMask = procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask();
+			CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		
 			// reload FI Config Defaults when pupil mask changes
 			FIConfigDefaults fiConfigDefaults = globalConfigMgmt.findFIConfigDefaults(instrumentId, 
 					selectedMask.getPupilMaskType().getPupilMaskTypeId(),
-					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+					procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), ccdType.getCcdTypeId(),
+					procedure.getProcedureType().isPupilRegistration());
 		
 			procedure.getProcedureConfigSet().setFiConfig(new FIConfig(fiConfigDefaults));
 		}

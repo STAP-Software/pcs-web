@@ -34,8 +34,11 @@ import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.ExtInfFactory;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.Procedure;
@@ -63,6 +66,8 @@ public class SessionController implements Serializable {
 	@EJB
 	CameraMgmt cameraMgmt;
 	@EJB
+	CcdMgmt ccdMgmt;
+	@EJB
 	ConstantsCache constantsCache;
 	@EJB
 	GlobalConfigMgmt globalConfigMgmt;
@@ -74,6 +79,9 @@ public class SessionController implements Serializable {
 	ExtInfConfigState extInfConfigState;
 	@EJB
 	ExtInfFactory extInfFactory;
+	@EJB
+	PhysicalModel physicalModel;
+
 
 
 
@@ -105,7 +113,11 @@ public class SessionController implements Serializable {
 	boolean ifCommandPermission;
 	boolean configPermission;
 	boolean includeTestData;
+	
+	boolean cameraInitialized = false;
+	boolean ccdInitialized = false;
 
+	
 	/**
 	 * Initialization method: creates a new current session if one does not exist
 	 * Sets up external interfaces to start up either in simulation or operational mode
@@ -141,7 +153,14 @@ public class SessionController implements Serializable {
 				getExtInfConnectConfig().setCcdEnabled(true);
 				getExtInfConnectConfig().setAcsEnabled(true);
 				getExtInfConnectConfig().setDcsEnabled(true);
+				
+				
+				// initialize the camera once the page is loaded
+				cameraInitialized = false;
+				ccdInitialized = false;
+
 			}
+						
 			
 
 		} catch (Exception e) {
@@ -306,6 +325,8 @@ public class SessionController implements Serializable {
 	public void setIncludeTestData(boolean includeTestData) {
 		this.includeTestData = includeTestData;
 	}
+
+
 
 	public int procedureSortFunction(Object o1, Object o2) {
 		Procedure p1 = (Procedure) o1;
@@ -493,7 +514,36 @@ public class SessionController implements Serializable {
 		return lastProcedure;
 
 	}
+	
+	/**
+	 * returns the id of the next procedure in the currently viewed session, 
+	 * given the current procedure id.
+	 * @param currentProcedureId
+	 * @return
+	 */
+	public Procedure getSessionNextProcedure(Procedure currentProcedure) {
+		List<Procedure> pList = session.getProcedureList(); // the currently viewed session
 
+		if (pList == null || pList.size() == 0) {
+			return null;
+		}
+				
+		boolean returnNext = false;
+		for (Procedure procedure : pList) {
+			if (returnNext) {
+				return procedure;
+			}
+			
+			Long candidateId = procedure.getProcedureId();
+			if (candidateId.longValue() == currentProcedure.getProcedureId().longValue()) {
+				returnNext = true;
+			}
+			
+		}
+
+		return null;
+	}
+	
 	/**
 	 * JSF event listener called when the User mode button is clicked
 	 * Pops up the login dialog
@@ -569,6 +619,7 @@ public class SessionController implements Serializable {
 		if (ok) {
 			extInfSimulationMode = false;
 			requestContext.update("menuForm");
+						
 		} else {
 			extInfSimulationMode = true;
 			// turn off all the ext interfaces
@@ -579,6 +630,7 @@ public class SessionController implements Serializable {
 		
 		requestContext.update("extInfMode");
 
+		
 	}
 	
 	/**
@@ -593,10 +645,20 @@ public class SessionController implements Serializable {
 			Future<Integer> twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.EXTENDED);
 
 			Utils.waitForComplete(twoPosCommandFuture);
+			
+			Future<Integer> stowFuture = cameraMgmt.stowCamera();
+			
+			Utils.waitForComplete(stowFuture);
+			
+			cameraInitialized = false;
+			ccdInitialized = false;
+			
 						
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
 		}
+		
+		
 		
 		// turn off all the ext interfaces
 		getExtInfConnectConfig().reset();
@@ -607,12 +669,108 @@ public class SessionController implements Serializable {
 		FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Session Ended", ""));
 	}
 
+
+	public void doCheckStartSession() {
+		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			if (!cameraInitialized) {
+				cameraInitialized = doInitCamera();				
+			}
+		}
+		if (extInfConfigState.getExtInfConnectConfig().isCcdEnabled()) {
+			if (!ccdInitialized && cameraInitialized) {
+				ccdInitialized = doInitCcd();
+				
+			}
+		}
+	}
+	
+	public boolean doInitCamera() {
+		
+		try {
+						
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(true);
+
+			// wait for 2 seconds to allow pollers to complete
+			Thread.sleep(2000);
+			
+			// check if the camera overall status is ready
+			CameraQueryResult queryResult = cameraMgmt.queryCamera(CameraCommand.DEVICE_CODE_OVERALL_STATUS);
+			
+			// if status is not ready, init camera
+			if (queryResult.getIntValue() != CameraQueryResult.READY) {
+			
+				// initialize camera
+				Future<Integer>  instFuture = cameraMgmt.initializeCamera();
+				Utils.waitForComplete(instFuture);
+				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "Camera Initialized", ""));
+			} 
+			
+			return true;
+			
+		} catch (Throwable t) {
+			
+			t.printStackTrace();
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "Camera Initialization Failed: "  + buf, ""));
+			
+			return false;
+			
+		} finally {
+			extInfConfigState.getExtInfConnectConfig().setCameraInitializing(false);			
+		}
+	}
+	
+	
+	public boolean doInitCcd() {
+
+		try {
+			
+			// command CCD to initialize
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(true);
+			
+			// set default temperature
+			float defaultTemperature = instrument.getCcd().getDefaultTemperature();
+			Future<Integer> temperatureFuture = ccdMgmt.setTemp(defaultTemperature);
+			Utils.waitForComplete(temperatureFuture);
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_INFO, "CCD Initialized", ""));
+			
+			return true;
+
+		} catch (Throwable t) {
+			
+			Throwable next = t;
+			StringBuffer buf = new StringBuffer();
+			buf.append(next.getMessage());
+			while (next.getCause() != null) {
+				buf.append(" Caused By  " + next.getCause());
+				next = next.getCause();
+			}
+			
+			FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_ERROR, "CCD Initialization Failed: "  + buf, ""));
+			
+			return false;
+		} finally {
+			extInfConfigState.getExtInfConnectConfig().setCcdInitializing(false);
+		}
+		
+		
+	}
+	
+	
 	/**
 	 * @return true if simulation mode should be rendered to the screen
 	 */
 	public boolean getRenderSimulationMode() {
 		//return false;
-		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus();
+		return extInfSimulationMode && getExtInfConnectConfig().isCameraHeartbeatStatus() && getExtInfConnectConfig().isCcdHeartbeatStatus();
 	}
 
 	/**

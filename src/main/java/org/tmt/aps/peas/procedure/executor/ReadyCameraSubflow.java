@@ -15,8 +15,11 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmtAsync;
 import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
@@ -40,11 +43,15 @@ public class ReadyCameraSubflow {
 	@EJB
 	private StatusLogger statusLogger;
 	@EJB
-	private CameraMgmt cameraMgmt;
+	private CameraMgmt cameraMgmt;	
+	@EJB
+	private CcdMgmt ccdMgmt;
 	@EJB
 	private CameraMgmtAsync cameraMgmtAsync;
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
+	@EJB
+	private PhysicalModel physicalModel;
 
 
 	
@@ -152,10 +159,24 @@ public class ReadyCameraSubflow {
 				statusLogger.log("camera.cmd.two_pos_device", "extend");
 				twoPosCommandFuture = cameraMgmt.commandTwoPositionDevice(CameraCommand.RETRACTED);
 			}
+			
+		
+			statusLogger.log("ccd.cmd.gain", procedureConfig.getCcdGainNumber());
+			Future<Integer> ccdGainFuture = ccdMgmt.setGain(procedureConfig.getCcdGainNumber());
+			
+			// get the gain we will have if successful to set the offsets right now without having to wait
+			CcdGain ccdGain = physicalModel.getInstrument().getCcd().getCcdGain(procedureConfig.getCcdGainNumber());
+			statusLogger.log("ccd.cmd.offset", ccdGain.getGainOffsetChannel0(), ccdGain.getGainOffsetChannel1());
+			Future<Integer> ccdOffsetFuture = ccdMgmt.setOffset(ccdGain.getGainOffsets());
 
+			// open shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.OPEN);
+
+			
 			// wait for all commands to complete
 			long waitPeriodMs = Utils.waitForComplete(pupilMaskCommandFuture, filterCommandFuture, twoPosCommandFuture, refBeamFuture,
-					coarseMirrorCommandFuture, fineMirrorCommandFuture);
+					coarseMirrorCommandFuture, fineMirrorCommandFuture, ccdGainFuture, ccdOffsetFuture);
 			statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 
 			

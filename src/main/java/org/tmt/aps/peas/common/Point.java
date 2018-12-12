@@ -120,4 +120,9 @@ public class Point {
 		return new Point(p1.x * val, p1.y * val);
 	}
 
+	public FloatPoint prod(float factor) {
+		
+		return new FloatPoint(x * factor, y * factor);
+	}
+
 }

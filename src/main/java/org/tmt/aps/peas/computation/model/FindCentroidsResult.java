@@ -26,12 +26,12 @@ public class FindCentroidsResult {
 	 * @param peak
 	 * @param findCentStatus
 	 */
-	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak, int[] findCentStatus) {
+	public FindCentroidsResult(float[] xCent, float[] yCent, float[] intensity, float[] peak, float[] rawPeak, int[] findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< xCent.length; i++) {
-			Subimage subimage = new Subimage(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], findCentStatus[i]);
+			Subimage subimage = new Subimage(new FloatPoint(xCent[i], yCent[i]), intensity[i], peak[i], rawPeak[i], findCentStatus[i]);
 			subimageList.add(subimage);
 		}
 	}
@@ -43,12 +43,12 @@ public class FindCentroidsResult {
 	 * @param peak
 	 * @param findCentStatus
 	 */
-	public FindCentroidsResult(FloatPoint[] centroidList, float[] intensity, float[] peak, int[] findCentStatus) {
+	public FindCentroidsResult(FloatPoint[] centroidList, float[] intensity, float[] peak, float[] rawPeak, int[] findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< centroidList.length; i++) {
-			Subimage subimage = new Subimage(centroidList[i], intensity[i], peak[i], findCentStatus[i]);
+			Subimage subimage = new Subimage(centroidList[i], intensity[i], peak[i], rawPeak[i], findCentStatus[i]);
 			subimageList.add(subimage);
 		}
 	}
@@ -60,12 +60,12 @@ public class FindCentroidsResult {
 	 * @param peak
 	 * @param findCentStatus
 	 */
-	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak, List<Integer> findCentStatus) {
+	public FindCentroidsResult(List<FloatPoint> centroidList, List<Float> intensity, List<Float> peak, List<Float> rawPeak, List<Integer> findCentStatus) {
 		
 		subimageList = new ArrayList<Subimage>();
 		
 		for (int i = 0; i< centroidList.size(); i++) {
-			Subimage subimage = new Subimage(centroidList.get(i), intensity.get(i), peak.get(i), findCentStatus.get(i));
+			Subimage subimage = new Subimage(centroidList.get(i), intensity.get(i), peak.get(i), rawPeak.get(i), findCentStatus.get(i));
 			subimageList.add(subimage);
 		}
 	}
@@ -105,7 +105,7 @@ public class FindCentroidsResult {
 			subimageList = new ArrayList<Subimage>();
 
 			for (int i = 0; i< centroidList.length; i++) {
-				Subimage subimage = new Subimage(centroidList[i], 0.0f, 0.0f, 0);
+				Subimage subimage = new Subimage(centroidList[i], 0.0f, 0.0f, 0.0f, 0);
 				subimageList.add(subimage);
 			}
 		} else {
@@ -151,6 +151,17 @@ public class FindCentroidsResult {
 		int i=0;
 		for (Subimage subimage : subimageList) {
 			peaks[i++] = subimage.getPeakIntensity();
+		}
+
+		return peaks;
+	}
+	
+	public float[] getRawPeakList() {
+		
+		float[] peaks = new float[subimageList.size()];
+		int i=0;
+		for (Subimage subimage : subimageList) {
+			peaks[i++] = subimage.getRawPeakIntensity();
 		}
 
 		return peaks;

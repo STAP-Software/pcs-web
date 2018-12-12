@@ -18,6 +18,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanUtils;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 
 /**
  * Configuration entity class representing the IterationListConfig table
@@ -90,7 +91,7 @@ public class IterationListConfig {
 		this.integrationTimeList = integrationTimeList;
 	}
 	
-	public void updateIntegrationTimeList(int lightSource) {
+	public void updateDisplayLists(int lightSource) {
 		// also populate the associated integration times
 		StringBuffer buf = new StringBuffer();
 		for (int index=0; index<getIterationValueList().getSize(); index++) {
@@ -105,9 +106,39 @@ public class IterationListConfig {
 		buf.deleteCharAt(buf.length()-1);
 		buf.deleteCharAt(buf.length()-1);
 		setIntegrationTimeList(buf.toString());
+		
+		
+		// also populate the associated gains
+		buf = new StringBuffer();
+		for (int index=0; index<getIterationValueList().getSize(); index++) {
+			
+			IterationValue iterationValue = getIterationValueList().getIterationValue(index);
+			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
+				CcdGain ccdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+				buf.append(ccdGain.getGainNumber() + ", ");
+			} else {
+				CcdGain ccdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+				buf.append(ccdGain.getGainNumber() + ", ");
+			}
+		}
+		buf.deleteCharAt(buf.length()-1);
+		buf.deleteCharAt(buf.length()-1);
+		setCcdGainList(buf.toString());
 	}
 
 
+	@Transient
+	String ccdGainList;
+	
+	public String getCcdGainList() {
+		return ccdGainList;
+	}
+
+	public void setCcdGainList(String ccdGainList) {
+		this.ccdGainList = ccdGainList;
+	}
+		
+	
 	public boolean equals(Object obj) {
 		if (obj instanceof IterationListConfig) {
 			IterationListConfig candidate = (IterationListConfig)obj;

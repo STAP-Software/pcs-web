@@ -65,9 +65,11 @@ public class ProcedureMgmt {
 			iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), 
 					procedure.getProcedureType().getProcedureTypeId());
 			
-			procedure.getProcedureConfigSet().getIterationListConfig().updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			procedure.getProcedureConfigSet().getIterationListConfig().updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		
 			iterationEntityCache.applyIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), 
+					procedure.getProcedureConfigSet().getIterationListConfig());
+			iterationEntityCache.applyCcdGainList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource(), 
 					procedure.getProcedureConfigSet().getIterationListConfig());
 		}
 		

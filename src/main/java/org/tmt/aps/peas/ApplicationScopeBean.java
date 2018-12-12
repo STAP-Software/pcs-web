@@ -158,6 +158,7 @@ public class ApplicationScopeBean implements Serializable {
 		}
 
 		String facesRedirect = request.getParameter("faces-redirect");
+		String test = request.getParameter("test");
 		String fromBreadcrumb = request.getParameter("from-breadcrumb");
 		
 		logger.debug("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
@@ -186,8 +187,13 @@ public class ApplicationScopeBean implements Serializable {
 		} else if (path.equals("/modules/config/missingSpots.xhtml")) {
 			missingSpotsController.doViewMissingSpots();
 		} else if (path.contains("/modules/procedure/procedurePerspective.") && facesRedirect != null) {
-			breadcrumbMenuBean.removeTo("Procedure #");
-			//procedureController.doViewProcedure();
+			
+			if (test != null) {
+				procedureController.doViewNextArchivedProcedure();
+			} else {
+				breadcrumbMenuBean.removeTo("Procedure #");
+				//procedureController.doViewProcedure();
+			}
 		} else if (path.equals("/modules/diagnostic/acsManualInterface.xhtml")) {
 			acsManualController.doViewAcsManualInterface();
 		} else if (path.equals("/modules/diagnostic/ccdDiagnostic.xhtml")) {

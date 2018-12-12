@@ -74,6 +74,7 @@
 				</h:panelGroup>
 				<p:poll async="true" immediate="true" interval="2" update="extInfMode :menuForm:endSessionBtn" />
 				
+				<p:remoteCommand name="checkStartSession" action="#{sessionController.doCheckStartSession}" update=":growl :errorGrowl" autoRun="true" />
 				
 				<div style="float:right;margin-right:30px;margin-top:20px;">
 				<h:outputText value="" style="color:#d4f8ff;font-size:14pt;text-shadow: 1px 1px 1px #bbb;" />
@@ -125,7 +126,7 @@
 		<ui:include src="modules/util/helpDialog.xhtml"/>
 		<ui:include src="modules/util/loginDialog.xhtml"/>
 		<ui:include src="modules/config/extInfDialog.xhtml"/>
-		<ui:include src="modules/util/sessionClosingDialog.xhtml"/>
+		<ui:include src="modules/util/sessionClosingDialog.xhtml"/>		
 
 
 

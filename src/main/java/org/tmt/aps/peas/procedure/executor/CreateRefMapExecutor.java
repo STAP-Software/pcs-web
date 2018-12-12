@@ -19,6 +19,7 @@ import javax.ejb.Startup;
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
@@ -134,6 +135,13 @@ public class CreateRefMapExecutor {
 			/*                 Ready Camera               */
 			/**********************************************/			
 			readyCameraSubflow.execute(procedure);
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+			
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
 
 			procedureExecutionState.setPercentComplete(25);
 			
@@ -159,6 +167,11 @@ public class CreateRefMapExecutor {
 				long waitPeriodMs = Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+			
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 
 			statusLogger.log("procedure.success",  procedure.getProcedureType().getProcedureTypeName());
 

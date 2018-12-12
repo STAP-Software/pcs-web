@@ -28,6 +28,7 @@ import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -158,7 +159,8 @@ public class CoarsePhasingExecutor {
 					try {
 						
 						computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
+								globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getLeftTemperature(), 
+								physicalModel.getInstrument().getCcd().getRightTemperature(),procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
 
 					} catch (AutoRefMapCheckException e) {
 
@@ -211,6 +213,15 @@ public class CoarsePhasingExecutor {
 			
 			logger.debug("light source 2 = " + procedureConfig.getLightSource());
 
+			
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
+
+			
 			int readyCameraTime = 10;
 			int trialsTime = 70;
         			
@@ -220,7 +231,8 @@ public class CoarsePhasingExecutor {
 					constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
 					constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 					procedure.getProcedureConfigSet().getFindCentConfigInterior(),
-					procedureConfig.getPupilMask(), procedureConfig.getFilter());
+					procedureConfig.getPupilMask(), procedureConfig.getFilter(), 
+					startupComputationsResult.getArcsecPerPixel());
 					
 			/**********************************************/
 			/*           Set up colorsteps                */
@@ -404,6 +416,12 @@ public class CoarsePhasingExecutor {
 
 		    statusLogger.log("procedure.cph.algorithm_complete");
 
+		    if (procedureOutput.getPhasingStatsResult().getGoodEdgeCount() < constantsCache.getPhasingConstants().getGoodEdgeCountThreshold()) {
+		    	String text = MessageGenerator.generateMessage("phasing.good_edge_warning",
+						procedureOutput.getPhasingStatsResult().getGoodEdgeCount(), constantsCache.getPhasingConstants().getGoodEdgeCountThreshold());
+		    	
+		    	userPromptMgmt.displayInfoDialog("Good Edge Count Below Threshold", text);
+		    }
 		    
 			procedureExecutionState.setPercentComplete(98);
 						
@@ -463,6 +481,11 @@ public class CoarsePhasingExecutor {
 				long waitPeriodMs =  Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+			
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 	
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 	

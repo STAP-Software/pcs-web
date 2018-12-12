@@ -15,11 +15,14 @@ import org.tmt.aps.peas.common.TriState;
 import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.computation.model.AutoCenterTelCheckResult;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
+import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 import org.tmt.aps.peas.procedure.exception.NonLinearIntensitiesException;
@@ -74,17 +77,23 @@ public class JavaComputations {
 		}
 	}
 
-	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdTemperature, int numIterations,
+	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, 
+			float ccdLeftTemperature, float ccdRightTemperature, int numIterations,
 			Date currentDate, RefBeamMap currentRefMap) throws AutoRefMapCheckException {
 
-		CameraState cameraState = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame()
-				.getCameraState();
+		CcdFrame refMapFrame = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame();
+		
+		CameraState cameraState = refMapFrame.getCameraState();
+		CcdState ccdState = refMapFrame.getCcdState();
 
-		if (Math.abs(ccdTemperature - cameraState.getCcdTemp()) > autoRefMapConfig.getCcdTempChangeThresh()) {
-			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdTemperature, cameraState.getCcdTemp());
-
+		if (Math.abs(ccdLeftTemperature - ccdState.getLeftTemperature()) > autoRefMapConfig.getCcdTempChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdLeftTemperature, ccdState.getLeftTemperature());
 		}
 
+		if (Math.abs(ccdRightTemperature - ccdState.getRightTemperature()) > autoRefMapConfig.getCcdTempChangeThresh()) {
+			throw new AutoRefMapCheckException("autorefmap.temp_change_limit_exceeded", ccdRightTemperature, ccdState.getRightTemperature());
+		}
+		
 		if (numIterations >= autoRefMapConfig.getNumTrialsLimit()) {
 			throw new AutoRefMapCheckException("autorefmap.num_trials_limit_exceeded", numIterations, autoRefMapConfig.getNumTrialsLimit());
 
@@ -169,17 +178,17 @@ public class JavaComputations {
 
 	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
 		
-		for (int i=0; i< centroidMap.getFindCentroidsResult().getPeakList().length; i++) {
-
-			if (centroidMap.getFindCentroidsResult().getPeakList()[i] > threshold) {
-				throw new NonLinearIntensitiesException();
-			}
-
+		float max = calcMax(centroidMap.getFindCentroidsResult().getRawPeakList());
+		
+		if (max > threshold) {
+			throw new NonLinearIntensitiesException(max, (float)threshold);
 		}
 
 	}
 
 	public static float getMedianValue(float[] inputs) {
+		
+		if (inputs.length == 0 ) return 0.0f;
 		
 		// clone the array 
 		float[] values = inputs.clone();
@@ -414,6 +423,16 @@ public class JavaComputations {
 		}
 		return max;
 	}
+	
+	public static float calcMax(float[] input) {
+		// sum absolute values of inputs
+		float max = 0.0f;
+		for (int i=0; i<input.length; i++) {
+			max = Math.max(max, input[i]);
+		}
+		return max;
+	}
+	
 	
 	public static float calcRss(float[] input, int[] useValue) {
 		// sum absolute values of inputs for which useValue = 1
@@ -902,5 +921,108 @@ public class JavaComputations {
 				
 		return modifiedControlMatrix;
 	}
+
+	/**
+	 * Calculates arcsecPerPixel for a pupil mask given the arcsecPerMeter pupil mask factor and the ccd pixel size
+	 * @param arcsecPerMeter
+	 * @param pixelSize for the CCD in meters
+	 * @return arcsec per pixel
+	 */
+	public static float calcArcSecPerPixel(float arcsecPerMeter, float pixelSize) {
+		
+		return arcsecPerMeter * pixelSize;
+	}
+	
+	/**
+	 * Calculates mean of frame between left and right dark current overscan areas
+	 * 
+	 * @param frame
+	 * @param leftStartCol
+	 * @param leftEndCol
+	 * @param rightStartCol
+	 * @param rightEndCol
+	 * @param overscanSize the size of the overscan area in pixels for a half detector
+	 * @return FloatPoint containing left and right overscans
+	 */
+	public static CorrectOverscanDarkResult correctOverscanFrameDarkOffsets(int[][] frame, int leftStartCol, int leftEndCol, int rightStartCol, int rightEndCol, int overscanSize) throws ComputationException  {
+		
+		// frame is [x][y] so first element is the column
+		
+		int leftMedian = calcMedianDarkOffset(frame, leftStartCol, leftEndCol);
+		int rightMedian = calcMedianDarkOffset(frame, rightStartCol, rightEndCol);
+	
+		
+		int totalOverscanFrameCols = frame.length;
+		int totalCorrectedFrameCols = totalOverscanFrameCols - (overscanSize * 2);
+		
+		int deltaMedian = Math.abs(leftMedian - rightMedian);
+		
+		int correctionStartCol = (leftMedian < rightMedian) ? 0 : totalCorrectedFrameCols/2;
+		int correctionEndCol = (leftMedian < rightMedian) ? totalCorrectedFrameCols/2 : totalCorrectedFrameCols;
+		
+		// cut off the frame overscan columns into newFrame
+		int[][] newFrame = new int[totalCorrectedFrameCols][frame[0].length];
+		System.arraycopy(frame, overscanSize, newFrame, 0, newFrame.length);
+		
+		// apply the correction median delta to the lower side
+		for (int i=correctionStartCol; i<correctionEndCol; i++) {
+			for (int j=0; j<newFrame[i].length; j++) {
+
+				int sum =  newFrame[i][j] + deltaMedian;
+				
+				// so that saturated frames do not exceed max short values
+				newFrame[i][j] = (int)Math.min(sum, Short.MAX_VALUE);
+			}
+		}
+				
+		return new CorrectOverscanDarkResult(newFrame, leftMedian, rightMedian);
+	}
+	
+	
+	/**
+	 * Calculates the median value of pixels in a set of columns from startCol to endCol inclusive
+	 * 
+	 * @param frame
+	 * @param startCol
+	 * @param endCol
+	 * @return
+	 */
+	public static int calcMedianDarkOffset(int[][] frame, int startCol, int endCol) throws ComputationException  {
+		
+		int[] allPixels = new int[0];
+		for (int colIndex = startCol; colIndex <= endCol; colIndex++) {
+			allPixels = combine(allPixels, frame[colIndex]);
+		}
+		return getMedianValue(allPixels);
+	}
+	
+	
+	
+	public static int[] combine(int[] a, int[] b) throws ComputationException {
+        int length = a.length + b.length;
+        int[] result = new int[length];
+        System.arraycopy(a, 0, result, 0, a.length);
+        System.arraycopy(b, 0, result, a.length, b.length);
+        return result;
+    }
+  
+
+	public static int getMedianValue(int[] inputs) throws ComputationException  {
+		
+		// clone the array 
+		int[] values = inputs.clone();
+		
+		Arrays.sort(values);
+		float median;
+		if (values.length % 2 == 0)
+		    median = ((float)values[values.length/2] + (float)values[values.length/2 - 1])/2;
+		else
+		    median = (float) values[values.length/2];
+		
+		return (int)Math.round(median);
+	}
+
+
+	
 	
 }

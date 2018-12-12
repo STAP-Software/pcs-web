@@ -1,11 +1,11 @@
 package org.tmt.aps.peas.lang.interop; 
 public class JnbAnalyzeFrame
 {
-	public native void nbAnalyzeFrame(RetVal retVal, float frame[], int frame_size_1, int frame_size_2, float xCent[], int xCent_size_1, float yCent[], int yCent_size_1, int validSubimages[], int validSubimages_size_1, int edge_angle[], int edge_angle_size_1, float template_c[], int template_c_size_1, int template_c_size_2, int template_c_size_3, int template_c_size_4, float coherence_out[], int coherence_out_size_1, float bestCorrelationIndex[], int bestCorrelationIndex_size_1, float a_fit[], int a_fit_size_1, float b_fit[], int b_fit_size_1, float phi_fit[], int phi_fit_size_1, float chisq_f[], int chisq_f_size_1 );
+	public native void nbAnalyzeFrame(RetVal retVal, float frame[], int frame_size_1, int frame_size_2, float xCent[], int xCent_size_1, float yCent[], int yCent_size_1, int validPhasingSubimages[], int validPhasingSubimages_size_1, int edge_angle[], int edge_angle_size_1, float template_c[], int template_c_size_1, int template_c_size_2, int template_c_size_3, int template_c_size_4, float coherence_out[], int coherence_out_size_1, float bestCorrelationIndex[], int bestCorrelationIndex_size_1, float a_fit[], int a_fit_size_1, float b_fit[], int b_fit_size_1, float phi_fit[], int phi_fit_size_1, float chisq_f[], int chisq_f_size_1 );
 	static { System.loadLibrary("peas"); }
 	// TODO: We need to write the public method that calls the private and unpacks output arrays
 
-	public Object[] jnbAnalyzeFrame(RetVal retVal, float frame[][], float xCent[], float yCent[], int validSubimages[], int edge_angle[], float template_c[][][][], float coherence_out[], float bestCorrelationIndex[], float a_fit[], float b_fit[], float phi_fit[], float chisq_f[] ) {
+	public Object[] jnbAnalyzeFrame(RetVal retVal, float frame[][], float xCent[], float yCent[], int validPhasingSubimages[], int edge_angle[], float template_c[][][][], float coherence_out[], float bestCorrelationIndex[], float a_fit[], float b_fit[], float phi_fit[], float chisq_f[] ) {
 		// Output variable definitions
 		// Deal with Array Lengths
 		int frame_len1 = frame.length;
@@ -13,7 +13,7 @@ public class JnbAnalyzeFrame
 		float[] frame_collapse = new float[frame_len1 * frame_len2];
 		int xCent_len1 = xCent.length;
 		int yCent_len1 = yCent.length;
-		int validSubimages_len1 = validSubimages.length;
+		int validPhasingSubimages_len1 = validPhasingSubimages.length;
 		int edge_angle_len1 = edge_angle.length;
 		int template_c_len1 = template_c.length;
 		int template_c_len2 = template_c[0].length;
@@ -43,7 +43,7 @@ public class JnbAnalyzeFrame
 			} 
 		} 
 		// Call native method
-		nbAnalyzeFrame(retVal, frame_collapse,frame_len1,frame_len2,xCent,xCent_len1,yCent,yCent_len1,validSubimages,validSubimages_len1,edge_angle,edge_angle_len1,template_c_collapse,template_c_len1,template_c_len2,template_c_len3,template_c_len4,coherence_out,coherence_out_len1,bestCorrelationIndex,bestCorrelationIndex_len1,a_fit,a_fit_len1,b_fit,b_fit_len1,phi_fit,phi_fit_len1,chisq_f,chisq_f_len1);
+		nbAnalyzeFrame(retVal, frame_collapse,frame_len1,frame_len2,xCent,xCent_len1,yCent,yCent_len1,validPhasingSubimages,validPhasingSubimages_len1,edge_angle,edge_angle_len1,template_c_collapse,template_c_len1,template_c_len2,template_c_len3,template_c_len4,coherence_out,coherence_out_len1,bestCorrelationIndex,bestCorrelationIndex_len1,a_fit,a_fit_len1,b_fit,b_fit_len1,phi_fit,phi_fit_len1,chisq_f,chisq_f_len1);
 		// expand array to two dimensions
 		for (int i=0; i<frame_len1; i++) { 
 			for (int j=0; j<frame_len2; j++) { 

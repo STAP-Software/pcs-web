@@ -23,6 +23,7 @@ import javax.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.log4j.Logger;
+import org.primefaces.context.RequestContext;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -36,10 +37,12 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
+import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FindCentConfig;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
@@ -48,6 +51,8 @@ import org.tmt.aps.peas.frame.model.FitsFilesMaps;
 import org.tmt.aps.peas.frame.model.MarkedSubimage;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.Ccd;
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -71,6 +76,8 @@ public class FrameController implements Serializable {
 
 	@EJB
 	FrameMgmt frameMgmt;
+	@EJB
+	CcdMgmt ccdMgmt;
 	@EJB
 	ProcedureMgmt procedureMgmt;
 	@EJB
@@ -180,6 +187,14 @@ public class FrameController implements Serializable {
 
 	public void setFrameEditMode(boolean frameEditMode) {
 		this.frameEditMode = frameEditMode;
+	}
+
+	public CcdFrame getCcdFrame() {
+		return ccdFrame;
+	}
+
+	public void setCcdFrame(CcdFrame ccdFrame) {
+		this.ccdFrame = ccdFrame;
 	}
 
 	public String getSelectedFitsFilename() {
@@ -395,12 +410,12 @@ public class FrameController implements Serializable {
 	 * Sets up a raw frame for display (one that has been manually taken)
 	 * @param rawFrame the raw frame
 	 */
-	public void setupFrameToolFrameDisplay(short[][] rawFrame) {
+	public void setupFrameToolFrameDisplay(CcdFrame ccdFrame) {
 
 		try {
-		ccdFrame = new CcdFrame();
-		ccdFrame.setRawFrame(rawFrame);
-
+			
+		this.ccdFrame = ccdFrame;
+		
 		byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, false);
 
 		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
@@ -505,6 +520,11 @@ public class FrameController implements Serializable {
 			// refresh status for fits header
 			telescopeMgmt.refreshStatus();
 
+			
+			// get integration time here
+			double intTime = ccdMgmt.getExposureTime();
+			ccdFrame.setIntTime((float)intTime);
+			
 			ccdFrame.setFitsFilename(fitsFilename.generateFileName());
 			frameMgmt.saveFitsFrame(ccdFrame);
 
@@ -520,6 +540,56 @@ public class FrameController implements Serializable {
 		}
 
 	}
+	
+	public void doCorrectDarkCurrent() {
+		try 
+		{
+		// get overscan results for testing
+		Ccd ccd = physicalModel.getInstrument().getCcd();
+		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
+
+		short[][] frame = ccdFrame.getRawFrame();
+		int[][] intFrame = new int[frame.length][frame[0].length];
+		for (int i = 0; i < frame.length; i++) {
+			for (int j = 0; j < frame[0].length; j++) {
+				intFrame[i][j] = (int)frame[i][j];
+			}
+		}
+
+		
+		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(intFrame, 
+				ccd.getDarkOvscnLeftColStart(), 
+				ccd.getDarkOvscnLeftColEnd(), 
+				ccd.getDarkOvscnRightColStart(), 
+				ccd.getDarkOvscnRightColEnd(),
+				overscanSize);
+		
+		int[][] corrected = result.getCorrectedFrame();
+		short[][] shortFrame = new short[corrected.length][corrected[0].length];
+		for (int i = 0; i < corrected.length; i++) {
+			for (int j = 0; j < corrected[0].length; j++) {
+				shortFrame[i][j] = (short)corrected[i][j];
+			}
+		}
+	
+		
+		// overwrite ccdFrame with corrected frame
+		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(shortFrame, ccdFrame.getIntTime(), 0, 
+				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), null);
+
+		setupFrameToolFrameDisplay(correctedFrame);
+		
+		//RequestContext requestContext = RequestContext.getCurrentInstance();
+		//requestContext.update("frameDisplayForm:framePanel");
+		//requestContext.execute("drawFrame()");
+
+	} catch (Exception e) {
+		FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+		logger.error(MessageGenerator.generateMessage("generic.error"), e);
+	}
+		
+	}
+	
 
 	/**
 	 * JSF Action method to set the frame display mode to allow panning and zooming into the frame
@@ -577,11 +647,12 @@ public class FrameController implements Serializable {
 
 	private MarkedSubimage calcMarkedSubimage(FloatPoint guess, int count, FloatPoint firstCentroid) {
 
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		// load up defaults for mask type
+		CcdType ccdType = physicalModel.getInstrument().getCcd().getCcdType();
 		FindCentConfig findCentConfig = globalConfigMgmt.findFindCentConfig(pupilMask.getPupilMaskType().getPupilMaskTypeId(), FilterType.FILTER_TYPE_ID_611,
-				Constants.SPOT_TYPE_INTERIOR);
+				Constants.SPOT_TYPE_INTERIOR, ccdType.getCcdTypeId());
 
 		// then set the search radius for hand marking
 		findCentConfig.setIrad(searchRadius);

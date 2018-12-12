@@ -29,6 +29,7 @@ import org.tmt.aps.peas.computation.model.NbActuatorsResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFilterSequenceResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
+import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.computation.model.TerraceModeComponentsResult;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -40,11 +41,13 @@ import org.tmt.aps.peas.config.model.IterationValue;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
+import org.tmt.aps.peas.extInterface.business.CcdMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
+import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -73,6 +76,8 @@ public class NarrowBandPhasingExecutor {
 
 	@EJB
 	private CameraMgmt cameraMgmt;
+	@EJB
+	private CcdMgmt ccdMgmt;
 	@EJB
 	private AcsMgmt acsMgmt;
 	@EJB
@@ -158,6 +163,15 @@ public class NarrowBandPhasingExecutor {
 
 			int trialsTime = 70;
 			
+			
+			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
+
+			/***********************************************/
+			/*             Startup Computations            */
+			/***********************************************/
+			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
+					procedureConfig.getPupilMask().getArcsecPerMeter(),
+					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
 
 			
 			for (int index=0; index<iterationList.getIterationValueList().getSize(); index++) {
@@ -166,6 +180,7 @@ public class NarrowBandPhasingExecutor {
 				
 				Filter currentFilter = (Filter)iterationValue.getIterableEntity("Filter");
 				ReferenceBeam currentRefBeam = (ReferenceBeam)iterationValue.getIterableEntity("ReferenceBeam");
+				
 				// set up procedureConfig each loop so that the create ref map auto subprocedures know how to get this info
 				// TODO: the following statements need to be somewhere else ultimately
 				procedureConfig.setFilter(currentFilter);
@@ -194,7 +209,8 @@ public class NarrowBandPhasingExecutor {
 						try {
 							
 							computationLibrary.autoRefMapCheck(procedure.getProcedureConfigSet().getAutoRefMapConfig(), globalConfig.getCoarseMirrorDefault(), 
-									globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getTemperature(), procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
+									globalConfig.getFineMirrorDefault(), physicalModel.getInstrument().getCcd().getLeftTemperature(), 
+									physicalModel.getInstrument().getCcd().getRightTemperature(),procedureConfig.getNumberOfTrials(), new Date(), currentRefMap);
 	
 						} catch (AutoRefMapCheckException e) {
 	
@@ -236,7 +252,26 @@ public class NarrowBandPhasingExecutor {
 
 				logger.debug("light source 1 = " + procedureConfig.getLightSource());
 				
-							
+						
+				
+				// set up integration time for this iteration
+				if (procedureConfig.isLightSourceLed()) {
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("LedGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
+				} else {
+					
+					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
+					procedureConfig.setIntegrationTime(intTime);
+					CcdGain currentCcdGain = (CcdGain)iterationValue.getIterableEntity("StarGain");
+					procedureConfig.setCcdGainNumber(currentCcdGain.getGainNumber());
+
+				}
+
+				
+				
 				/**********************************************/
 				/*                 Ready Camera               */
 				/**********************************************/			
@@ -260,15 +295,6 @@ public class NarrowBandPhasingExecutor {
 			    statusLogger.log("nph.current_filter", currentFilter.getFilterName());
 
 				
-				// set up integration time for this iteration
-				if (procedureConfig.isLightSourceLed()) {
-					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("LedIntegrationTime")).getIntegrationTime();
-					procedureConfig.setIntegrationTime(intTime);
-				} else {
-					
-					float intTime = ((IntegrationTime)iterationValue.getIterableEntity("StarIntegrationTime")).getIntegrationTime();
-					procedureConfig.setIntegrationTime(intTime);
-				}
 
 				
 				int trialTimeDelta = (trialsTime/iterationList.getIterationValueList().getSize())*index;
@@ -284,26 +310,6 @@ public class NarrowBandPhasingExecutor {
 				
 				procedureExecutionState.incrementIteration();
 				
-				//***********************************************//
-				//       Set the Filter and Reference Beam       //
-				//***********************************************//
-				
-				/*
-				if (procedureConfig.isFrameFromCcd()) {
-				
-					statusLogger.log("camera.cmd.filter_wheel", currentFilter.getWheelPosition());
-					Future<Integer> filterCommandFuture = cameraMgmt.commandFilterWheel(procedureConfig.getFilter().getWheelPosition());
-	
-					statusLogger.log("camera.cmd.ref_beam", currentRefBeam.getRefBeamNum());
-					Future<Integer> refBeamFuture = cameraMgmt.commandReferenceBeamState(currentRefBeam.getRefBeamNum());
-	
-					// wait for all commands to complete
-					long waitPeriodMs = Utils.waitForComplete(filterCommandFuture, refBeamFuture);
-					statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
-					
-				}
-				*/
-
 			    statusLogger.log("nph.calc_templates");
 
 				
@@ -315,7 +321,8 @@ public class NarrowBandPhasingExecutor {
 						constantsCache.getPhasingConstants().getPhasingSubimageFftSize(), 
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 						procedure.getProcedureConfigSet().getFindCentConfigInterior(),
-						procedureConfig.getPupilMask(), currentFilter);
+						procedureConfig.getPupilMask(), currentFilter, 
+						startupComputationsResult.getArcsecPerPixel());
 				
 
 				/**********************************************/
@@ -586,6 +593,11 @@ public class NarrowBandPhasingExecutor {
 				long waitPeriodMs =  Utils.waitForComplete(refBeamFuture);
 	        	statusLogger.log("camera.cmd.complete", waitPeriodMs/1000.0);
 			}
+			
+			// close shutter
+			// FIXME: remove this call when all shutter usage is deprecated
+			//cameraMgmt.commandCcdShutterState(CameraCommand.CLOSED);
+
 	
 			statusLogger.log("procedure.success", procedure.getProcedureType().getProcedureTypeName());
 	

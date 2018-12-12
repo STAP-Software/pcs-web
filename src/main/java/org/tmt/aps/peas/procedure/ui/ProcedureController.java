@@ -46,6 +46,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.ConstantsCache;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.FIConfig;
@@ -56,7 +57,10 @@ import org.tmt.aps.peas.config.model.NbFilterSeqConfigDefaults;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfig;
 import org.tmt.aps.peas.config.model.SufsCoarseOffsetsConfigDefaults;
+import org.tmt.aps.peas.config.model.SufsRefMapConfigDefaults;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.extInterface.ui.CameraManualController;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
 import org.tmt.aps.peas.frame.business.FrameDisplayMgmt;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.business.FrameSimulator;
@@ -67,6 +71,7 @@ import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.CameraDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CameraState;
+import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -164,6 +169,8 @@ public class ProcedureController implements Serializable {
 	private ConstantsCache constantsCache;
 	@EJB
 	private IterationEntityCache iterationEntityCache;
+	@EJB
+	private ExtInfConfigState extInfConfigState;
 
 
 	@Inject
@@ -178,6 +185,7 @@ public class ProcedureController implements Serializable {
 	private FrameController frameController;
 	@Inject
 	private AsyncController asyncController;
+	@Inject CameraManualController cameraManualController;
 
 	// need to exchange when changing from subprocedure and back
 	Procedure procedure;
@@ -631,8 +639,40 @@ public class ProcedureController implements Serializable {
 			}
 		}
 
+		if (isCameraNotReady()) {
+			return false;
+		}
 		
 		return true;
+	}
+	/**
+	 * 
+	 * @return true if the camera is enabled but not ready
+	 */
+	public boolean isCameraNotReady() {
+		
+		// frame from file, always ready
+		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
+			return false;
+		}
+		
+		// if disconnected, always ready
+		if (!extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			return false;
+		}
+		
+		if (extInfConfigState.getExtInfConnectConfig().isCameraUsable()) {
+			// query overall status if ready
+			if (cameraManualController.getCamera().getOverallStatus() == CameraQueryResult.READY) {
+
+				return false;
+			} else {
+				return true;
+			}
+			
+		} else {
+			return false;
+		}
 	}
 
 	public void frameSourceListener() {
@@ -828,6 +868,20 @@ public class ProcedureController implements Serializable {
 					new FacesMessage(FacesMessage.SEVERITY_WARN, "Off Nominal Configuration!  Filter is normally 611 for Passive Tilt!", ""));
 
 		}
+		
+		// if the camera is enabled but not ready, then throw an error and do not start the procedure
+		if (extInfConfigState.getExtInfConnectConfig().isCameraEnabled() &&
+				physicalModel.getInstrument().getCamera().getOverallStatus() != CameraQueryResult.READY) {
+			
+			FacesContext.getCurrentInstance().addMessage(null,
+					new FacesMessage(FacesMessage.SEVERITY_ERROR, "Error Starting Procedure, camera was not in a Ready state", ""));
+			return;
+			
+		}
+			
+			
+			
+		
 		// reset marking mode in case of hiccup in previous procedure
 		frameMarkingMode = false;
 		
@@ -976,6 +1030,15 @@ public class ProcedureController implements Serializable {
 	}
 
 	/**
+	 * view the next archived procedure
+	 */
+	public String doViewNextArchivedProcedure() {
+		Procedure nextProcedure = sessionController.getSessionNextProcedure(procedure);
+		procedure = nextProcedure;
+		return doViewArchivedProcedure();
+	}
+		
+	/**
 	 * JSF Action method to bring up an archived procedure for viewing
 	 * Loads up the procedure, the procedure output, all FITS frames and visualization displays
 	 * @return the JSF page to view a procedure
@@ -1025,7 +1088,8 @@ public class ProcedureController implements Serializable {
 				}
 
 				// set up display of camera state values for first frame
-				loadCameraState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState());
+				loadInstrumentState(procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCameraState(),
+						procedure.getProcedureCcdFrameList().get(selectedFrameNumber).getCcdFrame().getCcdState());
 
 			}
 			
@@ -1046,7 +1110,10 @@ public class ProcedureController implements Serializable {
 			breadcrumbMenuBean.addItem("Procedure #" + procedure.getProcedureNumber() + ": "
 					+ procedure.getProcedureType().getProcedureTypeName(),
 					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");
-
+			
+			if (sessionController.getSessionNextProcedure(procedure) != null) {
+				breadcrumbMenuBean.addItem("Next Procedure", "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true&test=1");
+			}
 			return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
 
 		} catch (Exception e) {
@@ -1146,8 +1213,9 @@ public class ProcedureController implements Serializable {
 	 * method to load a passed camera state into the view
 	 * @param cameraState the camera state to view
 	 */
-	public void loadCameraState(CameraState cameraState) {
+	public void loadInstrumentState(CameraState cameraState, CcdState ccdState) {
 		frameInstrument.updateState(cameraState);
+		frameInstrument.updateState(ccdState);
 	}
 
 	// ====================================================================================== //
@@ -1161,7 +1229,7 @@ public class ProcedureController implements Serializable {
 	public void frameSelectListener() {
 
 		selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
-		loadCameraState(selectedFrame.getCcdFrame().getCameraState());
+		loadInstrumentState(selectedFrame.getCcdFrame().getCameraState(), selectedFrame.getCcdFrame().getCcdState());
 		
 		if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
 			ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
@@ -1197,7 +1265,8 @@ public class ProcedureController implements Serializable {
 		// change int time and selected ref beam settings in procedure config
 		procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 				.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-				.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+				.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+				physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 						
 		
 		procedureExecutionMgmt.reloadFIConfig(procedure, sessionController.getInstrument().getInstrumentId());
@@ -1260,7 +1329,8 @@ public class ProcedureController implements Serializable {
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		}
 	}	
 
@@ -1285,7 +1355,7 @@ public class ProcedureController implements Serializable {
 		// FIXME: generalize this
 		if (procedure.getProcedureType().isNarrowBandPhasing()) {
 			IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
-			iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+			iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		}
 	}
 		
@@ -1337,7 +1407,8 @@ public class ProcedureController implements Serializable {
 			// change int time and selected ref beam settings in procedure config
 			procedureExecutionMgmt.setupCreateRefMapDefaults(procedure, sessionController.getInstrument().getInstrumentId(), procedure
 					.getProcedureConfigSet().getProcedureConfig().getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedure
-					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId());
+					.getProcedureConfigSet().getProcedureConfig().getFilter().getFilterType().getFilterTypeId(),
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId());
 		} 
 		
 	}
@@ -1362,9 +1433,17 @@ public class ProcedureController implements Serializable {
 		if (procedure.getProcedureType().isCreateRefMap()) {
 		
 			int refBeamNum = physicalModel.getSufsGroupByNumber(sufsGroup).getDefaultRefBeamNum();
-			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum);
+			ReferenceBeam referenceBeam = globalConfigMgmt.findReferenceBeamByNumber(refBeamNum, physicalModel.getInstrument().getInstrumentId());
 			procedure.getProcedureConfigSet().getProcedureConfig().setReferenceBeam(referenceBeam);
 		
+			// the integration time should change when the ref beam changes
+			SufsRefMapConfigDefaults sufsRefMapConfigDefaults = globalConfigMgmt.findSufsRefMapConfigDefaults(
+					physicalModel.getInstrument().getInstrumentId(), 
+					physicalModel.getInstrument().getCcd().getCcdType().getCcdTypeId(), refBeamNum);
+			
+			procedure.getProcedureConfigSet().getProcedureConfig().setCcdGainNumber(sufsRefMapConfigDefaults.getCcdGainNumber());
+			procedure.getProcedureConfigSet().getProcedureConfig().setIntegrationTime(sufsRefMapConfigDefaults.getIntegrationTime());
+			
 		}
 		
 	}
@@ -1373,7 +1452,7 @@ public class ProcedureController implements Serializable {
 		
 		// change the associated integration times when the option changes (in procedure controller)
 		IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
-		iterationListConfig.updateIntegrationTimeList(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
+		iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		
 		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
 		
@@ -1415,7 +1494,7 @@ public class ProcedureController implements Serializable {
 		// call findCent on each centroid
 		FloatPoint guess = new FloatPoint(x, y);
 		// if findCent fails then we just use the user-marked guess as the centroid
-		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0);
+		Subimage subimage = new Subimage(guess, 0.0f, 0.0f, 0.0f, 0);
 
 		try {
 			FindCentConfig findCentConfig = (FindCentConfig) BeanUtils.cloneBean(procedure.getProcedureConfigSet().getFindCentConfigInterior());
@@ -1506,6 +1585,7 @@ public class ProcedureController implements Serializable {
 	 * @param setting true if Show Marking, false otherwise
 	 */
 	public void doSetMarkedDisplayMode(boolean setting) {
+		
 		
 		markedDisplayMode = setting;
 		

@@ -44,6 +44,7 @@ public class PupilRegErrorConfig {
 	private float largeCommandGainFactor; // meters
 	private float smallLargeCommandThreshold; // meters
 	private float frameOkThreshold; // mm
+	private float pupilRotationThreshold;
 
 	public PupilRegErrorConfig() {
 		
@@ -127,6 +128,16 @@ public class PupilRegErrorConfig {
 
 	public void setFrameOkThreshold(float frameOkThreshold) {
 		this.frameOkThreshold = frameOkThreshold;
+	}
+
+
+	public float getPupilRotationThreshold() {
+		return pupilRotationThreshold;
+	}
+
+
+	public void setPupilRotationThreshold(float pupilRotationThreshold) {
+		this.pupilRotationThreshold = pupilRotationThreshold;
 	}
 
 

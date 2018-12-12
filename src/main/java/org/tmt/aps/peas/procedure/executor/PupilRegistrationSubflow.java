@@ -98,6 +98,16 @@ public class PupilRegistrationSubflow {
 					new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
 
 			
+			// Tell user that the rotation exceeds threshold (only if in PR procedure)
+			double pupilRotation = pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD;
+			double threshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getPupilRotationThreshold();
+			
+			if (Math.abs(pupilRotation) > threshold && procedure.getProcedureType().isPupilRegistration()) {
+				statusLogger.log("calc.pupil_rotation_exceeds_threshold", pupilRotation);  // degrees
+				String warningMessage = MessageGenerator.generateMessage("calc.pupil_rotation_exceeds_threshold", pupilRotation);
+				userPromptMgmt.displayInfoDialog("Pupil Rotation Warning", warningMessage);
+			}
+			
 		/*****************************************************/
 		/*           determine fine/coarse PR Commands       */
 		/*****************************************************/
@@ -170,7 +180,11 @@ public class PupilRegistrationSubflow {
 		
 		// return false if we need to take a new frame
 		// if the error was > thresh (10 mm)and a move was performed, then return false
-		float frameOkThreshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
+		float frameOkThreshold = 
+				procedure.getProcedureConfigSet().getPupilRegErrorConfig().getFrameOkThreshold();
+					
+	
+		logger.info("frameOkThreshold = " + frameOkThreshold);
 		if ((Math.abs(regErrorMm.x) > frameOkThreshold || Math.abs(regErrorMm.y) > frameOkThreshold) && commandsSent) {
 			return false; // retake the frame
 		}

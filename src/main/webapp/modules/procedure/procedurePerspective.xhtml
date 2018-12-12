@@ -7,7 +7,11 @@
 <ui:composition template="../../template.xhtml">
 
 	<ui:define name="content">
-
+	
+		<h:form>
+			<p:poll async="true" immediate="true" interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady :procedureDetailForm:miscPanel:cameraStatusPanel" />
+		</h:form>
+		
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
@@ -120,6 +124,19 @@
 									<h:message for="intTimes" style="color:red" showSummary="true" showDetail="true" />
 								</p:column>
 							</p:row>
+							
+							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}" >
+								<p:column styleClass="btmsFormLabelColumn">
+									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','CcdGain')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />
+								</p:column>
+								<p:column styleClass="btmsFormInputColumn">
+									<p:inputText id="ccdGainNumbers" size="15" 
+									value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.ccdGainList}" 
+									disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
+									<h:message for="ccdGainNumbers" style="color:red" showSummary="true" showDetail="true" />
+								</p:column>
+							</p:row>
 
 							<p:row rendered="#{procedureController.renderNumTrials}">
 								<p:column styleClass="btmsFormLabelColumn">
@@ -143,7 +160,7 @@
 									<p:selectOneMenu id="loopOptions1" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.fullDisplayString}" itemValue="#{option}" />
-										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
+										<p:ajax update="startButton intTimes ccdGainNumbers" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
@@ -159,7 +176,7 @@
 									<p:selectOneMenu id="loopOptions2" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.displayString}" itemValue="#{option}" />
-										<p:ajax update="startButton intTimes" listener="#{procedureController.iterationListChangeListener}" />  
+										<p:ajax update="startButton intTimes ccdGainNumbers" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
@@ -174,7 +191,7 @@
 									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
 									disabled="#{procedureController.procedure.procedureState gt 1}" >
 										<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
-										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton" listener="#{procedureController.sufsGroupChangeListener}" />
+										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
 									</p:selectOneMenu>
 									
 								</p:column>
@@ -288,6 +305,13 @@
 							<p:spacer width="30px" />
 							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
 							<br />
+							
+							<h:panelGroup id="cameraNotReady" layout="block" >
+							<h:panelGroup layout="block" styleClass="redText" rendered="#{procedureController.cameraNotReady}">
+								<h:outputText value="Camera not ready" styleClass="redText" />
+							</h:panelGroup>
+							</h:panelGroup>
+							
 							<br />
 							<p:progressBar widgetVar="pbAjax" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated"
 								displayOnly="true" />
@@ -387,19 +411,24 @@
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 							
 
-							<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+							<p:panelGrid styleClass="pcsNoPad" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
 
 							<p:row>
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<canvas id="infoCanvas" width="270px" height="15px" ></canvas>
+								<p:column styleClass="peasFormLabelColumn" style="width:25%">
+									<canvas id="infoCanvas" width="180px" height="15px" ></canvas>
 								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:35%">
-									<h:outputLabel value="Median Peak Intensity:" />
+								<p:column styleClass="peasFormLabelColumn" style="width:55%">
+									<h:outputLabel value="Median Peak Intensity (counts, e-):  " />
 								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:15%">
-										<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+								<p:column styleClass="peasFormOutputColumn" style="width:20%">
+									<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
 										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
 									</h:outputText>
+									<h:outputText value=", " rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" />
+									<h:outputText value="#{procedureController.selectedFrame.medianPeakIntensityAdu}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
+									</h:outputText>
+									
 								</p:column>
 							</p:row>
 							</p:panelGrid>
@@ -492,6 +521,7 @@
   $(document).ready(function() {
 	  $('input,select').keypress(function(event) { return event.keyCode != 13; }); 
 });	
+  
 
     var mousePos;
     var moving = false;
@@ -595,7 +625,7 @@
 					ctx.strokeStyle = '#ff0000';
 					ctx.lineWidth = 2;
 					ctx.stroke();
-					if (handMark == "true") {
+					if (handMark == "true" && xArray.length < 50) {
 						ctx.fillText("" + (segmentNum), xArray[i]/2 - 14, yArray[i]/2 - 15);
 					}
 				}
@@ -620,7 +650,7 @@
  	function displayFrameValue() {
  			
  		var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
- 		var message = '    Mouse position: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  value = ' + pixelValue;
+ 		var message = 'pos: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  val = ' + pixelValue;
         var infoCanvas = document.getElementById("infoCanvas");
         writeMessage(infoCanvas, message);
  	}

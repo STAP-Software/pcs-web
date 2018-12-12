@@ -153,7 +153,13 @@ public class ProcedureCcdFrame {
 		this.frameFieldDisplayList = frameFieldDisplayList;
 	}
 
-
+	public float getMedianPeakIntensityAdu() {
+		if (centroidMap != null && ccdFrame != null && centroidMap.getMedianPeakIntensity() != null) {
+			return centroidMap.getMedianPeakIntensity() * ccdFrame.getCcdGainValue();
+		} else {
+			return 0.0f;
+		}
+	}
 
 	
 }

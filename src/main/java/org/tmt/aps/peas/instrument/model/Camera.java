@@ -21,7 +21,10 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.tmt.aps.peas.common.Point;
+import org.tmt.aps.peas.extinf.CameraCommand;
+import org.tmt.aps.peas.extinf.CameraQueryResult;
+import org.tmt.aps.peas.extinf.CameraStatus;
+
 
 /**
  * Instrument configuration Entity class representing the Camera table.  Contains <code>@Transient</code> fields used to store current state information for
@@ -53,6 +56,26 @@ public class Camera {
 	private float instrumentTemperature;
 	@Transient
 	private float electronicsBoxTemperature;
+	@Transient
+	private float instrumentHumidity;
+	@Transient
+	private float electronicsBoxHumidity;
+	@Transient
+	private boolean temperatureInterlock;
+	@Transient
+	private boolean purgeState;
+	@Transient
+	private boolean glycolFlow;
+	@Transient
+	private int overallStatus;
+	@Transient
+	private int overallPowerState;
+	@Transient
+	private int ccdPowerState;
+	@Transient
+	private int galilPowerState;
+	
+
 
 	@OneToOne
 	@JoinColumn(name="instrumentId")
@@ -85,12 +108,45 @@ public class Camera {
 		}
 	}
 	
+	public String getOverallStatusDisplayString() {
+		if (overallStatus == CameraQueryResult.READY) {
+			return "Ready";
+		} else if (overallStatus == CameraQueryResult.NOT_READY) {
+			return "Not Ready";
+		} else {
+			return "Unknown";
+		}
+	}
+	
+	private String powerStateDisplayString(int powerState) {
+		return (powerState == CameraCommand.ON) ? "On" : ((powerState == CameraCommand.OFF) ? "Off" : "Unknown");
+	}
+	
+	public String getOverallPowerStateDisplayString() {
+		return powerStateDisplayString(overallPowerState);
+	}
+	public String getCcdPowerStateDisplayString() {
+		return powerStateDisplayString(ccdPowerState);
+	}
+	public String getGalilPowerStateDisplayString() {
+		return powerStateDisplayString(galilPowerState);
+	}
+	
+	
 	public int getCurrentRefBeam() {
 		return currentRefBeam;
 	}
 
 	public void setCurrentRefBeam(int currentRefBeam) {
 		this.currentRefBeam = currentRefBeam;
+	}
+
+	public int getOverallStatus() {
+		return overallStatus;
+	}
+
+	public void setOverallStatus(int overallStatus) {
+		this.overallStatus = overallStatus;
 	}
 
 	public Shutter getShutter() {
@@ -139,6 +195,72 @@ public class Camera {
 
 	public void setElectronicsBoxTemperature(float electronicsBoxTemperature) {
 		this.electronicsBoxTemperature = electronicsBoxTemperature;
+	}
+
+	public float getInstrumentHumidity() {
+		return instrumentHumidity;
+	}
+
+	public void setInstrumentHumidity(float instrumentHumidity) {
+		this.instrumentHumidity = instrumentHumidity;
+	}
+
+	public float getElectronicsBoxHumidity() {
+		return electronicsBoxHumidity;
+	}
+
+	public void setElectronicsBoxHumidity(float electronicsBoxHumidity) {
+		this.electronicsBoxHumidity = electronicsBoxHumidity;
+	}
+
+	public boolean isTemperatureInterlock() {
+		return temperatureInterlock;
+	}
+
+	public void setTemperatureInterlock(boolean temperatureInterlock) {
+		this.temperatureInterlock = temperatureInterlock;
+	}
+
+	public boolean isPurgeState() {
+		return purgeState;
+	}
+
+	public void setPurgeState(boolean purgeState) {
+		this.purgeState = purgeState;
+	}
+
+	public boolean isGlycolFlow() {
+		return glycolFlow;
+	}
+
+	public void setGlycolFlow(boolean glycolFlow) {
+		this.glycolFlow = glycolFlow;
+	}
+
+	public int getOverallPowerState() {
+		return overallPowerState;
+	}
+
+	public void setOverallPowerState(int overallPowerState) {
+		this.overallPowerState = overallPowerState;
+	}
+
+	public int getCcdPowerState() {
+		return ccdPowerState;
+	}
+
+	public void setCcdPowerState(int ccdPowerState) {
+		this.ccdPowerState = ccdPowerState;
+	}
+
+
+
+	public int getGalilPowerState() {
+		return galilPowerState;
+	}
+
+	public void setGalilPowerState(int galilPowerState) {
+		this.galilPowerState = galilPowerState;
 	}
 
 	public Instrument getInstrument() {
@@ -215,4 +337,6 @@ public class Camera {
 		return refBeamList;
 	}
 	
+
+
 }

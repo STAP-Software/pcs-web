@@ -11,8 +11,10 @@ public class UserAssistRequiredException extends FandIException {
 	
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
+	private boolean fracAnalysisThreshExceeded;
 	private float fracThreshExceededFindCent = -1.0f;
 	private boolean fracThreshExceededPT;
+	private boolean fracAnalysisThreshExceededPT;
 	private boolean fourierThreshExceeded;
 	private boolean badNSolution;
 	
@@ -43,7 +45,7 @@ public class UserAssistRequiredException extends FandIException {
 		this.badNSolution = badNSolution;
 	}
 	public boolean shouldThrow() {
-		return ndetectNotAllSingle || fracThreshExceeded ||fracThreshExceededPT || fourierThreshExceeded || badNSolution;
+		return ndetectNotAllSingle || fracThreshExceeded ||fracThreshExceededPT || fourierThreshExceeded || badNSolution || fracAnalysisThreshExceeded || fracAnalysisThreshExceededPT;
 	}
 	public boolean isFracThreshExceededPT() {
 		return fracThreshExceededPT;
@@ -59,6 +61,18 @@ public class UserAssistRequiredException extends FandIException {
 	}
 	public void setFracThreshExceededFindCent(float findCentFracFilled) {
 		this.fracThreshExceededFindCent = findCentFracFilled;
+	}
+	public boolean isFracAnalysisThreshExceeded() {
+		return fracAnalysisThreshExceeded;
+	}
+	public void setFracAnalysisThreshExceeded(boolean fracAnalysisThreshExceeded) {
+		this.fracAnalysisThreshExceeded = fracAnalysisThreshExceeded;
+	}
+	public boolean isFracAnalysisThreshExceededPT() {
+		return fracAnalysisThreshExceededPT;
+	}
+	public void setFracAnalysisThreshExceededPT(boolean fracAnalysisThreshExceededPT) {
+		this.fracAnalysisThreshExceededPT = fracAnalysisThreshExceededPT;
 	}
 
 }

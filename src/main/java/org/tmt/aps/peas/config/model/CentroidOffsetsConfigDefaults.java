@@ -13,6 +13,7 @@ import javax.persistence.NamedQuery;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 
 /**
@@ -23,8 +24,9 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "CentroidOffsetsConfigDefaults")
 @PrimaryKeyJoinColumn(name="centroidOffsetsConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findByProcedureType", query = "SELECT o from CentroidOffsetsConfigDefaults o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId" )
+	@NamedQuery(name = "findByProcedureType", query = "SELECT o from CentroidOffsetsConfigDefaults o "
+			+ "INNER JOIN FETCH o.procedureType p INNER JOIN FETCH o.ccdType t "
+			+ "where p.procedureTypeId = :procedureTypeId and t.ccdTypeId = :ccdTypeId" )
 })
 public class CentroidOffsetsConfigDefaults extends CentroidOffsetsConfig {
 
@@ -33,6 +35,11 @@ public class CentroidOffsetsConfigDefaults extends CentroidOffsetsConfig {
 	@JoinColumn(name = "procedureTypeId")
 	private ProcedureType procedureType;
 
+	@ManyToOne
+	@JoinColumn(name = "ccdTypeId")
+	private CcdType ccdType;
+
+	
 	public ProcedureType getProcedureType() {
 		return procedureType;
 	}
