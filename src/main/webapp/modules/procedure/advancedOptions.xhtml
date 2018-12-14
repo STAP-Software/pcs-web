@@ -101,6 +101,9 @@
  					<h:outputLabel value="Fraction of Boxes Filled Threshold" />
  					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fracFilledThresh}" disabled="#{procedureController.procedure.procedureState gt 1}" />
  					
+ 					<h:outputLabel value="Fraction of Analysis Boxes Filled Threshold" />
+ 					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fracFilledAnalysisThresh}" disabled="#{procedureController.procedure.procedureState gt 1}" />
+ 					
  					<h:outputLabel value="Fourier Quality Threshold" />
  					<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.fiConfig.fourierQualityThresh}" disabled="#{procedureController.procedure.procedureState gt 1}" />
   
