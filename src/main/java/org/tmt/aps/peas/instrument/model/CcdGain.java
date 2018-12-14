@@ -122,4 +122,8 @@ public class CcdGain implements IterableEntity {
 		return "Gain";
 	}
 	
+	public String getGainDisplay() {
+		return gainNumber + ": (" + gainValue + ")";
+	}
+	
 }
