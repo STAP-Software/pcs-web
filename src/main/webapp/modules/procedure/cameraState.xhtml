@@ -37,6 +37,9 @@
 
 		<h:outputLabel value="CCD Power" />
 		<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" style="position:relative; top:2px" />
+		
+		<h:outputLabel value="CCD Gain" />
+		<h:outputText value="#{procedureController.frameInstrument.ccd.ccdGain.gainDisplay}" style="position:relative; top:2px" />
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
 	    <h:outputLabel value="CCD Temp (L,R) (#{fieldMetaData.units})" />

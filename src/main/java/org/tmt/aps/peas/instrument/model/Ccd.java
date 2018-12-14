@@ -466,6 +466,10 @@ public class Ccd {
 		}
 	}
 	
+	public void setCcdGain(CcdGain gain) {
+		
+	}
+	
 	public CcdGain getCcdGain(int gainNumber) {
 		if (gainNumber == 0) {
 			return ccdGain0;
