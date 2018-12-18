@@ -123,7 +123,7 @@ public class CcdGain implements IterableEntity {
 	}
 	
 	public String getGainDisplay() {
-		return gainNumber + ": (" + gainValue + ")";
+		return gainNumber + ": (" + gainValue + "(e-/count))";
 	}
 	
 }
