@@ -278,6 +278,10 @@ public class CoarsePhasingExecutor {
 				
 				statusLogger.log("acs.cmd_completed", deltaMs/1000.0);
 				
+				// wait an additional configurable time for ACS to settle
+				Utils.waitFor(procedureConfig.getAcsSettleWait() * 1000);
+				
+				statusLogger.log("acs.cmd_waited", procedureConfig.getAcsSettleWait());
 					
 				/**********************************************/
 				/*        PupilRegistration Subflow           */

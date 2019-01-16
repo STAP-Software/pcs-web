@@ -96,6 +96,7 @@ public class ProcedureConfig {
 	
 	int autoPointTelescopeSufsGroup;
 	private int ccdGainNumber;
+	private int acsSettleWait;
 
 	
 	@Column(nullable=false, length=255)
@@ -444,6 +445,14 @@ public class ProcedureConfig {
 
 	public void setCcdGainNumber(int ccdGainNumber) {
 		this.ccdGainNumber = ccdGainNumber;
+	}
+
+	public int getAcsSettleWait() {
+		return acsSettleWait;
+	}
+
+	public void setAcsSettleWait(int acsSettleWait) {
+		this.acsSettleWait = acsSettleWait;
 	}
 
 	public boolean isFrameFromFile() {

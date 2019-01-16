@@ -161,6 +161,10 @@
 					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
        				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.phasingStepSize}" disabled="#{procedureController.procedure.procedureState gt 1}" />
   
+  					<h:outputLabel value="ACS Settle Additional wait time (secs)" />
+       				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.acsSettleWait}" disabled="#{procedureController.procedure.procedureState gt 1}" />
+ 
+  
 				</p:panelGrid>
 				</p:fieldset>
 
@@ -170,6 +174,7 @@
 					
 					<h:outputLabel value="Edge Height Search Range for Filter Sequence" />
        				<p:inputText size="4" value="#{procedureController.procedure.procedureConfigSet.nbFilterSeqConfig.edgeHeightSearchRange}" disabled="#{procedureController.procedure.procedureState gt 1}" />
+       			       				
        								  
 				</p:panelGrid>
 				</p:fieldset>
