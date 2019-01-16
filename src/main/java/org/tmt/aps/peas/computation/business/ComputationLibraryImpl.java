@@ -1209,14 +1209,22 @@ public class ComputationLibraryImpl {
 		float[] m2TipTiltArr = new float[2];
 		float[] m2TipTiltArrTelescopeCoords = new float[2];
 		
-		float[] m1OffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
-		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1MeanOffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1MeanOffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
+		
+		float[] m1OffsetsZeroSegmentTipTiltX = new float[subimagesForM2Calc.length];
+		float[] m1OffsetsZeroSegmentTipTiltY = new float[subimagesForM2Calc.length];
+		float[] m1OffsetsCorrectedForM2X = new float[subimagesForM2Calc.length];
+		float[] m1OffsetsCorrectedForM2Y = new float[subimagesForM2Calc.length];
 		
 		Object[] result = jcalculateM2M1RayTrace.jcalculateM2M1RayTrace(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
 				m2PistonUnitPertibation, m2TTUnitPertibation, xLensletLocations, yLensletLocations, 
 				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
-				telescopeConstants.getM1CurvatureRadius(), m2TtCorrectionFactor, m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+				telescopeConstants.getM1CurvatureRadius(), m2TtCorrectionFactor, m2TipTiltArr, m2TipTiltArrTelescopeCoords, 
+				m1MeanOffsetsCorrectedForM2X, m1MeanOffsetsCorrectedForM2Y, m1OffsetsZeroSegmentTipTiltX, m1OffsetsZeroSegmentTipTiltY,
+				m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 
+		
 		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
@@ -1230,28 +1238,30 @@ public class ComputationLibraryImpl {
 		FloatPoint tipTiltErrorMulitplier = new FloatPoint((Float)result[3], (Float)result[4]);
 		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
 		FloatPoint m2TipTiltTelescopeCoords = new FloatPoint(m2TipTiltArrTelescopeCoords[0], m2TipTiltArrTelescopeCoords[1]);
+		List<FloatPoint> m1MeanOffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1MeanOffsetsCorrectedForM2X, m1MeanOffsetsCorrectedForM2Y);
+		List<FloatPoint> m1OffsetsZeroSegmentTipTilt = FloatPointListEncoder.constructFromXandY(m1OffsetsZeroSegmentTipTiltX, m1OffsetsZeroSegmentTipTiltY);
 		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
 		
 		// convert corrected offsets from arcsec to pixels
-		List<FloatPoint> m1OffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
-		for (FloatPoint arcsecOffset : m1OffsetsCorrectedForM2) {
+		List<FloatPoint> m1MeanOffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
+		for (FloatPoint arcsecOffset : m1MeanOffsetsCorrectedForM2) {
 		
 			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
-			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
+			m1MeanOffsetsCorrectedForM2Pixels.add(pixelOffset);
 		}
 		
-		FloatPoint[] m1OffsetsPixelsCartesian = m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
-		FloatPoint[] m1OffsetsPixelsCcd = new FloatPoint[m1OffsetsPixelsCartesian.length];
+		FloatPoint[] m1MeanOffsetsPixelsCartesian = m1MeanOffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
+		FloatPoint[] m1MeanOffsetsPixelsCcd = new FloatPoint[m1MeanOffsetsPixelsCartesian.length];
 		
 		// convert cartesian to ccd offsets
-		for (int i=0; i<m1OffsetsPixelsCartesian.length; i++) {
-			m1OffsetsPixelsCcd[i] = new FloatPoint(m1OffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1OffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
+		for (int i=0; i<m1MeanOffsetsPixelsCartesian.length; i++) {
+			m1MeanOffsetsPixelsCcd[i] = new FloatPoint(m1MeanOffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1MeanOffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
 		}
 
 				
 		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual, pistonErrorMultiplier, tipTiltErrorMulitplier,
-				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsPixelsCartesian, m1OffsetsPixelsCcd);
-
+				 m1MeanOffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1MeanOffsetsPixelsCartesian, m1MeanOffsetsPixelsCcd,
+				 m1OffsetsZeroSegmentTipTilt.toArray(new FloatPoint[0]), m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]));
 
 		// End of code for findCent unit testing
 		logger.info(MessageGenerator.generateMessage("computation.success", "calculateM2M1RayTrace"));
@@ -1313,14 +1323,14 @@ public class ComputationLibraryImpl {
 		float[] m2TipTiltArr = new float[2];
 		float[] m2TipTiltArrTelescopeCoords = new float[2];
 		
-		float[] m1OffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
-		float[] m1OffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1MeanOffsetsCorrectedForM2X = new float[telescopeConstants.getNumberOfSegments()];
+		float[] m1MeanOffsetsCorrectedForM2Y = new float[telescopeConstants.getNumberOfSegments()];
 		
 		Object[] result = jcalculateM2M1Analytical.jcalculateM2M1Analytical(retVal, offsetsX, offsetsY, validSubimages, subimagesForM2Calc, 
 				xLensletLocations, yLensletLocations, 
 				telescopeConstants.getBackFocalDistance(), telescopeConstants.getM1FocalLength(), telescopeConstants.getTelescopeFocalLength(), 
 				m2TtCorrectionFactor, telescopeConstants.getM1OuterDiameter(), aHex, startSegNum, endSegNum, 
-				m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+				m2TipTiltArr, m2TipTiltArrTelescopeCoords, m1MeanOffsetsCorrectedForM2X, m1MeanOffsetsCorrectedForM2Y);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1335,28 +1345,28 @@ public class ComputationLibraryImpl {
 		
 		FloatPoint m2TipTilt = new FloatPoint(m2TipTiltArr[0], m2TipTiltArr[1]);
 		FloatPoint m2TipTiltTelescopeCoords = new FloatPoint(m2TipTiltArrTelescopeCoords[0], m2TipTiltArrTelescopeCoords[1]);
-		List<FloatPoint> m1OffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1OffsetsCorrectedForM2X, m1OffsetsCorrectedForM2Y);
+		List<FloatPoint> m1MeanOffsetsCorrectedForM2 = FloatPointListEncoder.constructFromXandY(m1MeanOffsetsCorrectedForM2X, m1MeanOffsetsCorrectedForM2Y);
 		
 		// convert corrected offsets from arcsec to pixels
-		List<FloatPoint> m1OffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
-		for (FloatPoint arcsecOffset : m1OffsetsCorrectedForM2) {
+		List<FloatPoint> m1MeanOffsetsCorrectedForM2Pixels = new ArrayList<FloatPoint>();
+		for (FloatPoint arcsecOffset : m1MeanOffsetsCorrectedForM2) {
 		
 			FloatPoint pixelOffset = new FloatPoint(arcsecOffset.x / secPerPixel, arcsecOffset.y / secPerPixel);
-			m1OffsetsCorrectedForM2Pixels.add(pixelOffset);
+			m1MeanOffsetsCorrectedForM2Pixels.add(pixelOffset);
 		}
 				
-		FloatPoint[] m1OffsetsPixelsCartesian = m1OffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
-		FloatPoint[] m1OffsetsPixelsCcd = new FloatPoint[m1OffsetsPixelsCartesian.length];
+		FloatPoint[] m1MeanOffsetsPixelsCartesian = m1MeanOffsetsCorrectedForM2Pixels.toArray(new FloatPoint[0]);
+		FloatPoint[] m1MeanOffsetsPixelsCcd = new FloatPoint[m1MeanOffsetsPixelsCartesian.length];
 		
 		// convert cartesian to ccd offsets
-		for (int i=0; i<m1OffsetsPixelsCartesian.length; i++) {
-			m1OffsetsPixelsCcd[i] = new FloatPoint(m1OffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1OffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
+		for (int i=0; i<m1MeanOffsetsPixelsCartesian.length; i++) {
+			m1MeanOffsetsPixelsCcd[i] = new FloatPoint(m1MeanOffsetsPixelsCartesian[i].x / pupilMaskType.getCcdToCartesianPixelX(), m1MeanOffsetsPixelsCartesian[i].y / pupilMaskType.getCcdToCartesianPixelY());
 		}
 
 
 		
 		CalcM2M1Result calcM2M1Result = new CalcM2M1Result(m2Piston, m2TipTilt, m2TipTiltTelescopeCoords, centroidResidual,
-				 m1OffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1OffsetsPixelsCartesian, m1OffsetsPixelsCcd);
+				 m1MeanOffsetsCorrectedForM2.toArray(new FloatPoint[0]), m1MeanOffsetsPixelsCartesian, m1MeanOffsetsPixelsCcd);
 
 
 		// End of code for findCent unit testing

@@ -328,7 +328,7 @@ public class FineScreenExecutor {
 				// calc centroid stats for pseudo pt 
 				
 				SubimageDefList subimageDefListPt = subimageDefCache.getSubimageDefList(PupilMaskType.PUPIL_MASK_TYPE_ID_36);				
-				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCcd(), subimageDefListPt.getNspotTypes());
+				computationLibrary.calculatePseudoCentroidStats(calcM2M1Result.getM1MeanOffsetsCorrectedForM2PixelsCcd(), subimageDefListPt.getNspotTypes());
 
 	
 				// Go from segment tip/tilt offsets to actuator deltas with pistons set to zero
@@ -340,7 +340,7 @@ public class FineScreenExecutor {
 				// lpz = local piston zeroed on a segment
 				// TODO: the result here should be a TtOffsetsToActsResult object
 				float[][] lpzActDeltas = computationLibrary.ttOffsetsToActs(actPosList, startupComputationsResult.getArcsecPerPixel(),
-						calcM2M1Result.getM1OffsetsCorrectedForM2PixelsCartesian(), globalConfig.getMirrorList());
+						calcM2M1Result.getM1MeanOffsetsCorrectedForM2PixelsCartesian(), globalConfig.getMirrorList());
 		
 				// Decompose the calculated actuators into pure tip/tilt and pure piston.
 				// This code is to ensure that the pistons are indeed zero prior to proceding.
@@ -482,8 +482,8 @@ public class FineScreenExecutor {
 			/*****************************************************/
 			/*      Calculate Average Seg Tip/Tilts              */
 			/*****************************************************/
-			FloatPoint[][] m1SegmentTipTiltErrorsCcd = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2PixelsCcd", FloatPoint[].class).toArray(new FloatPoint[0][0]);
-			FloatPoint[][] m1SegmentTipTiltErrorsCartesian = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1OffsetsCorrectedForM2PixelsCartesian", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			FloatPoint[][] m1SegmentTipTiltErrorsCcd = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1MeanOffsetsCorrectedForM2PixelsCcd", FloatPoint[].class).toArray(new FloatPoint[0][0]);
+			FloatPoint[][] m1SegmentTipTiltErrorsCartesian = procedureOutput.getIterationValuesFor("CalcM2M1Result", "M1MeanOffsetsCorrectedForM2PixelsCartesian", FloatPoint[].class).toArray(new FloatPoint[0][0]);
 			// this value will get overwritten in FineScreenProcedureOutput
 			CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResultCcd = computationLibrary.calcSegmentMeanTipTilts(m1SegmentTipTiltErrorsCcd);
 			// this will overwrite CalcSegmentMeanTipTiltsResult in FineScreenProcedureOutput
