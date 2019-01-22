@@ -441,6 +441,8 @@ public class GraphicDisplayMgmt implements Serializable {
 		useForAnalysis = IntegerListEncoder.encodeList(useEdgeForAnalysis);
 		rowFlagOut = IntegerListEncoder.encodeList(edgeHeightsDisplayValues.getRowFlagOut());
 
+		
+		
 	}
 
 

@@ -419,7 +419,7 @@ public class JavaComputations {
 		// sum absolute values of inputs for which useValue = 1
 		float max = 0.0f;
 		for (int i=0; i<input.length; i++) {
-			max = Math.max(max, Math.abs(input[i] * useValue[i]));
+			if (useValue[i] == 1) max = Math.max(max, Math.abs(input[i]));
 		}
 		return max;
 	}
@@ -440,8 +440,10 @@ public class JavaComputations {
 		float sumOfSquares = 0.0f;
 		int count = 0;
 		for (int i=0; i<input.length; i++) {
-			sumOfSquares += (input[i] * useValue[i]) * (input[i] * useValue[i]);
-			count += useValue[i];
+			if (useValue[i] == 1) {
+				sumOfSquares += (input[i] * useValue[i]) * (input[i] * useValue[i]);
+				count ++;
+			}
 		}
 		
 		return (count == 0) ? 0.0f :(float)Math.sqrt(sumOfSquares/count);
