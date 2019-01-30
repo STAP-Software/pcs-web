@@ -70,6 +70,8 @@ public class PupilRegistrationSubflow {
 	@Abortable
 	public boolean execute(Procedure procedure, FindCentroidsResult findCentroidsResult) throws Throwable {
 		
+		final double PUPIL_ROTATION_XY_THRESH = 15.0;
+
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
 		Integer sufsGroup = procedure.getProcedureType().isSufs() ? procedureConfig.getSufsGroup() : null;
@@ -102,7 +104,10 @@ public class PupilRegistrationSubflow {
 			double pupilRotation = pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD;
 			double threshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getPupilRotationThreshold();
 			
-			if (Math.abs(pupilRotation) > threshold && procedure.getProcedureType().isPupilRegistration()) {
+			
+			if (Math.abs(pupilRegErrorResult.getRegErrorX()) < PUPIL_ROTATION_XY_THRESH && 
+					Math.abs(pupilRegErrorResult.getRegErrorY()) < PUPIL_ROTATION_XY_THRESH &&
+					Math.abs(pupilRotation) > threshold && procedure.getProcedureType().isPupilRegistration()) {
 				statusLogger.log("calc.pupil_rotation_exceeds_threshold", pupilRotation);  // degrees
 				String warningMessage = MessageGenerator.generateMessage("calc.pupil_rotation_exceeds_threshold", pupilRotation);
 				userPromptMgmt.displayInfoDialog("Pupil Rotation Warning", warningMessage);
