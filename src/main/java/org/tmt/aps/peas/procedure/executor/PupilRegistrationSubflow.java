@@ -70,7 +70,7 @@ public class PupilRegistrationSubflow {
 	@Abortable
 	public boolean execute(Procedure procedure, FindCentroidsResult findCentroidsResult) throws Throwable {
 		
-		final double PUPIL_ROTATION_XY_THRESH = 15.0;
+		final double PUPIL_ROTATION_XY_THRESH = 15.0/1000.0;  // 15 mm
 
 		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
