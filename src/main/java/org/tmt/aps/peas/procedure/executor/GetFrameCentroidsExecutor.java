@@ -506,7 +506,7 @@ public class GetFrameCentroidsExecutor {
 				}
 				
 				
-				if (newestRefBeamMap != null) {
+				if (newestRefBeamMap != null && !procedure.getProcedureType().isPassiveTilt()) {
 					float delta = Math.abs(newestRefBeamMap.getCentroidMap().getRotation() - centroidMap.getRotation());
 					
 					float threshold = constantsCache.getMaskConstants().getMaskRotationDifferenceThreshold();
