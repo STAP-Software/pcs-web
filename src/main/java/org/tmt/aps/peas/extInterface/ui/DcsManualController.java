@@ -51,6 +51,7 @@ public class DcsManualController implements Serializable {
 	double[] m2Pos = new double[3];
 	Double[] telescopeDeltaCmds = new Double[2];
 	Double[] secondaryDeltaCmds = new Double[3];
+	double[] telescopeFocusAndTilt = new double[3];
 	
 
 	@PostConstruct
@@ -113,6 +114,16 @@ public class DcsManualController implements Serializable {
 		this.m2Pos = m2Pos;
 	}
 
+	public double[] getTelescopeFocusAndTilt() {
+		return telescopeFocusAndTilt;
+	}
+
+
+	public void setTelescopeFocusAndTilt(double[] telescopeFocusAndTilt) {
+		this.telescopeFocusAndTilt = telescopeFocusAndTilt;
+	}
+
+
 	public Double[] getTelescopeDeltaCmds() {
 		return telescopeDeltaCmds;
 	}
@@ -155,6 +166,25 @@ public class DcsManualController implements Serializable {
 				
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying telescope position"));
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}			
+	}
+
+	/**
+	 * JSF Action method to query the telescope position
+	 */
+	public void doQueryM2FocusAndTilt() {
+		try {
+			telescopePosition = dcsMgmt.queryM2FocusAndTilts();
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query M2 Focus/Tilts"));
+			
+		} catch (CommandFailureException e) {
+				
+			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e, "Error querying M2 focus/tilts"));
+			logger.error(MessageGenerator.generateMessage("command.failure"), e);
+				
+		} catch (Exception e) {
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e, "Error querying M2 focus/tiltsn"));
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}			
 	}
@@ -240,6 +270,7 @@ public class DcsManualController implements Serializable {
 		starInfo = dcsMgmt.queryStar();
 		dcsStatus = dcsMgmt.queryDcsStatus();
 		m2Pos = dcsMgmt.querySecondary();
+		telescopeFocusAndTilt = dcsMgmt.queryM2FocusAndTilts();
 
 	}
 

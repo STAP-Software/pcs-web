@@ -1,5 +1,7 @@
 package org.tmt.aps.peas.extInterface.business;
 
+import java.rmi.RemoteException;
+
 import org.apache.log4j.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -20,6 +22,7 @@ public class DcsCommandSimulator implements DcsCommand {
 	
 	double[] dcsM2Pos = {0.1f, 0.2f, 0.3f};
 	double[] telPos = {1.101010101, 2.202020202};
+	double[] m2FocusAndTilt = {1.1, 1.2, 1.3};
 	
 	@Override
 	public void commandDcsOffset(double deltaAz, double deltaEl) throws CommunicationException, TimeoutException, CommandFailureException {
@@ -59,6 +62,13 @@ public class DcsCommandSimulator implements DcsCommand {
 		logger.info(MessageGenerator.generateMessage("command.start", "queryTelPos::SIMULATOR"));
 		logger.info(MessageGenerator.generateMessage("command.success", "queryTelPos::SIMULATOR"));
 		return telPos;
+	}
+
+	@Override
+	public double[] queryM2FocusAndTilt() throws CommunicationException, TimeoutException, CommandFailureException, RemoteException {
+		logger.info(MessageGenerator.generateMessage("command.start", "queryM2FocusAndTilt::SIMULATOR"));
+		logger.info(MessageGenerator.generateMessage("command.success", "queryM2FocusAndTilt::SIMULATOR"));
+		return m2FocusAndTilt;
 	}
 
 	@Override

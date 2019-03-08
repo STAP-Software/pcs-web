@@ -130,6 +130,7 @@
       			<p:commandButton value="Query" icon="ui-icon-refresh" 
 							ajax="false" action="#{dcsManualController.doQuerySecondary}" 
 							update=":growl :errorGrowl" />	
+			
 				
 				
  				<p:fieldset legend="Telescope">
@@ -160,6 +161,49 @@
 							ajax="false" action="#{dcsManualController.doQueryTelescopePosition}"
 							update=":growl :errorGrowl" />
  								          		
+				
+				
+				
+				
+ 				<p:fieldset legend="M2 Focus and Tilt">
+    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
+ 				
+ 				<h:panelGroup>
+          		<h:outputText value="Focus (mm): " />	
+ 				<p:spacer width="12px"/>				
+         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[0]}" >
+          			<f:convertNumber pattern="#0.00" />
+          		</h:outputText>		
+          		</h:panelGroup>
+ 				
+ 				<h:panelGroup>
+          		<h:outputText value="Tilt-X (arcsec): " />	
+ 				<p:spacer width="12px"/>				
+         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[1]}" >
+          			<f:convertNumber pattern="#0.00" />
+          		</h:outputText>		
+          		</h:panelGroup>
+ 				
+ 				<h:panelGroup>
+          		<h:outputText value="Tilt-Y (arcsec): " />	
+ 				<p:spacer width="12px"/>				
+         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[2]}" >
+          			<f:convertNumber pattern="#0.00" />
+          		</h:outputText>		
+          		</h:panelGroup>
+ 				
+ 				
+          		
+       			</p:panelGrid>
+ 				</p:fieldset>
+ 				<p:commandButton value="Query" icon="ui-icon-refresh" 
+							ajax="false" action="#{dcsManualController.doQueryM2FocusAndTilt}"
+							update=":growl :errorGrowl" />
+ 								          		
+				
+				
+				
+				
 				<p:fieldset legend="Star">
    				<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
  				

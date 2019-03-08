@@ -115,5 +115,10 @@ public class DcsMgmt {
 		extInfFactory.getDcsCommand().commandDcsM2PosDelta(secondaryDeltas);
 	}
 
+	public double[] queryM2FocusAndTilts() throws Exception {
+		double[] m2FocusAndTilts =  extInfFactory.getDcsCommand().queryM2FocusAndTilt();
+		
+		return m2FocusAndTilts;
+	}
 
 }
