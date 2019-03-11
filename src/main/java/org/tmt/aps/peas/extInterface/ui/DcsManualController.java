@@ -62,6 +62,10 @@ public class DcsManualController implements Serializable {
 		m2Pos[0] = 0.111f;
 		m2Pos[1] = 1.232f;
 		m2Pos[2] = 7.022f;
+		
+		telescopeFocusAndTilt[0] = 1.1;
+		telescopeFocusAndTilt[1] = 22.1;
+		telescopeFocusAndTilt[2] = 331.2;
 	}
 
 
@@ -175,7 +179,7 @@ public class DcsManualController implements Serializable {
 	 */
 	public void doQueryM2FocusAndTilt() {
 		try {
-			telescopePosition = dcsMgmt.queryM2FocusAndTilts();
+			telescopeFocusAndTilt = dcsMgmt.queryM2FocusAndTilts();
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Query M2 Focus/Tilts"));
 			
 		} catch (CommandFailureException e) {

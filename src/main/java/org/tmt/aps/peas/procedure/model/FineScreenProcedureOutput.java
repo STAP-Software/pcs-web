@@ -11,6 +11,7 @@ import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
+import org.tmt.aps.peas.computation.model.M2FocusAndTilts;
 import org.tmt.aps.peas.computation.model.PseudoTipTiltCentroidStatsResult;
 import org.tmt.aps.peas.visualization.model.ActuatorDeltasDisplayValues;
 import org.tmt.aps.peas.visualization.model.AvgFsCentroidOffsetsDisplayValues;
@@ -33,6 +34,7 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	CalcSegmentMeanTipTiltsResult calcSegmentMeanTipTiltsResult;
 	AvgCentroidStatsResult avgCentroidStatsResult;
 	DecomposeActsResult  decomposeActsResult;
+	M2FocusAndTilts m2FocusAndTilts;
 	
 	
 	public CentroidOffsetsResult getCentroidOffsetsResult() {
@@ -129,6 +131,13 @@ public class FineScreenProcedureOutput extends ProcedureOutput implements AvgPtC
 	public CentroidStatsResult getAvgFsCentroidStatsResult() {
 		return avgCentroidStatsResult;
 	}
+	public M2FocusAndTilts getM2FocusAndTilts() {
+		return m2FocusAndTilts;
+	}
+	public void setM2FocusAndTilts(M2FocusAndTilts m2FocusAndTilts) {
+		this.m2FocusAndTilts = m2FocusAndTilts;
+	}
+
 	
 
 	

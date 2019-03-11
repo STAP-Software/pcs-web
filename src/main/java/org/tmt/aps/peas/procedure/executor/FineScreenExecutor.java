@@ -31,6 +31,7 @@ import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.DecomposeActsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
+import org.tmt.aps.peas.computation.model.M2FocusAndTilts;
 import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
@@ -478,6 +479,22 @@ public class FineScreenExecutor {
 			
 			procedureOutput.getProcedureDecisionLog().setM2CmdsSent(dcsCommandsSent);
 
+			// query focus and tilts and store in procedure output
+			// FIXME - this is unorthodox.  there should be a general pile of state information around the telescope, 
+			// as it is implemented, it is with computation outputs.  It is not handled automatically.  Also, in
+			// order for reports to work, M2FocusAndTilts must be in the computation.model package.  This doesn't
+			// really fir because it is not a computation output.
+			try {
+				double[] m2FocusAndTilts = dcsMgmt.queryM2FocusAndTilts();
+				((FineScreenProcedureOutput)procedureOutput).setM2FocusAndTilts(new M2FocusAndTilts(m2FocusAndTilts));
+				statusLogger.log("fs.m2_focus_tilt", m2FocusAndTilts[0], m2FocusAndTilts[1], m2FocusAndTilts[2]);
+			} catch (Exception e) {
+					
+				statusLogger.log("fs.m2_focus_tilt_query_failed");
+				logger.error(MessageGenerator.generateMessage("command.failure"), e);
+					
+			}	
+			
 			
 			/*****************************************************/
 			/*      Calculate Average Seg Tip/Tilts              */
