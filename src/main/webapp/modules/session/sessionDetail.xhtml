@@ -249,6 +249,29 @@
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m2CmdsSent}" style="position:relative; top:2px"/>
 
 
+
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2TelescopeFocus')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2TelescopeFocus}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
+
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaX')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaX}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
+
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaY')}" />				
+									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaY}" style="position:relative; top:2px">
+										<f:converter converterId="DynamicNumberConverter" />
+										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+									</h:outputText>
+
+
 									<h:outputLabel value="M1 Cmds RMS (nm)" />
 									<h:panelGroup>
 									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
