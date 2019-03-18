@@ -250,9 +250,9 @@
 
 
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2TelescopeFocus')}" />				
+									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','TelescopeFocus')}" />				
 									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2TelescopeFocus}" style="position:relative; top:2px">
+									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.telescopeFocus}" style="position:relative; top:2px">
 										<f:converter converterId="DynamicNumberConverter" />
 										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 									</h:outputText>
