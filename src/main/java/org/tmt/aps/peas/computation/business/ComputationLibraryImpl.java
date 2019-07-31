@@ -967,9 +967,21 @@ public class ComputationLibraryImpl {
 		int[] good_spots = 	goodCentroidsFound(missingSpotFlags, findCentStatusList);
 
 		
+		// expand peripheral spot arrays to be subimages length long
+		float[] allSpotPerp = new float[nspotTypes.length];
+		float[] allSpotParallel = new float[nspotTypes.length];
+		float[] allSpotTheta = new float[nspotTypes.length];
+		
+		for (int i=0; i<35; i++) {
+			allSpotPerp[nspotTypes.length - 35 + i] =  peripheralSpotPerp[i];
+			allSpotParallel[nspotTypes.length - 35 + i] = peripheralSpotParallel[i];
+			allSpotTheta[nspotTypes.length - 35 + i] =  peripheralSpotTheta[i];
+		}
+		
+		
 		Object[] output = jcalculatePupilRegError.jcalculatePupilRegError(retVal, pupilRegErrorConfig.getFractionalIntensityCalcMethod(),
-				centroidMap.getFindCentroidsResult().getIntensityList(), numSpots, pupilRegErrorConfig.getnStart(), good_spots, peripheralSpotTheta, 
-				peripheralSpotPerp, peripheralSpotParallel, aHex, spotDiameter);
+				centroidMap.getFindCentroidsResult().getIntensityList(), good_spots, nspotTypes, allSpotTheta, 
+				allSpotPerp, allSpotParallel, aHex, spotDiameter);
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
