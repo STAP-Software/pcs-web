@@ -25,9 +25,7 @@ public class FIResult {
 	 
 	int n0123[];
 	
-	float ccdBoxesAll[][];
-	float ccdBoxesSha[][];
-	float ccdBoxesNum[][];
+
 	
 	int numFilledBoxes;
 	float fracFilledBoxes;
@@ -53,9 +51,6 @@ public class FIResult {
 		yPeak = new float[numSpots];
 		nDetect = new int[numSpots]; 
 		n0123 = new int[4];
-		ccdBoxesAll = new float[frame.length][frame[0].length];
-		ccdBoxesSha = new float[frame.length][frame[0].length];
-		ccdBoxesNum = new float[frame.length][frame[0].length];
 	}
 	/**
 	 * Constructor that creates an FIResult from a list of handMarks.  Sets the handMarked flag to true.
@@ -75,9 +70,7 @@ public class FIResult {
 		yPeak = new float[numSpotsFullMirror];
 		nDetect = new int[numSpotsFullMirror]; 
 		n0123 = new int[4];
-		ccdBoxesAll = new float[frame.length][frame[0].length];
-		ccdBoxesSha = new float[frame.length][frame[0].length];
-		ccdBoxesNum = new float[frame.length][frame[0].length];
+
 		
 		// set all nDetect to one and fill x and y peak with the handmarking
 		float[] xPeakPresent = FloatPointListEncoder.extractXArray(handMarks);
@@ -186,30 +179,6 @@ public class FIResult {
 
 	public void setN0123(int[] n0123) {
 		this.n0123 = n0123;
-	}
-
-	public float[][] getCcdBoxesAll() {
-		return ccdBoxesAll;
-	}
-
-	public void setCcdBoxesAll(float[][] ccdBoxesAll) {
-		this.ccdBoxesAll = ccdBoxesAll;
-	}
-
-	public float[][] getCcdBoxesSha() {
-		return ccdBoxesSha;
-	}
-
-	public void setCcdBoxesSha(float[][] ccdBoxesSha) {
-		this.ccdBoxesSha = ccdBoxesSha;
-	}
-
-	public float[][] getCcdBoxesNum() {
-		return ccdBoxesNum;
-	}
-
-	public void setCcdBoxesNum(float[][] ccdBoxesNum) {
-		this.ccdBoxesNum = ccdBoxesNum;
 	}
 
 	public int getNumFilledBoxes() {

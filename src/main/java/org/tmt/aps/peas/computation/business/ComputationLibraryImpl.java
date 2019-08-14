@@ -461,6 +461,8 @@ public class ComputationLibraryImpl {
 		// the result object
 		FIResult fiResult = new FIResult(numSpots, frame);
 		
+		int hexArrayFlg = 1;
+		
 		logger.info("jfindAndIdentify inputs:  nsp = " + nsp + ", ngp = " + ngp + ", x_ref_def = " + x_ref_def + ", y_ref_def = " + y_ref_def +
 				", fiConfig = " + fiConfig + ", forceRotationDeg = " + forceRotationDeg + ", forceScaleValue = " + forceScaleValue + 
 				", passedMissingSpotFlags = " + passedMissingSpotFlags);
@@ -469,8 +471,9 @@ public class ComputationLibraryImpl {
 				fiConfig.getuDelta0(), fiConfig.getMatchbox(), fiConfig.getnThresh0(), fiConfig.getnPeakMinThresh(),
 				fiConfig.getnPeakMaxThresh(), fiConfig.isForceScale() ? 1 : 0, forceScaleValue, fiConfig.isForceRotation() ? 1 : 0,
 				forceRotationRad, fiConfig.getMatchFineThresh(), fiConfig.getLensletOrientation(), fiConfig.getSpiralRingCount(),
+				hexArrayFlg,
 				passedMissingSpotFlags, fiResult.getXiRst(), fiResult.getYiRst(), fiResult.getxPeak(), fiResult.getyPeak(), fiResult.getnDetect(),
-				fiParams, fiResult.getN0123(), fiResult.getCcdBoxesAll(), fiResult.getCcdBoxesSha(), fiResult.getCcdBoxesNum());
+				fiParams, fiResult.getN0123());
 
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
