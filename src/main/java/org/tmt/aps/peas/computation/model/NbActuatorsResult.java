@@ -7,16 +7,26 @@ public class NbActuatorsResult {
 	int constrainedSegmentCount;
 	float segmentPistonRms;
 	
+	int numberOfIslands;
+	int[] segmentIslandNumber;
+	int[] islandSegmentCount;
+	
+	
 	public NbActuatorsResult() {
 		
 	}
 	
-	public NbActuatorsResult(float[] actCalc, float[] resid, int constrainedSegmentCount, float segmentPistonRms) {
+	public NbActuatorsResult(float[] actCalc, float[] resid, int constrainedSegmentCount, float segmentPistonRms, int numberOfIslands, 
+			int[] segmentIslandNumber, int[] islandSegmentCount) {
 		
 		this.actCalc = actCalc;
 		this.resid = resid;
 		this.constrainedSegmentCount = constrainedSegmentCount;
 		this.segmentPistonRms = segmentPistonRms;
+		
+		this.numberOfIslands = numberOfIslands;
+		this.segmentIslandNumber = segmentIslandNumber;
+		this.islandSegmentCount = islandSegmentCount;
 	}
 
 
@@ -51,6 +61,30 @@ public class NbActuatorsResult {
 
 	public void setSegmentPistonRms(float segmentPistonRms) {
 		this.segmentPistonRms = segmentPistonRms;
+	}
+
+	public int getNumberOfIslands() {
+		return numberOfIslands;
+	}
+
+	public void setNumberOfIslands(int numberOfIslands) {
+		this.numberOfIslands = numberOfIslands;
+	}
+
+	public int[] getSegmentIslandNumber() {
+		return segmentIslandNumber;
+	}
+
+	public void setSegmentIslandNumber(int[] segmentIslandNumber) {
+		this.segmentIslandNumber = segmentIslandNumber;
+	}
+
+	public int[] getIslandSegmentCount() {
+		return islandSegmentCount;
+	}
+
+	public void setIslandSegmentCount(int[] islandSegmentCount) {
+		this.islandSegmentCount = islandSegmentCount;
 	}
 
 }

@@ -1834,10 +1834,14 @@ public class ComputationLibraryImpl {
 		int[] rowFlagOut = new int[numEdges];
 
 		float[] bestFitCoherences = new float[numEdges];
+		
+		int[] segmentIslandNumber = new int[mirrorConfig.length];
+		int[] islandSegmentCount = new int[mirrorConfig.length];
 
 		
 		Object[] result = jbbAnalyzeSequence.jbbAnalyzeSequence(retVal, coherenceTable, sigmaMicrons, stepSize, bbPhasingFracInterval, asca, edgeAngle, edgeColor, 
-				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, stepCorr, actCalc, resid, rowFlagOut, bestFitCoherences);
+				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, plusPiston, minusPiston, stepCorr, actCalc, resid, rowFlagOut, bestFitCoherences, 
+				segmentIslandNumber, islandSegmentCount);
 
 		
 		if (retVal.getCode() > 0) {
@@ -1848,9 +1852,10 @@ public class ComputationLibraryImpl {
 		int  constrainedSegmentCount = (Integer)result[0];
 		float segmentPistonRms = (Float)result[1]; 
 		float meanBestFitCoherence = (Float)result[2];
+		int numberOfIslands = (Integer)result[3];
 		
 		BbAnalyzeSequenceResult bbAnalyzeSequenceResult = new BbAnalyzeSequenceResult(stepCorr, actCalc, resid, rowFlagIn, rowFlagOut, constrainedSegmentCount, segmentPistonRms,
-				bestFitCoherences, meanBestFitCoherence);
+				bestFitCoherences, meanBestFitCoherence, numberOfIslands, segmentIslandNumber, islandSegmentCount);
 
 
 		// End of code for findCent unit testing
@@ -2739,7 +2744,11 @@ public class ComputationLibraryImpl {
 		
 		float[][] acsa = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
 		
-		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, actCalc,  resid);
+		int[] segmentIslandNumber = new int[mirrorConfig.length];
+		int[] islandSegmentCount = new int[mirrorConfig.length];
+
+		
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, plusPiston, minusPiston, actCalc, resid, segmentIslandNumber, islandSegmentCount);
 
 		
 		if (retVal.getCode() > 0) {
@@ -2752,9 +2761,10 @@ public class ComputationLibraryImpl {
 
 		int constrainedSegmentCount = (Integer)result[0];
 		float segmentPistonRms = (Float)result[1];
+		int numberOfIslands = (Integer)result[2];
 		
 		
-		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actCalc, resid, constrainedSegmentCount, segmentPistonRms);
+		NbActuatorsResult nbActuatorsResult = new NbActuatorsResult(actCalc, resid, constrainedSegmentCount, segmentPistonRms, numberOfIslands, segmentIslandNumber, islandSegmentCount);
 
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "nbActuators"));

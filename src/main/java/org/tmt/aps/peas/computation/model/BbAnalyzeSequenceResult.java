@@ -17,7 +17,10 @@ public class BbAnalyzeSequenceResult {
 	int  constrainedSegmentCount;
 	float segmentPistonRms; 
 	float meanBestFitCoherence;
-	
+	int numberOfIslands;
+	int[] segmentIslandNumber;
+	int[] islandSegmentCount;
+
 
 	
 	public BbAnalyzeSequenceResult() {
@@ -25,7 +28,7 @@ public class BbAnalyzeSequenceResult {
 	}
 	
 	public BbAnalyzeSequenceResult(float[] stepCorr, float[] actCalc, float[] resid, int[] rowFlagIn, int[] rowFlagOut, int constrainedSegmentCount, float segmentPistonRms, 
-			float[] bestFitCoherences, float meanBestFitCoherence) {
+			float[] bestFitCoherences, float meanBestFitCoherence, int numberOfIslands, int[] segmentIslandNumber, int[] islandSegmentCount) {
 		this.stepCorr = stepCorr;
 		this.actCalc = actCalc;
 		this.resid = resid;
@@ -35,6 +38,10 @@ public class BbAnalyzeSequenceResult {
 		this.segmentPistonRms = segmentPistonRms;
 		this.bestFitCoherences = bestFitCoherences;
 		this.meanBestFitCoherence = meanBestFitCoherence;
+		this.numberOfIslands = numberOfIslands;
+		this.segmentIslandNumber = segmentIslandNumber;
+		this.islandSegmentCount = islandSegmentCount;
+
 	}
 
 	public float[] getStepCorr() {
@@ -107,6 +114,30 @@ public class BbAnalyzeSequenceResult {
 
 	public void setMeanBestFitCoherence(float meanBestFitCoherence) {
 		this.meanBestFitCoherence = meanBestFitCoherence;
+	}
+
+	public int getNumberOfIslands() {
+		return numberOfIslands;
+	}
+
+	public void setNumberOfIslands(int numberOfIslands) {
+		this.numberOfIslands = numberOfIslands;
+	}
+
+	public int[] getSegmentIslandNumber() {
+		return segmentIslandNumber;
+	}
+
+	public void setSegmentIslandNumber(int[] segmentIslandNumber) {
+		this.segmentIslandNumber = segmentIslandNumber;
+	}
+
+	public int[] getIslandSegmentCount() {
+		return islandSegmentCount;
+	}
+
+	public void setIslandSegmentCount(int[] islandSegmentCount) {
+		this.islandSegmentCount = islandSegmentCount;
 	}
 
 

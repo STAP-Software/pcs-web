@@ -457,10 +457,46 @@ public class NarrowBandPhasingExecutor {
 		    		constantsCache.getTelescopeConstants().getNumberOfSegments(),
 		    		globalConfig.getMirrorListInt());
 			
+			
+			// if all segments constrained - say nothing
 		    if (nbActuatorsResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
 		    	
-			    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", MessageGenerator.generateMessage("phasing.constrained_warning", 
-			    		nbActuatorsResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments()));
+		    	
+		    	
+		    	if (nbActuatorsResult.getIslandSegmentCount()[1] == 1) {
+		    		// if all islands except island(1) have 1 segment then say there are N unconstrained segments
+		    		
+		    		String segmentConstraintMessage = MessageGenerator.generateMessage("phasing.constrained_warning", 
+				    		nbActuatorsResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments());
+		    		
+				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", segmentConstraintMessage);
+				    
+				    statusLogger.log("segmentConstraintMessage");
+		    		
+		    	} else {
+		    		// else for each island list the number of segments
+		    		// "Island 1 contains xxxx segments, island 2 contains yyy segments, etc, and there are zzz unconstrained segments."
+		    		
+		    		StringBuffer msg = new StringBuffer();
+		    		int unconstrainedCount = 0;
+		    		for (int islandIndex = 0; islandIndex < nbActuatorsResult.getIslandSegmentCount().length; islandIndex++) {
+		    			
+		    			int islandSegmentCount = nbActuatorsResult.getIslandSegmentCount()[islandIndex];
+		    			
+		    			if (islandSegmentCount > 1) {
+		    				msg.append("Island " + (islandIndex+1) + " contains " + nbActuatorsResult.getIslandSegmentCount() + "segments\n");
+		    			} else {
+		    				unconstrainedCount++;
+		    			}
+		    			
+		    		}
+		    		msg.append("And there are " + unconstrainedCount + " unconstrained segments");
+		    		
+		    	
+				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", msg.toString());
+				    statusLogger.log(msg.toString());
+
+		    	}
 		    	
 		    }
 
