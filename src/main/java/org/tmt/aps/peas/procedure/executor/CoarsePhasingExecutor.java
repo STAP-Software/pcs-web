@@ -388,7 +388,7 @@ public class CoarsePhasingExecutor {
 		    			int islandSegmentCount = bbAnalyzeSequenceResult.getIslandSegmentCount()[islandIndex];
 		    			
 		    			if (islandSegmentCount > 1) {
-		    				msg.append("Island " + (islandIndex+1) + " contains " + bbAnalyzeSequenceResult.getIslandSegmentCount() + "segments\n");
+		    				msg.append("Island " + (islandIndex+1) + " contains " + islandSegmentCount + " segments\n");
 		    			} else {
 		    				unconstrainedCount++;
 		    			}
@@ -398,7 +398,7 @@ public class CoarsePhasingExecutor {
 		    		
 		    	
 				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", msg.toString());
-				    statusLogger.log(msg.toString());
+				    statusLogger.logRaw(msg.toString());
 
 		    	}
 		    	

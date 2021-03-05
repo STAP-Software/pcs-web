@@ -76,6 +76,13 @@ public class StatusLogger {
 	}
 	
 	/**
+	 * Logs a message raw message
+	 */
+	public void logRaw(String message) {
+		procedureStatusLog.addEntry(message);
+	}
+	
+	/**
 	 * Logs a message bundle generated message with a key and variable number of arguments
 	 * @param key the key to the message in the message bundle
 	 * @param args variable number of args to substitute into the message: e.g. <code>{0} blah blah {1}</code>
