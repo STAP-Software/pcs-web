@@ -1815,11 +1815,15 @@ public class ComputationLibraryImpl {
 		
 		
 		float sigmaMicrons = filter.getCoherenceLength();
-
+		int[] plusPiston84 = new int[numEdges];
+		int[] minusPiston84 = new int[numEdges];
+		
 		// rowFlagIn is whether the edge can be used
 		int[] rowFlagIn = new int[numEdges];
 		for (int i=0; i<numEdges; i++) {
 			rowFlagIn[i] = useForAnalysis[i+numSegments] & goodSpots[i+numSegments];
+			plusPiston84[i] = plusPiston[i];
+			minusPiston84[i] = minusPiston[i];
 		}
 		
 		float[][] asca = JavaComputations.generatePhasingInteractionMatrix(numEdges, numSegments, plusPiston, minusPiston);
@@ -1840,7 +1844,7 @@ public class ComputationLibraryImpl {
 
 		
 		Object[] result = jbbAnalyzeSequence.jbbAnalyzeSequence(retVal, coherenceTable, sigmaMicrons, stepSize, bbPhasingFracInterval, asca, edgeAngle, edgeColor, 
-				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, plusPiston, minusPiston, stepCorr, actCalc, resid, rowFlagOut, bestFitCoherences, 
+				rowFlagIn, ringMode, ringModeCorrectionFactor, mirrorConfig, plusPiston84, minusPiston84, stepCorr, actCalc, resid, rowFlagOut, bestFitCoherences, 
 				segmentIslandNumber, islandSegmentCount);
 
 		
@@ -2738,6 +2742,16 @@ public class ComputationLibraryImpl {
 
 
 		int numEdges = nbStep.length;
+	
+		int[] plusPiston84 = new int[numEdges];
+		int[] minusPiston84 = new int[numEdges];
+		
+		// limit plus, minus piston to interior edges
+		for (int i=0; i<numEdges; i++) {
+			plusPiston84[i] = plusPiston[i];
+			minusPiston84[i] = minusPiston[i];
+		}
+
 		
 		float[] actCalc = new float[numSegments];
 		float[] resid = new float[numEdges];
@@ -2746,9 +2760,10 @@ public class ComputationLibraryImpl {
 		
 		int[] segmentIslandNumber = new int[mirrorConfig.length];
 		int[] islandSegmentCount = new int[mirrorConfig.length];
+	
 
 		
-		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, plusPiston, minusPiston, actCalc, resid, segmentIslandNumber, islandSegmentCount);
+		Object[] result = jnbActuators.jnbActuators(retVal, nbStep, rowFlag, colFlag, acsa, mirrorConfig, plusPiston84, minusPiston84, actCalc, resid, segmentIslandNumber, islandSegmentCount);
 
 		
 		if (retVal.getCode() > 0) {
