@@ -353,14 +353,6 @@ public class CoarsePhasingExecutor {
 					procedureConfig.getPhasingSteps(), 
 		    		subimageDefList.useForAnalysis(), goodSpots);
 		
-		    /* TODO: Compare this to the number of active segments */
-		    
-		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
-		    	
-			    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", MessageGenerator.generateMessage("phasing.constrained_warning", 
-			    		bbAnalyzeSequenceResult.getConstrainedSegmentCount(), constantsCache.getTelescopeConstants().getNumberOfSegments()));
-		    	
-		    }
 		    
 			// if all segments constrained - say nothing
 		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {
@@ -375,7 +367,7 @@ public class CoarsePhasingExecutor {
 		    		
 				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", segmentConstraintMessage);
 				    
-				    statusLogger.log("segmentConstraintMessage");
+				    statusLogger.logRaw(segmentConstraintMessage);
 		    		
 		    	} else {
 		    		// else for each island list the number of segments
@@ -389,12 +381,12 @@ public class CoarsePhasingExecutor {
 		    			
 		    			if (islandSegmentCount > 1) {
 		    				msg.append("Island " + (islandIndex+1) + " contains " + islandSegmentCount + " segments\n");
-		    			} else {
+		    			} else if (islandSegmentCount == 1) {
 		    				unconstrainedCount++;
 		    			}
 		    			
 		    		}
-		    		msg.append("And there are " + unconstrainedCount + " unconstrained segments");
+		    		msg.append("And there are " + unconstrainedCount + " additional unconstrained segments");
 		    		
 		    	
 				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", msg.toString());

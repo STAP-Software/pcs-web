@@ -471,7 +471,7 @@ public class NarrowBandPhasingExecutor {
 		    		
 				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", segmentConstraintMessage);
 				    
-				    statusLogger.log("segmentConstraintMessage");
+				    statusLogger.logRaw(segmentConstraintMessage);
 		    		
 		    	} else {
 		    		// else for each island list the number of segments
@@ -485,12 +485,12 @@ public class NarrowBandPhasingExecutor {
 		    			
 		    			if (islandSegmentCount > 1) {
 		    				msg.append("Island " + (islandIndex+1) + " contains " + islandSegmentCount + " segments\n");
-		    			} else {
+		    			} else if (islandSegmentCount == 1) {
 		    				unconstrainedCount++;
 		    			}
 		    			
 		    		}
-		    		msg.append("And there are " + unconstrainedCount + " unconstrained segments");
+		    		msg.append("And there are " + unconstrainedCount + " additional unconstrained segments");
 		    		
 		    	
 				    userPromptMgmt.displayInfoDialog("Constrained Segment Warning", msg.toString());
