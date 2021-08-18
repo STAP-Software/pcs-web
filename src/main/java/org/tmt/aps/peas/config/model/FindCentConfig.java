@@ -40,6 +40,7 @@ public class FindCentConfig {
 	private int itermax;
 	private float subimageIntensityThreshold;
 	private boolean ignoreNdectZeroSpots;
+	private int maxNonLinearPeakCount;
 
 	
 	public FindCentConfig() {
@@ -115,16 +116,19 @@ public class FindCentConfig {
 		this.ignoreNdectZeroSpots = ignoreNdectZeroSpots;
 	}
 
-	public String toString() {
-		
-		StringBuffer buf = new StringBuffer();
-		buf.append("FindCentConfig:");
-		buf.append("\nirad = " + irad);
-		buf.append("\nimargin = " + imargin);
-		buf.append("\nngauss = " + ngauss);
-		buf.append("\nitermax = " + itermax);
-		buf.append("\n");
+	public int getMaxNonLinearPeakCount() {
+		return maxNonLinearPeakCount;
+	}
 
-		return buf.toString();
+	public void setMaxNonLinearPeakCount(int maxNonLinearPeakCount) {
+		this.maxNonLinearPeakCount = maxNonLinearPeakCount;
+	}
+	
+
+	@Override
+	public String toString() {
+		return "FindCentConfig [logger=" + logger + ", findCentConfigId=" + findCentConfigId + ", irad=" + irad + ", imargin=" + imargin
+				+ ", ngauss=" + ngauss + ", itermax=" + itermax + ", subimageIntensityThreshold=" + subimageIntensityThreshold
+				+ ", ignoreNdectZeroSpots=" + ignoreNdectZeroSpots + ", maxNonLinearPeakCount=" + maxNonLinearPeakCount + "]";
 	}
 }

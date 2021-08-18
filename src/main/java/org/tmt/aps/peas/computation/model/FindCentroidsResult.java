@@ -126,6 +126,15 @@ public class FindCentroidsResult {
 	}
 
 	/**
+	 * Sets the find_cent status for a subimage at index 
+	 * @param index the index of the subimage status to replace
+	 * @param findCentStatus the new value
+	 */
+	public void setSubimageFindCentStatus(int index, int findCentStatus) {
+		this.subimageList.get(index).findCentStatus = findCentStatus;
+	}
+
+	/**
 	 * Computes the array of intensities from the list of Subimage objects
 	 * @return array of subimage intensities
 	 */
@@ -216,6 +225,7 @@ public class FindCentroidsResult {
 		int i=0;
 		for (Subimage subimage : subimageList) {
 			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_NON_LINEAR || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
@@ -243,6 +253,7 @@ public class FindCentroidsResult {
 		int i=0;
 		for (Subimage subimage : interiorList) {
 			foundFlags[i++] = (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS ||
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_NON_LINEAR ||
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
        			    subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y) ? 1 : 0;
@@ -278,6 +289,7 @@ public class FindCentroidsResult {
 			if (subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK && 
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X && 
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y &&
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_NON_LINEAR &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_NOT_PERFORMED &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_SUCCESS) {
 				
@@ -293,6 +305,7 @@ public class FindCentroidsResult {
 			if (subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X || 
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y ||
+					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_NON_LINEAR ||
 					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_SUCCESS) {
 				
 				foundSpots++;				

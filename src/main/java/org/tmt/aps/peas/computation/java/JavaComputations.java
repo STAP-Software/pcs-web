@@ -1,8 +1,11 @@
 package org.tmt.aps.peas.computation.java;
 
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
 import org.apache.log4j.Logger;
@@ -176,14 +179,42 @@ public class JavaComputations {
 		}
 	}
 
-	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws Exception {
+	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws Exception {
 		
-		float max = calcMax(centroidMap.getFindCentroidsResult().getRawPeakList());
+		// determines for the 'n' top valued peaks, if they all exceed the threshold for non-linear intensities
 		
-		if (max > threshold) {
-			throw new NonLinearIntensitiesException(max, (float)threshold);
+		
+		float[] maxList = topN(centroidMap.getFindCentroidsResult().getRawPeakList(), n);
+		float min = calcMin(maxList);
+		
+		if (min > threshold) {
+			throw new NonLinearIntensitiesException(min, (float)threshold);
 		}
+		
+		for (float peakIntensity : maxList) {
+			if (peakIntensity > threshold) {
+				List<Integer> resultList = getMatchingValueIndexes(centroidMap.getFindCentroidsResult().getRawPeakList(), peakIntensity);
+				
+				for (Integer index : resultList) {
+					// if less than n found but > 0, we want to change the value of the Subimage.findCentStatus to FIND_CENT_STATUS_NON_LINEAR.
+					
+					centroidMap.getFindCentroidsResult().setSubimageFindCentStatus(index, Constants.FIND_CENT_STATUS_NON_LINEAR);
 
+					logger.info("ignoring non-linear subimage at index = " + index);
+				}
+				
+			}
+		}
+	}
+	
+	public static List<Integer> getMatchingValueIndexes(float[] values, float matchValue) {
+		List<Integer> resultList = new ArrayList<Integer>();
+		for (int i=0; i<values.length; i++) {
+			if (values[i] == matchValue) {
+				resultList.add(i);
+			}
+		}
+		return resultList;
 	}
 
 	public static float getMedianValue(float[] inputs) {
@@ -425,7 +456,7 @@ public class JavaComputations {
 	}
 	
 	public static float calcMax(float[] input) {
-		// sum absolute values of inputs
+		// find the max value in an array
 		float max = 0.0f;
 		for (int i=0; i<input.length; i++) {
 			max = Math.max(max, input[i]);
@@ -433,6 +464,36 @@ public class JavaComputations {
 		return max;
 	}
 	
+	public static float calcMin(float[] input) {
+		// find the max value in an array
+		float min = Float.MAX_VALUE;
+		for (int i=0; i<input.length; i++) {
+			min = Math.min(min, input[i]);
+		}
+		return min;
+	}
+	
+	public static float[] topN(float[] input, int n) {
+		// returns the top n values in an array
+		
+		List<Float> list = new ArrayList<Float>();
+		for (float element : input) {
+			list.add(new Float(element));
+		}
+		
+		Collections.sort(list);
+		List<Float> topNList = new ArrayList<Float>(list.subList(list.size() -n, list.size()));
+		
+		
+		float[] returnVal = new float[n];
+		int i=0;
+		for (Float obj : topNList) {
+			returnVal[i++] = obj.floatValue();
+		}
+		
+		return returnVal;
+		
+	}
 	
 	public static float calcRss(float[] input, int[] useValue) {
 		// sum absolute values of inputs for which useValue = 1

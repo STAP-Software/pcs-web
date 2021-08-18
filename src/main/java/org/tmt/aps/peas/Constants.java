@@ -88,6 +88,7 @@ public class Constants {
 	public static final int FIND_CENT_STATUS_GAUSS_FALLBACK_X = 1011; 
 	public static final int FIND_CENT_STATUS_GAUSS_FALLBACK_Y = 1012; 
 	public static final int FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK = 1013;
+	public static final int FIND_CENT_STATUS_NON_LINEAR = 1014; 
 	public static final int FIND_CENT_STATUS_NOT_PERFORMED = -1;
 	
 	

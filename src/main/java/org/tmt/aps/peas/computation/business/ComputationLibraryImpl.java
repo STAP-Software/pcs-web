@@ -1115,13 +1115,14 @@ public class ComputationLibraryImpl {
 	 * This method delegates to {@link JavaComputations#autoCenterTelescopeCheck(AutoCenterTelConfig, FloatPoint, FloatPoint)}
 	 * @param centroidMap centroid map object containing the array of subimage peak intensities
 	 * @param threshold the threshold to test against
+	 * @param n number of peaks exceeding threshold to trigger exception
 	 * @throws NonLinearIntensitiesException when a subimage exceeds the threshold
 	 */
-	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold) throws NonLinearIntensitiesException, Exception {
+	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws NonLinearIntensitiesException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
 
-		JavaComputations.checkSubimageIntensities(centroidMap, threshold);
+		JavaComputations.checkSubimageIntensities(centroidMap, threshold, n);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "checkSubimageIntensities"));
 		
