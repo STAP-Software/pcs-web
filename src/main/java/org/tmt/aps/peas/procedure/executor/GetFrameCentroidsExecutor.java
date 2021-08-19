@@ -295,7 +295,7 @@ public class GetFrameCentroidsExecutor {
 
 	private void handleNonLinearIntensitiesException(NonLinearIntensitiesException e) throws AbortProcedureException, Exception {
 
-		String text = MessageGenerator.generateMessage("fandi.intensities.nonlinear", e.getMax(), e.getThreshold());
+		String text = MessageGenerator.generateMessage("fandi.intensities.nonlinear", e.getMax(), e.getThreshold(), e.getN());
 
 		// user interaction
 		statusLogger.log("procedure.exception", text);

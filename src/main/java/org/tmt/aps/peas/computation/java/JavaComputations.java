@@ -186,9 +186,10 @@ public class JavaComputations {
 		
 		float[] maxList = topN(centroidMap.getFindCentroidsResult().getRawPeakList(), n);
 		float min = calcMin(maxList);
+		float max = calcMax(maxList);
 		
 		if (min > threshold) {
-			throw new NonLinearIntensitiesException(min, (float)threshold);
+			throw new NonLinearIntensitiesException(max, (float)threshold, n);
 		}
 		
 		List<Integer> resultList = new ArrayList<Integer>();

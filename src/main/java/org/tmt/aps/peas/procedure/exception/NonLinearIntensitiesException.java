@@ -9,10 +9,13 @@ public class NonLinearIntensitiesException extends FandIException {
 	
 	float max;
 	float threshold;
+	int n;
 	
-	public NonLinearIntensitiesException(float max, float threshold) {
+	
+	public NonLinearIntensitiesException(float max, float threshold, int n) {
 		this.max = max;
 		this.threshold = threshold;
+		this.n = n;
 	}
 	
 	public float getMax() {
@@ -23,6 +26,9 @@ public class NonLinearIntensitiesException extends FandIException {
 		return threshold;
 	}
 
+	public int getN() {
+		return n;
+	}
 	
 	
 
