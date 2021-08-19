@@ -179,7 +179,7 @@ public class JavaComputations {
 		}
 	}
 
-	public static void checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws Exception {
+	public static List<Integer> checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws Exception {
 		
 		// determines for the 'n' top valued peaks, if they all exceed the threshold for non-linear intensities
 		
@@ -191,9 +191,10 @@ public class JavaComputations {
 			throw new NonLinearIntensitiesException(min, (float)threshold);
 		}
 		
+		List<Integer> resultList = new ArrayList<Integer>();
 		for (float peakIntensity : maxList) {
 			if (peakIntensity > threshold) {
-				List<Integer> resultList = getMatchingValueIndexes(centroidMap.getFindCentroidsResult().getRawPeakList(), peakIntensity);
+				resultList = getMatchingValueIndexes(centroidMap.getFindCentroidsResult().getRawPeakList(), peakIntensity);
 				
 				for (Integer index : resultList) {
 					// if less than n found but > 0, we want to change the value of the Subimage.findCentStatus to FIND_CENT_STATUS_NON_LINEAR.
@@ -205,6 +206,7 @@ public class JavaComputations {
 				
 			}
 		}
+		return resultList;
 	}
 	
 	public static List<Integer> getMatchingValueIndexes(float[] values, float matchValue) {

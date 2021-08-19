@@ -198,8 +198,14 @@ public class GetFrameCentroidsExecutor {
 			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
 
 			// test for non-linear subimage maximums
-			computationLibrary.checkSubimageIntensities(centroidMap, physicalModel.getInstrument().getCcd()
+			List<Integer> resultList = computationLibrary.checkSubimageIntensities(centroidMap, physicalModel.getInstrument().getCcd()
 					.getNonLinearThreshold(), procedure.getProcedureConfigSet().getFindCentConfigInterior().getMaxNonLinearPeakCount());
+			
+			for (Integer index : resultList) {
+
+				statusLogger.log("find_cent.nonlinear_intensity_subimage_ignored", index);
+
+			}
 			
 			// test for ccd gain offset bias threshold exceeded
 			int leftRightBiasThreshold = procedure.getProcedureConfigSet().getFrameCorrectionConfig().getLeftRightBiasThreshold();

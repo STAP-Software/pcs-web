@@ -1118,13 +1118,15 @@ public class ComputationLibraryImpl {
 	 * @param n number of peaks exceeding threshold to trigger exception
 	 * @throws NonLinearIntensitiesException when a subimage exceeds the threshold
 	 */
-	public void checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws NonLinearIntensitiesException, Exception {
+	public List<Integer> checkSubimageIntensities(CentroidMap centroidMap, double threshold, int n) throws NonLinearIntensitiesException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "checkSubimageIntensities"));
 
-		JavaComputations.checkSubimageIntensities(centroidMap, threshold, n);
+		List<Integer> resultList = JavaComputations.checkSubimageIntensities(centroidMap, threshold, n);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "checkSubimageIntensities"));
+		
+		return resultList;
 		
 	}
 	
