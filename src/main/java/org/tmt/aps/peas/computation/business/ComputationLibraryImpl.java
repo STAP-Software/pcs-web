@@ -39,6 +39,7 @@ import org.tmt.aps.peas.computation.model.CalcSegmentMeanTipTiltsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.CoherenceAnalyzerResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
@@ -88,6 +89,7 @@ import org.tmt.aps.peas.lang.interop.JcalculateFocusModeVector;
 import org.tmt.aps.peas.lang.interop.JcalculateM2M1Analytical;
 import org.tmt.aps.peas.lang.interop.JcalculateM2M1RayTrace;
 import org.tmt.aps.peas.lang.interop.JcalculatePupilRegError;
+import org.tmt.aps.peas.lang.interop.JcoherenceAnalyzer;
 import org.tmt.aps.peas.lang.interop.JcolorStep;
 import org.tmt.aps.peas.lang.interop.JcolorStepToActuators;
 import org.tmt.aps.peas.lang.interop.JdecomposeActs;
@@ -2949,6 +2951,50 @@ public class ComputationLibraryImpl {
 		if (Math.abs(ccdFrame.getDarkMedianLeft() - ccdFrame.getDarkMedianRight()) > threshold) {
 			throw new CcdLeftRightBiasException();
 		}
+	}
+	
+	
+	/**
+	 * Coherence analyzer.
+	 * Calculates statistics based on the coherence of phasing sub-images
+	 * These include the average coherence, coherence asymetry which should be useful 
+	 * for looking at pupil scale errors, coherence of top fracSeeing edges which should
+	 * be something we can correlate with seeing
+	 * 
+	 * @param coherence values for all edges
+	 * @param edgeFlag 1 if flag should be used in coherence statistics, otherwise 0
+	 * @param fracSeeing fraction of good edges (as indicated by edgeFlag) to be used in seeing calculation
+	 * typically 0.25
+	 * 
+	 * @return CoherenceAnalyzerResult
+	 */
+	@Computation
+	public CoherenceAnalyzerResult coherenceAnalyzer(float[] coherence, int[] edgeFlag, float fracSeeing) throws ComputationException {
+		
+		logger.info(MessageGenerator.generateMessage("computation.start", "coherenceAnalyzer"));
+
+		JcoherenceAnalyzer jcoherenceAnalyzer = new JcoherenceAnalyzer();
+		RetVal retVal = new RetVal();
+		
+		
+		Object[] result = jcoherenceAnalyzer.jcoherenceAnalyzer(retVal, coherence, edgeFlag, fracSeeing);
+
+		if (retVal.getCode() > 0) {
+			statusLogger.log(retVal);
+			throw new ComputationException("coherenceAnalyzer calcuation error.  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
+		}
+		
+		int numberSeeingEdges = (Integer)result[0];
+		float coherenceMean = (Float)result[1];
+		float coherenceSeeing = (Float)result[2];
+		float coherenceAsymmetry = (Float)result[3];
+		float coherenceAsymmetryUncertainty = (Float)result[4];
+		
+		CoherenceAnalyzerResult coherenceAnalyzerResult = new CoherenceAnalyzerResult(numberSeeingEdges, coherenceMean, coherenceSeeing, coherenceAsymmetry, coherenceAsymmetryUncertainty);
+
+		logger.info(MessageGenerator.generateMessage("computation.success", "coherenceAnalyzer"));
+
+		return coherenceAnalyzerResult;
 	}
 
 	
