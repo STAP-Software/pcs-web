@@ -365,6 +365,12 @@ public class NarrowBandPhasingExecutor {
 						constantsCache.getPhasingConstants().getPhasingTemplateCount(), 
 						constantsCache.getTelescopeConstants().getNumberOfSegments(), 
 						constantsCache.getPhasingConstants().getNbSingleFilterCoherenceThreshold());
+				
+				/**********************************************/
+				/*            Coherence Analyzer              */
+				/**********************************************/
+			    computationLibrary.coherenceAnalyzer(nbAnalyzeFrameResult.getCoherenceOut(), nphMissingSpotsFlags, constantsCache.getPhasingConstants().getFracSeeing());
+
 
 			    /**********************************************/
 				/*          CalculatePhasingStats             */

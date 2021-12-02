@@ -23,6 +23,7 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
+import org.tmt.aps.peas.computation.model.CoherenceAnalyzerResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
@@ -353,6 +354,11 @@ public class CoarsePhasingExecutor {
 					procedureConfig.getPhasingSteps(), 
 		    		subimageDefList.useForAnalysis(), goodSpots);
 		
+		    
+			/**********************************************/
+			/*            Coherence Analyzer              */
+			/**********************************************/
+		    computationLibrary.coherenceAnalyzer(bbAnalyzeSequenceResult.getBestFitCoherences(), bbAnalyzeSequenceResult.getRowFlagOut(), constantsCache.getPhasingConstants().getFracSeeing());
 		    
 			// if all segments constrained - say nothing
 		    if (bbAnalyzeSequenceResult.getConstrainedSegmentCount() != constantsCache.getTelescopeConstants().getNumberOfSegments()) {

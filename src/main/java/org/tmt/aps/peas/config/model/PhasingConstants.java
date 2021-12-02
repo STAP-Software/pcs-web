@@ -23,6 +23,7 @@ public class PhasingConstants {
 	
 	
 	float bbPhasingFracInterval;
+	float fracSeeing;
 	float ringModeCorrectionFactor;
 	float stepSize30;
 	float stepSize100;
@@ -64,6 +65,14 @@ public class PhasingConstants {
 
 	public void setBbPhasingFracInterval(float bbPhasingFracInterval) {
 		this.bbPhasingFracInterval = bbPhasingFracInterval;
+	}
+
+	public float getFracSeeing() {
+		return fracSeeing;
+	}
+
+	public void setFracSeeing(float fracSeeing) {
+		this.fracSeeing = fracSeeing;
 	}
 
 	public float getRingModeCorrectionFactor() {
@@ -143,7 +152,8 @@ public class PhasingConstants {
 		buf.append("\nphasingTemplateCount = " + phasingTemplateCount);
 		buf.append("\nphasingSubimageFftSize = " + phasingSubimageFftSize);
 		buf.append("\nnbSingleFilterCoherenceThreshold = " + nbSingleFilterCoherenceThreshold);		
-		buf.append("\nbbPhasingFracInterval = " + bbPhasingFracInterval);
+		buf.append("\nbbPhasingFracInterval = " + bbPhasingFracInterval);		
+		buf.append("\nfracSeeing = " + fracSeeing);
 		buf.append("\nringModeCorrectionFactor = " + ringModeCorrectionFactor);
 		buf.append("\nstepSize30 = " + stepSize30);
 		buf.append("\nstepSize100 = " + stepSize100);

@@ -3,6 +3,7 @@ package org.tmt.aps.peas.procedure.model;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
 import org.tmt.aps.peas.computation.model.CalcDesiredActCommandsResult;
+import org.tmt.aps.peas.computation.model.CoherenceAnalyzerResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FixPistonsResult;
@@ -19,6 +20,7 @@ import org.tmt.aps.peas.visualization.model.EdgeHeightsDisplayValues;
 public class CoarsePhasingProcedureOutput extends ProcedureOutput implements EdgeHeightsDisplayValues, ActuatorDeltasDisplayValues {
 
 	BbAnalyzeSequenceResult bbAnalyzeSequenceResult;
+	CoherenceAnalyzerResult coherenceAnalyzerResult;
 	FixPistonsResult fixPistonsResult;
 	PhasingStatsResult phasingStatsResult;
 	CalcDesiredActCommandsResult calcDesiredActCommandsResult;
@@ -32,6 +34,14 @@ public class CoarsePhasingProcedureOutput extends ProcedureOutput implements Edg
 
 	public void setBbAnalyzeSequenceResult(BbAnalyzeSequenceResult bbAnalyzeSequenceResult) {
 		this.bbAnalyzeSequenceResult = bbAnalyzeSequenceResult;
+	}
+
+	public CoherenceAnalyzerResult getCoherenceAnalyzerResult() {
+		return coherenceAnalyzerResult;
+	}
+
+	public void setCoherenceAnalyzerResult(CoherenceAnalyzerResult coherenceAnalyzerResult) {
+		this.coherenceAnalyzerResult = coherenceAnalyzerResult;
 	}
 
 	public FixPistonsResult getFixPistonsResult() {

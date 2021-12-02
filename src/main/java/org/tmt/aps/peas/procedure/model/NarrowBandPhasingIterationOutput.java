@@ -3,6 +3,7 @@ package org.tmt.aps.peas.procedure.model;
 import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
+import org.tmt.aps.peas.computation.model.CoherenceAnalyzerResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.MakeTemplateResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
@@ -30,6 +31,7 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	NbAnalyzeFrameResult nbAnalyzeFrameResult;
 	NbAnalyzeStepSequenceResult nbAnalyzeStepSequenceResult;
 	PhasingStatsResult phasingStatsResult;
+	CoherenceAnalyzerResult coherenceAnalyzerResult;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -86,7 +88,12 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	public void setPhasingStatsResult(PhasingStatsResult phasingStatsResult) {
 		this.phasingStatsResult = phasingStatsResult;
 	}
-	
+	public CoherenceAnalyzerResult getCoherenceAnalyzerResult() {
+		return coherenceAnalyzerResult;
+	}
+	public void setCoherenceAnalyzerResult(CoherenceAnalyzerResult coherenceAnalyzerResult) {
+		this.coherenceAnalyzerResult = coherenceAnalyzerResult;
+	}
 
 	// Edge Heights Display Values implementation methods
 	
@@ -94,6 +101,7 @@ public class NarrowBandPhasingIterationOutput extends ProcedureIterationOutput i
 	
 
 	
+
 	public float[] getStepCorr() {
 		
 		return nbAnalyzeStepSequenceResult.getStepTable();
