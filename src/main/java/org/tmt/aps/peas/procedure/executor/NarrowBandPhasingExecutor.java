@@ -369,7 +369,7 @@ public class NarrowBandPhasingExecutor {
 				/**********************************************/
 				/*            Coherence Analyzer              */
 				/**********************************************/
-			    computationLibrary.coherenceAnalyzer(nbAnalyzeFrameResult.getCoherenceOut(), nphMissingSpotsFlags, constantsCache.getPhasingConstants().getFracSeeing());
+			    computationLibrary.coherenceAnalyzer(nbAnalyzeFrameResult.getCoherenceOut(), nbAnalyzeStepSequenceResult.getRowFlagOut(), constantsCache.getPhasingConstants().getFracSeeing());
 
 
 			    /**********************************************/
