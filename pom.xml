@@ -298,6 +298,9 @@
                <!-- Java EE 6 doesn't require web.xml, Maven needs to catch 
                   up! -->
                <failOnMissingWebXml>false</failOnMissingWebXml>
+
+    			<attachClasses>true</attachClasses>
+
             </configuration>
          </plugin>
          <!-- JBoss AS plugin to deploy war -->
