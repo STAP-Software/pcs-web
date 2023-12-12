@@ -535,7 +535,8 @@ public class GetFrameCentroidsExecutor {
                 	     expectedSpotCount = subimageDefList.fandiExpectedSpotCount();
                        } else {
                 	     expectedSpotCount = procedureConfig.getPupilMask().getPupilMaskType().getNumSpots() ; 
-                       }                   
+                       }  
+				   } else {
                       expectedSpotCount = 	subimageDefList.fandiExpectedSpotCount();
 				  }
 					
@@ -550,7 +551,7 @@ public class GetFrameCentroidsExecutor {
 							
 					if (procedure.getProcedureType().isCreateRefMap()) {
 						// if this is a ref beam map, just fail
-						String text = MessageGenerator.generateMessage("find_cent.frac_vs_threshold", findCentFracFilled, fiConfig.getFracFilledThresh());
+						String text = MessageGenerator.generateMessage("find_cent.ref_map_missing_subimages", findCentroidsResult.missedSpots());
 						throw new Exception(text);
 					} else {
 						// otherwise create and throw a user assist exception

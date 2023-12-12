@@ -289,7 +289,7 @@ public class FindCentroidsResult {
 			if (subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FIT_FAILED_FALLBACK && 
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_X && 
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_GAUSS_FALLBACK_Y &&
-					subimage.getFindCentStatus() == Constants.FIND_CENT_STATUS_NON_LINEAR &&
+					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_NON_LINEAR &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_NOT_PERFORMED &&
 					subimage.getFindCentStatus() != Constants.FIND_CENT_STATUS_SUCCESS) {
 				
