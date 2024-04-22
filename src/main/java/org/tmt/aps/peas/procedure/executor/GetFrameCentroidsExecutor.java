@@ -561,8 +561,6 @@ public class GetFrameCentroidsExecutor {
 					}
 				}
 				
-			} catch (UserAssistRequiredException e) {
-				throw e;
 			} catch (Exception e) {
 				if (procedure.getProcedureType().isPassiveTilt()) {
 					throw new HandMarkRequiredException();
