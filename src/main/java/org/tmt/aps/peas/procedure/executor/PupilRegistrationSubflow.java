@@ -21,6 +21,7 @@ import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -82,7 +83,16 @@ public class PupilRegistrationSubflow {
 		/*****************************************************/
 		/*            calcPupilRegErrorDefaults              */
 		/*****************************************************/
-				
+		
+		/* 
+		 * TODO Add the following variables as the last parameters of calculatePupilRegError
+		 *
+			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
+			globalConfig.getPupilRegistrationOffsetX()
+			globalConfig.getPupilRegistrationOffsetY()
+		*/	
+
+		
 		PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 			procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
 			procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
