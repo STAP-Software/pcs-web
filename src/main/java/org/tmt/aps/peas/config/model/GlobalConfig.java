@@ -48,8 +48,8 @@ public class GlobalConfig {
 	int coarseMirrorY;
 	int fineMirrorX;
 	int fineMirrorY;
-	int pupilRegistrationOffsetX;
-	int pupilRegistrationOffsetY;
+	float pupilRegistrationOffsetX;
+	float pupilRegistrationOffsetY;
 
 	String sufsZernikeOrderListEncoded;
 	String mirrorListEncoded;
@@ -107,19 +107,20 @@ public class GlobalConfig {
 		this.fineMirrorY = fineMirrorY;
 	}
 	
-	public int getPupilRegistrationOffsetX() {
+
+	public float getPupilRegistrationOffsetX() {
 		return pupilRegistrationOffsetX;
 	}
 
-	public void setPupilRegistrationOffsetX(int pupilRegistrationOffsetX) {
+	public void setPupilRegistrationOffsetX(float pupilRegistrationOffsetX) {
 		this.pupilRegistrationOffsetX = pupilRegistrationOffsetX;
 	}
 
-	public int getPupilRegistrationOffsetY() {
+	public float getPupilRegistrationOffsetY() {
 		return pupilRegistrationOffsetY;
 	}
 
-	public void setPupilRegistrationOffsetY(int pupilRegistrationOffsetY) {
+	public void setPupilRegistrationOffsetY(float pupilRegistrationOffsetY) {
 		this.pupilRegistrationOffsetY = pupilRegistrationOffsetY;
 	}
 

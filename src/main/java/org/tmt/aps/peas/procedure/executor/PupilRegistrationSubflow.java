@@ -85,12 +85,16 @@ public class PupilRegistrationSubflow {
 		/*****************************************************/
 		
 		/* 
-		 * TODO Add the following variables as the last parameters of calculatePupilRegError
+		 * 1/9/2025  Added the following variables as the last parameters of calculatePupilRegError:
 		 *
-			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
-			globalConfig.getPupilRegistrationOffsetX()
-			globalConfig.getPupilRegistrationOffsetY()
-		*/	
+		 * getPupilRegistrationOffsetX, getPupilRegistrationOffsetY
+		 * 
+		 * These are in units of mm at M1, and these are added directly to the result?
+		 *
+		 * TODO: make sure the output values for PR x,y are in mm at M1
+		 */
+		GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
+		
 
 		
 		PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
@@ -102,7 +106,8 @@ public class PupilRegistrationSubflow {
 			constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotTheta(),
 			constantsCache.getPrimaryMirrorConstants().getaHex(), 
 			procedureConfig.getPupilMask().getSpotDiamPeripheral(), 
-			subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+			subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(),
+			globalConfig.getPupilRegistrationOffsetX(), globalConfig.getPupilRegistrationOffsetY());
 			
 		
 			// log values 
