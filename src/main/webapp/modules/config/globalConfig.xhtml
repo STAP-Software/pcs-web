@@ -41,6 +41,25 @@
 
 
 				<p:spacer height="10px" />
+				<p:fieldset legend="Pupil Registration Offsets" toggleable="true" toggleSpeed="500">
+
+					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetX')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText id="pupilRegistrationOffsetX" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetX}" size="5" />
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetY')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText id="pupilRegistrationOffsetY" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetY}" size="5" />
+						
+
+					</p:panelGrid>
+
+				</p:fieldset>
+
+
+				<p:spacer height="10px" />
 
 
 				<f:facet name="footer">

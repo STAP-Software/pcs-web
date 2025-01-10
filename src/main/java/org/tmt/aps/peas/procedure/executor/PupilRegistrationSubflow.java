@@ -21,6 +21,7 @@ import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
+import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -82,7 +83,20 @@ public class PupilRegistrationSubflow {
 		/*****************************************************/
 		/*            calcPupilRegErrorDefaults              */
 		/*****************************************************/
-				
+		
+		/* 
+		 * 1/9/2025  Added the following variables as the last parameters of calculatePupilRegError:
+		 *
+		 * getPupilRegistrationOffsetX, getPupilRegistrationOffsetY
+		 * 
+		 * These are in units of mm at M1, and these are added directly to the result?
+		 *
+		 * TODO: make sure the output values for PR x,y are in mm at M1
+		 */
+		GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
+		
+
+		
 		PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 			procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
 			procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
@@ -92,7 +106,8 @@ public class PupilRegistrationSubflow {
 			constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotTheta(),
 			constantsCache.getPrimaryMirrorConstants().getaHex(), 
 			procedureConfig.getPupilMask().getSpotDiamPeripheral(), 
-			subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
+			subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList(),
+			globalConfig.getPupilRegistrationOffsetX(), globalConfig.getPupilRegistrationOffsetY());
 			
 		
 			// log values 

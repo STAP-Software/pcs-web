@@ -956,12 +956,15 @@ public class ComputationLibraryImpl {
 	 * @param nspotTypes array of spot types, interior vs peripheral
 	 * @param missingSpotFlags array of flags indicating missing spot type (missing from find and identify, use for analysis)
 	 * @param findCentStatusList an array of flags indicating if/how this spot was found during find and identify
+	 * @param pupilRegistrationOffsetX the X offset applied to the error calculation
+	 * @param pupilRegistrationOffsetY the Y offset applied to the error calculation
 	 * @return result object containing registration error in x, y and phi and scale error
 	 * @throws ComputationException if the Fortran routine returns an error code
 	 */
 	@Computation
 	public PupilRegErrorResult calculatePupilRegError(PupilRegErrorConfig pupilRegErrorConfig, CentroidMap centroidMap, int numSpots,
-			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, int[] missingSpotFlags, int[] findCentStatusList)
+			float[] peripheralSpotPerp, float[] peripheralSpotParallel, float[] peripheralSpotTheta, float aHex, float spotDiameter, int[] nspotTypes, 
+			int[] missingSpotFlags, int[] findCentStatusList, float pupilRegistrationOffsetX, float pupilRegistrationOffsetY)
 					throws Exception {
 		logger.info(MessageGenerator.generateMessage("computation.start", "calculatePupilRegError"));
 
@@ -993,8 +996,16 @@ public class ComputationLibraryImpl {
 			throw new ComputationException("calculate pupil reg error failed, status code = " + retVal.getCode() + ".  " + MessageGenerator.generateErrorMessage(retVal) + ".  ");
 		}
 		
-		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult((Float) output[0], (Float) output[1], (Float) output[2], 
-				(Float) output[3], (Float) output[4], (Float) output[5], (Float) output[6]);
+		float regErrorX = (Float) output[0] - (pupilRegistrationOffsetX / Constants.METERS_TO_MM);
+		float regErrorY = (Float) output[1] - (pupilRegistrationOffsetY / Constants.METERS_TO_MM);
+		float regErrorPhi = (Float) output[2];
+		float regErrorApproxX = (Float) output[3] - (pupilRegistrationOffsetX / Constants.METERS_TO_MM);
+		float regErrorApproxY = (Float) output[4] - (pupilRegistrationOffsetY / Constants.METERS_TO_MM);
+		float regErrorApproxPhi = (Float) output[5];
+		float regScaleError = (Float) output[6];
+		
+		PupilRegErrorResult pupilRegErrorResult = new PupilRegErrorResult(regErrorX, regErrorY, regErrorPhi, 
+				regErrorApproxX, regErrorApproxY, regErrorApproxPhi, regScaleError);
 		
 		
 		// End of code for findCent unit testing
