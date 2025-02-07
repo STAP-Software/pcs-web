@@ -191,8 +191,16 @@ public class SessionController implements Serializable {
 			
 			globalConfigDefaults.setMirrorListEncoded(IntegerListEncoder.encodeList(mirrorList));
 			
+			// reset global testing values (pupil registration offsets set back to zero at session end)
+			// create a config defaults object to save back
+			globalConfigDefaults.setPupilRegistrationOffsetX(0.0f);
+			globalConfigDefaults.setPupilRegistrationOffsetY(0.0f);
+			
 			globalConfigMgmt.saveDefaultConfig(globalConfigDefaults);
 
+
+
+			
 			
 		}
 
