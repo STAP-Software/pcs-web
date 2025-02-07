@@ -114,7 +114,11 @@ public class PupilRegistrationSubflow {
 			statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
 					new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
 
-			
+			if (globalConfig.getPupilRegistrationOffsetX() != 0.0f || globalConfig.getPupilRegistrationOffsetY() != 0.0f) {
+				// error from desired pupil position is offset by 
+				statusLogger.log("calc.pupil_reg_error_offsets", globalConfig.getPupilRegistrationOffsetX(), globalConfig.getPupilRegistrationOffsetY());
+			}
+	
 			// Tell user that the rotation exceeds threshold (only if in PR procedure)
 			double pupilRotation = pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD;
 			double threshold = procedure.getProcedureConfigSet().getPupilRegErrorConfig().getPupilRotationThreshold();
