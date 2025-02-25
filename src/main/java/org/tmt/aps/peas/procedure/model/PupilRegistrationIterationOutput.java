@@ -4,6 +4,8 @@ import org.tmt.aps.peas.computation.model.CalcPrCommandsResult;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.CentroidOffsetsResult;
 import org.tmt.aps.peas.computation.model.CentroidStatsResult;
+import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
 
 /**
@@ -18,6 +20,7 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 	CentroidStatsResult centroidStatsResult;
 	PupilRegErrorResult pupilRegErrorResult;
 	CalcPrCommandsResult calcPrCommandsResult;
+	FindCentroidsResult findCentroidsResult;
 	
 	public CenterTelescopeCalcResult getCenterTelescopeCalcResult() {
 		return centerTelescopeCalcResult;
@@ -48,6 +51,12 @@ public class PupilRegistrationIterationOutput extends ProcedureIterationOutput {
 	}
 	public void setCalcPrCommandsResult(CalcPrCommandsResult calcPrCommandsResult) {
 		this.calcPrCommandsResult = calcPrCommandsResult;
+	}
+	public FindCentroidsResult getFindCentroidsResult() {
+		return findCentroidsResult;
+	}
+	public void setFindCentroidsResult(FindCentroidsResult findCentroidsResult) {
+		this.findCentroidsResult = findCentroidsResult;
 	}	
 	
 
