@@ -604,18 +604,17 @@ public class FineScreenExecutor {
 				statusLogger.log("pt.m1_act_cmd_success");
 				logger.info("doSendActDeltaCommands: success");
 				commandsSent = true;
-					
-				try {
-					// take and store a snapshot
-					int snapNum = acsMgmt.commandTakeSnap();
-					procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
-					
-				} catch (Exception e) {
-					statusLogger.log("pt.m1_act_cmd_failed");
-					logger.error(MessageGenerator.generateMessage("command.error"), e);
-				}
-	
 			}
+			try {
+				// take and store a snapshot
+				int snapNum = acsMgmt.commandTakeSnap();
+				procedureOutput.getProcedureDecisionLog().setM1SnapNumberAfter(snapNum);
+				
+			} catch (Exception e) {
+				statusLogger.log("pt.m1_act_cmd_failed");
+				logger.error(MessageGenerator.generateMessage("command.error"), e);
+			}
+	
 					
 			procedureOutput.getProcedureDecisionLog().setM1CmdsSent(commandsSent);
 		
