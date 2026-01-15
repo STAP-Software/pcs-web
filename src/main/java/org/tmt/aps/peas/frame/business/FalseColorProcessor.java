@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
  
 /**
  * Contains the colormap used to create the false color in all CCD images and methods to generate png formatted images from CCD values.

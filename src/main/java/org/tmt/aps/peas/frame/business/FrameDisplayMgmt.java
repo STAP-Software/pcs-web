@@ -10,12 +10,12 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.Lock;
-import javax.ejb.LockType;
-import javax.ejb.Singleton;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.Lock;
+import jakarta.ejb.LockType;
+import jakarta.ejb.Singleton;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.Utils;
 

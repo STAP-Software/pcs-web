@@ -1,6 +1,6 @@
 package org.tmt.aps.peas.extInterface.business;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.extInterface.model.GainImpl;
 import org.tmt.aps.peas.extinf.CcdCommand;

@@ -9,17 +9,17 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Serializable;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.primefaces.event.FileUploadEvent;
-import org.primefaces.model.UploadedFile;
+import org.primefaces.model.file.UploadedFile;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -52,6 +52,7 @@ public class AcsManualController implements Serializable {
 	boolean acsRunning;
 	double rmsActuatorMove;
 	double sensorRange;
+	UploadedFile uploadFile;
 
 	@PostConstruct
 	public void init() {
@@ -63,6 +64,15 @@ public class AcsManualController implements Serializable {
 		}
 
 	}
+	
+	public UploadedFile getUploadFile() {
+		return uploadFile;
+	}
+    
+	public void setUploadFitsFile(UploadedFile uploadFile) {
+        this.uploadFile = uploadFile;
+    }
+
 
 	public int getSnapshotNumber() {
 		return snapshotNumber;
@@ -114,14 +124,13 @@ public class AcsManualController implements Serializable {
 
 	/**
 	 * Handles file update of actuator deltas files
-	 * @param event the file upload event containing the file that was uploaded
 	 */
-	public void handleFileUpload(FileUploadEvent event) {
+	public void handleFileUpload() {
 
 		BufferedReader br = null;
 		try {
-			UploadedFile file = event.getFile();
-			br = new BufferedReader(new InputStreamReader(file.getInputstream()));
+		
+			br = new BufferedReader(new InputStreamReader(uploadFile.getInputStream()));
 
 			for (int i = 0; i < 36; i++) {
 				for (int j = 0; j < 3; j++) {

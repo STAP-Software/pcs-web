@@ -7,12 +7,12 @@ package org.tmt.aps.peas.statusLog.ui;
 
 import java.io.Serializable;
 
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 import org.tmt.aps.peas.statusLog.business.StatusLogMgmt;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;

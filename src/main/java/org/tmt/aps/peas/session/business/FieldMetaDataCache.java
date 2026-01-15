@@ -9,12 +9,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.ejb.Singleton;
-import javax.ejb.Startup;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Singleton;
+import jakarta.ejb.Startup;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.session.model.FieldMetaData;

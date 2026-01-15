@@ -5,7 +5,7 @@
  */
 package org.tmt.aps.peas.frame.ui;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 
 /**
  * JSF class to support tree display in frame tools frame browser window

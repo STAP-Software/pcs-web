@@ -9,14 +9,14 @@ import java.io.Serializable;
 import java.util.Arrays;
 import java.util.List;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
@@ -654,8 +654,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
 	 */
 	public void updateCentroidOffsetDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
+		
+		PrimeFaces.current().executeScript("drawCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	/**
@@ -663,8 +663,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
 	 */
 	public void updateAvgPtCentroidOffsetDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawAvgPtCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
+		
+		PrimeFaces.current().executeScript("drawAvgPtCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	/**
@@ -672,8 +672,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments' and 'showSegNums'
 	 */
 	public void updateAvgFsCentroidOffsetDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawAvgFsCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
+		
+		PrimeFaces.current().executeScript("drawAvgFsCentroidOffsets(" + showSegments + ", " + showSegNums + ")");
 	}
 
 	/**
@@ -681,8 +681,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums', 'showActVals', 'showHeat', and 'showHeatCircles'
 	 */
 	public void updateActDeltaDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
+		
+		PrimeFaces.current().executeScript("drawActDeltas(" + showSegments + ", " + showSegNums + ", " + showActVals + ", " + showHeat  + ", " + showHeatCircles + ")");
 	}
 
 	/**
@@ -690,8 +690,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
 	 */
 	public void updateEdgeHeightsDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
+	
+		PrimeFaces.current().executeScript("drawEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
 	}
 
 	/**
@@ -699,8 +699,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
 	 */
 	public void updateSingleFilterEdgeHeightsDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawSingleFilterEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
+	
+		PrimeFaces.current().executeScript("drawSingleFilterEdgeHeights(" + showSegments + ", " + showSegNums + ", " + showEdgeNums + ")");
 	}
 
 	/**
@@ -708,8 +708,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw with updated values for 'showSegments', 'showSegNums' and 'showEdgeNums'
 	 */
 	public void updateEdgeResidualsDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ", " + showEdgeNums  + ")");
+	
+		PrimeFaces.current().executeScript("drawEdgeResiduals(" + showSegments + ", " + showSegNums + ", " + showEdgeNums  + ")");
 	}
 	
 	/**
@@ -717,8 +717,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw the centroid offsets with current values
 	 */
 	public void updateSufsCentroidOffsetDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawSufsCentroidOffsets()");
+		
+		PrimeFaces.current().executeScript("drawSufsCentroidOffsets()");
 	}
 
 	/**
@@ -726,8 +726,8 @@ public class VisualizationController implements Serializable {
 	 * Calls javascript to redraw the average centroid offsets with current values
 	 */
 	public void updateAvgSufsCentroidOffsetDisplayListener() {
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("drawAvgSufsCentroidOffsets()");
+		
+		PrimeFaces.current().executeScript("drawAvgSufsCentroidOffsets()");
 	}
 
 	/**

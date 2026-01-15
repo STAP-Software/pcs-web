@@ -5,11 +5,11 @@
  */
 package org.tmt.aps.peas.config.model;
 
-import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.PrimaryKeyJoinColumn;
-import javax.persistence.Table;
+import jakarta.persistence.Entity;
+import jakarta.persistence.NamedQueries;
+import jakarta.persistence.NamedQuery;
+import jakarta.persistence.PrimaryKeyJoinColumn;
+import jakarta.persistence.Table;
 
 /**
  * Configuration entity class representing the FrameCorrectionConfigDefaults table.  This table is joined with the FrameCorrectionConfig table using inheritance model.

@@ -8,12 +8,12 @@ package org.tmt.aps.peas.extInterface.business;
 
 import java.util.concurrent.Future;
 
-import javax.ejb.AsyncResult;
-import javax.ejb.Asynchronous;
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import jakarta.ejb.AsyncResult;
+import jakarta.ejb.Asynchronous;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 
 /**
  * EJB Session bean for additional PCS camera command interfaces.  Used because JBoss bug that requires an EJB boundary to have methods tagged <code>@Asynchronous</code>  

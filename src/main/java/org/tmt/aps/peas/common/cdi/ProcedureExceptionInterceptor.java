@@ -9,12 +9,12 @@ import java.io.Serializable;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
-import javax.ejb.EJB;
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.ejb.EJB;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.computation.business.ComputationException;
 import org.tmt.aps.peas.lang.interop.RetVal;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;

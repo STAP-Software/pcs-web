@@ -8,11 +8,11 @@ package org.tmt.aps.peas.common.cdi;
 import java.io.Serializable;
 import java.util.Arrays;
 
-import javax.interceptor.AroundInvoke;
-import javax.interceptor.Interceptor;
-import javax.interceptor.InvocationContext;
+import jakarta.interceptor.AroundInvoke;
+import jakarta.interceptor.Interceptor;
+import jakarta.interceptor.InvocationContext;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 /**
  * Logging interceptor.  Every method with the <code>@Loggable</code> annotation will participate in trace level logging of
  * method name, input and output values.  This interceptor is currently not being called as no method is currently so annotated.

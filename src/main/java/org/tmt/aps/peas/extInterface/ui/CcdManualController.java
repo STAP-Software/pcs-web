@@ -8,15 +8,15 @@ package org.tmt.aps.peas.extInterface.ui;
 import java.io.Serializable;
 import java.util.concurrent.Future;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
@@ -220,7 +220,6 @@ public class CcdManualController implements Serializable {
 		try {
 
 			String commandType = null;
-			RequestContext requestContext = RequestContext.getCurrentInstance();
 			
 			switch (commandSelection) {
 
@@ -244,8 +243,8 @@ public class CcdManualController implements Serializable {
 				
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				
-				requestContext.update("frameDisplayForm:framePanel");
-				requestContext.execute("drawFrame()");
+				PrimeFaces.current().ajax().update("frameDisplayForm:framePanel");
+				PrimeFaces.current().executeScript("drawFrame()");
 				
 				commandType = "Take Exposure";
 				break;
@@ -268,8 +267,8 @@ public class CcdManualController implements Serializable {
 				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1, null);
 				
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
-				requestContext.update("frameDisplayForm:framePanel");
-				requestContext.execute("drawFrame()");
+				PrimeFaces.current().ajax().update("frameDisplayForm:framePanel");
+				PrimeFaces.current().executeScript("drawFrame()");
 				
 				commandType = "Take Overscanned Exposure";
 				break;

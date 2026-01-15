@@ -4,7 +4,9 @@
 	<p:panelGrid styleClass="pcsFormNoBorder">
 		<p:row>
 			<p:column colspan="2">
-				<p:fileUpload fileUploadListener="#{procedureController.handleFileUpload}" mode="advanced" update=":growl :errorGrowl :frameDisplayForm:framePanel"
+				<p:fileUpload value="#{procedureController.uploadFitsFile}" mode="advanced" auto="true" dragDropSupport="false" 
+					fileUploadListener="#{procedureController.handleFileUpload}"
+					update=":growl :errorGrowl :frameDisplayForm:framePanel"
 					sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
 			</p:column>
 		</p:row>

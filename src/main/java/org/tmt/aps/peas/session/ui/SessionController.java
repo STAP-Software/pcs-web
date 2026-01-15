@@ -12,16 +12,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.ApplicationScopeBean;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.Constants;
@@ -558,12 +558,12 @@ public class SessionController implements Serializable {
 	 */
 	public void modeChangeListener() {
 		// here we check the mode and popup dialog at correct state change
-		RequestContext requestContext = RequestContext.getCurrentInstance();
+
 		if (advancedViewMode == true) {
-			requestContext.execute("loginDialog.show()");
+			PrimeFaces.current().executeScript("loginDialog.show()");
 		} else {
-			requestContext.update("procedureDetailForm");
-			requestContext.update("procedureListForm");			
+			PrimeFaces.current().ajax().update("procedureDetailForm");
+			PrimeFaces.current().ajax().update("procedureListForm");			
 		}
 		
 	}
@@ -575,22 +575,21 @@ public class SessionController implements Serializable {
 	 */
 	public void login() {
 		// here we check the password and change the mode accordingly
-		RequestContext requestContext = RequestContext.getCurrentInstance();
 
 
 		if (password.equals("ekinrez")) {
 			advancedViewMode = true;
 			advancedView = Constants.ADVANCED_VIEW_ADMINISTRATION;
 			advancedViewModeLabel = "Administration Mode";
-			requestContext.update("menuForm");
+			PrimeFaces.current().ajax().update("menuForm");
 		} else {
 			advancedViewMode = true;
 			advancedView = Constants.ADVANCED_VIEW_ENGINEERING;
 			advancedViewModeLabel = "Engineering Mode";
-			requestContext.update("menuForm");
+			PrimeFaces.current().ajax().update("menuForm");
 		}
-		requestContext.update("procedureDetailForm");
-		requestContext.update("procedureListForm");
+		PrimeFaces.current().ajax().update("procedureDetailForm");
+		PrimeFaces.current().ajax().update("procedureListForm");
 	}
 
 	/**
@@ -600,19 +599,19 @@ public class SessionController implements Serializable {
 	 */
 	public void extInfChangeListener() {
 		// here we check the mode and popup dialog at correct state change
-		RequestContext requestContext = RequestContext.getCurrentInstance();
+
 		if (extInfSimulationMode == true) {
 			
 			// default all the ext interface checkboxes in the dialog only
-			requestContext.execute("setAllExtInfCheckboxes()");
-			requestContext.execute("extInfDialog.show()");
+			PrimeFaces.current().executeScript("setAllExtInfCheckboxes()");
+			PrimeFaces.current().executeScript("extInfDialog.show()");
 			
 		} else {
 			// turn off all the ext interfaces
 			getExtInfConnectConfig().reset();
 			
 			extInfSimulationMode = true;
-			requestContext.update("extInfMode");
+			PrimeFaces.current().ajax().update("extInfMode");
 		}
 	}
 
@@ -622,11 +621,10 @@ public class SessionController implements Serializable {
 	 */
 	public void doExtInfChange(boolean ok) {
 		// here we check the password and change the mode accordingly
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-
+		
 		if (ok) {
 			extInfSimulationMode = false;
-			requestContext.update("menuForm");
+			PrimeFaces.current().ajax().update("menuForm");
 						
 		} else {
 			extInfSimulationMode = true;
@@ -636,7 +634,7 @@ public class SessionController implements Serializable {
 			extInfFactory.resetAll();
 		}
 		
-		requestContext.update("extInfMode");
+		PrimeFaces.current().ajax().update("extInfMode");
 
 		
 	}
@@ -646,7 +644,6 @@ public class SessionController implements Serializable {
 	 */
 	public void doEndSession() {
 		
-		RequestContext requestContext = RequestContext.getCurrentInstance();
 		
 			
 		try {
@@ -672,7 +669,7 @@ public class SessionController implements Serializable {
 		getExtInfConnectConfig().reset();
 		
 		extInfSimulationMode = true;
-		requestContext.update("extInfMode");
+		PrimeFaces.current().ajax().update("extInfMode");
 		
 		// reset global testing values (pupil registration offsets set back to zero at session end)
 		// create a config defaults object to save back

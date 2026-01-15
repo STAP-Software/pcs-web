@@ -10,17 +10,17 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Future;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
@@ -435,13 +435,11 @@ public class CameraManualController implements Serializable {
 	 */
 	public void pollListener() {
 		
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		
 		
 		// check each listener to see if it is asking for an update of the view
 		
 		if (dcsl.isUpdateRequested()) {
-			requestContext.update("cameraDiagForm:cameraStatusPanel");
+			PrimeFaces.current().ajax().update("cameraDiagForm:cameraStatusPanel");
 			dcsl.setUpdateRequested(false);
 			
 			return; // don't need to update by device if we are updating all of them
@@ -461,8 +459,8 @@ public class CameraManualController implements Serializable {
 				System.out.println(" Updating: cameraDiagForm:" + prefix + "Value");
 				System.out.println(" Updating: cameraDiagForm:" + prefix + "Status");
 				
-				requestContext.update("cameraDiagForm:" + prefix + "Value"); 
-				requestContext.update("cameraDiagForm:" + prefix + "Status"); 
+				PrimeFaces.current().ajax().update("cameraDiagForm:" + prefix + "Value"); 
+				PrimeFaces.current().ajax().update("cameraDiagForm:" + prefix + "Status"); 
 									
 				dcql.setUpdateRequested(false);
 			}

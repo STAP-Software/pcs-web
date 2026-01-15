@@ -1,9 +1,9 @@
 package org.tmt.aps.peas.common.ui;
 
-import javax.faces.component.UIComponent;
-import javax.faces.context.FacesContext;
-import javax.faces.convert.FacesConverter;
-import javax.faces.convert.NumberConverter;
+import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.convert.FacesConverter;
+import jakarta.faces.convert.NumberConverter;
 
 /**
  * JSF Converter used to format output data using patterns found in the database such as the {@link org.tmt.aps.peas.session.model.FieldMetaData#getDisplayFormat()} method.

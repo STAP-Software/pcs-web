@@ -11,11 +11,11 @@ import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Future;
 
-import javax.ejb.EJB;
-import javax.ejb.EJBTransactionRolledbackException;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJB;
+import jakarta.ejb.EJBTransactionRolledbackException;
+import jakarta.ejb.Stateless;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;

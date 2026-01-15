@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 
 /**
  * Utility functions to encode and decode lists and arrays of integer numbers to a string representation.

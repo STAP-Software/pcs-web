@@ -2,9 +2,9 @@ package org.tmt.aps.peas.common.ui;
 
 import java.io.Serializable;
 
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
 import org.tmt.aps.peas.procedure.model.ProcedureOutputField;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;

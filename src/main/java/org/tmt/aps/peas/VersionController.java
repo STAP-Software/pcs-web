@@ -10,12 +10,12 @@ import java.io.FileInputStream;
 import java.io.Serializable;
 import java.util.Properties;
 
-import javax.annotation.PostConstruct;
-import javax.enterprise.context.SessionScoped;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.common.MessageGenerator;
 
 /**

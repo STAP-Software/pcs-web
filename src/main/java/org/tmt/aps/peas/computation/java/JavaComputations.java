@@ -8,7 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.math3.stat.StatUtils;
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.common.FloatPointListEncoder;

@@ -15,25 +15,27 @@ import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.application.FacesMessage;
-import javax.faces.context.FacesContext;
-import javax.faces.event.AjaxBehaviorEvent;
-import javax.faces.event.PhaseId;
-import javax.faces.model.SelectItem;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.application.FacesMessage;
+import jakarta.faces.context.FacesContext;
+import jakarta.faces.event.AjaxBehaviorEvent;
+import jakarta.faces.event.PhaseId;
+import jakarta.faces.model.SelectItem;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.BeanUtils;
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
-import org.primefaces.model.UploadedFile;
+
+import org.primefaces.model.file.UploadedFile;
+
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.Constants;
 import org.tmt.aps.peas.PeasProperties;
@@ -193,7 +195,10 @@ public class ProcedureController implements Serializable {
 
 	// do not need to exchange
 	float integrationAddTime;
+	
+    // This field is automatically populated by <p:fileUpload value="#{myBean.uploadFitsFile}">
 	UploadedFile uploadFitsFile;
+	
 	List<FitsFilename> selectedFitsFiles;
 	List<FitsFilename> availableFitsFiles;
 	int selectedFrameNumber;
@@ -266,7 +271,11 @@ public class ProcedureController implements Serializable {
 	public UploadedFile getUploadFitsFile() {
 		return uploadFitsFile;
 	}
-
+    
+	public void setUploadFitsFile(UploadedFile uploadFitsFile) {
+        this.uploadFitsFile = uploadFitsFile;
+    }
+    
 	public String getFrameCentroidXs() {
 		return frameDisplayMgmt.getCentroidXs();
 	}
@@ -448,7 +457,14 @@ public class ProcedureController implements Serializable {
 				if (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename())) {
 					// get a blank picture
 					Utils.waitFor(1000);
-					return new DefaultStreamedContent(new ByteArrayInputStream(new byte[0]), "image/png");
+					
+					StreamedContent file = DefaultStreamedContent.builder()
+						    .stream(() -> new ByteArrayInputStream(new byte[0]))
+						    .contentType("image/png")
+						    .name("myFile.png")    // optional, but often required
+						    .build();
+					
+					return file;
 				}
 			}
 			
@@ -460,7 +476,15 @@ public class ProcedureController implements Serializable {
 			if (falseColorPng == null) {
 				return null;
 			}
-			return new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+			
+			StreamedContent file = DefaultStreamedContent.builder()
+				    .stream(() -> new ByteArrayInputStream(falseColorPng))
+				    .contentType("image/png")
+				    .name("myFile.png")    // optional, but often required
+				    .build();
+			
+			return file;
+			
 		}
 	}
 
@@ -472,22 +496,27 @@ public class ProcedureController implements Serializable {
 	 * Handles upload of FITS files
 	 * @param event
 	 */
-	public void handleFileUpload(FileUploadEvent event) {
+	// This is the new listener method for PF14 — no FileUploadEvent needed
+    public void handleFileUpload() {
+    	
+        if (uploadFitsFile != null) {
+            try {
+                // Use the UploadedFile to get InputStream and filename
+                CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(
+                    uploadFitsFile.getInputStream(),  // Capital S!
+                    uploadFitsFile.getFileName()
+                );
 
-		try {
-			uploadFitsFile = event.getFile();
+                falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
 
-			CcdFrame loadedFitsFile = frameMgmt.loadFitsFrame(uploadFitsFile.getInputstream(), uploadFitsFile.getFileName());
+                FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
+                FacesContext.getCurrentInstance().addMessage(null, msg);
 
-			falseColorPng = frameMgmt.loadPng(loadedFitsFile, true);
-
-			FacesMessage msg = new FacesMessage("FITS Frame uploaded successfully");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		}
-	}
+            } catch (Exception e) {
+                logger.error(MessageGenerator.generateMessage("generic.error"), e);
+            }
+        }
+    }
 
 	/**
 	 * JSF action method called when frames from file selection dialog 'Save' button is clicked.
@@ -939,15 +968,15 @@ public class ProcedureController implements Serializable {
 
 		// if we are running, we need to restore some things
 
-		RequestContext requestContext = RequestContext.getCurrentInstance();
+	
 		
 		if (procedureExecutionState.getExecutionStatus() == true) {
 
 			// restart the poller
-			requestContext.execute("procedureExecutionPoller.start();");
+			PrimeFaces.current().executeScript("procedureExecutionPoller.start();");
 
 				
-			requestContext.execute("markFrame()");
+			PrimeFaces.current().executeScript("markFrame()");
 
 			
 			VisualizationDisplay visualizationDisplay = visualizationController.getCurrentDisplay();
@@ -955,38 +984,38 @@ public class ProcedureController implements Serializable {
 			if (visualizationDisplay != null) {
 
 				if (visualizationDisplay.isDisplayTypeCentroids()) {
-					requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawSpots(); centroidsDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
-					requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
-					requestContext.execute("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
-					requestContext.execute("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
-					requestContext.execute("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
-					requestContext.execute("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
-					requestContext.execute("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
-					requestContext.execute("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
 				}
 				if (visualizationDisplay.isDisplayTypeAvgSufsCentroidOffsets()) {
-					requestContext.execute("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
+					PrimeFaces.current().executeScript("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
 				}
 			}
 			
 			// user prompt
 			if (currentPrompt != null) {
 				
-				requestContext.execute("userPromptDialog.show()");
+				PrimeFaces.current().executeScript("userPromptDialog.show()");
 				
 			}
 			
@@ -1008,7 +1037,7 @@ public class ProcedureController implements Serializable {
 			}
 
 			
-			requestContext.update("breadcrumbForm");
+			PrimeFaces.current().ajax().update("breadcrumbForm");
 				
 		}
 
@@ -1530,8 +1559,8 @@ public class ProcedureController implements Serializable {
 		frameDisplayMgmt.setPendingMarkAction(false);
 
 		frameMarkingMode = false;
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("instructionDialog.hide()");
+	
+		PrimeFaces.current().executeScript("instructionDialog.hide()");
 	}
 
 	/**
@@ -1541,8 +1570,8 @@ public class ProcedureController implements Serializable {
 		frameDisplayMgmt.setPendingMarkAction(false);
 
 		frameMarkingMode = false;
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.execute("instructionDialog.hide()");
+		
+		PrimeFaces.current().executeScript("instructionDialog.hide()");
 		procedureExecutionState.setAbortRequested(true);
 	}
 	
@@ -1607,9 +1636,9 @@ public class ProcedureController implements Serializable {
 				setFrameCentroidYs(centroidYs);
 				
 				// display the frame unmarked
-				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.update("frameHiddenForm");
-				requestContext.execute("markFrame()");
+				
+				PrimeFaces.current().ajax().update("frameHiddenForm");
+				PrimeFaces.current().executeScript("markFrame()");
 	
 				
 			} else {
@@ -1618,9 +1647,9 @@ public class ProcedureController implements Serializable {
 				setFrameCentroidYs(null);
 				
 				// display the frame unmarked
-				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.update("frameHiddenForm");
-				requestContext.execute("drawFrame()");
+				
+				PrimeFaces.current().ajax().update("frameHiddenForm");
+				PrimeFaces.current().executeScript("drawFrame()");
 	
 	
 			}
@@ -1632,9 +1661,9 @@ public class ProcedureController implements Serializable {
 			setFrameCentroidYs(null);
 			
 			// display the frame unmarked
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("frameHiddenForm");
-			requestContext.execute("drawFrame()");
+			
+			PrimeFaces.current().ajax().update("frameHiddenForm");
+			PrimeFaces.current().executeScript("drawFrame()");
 
 		}
 	}

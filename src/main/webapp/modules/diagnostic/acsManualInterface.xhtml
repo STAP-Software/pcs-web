@@ -46,7 +46,9 @@
 									<h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
 								</p:column>
 								<p:column>
-									<p:fileUpload fileUploadListener="#{acsManualController.handleFileUpload}" mode="advanced" update=":growl :errorGrowl @form"
+									<p:fileUpload value="#{acsManualController.uploadFile}" mode="advanced" auto="true" dragDropSupport="false"
+										fileUploadListener="#{acsManualController.handleFileUpload}"
+										update=":growl :errorGrowl @form"
 										sizeLimit="40000" auto="true" styleClass="no-expand"/>
 								</p:column>
 							</p:row>

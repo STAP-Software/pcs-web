@@ -64,7 +64,7 @@
 				<p:panelGrid id="centroidDisplay" columns="2" style="margin:0px;" styleClass="pcsForm">
 					<canvas id="spotCanvas" width="750px" height="750px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>					
 					<p:scrollPanel style="width:200px;height:748px">
-					<p:selectManyCheckbox id="spotSelector" value="#{missingSpotsController.selectedSpots}" layout="pageDirection" converter="javax.faces.Integer">
+					<p:selectManyCheckbox id="spotSelector" value="#{missingSpotsController.selectedSpots}" layout="pageDirection" converter="jakarta.faces.Integer">
 						<f:selectItems value="#{missingSpotsController.spots}" />
 						<p:column>spot # #{spot}</p:column>
 						<p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.spotChangeListener}" oncomplete="runDrawMissingSpots();"/>
@@ -72,7 +72,7 @@
     				</p:scrollPanel>
 					<!--  			
 					<p:selectManyMenu id="spotSelector" value="#{missingSpotsController.selectedSpots}" label="Spots" filter="true" showCheckbox="true"
-						filterMatchMode="contains" var="spot" style="height:748px;width:150px" converter="javax.faces.Integer">
+						filterMatchMode="contains" var="spot" style="height:748px;width:150px" converter="jakarta.faces.Integer">
 						<f:selectItems value="#{missingSpotsController.spots}" />
 						<p:column>spot # #{spot}</p:column>
 						<p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.spotChangeListener}" oncomplete="runDrawMissingSpots();"/>

@@ -29,7 +29,7 @@
 
 	<h:body>
 		<!--  workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF -->
-		<f:event type="javax.faces.event.PreRenderViewEvent"
+		<f:event type="jakarta.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
 

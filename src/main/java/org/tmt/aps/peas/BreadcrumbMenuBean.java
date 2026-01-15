@@ -8,14 +8,20 @@ package org.tmt.aps.peas;
 import java.io.Serializable;
 import java.util.List;
 
-import javax.enterprise.context.SessionScoped;
-import javax.faces.component.UIComponent;
-import javax.inject.Named;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.component.UIComponent;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.component.menuitem.MenuItem;
-import org.primefaces.model.DefaultMenuModel;
-import org.primefaces.model.MenuModel;
+import org.jboss.logging.Logger;
+import org.primefaces.model.menu.MenuItem;
+import org.primefaces.model.menu.DefaultMenuItem;
+import org.primefaces.model.menu.MenuModel;
+import org.primefaces.model.menu.Submenu;
+import org.primefaces.model.menu.DefaultSubMenu;
+import org.primefaces.model.menu.DefaultMenuModel;
+import org.primefaces.model.menu.MenuElement;
+
+
 
 /**
  * JSF named object controlling the breadcrumb
@@ -36,12 +42,15 @@ public class BreadcrumbMenuBean implements Serializable {
 	 */
 	public BreadcrumbMenuBean() {
 		model = new DefaultMenuModel();
-		MenuItem item = new MenuItem();
-		item.setValue("Session List");
-		item.setUrl("sessionList.xhtml");
-		item.setIcon(null);
-		item.setId("breadCrumbMenu_Item_0");  // need to set ids explicitly to avoid collisions in view
-		model.addMenuItem(item);
+		MenuItem item = DefaultMenuItem.builder()
+		.value("Session List")
+		.url("sessionList.xhtml")
+		.icon(null)
+		.id("breadCrumbMenu_Item_0")
+		.build();  // need to set ids explicitly to avoid collisions in view
+		
+		
+		model.getElements().add(item);
 	}
 	
 	/**
@@ -51,12 +60,20 @@ public class BreadcrumbMenuBean implements Serializable {
 	 */
 	public void addFirstItem(String name, String url) {
 		model = new DefaultMenuModel();
-		MenuItem item = new MenuItem();
-		item.setValue(name);
-		item.setUrl(addBreadcrumbSource(url));
+		
+		MenuItem item = DefaultMenuItem.builder()
+			.value(name)
+			.url(addBreadcrumbSource(url))
+			.icon(null)
+			.id("breadcrumbMenu_Item_" + model.getElements().size())
+			.build();  // need to set ids explicitly to avoid collisions in view
+		
+			
 		immediateUrl = addBreadcrumbSource(url);
-		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
-		model.addMenuItem(item);
+
+		model.getElements().add(item);
+
+
 	}
 	
 	/**
@@ -65,12 +82,20 @@ public class BreadcrumbMenuBean implements Serializable {
 	 * @param url the URL it links to
 	 */
 	public void addItem(String name, String url) {
-		MenuItem item = new MenuItem();
-		item.setValue(name);
-		item.setUrl(addBreadcrumbSource(url));
+		MenuItem item = DefaultMenuItem.builder()
+			.value(name)
+			.url(addBreadcrumbSource(url))
+			.icon(null)
+			.id("breadcrumbMenu_Item_" + model.getElements().size())
+			.build();  // need to set ids explicitly to avoid collisions in view
+		
+		
+
+		
 		immediateUrl = addBreadcrumbSource(url);
-		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
-		model.addMenuItem(item);
+
+
+		model.getElements().add(item);
 	}
 	
 	/**
@@ -79,15 +104,21 @@ public class BreadcrumbMenuBean implements Serializable {
 	 * @param url the URL it links to
 	 */
 	public void insertFirst(String name, String url) {
-		MenuItem item = new MenuItem();
-		item.setValue(name);
-		item.setUrl(addBreadcrumbSource(url));
-		if (model.getContents().size() == 0) {
+		MenuItem item = DefaultMenuItem.builder()
+			.value(name)
+			.url(addBreadcrumbSource(url))
+			.icon(null)
+			.id("breadcrumbMenu_Item_" + model.getElements().size())
+			.build();  // need to set ids explicitly to avoid collisions in view
+		
+		
+		
+		if (model.getElements().size() == 0) {
 			// if this will be the only item, then set the immediateUrl
 			immediateUrl = addBreadcrumbSource(url);
 		}
-		item.setId("breadcrumbMenu_Item_" + model.getContents().size());
-		model.getContents().add(0, item);
+
+		model.getElements().add(0, item);
 	}
 	
 	private String addBreadcrumbSource(String url) {
@@ -102,21 +133,22 @@ public class BreadcrumbMenuBean implements Serializable {
 	 * Removes all menuitems from the breadcrumb until reaching the item matching name
 	 * @param name the name to match
 	 */
-	public void removeTo(String name) {
+	public void removeTo(String value) {
+	    List<MenuElement> elements = model.getElements();
 
-		MenuModel newModel = new DefaultMenuModel();
-		
-		List<UIComponent> components = model.getContents();
-		for (UIComponent component: components) {
-			MenuItem item = (MenuItem)component;
-			String candidate = (String)item.getValue();
-			newModel.addMenuItem(item);
-			if (candidate.contains(name)) {
-				model = newModel;
-				return;
-			}
-		}
-		
+	    for (int i = elements.size() - 1; i >= 0; i--) {
+	        MenuElement element = elements.get(i);
+
+	        if (element instanceof MenuItem) {
+	            MenuItem item = (MenuItem) element;
+
+	            if (value.equals(item.getValue())) {
+	                break; // stop trimming
+	            } else {
+	                elements.remove(i);
+	            }
+	        }
+	    }
 	}
 
 	/**
@@ -147,15 +179,10 @@ public class BreadcrumbMenuBean implements Serializable {
 	 * Removes the last item in the breadcrumb
 	 */
 	public void removeLast() {
-		MenuModel newModel = new DefaultMenuModel();
-		
-		List<UIComponent> components = model.getContents();
-		for (int i=0; i<components.size()-1; i++) {
-			UIComponent component = components.get(i);
-			MenuItem item = (MenuItem)component;
-			newModel.addMenuItem(item);
-		}		
-		model = newModel;
+		List<MenuElement> elements = model.getElements();
+	    if (!elements.isEmpty()) {
+	        elements.remove(elements.size() - 1);
+	    }
 	}
 	
 }

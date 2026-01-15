@@ -7,14 +7,14 @@ package org.tmt.aps.peas.procedure.ui;
 
 import java.io.Serializable;
 
-import javax.ejb.EJB;
-import javax.faces.bean.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.ejb.EJB;
+import jakarta.faces.bean.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -154,11 +154,11 @@ public class AsyncController implements Serializable {
 		if (userPromptMgmt.getPendingPrompt() != null) {
 			procedureController.setCurrentPrompt(userPromptMgmt.getPendingPrompt());
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + procedureController.getCurrentPrompt().getMessage());
-			RequestContext requestContext = RequestContext.getCurrentInstance();
+		
 			
-			requestContext.update("promptDialog"); 
-			requestContext.update("promptDialogForm"); 
-			requestContext.execute("userPromptDialog.show()");
+			PrimeFaces.current().ajax().update("promptDialog"); 
+			PrimeFaces.current().ajax().update("promptDialogForm"); 
+			PrimeFaces.current().executeScript("userPromptDialog.show()");
 			
 			userPromptMgmt.setPendingPrompt(null);
 		}
@@ -186,49 +186,49 @@ public class AsyncController implements Serializable {
 			//visualizationController.doUpdateDisplays();
 			
 			// update form values 
-			RequestContext requestContext = RequestContext.getCurrentInstance();
+	
 			
-			requestContext.update("offsetsForm");
-			requestContext.update("avgPtOffsetsForm");
-			requestContext.update("avgFsOffsetsForm");
-			requestContext.update("spotsForm");
-			requestContext.update("actDeltasForm");
-			requestContext.update("edgeHeightsForm");
-			requestContext.update("singleFilterEdgeHeightsForm");
-			requestContext.update("edgeResidualsForm");
-			requestContext.update("sufsOffsetsForm");
-			requestContext.update("avgSufsOffsetsForm");
+			PrimeFaces.current().ajax().update("offsetsForm");
+			PrimeFaces.current().ajax().update("avgPtOffsetsForm");
+			PrimeFaces.current().ajax().update("avgFsOffsetsForm");
+			PrimeFaces.current().ajax().update("spotsForm");
+			PrimeFaces.current().ajax().update("actDeltasForm");
+			PrimeFaces.current().ajax().update("edgeHeightsForm");
+			PrimeFaces.current().ajax().update("singleFilterEdgeHeightsForm");
+			PrimeFaces.current().ajax().update("edgeResidualsForm");
+			PrimeFaces.current().ajax().update("sufsOffsetsForm");
+			PrimeFaces.current().ajax().update("avgSufsOffsetsForm");
 			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
-				requestContext.execute("runDrawSpots(); centroidsDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawSpots(); centroidsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
-				requestContext.execute("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
-				requestContext.execute("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
-				requestContext.execute("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
-				requestContext.execute("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
-				requestContext.execute("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeSingleFilterEdgeHeights()) {
-				requestContext.execute("runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
-				requestContext.execute("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
-				requestContext.execute("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
 			}
 			if (visualizationDisplay.isDisplayTypeAvgSufsCentroidOffsets()) {
-				requestContext.execute("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
+				PrimeFaces.current().executeScript("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
 			}
 			
 			graphicDisplayMgmt.setPendingDisplay(null);
@@ -240,9 +240,9 @@ public class AsyncController implements Serializable {
 		// refresh the controller from the logger to get it to the display
 		statusLogController.refreshCurrentProcedureStatusLog();
 		
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		//requestContext.update("procedureDetailForm:miscPanel");
-		requestContext.update("procedureDetailForm:controlPanel");
+
+		//PrimeFaces.current().ajax().update("procedureDetailForm:miscPanel");
+		PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");
 	}
 	
 	private void checkFrameDisplay() {
@@ -268,15 +268,15 @@ public class AsyncController implements Serializable {
 				procedureController.setFrameCentroidXs(xList);
 				procedureController.setFrameCentroidYs(yList);
 				
-				RequestContext requestContext = RequestContext.getCurrentInstance();
-				requestContext.update("procedureDetailForm:framePanel");
-				requestContext.update("frameHiddenForm");
+
+				PrimeFaces.current().ajax().update("procedureDetailForm:framePanel");
+				PrimeFaces.current().ajax().update("frameHiddenForm");
 							
-				requestContext.execute("drawFrame()");
+				PrimeFaces.current().executeScript("drawFrame()");
 				
 				if (frameDisplayMgmt.getFrameInstructions() != null) {
-					requestContext.update("instructionDialogForm");
-					requestContext.execute("instructionDialog.show()");
+					PrimeFaces.current().ajax().update("instructionDialogForm");
+					PrimeFaces.current().executeScript("instructionDialog.show()");
 				}
 				
 			}
@@ -284,8 +284,8 @@ public class AsyncController implements Serializable {
 			setDisplayNewFrame(false);
 		}
 		if (getMarkNewFrame()) {
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.execute("markFrame()");
+
+			PrimeFaces.current().executeScript("markFrame()");
 			setMarkNewFrame(false);
 		}
 	}
@@ -306,10 +306,10 @@ public class AsyncController implements Serializable {
 					"/modules/procedure/procedurePerspective.xhtml");
 
 			
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			//requestContext.update("procedureDetailForm:miscPanel");
-			requestContext.update("procedureDetailForm:controlPanel");
-			requestContext.update("breadcrumbForm");
+
+			//PrimeFaces.current().ajax().update("procedureDetailForm:miscPanel");
+			PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");
+			PrimeFaces.current().ajax().update("breadcrumbForm");
 		}
 	}
 	
@@ -317,7 +317,7 @@ public class AsyncController implements Serializable {
 
 		if (procedureExecutionState.isSubProcedureEndRequested()) {
 	
-			RequestContext requestContext = RequestContext.getCurrentInstance();
+
 
 			
 			// we captured it, so reset it for next time, if any
@@ -334,17 +334,17 @@ public class AsyncController implements Serializable {
 			breadcrumbMenuBean.removeLast();
 
 			
-			//requestContext.update("procedureDetailForm:miscPanel");
-			requestContext.update("procedureDetailForm:controlPanel");
-			requestContext.update("breadcrumbForm");
+			//PrimeFaces.current().ajax().update("procedureDetailForm:miscPanel");
+			PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");
+			PrimeFaces.current().ajax().update("breadcrumbForm");
 
 		}
 	}
 
 	private void checkCameraDisplay() {
 
-		RequestContext requestContext = RequestContext.getCurrentInstance();
-		requestContext.update("procedureDetailForm:miscPanel:cameraStatusPanel");
+
+		PrimeFaces.current().ajax().update("procedureDetailForm:miscPanel:cameraStatusPanel");
 	}
 	
 	private void checkMessages() {
@@ -365,11 +365,11 @@ public class AsyncController implements Serializable {
 		
 		int secs = graphicDisplayMgmt.getWaitingForSecs() + userPromptMgmt.getWaitingForSecs();
 		
-		RequestContext requestContext = RequestContext.getCurrentInstance();
+
 		if (secs > waitForUserThreshold) {
-			requestContext.execute("play_wake_up_sound();");
+			PrimeFaces.current().executeScript("play_wake_up_sound();");
 		} else {
-			requestContext.execute("stop_wake_up_sound();");
+			PrimeFaces.current().executeScript("stop_wake_up_sound();");
 		}
 	}
 	
@@ -391,20 +391,20 @@ public class AsyncController implements Serializable {
 			
 			
 			// display frame
-			RequestContext requestContext = RequestContext.getCurrentInstance();
-			requestContext.update("procedureDetailForm:framePanel");
-			requestContext.execute("markFrame()");
+
+			PrimeFaces.current().ajax().update("procedureDetailForm:framePanel");
+			PrimeFaces.current().executeScript("markFrame()");
 
 
 			// update the breadcrumb to associate the current session as the first link
 			Session session = sessionController.getCurrentSession();
 			breadcrumbMenuBean.insertFirst("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
-			RequestContext.getCurrentInstance().update("breadcrumbForm");
+			PrimeFaces.current().ajax().update("breadcrumbForm");
 			
 			// update the currentSessionPersisted for use in the UI
 			sessionController.updateCurrentSession();
 			
-			requestContext.update("procedureDetailForm:controlPanel");
+			PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");
 			
 
 			
@@ -421,7 +421,7 @@ public class AsyncController implements Serializable {
 		if (procedureExecutionState.getProcedureException() == null) {
 			// put up completion notice if there was no exception
 			FacesContext.getCurrentInstance().addMessage(null, Utils.procedureSuccessfulMessage(procedureController.getProcedure().getProcedureType().getProcedureTypeName()));
-			RequestContext.getCurrentInstance().update("procedureDetailForm");
+			PrimeFaces.current().ajax().update("procedureDetailForm");
 		}
 		
 		statusLogController.refreshProcedureStatusLog();

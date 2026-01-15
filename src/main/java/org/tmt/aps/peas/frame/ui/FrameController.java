@@ -14,16 +14,16 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
-import javax.annotation.PostConstruct;
-import javax.ejb.EJB;
-import javax.enterprise.context.SessionScoped;
-import javax.faces.context.FacesContext;
-import javax.inject.Inject;
-import javax.inject.Named;
+import jakarta.annotation.PostConstruct;
+import jakarta.ejb.EJB;
+import jakarta.enterprise.context.SessionScoped;
+import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
+import jakarta.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
-import org.apache.log4j.Logger;
-import org.primefaces.context.RequestContext;
+import org.jboss.logging.Logger;
+import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -252,7 +252,14 @@ public class FrameController implements Serializable {
 			// load up first frame
 			ccdFrame = frameMgmt.loadFitsFrame(firstFilename);
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
-			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+			
+			
+			graphicImage = DefaultStreamedContent.builder()
+				    .stream(() -> new ByteArrayInputStream(falseColorPng))
+				    .contentType("image/png")
+				    .name("myFile.png")    // optional, but often required
+				    .build();
+			
 
 			searchRadius = 20; // TODO: whatever that should be - this needs to be loaded with the frame too.
 
@@ -362,7 +369,11 @@ public class FrameController implements Serializable {
 
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 
-			graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+			graphicImage = DefaultStreamedContent.builder()
+				    .stream(() -> new ByteArrayInputStream(falseColorPng))
+				    .contentType("image/png")
+				    .name("myFile.png")    // optional, but often required
+				    .build();
 
 			// do not save files from selected nodes
 			allowFrameSave = false;
@@ -418,7 +429,11 @@ public class FrameController implements Serializable {
 		
 		byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, false);
 
-		graphicImage = new DefaultStreamedContent(new ByteArrayInputStream(falseColorPng), "image/png");
+		graphicImage = DefaultStreamedContent.builder()
+			    .stream(() -> new ByteArrayInputStream(falseColorPng))
+			    .contentType("image/png")
+			    .name("myFile.png")    // optional, but often required
+			    .build();
 
 		allowFrameSave = true;
 		

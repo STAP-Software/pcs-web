@@ -7,10 +7,10 @@ package org.tmt.aps.peas.extInterface.business;
 
 import java.util.Arrays;
 
-import javax.ejb.EJB;
-import javax.ejb.Stateless;
+import jakarta.ejb.EJB;
+import jakarta.ejb.Stateless;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 
 /**
  * EJB Session bean for the ACS command interface.  

@@ -5,10 +5,10 @@
  */
 package org.tmt.aps.peas.procedure.business;
 
-import javax.ejb.Singleton;
-import javax.inject.Named;
+import jakarta.ejb.Singleton;
+import jakarta.inject.Named;
 
-import org.apache.log4j.Logger;
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
