@@ -96,7 +96,7 @@ public class MissingSpotsController implements Serializable {
 		try {
 			
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-			telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
+			telescope = telescopeMgmt.findTelescope(Long.valueOf(telescopeIdStr));
 
 
 			pupilMaskTypeList = cameraDefMgmt.findAllPupilMaskTypes();

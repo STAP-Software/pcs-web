@@ -108,7 +108,7 @@ public class RefBeamController implements Serializable {
 			String refBeamNumId = refBeamNumInput.getClientId();
 
 			try {
-				int refBeamNum = new Integer(refBeamNumStr);
+				int refBeamNum = Integer.valueOf(refBeamNumStr);
 	
 				for (ReferenceBeam referenceBeam : referenceBeamList) {
 	

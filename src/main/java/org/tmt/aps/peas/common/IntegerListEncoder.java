@@ -36,7 +36,7 @@ public class IntegerListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<Integer> numberList = new ArrayList<Integer>();
 		for (String item : items) {
-			Integer number = new Integer(item.trim());
+			Integer number = Integer.valueOf(item.trim());
 			numberList.add(number);
 		}
 		return numberList;
@@ -57,7 +57,7 @@ public class IntegerListEncoder {
 		int[] result = new int[items.size()];
 		int i=0;
 		for (String item : items) {
-			Integer number = new Integer(item.trim());
+			Integer number = Integer.valueOf(item.trim());
 			result[i++] = number;
 		}
 		return result;
@@ -78,8 +78,8 @@ public class IntegerListEncoder {
 		Integer[] result = new Integer[items.size()];
 		int i=0;
 		for (String item : items) {
-			Integer number = new Integer(item.trim());
-			result[i++] = new Integer(number);
+			Integer number = Integer.valueOf(item.trim());
+			result[i++] = Integer.valueOf(number);
 		}
 		return result;
 	}

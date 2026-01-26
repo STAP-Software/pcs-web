@@ -32,9 +32,17 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 @Entity
 @Table(name = "SufsRefMapConfigDefaults")
 @NamedQueries({
-	@NamedQuery(name = "findByRefBeamNum", query = "SELECT o from SufsRefMapConfigDefaults o INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.ccdType t "
-			+ "where i.instrumentId = :instrumentId and t.ccdTypeId = :ccdTypeId and o.referenceBeamNum = :referenceBeamNum " )
+    @NamedQuery(
+        name = "findByRefBeamNum",
+        query = "SELECT o FROM SufsRefMapConfigDefaults o " +
+                "INNER JOIN FETCH o.instrument " +   // no alias
+                "INNER JOIN FETCH o.ccdType " +     // no alias
+                "WHERE o.instrument.instrumentId = :instrumentId " +
+                "AND o.ccdType.ccdTypeId = :ccdTypeId " +
+                "AND o.referenceBeamNum = :referenceBeamNum"
+    )
 })
+
 public class SufsRefMapConfigDefaults {
 
 	@Id

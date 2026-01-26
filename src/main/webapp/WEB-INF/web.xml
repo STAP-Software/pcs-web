@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<web-app version="2.5" xmlns="http://java.sun.com/xml/ns/javaee"
-        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-        xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd">
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee 
+                             https://jakarta.ee/xml/ns/jakartaee/web-app_5_0.xsd"
+         version="5.0">
 
-	
-       <context-param>  
-        <param-name>primefaces.THEME</param-name>  
-        <param-value>aristo</param-value>  
-       </context-param>  
+    <context-param>
+        <param-name>jakarta.faces.PROJECT_STAGE</param-name>
+        <param-value>Development</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>primefaces.THEME</param-name>
+        <param-value>saga</param-value>
+    </context-param>
+
+    <servlet>
+        <servlet-name>Faces Servlet</servlet-name>
+        <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>Faces Servlet</servlet-name>
+        <url-pattern>*.jsf</url-pattern>
+    </servlet-mapping>
 
 
-<filter>
-    <filter-name>PrimeFaces FileUpload Filter</filter-name>
-    <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
-</filter>
-<filter-mapping>
-    <filter-name>PrimeFaces FileUpload Filter</filter-name>
-    <servlet-name>Faces Servlet</servlet-name>
-</filter-mapping>
 
-        <servlet>
-                <servlet-name>Faces Servlet</servlet-name>
-                <servlet-class>jakarta.faces.webapp.FacesServlet</servlet-class>
-                <load-on-startup>1</load-on-startup>
-        </servlet>
 
-        <servlet-mapping>
-                <servlet-name>Faces Servlet</servlet-name>
-                <url-pattern>*.jsf</url-pattern>
-                <url-pattern>*.xhtml</url-pattern>
-        </servlet-mapping>
+	<filter>
+	    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+	    <filter-class>org.primefaces.webapp.filter.FileUploadFilter</filter-class>
+	</filter>
+	<filter-mapping>
+	    <filter-name>PrimeFaces FileUpload Filter</filter-name>
+	    <servlet-name>Faces Servlet</servlet-name>
+	</filter-mapping>
+
+
         
-        <context-param>
-    		<param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
-    		<param-value>true</param-value>
-		</context-param>
-			
-		<context-param>
-			<description>If this property is set to true, the number
-			that is used to generate new client IDs is stored in the view
-			so that it is saved between requests.
-			</description>
-			<param-name>com.ibm.ws.jsf.storeDynamicClientIds</param-name>
-			<param-value>true</param-value>
-		</context-param> 
+    <context-param>
+   		<param-name>jakarta.faces.FACELETS_SKIP_COMMENTS</param-name>
+   		<param-value>true</param-value>
+	</context-param>
+		
+	<context-param>
+		<description>If this property is set to true, the number
+		that is used to generate new client IDs is stored in the view
+		so that it is saved between requests.
+		</description>
+		<param-name>com.ibm.ws.jsf.storeDynamicClientIds</param-name>
+		<param-value>true</param-value>
+	</context-param> 
 		
 		
 	<session-config>
@@ -58,35 +67,8 @@
     	<location>/timeout.xhtml</location>
 	</error-page>	
 		
-		
-	<!-- 
-	<security-constraint>
-   		<web-resource-collection>
-      			<web-resource-name>APS</web-resource-name>
-      			<url-pattern>/modules/*</url-pattern>
-   		</web-resource-collection>
-   		<auth-constraint>
-            <role-name>admin</role-name>
-   		</auth-constraint>
-	</security-constraint>	
-		
-		 
-	<login-config>
-        <auth-method>FORM</auth-method>
-        	<realm-name>APSRealm</realm-name>
-        	<form-login-config>
-            	<form-login-page>/login.xhtml</form-login-page>
-            	<form-error-page>/login.xhtml</form-error-page>
-        	</form-login-config>
-    	</login-config>		
+	
 
-	    <security-role>
-	        <role-name>admin</role-name>
-	    </security-role>
-
-	- -->	
-		
-		
 </web-app>
 
     

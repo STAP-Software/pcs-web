@@ -8,7 +8,7 @@ package org.tmt.aps.peas.procedure.ui;
 import java.io.Serializable;
 
 import jakarta.ejb.EJB;
-import jakarta.faces.bean.SessionScoped;
+import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;

@@ -24,9 +24,14 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Entity
 @Table(name = "PeripheralSpotList")
 @NamedQueries({
-	@NamedQuery(name = "findPeripheralSpotList", query = "SELECT o from PeripheralSpotList o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId" )
+    @NamedQuery(
+        name = "findPeripheralSpotList",
+        query = "SELECT o FROM PeripheralSpotList o " +
+                "INNER JOIN FETCH o.pupilMaskType " +  // no alias here
+                "WHERE o.pupilMaskType.pupilMaskTypeId = :pupilMaskTypeId"
+    )
 })
+
 public class PeripheralSpotList {
 	
 	@Id

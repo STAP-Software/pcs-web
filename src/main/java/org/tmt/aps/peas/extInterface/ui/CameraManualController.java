@@ -116,7 +116,7 @@ public class CameraManualController implements Serializable {
 			
 			DiagnosticCameraQueryListener dcql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
 		
-			device2cameraQueryListener.put(new Integer(deviceCode), dcql);
+			device2cameraQueryListener.put(Integer.valueOf(deviceCode), dcql);
 			
 		}
 		
@@ -391,7 +391,7 @@ public class CameraManualController implements Serializable {
 			
 			// Kill reference - weak reference will take care of removeListener
 			cql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
-			device2cameraQueryListener.put(new Integer(deviceCode), cql);
+			device2cameraQueryListener.put(Integer.valueOf(deviceCode), cql);
 
 		}
 	}
@@ -404,16 +404,16 @@ public class CameraManualController implements Serializable {
 		
 		String deviceCd = (String)event.getComponent().getAttributes().get("deviceCode");
 		
-		int deviceCode = new Integer(deviceCd);
+		int deviceCode = Integer.valueOf(deviceCd);
 				
 		// 1. remove current listener from all listeners
 		CameraQueryListener cql = device2cameraQueryListener.get(deviceCode);
 		// Kill reference - weak reference will take care of removeListener
 		cql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
-		device2cameraQueryListener.put(new Integer(deviceCode), cql);
+		device2cameraQueryListener.put(Integer.valueOf(deviceCode), cql);
 
 		
-		int method = new Integer(queryUpdateMethod[deviceCode]);
+		int method = Integer.valueOf(queryUpdateMethod[deviceCode]);
 		
 		// 2. add the device code to the selected listener type
 		switch (method) {

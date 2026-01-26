@@ -7,8 +7,8 @@ package org.tmt.aps.peas;
 
 import java.io.Serializable;
 
-import jakarta.faces.bean.ApplicationScoped;
-import jakarta.faces.bean.ManagedBean;
+import jakarta.enterprise.context.ApplicationScoped;
+import jakarta.inject.Named;
 import jakarta.faces.context.ExternalContext;
 import jakarta.faces.context.FacesContext;
 import jakarta.faces.event.ComponentSystemEvent;
@@ -41,7 +41,7 @@ import org.tmt.aps.peas.session.ui.SessionController;
  * @author smichaels
  *
  */
-@ManagedBean
+@Named
 @ApplicationScoped
 public class ApplicationScopeBean implements Serializable {
 

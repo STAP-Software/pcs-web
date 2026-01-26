@@ -11,6 +11,7 @@ import jakarta.ejb.EJB;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
 
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
@@ -25,6 +26,7 @@ import org.tmt.aps.peas.procedure.exception.AbortProcedureException;
  * @see org.tmt.aps.peas.procedure.ui.AsyncController
  */
 @Interceptor
+@Priority(1)
 @Abortable
 public class AbortInterceptor implements Serializable {
 

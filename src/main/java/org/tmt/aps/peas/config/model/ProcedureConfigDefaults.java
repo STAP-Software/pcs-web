@@ -26,12 +26,28 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "ProcedureConfigDefaults")
 @PrimaryKeyJoinColumn(name="procedureConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findAllProcedureConfigs", query = "SELECT p from ProcedureConfigDefaults p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.filterType "),
-	@NamedQuery(name = "findDefaultProcedureConfig", query = "SELECT p from ProcedureConfigDefaults p INNER JOIN FETCH p.telescope tel INNER JOIN FETCH p.instrument inst "
-			+ "INNER JOIN FETCH p.procedureType pt  INNER JOIN FETCH p.filterType  INNER JOIN FETCH p.pupilMaskType "
-			+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId AND pt.procedureTypeId = :procedureTypeId ")
+    @NamedQuery(
+        name = "findAllProcedureConfigs",
+        query = "SELECT p FROM ProcedureConfigDefaults p " +
+                "INNER JOIN FETCH p.telescope " + 
+                "INNER JOIN FETCH p.instrument " +
+                "INNER JOIN FETCH p.procedureType " +
+                "INNER JOIN FETCH p.filterType"
+    ),
+    @NamedQuery(
+        name = "findDefaultProcedureConfig",
+        query = "SELECT p FROM ProcedureConfigDefaults p " +
+                "INNER JOIN FETCH p.telescope " +   // no alias
+                "INNER JOIN FETCH p.instrument " +  // no alias
+                "INNER JOIN FETCH p.procedureType " + 
+                "INNER JOIN FETCH p.filterType " + 
+                "INNER JOIN FETCH p.pupilMaskType " +
+                "WHERE p.telescope.telescopeId = :telescopeId " +
+                "AND p.instrument.instrumentId = :instrumentId " +
+                "AND p.procedureType.procedureTypeId = :procedureTypeId"
+    )
 })
+
 public class ProcedureConfigDefaults extends ProcedureConfig {
 
 	

@@ -24,6 +24,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -44,22 +45,56 @@ import org.tmt.aps.peas.telescope.model.Telescope;
  * @author smichaels
  *
  */
+
 @Entity
 @Table(name = "Procedure")
 @NamedQueries({
-	@NamedQuery(name = "findAllProcedures", query = "SELECT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig INNER JOIN FETCH pcs.globalConfig" ),
-	@NamedQuery(name = "findLatestSessionProcedure", query = "SELECT p from Procedure p INNER JOIN FETCH p.session "
-			+ "WHERE p.session.sessionId = :sessionId ORDER BY p.executionStartTime desc" ),
-	@NamedQuery(name = "findProcedure", query = "SELECT DISTINCT p from Procedure p INNER JOIN FETCH p.telescope INNER JOIN FETCH p.instrument "
-			+ "INNER JOIN FETCH p.procedureType INNER JOIN FETCH p.procedureConfigSet pcs INNER JOIN FETCH pcs.procedureConfig pc INNER JOIN FETCH pcs.globalConfig "
-			+ "LEFT OUTER JOIN FETCH p.procedureCcdFrameList pcf LEFT OUTER JOIN FETCH pcf.ccdFrame cf LEFT OUTER JOIN FETCH pcf.centroidMap "
-			+ "LEFT OUTER JOIN FETCH cf.cameraState INNER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.fiConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.pupilRegErrorConfig LEFT OUTER JOIN FETCH pcs.calcM2M1Config "
-			+ "LEFT OUTER JOIN FETCH pcs.findCentConfigInterior LEFT OUTER JOIN FETCH pcs.findCentConfigPeripheral LEFT OUTER JOIN FETCH pcs.centroidOffsetsConfig LEFT OUTER JOIN FETCH pc.pupilMask "
-			+ "LEFT OUTER JOIN FETCH pc.filter LEFT OUTER JOIN FETCH pc.referenceBeam LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.iterationListConfig LEFT OUTER JOIN FETCH pcs.nbFilterSeqConfig LEFT OUTER JOIN FETCH pcs.frameCorrectionConfig "
-			+ "WHERE p.procedureId = :procedureId" )
+	@NamedQuery(
+		    name = "findAllProcedures",
+		    query = "SELECT p FROM Procedure p " +
+		            "INNER JOIN FETCH p.telescope " +
+		            "INNER JOIN FETCH p.instrument " +
+		            "INNER JOIN FETCH p.procedureType " +
+		            "INNER JOIN FETCH p.procedureConfigSet " +
+		            "INNER JOIN FETCH p.procedureConfigSet.procedureConfig " +
+		            "INNER JOIN FETCH p.procedureConfigSet.globalConfig"
+	),
+	@NamedQuery(
+		    name = "findLatestSessionProcedure",
+		    query = "SELECT p FROM Procedure p " +
+		            "INNER JOIN FETCH p.session " +
+		            "WHERE p.session.sessionId = :sessionId " +
+		            "ORDER BY p.executionStartTime DESC"
+	),
+	@NamedQuery(
+		    name = "findProcedure",
+		    query = "SELECT DISTINCT p FROM Procedure p " +
+		            "INNER JOIN FETCH p.telescope " +
+		            "INNER JOIN FETCH p.instrument " +
+		            "INNER JOIN FETCH p.procedureType " +
+		            "INNER JOIN FETCH p.procedureConfigSet " +
+		            "INNER JOIN FETCH p.procedureConfigSet.procedureConfig " +
+		            "INNER JOIN FETCH p.procedureConfigSet.globalConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList.centroidMap " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.fiConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.pupilRegErrorConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.calcM2M1Config " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.findCentConfigInterior " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.findCentConfigPeripheral " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.centroidOffsetsConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.procedureConfig.pupilMask " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.procedureConfig.filter " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.procedureConfig.referenceBeam " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.sufsCoarseOffsetsConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.iterationListConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.nbFilterSeqConfig " +
+		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.frameCorrectionConfig " +
+		            "WHERE p.procedureId = :procedureId"
+	)
+
 	
 })
 public class Procedure {

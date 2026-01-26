@@ -273,15 +273,15 @@ public class Utils {
 			switch (fieldDescriptor.getDataType()) {
 
 			case Constant.DATA_TYPE_INT:
-				Integer intValue = new Integer(value);
+				Integer intValue = Integer.valueOf(value);
 				return MessageFormat.format(format, intValue);
 
 			case Constant.DATA_TYPE_FLOAT:
-				Float floatValue = new Float(value);
+				Float floatValue = Float.valueOf(value);
 				return MessageFormat.format(format, floatValue);
 
 			case Constant.DATA_TYPE_DOUBLE:
-				Double doubleValue = new Double(value);
+				Double doubleValue = Double.valueOf(value);
 				return MessageFormat.format(format, doubleValue);
 
 			case Constant.DATA_TYPE_BOOLEAN:

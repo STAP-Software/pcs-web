@@ -12,6 +12,7 @@ import jakarta.ejb.EJB;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
@@ -26,6 +27,7 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
  * @see org.tmt.aps.peas.procedure.business.ProcedureExecutionState#getCurrentOutputTarget()
  */
 @Interceptor
+@Priority(1)
 @Computation
 public class ComputationInterceptor implements Serializable {
 

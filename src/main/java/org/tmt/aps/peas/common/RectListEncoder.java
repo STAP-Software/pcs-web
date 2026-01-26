@@ -39,8 +39,8 @@ public class RectListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<Rect> rectList = new ArrayList<Rect>();
 		for (int i=0; i<items.size()/4; i++) {
-			Point p1 = new Point(new Integer(items.get(i*4).trim()), new Integer(items.get((i*4)+1).trim()));
-			Point p2 = new Point(new Integer(items.get((i*4)+2).trim()), new Integer(items.get((i*4)+3).trim()));
+			Point p1 = new Point(Integer.valueOf(items.get(i*4).trim()), Integer.valueOf(items.get((i*4)+1).trim()));
+			Point p2 = new Point(Integer.valueOf(items.get((i*4)+2).trim()), Integer.valueOf(items.get((i*4)+3).trim()));
 			rectList.add(new Rect(p1, p2));
 		}
 		return rectList;

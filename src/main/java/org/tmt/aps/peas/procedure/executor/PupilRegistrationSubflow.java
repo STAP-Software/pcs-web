@@ -111,8 +111,8 @@ public class PupilRegistrationSubflow {
 			
 		
 			// log values 
-			statusLogger.log("calc.pupil_reg_error", new Float(pupilRegErrorResult.getRegErrorX() * 1000.0f), new Float(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
-					new Float(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD));
+			statusLogger.log("calc.pupil_reg_error",  Float.valueOf(pupilRegErrorResult.getRegErrorX() * 1000.0f), Float.valueOf(pupilRegErrorResult.getRegErrorY() * 1000.0f), 
+					 Float.valueOf((float)(pupilRegErrorResult.getRegErrorPhi() / Constants.DEG2RAD)));
 
 			if (globalConfig.getPupilRegistrationOffsetX() != 0.0f || globalConfig.getPupilRegistrationOffsetY() != 0.0f) {
 				// error from desired pupil position is offset by 
@@ -276,7 +276,7 @@ public class PupilRegistrationSubflow {
 					int failureCode = ((CommandFailureException)internalException).getFailureCode();
 					
 					// check if failureCode is anything we can try to correct by homing a motor/stage
-					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(new Integer(failureCode));
+					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(Integer.valueOf(failureCode));
 					if (mechanism != null) {
 						readyCameraSubflow.homeMechanism(mechanism);
 					}

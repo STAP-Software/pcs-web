@@ -449,25 +449,25 @@ public class ProcedureOutputMgmt {
 			switch (fieldDescriptor.getDataType()) {
 
 			case Constant.DATA_TYPE_INT:
-				Integer intValue = new Integer(value);
+				Integer intValue = Integer.valueOf(value);
 				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), int.class);
 				method.invoke(classInstance, intValue);
 				break;
 
 			case Constant.DATA_TYPE_FLOAT:
-				Float floatValue = new Float(value);
+				Float floatValue = Float.valueOf(value);
 				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), float.class);
 				method.invoke(classInstance, floatValue);
 				break;
 
 			case Constant.DATA_TYPE_DOUBLE:
-				Double doubleValue = new Double(value);
+				Double doubleValue = Double.valueOf(value);
 				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), double.class);
 				method.invoke(classInstance, doubleValue);
 				break;
 
 			case Constant.DATA_TYPE_BOOLEAN:
-				Boolean booleanValue = new Boolean(value);
+				Boolean booleanValue = Boolean.valueOf(value);
 				method = classInstance.getClass().getMethod("set" + fieldDescriptor.getFieldName(), boolean.class);
 				method.invoke(classInstance, booleanValue);
 				break;

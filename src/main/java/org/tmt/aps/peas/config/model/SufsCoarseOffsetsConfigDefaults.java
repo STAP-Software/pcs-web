@@ -23,8 +23,17 @@ import org.tmt.aps.peas.instrument.model.SufsGroup;
 @Entity
 @Table(name = "SufsCoarseOffsetsConfigDefaults")
 @PrimaryKeyJoinColumn(name="SufsCoarseOffsetsConfigId")
-@NamedQueries({ @NamedQuery(name = "findSufsCoarseOffsetsConfig", query = "SELECT o from SufsCoarseOffsetsConfigDefaults o INNER JOIN FETCH o.instrument i INNER JOIN FETCH o.sufsGroup s "
-		+ " WHERE i.instrumentId = :instrumentId and s.sufsGroupId = :sufsGroupId ") })
+@NamedQueries({
+    @NamedQuery(
+        name = "findSufsCoarseOffsetsConfig",
+        query = "SELECT o FROM SufsCoarseOffsetsConfigDefaults o " +
+                "INNER JOIN FETCH o.instrument " +
+                "INNER JOIN FETCH o.sufsGroup " +
+                "WHERE o.instrument.instrumentId = :instrumentId " +
+                "AND o.sufsGroup.sufsGroupId = :sufsGroupId"
+    )
+})
+
 
 public class SufsCoarseOffsetsConfigDefaults extends SufsCoarseOffsetsConfig {
 

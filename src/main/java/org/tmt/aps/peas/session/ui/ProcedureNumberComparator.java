@@ -41,8 +41,8 @@ public class ProcedureNumberComparator implements Comparator<Procedure> {
 			return compareVersions(st1, st2);
 		} else {
 			
-			Integer i1 = new Integer(t1);
-			Integer i2 = new Integer(t2);
+			Integer i1 = Integer.valueOf(t1);
+			Integer i2 = Integer.valueOf(t2);
 			
 			return i1.compareTo(i2);
 		}

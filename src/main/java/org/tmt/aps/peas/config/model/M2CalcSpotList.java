@@ -24,9 +24,14 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Entity
 @Table(name = "M2CalcSpotList")
 @NamedQueries({
-	@NamedQuery(name = "findM2CalcSpotList", query = "SELECT o from M2CalcSpotList o INNER JOIN FETCH o.telescope t "
-			+ "where t.telescopeId = :telescopeId" )
+    @NamedQuery(
+        name = "findM2CalcSpotList",
+        query = "SELECT o FROM M2CalcSpotList o " +
+                "INNER JOIN FETCH o.telescope " +  // no alias
+                "WHERE o.telescope.telescopeId = :telescopeId"
+    )
 })
+
 public class M2CalcSpotList {
 	
 	@Id

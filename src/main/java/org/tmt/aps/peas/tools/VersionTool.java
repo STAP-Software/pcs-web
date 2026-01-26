@@ -76,7 +76,7 @@ public class VersionTool {
 			String latest = versionDirs[0].getName();
 			String majorRelease = latest.substring(0, latest.indexOf("."));
 			String minorRelease = latest.substring(latest.indexOf(".")+1);
-			int minorInt = new Integer(minorRelease);
+			int minorInt = Integer.valueOf(minorRelease);
 			System.out.println(majorRelease + "." + (++minorInt));
 		}
 		}

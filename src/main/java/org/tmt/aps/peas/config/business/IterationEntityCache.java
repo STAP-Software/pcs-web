@@ -85,7 +85,7 @@ public class IterationEntityCache {
 	public void refresh() throws Exception {
 		
 		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-		Long instrumentId = new Long(instrumentIdStr);
+		Long instrumentId = Long.valueOf(instrumentIdStr);
 		
 		// find the ccd for this instrument
 		Ccd ccd = cameraDefMgmt.findInstrumentCcd(instrumentId);
@@ -162,7 +162,7 @@ public class IterationEntityCache {
 		int intTimeIdx = 1;
 		while (intTimeIdx < 610) {
 		
-			IntegrationTime integrationTime = new IntegrationTime(new Long(intTimeIdx), (((float)intTimeIdx)/10.0f));
+			IntegrationTime integrationTime = new IntegrationTime(Long.valueOf(intTimeIdx), (((float)intTimeIdx)/10.0f));
 			indexToEntityMap.put(getKeyFieldValue(integrationTime), integrationTime);
 			className = integrationTime.getClassName();		
 			intTimeIdx += (intTimeIdx < 100) ? 1 : 10; 
@@ -254,7 +254,7 @@ public class IterationEntityCache {
 			for (int j=0; j<classNames.size(); j++) {
 				
 				try {
-					Long nextKey = new Long(items.get(i*classNames.size() + j));
+					Long nextKey = Long.valueOf(items.get(i*classNames.size() + j));
 					// find the entity that matches
 					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(nextKey);
 					entities.add(entity);
@@ -263,10 +263,10 @@ public class IterationEntityCache {
 					
 					// for now we only support float instead of int
 					
-					Float nextKey = new Float(items.get(i*classNames.size() + j));
+					Float nextKey = Float.valueOf(items.get(i*classNames.size() + j));
 					// find the entity that matches
 					
-					Long key = new Long((int)(nextKey*10));
+					Long key = Long.valueOf((int)(nextKey*10));
 										
 					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(key);
 					entities.add(entity);
@@ -319,10 +319,10 @@ public class IterationEntityCache {
 			Object result = method.invoke(entity, null);
 			
 			if (result instanceof String) {
-				return new Long((String)result);
+				return Long.valueOf((String)result);
 			}
 			if (result instanceof Integer) {
-				return new Long((Integer)result);
+				return Long.valueOf((Integer)result);
 			}
 			if (result instanceof Long) {
 				return (Long)result;
@@ -430,15 +430,15 @@ public class IterationEntityCache {
 		
 
 		for (int index=0; index<iterationListConfig.getIterationValueList().getSize(); index++) {
-			float intTime = new Float(items.get(index));
+			float intTime = Float.valueOf(items.get(index));
 			IterationValue iterationValue = iterationListConfig.getIterationValueList().getIterationValue(index);
 			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
 				
-				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", Long.valueOf((int)(intTime * 10)));				
 				iterationValue.setIterableEntity("LedIntegrationTime", iterableEntity);
 				
 			} else {
-				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", new Long((int)(intTime * 10)));				
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.config.model.IntegrationTime", Long.valueOf((int)(intTime * 10)));				
 				iterationValue.setIterableEntity("StarIntegrationTime", iterableEntity);
 			}
 		}
@@ -452,16 +452,16 @@ public class IterationEntityCache {
 		
 
 		for (int index=0; index<iterationListConfig.getIterationValueList().getSize(); index++) {
-			int gainNum = new Integer(items.get(index));
+			int gainNum = Integer.valueOf(items.get(index));
 			
 			IterationValue iterationValue = iterationListConfig.getIterationValueList().getIterationValue(index);
 			if (lightSource == ProcedureConfig.LIGHT_SOURCE_LED) {
 				
-				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", new Long(gainNum));				
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", Long.valueOf(gainNum));				
 				iterationValue.setIterableEntity("LedGain", iterableEntity);
 				
 			} else {
-				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", new Long(gainNum));				
+				IterableEntity iterableEntity = getIterableEntity("org.tmt.aps.peas.instrument.model.CcdGain", Long.valueOf(gainNum));				
 				iterationValue.setIterableEntity("StarGain", iterableEntity);
 			}
 		}

@@ -23,10 +23,14 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "ProcTypeVisualDisplay")
 @NamedQueries({
-	@NamedQuery(name = "findProcTypeVisualizationDisplays", query = "SELECT p from ProcTypeVisualizationDisplay p "
-			+ "INNER JOIN FETCH p.visualizationDisplay vd "
-			+ "where p.procedureTypeId = :procedureTypeId " )
+    @NamedQuery(
+        name = "findProcTypeVisualizationDisplays",
+        query = "SELECT p FROM ProcTypeVisualizationDisplay p " +
+                "INNER JOIN FETCH p.visualizationDisplay " +  // no alias
+                "WHERE p.procedureTypeId = :procedureTypeId"
+    )
 })
+
 public class ProcTypeVisualizationDisplay {
 
 		

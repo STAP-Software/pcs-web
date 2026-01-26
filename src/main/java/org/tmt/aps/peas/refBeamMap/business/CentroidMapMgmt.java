@@ -273,7 +273,7 @@ public class CentroidMapMgmt {
 		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
 			for (int j=0; j<mirrorConfigAnalysisSubaperatures.length; j++) {
 				if (!mirrorConfigAnalysisSubaperatures[j]) {
-					fullAnalysisMissingSpotList.add(new Integer(j+1));
+					fullAnalysisMissingSpotList.add(Integer.valueOf(j+1));
 				}
 			}
 		}
@@ -314,7 +314,7 @@ public class CentroidMapMgmt {
 		if (sufsGroupNumber == null || sufsGroupNumber.intValue() > 0) {
 			for (int j=0; j<mirrorConfigPresentSubaperatures.length; j++) {
 				if (!mirrorConfigPresentSubaperatures[j]) {
-					fullFandIMissingSpotList.add(new Integer(j+1));
+					fullFandIMissingSpotList.add(Integer.valueOf(j+1));
 				}
 			}
 		}

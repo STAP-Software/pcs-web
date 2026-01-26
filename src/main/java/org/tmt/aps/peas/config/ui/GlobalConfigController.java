@@ -108,8 +108,8 @@ public class GlobalConfigController implements Serializable {
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 
-			telescopeId = new Long(telescopeIdStr);
-			instrumentId = new Long(instrumentIdStr);
+			telescopeId = Long.valueOf(telescopeIdStr);
+			instrumentId = Long.valueOf(instrumentIdStr);
 
 			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);
 			
@@ -140,8 +140,8 @@ public class GlobalConfigController implements Serializable {
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
 
-			telescopeId = new Long(telescopeIdStr);
-			instrumentId = new Long(instrumentIdStr);
+			telescopeId = Long.valueOf(telescopeIdStr);
+			instrumentId = Long.valueOf(instrumentIdStr);
 
 			globalConfigDefaults = globalConfigMgmt.findDefaultConfig(telescopeId, instrumentId);	
 			

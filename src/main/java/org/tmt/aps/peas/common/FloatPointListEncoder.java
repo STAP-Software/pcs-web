@@ -41,7 +41,7 @@ public class FloatPointListEncoder {
 		List<String> items = Arrays.asList(encodedList.split("\\s*,\\s*"));
 		List<FloatPoint> pointList = new ArrayList<FloatPoint>();
 		for (int i=0; i<items.size()/2; i++) {
-			FloatPoint point = new FloatPoint(new Float(items.get(i*2).trim()), new Float(items.get((i*2)+1).trim()));
+			FloatPoint point = new FloatPoint(Float.valueOf(items.get(i*2).trim()), Float.valueOf(items.get((i*2)+1).trim()));
 			pointList.add(point);
 		}
 		return pointList;

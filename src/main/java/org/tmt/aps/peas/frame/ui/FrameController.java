@@ -450,8 +450,8 @@ public class FrameController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 
-		int x = (new Double(xStr)).intValue();
-		int y = (new Double(yStr)).intValue();
+		int x = (Double.valueOf(xStr)).intValue();
+		int y = (Double.valueOf(yStr)).intValue();
 
 		// add to the centroid hidden form vars
 		centroidXs = (centroidXs == null) ? "" + x : centroidXs + "," + x;
@@ -507,8 +507,8 @@ public class FrameController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
 
-		int x = (new Double(xStr)).intValue();
-		int y = (new Double(yStr)).intValue();
+		int x = (Double.valueOf(xStr)).intValue();
+		int y = (Double.valueOf(yStr)).intValue();
 
 		int value = ccdFrame.getRawFrame()[x][y];
 

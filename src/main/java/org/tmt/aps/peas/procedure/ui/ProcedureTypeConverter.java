@@ -41,7 +41,7 @@ public class ProcedureTypeConverter implements Converter, Serializable {
 		} else {
 			try {
 				String idStr = submittedValue;
-				long id = new Long(idStr);
+				long id = Long.valueOf(idStr);
 
 				List<ProcedureType> fullList = procedureController.getProcedureTypeForSelectList();
 

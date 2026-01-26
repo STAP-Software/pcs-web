@@ -79,7 +79,6 @@
         <dependency>
 		    <groupId>jakarta.inject</groupId>
 		    <artifactId>jakarta.inject-api</artifactId>
-		    <version>2.0.1</version>
 		    <scope>provided</scope>
 		</dependency>
 
@@ -96,14 +95,12 @@
 		<dependency>
 		    <groupId>jakarta.faces</groupId>
 		    <artifactId>jakarta.faces-api</artifactId>
-		    <version>3.0.0</version>
 		    <scope>provided</scope>
 		</dependency>
 		
 		<dependency>
 		    <groupId>jakarta.servlet</groupId>
 		    <artifactId>jakarta.servlet-api</artifactId>
-		    <version>5.0.0</version>
 		    <scope>provided</scope>
 		</dependency>
 
@@ -118,7 +115,6 @@
 		<dependency>
 		    <groupId>jakarta.persistence</groupId>
 		    <artifactId>jakarta.persistence-api</artifactId>
-		    <version>3.1.0</version>
 		    <scope>provided</scope>
 		</dependency>
 		
@@ -126,7 +122,6 @@
 		<dependency>
 		    <groupId>jakarta.transaction</groupId>
 		    <artifactId>jakarta.transaction-api</artifactId>
-		    <version>2.0.1</version>
 		    <scope>provided</scope>
 		</dependency>
 
@@ -147,8 +142,7 @@
 		<dependency>
 		  <groupId>org.jboss.logging</groupId>
 		  <artifactId>jboss-logging</artifactId>
-		  <version>3.5.0.Final</version>
-		</dependency>
+		  </dependency>
 
         <dependency>
             <groupId>org.apache.poi</groupId>
@@ -160,14 +154,12 @@
 	  <dependency>
 		<groupId>commons-beanutils</groupId>
 		<artifactId>commons-beanutils</artifactId>
-		<version>1.8.3</version>
-	  </dependency>
+		</dependency>
 	  
 	  <dependency>
 		<groupId>commons-collections</groupId>
 		<artifactId>commons-collections</artifactId>
-		<version>3.2.1</version>
-	  </dependency>
+		</dependency>
 	
 	  <dependency>
 		<groupId>org.apache.commons</groupId>
@@ -294,93 +286,11 @@
 
             <plugin>
             	<groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-war-plugin</artifactId>
-        </plugin>
+            	<artifactId>maven-war-plugin</artifactId>
+            	<version>3.3.2</version> <!-- Latest stable release -->
+        	</plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>provisioned-server</id>
-            <activation>
-                <activeByDefault>true</activeByDefault>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>package</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>openshift</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.wildfly.plugins</groupId>
-                        <artifactId>wildfly-maven-plugin</artifactId>
-                        <configuration>
-                            <discover-provisioning-info>
-                                <version>${version.server}</version>
-                                <context>cloud</context>
-                            </discover-provisioning-info>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>package</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                    <!-- do not attach sources to openshift deployments -->
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-source-plugin</artifactId>
-                        <executions>
-                            <execution>
-                                <id>attach-sources</id>
-                                <phase>none</phase>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-        <profile>
-            <id>integration-testing</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.apache.maven.plugins</groupId>
-                        <artifactId>maven-failsafe-plugin</artifactId>
-                        <configuration>
-                            <includes>
-                                <include>**/*IT</include>
-                            </includes>
-                        </configuration>
-                        <executions>
-                            <execution>
-                                <goals>
-                                    <goal>integration-test</goal>
-                                    <goal>verify</goal>
-                                </goals>
-                            </execution>
-                        </executions>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
 
     <repositories>
     

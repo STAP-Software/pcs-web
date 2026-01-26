@@ -628,7 +628,7 @@ public class ProcedureExecutionMgmt {
 						
 			// get SufsCoarseOffsetsConfigDefaults
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
-					physicalModel.getInstrument().getInstrumentId(), new Long(procedureConfig.getSufsGroup()));
+					physicalModel.getInstrument().getInstrumentId(), Long.valueOf(procedureConfig.getSufsGroup()));
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 		}
 		
@@ -723,7 +723,7 @@ public class ProcedureExecutionMgmt {
 
 			
 			SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
-					physicalModel.getInstrument().getInstrumentId(), new Long(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
+					physicalModel.getInstrument().getInstrumentId(), Long.valueOf(procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup()));
 			procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 
 

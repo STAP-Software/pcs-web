@@ -23,9 +23,14 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "CalcM2M1ConfigDefaults")
 @PrimaryKeyJoinColumn(name="calcM2M1ConfigId")
 @NamedQueries({
-	@NamedQuery(name = "calcM2M1Config.findByProcedureType", query = "SELECT o from CalcM2M1ConfigDefaults o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId" )
+    @NamedQuery(
+        name = "calcM2M1Config.findByProcedureType",
+        query = "SELECT o FROM CalcM2M1ConfigDefaults o " +
+                "INNER JOIN FETCH o.procedureType " +  // no alias
+                "WHERE o.procedureType.procedureTypeId = :procedureTypeId"
+    )
 })
+
 public class CalcM2M1ConfigDefaults extends CalcM2M1Config {
 
 	

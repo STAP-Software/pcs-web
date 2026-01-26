@@ -100,7 +100,7 @@ public class FitsFilename {
 			StringTokenizer st = new StringTokenizer(fileName, "_");
 
 			String telescopeStr = st.nextToken();
-			telescope = new Integer(telescopeStr.substring(1));
+			telescope = Integer.valueOf(telescopeStr.substring(1));
 
 			String dateString = st.nextToken();
 			date = sdf.parse(dateString);
@@ -110,10 +110,10 @@ public class FitsFilename {
 			procedureTypeCd = st.nextToken();
 			
 			if (procedureTypeCd.startsWith("UFS")) {
-				ufsSegment = new Integer(procedureTypeCd.substring(4));
+				ufsSegment = Integer.valueOf(procedureTypeCd.substring(4));
 				procedureTypeCd = procedureTypeCd.substring(0, 3);
 			} else if (procedureTypeCd.startsWith("SUFS")) {
-				sufsGroup = new Integer(procedureTypeCd.substring(5));
+				sufsGroup = Integer.valueOf(procedureTypeCd.substring(5));
 				procedureTypeCd = procedureTypeCd.substring(0, 4);
 			}
 			
@@ -122,18 +122,18 @@ public class FitsFilename {
 			String sequenceCd = st.nextToken();
 			
 			if (procedureTypeCd.startsWith("CPH")) {
-				iteration = new Integer(sequenceCd.substring(0, 1));
+				iteration = Integer.valueOf(sequenceCd.substring(0, 1));
 				// transform A-K to 1-11
 				phasingStep = (int)sequenceCd.charAt(1) - (int)'A' + 1; // A-K
 				nphFilter = 0;
 
 			} else if (procedureTypeCd.startsWith("NPH")) {
 				phasingStep = 0;
-				iteration = new Integer(sequenceCd.substring(0,1));
+				iteration = Integer.valueOf(sequenceCd.substring(0,1));
 				String filter = st.nextToken().substring(0,3);
-				nphFilter = new Integer(filter);
+				nphFilter = Integer.valueOf(filter);
 			} else {
-				iteration = new Integer(sequenceCd.substring(0,2));
+				iteration = Integer.valueOf(sequenceCd.substring(0,2));
 			}
 			
 			if (procedureTypeCd.startsWith("RB") || procedureTypeCd.startsWith("PR")) {
@@ -305,10 +305,10 @@ public class FitsFilename {
 		int procedureNum = 0;
 		if (decimalIndex > 0) {
 			subprocedureNum = procedureNumber.substring(decimalIndex+1);
-			procedureNum = new Integer(procedureNumber.substring(0, decimalIndex));
+			procedureNum = Integer.valueOf(procedureNumber.substring(0, decimalIndex));
 			buf.append(String.format("%03d", procedureNum) + "." + subprocedureNum + "_");
 		} else {
-			procedureNum = new Integer(procedureNumber);
+			procedureNum = Integer.valueOf(procedureNumber);
 			buf.append(String.format("%03d", procedureNum) + "_");
 		}
 		

@@ -25,11 +25,27 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Entity
 @Table(name = "MissingSpotList")
 @NamedQueries({
-	@NamedQuery(name = "findSpotListByTypeAndMask", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.telescope t "
-			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and t.telescopeId = :telescopeId" ),
-	@NamedQuery(name = "findSpotListByTypeMaskGroup", query = "SELECT o from MissingSpotList o INNER JOIN FETCH o.pupilMaskType p INNER JOIN FETCH o.telescope t "
-			+ "where o.spotListType = :spotListType and p.pupilMaskTypeId = :pupilMaskTypeId and t.telescopeId = :telescopeId and o.sufsGroup = :sufsGroup" )
+    @NamedQuery(
+        name = "findSpotListByTypeAndMask",
+        query = "SELECT o FROM MissingSpotList o " +
+                "INNER JOIN FETCH o.pupilMaskType " +  // no alias
+                "INNER JOIN FETCH o.telescope " +      // no alias
+                "WHERE o.spotListType = :spotListType " +
+                "AND o.pupilMaskType.pupilMaskTypeId = :pupilMaskTypeId " +
+                "AND o.telescope.telescopeId = :telescopeId"
+    ),
+    @NamedQuery(
+        name = "findSpotListByTypeMaskGroup",
+        query = "SELECT o FROM MissingSpotList o " +
+                "INNER JOIN FETCH o.pupilMaskType " +
+                "INNER JOIN FETCH o.telescope " +
+                "WHERE o.spotListType = :spotListType " +
+                "AND o.pupilMaskType.pupilMaskTypeId = :pupilMaskTypeId " +
+                "AND o.telescope.telescopeId = :telescopeId " +
+                "AND o.sufsGroup = :sufsGroup"
+    )
 })
+
 public class MissingSpotList {
 	
 	@Id

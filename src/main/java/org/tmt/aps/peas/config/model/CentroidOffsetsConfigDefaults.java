@@ -24,10 +24,16 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "CentroidOffsetsConfigDefaults")
 @PrimaryKeyJoinColumn(name="centroidOffsetsConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findByProcedureType", query = "SELECT o from CentroidOffsetsConfigDefaults o "
-			+ "INNER JOIN FETCH o.procedureType p INNER JOIN FETCH o.ccdType t "
-			+ "where p.procedureTypeId = :procedureTypeId and t.ccdTypeId = :ccdTypeId" )
+    @NamedQuery(
+        name = "findByProcedureType",
+        query = "SELECT o FROM CentroidOffsetsConfigDefaults o " +
+                "INNER JOIN FETCH o.procedureType " +  // no alias
+                "INNER JOIN FETCH o.ccdType " +       // no alias
+                "WHERE o.procedureType.procedureTypeId = :procedureTypeId " +
+                "AND o.ccdType.ccdTypeId = :ccdTypeId"
+    )
 })
+
 public class CentroidOffsetsConfigDefaults extends CentroidOffsetsConfig {
 
 	

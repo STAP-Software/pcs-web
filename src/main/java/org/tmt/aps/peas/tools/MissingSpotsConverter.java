@@ -30,7 +30,7 @@ public class MissingSpotsConverter {
 			while ((line = br.readLine()) != null) {
 				StringTokenizer st = new StringTokenizer(line, " ");
 				String spotNum = st.nextToken();
-				int type = new Integer(st.nextToken());
+				int type = Integer.valueOf(st.nextToken());
 				if (type == 0) {
 					fAndIList.add(spotNum);
 				}

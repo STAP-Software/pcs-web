@@ -881,10 +881,10 @@ public class FrameMgmt {
 		for (FitsFilename fitsFile : fitsFileList) {
 
 			try {
-				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(new Integer(fitsFile.getTelescope()));
+				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(Integer.valueOf(fitsFile.getTelescope()));
 				if (telescopeFitsMap == null) {
 					telescopeFitsMap = new TreeMap<Date, List<FitsFilename>>();
-					telescope2Fits.put(new Integer(fitsFile.getTelescope()), telescopeFitsMap);
+					telescope2Fits.put(Integer.valueOf(fitsFile.getTelescope()), telescopeFitsMap);
 				}
 
 				// logger.debug("map get filename = " + fitsFile.getFileName());

@@ -23,10 +23,21 @@ import org.tmt.aps.peas.config.model.IterableEntity;
 @Entity
 @Table(name = "Filter")
 @NamedQueries({
-	@NamedQuery(name = "findAllFilters", query = "SELECT o from Filter o INNER JOIN FETCH o.filterType" ),
-	@NamedQuery(name = "findByFilterTypeAndWheel", query = "SELECT o from Filter o INNER JOIN FETCH o.filterWheel fw INNER JOIN FETCH o.filterType ft "
-			+ "where ft.filterTypeId = :filterTypeId AND fw.filterWheelId = :filterWheelId" )
+    @NamedQuery(
+        name = "findAllFilters",
+        query = "SELECT o FROM Filter o " +
+                "INNER JOIN FETCH o.filterType"
+    ),
+    @NamedQuery(
+        name = "findByFilterTypeAndWheel",
+        query = "SELECT o FROM Filter o " +
+                "INNER JOIN FETCH o.filterWheel " +
+                "INNER JOIN FETCH o.filterType " +
+                "WHERE o.filterType.filterTypeId = :filterTypeId " +
+                "AND o.filterWheel.filterWheelId = :filterWheelId"
+    )
 })
+
 public class Filter implements IterableEntity {
 
 	@Id
@@ -69,7 +80,7 @@ public class Filter implements IterableEntity {
 
 	public int getFilterNameAsNumber() {
 		try {
-			return new Integer(filterName);
+			return Integer.valueOf(filterName);
 		} catch (Exception e) {
 			// if 'None' then use 0
 			return 0;

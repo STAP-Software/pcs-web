@@ -49,12 +49,12 @@ public class VisualizationDisplay extends UserPrompt {
 	
 	public VisualizationDisplay(int visualizationDisplayType) {
 		super("");
-		this.visualizationDisplayId = new Long(visualizationDisplayType);
+		this.visualizationDisplayId = Long.valueOf(visualizationDisplayType);
 	}
 	
 	public VisualizationDisplay(int visualizationDisplayType, int buttonType, String message) {
 		super("", buttonType, message);
-		this.visualizationDisplayId = new Long(visualizationDisplayType);
+		this.visualizationDisplayId = Long.valueOf(visualizationDisplayType);
 	}
 
 	

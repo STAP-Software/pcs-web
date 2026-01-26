@@ -42,7 +42,7 @@ public class CcdGainConverter implements Converter, Serializable {
 		} else {
 			try {
 				String idStr = submittedValue;
-				long id = new Long(idStr);
+				long id = Long.valueOf(idStr);
 
 				List<CcdGain> fullList = physicalModel.getInstrument().getCcd().getCcdGainList();
 

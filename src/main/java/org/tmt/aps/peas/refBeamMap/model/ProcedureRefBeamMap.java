@@ -26,9 +26,15 @@ import org.tmt.aps.peas.procedure.model.Procedure;
 @Entity
 @Table(name = "ProcedureRefBeamMap")
 @NamedQueries({
-	@NamedQuery(name = "findRefBeamMapsForProcedure", query = "SELECT prbm from ProcedureRefBeamMap prbm "
-			+ "INNER JOIN FETCH prbm.refBeamMap INNER JOIN FETCH prbm.procedure p where p.procedureId = :procedureId" )
+    @NamedQuery(
+        name = "findRefBeamMapsForProcedure",
+        query = "SELECT prbm FROM ProcedureRefBeamMap prbm " +
+                "INNER JOIN FETCH prbm.refBeamMap " +   // no alias
+                "INNER JOIN prbm.procedure p " +        // normal join with alias for filtering
+                "WHERE p.procedureId = :procedureId"
+    )
 })
+
 public class ProcedureRefBeamMap {
 	
 	@Id

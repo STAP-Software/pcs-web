@@ -100,7 +100,7 @@
 <pre>public class <span class="strong">CameraMgmtAsync</span>
 extends <a href="http://docs.oracle.com/javase/6/docs/api/java/lang/Object.html?is-external=true" title="class or interface in java.lang">Object</a></pre>
 <div class="block">EJB Session bean for additional PCS camera command interfaces.  Used because JBoss bug that requires an EJB boundary to have methods tagged <code>@Asynchronous</code>  
- execute in a separate thread.  CameraMgmt nested <code>@Asynchronous<code> calls call methods here.
+ execute in a separate thread.  CameraMgmt nested <code>@Asynchronous</code> calls call methods here.
  All calls are delegated to the <a href="../../../../../../org/tmt/aps/peas/extInterface/business/ExtInfFactory.html" title="class in org.tmt.aps.peas.extInterface.business"><code>ExtInfFactory</code></a> which will delegate to either the actual RPC client interface or a simulator.</div>
 <dl><dt><span class="strong">Author:</span></dt>
   <dd>smichaels</dd></dl>

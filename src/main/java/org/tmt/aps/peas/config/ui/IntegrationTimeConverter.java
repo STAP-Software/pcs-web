@@ -43,8 +43,8 @@ public class IntegrationTimeConverter implements Converter, Serializable {
 		} else {
 			try {
 				
-				float intTime = new Float(submittedValue);
-				Long id = new Long((int)(intTime * 10));
+				float intTime = Float.valueOf(submittedValue);
+				Long id = Long.valueOf((int)(intTime * 10));
 
 				return iterationEntityCache.getIterableEntity(IntegrationTime.class.getName(), id);
 				

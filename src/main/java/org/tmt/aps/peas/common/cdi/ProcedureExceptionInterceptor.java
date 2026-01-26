@@ -6,18 +6,15 @@
 package org.tmt.aps.peas.common.cdi;
 
 import java.io.Serializable;
-import java.text.MessageFormat;
-import java.util.ResourceBundle;
 
-import jakarta.ejb.EJB;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.computation.business.ComputationException;
-import org.tmt.aps.peas.lang.interop.RetVal;
-import org.tmt.aps.peas.statusLog.business.StatusLogger;
+
 
 /**
  * This interceptor is not used.
@@ -25,6 +22,7 @@ import org.tmt.aps.peas.statusLog.business.StatusLogger;
  * @deprecated
  */
 @Interceptor
+@Priority(1)
 @ProcedureExceptionManageable
 public class ProcedureExceptionInterceptor implements Serializable {
 

@@ -238,13 +238,13 @@ public class SessionMgmt {
 			if (superProcedureNum == null) {
 				// increment major number
 				String latestMajorNum = isLatestProcedureSubProcedure ? latestProcedureNum.substring(0, latestProcedureNum.indexOf(".")) : latestProcedureNum;
-				int newMajorNum = new Integer(latestMajorNum) + 1;
+				int newMajorNum = Integer.valueOf(latestMajorNum) + 1;
 				return "" + newMajorNum;
 			} else {
 				if (isLatestProcedureSubProcedure) {
 					// extract minor number
 					String oldMinorNum = latestProcedureNum.substring(latestProcedureNum.indexOf(".") + 1);
-					return superProcedureNum + "." + (new Integer(oldMinorNum) + 1);
+					return superProcedureNum + "." + (Integer.valueOf(oldMinorNum) + 1);
 					
 				} else {
 					return superProcedureNum + ".1";

@@ -23,9 +23,14 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 @Table(name = "PupilRegErrorConfigDefaults")
 @PrimaryKeyJoinColumn(name="pupilRegErrorConfigId")
 @NamedQueries({
-	@NamedQuery(name = "pupilRegErrorConfig.findByMaskType", query = "SELECT o from PupilRegErrorConfigDefaults o INNER JOIN FETCH o.pupilMaskType p "
-			+ "where p.pupilMaskTypeId = :pupilMaskTypeId" )
+    @NamedQuery(
+        name = "pupilRegErrorConfig.findByMaskType",
+        query = "SELECT o FROM PupilRegErrorConfigDefaults o " +
+                "INNER JOIN FETCH o.pupilMaskType " +  // no alias here
+                "WHERE o.pupilMaskType.pupilMaskTypeId = :pupilMaskTypeId"
+    )
 })
+
 public class PupilRegErrorConfigDefaults extends PupilRegErrorConfig {
 
 	

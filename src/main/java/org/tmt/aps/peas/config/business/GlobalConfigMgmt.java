@@ -293,7 +293,7 @@ public class GlobalConfigMgmt {
 	 */
 	public void updateSufsCoarseOffsetsCurrent(Long instrumentId, int sufsGroupId, int coarseOffsetX, int coarseOffsetY) {
 		
-		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = findSufsCoarseOffsetsConfig(instrumentId, new Long(sufsGroupId));
+		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = findSufsCoarseOffsetsConfig(instrumentId, Long.valueOf(sufsGroupId));
 		sufsCoarseOffsetsConfigDefaults.setCoarseMirrorOffsetCurrentX(coarseOffsetX);
 		sufsCoarseOffsetsConfigDefaults.setCoarseMirrorOffsetCurrentY(coarseOffsetY);
 		

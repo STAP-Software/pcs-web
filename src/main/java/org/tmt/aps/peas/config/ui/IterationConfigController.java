@@ -395,7 +395,7 @@ public class IterationConfigController implements Serializable {
 			// determine the next id in the list and add 100 
 			int nextNum = 100 + iterationEntityCache.getOptionList(procedureType.getProcedureTypeId()).size();
 			
-			option.setIterationListConfigId(new Long(nextNum));
+			option.setIterationListConfigId(Long.valueOf(nextNum));
 			option.setOptionOrder(nextNum);  // this is not needed, since we are not saving the 'option' to the database
 
 			// the procedureIterationDefs for this procedureType

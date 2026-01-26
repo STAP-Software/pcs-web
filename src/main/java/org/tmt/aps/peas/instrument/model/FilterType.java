@@ -24,12 +24,12 @@ import org.tmt.aps.peas.config.model.IterableEntity;
 @NamedQueries({ @NamedQuery(name = "findAllFilterTypes", query = "SELECT o from FilterType o") })
 public class FilterType implements IterableEntity {
 
-	public static final Long FILTER_TYPE_ID_611 = new Long(1);
-	public static final Long FILTER_TYPE_ID_651 = new Long(2);
-	public static final Long FILTER_TYPE_ID_852 = new Long(3);
-	public static final Long FILTER_TYPE_ID_870 = new Long(4);
-	public static final Long FILTER_TYPE_ID_891 = new Long(5);
-	public static final Long FILTER_TYPE_ID_NONE = new Long(6);
+	public static final Long FILTER_TYPE_ID_611 = Long.valueOf(1);
+	public static final Long FILTER_TYPE_ID_651 = Long.valueOf(2);
+	public static final Long FILTER_TYPE_ID_852 = Long.valueOf(3);
+	public static final Long FILTER_TYPE_ID_870 = Long.valueOf(4);
+	public static final Long FILTER_TYPE_ID_891 = Long.valueOf(5);
+	public static final Long FILTER_TYPE_ID_NONE = Long.valueOf(6);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

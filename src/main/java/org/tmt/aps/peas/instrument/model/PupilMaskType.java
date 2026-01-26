@@ -24,11 +24,11 @@ import org.tmt.aps.peas.config.model.IterableEntity;
 @NamedQueries({ @NamedQuery(name = "findAllPupilMaskTypes", query = "SELECT o from PupilMaskType o") })
 public class PupilMaskType implements IterableEntity {
 
-	public static final Long PUPIL_MASK_TYPE_ID_36 = new Long(1);
-	public static final Long PUPIL_MASK_TYPE_ID_160 = new Long(2);
-	public static final Long PUPIL_MASK_TYPE_ID_508 = new Long(3);
-	public static final Long PUPIL_MASK_TYPE_ID_UFS = new Long(4);
-	public static final Long PUPIL_MASK_TYPE_ID_SUFS = new Long(5);
+	public static final Long PUPIL_MASK_TYPE_ID_36 = Long.valueOf(1);
+	public static final Long PUPIL_MASK_TYPE_ID_160 = Long.valueOf(2);
+	public static final Long PUPIL_MASK_TYPE_ID_508 = Long.valueOf(3);
+	public static final Long PUPIL_MASK_TYPE_ID_UFS = Long.valueOf(4);
+	public static final Long PUPIL_MASK_TYPE_ID_SUFS = Long.valueOf(5);
 	
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)

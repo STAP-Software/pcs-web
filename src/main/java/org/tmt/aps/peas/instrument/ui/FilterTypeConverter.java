@@ -40,7 +40,7 @@ public class FilterTypeConverter implements Converter, Serializable {
 		} else {
 			try {
 				String idStr = submittedValue;
-				long id = new Long(idStr);
+				long id = Long.valueOf(idStr);
 
 				List<FilterType> fullList = filterController.getFilterTypeList();
 

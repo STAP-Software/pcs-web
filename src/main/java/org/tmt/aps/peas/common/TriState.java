@@ -26,7 +26,7 @@ public class TriState {
 		if (state == 3) {
 			this.state = null;
 		} else {
-			this.state = new Boolean(state == 1);
+			this.state =  Boolean.valueOf(state == 1);
 		}
 	}
 	/**

@@ -74,7 +74,7 @@ public class ExtInfFactory {
 		cameraCommandSimulator = new CameraCommandSimulator();
 		
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		telescopeId = new Integer(telescopeIdStr);
+		telescopeId = Integer.valueOf(telescopeIdStr);
 
 	}
 
@@ -205,7 +205,7 @@ public class ExtInfFactory {
 		try {
 			if (ccd == null) {
 				String host = peasProperties.getProp("org.tmt.aps.peas.ccdHost").trim();
-				int port = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdPort"));
+				int port = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdPort"));
 				
 				logger.info("Creating CCD Command, host = " + host + ", port = " + port);
 				
@@ -237,11 +237,11 @@ public class ExtInfFactory {
 		try {
 			if (ccdCommandSimulator == null) {
 				
-				int imageHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageHeight"));
-				int imageWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageWidth"));
-				int overscanHeight = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanHeight"));
-				int overscanWidth = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanWidth"));
-				int gainNumber = new Integer(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainNumber"));
+				int imageHeight = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageHeight"));
+				int imageWidth = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.imageWidth"));
+				int overscanHeight = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanHeight"));
+				int overscanWidth = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.overscanWidth"));
+				int gainNumber = Integer.valueOf(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.gainNumber"));
 				int[] offsetCalibration = decodePropIntList(peasProperties.getProp("org.tmt.aps.peas.ccdSimulator.offsetCalibration"));
 				
 				ccdCommandSimulator = new CcdCommandSimulator(physicalModel.getInstrument().getCcd(), imageHeight, imageWidth, 
@@ -260,7 +260,7 @@ public class ExtInfFactory {
 		int[] output = new int[items.size()];
 		int i=0;
 		for (String item : items) {
-			output[i++] = new Integer(item);
+			output[i++] = Integer.valueOf(item);
 		}
 		return output;
 	}

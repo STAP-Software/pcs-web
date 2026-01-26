@@ -107,7 +107,7 @@ public class SufsGroupController implements Serializable {
 
 			try {
 
-				int groupNumber = new Integer(groupNumberStr);
+				int groupNumber = Integer.valueOf(groupNumberStr);
 
 				for (SufsGroup sufsGroup : sufsGroupList) {
 

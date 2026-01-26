@@ -34,15 +34,39 @@ import org.tmt.aps.peas.common.RectListEncoder;
 @Entity
 @Table(name = "Ccd")
 @NamedQueries({
-	@NamedQuery(name = "findCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
-			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 where o.ccdId = :ccdId" ),
-	@NamedQuery(name = "findInstrumentCcd", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
-			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 INNER JOIN FETCH o.instrument i"
-			+ " where i.instrumentId = :instrumentId" ),
-	@NamedQuery(name = "findAllCcds", query = "SELECT o from Ccd o INNER JOIN FETCH o.ccdType t INNER JOIN FETCH o.ccdGain0 "
-			+ " INNER JOIN FETCH o.ccdGain1  INNER JOIN FETCH o.ccdGain2  INNER JOIN FETCH o.ccdGain3 "
-			+ " LEFT OUTER JOIN o.instrument" )
+    @NamedQuery(
+        name = "findCcd",
+        query = "SELECT o FROM Ccd o " +
+                "INNER JOIN FETCH o.ccdType " +
+                "INNER JOIN FETCH o.ccdGain0 " +
+                "INNER JOIN FETCH o.ccdGain1 " +
+                "INNER JOIN FETCH o.ccdGain2 " +
+                "INNER JOIN FETCH o.ccdGain3 " +
+                "WHERE o.ccdId = :ccdId"
+    ),
+    @NamedQuery(
+        name = "findInstrumentCcd",
+        query = "SELECT o FROM Ccd o " +
+                "INNER JOIN FETCH o.ccdType " +
+                "INNER JOIN FETCH o.ccdGain0 " +
+                "INNER JOIN FETCH o.ccdGain1 " +
+                "INNER JOIN FETCH o.ccdGain2 " +
+                "INNER JOIN FETCH o.ccdGain3 " +
+                "INNER JOIN FETCH o.instrument " +
+                "WHERE o.instrument.instrumentId = :instrumentId"
+    ),
+    @NamedQuery(
+        name = "findAllCcds",
+        query = "SELECT o FROM Ccd o " +
+                "INNER JOIN FETCH o.ccdType " +
+                "INNER JOIN FETCH o.ccdGain0 " +
+                "INNER JOIN FETCH o.ccdGain1 " +
+                "INNER JOIN FETCH o.ccdGain2 " +
+                "INNER JOIN FETCH o.ccdGain3 " +
+                "LEFT OUTER JOIN o.instrument"
+    )
 })
+
 public class Ccd {
 
 	public static final int POWER_STATE_ON = 1;

@@ -199,7 +199,7 @@ public class CameraMgmt {
 		while (!xFuture.isDone()) {
 			Thread.sleep(300);
 		}
-		Integer result = new Integer(xFuture.get());
+		Integer result = Integer.valueOf(xFuture.get());
 		return new AsyncResult<Integer>(result);
 	}
 
@@ -211,7 +211,7 @@ public class CameraMgmt {
 		while (!yFuture.isDone()) {
 			Thread.sleep(300);
 		}
-		Integer result = new Integer(yFuture.get());
+		Integer result = Integer.valueOf(yFuture.get());
 		return new AsyncResult<Integer>(result);
 	}
 
@@ -236,7 +236,7 @@ public class CameraMgmt {
 			logger.debug("waiting on coarse Tilt Mirror xDone = " + xFuture.isDone());
 			Thread.sleep(300);
 		}
-		Integer result = new Integer(xFuture.get());
+		Integer result = Integer.valueOf(xFuture.get());
 		return new AsyncResult<Integer>(result);
 	}
 
@@ -248,7 +248,7 @@ public class CameraMgmt {
 			logger.debug("waiting on coarse Tilt Mirror yDone = " + yFuture.isDone());
 			Thread.sleep(300);
 		}
-		Integer result = new Integer(yFuture.get());
+		Integer result = Integer.valueOf(yFuture.get());
 		return new AsyncResult<Integer>(result);
 	}
 

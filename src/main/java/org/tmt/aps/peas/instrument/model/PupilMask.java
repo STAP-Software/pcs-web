@@ -25,10 +25,21 @@ import jakarta.persistence.Table;
 @Entity
 @Table(name = "PupilMask")
 @NamedQueries({
-	@NamedQuery(name = "findAllPupilMasks", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType" ),
-	@NamedQuery(name = "findByPupilMaskTypeAndWheel", query = "SELECT o from PupilMask o INNER JOIN FETCH o.pupilMaskType t INNER JOIN FETCH o.pupilWheel pw "
-			+ "WHERE t.pupilMaskTypeId = :pupilMaskTypeId and pw.pupilWheelId = :pupilWheelId" )
+    @NamedQuery(
+        name = "findAllPupilMasks",
+        query = "SELECT o FROM PupilMask o " +
+                "INNER JOIN FETCH o.pupilMaskType"
+    ),
+    @NamedQuery(
+        name = "findByPupilMaskTypeAndWheel",
+        query = "SELECT o FROM PupilMask o " +
+                "INNER JOIN FETCH o.pupilMaskType " +   // no alias
+                "INNER JOIN FETCH o.pupilWheel " +      // no alias
+                "WHERE o.pupilMaskType.pupilMaskTypeId = :pupilMaskTypeId " +
+                "AND o.pupilWheel.pupilWheelId = :pupilWheelId"
+    )
 })
+
 public class PupilMask {
 
 	@Id

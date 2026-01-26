@@ -481,7 +481,7 @@ public class JavaComputations {
 		
 		List<Float> list = new ArrayList<Float>();
 		for (float element : input) {
-			list.add(new Float(element));
+			list.add(Float.valueOf(element));
 		}
 		
 		Collections.sort(list);

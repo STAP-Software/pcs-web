@@ -224,7 +224,7 @@ public class ProcedureController implements Serializable {
 		currentPrompt = new UserPrompt("Default Text", UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
 
 		// set up the instrument to be associated with each frame to display archived state
-		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
+		Long instrumentId = Long.valueOf(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
 		
 		pupilMaskSelectList = sessionController.getInstrument().getCamera().getPupilWheel().getOrigPupilMaskList();
@@ -1455,7 +1455,7 @@ public class ProcedureController implements Serializable {
 		
 		// get SufsCoarseOffsetsConfigDefaults
 		SufsCoarseOffsetsConfigDefaults sufsCoarseOffsetsConfigDefaults = globalConfigMgmt.findSufsCoarseOffsetsConfig(
-				physicalModel.getInstrument().getInstrumentId(), new Long(sufsGroup));
+				physicalModel.getInstrument().getInstrumentId(), Long.valueOf(sufsGroup));
 		procedure.getProcedureConfigSet().setSufsCoarseOffsetsConfig(new SufsCoarseOffsetsConfig(sufsCoarseOffsetsConfigDefaults));
 		
 		// set the ref beam if a ref map procedure
@@ -1516,8 +1516,8 @@ public class ProcedureController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 
-		int x = 2 * (new Double(xStr)).intValue(); // 512 * 2 = 1024
-		int y = 2 * (new Double(yStr)).intValue(); // 512 * 2 = 1024
+		int x = 2 * (Double.valueOf(xStr)).intValue(); // 512 * 2 = 1024
+		int y = 2 * (Double.valueOf(yStr)).intValue(); // 512 * 2 = 1024
 		// add to the centroid hidden form vars
 
 		// call findCent on each centroid
@@ -1678,8 +1678,8 @@ public class ProcedureController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("mouse_y");
 		
-		int x = (new Double(xStr)).intValue(); 
-		int y = (new Double(yStr)).intValue(); 
+		int x = (Double.valueOf(xStr)).intValue(); 
+		int y = (Double.valueOf(yStr)).intValue(); 
 
 		// check for null so we don't get exceptions
 		if (selectedFrame.getCcdFrame().getRawFrame() != null) {

@@ -28,8 +28,8 @@ import jakarta.persistence.Table;
 public class CcdType {
 
 	
-	public static final Long CCD_TYPE_ID_ORIG = new Long(1);
-	public static final Long CCD_TYPE_ID_SCIMEAS = new Long(2);
+	public static final Long CCD_TYPE_ID_ORIG = Long.valueOf(1);
+	public static final Long CCD_TYPE_ID_SCIMEAS = Long.valueOf(2);
 	
 
 	@Id

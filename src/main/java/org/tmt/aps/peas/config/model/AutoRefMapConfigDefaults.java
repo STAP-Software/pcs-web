@@ -24,10 +24,16 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "AutoRefMapConfigDefaults")
 @PrimaryKeyJoinColumn(name="autoRefMapConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findAutoByProcedureType", query = "SELECT o from AutoRefMapConfigDefaults o "
-			+ "INNER JOIN FETCH o.procedureType p INNER JOIN FETCH o.ccdType t "
-			+ "where p.procedureTypeId = :procedureTypeId and t.ccdTypeId = :ccdTypeId" )
+    @NamedQuery(
+        name = "findAutoByProcedureType",
+        query = "SELECT o FROM AutoRefMapConfigDefaults o " +
+                "INNER JOIN FETCH o.procedureType " +
+                "INNER JOIN FETCH o.ccdType " +
+                "WHERE o.procedureType.procedureTypeId = :procedureTypeId " +
+                "AND o.ccdType.ccdTypeId = :ccdTypeId"
+    )
 })
+
 public class AutoRefMapConfigDefaults extends AutoRefMapConfig {
 
 	

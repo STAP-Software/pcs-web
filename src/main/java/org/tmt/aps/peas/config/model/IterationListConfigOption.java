@@ -26,11 +26,19 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "IterationListConfigOption")
 @PrimaryKeyJoinColumn(name="iterationListConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findIterationListConfigOptions", query = "SELECT o from IterationListConfigOption o INNER JOIN FETCH o.procedureType p "
-			+ "INNER JOIN FETCH o.instrument inst INNER JOIN FETCH o.ccdType t "
-			+ "where p.procedureTypeId = :procedureTypeId AND inst.instrumentId = :instrumentId "
-			+ "AND t.ccdTypeId = :ccdTypeId ORDER BY o.optionOrder" )
+    @NamedQuery(
+        name = "findIterationListConfigOptions",
+        query = "SELECT o FROM IterationListConfigOption o " +
+                "INNER JOIN FETCH o.procedureType " +   // no alias
+                "INNER JOIN FETCH o.instrument " +      // no alias
+                "INNER JOIN FETCH o.ccdType " +         // no alias
+                "WHERE o.procedureType.procedureTypeId = :procedureTypeId " +
+                "AND o.instrument.instrumentId = :instrumentId " +
+                "AND o.ccdType.ccdTypeId = :ccdTypeId " +
+                "ORDER BY o.optionOrder"
+    )
 })
+
 public class IterationListConfigOption extends IterationListConfig {
 	
 	int optionOrder;

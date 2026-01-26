@@ -37,31 +37,87 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Entity
 @Table(name = "Session")
 @NamedQueries({
-	@NamedQuery(name = "findAllSessions", query = "SELECT s from Session s INNER JOIN s.telescope t where t.telescopeId = :telescopeId" ),
-	@NamedQuery(name = "findLastSessions", query = "SELECT s from Session s INNER JOIN s.telescope t where t.telescopeId = :telescopeId AND s.sessionDate < :searchDate ORDER BY s.sessionDate desc " ),
-	@NamedQuery(name = "findSessionByDate", query = "SELECT DISTINCT s from Session s "
-			+ "INNER JOIN FETCH s.telescope t INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
-			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
-			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.procedureConfig LEFT OUTER JOIN FETCH pcs.globalConfig LEFT OUTER JOIN FETCH p.session "
-			+ "where s.sessionDate = :sessionDate AND t.telescopeId = :telescopeId" ),
-	@NamedQuery(name = "findSession", query = "SELECT DISTINCT s from Session s "
-			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
-			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
-			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.procedureConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.globalConfig LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig LEFT OUTER JOIN FETCH pcs.iterationListConfig "
-			+ "LEFT OUTER JOIN FETCH p.session "
-			+ "where s.sessionId = :sessionId" ),
-	@NamedQuery(name = "findSessionOperationalData", query = "SELECT DISTINCT s from Session s "
-			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument LEFT OUTER JOIN FETCH s.procedureList p "
-			+ "LEFT OUTER JOIN FETCH p.telescope LEFT OUTER JOIN FETCH p.instrument "
-			+ "LEFT OUTER JOIN FETCH p.procedureType LEFT OUTER JOIN FETCH p.procedureConfigSet pcs LEFT OUTER JOIN FETCH pcs.procedureConfig "
-			+ "LEFT OUTER JOIN FETCH pcs.globalConfig LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig LEFT OUTER JOIN FETCH pcs.iterationListConfig "
-			+ "LEFT OUTER JOIN FETCH p.session "
-			+ "where s.sessionId = :sessionId AND (p.operational = true OR p.procedureId IS NULL)"),
-	@NamedQuery(name = "findSessionLight", query = "SELECT DISTINCT s from Session s "
-			+ "INNER JOIN FETCH s.telescope INNER JOIN FETCH s.instrument "
-			+ "where s.sessionId = :sessionId")
+    @NamedQuery(
+        name = "findAllSessions",
+        query = "SELECT s FROM Session s " +
+                "INNER JOIN s.telescope " +       // simple join, no alias needed
+                "WHERE s.telescope.telescopeId = :telescopeId"
+    ),
+    @NamedQuery(
+        name = "findLastSessions",
+        query = "SELECT s FROM Session s " +
+                "INNER JOIN s.telescope " +
+                "WHERE s.telescope.telescopeId = :telescopeId " +
+                "AND s.sessionDate < :searchDate " +
+                "ORDER BY s.sessionDate DESC"
+    ),
+    @NamedQuery(
+    	    name = "findSessionByDate",
+    	    query = "SELECT DISTINCT s FROM Session s " +
+    	            "INNER JOIN FETCH s.telescope " +         // fetch root association
+    	            "INNER JOIN FETCH s.instrument " +        // fetch root association
+    	            "LEFT OUTER JOIN FETCH s.procedureList " + // fetch root collection
+    	            "LEFT OUTER JOIN s.procedureList.procedureType pt " + // normal join for filtering
+    	            "LEFT OUTER JOIN s.procedureList.procedureConfigSet pcs " +
+    	            "LEFT OUTER JOIN pcs.procedureConfig " +
+    	            "LEFT OUTER JOIN pcs.globalConfig " +
+    	            "WHERE s.sessionDate = :sessionDate " +
+    	            "AND s.telescope.telescopeId = :telescopeId"
+    ),
+    @NamedQuery(
+	    name = "findSession",
+	    query = "SELECT DISTINCT s FROM Session s " +
+	            "INNER JOIN FETCH s.telescope " +
+	            "INNER JOIN FETCH s.instrument " +
+	            "LEFT OUTER JOIN FETCH s.procedureList " +
+	            "LEFT OUTER JOIN s.procedureList.procedureConfigSet pcs " +
+	            "LEFT OUTER JOIN FETCH pcs.procedureConfig " +
+	            "LEFT OUTER JOIN FETCH pcs.globalConfig " +
+	            "LEFT OUTER JOIN FETCH pcs.sufsCoarseOffsetsConfig " +
+	            "LEFT OUTER JOIN FETCH pcs.iterationListConfig " +
+	            "LEFT OUTER JOIN s.procedureList.telescope t " +      // normal join, alias allowed for filtering
+	            "LEFT OUTER JOIN s.procedureList.instrument i " +    // normal join, alias allowed for filtering
+	            "LEFT OUTER JOIN s.procedureList.procedureType pt " +// normal join, alias allowed for filtering
+	            "LEFT OUTER JOIN s.procedureList.session pSess " +   // normal join, alias allowed for filtering
+	            "WHERE s.sessionId = :sessionId " +
+	            "AND pt.procedureTypeId = :procedureTypeId " +       // can filter now
+	            "AND t.telescopeId = :telescopeId"
+	),
+    
+    @NamedQuery(
+    	    name = "findSessionOperationalData",
+    	    query = "SELECT DISTINCT s FROM Session s " +
+    	            "INNER JOIN FETCH s.telescope " +
+    	            "INNER JOIN FETCH s.instrument " +
+    	            "LEFT JOIN s.procedureList p " +          // normal join for filtering only
+    	            "WHERE s.sessionId = :sessionId " +
+    	            "AND (p.operational = true OR p.procedureId IS NULL)"
+    ),
+    // TODO: the findSessionOperationalData also grab the full procedureList associations.  We will have to do it separately using this query
+    @NamedQuery(
+    	    name = "findProcedureListForSession",
+    	    query = "SELECT DISTINCT p FROM Procedure p " +
+    	            "LEFT JOIN FETCH p.telescope " +
+    	            "LEFT JOIN FETCH p.instrument " +
+    	            "LEFT JOIN FETCH p.procedureType " +
+    	            "LEFT JOIN FETCH p.procedureConfigSet " + // no alias
+    	            "LEFT JOIN FETCH p.procedureConfigSet.procedureConfig " +
+    	            "LEFT JOIN FETCH p.procedureConfigSet.globalConfig " +
+    	            "LEFT JOIN FETCH p.procedureConfigSet.sufsCoarseOffsetsConfig " +
+    	            "LEFT JOIN FETCH p.procedureConfigSet.iterationListConfig " +
+    	            "WHERE p.session.sessionId = :sessionId " +
+    	            "AND (p.operational = true OR p.procedureId IS NULL)"
+    ),
+
+    @NamedQuery(
+        name = "findSessionLight",
+        query = "SELECT DISTINCT s FROM Session s " +
+                "INNER JOIN FETCH s.telescope " +
+                "INNER JOIN FETCH s.instrument " +
+                "WHERE s.sessionId = :sessionId"
+    )
 })
+
 public class Session {
 
 	@Id

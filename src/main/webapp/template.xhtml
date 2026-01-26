@@ -21,22 +21,32 @@
 #svgbasics { width: 700px; height: 700px; border: 1px solid #484; }
 </style>
 
-<h:outputScript library="primefaces" name="jquery/jquery.js"/>
-<h:outputScript library="js" name="jquery-1.7.2.js" />
-    
+    <!-- PrimeFlex (still fine to use from CDN) -->
+    <link rel="stylesheet" href="https://unpkg.com/primeflex@3.3.1/primeflex.min.css" />
+
+    <!-- Load PrimeFaces resources correctly from the JAR -->
+    <h:outputStylesheet name="components.css" library="primefaces" />
+    <h:outputScript name="components.js" library="primefaces" />
+    <h:outputScript name="core.js" library="primefaces" />
+
+    <!-- Choose a theme you have in your JAR: 'lara-light-indigo' is not in the core jar -->
+    <!-- For example, use nova-light if using free built-in theme: -->
+    <!--  h:outputStylesheet name="theme.css" library="primefaces-nova-light" / -->
+
+   
 	</h:head>
 
 
-	<h:body>
+	<h:body styleClass="m-0 p-0">
 		<!--  workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF -->
 		<f:event type="jakarta.faces.event.PreRenderViewEvent"
 			listener="#{applicationScopeBean.preRenderView}" />
 
 
 
-		<p:layout fullPage="true">
+		<div class="flex flex-column h-screen appearance-none">
 
-			<p:layoutUnit id="top" position="north" size="64" collapsible="true">
+			<div class="h-6rem bg-gray-100 border-bottom-1 border-gray-300 p-3">
 					
 				<h:form id="topForm">
 				<h:panelGroup style="float:left">
@@ -57,18 +67,25 @@
 					columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn" >
 					
 					<h:outputText value="CAM: " style="position: relative;  top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					 
 					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.cameraEnabled}"/>
 					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.cameraEnabled}"/>
+					
 					<h:outputText value="ACS: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					 
 					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.acsEnabled}"/>
 					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.acsEnabled}"/>
 					
 					<h:outputText value="CCD: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					 
 					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.ccdEnabled}"/>
 					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.ccdEnabled}"/>
+					 
 					<h:outputText value="DCS: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					 
 					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.dcsEnabled}"/>
 					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px;position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.dcsEnabled}"/>
+				 
 				</h:panelGrid>
 				
 				</h:panelGroup>
@@ -94,10 +111,10 @@
  				
  				</h:form>
 				
-			</p:layoutUnit>
+			</div>
 
 
-			<p:layoutUnit id="center" position="center">
+			<div class="flex-1 overflow-auto p-4">
 				<ui:include src="modules/util/navigation.xhtml"/>
 
 				<p:messages id="errorGrowl" severity="error,fatal" showDetail="true" closable="true"/>
@@ -110,24 +127,22 @@
 
 				<ui:insert name="content" />
 
-			</p:layoutUnit>
+			</div>
 
-		</p:layout>
+		</div>
 
-		<p:dialog modal="true" widgetVar="waitDialog" header="Please wait while records are retrieved..." resizable="false" draggable="false" close="false">
-        	<h:graphicImage value="../../images/ajaxloadingbar.gif" />
-		</p:dialog>
 
 		
+		<ui:include src="modules/util/waitDialog.xhtml"/>
 		<ui:include src="modules/procedure/userPromptDialog.xhtml"/>
-		<ui:include src="modules/procedure/instructionDialog.xhtml"/>
 		
 		<ui:include src="modules/util/helpAboutDialog.xhtml"/>
+		  
 		<ui:include src="modules/util/helpDialog.xhtml"/>
 		<ui:include src="modules/util/loginDialog.xhtml"/>
 		<ui:include src="modules/config/extInfDialog.xhtml"/>
 		<ui:include src="modules/util/sessionClosingDialog.xhtml"/>		
-
+		
 
 
 	</h:body>

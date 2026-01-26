@@ -23,9 +23,14 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 @Table(name = "AutoCenterTelConfigDefaults")
 @PrimaryKeyJoinColumn(name="autoCenterTelConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findAutoCenterTelConfigDefaults", query = "SELECT o from AutoCenterTelConfigDefaults o INNER JOIN FETCH o.procedureType p "
-			+ "where p.procedureTypeId = :procedureTypeId" )
+    @NamedQuery(
+        name = "findAutoCenterTelConfigDefaults",
+        query = "SELECT o FROM AutoCenterTelConfigDefaults o " +
+                "INNER JOIN FETCH o.procedureType " +   // no alias
+                "WHERE o.procedureType.procedureTypeId = :procedureTypeId"
+    )
 })
+
 public class AutoCenterTelConfigDefaults extends AutoCenterTelConfig {
 	
 	@ManyToOne

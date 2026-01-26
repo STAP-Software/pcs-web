@@ -55,15 +55,15 @@ public class SubimageDefCache {
 	public void init() throws Exception {
 
 		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		telescopeId = new Long(telescopeIdStr);
+		telescopeId = Long.valueOf(telescopeIdStr);
 		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-		instrumentId = new Long(instrumentIdStr);
+		instrumentId = Long.valueOf(instrumentIdStr);
 
 		
 		List<Integer> mirrors = new ArrayList<Integer>();
 		
 		for (int i=0; i<constantsCache.getTelescopeConstants().getNumberOfSegments(); i++) {
-			mirrors.add(new Integer(1));
+			mirrors.add(Integer.valueOf(1));
 		}
 
 		refreshCache();
@@ -81,10 +81,10 @@ public class SubimageDefCache {
 		// No UFS/SUFS for now, will upgrade later
 		for (int i=1; i<4; i++) {
 			
-			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, instrumentId, new Long(i), mirrors);
+			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, instrumentId, Long.valueOf(i), mirrors);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
-			subimageDefMap.put(new Long(i), subimageDefList);
+			subimageDefMap.put(Long.valueOf(i), subimageDefList);
 		
 		}
 		
@@ -97,7 +97,7 @@ public class SubimageDefCache {
 			List<SubimageDef> listOfSubimageDefs = centroidMapMgmt.getSubimageDefList(telescopeId, instrumentId, PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS, mirrors, i);
 			SubimageDefList subimageDefList = new SubimageDefList(listOfSubimageDefs);
 							
-			sufsSubimageDefMap.put(new Integer(i), subimageDefList);
+			sufsSubimageDefMap.put(Integer.valueOf(i), subimageDefList);
 		
 		}
 		

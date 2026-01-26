@@ -89,9 +89,9 @@ public class IncompleteMirrorController implements Serializable {
 		try {
 			
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-			telescopeId = new Long(telescopeIdStr);
+			telescopeId = Long.valueOf(telescopeIdStr);
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			instrumentId = new Long(instrumentIdStr);						
+			instrumentId = Long.valueOf(instrumentIdStr);						
 			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
@@ -138,8 +138,8 @@ public class IncompleteMirrorController implements Serializable {
 		String xStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_x");
 		String yStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("canvas_y");
 
-		int x = (new Double(xStr)).intValue();
-		int y = (new Double(yStr)).intValue();
+		int x = (Double.valueOf(xStr)).intValue();
+		int y = (Double.valueOf(yStr)).intValue();
 
 		FloatPoint subapp = new FloatPoint(x/0.61f, y/0.61f); // unscale
 						

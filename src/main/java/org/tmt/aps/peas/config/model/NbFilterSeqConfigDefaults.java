@@ -21,9 +21,14 @@ import jakarta.persistence.Table;
 @Table(name = "NbFilterSeqConfigDefaults")
 @PrimaryKeyJoinColumn(name="nbFilterSeqConfigId")
 @NamedQueries({
-	@NamedQuery(name = "nbFilterSeqConfig.findByFilterSetOption", query = "SELECT o from NbFilterSeqConfigDefaults o INNER JOIN FETCH o.iterationListConfigOption ilco "
-			+ "where ilco.iterationListConfigId = :iterationListConfigId" )
+    @NamedQuery(
+        name = "nbFilterSeqConfig.findByFilterSetOption",
+        query = "SELECT o FROM NbFilterSeqConfigDefaults o " +
+                "INNER JOIN FETCH o.iterationListConfigOption " + // no alias
+                "WHERE o.iterationListConfigOption.iterationListConfigId = :iterationListConfigId"
+    )
 })
+
 public class NbFilterSeqConfigDefaults extends NbFilterSeqConfig {
 
 	

@@ -131,10 +131,10 @@ public class SessionController implements Serializable {
 			searchDate = new Date();
 
 			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-			telescope = telescopeMgmt.findTelescope(new Long(telescopeIdStr));
+			telescope = telescopeMgmt.findTelescope(Long.valueOf(telescopeIdStr));
 
 			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-			instrument = sessionMgmt.findInstrument(new Long(instrumentIdStr));
+			instrument = sessionMgmt.findInstrument(Long.valueOf(instrumentIdStr));
 
 			sessionList = sessionMgmt.findLastSessions(telescope.getTelescopeId(), searchDate, searchQuantity);
 
@@ -145,7 +145,7 @@ public class SessionController implements Serializable {
 			
 			
 			// setup external interfaces either in simulation mode or production mode
-			extInfSimulationMode = new Boolean(peasProperties.getProp("org.tmt.aps.peas.extinf.startup_simulation_mode"));
+			extInfSimulationMode = Boolean.valueOf(peasProperties.getProp("org.tmt.aps.peas.extinf.startup_simulation_mode"));
 			
 			if (!extInfSimulationMode) {
 				// if not using simulators, now is the time that we connect up
@@ -186,7 +186,7 @@ public class SessionController implements Serializable {
 			List<Integer> mirrorList = new ArrayList<Integer>();
 			int segmentCount = constantsCache.getTelescopeConstants().getNumberOfSegments();
 			for (int i=0; i<segmentCount; i++) {
-				mirrorList.add(new Integer(1));
+				mirrorList.add(Integer.valueOf(1));
 			}
 			
 			globalConfigDefaults.setMirrorListEncoded(IntegerListEncoder.encodeList(mirrorList));
@@ -513,9 +513,9 @@ public class SessionController implements Serializable {
 		int maxProcNum = 0;
 		for (Procedure procedure : pList) {
 			String procNumStr = procedure.getProcedureNumber();
-			if (procNumStr.indexOf(".") < 0 && (new Integer(procNumStr)) > maxProcNum) {
+			if (procNumStr.indexOf(".") < 0 && (Integer.valueOf(procNumStr)) > maxProcNum) {
 				lastProcedure = procedure;
-				maxProcNum = new Integer(procNumStr);
+				maxProcNum = Integer.valueOf(procNumStr);
 			}
 		}
 
@@ -560,10 +560,9 @@ public class SessionController implements Serializable {
 		// here we check the mode and popup dialog at correct state change
 
 		if (advancedViewMode == true) {
-			PrimeFaces.current().executeScript("loginDialog.show()");
+			PrimeFaces.current().executeScript("PF('loginDialog').show()");
 		} else {
-			PrimeFaces.current().ajax().update("procedureDetailForm");
-			PrimeFaces.current().ajax().update("procedureListForm");			
+			PrimeFaces.current().ajax().update("procedureDetailForm procedureListForm");		
 		}
 		
 	}

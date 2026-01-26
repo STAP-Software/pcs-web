@@ -43,7 +43,7 @@ public class IterationListConfigConverter implements Converter, Serializable {
 		} else {
 			try {
 				String idStr = submittedValue;
-				long id = new Long(idStr);
+				long id = Long.valueOf(idStr);
 
 				List<IterationListConfig> fullList = procedureController.getIterationListConfigOptions();
 

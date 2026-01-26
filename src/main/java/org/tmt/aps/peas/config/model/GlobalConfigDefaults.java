@@ -28,10 +28,17 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @Table(name = "GlobalConfigDefaults")
 @PrimaryKeyJoinColumn(name="globalConfigId")
 @NamedQueries({
-	@NamedQuery(name = "findDefaultConfig", query = "SELECT g from GlobalConfigDefaults g INNER JOIN FETCH g.telescope tel INNER JOIN FETCH g.instrument inst "
-			+ "WHERE tel.telescopeId = :telescopeId AND inst.instrumentId = :instrumentId ")
+    @NamedQuery(
+        name = "findDefaultConfig",
+        query = "SELECT g FROM GlobalConfigDefaults g " +
+                "INNER JOIN FETCH g.telescope " +   // no alias
+                "INNER JOIN FETCH g.instrument " +  // no alias
+                "WHERE g.telescope.telescopeId = :telescopeId " +
+                "AND g.instrument.instrumentId = :instrumentId"
+    )
+})
 
-})public class GlobalConfigDefaults extends GlobalConfig {
+public class GlobalConfigDefaults extends GlobalConfig {
 
 	
 	@ManyToOne(fetch = FetchType.LAZY)

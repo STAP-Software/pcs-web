@@ -28,17 +28,31 @@ import org.tmt.aps.peas.extinf.CameraStatus;
 @Entity
 @Table(name = "Instrument")
 @NamedQueries({
-	@NamedQuery(name = "findAllInstruments", query = "SELECT o from Instrument o" ),
-	@NamedQuery(name = "findInstrument", query = "SELECT DISTINCT o from Instrument o INNER JOIN FETCH o.camera c "
-			+ "LEFT OUTER JOIN FETCH c.referenceBeamSet "
-			+ "INNER JOIN FETCH c.coarseTiltMirror INNER JOIN FETCH c.fineTiltMirror "
-			+ "INNER JOIN FETCH c.pupilWheel pw INNER JOIN FETCH c.filterWheel fw "
-			+ "LEFT OUTER JOIN FETCH pw.pupilMaskSet pml "
-			+ "LEFT OUTER JOIN FETCH fw.filterSet "
-			+ "LEFT OUTER JOIN FETCH o.ccd d LEFT OUTER JOIN FETCH d.ccdType LEFT OUTER JOIN FETCH d.ccdGain0 "
-			+ "LEFT OUTER JOIN FETCH d.ccdGain1 LEFT OUTER JOIN FETCH d.ccdGain2 LEFT OUTER JOIN FETCH d.ccdGain3 "
-			+ "where o.instrumentId = :instrumentId" )
+    @NamedQuery(
+        name = "findAllInstruments",
+        query = "SELECT o FROM Instrument o"
+    ),
+    @NamedQuery(
+        name = "findInstrument",
+        query = "SELECT DISTINCT o FROM Instrument o " +
+                "INNER JOIN FETCH o.camera " +
+                "LEFT OUTER JOIN FETCH o.camera.referenceBeamSet " +
+                "INNER JOIN FETCH o.camera.coarseTiltMirror " +
+                "INNER JOIN FETCH o.camera.fineTiltMirror " +
+                "INNER JOIN FETCH o.camera.pupilWheel " +
+                "INNER JOIN FETCH o.camera.filterWheel " +
+                "LEFT OUTER JOIN FETCH o.camera.pupilWheel.pupilMaskSet " +
+                "LEFT OUTER JOIN FETCH o.camera.filterWheel.filterSet " +
+                "LEFT OUTER JOIN FETCH o.ccd " +
+                "LEFT OUTER JOIN FETCH o.ccd.ccdType " +
+                "LEFT OUTER JOIN FETCH o.ccd.ccdGain0 " +
+                "LEFT OUTER JOIN FETCH o.ccd.ccdGain1 " +
+                "LEFT OUTER JOIN FETCH o.ccd.ccdGain2 " +
+                "LEFT OUTER JOIN FETCH o.ccd.ccdGain3 " +
+                "WHERE o.instrumentId = :instrumentId"
+    )
 })
+
 
 public class Instrument {
 

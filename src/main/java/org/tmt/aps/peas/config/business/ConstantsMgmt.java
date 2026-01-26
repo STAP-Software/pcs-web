@@ -86,19 +86,19 @@ public class ConstantsMgmt {
 				switch (constant.getDataType()) {
 
 				case Constant.DATA_TYPE_INT:
-					Integer intValue = new Integer(constant.getData());
+					Integer intValue = Integer.valueOf(constant.getData());
 					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), int.class);
 					method.invoke(constantsInstance, intValue);
 					break;
 
 				case Constant.DATA_TYPE_FLOAT:
-					Float floatValue = new Float(constant.getData());
+					Float floatValue = Float.valueOf(constant.getData());
 					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), float.class);
 					method.invoke(constantsInstance, floatValue);
 					break;
 
 				case Constant.DATA_TYPE_DOUBLE:
-					Double doubleValue = new Double(constant.getData());
+					Double doubleValue = Double.valueOf(constant.getData());
 					method = constantsInstance.getClass().getDeclaredMethod("set" + constant.getFieldName(), double.class);
 					method.invoke(constantsInstance, doubleValue);
 					break;

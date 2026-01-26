@@ -11,6 +11,7 @@ import java.util.Arrays;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
+import jakarta.annotation.Priority;
 
 import org.jboss.logging.Logger;
 /**
@@ -21,6 +22,7 @@ import org.jboss.logging.Logger;
  *
  */
 @Interceptor
+@Priority(1)
 @Loggable
 public class LoggingInterceptor implements Serializable {
 

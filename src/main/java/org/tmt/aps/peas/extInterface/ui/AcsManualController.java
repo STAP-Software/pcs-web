@@ -136,7 +136,7 @@ public class AcsManualController implements Serializable {
 				for (int j = 0; j < 3; j++) {
 					String line = br.readLine();
 					if (line == null) break;
-					Float temp = new Float(line);
+					Float temp = Float.valueOf(line);
 					actDeltas[i][j] = temp;
 				}
 			}

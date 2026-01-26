@@ -24,13 +24,13 @@ public class TestJfindCentGauss {
 		String filename = args[0];
 		float[][] ccd = new float[1024][1024];
 
-		int irad = new Integer(args[1]);
-		int imargin = new Integer(args[2]);
-		int i_init = new Integer(args[3]);
-		int j_init = new Integer(args[4]);
-		int itermax = new Integer(args[5]);
-		int nspot_type = new Integer(args[6]);
-		int ngauss = new Integer(args[7]);
+		int irad = Integer.valueOf(args[1]);
+		int imargin = Integer.valueOf(args[2]);
+		int i_init = Integer.valueOf(args[3]);
+		int j_init = Integer.valueOf(args[4]);
+		int itermax = Integer.valueOf(args[5]);
+		int nspot_type = Integer.valueOf(args[6]);
+		int ngauss = Integer.valueOf(args[7]);
 
 		FileReader fr = null;
 		BufferedReader reader = null;
@@ -44,7 +44,7 @@ public class TestJfindCentGauss {
 					if (line == null) {
 						throw new Exception("Not enough 1024x1024 lines in file");
 					}
-					ccd[i][j] = new Float(line);
+					ccd[i][j] = Float.valueOf(line);
 				}
 			}
 

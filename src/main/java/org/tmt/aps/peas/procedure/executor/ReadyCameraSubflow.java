@@ -97,7 +97,7 @@ public class ReadyCameraSubflow {
 					int failureCode = ((CommandFailureException)internalException).getFailureCode();
 					
 					// check if failureCode is anything we can try to correct by homing a motor/stage
-					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(new Integer(failureCode));
+					Integer mechanism = CameraMgmt.errorCodeToMechanism.get(Integer.valueOf(failureCode));
 					if (mechanism != null) {
 						homeMechanism(mechanism);
 					}

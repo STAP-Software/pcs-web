@@ -29,26 +29,46 @@ import org.tmt.aps.peas.common.Utils;
 @Entity
 @Table(name = "ProcedureOutputValue")
 @NamedQueries({
-	@NamedQuery(name = "findOutputDisplayValuesForProcedure", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-			+ "INNER JOIN f.procedureOutputFieldDisplay fd INNER JOIN fd.procedureType pt "
-			+ "where p.procedureId = :procedureId "
-			+ "AND p.iteration is null "
-			+ "AND pt.procedureTypeId = :procedureTypeId "
-			+ "AND fd.isIteration = false "
-			+ "ORDER BY fd.displayOrder "),
-	@NamedQuery(name = "findAllOutputValuesForProcedure", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-			+ "where p.procedureId = :procedureId "
-			+ "AND p.iteration is null "),
-	@NamedQuery(name = "findOutputDisplayValuesForProcedureIteration", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-			+ "INNER JOIN f.procedureOutputFieldDisplay fd INNER JOIN fd.procedureType pt "
-			+ "where p.procedureId = :procedureId "
-			+ "AND p.iteration = :iteration "
-			+ "AND pt.procedureTypeId = :procedureTypeId "
-			+ "AND fd.isIteration = true "
-			+ "ORDER BY fd.displayOrder "),
-	@NamedQuery(name = "findAllOutputValuesForProcedureIteration", query = "SELECT p from ProcedureOutputValue p INNER JOIN FETCH p.procedureOutputField f "
-			+ "where p.procedureId = :procedureId "
-			+ "AND p.iteration = :iteration ") })
+    @NamedQuery(
+        name = "findOutputDisplayValuesForProcedure",
+        query = "SELECT p FROM ProcedureOutputValue p " +
+                "INNER JOIN p.procedureOutputField f " +        // normal join for filtering
+                "INNER JOIN f.procedureOutputFieldDisplay fdElem " +
+                "INNER JOIN fdElem.procedureType pt " +
+                "WHERE p.procedureId = :procedureId " +
+                "AND p.iteration IS NULL " +
+                "AND pt.procedureTypeId = :procedureTypeId " +
+                "AND fdElem.isIteration = false " +
+                "ORDER BY fdElem.displayOrder"
+    ),
+    @NamedQuery(
+        name = "findAllOutputValuesForProcedure",
+        query = "SELECT p FROM ProcedureOutputValue p " +
+                "INNER JOIN FETCH p.procedureOutputField " +
+                "WHERE p.procedureId = :procedureId " +
+                "AND p.iteration IS NULL"
+    ),
+    @NamedQuery(
+    	    name = "findOutputDisplayValuesForProcedureIteration",
+    	    query = "SELECT p FROM ProcedureOutputValue p " +
+    	            "INNER JOIN FETCH p.procedureOutputField " +     // no alias here!
+    	            "INNER JOIN p.procedureOutputField.procedureOutputFieldDisplay fd " +  // collection join with alias
+    	            "INNER JOIN fd.procedureType pt " +
+    	            "WHERE p.procedureId = :procedureId " +
+    	            "AND p.iteration = :iteration " +
+    	            "AND pt.procedureTypeId = :procedureTypeId " +
+    	            "AND fd.isIteration = true " +
+    	            "ORDER BY fd.displayOrder"
+    	),
+    @NamedQuery(
+        name = "findAllOutputValuesForProcedureIteration",
+        query = "SELECT p FROM ProcedureOutputValue p " +
+                "INNER JOIN FETCH p.procedureOutputField " +
+                "WHERE p.procedureId = :procedureId " +
+                "AND p.iteration = :iteration"
+    )
+})
+
 
 public class ProcedureOutputValue {
 

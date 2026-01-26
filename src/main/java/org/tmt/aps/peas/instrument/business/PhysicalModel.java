@@ -66,9 +66,9 @@ public class PhysicalModel {
 	 * @throws Exception
 	 */
 	public void refresh() throws Exception {
-		Long instrumentId = new Long(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
+		Long instrumentId = Long.valueOf(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
 		instrument = cameraDefMgmt.findInstrument(instrumentId);	
-		Long telescopeId = new Long(peasProperties.getProp("org.tmt.aps.peas.telescopeId"));
+		Long telescopeId = Long.valueOf(peasProperties.getProp("org.tmt.aps.peas.telescopeId"));
 		telescope = telescopeMgmt.findTelescope(telescopeId);	
 		
 		filterTypeList = cameraDefMgmt.findAllFilterTypes();

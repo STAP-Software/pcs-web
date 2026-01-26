@@ -26,15 +26,15 @@ import jakarta.persistence.Table;
 })
 public class ProcedureType {
 
-	public static final Long PROCEDURE_TYPE_ID_PASSIVE_TILT = new Long(1);
-	public static final Long PROCEDURE_TYPE_ID_FINE_SCREEN = new Long(2);
-	public static final Long PROCEDURE_TYPE_ID_COARSE_PHASING = new Long(3);
-	public static final Long PROCEDURE_TYPE_ID_NARROW_BAND_PHASING = new Long(4);
-	public static final Long PROCEDURE_TYPE_ID_SUFS = new Long(5);
-	public static final Long PROCEDURE_TYPE_ID_PUPIL_REGISTRATION = new Long(6);
-	public static final Long PROCEDURE_TYPE_ID_CENTER_TELESCOPE = new Long(7);
-	public static final Long PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP = new Long(8);  // if this changes, RefBeamMap JPA Named query needs to change too
-	public static final Long PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP = new Long(9);
+	public static final Long PROCEDURE_TYPE_ID_PASSIVE_TILT = Long.valueOf(1);
+	public static final Long PROCEDURE_TYPE_ID_FINE_SCREEN = Long.valueOf(2);
+	public static final Long PROCEDURE_TYPE_ID_COARSE_PHASING = Long.valueOf(3);
+	public static final Long PROCEDURE_TYPE_ID_NARROW_BAND_PHASING = Long.valueOf(4);
+	public static final Long PROCEDURE_TYPE_ID_SUFS = Long.valueOf(5);
+	public static final Long PROCEDURE_TYPE_ID_PUPIL_REGISTRATION = Long.valueOf(6);
+	public static final Long PROCEDURE_TYPE_ID_CENTER_TELESCOPE = Long.valueOf(7);
+	public static final Long PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP = Long.valueOf(8);  // if this changes, RefBeamMap JPA Named query needs to change too
+	public static final Long PROCEDURE_TYPE_ID_CREATE_FIRST_REFERENCE_BEAM_MAP = Long.valueOf(9);
 	
 	@Id
 	private Long procedureTypeId;
