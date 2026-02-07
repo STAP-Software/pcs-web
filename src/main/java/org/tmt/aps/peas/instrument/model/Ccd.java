@@ -19,6 +19,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -73,7 +74,15 @@ public class Ccd {
 	public static final int POWER_STATE_OFF = 2;
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "ccd_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "ccd_gen"
+		)
 	private Long ccdId;
 	private String ccdName;	
 	private String ccdDescription;	

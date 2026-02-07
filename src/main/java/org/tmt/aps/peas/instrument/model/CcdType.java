@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 /**
@@ -33,7 +34,15 @@ public class CcdType {
 	
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "ccdType_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "ccdType_gen"
+		)
 	private Long ccdTypeId;
 	private String ccdTypeName;	
 	private String ccdTypeDescription;	

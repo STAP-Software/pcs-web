@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.config.model.IterableEntity;
@@ -31,7 +32,15 @@ public class PupilMaskType implements IterableEntity {
 	public static final Long PUPIL_MASK_TYPE_ID_SUFS = Long.valueOf(5);
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "pupilMaskType_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "pupilMaskType_gen"
+		)
 	private Long pupilMaskTypeId;
 
 	private int numSpots;

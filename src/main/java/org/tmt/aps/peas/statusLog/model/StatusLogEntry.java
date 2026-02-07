@@ -13,6 +13,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -33,7 +34,15 @@ import jakarta.persistence.TemporalType;
 public class StatusLogEntry {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "statusLogEntry_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "statusLogEntry_gen"
+		)
 	Long statusLogEntryId;
 	
 	Long procedureId;

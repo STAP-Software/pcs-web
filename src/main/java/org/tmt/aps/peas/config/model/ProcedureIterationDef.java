@@ -9,6 +9,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.procedure.model.ProcedureType;
@@ -32,7 +33,15 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 public class ProcedureIterationDef {
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "procedureIterationDef_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+	)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "procedureIterationDef_gen"
+	)
 	Long procedureIterationDefId;
 
 	String iterationEntityClassName;

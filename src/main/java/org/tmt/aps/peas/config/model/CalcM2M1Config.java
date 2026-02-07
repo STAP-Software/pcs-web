@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -32,7 +33,15 @@ public class CalcM2M1Config {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "calcM2M1Config_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "calcM2M1Config_gen"
+		)
 	private Long calcM2M1ConfigId;
 	
 	private int calcMethod; // Ray Trace vs Zernike

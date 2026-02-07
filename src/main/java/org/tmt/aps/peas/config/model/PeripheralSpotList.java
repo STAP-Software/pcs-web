@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -35,8 +36,17 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
 public class PeripheralSpotList {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "peripheralSpotList_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "peripheralSpotList_gen"
+		)
 	private Long peripheralSpotListId;
+	
 	private String peripheralSpotListEncoded = "";  
 	
 	@ManyToOne

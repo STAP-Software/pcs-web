@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -26,7 +27,15 @@ public class AutoRefMapConfig {
 
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "autoRefMapConfig_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "autoRefMapConfig_gen"
+		)
 	private Long autoRefMapConfigId;
 
 	private int numTrialsLimit; 

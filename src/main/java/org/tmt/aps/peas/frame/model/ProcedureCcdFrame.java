@@ -16,6 +16,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -53,7 +54,15 @@ import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 public class ProcedureCcdFrame {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "procedureCcdFrame_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+	)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "procedureCcdFrame_gen"
+	)
 	private Long procedureCcdFrameId;
 
 	private boolean newFrameFlg;

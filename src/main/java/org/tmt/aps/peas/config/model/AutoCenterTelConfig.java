@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -27,7 +28,15 @@ public class AutoCenterTelConfig {
 
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "autoCenterTelConfig_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "autoCenterTelConfig_gen"
+		)
 	private Long autoCenterTelConfigId;
 
 	float moveTelFrameOkThreshold;

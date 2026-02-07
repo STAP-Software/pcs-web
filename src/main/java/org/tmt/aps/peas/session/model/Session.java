@@ -21,6 +21,7 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
@@ -121,7 +122,15 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 public class Session {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+	    name = "session_gen",
+	    sequenceName = "hibernate_sequence",
+	    allocationSize = 1
+	)
+	@GeneratedValue(
+	    strategy = GenerationType.SEQUENCE,
+	    generator = "session_gen"
+	)
 	private Long sessionId;
 	
 	@Temporal(TemporalType.TIMESTAMP)

@@ -12,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -27,7 +28,15 @@ public class CentroidOffsetsConfig {
 
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "centroidOffsetsConfig_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "centroidOffsetsConfig_gen"
+		)
 	private Long centroidOffsetsConfigId;
 
 	private boolean removeScale;

@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
 
@@ -46,7 +47,16 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 public class SufsRefMapConfigDefaults {
 
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "sufsRefMapConfigDefault_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+	)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "sufsRefMapConfigDefault_gen"
+	)
+
 	private Long sufsRefMapConfigDefaultId;
 
 	float integrationTime; 

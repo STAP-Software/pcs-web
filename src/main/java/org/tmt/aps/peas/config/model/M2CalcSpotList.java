@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -35,7 +36,16 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 public class M2CalcSpotList {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "m2CalcSpotList_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+		@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "m2CalcSpotList_gen"
+		)
+
 	private Long m2CalcSpotListId;
 	private String m2CalcSpotListEncoded = "";  
 	

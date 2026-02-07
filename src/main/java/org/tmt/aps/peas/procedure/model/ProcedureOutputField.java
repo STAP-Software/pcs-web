@@ -15,6 +15,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.session.model.FieldDescriptor;
@@ -35,7 +36,15 @@ import org.tmt.aps.peas.session.model.FieldDescriptor;
 public class ProcedureOutputField implements FieldDescriptor {
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "procedureOutputField_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "procedureOutputField_gen"
+		)
 	private Long procedureOutputFieldId;
 	
 	String className;

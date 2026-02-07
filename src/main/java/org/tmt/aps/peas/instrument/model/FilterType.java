@@ -11,6 +11,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.config.model.IterableEntity;
@@ -32,7 +33,15 @@ public class FilterType implements IterableEntity {
 	public static final Long FILTER_TYPE_ID_NONE = Long.valueOf(6);
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@SequenceGenerator(
+		    name = "filterType_gen",
+		    sequenceName = "hibernate_sequence",
+		    allocationSize = 1
+		)
+	@GeneratedValue(
+		    strategy = GenerationType.SEQUENCE,
+		    generator = "filterType_gen"
+		)
 	private Long filterTypeId;
 
 	private String filterTypeName;

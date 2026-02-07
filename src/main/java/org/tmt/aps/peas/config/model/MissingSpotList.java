@@ -13,6 +13,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
@@ -49,8 +50,17 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 public class MissingSpotList {
 	
 	@Id
-	@GeneratedValue(strategy=GenerationType.AUTO)
+	@SequenceGenerator(
+	    name = "missingSpotList_gen",
+	    sequenceName = "hibernate_sequence",
+	    allocationSize = 1
+	)
+	@GeneratedValue(
+	    strategy = GenerationType.SEQUENCE,
+	    generator = "missingSpotList_gen"
+	)
 	private Long missingSpotListId;
+	
 	private int spotListType;
 	private Integer ufsSegment;	
 	private Integer sufsGroup;	
