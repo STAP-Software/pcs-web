@@ -20,7 +20,7 @@
 	
 	<p:spacer width="400px" height="1px" />
 
-	<p:panelGrid id="cameraStatusPanel" columns="5" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
+	<p:panelGrid id="cameraStatusPanel" columns="6" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
 
 		<h:outputLabel value="Overall Status" />	
 		<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
@@ -36,6 +36,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[21] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((21).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}" styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<h:outputLabel value="Pupil Mask" />	
 		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
@@ -51,6 +52,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[1] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((1).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[1] eq 4}" styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<h:outputLabel value="Filter" />
 		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
@@ -66,6 +68,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[2] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((2).intValue())}" update="filterWheelValue filterWheelStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[2] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 		<h:outputLabel value="Ref. Beam" />
 		<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
@@ -81,6 +84,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[7] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((7).intValue())}" update="refBeamValue refBeamStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[7] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
@@ -98,6 +102,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[3] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((3).intValue())}" update="fineXValue fineXStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[3] eq 3}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
 		<h:outputLabel value="Fine Pupil Adj (y) (#{fieldMetaData.units})" />
@@ -114,6 +119,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[4] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((4).intValue())}" update="fineYValue fineYStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[4] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
 		<h:outputLabel value="Coarse Pupil Adj (x) (#{fieldMetaData.units})" />
@@ -130,6 +136,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[9] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((9).intValue())}" update="coarseXValue coarseXStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[9] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
 		<h:outputLabel value="Coarse Pupil Adj (y) (#{fieldMetaData.units})" />
@@ -146,6 +153,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[10] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((10).intValue())}" update="coarseYValue coarseYStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[10] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 		<h:outputLabel value="Two Position Mech" />
 		<h:outputText id="twoPosValue" value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
@@ -161,6 +169,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[5] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((5).intValue())}" update="twoPosValue twoPosStatus :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[5] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 		<h:outputLabel value="CCD Power" />
 		<h:outputText id="ccdPowerValue" value="#{cameraManualController.ccd.displayString}" style="position:relative; top:2px" />
@@ -176,6 +185,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[8] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((8).intValue())}" update="ccdPowerValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[8] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
 		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
@@ -195,6 +205,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[13] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((13).intValue())}" update="instTempValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[13] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />				
 		<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})" />
@@ -214,6 +225,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[12] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((12).intValue())}" update="boxTempValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[12] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 
 		<h:outputLabel value="Instrument Humidity" />
 		<h:outputText id="instHumidValue" value="#{cameraManualController.camera.instrumentHumidity}" style="position:relative; top:2px" >
@@ -233,6 +245,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[15] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((15).intValue())}" update="instHumidValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[15] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<h:outputLabel value="Electronics Box Humidity" />
 		<h:outputText id="boxHumidValue" value="#{cameraManualController.camera.electronicsBoxHumidity}" style="position:relative; top:2px" >
@@ -252,6 +265,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[14] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((14).intValue())}" update="boxHumidValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[14] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<h:outputLabel value="Temperature Interlock" />
 		<h:outputText id="tempInterlockValue" value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:2px" />
@@ -267,6 +281,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[16] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((16).intValue())}" update="tempInterlockValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[16] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		
 		
@@ -284,6 +299,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[18] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((18).intValue())}" update="purgeValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[18] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		<h:outputLabel value="Glycol Flow" />
 		<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow ? 'On' : 'Off'}" style="position:relative; top:2px" />
@@ -299,6 +315,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[19] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((19).intValue())}" update="glycolValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[19] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 		
 		<h:outputLabel value="Overall Power" />
@@ -315,6 +332,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[20] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((20).intValue())}" update="glycolValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[20] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 						
 		<h:outputLabel value="Galil Power" />
 		<h:outputText id="galilPower" value="#{cameraManualController.camera.galilPowerStateDisplayString}" style="position:relative; top:2px" />
@@ -330,6 +348,7 @@
 		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[17] ne 4}" />
 		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((17).intValue())}" update="glycolValue :growl :errorGrowl" 
 		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[17] eq 4}"  styleClass="thinButton"/>
+		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		
 	
 	</p:panelGrid>

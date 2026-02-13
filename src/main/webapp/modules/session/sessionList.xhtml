@@ -24,14 +24,21 @@
 					Session List for #{sessionController.telescope.telescopeName}
 				</f:facet>
 				
-				<p:column>
-					<p:commandLink value="" styleClass="ui-icon ui-icon-search"
-						style="float:left"
-						ajax="true"
-						action="#{sessionController.doViewSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" >
-						<f:setPropertyActionListener target="#{sessionController.session}" value="#{nightSession}" />
-					
-					</p:commandLink>
+				<p:column style="width:40px; text-align:center;">
+				
+				    <p:commandLink
+				        action="#{sessionController.doViewSession}"
+				        process="@this"
+				        update="@form"
+				        style="text-decoration:none; color:inherit;">
+				
+				        <i class="pi pi-search"></i>
+				
+				        <f:setPropertyActionListener
+				            target="#{sessionController.session}"
+				            value="#{nightSession}" />
+				    </p:commandLink>
+				
 				</p:column>
 				<p:column headerText="Session Date">
 					<h:outputText value="#{nightSession.sessionDate}" >

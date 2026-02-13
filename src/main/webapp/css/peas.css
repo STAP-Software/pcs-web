@@ -389,3 +389,47 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	color: red;
 	padding: 10px 0px 0px 20px;
 }
+
+
+
+
+
+
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+/* Full-page layout */
+.page {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* Header (replaces layout north) */
+.top {
+    height: 64px;
+    background-color: #003344;   /* adjust to your theme */
+    display: flex;
+    align-items: center;
+    padding-left: 20px;
+}
+
+/* Header text */
+.header-title {
+    color: #d4f8ff;
+    font-size: 24pt;
+    text-shadow: 1px 1px 1px #bbb;
+}
+
+/* Main content area (replaces layout center) */
+.center {
+    flex: 1;
+    overflow: auto;
+    padding: 1rem;
+}
+
+
+
+

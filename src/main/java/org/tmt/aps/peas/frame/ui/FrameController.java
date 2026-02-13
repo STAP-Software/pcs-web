@@ -257,7 +257,7 @@ public class FrameController implements Serializable {
 			graphicImage = DefaultStreamedContent.builder()
 				    .stream(() -> new ByteArrayInputStream(falseColorPng))
 				    .contentType("image/png")
-				    .name("myFile.png")    // optional, but often required
+				    .name("myFile_" + System.currentTimeMillis() + "..png")    // optional, but often required
 				    .build();
 			
 

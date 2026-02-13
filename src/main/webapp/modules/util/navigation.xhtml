@@ -89,10 +89,12 @@
 							
 					</p:submenu>
 
-				 	<p:submenu label="Help" icon="ui-icon-help">
-						<p:menuitem value="About..."  onclick="helpAboutDialog.show();" />
-						<p:menuitem value="Documentation"  onclick="openHelpWindow();" />
-					</p:submenu>
+					<p:submenu label="Help" icon="pi pi-question-circle">
+					    <p:menuitem value="About..."
+					                onclick="PF('helpAboutDialog').show(); return false;" />
+					    <p:menuitem value="Documentation"
+					                onclick="openHelpWindow(); return false;" />
+					</p:submenu>`
 					
 					<f:facet name="options">            			
             			<p:selectBooleanButton id="value2" value="#{sessionController.advancedViewMode}" onLabel="#{sessionController.advancedViewModeLabel}" offLabel="OA Mode"  style="margin-right:10px">

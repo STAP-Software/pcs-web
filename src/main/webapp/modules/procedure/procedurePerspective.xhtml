@@ -239,9 +239,14 @@
 										<p:ajax update="configPanel startButton" listener="#{procedureController.frameSourceListener}" />
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
-									<p:commandButton id="openFitsFolder" icon="ui-icon-folder-open" type="button"
-										rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource eq 2}" styleClass="thinPadding"
-										onclick="fitsFileLoadDialog.show();" style="top:-5px" disabled="#{procedureController.procedure.procedureState gt 1}" />
+									<p:commandButton id="openFitsFolder"
+						                 icon="pi pi-folder-open"
+						                 type="button"
+						                 styleClass="thinPadding"
+						                 style="top:-5px"
+						                 disabled="#{procedureController.procedure.procedureState gt 1}"
+						                 rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource eq 2}"
+						                 onclick="PF('fitsFileLoadDialog').show();" />
 								</p:column>
 							</p:row>
 
