@@ -94,10 +94,19 @@
 							(<h:outputText value="#{hotPixel.p2.x}" />, <h:outputText value="#{hotPixel.p2.y}" />)
 						</p:column>
 						<p:column headerText="Delete">
-							<p:commandLink action="#{ccdDefController.doDeleteHotPixel}" title="delete" styleClass="ui-icon ui-icon-closethick"
-								update="@form :growl :errorGrowl">
-								<f:setPropertyActionListener target="#{ccdDefController.hotPixelBoundingRect}" value="#{hotPixel}" />
+							<p:commandLink action="#{ccdDefController.doDeleteHotPixel}"
+							               title="Delete"
+							               update="@form :growl :errorGrowl"
+							               style="display:inline-flex; align-items:center;">
+							
+							    <i class="pi pi-times"></i>
+							
+							    <f:setPropertyActionListener
+							        target="#{ccdDefController.hotPixelBoundingRect}"
+							        value="#{hotPixel}" />
+							
 							</p:commandLink>
+
 						</p:column>
 
 					</p:dataTable>
@@ -132,10 +141,19 @@
 							(<h:outputText value="#{hotColumn.p2.x}" />, <h:outputText value="#{hotColumn.p2.y}" />)
 						</p:column>
 						<p:column headerText="Delete">
-							<p:commandLink action="#{ccdDefController.doDeleteHotColumn}" title="delete" styleClass="ui-icon ui-icon-closethick"
-								update="@form :growl :errorGrowl">
-								<f:setPropertyActionListener target="#{ccdDefController.hotColumnBoundingRect}" value="#{hotColumn}" />
+							<p:commandLink action="#{ccdDefController.doDeleteHotColumn}"
+							               title="Delete"
+							               update="@form :growl :errorGrowl"
+							               style="display:inline-flex; align-items:center;">
+							
+							    <i class="pi pi-times"></i>
+							
+							    <f:setPropertyActionListener
+							        target="#{ccdDefController.hotColumnBoundingRect}"
+							        value="#{hotColumn}" />
+							
 							</p:commandLink>
+
 						</p:column>
 
 					</p:dataTable>

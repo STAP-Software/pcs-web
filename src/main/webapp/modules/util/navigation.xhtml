@@ -7,7 +7,7 @@
 			
 				<p:menubar style="z-index:10">
 				
-					<p:submenu label="Session" icon="ui-icon-document">
+					<p:submenu label="Session" icon="pi pi-file">
 					
 						<p:menuitem value="Connect ..." ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
 						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
@@ -16,10 +16,10 @@
 						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.navDisabled}"/>
 					</p:submenu>
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.navDisabled}" 
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.navDisabled and sessionController.runProcedurePermission}" />
+						icon="pi pi-refresh" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.navDisabled and sessionController.runProcedurePermission}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
-						icon="ui-icon-arrowrefresh-1-w" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
-					<p:submenu label="Run" icon="ui-icon-gear" rendered="#{sessionController.runProcedurePermission}">
+						icon="pi pi-refresh" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
+					<p:submenu label="Run" icon="pi pi-cog" rendered="#{sessionController.runProcedurePermission}">
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Coarse Phasing" action="#{procedureController.doNewCoarsePhasing}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Narrow Band Phasing" action="#{procedureController.doNewNarrowBandPhasing}" disabled="#{sessionController.navDisabled}"/>
@@ -30,12 +30,12 @@
 						<p:menuitem value="Pupil Registration" action="#{procedureController.doNewPupilRegistration}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Center Telescope" action="#{procedureController.doNewCenterTelescope}" disabled="#{sessionController.navDisabled}"/>
 					</p:submenu>
-					<p:submenu label="Tools" icon="ui-icon-contact">
+					<p:submenu label="Tools" icon="pi pi-wrench">
 						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView }" />
 						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.ifCommandPermission}"/>
 					</p:submenu>
 
-					<p:submenu label="General Configuration" icon="ui-icon-pencil" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.configPermission}">
+					<p:submenu label="General Configuration" icon="pi pi-pencil" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.configPermission}">
 						<p:menuitem value="Global Config" action="#{globalConfigController.doViewGlobalConfig}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Incomplete Mirror" action="#{incompleteMirrorController.doViewIncompleteMirror}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}"/>
 						<p:menuitem value="Missing Spots" action="#{missingSpotsController.doViewMissingSpots}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.administrationView}"/>
@@ -57,12 +57,12 @@
 						</p:submenu>
 					</p:submenu>
 
-					<p:submenu label="Procedure Configuration" icon="ui-icon-pencil" rendered="#{breadcrumbMenuBean.inProcedure}" >
+					<p:submenu label="Procedure Configuration" icon="pi pi-pencil" rendered="#{breadcrumbMenuBean.inProcedure}" >
 						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="advancedDialog.show();" disabled="#{sessionController.navDisabled}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
 						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}" />
 					</p:submenu>
 					
-					<p:submenu label="Procedure Displays" icon="ui-icon-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
+					<p:submenu label="Procedure Displays" icon="pi pi-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
 						
 						<c:forEach var="iterationOutput" items="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" varStatus="loop">
 						<p:submenu label="Iteration #{loop.index+1}" >
@@ -83,7 +83,7 @@
 						
 					</p:submenu>
 					
-				 	<p:submenu label="External Interfaces" icon="ui-icon-wrench" disabled="true" rendered="#{sessionController.engineeringView and sessionController.ifCommandPermission}">
+				 	<p:submenu label="External Interfaces" icon="pi pi-arrows-h" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView and sessionController.ifCommandPermission}">
 						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
 							

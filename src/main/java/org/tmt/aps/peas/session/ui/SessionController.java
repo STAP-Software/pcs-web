@@ -597,21 +597,22 @@ public class SessionController implements Serializable {
 	 * If 'Disconnect' was clicked, reset all connections and go into simulation mode.
 	 */
 	public void extInfChangeListener() {
-		// here we check the mode and popup dialog at correct state change
 
-		if (extInfSimulationMode == true) {
-			
-			// default all the ext interface checkboxes in the dialog only
-			PrimeFaces.current().executeScript("setAllExtInfCheckboxes()");
-			PrimeFaces.current().executeScript("extInfDialog.show()");
-			
-		} else {
-			// turn off all the ext interfaces
-			getExtInfConnectConfig().reset();
-			
-			extInfSimulationMode = true;
-			PrimeFaces.current().ajax().update("extInfMode");
-		}
+	    if (extInfSimulationMode) {
+	        // Update dialog itself so widgets exist
+	        PrimeFaces.current().ajax().update("extInfDlg");
+
+	        // Execute scripts to set checkboxes and show dialog
+	        PrimeFaces.current().executeScript("setAllExtInfCheckboxes(); PF('extInfDialog').show();");
+
+	    } else {
+	        // Reset external interfaces
+	        getExtInfConnectConfig().reset();
+	        extInfSimulationMode = true;
+
+	        // Update the mode component
+	        PrimeFaces.current().ajax().update("extInfMode");
+	    }
 	}
 
 	/**

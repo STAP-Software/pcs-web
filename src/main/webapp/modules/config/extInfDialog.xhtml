@@ -34,9 +34,9 @@
     	
     		
     		<p:commandButton id="button1" value="Cancel" style="float:right" update=":growl :errorGrowl :menuForm"
-					action="#{sessionController.doExtInfChange(false)}" oncomplete="extInfDialog.hide();" />
+					action="#{sessionController.doExtInfChange(false)}" oncomplete="PF('extInfDialog').hide();" />
 			<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
-					action="#{sessionController.doExtInfChange(true)}" oncomplete="extInfDialog.hide();waitingPopup();"   />
+					action="#{sessionController.doExtInfChange(true)}" oncomplete="PF('extInfDialog').hide();waitingPopup();"   />
 					
 			<p:remoteCommand name="startSession" action="#{sessionController.doCheckStartSession}" update=":growl :errorGrowl" />
 			
@@ -47,12 +47,12 @@
 
 //<![CDATA[		
 		
-	function setAllExtInfCheckboxes() {
-		cameraCheck.check();
-		ccdCheck.check();
-		acsCheck.check();
-		dcsCheck.check();
-	}
+function setAllExtInfCheckboxes() {
+    if (PF('cameraCheck')) PF('cameraCheck').check();
+    if (PF('ccdCheck')) PF('ccdCheck').check();
+    if (PF('acsCheck')) PF('acsCheck').check();
+    if (PF('dcsCheck')) PF('dcsCheck').check();
+}
          
 	function waitingPopup() {
 		// popup a waiting popup if camera check is checked and execute a call to a JSF action

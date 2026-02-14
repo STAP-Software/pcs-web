@@ -19,6 +19,9 @@
 <style type="text/css">
 
 #svgbasics { width: 700px; height: 700px; border: 1px solid #484; }
+
+   
+
 </style>
 
     <!-- PrimeFlex (still fine to use from CDN) -->
@@ -28,12 +31,14 @@
     <h:outputStylesheet name="components.css" library="primefaces" />
     <h:outputScript name="components.js" library="primefaces" />
     <h:outputScript name="core.js" library="primefaces" />
+    
+    
 
     <!-- Choose a theme you have in your JAR: 'lara-light-indigo' is not in the core jar -->
     <!-- For example, use nova-light if using free built-in theme: -->
     <!--  h:outputStylesheet name="theme.css" library="primefaces-nova-light" / -->
 
-   
+
 	</h:head>
 
 
@@ -46,7 +51,7 @@
 
 		<div class="flex flex-column h-screen appearance-none">
 
-			<div class="h-6rem bg-gray-100 border-bottom-1 border-gray-300 p-3">
+			<div class="app-header h-6rem border-bottom-1 border-gray-300 p-3">
 					
 				<h:form id="topForm">
 				<h:panelGroup style="float:left">
