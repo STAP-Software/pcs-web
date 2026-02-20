@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition>
-		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog" >
+		<p:dialog id="advancedDlg" header="Advanced Configuration Options" widgetVar="advancedDialog" modal="true" resizable="true" width="900" draggable="true"
+          style="overflow-y:auto; max-height:1200px;">
 
 			<h:form id="advancedForm">
 			
@@ -14,8 +15,6 @@
 				
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
 
 					<h:outputLabel value="Filter" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.filter}"
@@ -49,8 +48,7 @@
 					<h:outputLabel value="Remove Bad Pixels" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.removeBadPixels}" disabled="#{procedureController.procedure.procedureState gt 1}" />
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
+
 
 				</p:panelGrid>
 				
@@ -192,9 +190,9 @@
 
 				</p:panelGrid>
 
-				<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl advancedForm :procedureDetailForm:controlPanel"
+				<p:commandButton id="saveButton" value="Save" icon="pi pi-check" style="float:right" update=":growl :errorGrowl advancedForm :procedureDetailForm:controlPanel"
 					action="#{procedureController.doSaveAdvancedOptions}" oncomplete="advancedDialog.hide();" disabled="#{procedureController.procedure.procedureState gt 1}" />
-				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
+				<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl"
 					type="button" onclick="advancedDialog.hide();" />
 
 			</h:form>

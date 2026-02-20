@@ -24,6 +24,7 @@ import org.jboss.logging.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
+import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.Instrument;
 import org.tmt.aps.peas.procedure.business.ProcedureOutputMgmt;
@@ -33,6 +34,8 @@ import org.tmt.aps.peas.session.model.FieldMetaData;
 import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
+
+import jakarta.transaction.Transactional;
 
 /**
  * Session EJB containing database methods to search, create and update night sessions
@@ -60,60 +63,76 @@ public class SessionMgmt {
 	 * @param sessionId the night session id
 	 * @return the night session
 	 */
+
+
+	@Transactional(Transactional.TxType.SUPPORTS)
 	public Session findSession(Long sessionId, boolean includeTestData) {
-		
-		TypedQuery<Session> query = null;
-		if (includeTestData) {
-		
-			query = em.createNamedQuery("findSession", Session.class);
-		
-		} else {
-			query = em.createNamedQuery("findSessionOperationalData", Session.class);
-			
-		}
-		
-		query.setParameter("sessionId", sessionId);
 
-		Session session = null;
-		
-		try {
-		
-			session = query.getSingleResult();
-		
-		} catch (NoResultException e) {
-			query = em.createNamedQuery("findSessionLight", Session.class);
-			query.setParameter("sessionId", sessionId);
-			session = query.getSingleResult();
-			session.setProcedureList(new ArrayList<Procedure>());
-		}
-		
-		for (Procedure procedure : session.getProcedureList()) {
-			try {
-				ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
-				procedure.setProcedureOutput(procedureOutput);
-				
-				// get the frame list shallow for the summary list
-				TypedQuery<ProcedureCcdFrame> query2 = em.createNamedQuery("findProcedureCcdFramesShallow", ProcedureCcdFrame.class);
-				query2.setParameter("procedureId", procedure.getProcedureId());
-				
-				List<ProcedureCcdFrame> procedureCcdFrameList = query2.getResultList();
-				procedure.setProcedureCcdFrameList(procedureCcdFrameList);
-				
-				// also process the iteration list config to get the integration time list for the row expansion values
-				if (procedure.getProcedureConfigSet().getIterationListConfig() != null) {
-					iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), procedure.getProcedureType().getProcedureTypeId());
-					int lightSource = procedure.getProcedureConfigSet().getProcedureConfig().getLightSource();
-					procedure.getProcedureConfigSet().getIterationListConfig().updateDisplayLists(lightSource);
-				}
-				
-			} catch (Exception e) {
-				logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			}
-		}
-		
-		return session;
+	    TypedQuery<Session> query;
+	    if (includeTestData) {
+	        query = em.createNamedQuery("findSession", Session.class);
+	    } else {
+	        query = em.createNamedQuery("findSessionOperationalData", Session.class);
+	    }
+	    query.setParameter("sessionId", sessionId);
+
+	    Session session;
+	    try {
+	        session = query.getSingleResult();
+	    } catch (NoResultException e) {
+	        query = em.createNamedQuery("findSessionLight", Session.class);
+	        query.setParameter("sessionId", sessionId);
+	        session = query.getSingleResult();
+	        session.setProcedureList(new ArrayList<>());
+	    }
+
+	    // Initialize lazy properties manually
+	    if (session.getProcedureList() != null) {
+	        for (Procedure procedure : session.getProcedureList()) {
+	        	try {
+
+	            ProcedureConfigSet pcs = procedure.getProcedureConfigSet();
+	            if (pcs != null) {
+	                // Force initialization by accessing properties
+	                pcs.getProcedureConfig().getCoarsePhasingOption();
+	                pcs.getGlobalConfig();
+	                pcs.getSufsCoarseOffsetsConfig();
+	                pcs.getIterationListConfig();
+	            }
+
+	            // Initialize other lazy associations
+	            procedure.getProcedureType().getProcedureTypeId();
+	            procedure.getTelescope().getTelescopeId();
+	            procedure.getInstrument().getInstrumentId();
+	            procedure.getSession().getSessionId();
+
+	            // procedure output
+	            ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
+	            procedure.setProcedureOutput(procedureOutput);
+
+	            // shallow CCD frames
+	            TypedQuery<ProcedureCcdFrame> query2 =
+	                em.createNamedQuery("findProcedureCcdFramesShallow", ProcedureCcdFrame.class);
+	            query2.setParameter("procedureId", procedure.getProcedureId());
+	            procedure.setProcedureCcdFrameList(query2.getResultList());
+
+	            // iteration list config: update display lists
+	            if (pcs != null && pcs.getIterationListConfig() != null) {
+	                iterationEntityCache.populateIterationValueList(
+	                    pcs.getIterationListConfig(),
+	                    procedure.getProcedureType().getProcedureTypeId()
+	                );
+	                int lightSource = pcs.getProcedureConfig().getLightSource();
+	                pcs.getIterationListConfig().updateDisplayLists(lightSource);
+	            }
+	        	} catch (Exception e) {
+	        		logger.error(e);
+	        	}
+	        }
+	    }
+
+	    return session;
 	}
-
 	/**
 	 * Searches for the most recent <code>searchQuantity</code> night sessions prior to <code>searchDate</code>
 	 * @param telescopeId the telescope to search night sessions for

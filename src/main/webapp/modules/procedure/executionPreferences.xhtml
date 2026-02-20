@@ -3,7 +3,8 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-	<p:dialog id="executionPrefsDlg" header="Procedure Execution Preferences" widgetVar="executionPrefsDialog">
+	<p:dialog id="executionPrefsDlg" header="Procedure Execution Preferences" widgetVar="executionPrefsDialog" modal="true" resizable="true" width="900" draggable="true"
+          style="overflow-y:auto; max-height:1200px;">
 
 		<h:form id="executionPrefsForm">
 
@@ -12,9 +13,6 @@
 			<p:fieldset legend="Frame Preferences" toggleable="true" toggleSpeed="500">
 
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
 
 					<h:outputLabel value="Frame Scale and Rotation Removal" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameScaleRotationRemoval}" disabled="#{procedureController.procedure.procedureState gt 1}">
@@ -33,8 +31,6 @@
 
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
 
 					<h:outputLabel value="Auto Display Centroids" />
 					<p:selectBooleanCheckbox value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoDisplayCentroids}" disabled="#{procedureController.procedure.procedureState gt 1}" />
@@ -66,9 +62,6 @@
 			<p:fieldset legend="General Workflow Preferences" rendered="#{not procedureController.procedure.procedureType.centerTelescope}">
 
 				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
 
 					<h:outputLabel value="Auto Center Telescope" />
 					<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.autoCenterTelescope}" disabled="#{procedureController.procedure.procedureState gt 1}">
@@ -170,9 +163,9 @@
 			
 			<br/>
 
-			<p:commandButton id="saveButton" value="Save" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
+			<p:commandButton id="saveButton" value="Save" icon="pi pi-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
 				oncomplete="executionPrefsDialog.hide();" disabled="#{procedureController.procedure.procedureState gt 1}" />
-			<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
+			<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl"
 				action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="executionPrefsDialog.hide();" />
 
 		</h:form>

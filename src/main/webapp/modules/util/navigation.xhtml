@@ -33,6 +33,8 @@
 					<p:submenu label="Tools" icon="pi pi-wrench">
 						<p:menuitem value="Frame and Instrument Tools" action="#{frameController.doSetupFrameViewer}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView }" />
 						<p:menuitem value="Camera Manual Control" action="#{cameraManualController.doViewCameraDiagnostic}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.ifCommandPermission}"/>
+						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.ifCommandPermission}"/>
+						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.ifCommandPermission}"/>
 					</p:submenu>
 
 					<p:submenu label="General Configuration" icon="pi pi-pencil" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.configPermission}">
@@ -58,8 +60,8 @@
 					</p:submenu>
 
 					<p:submenu label="Procedure Configuration" icon="pi pi-pencil" rendered="#{breadcrumbMenuBean.inProcedure}" >
-						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="advancedDialog.show();" disabled="#{sessionController.navDisabled}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
-						<p:menuitem value="Execution Preferences" type="button" onclick="executionPrefsDialog.show();" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}" />
+						<p:menuitem value="Advanced Options" action="#{procedureController.doViewAdvancedOptions}" oncomplete="PF('advancedDialog').show();" disabled="#{sessionController.navDisabled}" update=":advancedForm" rendered="#{sessionController.engineeringView}"/>
+						<p:menuitem value="Execution Preferences" type="button" onclick="PF('executionPrefsDialog').show();" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView}" />
 					</p:submenu>
 					
 					<p:submenu label="Procedure Displays" icon="pi pi-image" rendered="#{breadcrumbMenuBean.inProcedure}" >
@@ -77,17 +79,14 @@
 						<p:menuitem value="Avg. Pseudo PT Centroid Offsets" action="#{visualizationController.doPopulateAvgPtCentroidOffsetDisplay}" update=":avgPtOffsetsForm" oncomplete="runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgPtCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Avg. FS Centroid Offsets" action="#{visualizationController.doPopulateAvgFsCentroidOffsetDisplay}" update=":avgFsOffsetsForm" oncomplete="runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgFsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>						
 						<p:menuitem value="Avg. SUFS Centroid Offsets" action="#{visualizationController.doPopulateAvgSufsCentroidOffsetDisplay}" update=":avgSufsOffsetsForm" oncomplete="runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()" rendered="#{visualizationController.avgSufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>						
- 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); actuatorDeltasDisplayDialog.show()" rendered="#{visualizationController.actuatorDeltaDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+ 						<p:menuitem value="Actuator Deltas" action="#{visualizationController.doPopulateActuatorDeltaDisplay}" update=":actDeltasForm" oncomplete="runDrawActDeltas(); PF('actuatorDeltasDisplayDialog').show()" rendered="#{visualizationController.actuatorDeltaDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
  						<p:menuitem value="Edge Heights" action="#{visualizationController.doPopulateEdgeHeightsDisplay}" update=":edgeHeightsForm" oncomplete="runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()" rendered="#{visualizationController.edgeHeightsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
  						<p:menuitem value="Edge Residuals" action="#{visualizationController.doPopulateEdgeResidualsDisplay}" update=":edgeResidualsForm" oncomplete="runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()" rendered="#{visualizationController.edgeResidualsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 						
 					</p:submenu>
 					
-				 	<p:submenu label="External Interfaces" icon="pi pi-arrows-h" disabled="#{sessionController.navDisabled}" rendered="#{sessionController.engineeringView and sessionController.ifCommandPermission}">
-						<p:menuitem value="ACS Manual Control" action="#{acsManualController.doViewAcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
-						<p:menuitem value="DCS Manual Control" action="#{dcsManualController.doViewDcsManualInterface}" disabled="#{sessionController.navDisabled}"/>
 							
-					</p:submenu>
+
 
 					<p:submenu label="Help" icon="pi pi-question-circle">
 					    <p:menuitem value="About..."
