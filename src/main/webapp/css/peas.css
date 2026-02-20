@@ -389,7 +389,10 @@ div.btmsBreadcrumb ul li a.ui-icon {
 }
 
 
-
+body .ui-panel .ui-panel-footer {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
 
 
 

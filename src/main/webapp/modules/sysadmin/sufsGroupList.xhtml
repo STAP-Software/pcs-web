@@ -26,7 +26,8 @@
 				</f:facet>
 
 					<p:column>
-						<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{sufsGroupController.doViewSufsGroup}">
+						<p:commandLink value="" style="float:left" action="#{sufsGroupController.doViewSufsGroup}">
+							<i class="pi pi-search"></i>
 							<f:setPropertyActionListener target="#{sufsGroupController.sufsGroup}" value="#{sufsGroup}" />
 
 						</p:commandLink>

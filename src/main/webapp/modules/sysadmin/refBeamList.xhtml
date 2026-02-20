@@ -26,9 +26,9 @@
 				</f:facet>
 
 					<p:column>
-						<p:commandLink value="" styleClass="ui-icon ui-icon-search" style="float:left" action="#{refBeamController.doViewReferenceBeam}">
+						<p:commandLink value="" style="float:left" action="#{refBeamController.doViewReferenceBeam}">
+							 <i class="pi pi-search"></i>
 							<f:setPropertyActionListener target="#{refBeamController.referenceBeam}" value="#{refBeam}" />
-
 						</p:commandLink>
 					</p:column>
 					<p:column headerText="Reference Beam Number">

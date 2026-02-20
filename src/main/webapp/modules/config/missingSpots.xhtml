@@ -19,47 +19,85 @@
 
 			<p:panelGrid columns="1" style="margin:10px;padding:0px" styleClass="pcsForm">
 
-				<p:panelGrid id="controlPanel" columns="8" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn,btmsFormLabelColumn, btmsFormInputColumn">
 
-					<h:outputLabel value="Spot List Type" />
-					<p:selectOneMenu id="options1" value="#{missingSpotsController.spotListType}" style="top:2px" rendered="#{not missingSpotsController.pupilMaskType.pupilMaskTypePh}">
-						<f:selectItem itemLabel="Find and Identify" itemValue="1" />
-						<f:selectItem itemLabel="Analysis" itemValue="2" />
-					    <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}"
-					    	oncomplete="runDrawMissingSpots();" />
-					</p:selectOneMenu>
-					<p:selectOneMenu id="options2" value="#{missingSpotsController.spotListType}" style="top:2px" rendered="#{missingSpotsController.pupilMaskType.pupilMaskTypePh}">
-						<f:selectItem itemLabel="Find and Identify" itemValue="1" />
-						<f:selectItem itemLabel="CPH Analysis" itemValue="2" />
-						<f:selectItem itemLabel="NPH Analysis" itemValue="3" />
-					    <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" listener="#{missingSpotsController.listViewChangeListener}"
-					    	oncomplete="runDrawMissingSpots();" />
-					</p:selectOneMenu>
+    <p:panelGrid columns="1" style="margin:10px;padding:0px" styleClass="pcsForm">
 
-					<h:outputLabel value="Mask Type" />
-					<h:panelGroup id="maskPanel">
-					    <p:selectOneMenu value="#{missingSpotsController.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
-							<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
-							<p:ajax event="change" update=":missingSpotsForm" listener="#{missingSpotsController.listViewChangeListener}" process="@this" oncomplete="runDrawMissingSpots();" />
-						</p:selectOneMenu>
-					</h:panelGroup>
-					
-					<h:outputLabel value="SUFS Group" rendered="#{missingSpotsController.renderSufsGroup}"/>
-					<h:panelGroup id="sufsGroupPanel" rendered="#{missingSpotsController.renderSufsGroup}">
-					    <p:selectOneMenu value="#{missingSpotsController.sufsGroup}" converter="#{sufsGroupConverter}">
-							<f:selectItems value="#{missingSpotsController.sufsGroupList}" var="group" itemLabel="#{group.groupNumber}" itemValue="#{group}" />
-							<p:ajax update="groupSegmentNumbers maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots"  listener="#{missingSpotsController.listViewChangeListener}" oncomplete="runDrawMissingSpots();" />
-						</p:selectOneMenu>
-					</h:panelGroup>
-					
-					<h:outputLabel value="Show Segment Numbers" rendered="#{missingSpotsController.renderSufsGroup}"/>
-					<h:panelGroup id="showSegNumPanel" rendered="#{missingSpotsController.renderSufsGroup}">
-					    <p:selectBooleanCheckbox id="showSegmentNumbers" value="#{missingSpotsController.showSegmentNumbers}" >
-							<p:ajax update="showSegNum maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" oncomplete="runDrawMissingSpots();" />
-       					 </p:selectBooleanCheckbox>
-					</h:panelGroup>
+        <!-- Container for all 4 pairs -->
+        <h:panelGroup layout="block" style="display:flex; gap:24px; flex-wrap:wrap;">
 
-				</p:panelGrid>
+            <!-- Pair 1: Spot List Type -->
+            <h:panelGroup layout="block" style="display:flex; flex-direction:column; gap:6px;">
+                <h:panelGroup layout="block" style="display:flex; gap:6px;">
+                    <h:outputLabel value="Spot List Type" />
+                    <p:selectOneMenu id="options1" value="#{missingSpotsController.spotListType}" 
+                                     rendered="#{not missingSpotsController.pupilMaskType.pupilMaskTypePh}">
+                        <f:selectItem itemLabel="Find and Identify" itemValue="1" />
+                        <f:selectItem itemLabel="Analysis" itemValue="2" />
+                        <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" 
+                                listener="#{missingSpotsController.listViewChangeListener}"
+                                oncomplete="drawMissingSpots();" />
+                    </p:selectOneMenu>
+
+                    <p:selectOneMenu id="options2" value="#{missingSpotsController.spotListType}" 
+                                     rendered="#{missingSpotsController.pupilMaskType.pupilMaskTypePh}">
+                        <f:selectItem itemLabel="Find and Identify" itemValue="1" />
+                        <f:selectItem itemLabel="CPH Analysis" itemValue="2" />
+                        <f:selectItem itemLabel="NPH Analysis" itemValue="3" />
+                        <p:ajax update="centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" 
+                                listener="#{missingSpotsController.listViewChangeListener}"
+                                oncomplete="drawMissingSpots();" />
+                    </p:selectOneMenu>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- Pair 2: Mask Type -->
+            <h:panelGroup layout="block" style="display:flex; flex-direction:column; gap:6px;">
+                <h:panelGroup layout="block" style="display:flex; gap:6px;">
+                    <h:outputLabel value="Mask Type" />
+                    <h:panelGroup id="maskPanel">
+                        <p:selectOneMenu value="#{missingSpotsController.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
+                            <f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" 
+                                           itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
+                            <p:ajax event="change" update=":missingSpotsForm" 
+                                    listener="#{missingSpotsController.listViewChangeListener}" 
+                                    process="@this" oncomplete="drawMissingSpots();" />
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- Pair 3: SUFS Group -->
+            <h:panelGroup layout="block" style="display:flex; flex-direction:column; gap:6px;">
+                <h:panelGroup layout="block" style="display:flex; gap:6px;">
+                    <h:outputLabel value="SUFS Group" rendered="#{missingSpotsController.renderSufsGroup}" />
+                    <h:panelGroup id="sufsGroupPanel" rendered="#{missingSpotsController.renderSufsGroup}">
+                        <p:selectOneMenu value="#{missingSpotsController.sufsGroup}" converter="#{sufsGroupConverter}">
+                            <f:selectItems value="#{missingSpotsController.sufsGroupList}" var="group" 
+                                           itemLabel="#{group.groupNumber}" itemValue="#{group}" />
+                            <p:ajax update="groupSegmentNumbers maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots"  
+                                    listener="#{missingSpotsController.listViewChangeListener}" 
+                                    oncomplete="drawMissingSpots();" />
+                        </p:selectOneMenu>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+
+            <!-- Pair 4: Show Segment Numbers -->
+            <h:panelGroup layout="block" style="display:flex; flex-direction:column; gap:6px;">
+                <h:panelGroup layout="block" style="display:flex; gap:6px;">
+                    <h:outputLabel value="Show Segment Numbers" rendered="#{missingSpotsController.renderSufsGroup}" />
+                    <h:panelGroup id="showSegNumPanel" rendered="#{missingSpotsController.renderSufsGroup}">
+                        <p:selectBooleanCheckbox id="showSegmentNumbers" value="#{missingSpotsController.showSegmentNumbers}">
+                            <p:ajax update="showSegNum maskPanel centroidDisplay spotSelector centroidNbrs centroidXs centroidYs missingSpots" 
+                                    oncomplete="drawMissingSpots();" />
+                        </p:selectBooleanCheckbox>
+                    </h:panelGroup>
+                </h:panelGroup>
+            </h:panelGroup>
+
+        </h:panelGroup>
+
+    </p:panelGrid>
 				
 				<p:panelGrid id="centroidDisplay" columns="2" style="margin:0px;" styleClass="pcsForm">
 					<canvas id="spotCanvas" width="750px" height="750px" style="border:1px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>					
@@ -79,6 +117,8 @@
 					</p:selectManyMenu>
 					-->
 				
+	                <p:remoteCommand name="initSpots" oncomplete="drawMissingSpots();" autoRun="true" />
+				
 					<f:facet name="footer">
 						<p:commandButton value="Save" icon="ui-icon-check" ajax="true" action="#{missingSpotsController.doSave}" update=":growl :errorGrowl" />
 						<p:commandButton value="Reset" icon="ui-icon-refresh" ajax="false" action="#{missingSpotsController.doViewMissingSpots}" />
@@ -92,12 +132,6 @@
 <script type="text/javascript">  
 //<![CDATA[
     
-function runDrawMissingSpots() {
-	window.setTimeout("drawMissingSpots()", 100);
-}
-
-
-
 
 function drawMissingSpots() {
 	
@@ -176,12 +210,6 @@ function drawMissingSpots() {
 	
 	
 }
-
-$(window).load(function() {
-
-	window.setTimeout("drawMissingSpots()", 1000);
-
-});
 
 
 //]]>  
