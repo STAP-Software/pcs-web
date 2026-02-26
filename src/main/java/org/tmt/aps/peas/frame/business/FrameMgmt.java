@@ -407,7 +407,7 @@ public class FrameMgmt {
 		return populateCcdFrame(ccdFrame, exposureTime, sufsGroup, darkMedianLeft, darkMedianRight, removeBadPixelsResult);
 	}
 
-	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, int sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
+	public CcdFrame populateCcdFrame(CcdFrame ccdFrame, double exposureTime, Integer sufsGroup, int darkMedianLeft, int darkMedianRight, RemoveBadPixelsResult removeBadPixelsResult) {
 
 		
 		// save the camera state when the ccd frame was taken

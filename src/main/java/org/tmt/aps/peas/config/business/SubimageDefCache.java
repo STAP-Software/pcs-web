@@ -51,23 +51,29 @@ public class SubimageDefCache {
 	private Long telescopeId;
 	private Long instrumentId;
 
+
+	
 	@PostConstruct
-	public void init() throws Exception {
+	public void init() {
+	    try {
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+			telescopeId = Long.valueOf(telescopeIdStr);
+			String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
+			instrumentId = Long.valueOf(instrumentIdStr);
 
-		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		telescopeId = Long.valueOf(telescopeIdStr);
-		String instrumentIdStr = peasProperties.getProp("org.tmt.aps.peas.instrumentId");
-		instrumentId = Long.valueOf(instrumentIdStr);
+			
+			List<Integer> mirrors = new ArrayList<Integer>();
+			
+			for (int i=0; i<constantsCache.getTelescopeConstants().getNumberOfSegments(); i++) {
+				mirrors.add(Integer.valueOf(1));
+			}
 
-		
-		List<Integer> mirrors = new ArrayList<Integer>();
-		
-		for (int i=0; i<constantsCache.getTelescopeConstants().getNumberOfSegments(); i++) {
-			mirrors.add(Integer.valueOf(1));
-		}
-
-		refreshCache();
+			refreshCache();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 	
 	
 	public void refreshCache() throws Exception {

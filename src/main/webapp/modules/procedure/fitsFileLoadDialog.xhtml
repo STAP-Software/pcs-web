@@ -3,40 +3,61 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-		<p:dialog id="fitsFileLoadDlg" header="FITS File Loader" widgetVar="fitsFileLoadDialog">
+    <p:dialog id="fitsFileLoadDlg"
+              header="FITS File Loader"
+              widgetVar="fitsFileLoadDialog"
+              modal="true"
+              width="500">
 
-			<h:form id="fitsFileLoadForm">
-			
-				<p:panelGrid columns="1" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-				<h:outputText value="Select ccd frames to execute a procedure with." />
-				<h:outputText value="Selecting a single phasing frame will load all frames from that sequence." />
-				</p:panelGrid>
-				
-				<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+        <h:form id="fitsFileLoadForm">
 
-					<p:spacer height="5px" />
-					<p:spacer height="5px" />
-					
+            <div class="fitsIntro">
+                <h:outputText value="Select ccd frames to execute a procedure with." /><br/>
+                <h:outputText value="Selecting a single phasing frame will load all frames from that sequence." />
+            </div>
 
-					<h:outputLabel value="Select a File" />
-        			<p:selectManyMenu value="#{procedureController.selectedFitsFiles}" converter="#{pcsFitsFileConverter}" var="f" style="height:300px; width:300px;" showCheckbox="true">  
-            			<f:selectItems value="#{procedureController.availableFitsFiles}" var="fitsFile" itemLabel="#{fitsFile.fileName}" itemValue="#{fitsFile}" />  
-            			<p:column>  
-                			#{f.fileName}  
-            			</p:column>  
+            <div class="formRow">
 
-					</p:selectManyMenu>
+                <div class="formLabel">
+                    <h:outputLabel value="Select a File" />
+                </div>
 
-				</p:panelGrid>
+                <div class="formField">
+                    <p:selectManyMenu id="fitsSelect"
+                                      value="#{procedureController.selectedFitsFiles}"
+                                      converter="#{pcsFitsFileConverter}"
+                                      showCheckbox="true"
+                                      style="width:300px;"
+                                      panelStyle="width:300px;"
+                                      scrollHeight="296"
+                                      widgetVar="fitsSelectWidget">
+                        <f:selectItems value="#{procedureController.availableFitsFiles}"
+                                       var="fitsFile"
+                                       itemLabel="#{fitsFile.fileName}"
+                                       itemValue="#{fitsFile}" />
+                    </p:selectManyMenu>
+                </div>
 
-				<p:commandButton id="saveButton" value="Load" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel "
-					action="#{procedureController.doLoadFitsFile}" oncomplete="fitsFileLoadDialog.hide();" />
-				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
-					action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="fitsFileLoadDialog.hide();" />
+            </div>
 
-			</h:form>
-		</p:dialog>
+            <div class="dialogButtons">
+                <p:commandButton id="saveButton"
+                                 value="Load"
+                                 icon="ui-icon-check"
+                                 action="#{procedureController.doLoadFitsFile}"
+                                 update=":growl :errorGrowl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel"
+                                 oncomplete="PF('fitsFileLoadDialog').hide();" />
+
+                <p:commandButton id="closeButton"
+                                 value="Close"
+                                 icon="ui-icon-cancel"
+                                 action="#{procedureController.doCancelSaveAdvancedOptions}"
+                                 oncomplete="PF('fitsFileLoadDialog').hide();" />
+            </div>
+
+        </h:form>
+    </p:dialog>
+
 
 </ui:composition>
-
 </html>

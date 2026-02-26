@@ -77,10 +77,16 @@ public class IterationEntityCache {
 	
 	List<String> entityClassNames;
 	
+
 	@PostConstruct
-	public void init() throws Exception {
-		refresh();
+	public void init() {
+	    try {
+	    	refresh();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 	
 	public void refresh() throws Exception {
 		

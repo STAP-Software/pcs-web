@@ -106,6 +106,7 @@ import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.ui.SessionController;
+import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
@@ -219,29 +220,33 @@ public class ProcedureController implements Serializable {
 	ProcedureType registerPupilFor;
 	
 	@PostConstruct
-	private void init() throws Exception {
+	public void init() {
+	    try {
 
-		currentPrompt = new UserPrompt("Default Text", UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
+			currentPrompt = new UserPrompt("Default Text", UserPrompt.PROMPT_TYPE_YES_NO, "My Default Text");
+	
+			// set up the instrument to be associated with each frame to display archived state
+			Long instrumentId = Long.valueOf(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
+			frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
+			
+			pupilMaskSelectList = sessionController.getInstrument().getCamera().getPupilWheel().getOrigPupilMaskList();
+			
+			procedureTypeForSelectList = new ArrayList<ProcedureType>();
+			procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN));
+			procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_COARSE_PHASING));
+			procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_NARROW_BAND_PHASING));
+			
+			sufsGroupSelectList = new ArrayList<SelectItem>();
+			for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
+				String displayString = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroupNumber);
+				SelectItem selectItem = new SelectItem(sufsGroupNumber+1, " " + (sufsGroupNumber+1) + " : (" + displayString + ")");
+				sufsGroupSelectList.add(selectItem);
+			}
 
-		// set up the instrument to be associated with each frame to display archived state
-		Long instrumentId = Long.valueOf(peasProperties.getProp("org.tmt.aps.peas.instrumentId"));
-		frameInstrument = cameraDefMgmt.findInstrument(instrumentId);
 		
-		pupilMaskSelectList = sessionController.getInstrument().getCamera().getPupilWheel().getOrigPupilMaskList();
-		
-		procedureTypeForSelectList = new ArrayList<ProcedureType>();
-		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_FINE_SCREEN));
-		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_COARSE_PHASING));
-		procedureTypeForSelectList.add(procedureMgmt.findProcedureType(ProcedureType.PROCEDURE_TYPE_ID_NARROW_BAND_PHASING));
-		
-		sufsGroupSelectList = new ArrayList<SelectItem>();
-		for (int sufsGroupNumber=0; sufsGroupNumber<6; sufsGroupNumber++) {
-			String displayString = constantsCache.getSufsConstants().getSufsGroupToMirrorDisplayString(sufsGroupNumber);
-			SelectItem selectItem = new SelectItem(sufsGroupNumber+1, " " + (sufsGroupNumber+1) + " : (" + displayString + ")");
-			sufsGroupSelectList.add(selectItem);
-		}
-
-		
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
 
 	public Procedure getProcedure() {
@@ -885,6 +890,7 @@ public class ProcedureController implements Serializable {
 
 		logger.debug(" ###############################  doExecuteProcedure:: starting: mask = "
 				+ procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
+
 
 		logger.debug("doExecuteProcedure::mask = " + procedure.getProcedureConfigSet().getProcedureConfig().getPupilMask());
 		// validate inputs

@@ -562,7 +562,7 @@ public class SessionController implements Serializable {
 		if (advancedViewMode == true) {
 			PrimeFaces.current().executeScript("PF('loginDialog').show()");
 		} else {
-			PrimeFaces.current().ajax().update("procedureDetailForm procedureListForm");		
+			PrimeFaces.current().ajax().update("procedureDetailForm procedureListForm");	
 		}
 		
 	}

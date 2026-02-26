@@ -130,7 +130,11 @@ public class PassiveTiltExecutor {
 	public void executeProcedure(Procedure procedure, Session currentSession) {
 
 		logger.info("PassiveTiltExecutor::executeProcedure::");
-
+		
+		logger.info("about to add to statusLogger");
+		statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
+		logger.info("statusLogger add complete");
+		
 		try {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();

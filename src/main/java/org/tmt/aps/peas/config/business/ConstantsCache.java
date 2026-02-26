@@ -51,33 +51,37 @@ public class ConstantsCache {
 	
 
 	@PostConstruct
-	public void init() throws Exception {
-		primaryMirrorConstants = new PrimaryMirrorConstants();
-		primaryMirrorSegmentConstants = new PrimaryMirrorSegmentConstants();
-		phasingConstants = new PhasingConstants();
-		sufsConstants = new SufsConstants();
-		telescopeConstants = new TelescopeConstants();
-		maskConstants = new MaskConstants();
+	public void init() {
+	    try {
+	      
+			primaryMirrorConstants = new PrimaryMirrorConstants();
+			primaryMirrorSegmentConstants = new PrimaryMirrorSegmentConstants();
+			phasingConstants = new PhasingConstants();
+			sufsConstants = new SufsConstants();
+			telescopeConstants = new TelescopeConstants();
+			maskConstants = new MaskConstants();
+			
+			List<Object> instances = new ArrayList<Object>();
+			instances.add(primaryMirrorConstants);
+			instances.add(primaryMirrorSegmentConstants);
+			instances.add(phasingConstants);
+			instances.add(sufsConstants);
+			instances.add(telescopeConstants);
+			instances.add(maskConstants);
+			
+			// populate constants
+			constantsMgmt.loadConstants(instances);
+			
+			logger.info("\n\nPrimary Mirror Constants: \n" + primaryMirrorConstants);
+			logger.info("\n\nPrimary Mirror Segment Constants: \n" + primaryMirrorSegmentConstants);
+			logger.info("\n\nPhasing Constants: \n" + phasingConstants);
+			logger.info("\n\nSUFS Constants: \n" + sufsConstants);
+			logger.info("\n\nTelescope Constants: \n" + telescopeConstants);
+			logger.info("\n\nMask Constants: \n" + maskConstants);
 		
-		List<Object> instances = new ArrayList<Object>();
-		instances.add(primaryMirrorConstants);
-		instances.add(primaryMirrorSegmentConstants);
-		instances.add(phasingConstants);
-		instances.add(sufsConstants);
-		instances.add(telescopeConstants);
-		instances.add(maskConstants);
-		
-		// populate constants
-		constantsMgmt.loadConstants(instances);
-		
-		logger.info("\n\nPrimary Mirror Constants: \n" + primaryMirrorConstants);
-		logger.info("\n\nPrimary Mirror Segment Constants: \n" + primaryMirrorSegmentConstants);
-		logger.info("\n\nPhasing Constants: \n" + phasingConstants);
-		logger.info("\n\nSUFS Constants: \n" + sufsConstants);
-		logger.info("\n\nTelescope Constants: \n" + telescopeConstants);
-		logger.info("\n\nMask Constants: \n" + maskConstants);
-		
-
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
 
 	

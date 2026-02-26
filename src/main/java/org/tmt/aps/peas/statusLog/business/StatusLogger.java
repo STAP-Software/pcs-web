@@ -46,7 +46,7 @@ public class StatusLogger {
 	@PostConstruct
 	public void startup() {
 		stack = null;
-		procedureStatusLog = null;
+		procedureStatusLog = new ProcedureStatusLog();
 	}
 
 	/**

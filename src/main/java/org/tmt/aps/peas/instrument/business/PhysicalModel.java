@@ -55,10 +55,14 @@ public class PhysicalModel {
 	 * Called on startup, calls {@link #refresh()}
 	 */
 	@PostConstruct
-	public void init() throws Exception {
-		
-		refresh();
+	public void init() {
+	    try {
+	    	refresh();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 
 	/**
 	 * Reads instrument and telescope ids from peas.properties file, loads all instrument and telescope configuration into the cache.

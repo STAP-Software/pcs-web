@@ -15,7 +15,7 @@
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm" listener="#{asyncController.asyncListener}"
+				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable" listener="#{asyncController.asyncListener}"
 				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()"
 				rendered="#{sessionController.runProcedurePermission}" />
 		</h:form>
@@ -333,7 +333,10 @@
 					</p:tab>
 					<p:tab title="Procedure Event Log">
 						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:206px" mode="native">
-							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}">
+						
+						<h:outputText value="#{statusLogController.procedureStatusLog != null ? statusLogController.procedureStatusLog.logEntryList.size : -1} entries" />
+						
+							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" lazy="false">
 
 								<p:column headerText="Time">
 									<h:outputText value="#{logEntry.createDate}" style="font-size: 10px">

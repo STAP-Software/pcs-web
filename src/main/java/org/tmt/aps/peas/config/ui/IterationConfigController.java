@@ -102,22 +102,27 @@ public class IterationConfigController implements Serializable {
 
 	Instrument instrument;
 
+
 	@PostConstruct
-	public void init() throws Exception {
-		
+	public void init() {
+	    try {
+			instrument = sessionController.getInstrument();
+			
+			// set up the filter list
+			filterList = sessionController.getInstrument().getCamera().getFilterWheel().getOrigFilterList();
+			// order by name
+			Collections.sort(filterList, new BeanComparator("filterName"));
 
-		instrument = sessionController.getInstrument();
-		
-		// set up the filter list
-		filterList = sessionController.getInstrument().getCamera().getFilterWheel().getOrigFilterList();
-		// order by name
-		Collections.sort(filterList, new BeanComparator("filterName"));
+			// set up the ref beam list
+			refBeamList = cameraDefMgmt.findAllRefBeams(instrument.getInstrumentId());
+			
+			ccdGainList = sessionController.getInstrument().getCcd().getCcdGainList();
 
-		// set up the ref beam list
-		refBeamList = cameraDefMgmt.findAllRefBeams(instrument.getInstrumentId());
-		
-		ccdGainList = sessionController.getInstrument().getCcd().getCcdGainList();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 
 	public boolean isElementEnable1() {
 		return elementEnable1;

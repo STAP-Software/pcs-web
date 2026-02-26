@@ -83,9 +83,10 @@
 							<p:rowToggler />
 						</p:column>
 						<p:column>
-							<p:commandLink value="" styleClass="ui-icon ui-icon-search"
+							<p:commandLink value="" 
 								style="float:left"
 								action="#{procedureController.doViewProcedure}">
+								<i class="pi pi-search"></i>
 								<f:setPropertyActionListener
 									target="#{procedureController.procedure}" value="#{procedure}" />
 							</p:commandLink>

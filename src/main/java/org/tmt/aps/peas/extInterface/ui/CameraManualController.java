@@ -93,57 +93,60 @@ public class CameraManualController implements Serializable {
 	int instrumentStateCmd = 0;
 	
 
+
 	@PostConstruct
-	public void init() throws Exception {
-		
-		//physicalModel.refresh();
-		//camera = physicalModel.getInstrument().getCamera();
+	public void init() {
+	    try {
+			//physicalModel.refresh();
+			//camera = physicalModel.getInstrument().getCamera();
 
-		//camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
-		commandSelection = 1;
+			//camera.setCurrentState(1, 1, 1, 1, 23.0f, 6.22f, 0.43f, 7.54f, -0.32f, 1, 1, -43.2f);
+			commandSelection = 1;
 
-		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>" + physicalModel.getInstrument().getCcd());
 
-		//ccd = physicalModel.getInstrument().getCcd();
-		
-		 dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
-
-		 
-		 queryUpdateMethod = new String[CameraCommand.DEVICE_CODE_MAX];
-		 
-		// create all the cameraQueryListeners for each device code
-		for (int deviceCode = 1; deviceCode < CameraCommand.DEVICE_CODE_MAX; deviceCode++) {
+			//ccd = physicalModel.getInstrument().getCcd();
 			
-			DiagnosticCameraQueryListener dcql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
-		
-			device2cameraQueryListener.put(Integer.valueOf(deviceCode), dcql);
+			 dcsl = new DiagnosticCameraStatusListener(physicalModel.getInstrument());
+
+			 
+			 queryUpdateMethod = new String[CameraCommand.DEVICE_CODE_MAX];
+			 
+			// create all the cameraQueryListeners for each device code
+			for (int deviceCode = 1; deviceCode < CameraCommand.DEVICE_CODE_MAX; deviceCode++) {
+				
+				DiagnosticCameraQueryListener dcql = new DiagnosticCameraQueryListener(physicalModel.getInstrument());
 			
-		}
-		
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_POWER, "ccdPower");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_SHUTTER, "shutter");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE, "boxTemp");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "galilPower");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH, "instHumid");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE, "instTemp");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PUPIL_WHEEL, "pupilMask");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS, "refBeam");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK, "tempInterlock");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE, "twoPos");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_STEERING_MIRROR, "coarseX");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_TILT_PLATE, "fineX");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR, "coarseY");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_TILT_PLATE, "fineY");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_AIR, "purge");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_STATUS, "overallStat");
-		device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_POWER, "overallPower");
-		
+				device2cameraQueryListener.put(Integer.valueOf(deviceCode), dcql);
+				
+			}
+			
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_POWER, "ccdPower");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_SHUTTER, "shutter");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_CCD_TEMPERATURE, "ccdTemp");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_BOX_TEMPERATURE, "boxTemp");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_ELECTRONICS_RH, "boxHumid");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_FILTER_WHEEL, "filterWheel");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GALIL_POWER, "galilPower");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_RH, "instHumid");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OPTICAL_BENCH_TEMPERATURE, "instTemp");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PUPIL_WHEEL, "pupilMask");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_REFERENCE_BEAMS, "refBeam");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TEMPERATURE_INTERLOCK, "tempInterlock");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_TWO_POSITION_DEVICE, "twoPos");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_STEERING_MIRROR, "coarseX");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_X_TILT_PLATE, "fineX");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_STEERING_MIRROR, "coarseY");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_Y_TILT_PLATE, "fineY");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_PURGE_AIR, "purge");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_GLYCOL_FLOW, "glycol");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_STATUS, "overallStat");
+			device2fieldNamePrefix.put(CameraCommand.DEVICE_CODE_OVERALL_POWER, "overallPower");
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
-	
+
 	
 
 	public Camera getCamera() {

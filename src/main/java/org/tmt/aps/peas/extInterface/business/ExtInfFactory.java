@@ -68,15 +68,20 @@ public class ExtInfFactory {
 	
 	int telescopeId;
 	
-	@PostConstruct
-	void init() throws Exception {
-		dcsCommandSimulator = new DcsCommandSimulator();
-		cameraCommandSimulator = new CameraCommandSimulator();
-		
-		String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
-		telescopeId = Integer.valueOf(telescopeIdStr);
 
+	@PostConstruct
+	public void init() {
+	    try {
+	    	dcsCommandSimulator = new DcsCommandSimulator();
+			cameraCommandSimulator = new CameraCommandSimulator();
+			
+			String telescopeIdStr = peasProperties.getProp("org.tmt.aps.peas.telescopeId");
+			telescopeId = Integer.valueOf(telescopeIdStr);
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 
 	/**
 	 * @return a reference to the ACS RPC client, or a simulator depending on current interface connection configuration

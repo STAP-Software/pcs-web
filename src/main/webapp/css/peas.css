@@ -389,6 +389,75 @@ div.btmsBreadcrumb ul li a.ui-icon {
 }
 
 
+/* Dialog padding */
+#fitsFileLoadDlg .ui-dialog-content {
+    padding: 16px 20px;
+}
+
+/* Intro spacing */
+#fitsFileLoadDlg .fitsIntro {
+    margin-bottom: 15px;
+    line-height: 1.4;
+}
+
+/* Horizontal form row */
+#fitsFileLoadDlg .formRow {
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+/* Label column */
+#fitsFileLoadDlg .formLabel {
+    width: 120px;
+    font-weight: bold;
+    color: #666;
+    padding-top: 6px;
+}
+
+/* Field column */
+#fitsFileLoadDlg .formField {
+    flex: 0 0 auto;   /* prevents stretching */
+}
+
+/* Buttons bottom-left */
+#fitsFileLoadDlg .dialogButtons {
+    display: flex;
+    justify-content: flex-end;   /* RIGHT aligned */
+    gap: 10px;
+    margin-top: 15px;
+}
+
+/* SelectManyMenu visible box */
+#fitsFileLoadDlg .ui-selectmanymenu {
+    height: 300px; /* height of the visible input box */
+}
+
+/* Outer panel scroll wrapper */
+#fitsFileLoadDlg .ui-selectmanymenu-panel .ui-selectmanymenu-items-wrapper {
+    width: 100% !important;       /* full width */
+    height: 100% !important;      /* full height */
+    max-height: 100% !important;  /* prevent shrinking */
+    overflow-y: auto;             /* enable scrolling */
+    box-sizing: border-box;       /* padding included in size */
+    padding: 0;                   /* remove extra wrapper padding */
+}
+
+/* Each item styling */
+#fitsFileLoadDlg .ui-selectmanymenu-panel .ui-selectmanymenu-item {
+    padding-top: 2px !important;
+    padding-bottom: 2px !important;
+    display: flex;
+    align-items: center;
+}
+
+/* Optional: checkboxes spacing */
+#fitsFileLoadDlg .ui-chkbox {
+    margin-right: 8px !important;
+}
+
+
 body .ui-panel .ui-panel-footer {
     padding-top: 6px;
     padding-bottom: 6px;

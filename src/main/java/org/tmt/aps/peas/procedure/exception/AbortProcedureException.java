@@ -5,10 +5,10 @@ package org.tmt.aps.peas.procedure.exception;
  * @author smichaels
  *
  */
-public class AbortProcedureException extends Exception {
+public final class AbortProcedureException extends RuntimeException {
+    private static final long serialVersionUID = 1L;
 
 	public AbortProcedureException(String message) {
-		super(message);
-	}
-	
+        super(message, null, false, false); // no stack trace, no suppression
+    }
 }

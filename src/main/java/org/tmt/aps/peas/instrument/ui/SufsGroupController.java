@@ -57,7 +57,7 @@ public class SufsGroupController implements Serializable {
 	
 
 	@PostConstruct
-	private void init() throws Exception {
+	private void init() {
 
 	}
 

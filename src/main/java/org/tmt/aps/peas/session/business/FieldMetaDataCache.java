@@ -43,29 +43,32 @@ public class FieldMetaDataCache {
 	 * @throws Exception
 	 */
 	@PostConstruct
-	public void init() throws Exception {
-		
-		List<FieldMetaData> fmdList = sessionMgmt.findAllFieldMetaData();
-		fieldMap = new HashMap<String, FieldMetaData>();
-		
-		for (FieldMetaData fmd : fmdList) {
+	public void init() {
+	    try {
+			List<FieldMetaData> fmdList = sessionMgmt.findAllFieldMetaData();
+			fieldMap = new HashMap<String, FieldMetaData>();
 			
-			String key = fmd.getTableName() + "::" + fmd.getFieldName();
-			
-			fieldMap.put(key.toLowerCase(), fmd);
-		}
+			for (FieldMetaData fmd : fmdList) {
+				
+				String key = fmd.getTableName() + "::" + fmd.getFieldName();
+				
+				fieldMap.put(key.toLowerCase(), fmd);
+			}
 
-		List<ProcedureOutputField> pofList = procedureOutputMgmt.findAllProcedureOutputFields();
-		procedureOutputFieldMap = new HashMap<String, ProcedureOutputField>();
-		
-		for (ProcedureOutputField pof : pofList) {
+			List<ProcedureOutputField> pofList = procedureOutputMgmt.findAllProcedureOutputFields();
+			procedureOutputFieldMap = new HashMap<String, ProcedureOutputField>();
 			
-			String key = pof.getClassName() + "::" + pof.getFieldName();
-			
-			procedureOutputFieldMap.put(key.toLowerCase(), pof);
-		}
-
+			for (ProcedureOutputField pof : pofList) {
+				
+				String key = pof.getClassName() + "::" + pof.getFieldName();
+				
+				procedureOutputFieldMap.put(key.toLowerCase(), pof);
+			}
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 
 	/**
 	 * Cache access method to retrieve metadata for a single database field

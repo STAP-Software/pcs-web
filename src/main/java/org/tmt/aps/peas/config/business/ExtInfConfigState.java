@@ -28,12 +28,16 @@ public class ExtInfConfigState {
 
 	ExtInfConnectConfig extInfConnectConfig;
 	
-	@PostConstruct
-	void init() throws Exception {
-		
-		extInfConnectConfig = new ExtInfConnectConfig();
 
+	@PostConstruct
+	public void init() {
+	    try {
+	    	extInfConnectConfig = new ExtInfConnectConfig();
+	    } catch (Exception e) {
+	        throw new IllegalStateException("Initialization failed", e);
+	    }
 	}
+
 
 	@Lock(LockType.READ)
 	@AccessTimeout(value=120000)  // two minutes
