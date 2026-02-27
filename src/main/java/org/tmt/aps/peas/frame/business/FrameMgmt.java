@@ -164,13 +164,16 @@ public class FrameMgmt {
 		
 		ProcedureConfig procedureConfig = procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig();
 		
+		int ufsSegment = procedureConfig.getUfsSegment() == null ? -1 : procedureConfig.getUfsSegment();
+		int sufsGroup = procedureConfig.getSufsGroup() == null ? -1 : procedureConfig.getSufsGroup();
+		
 		FitsFilename fitsFilename = new FitsFilename(
 				procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), 
 				procedureCcdFrame.getProcedure().getProcedureType().getProcedureTypeCd(), 
 				procedureCcdFrame.getProcedure().getProcedureNumber(),
 				procedureCcdFrame.getProcedureIterationNumber(), 
-				procedureConfig.getUfsSegment(),
-				procedureConfig.getSufsGroup(), 
+				ufsSegment,
+				sufsGroup, 
 				procedureCcdFrame.getPhasingStepNumber(),
 				procedureConfig.getFilter().getFilterNameAsNumber(),
 				procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeName(),
@@ -488,45 +491,101 @@ public class FrameMgmt {
 			/*** FIXME -- uncomment to test code only **/
 		}
 		
-		
-			
-			
-			
-		
 		procedureExecutionState.setCurrentFrame(ccdFrame);
 		Procedure procedure = procedureExecutionState.getCurrentProcedure();
 
-		ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
-		procedureCcdFrame.setCcdFrame(ccdFrame);
-		procedureCcdFrame.setNewFrameFlg(false); // frame from file
-		procedureCcdFrame.setProcedureFrameNumber(frameNumber);
-		procedureCcdFrame.setProcedure(procedure);
-		if (procedureType.isCoarsePhasing()) {
-			procedureCcdFrame.setProcedureIterationNumber(1); 
-			procedureCcdFrame.setPhasingStepNumber(iteration);
-			procedureCcdFrame.setPhasingFilterNumber(0);
-		} else if (procedureType.isNarrowBandPhasing()) {
-				procedureCcdFrame.setProcedureIterationNumber(1); 
-				procedureCcdFrame.setPhasingStepNumber(0);
-				procedureCcdFrame.setPhasingFilterNumber(iteration);
-		} else {
-			procedureCcdFrame.setProcedureIterationNumber(iteration);
-			procedureCcdFrame.setPhasingStepNumber(0);
-			procedureCcdFrame.setPhasingFilterNumber(0);
-		}
 		
-		// add it to the procedure
-		procedure.addProcedureCcdFrame(procedureCcdFrame);
+		// SM V3.0 - this might get deprecated
+		// procedure.addProcedureCcdFrame(procedureCcdFrame);
 
+		// SM V3.0  always store in database, don't wait until end of procedure 
+		ProcedureCcdFrame procedureCcdFrame = createAndPersistProcedureCcdFrame(procedure.getProcedureId(), ccdFrame, frameNumber, iteration, procedureType);
+		
 		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			// generate filename and store into the FITS file
 			saveCcdFrame(procedureCcdFrame);			
 		}
 
 
-
 		return procedureCcdFrame;
 	}
+
+	// SM V3.0 - workaround for new restrictive Hibernate that does not support in memory associations across transaction/EJB boundaries - store in DB immediately
+    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    public ProcedureCcdFrame createAndPersistProcedureCcdFrame(
+            Long procedureId,
+            CcdFrame ccdFrame,
+            int frameNumber,
+            int iteration,
+            ProcedureType procedureType
+    ) {
+        Procedure procedure = em.find(Procedure.class, procedureId);
+
+        ProcedureCcdFrame frame = new ProcedureCcdFrame();
+        frame.setProcedure(procedure);
+        frame.setCcdFrame(ccdFrame);
+        frame.setProcedureFrameNumber(frameNumber);
+
+        if (procedureType.isCoarsePhasing()) {
+            frame.setProcedureIterationNumber(1);
+            frame.setPhasingStepNumber(iteration);
+            frame.setPhasingFilterNumber(0);
+        } else if (procedureType.isNarrowBandPhasing()) {
+            frame.setProcedureIterationNumber(1);
+            frame.setPhasingStepNumber(0);
+            frame.setPhasingFilterNumber(iteration);
+        } else {
+            frame.setProcedureIterationNumber(iteration);
+            frame.setPhasingStepNumber(0);
+            frame.setPhasingFilterNumber(0);
+        }
+
+        em.persist(frame);
+        em.flush(); // ensures visibility to other threads immediately
+
+        return frame;
+    }
+	
+    // V3.0 - replaces getLatestProcedureCcdFrame
+    public ProcedureCcdFrame findLatestProcedureCcdFrame(Procedure procedure) throws Exception {
+    	ProcedureCcdFrame procedureCcdFrame = em.createQuery("""
+                SELECT f
+                FROM ProcedureCcdFrame f
+                JOIN FETCH f.ccdFrame c
+                LEFT JOIN FETCH f.centroidMap cm
+                WHERE f.procedure.procedureId = :pid
+                ORDER BY f.procedureFrameNumber DESC
+            """, ProcedureCcdFrame.class)
+            .setParameter("pid", procedure.getProcedureId())
+            .setMaxResults(1)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
+    	
+    	CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
+    	hydrate(ccdFrame);
+    	
+    	return procedureCcdFrame;
+    }
+    
+    // V3.0 - transient CcdFrame fields must be populated whenever it is read in from DB
+    public void hydrate(CcdFrame ccdFrame) throws Exception {
+        if (ccdFrame.getRawFrame() == null) {
+        	loadRawFrameFromFits(ccdFrame.getFitsFilename(), ccdFrame);
+        }
+
+        if (ccdFrame.getCorrectedFrame() == null) {
+    		// we copy directly from raw frame if the corrected frame is desired and not yet initialized
+			float[][] correctedFrame = new float[1024][1024];
+			for (int i = 0; i < 1024; i++) {
+				for (int j = 0; j < 1024; j++) {
+					correctedFrame[i][j] = ccdFrame.getRawFrame()[i][j];
+				}
+			}
+        }
+    }
+
+    
 
 	/**
 	 * @return a list of all fits files in the fits repository path specified in the peas.properties file
@@ -728,6 +787,88 @@ public class FrameMgmt {
 		}
 		return ccdFrame;
 	}
+	
+	
+	public void loadRawFrameFromFits(String fitsFilename, CcdFrame ccdFrame) throws Exception {
+		
+		String frameFolder = peasProperties.getProp("org.tmt.aps.peas.fitsRepositoryPath");
+
+		String path = frameFolder + File.separator + fitsFilename;
+		Fits fitsFile = new Fits(path);
+		BasicHDU[] bhdus = fitsFile.read();
+
+
+		if (bhdus != null) {
+
+			for (int index = 0; index < bhdus.length; index++) {
+				BasicHDU hdu = bhdus[index];
+
+				logger.debug("hdu.class = " + hdu.getClass());
+
+				PrimaryHDU imhdu = (PrimaryHDU) hdu;
+				// imhdu.info();
+
+				Data data = imhdu.getData();
+
+				int leng = (int) data.getTrueSize(); // VS PADDED
+				logger.debug("Length=" + leng);
+				logger.debug("Data=" + data);
+				int[] axes = imhdu.getAxes();
+
+				logger.debug("data.getData: " + data.getData());
+
+				short[][] shortArray = (short[][]) data.getData();
+
+				logger.debug(imhdu.getBitPix() + " bits per pixel");
+				logger.debug("Data = " + data.getData().getClass());
+
+				int bpix = (int) imhdu.getBitPix();
+
+				ccdFrame.setBitPix(bpix);
+
+				ccdFrame.setNoOfAxes(imhdu.getHeader().getIntValue("NAXIS"));
+
+				ccdFrame.setAxes1(axes[1]);
+
+				ccdFrame.setAxes2(axes[0]);
+
+				short[][] rawFrame = new short[shortArray[0].length][shortArray.length];
+
+				for (int i = 0; i < shortArray[0].length; i++) {
+					for (int j = 0; j < shortArray.length; j++) {
+						rawFrame[i][j] = shortArray[j][i];
+					}
+				}
+
+				ccdFrame.setRawFrame(rawFrame);
+				
+				// get pupilMask
+				String mask = imhdu.getHeader().getStringValue("MASK");
+				
+				// TODO: we need metadata store that we can access for pupilmasktype so that Cd to MaskType mapping can be accessed.
+				// for now, hardcode it
+				
+				PupilMaskType headerPupilMaskType = null;
+				if (mask.equals("PT") || mask.equals("036")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_36);
+				} else if (mask.equals("FS") || mask.equals("508")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_508);
+				} else if (mask.equals("PH") || mask.equals("CPH") || mask.equals("160")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_160);
+				} else if (mask.equals("UFS")) {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_UFS);
+				} else {
+					headerPupilMaskType = physicalModel.getPupilMaskTypeById(PupilMaskType.PUPIL_MASK_TYPE_ID_SUFS);
+				}
+				
+				ccdFrame.setHeaderPupilMaskType(headerPupilMaskType);
+				
+			}
+
+		}
+
+	}
+	
 
 	/**
 	 * Saves a frame to a FITS file

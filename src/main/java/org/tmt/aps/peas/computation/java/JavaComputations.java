@@ -24,6 +24,7 @@ import org.tmt.aps.peas.config.model.AutoCenterTelConfig;
 import org.tmt.aps.peas.config.model.AutoRefMapConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
@@ -82,9 +83,10 @@ public class JavaComputations {
 
 	public static void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, 
 			float ccdLeftTemperature, float ccdRightTemperature, int numIterations,
-			Date currentDate, RefBeamMap currentRefMap) throws AutoRefMapCheckException {
+			Date currentDate, RefBeamMap currentRefMap, ProcedureCcdFrame procedureCcdFrame) throws AutoRefMapCheckException {
 
-		CcdFrame refMapFrame = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame().getCcdFrame();
+		
+		CcdFrame refMapFrame = procedureCcdFrame.getCcdFrame();
 		
 		CameraState cameraState = refMapFrame.getCameraState();
 		CcdState ccdState = refMapFrame.getCcdState();

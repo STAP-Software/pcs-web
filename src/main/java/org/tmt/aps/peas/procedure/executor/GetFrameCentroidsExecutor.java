@@ -437,7 +437,8 @@ public class GetFrameCentroidsExecutor {
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 	
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
-			ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
+
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
 			SubimageDefList subimageDefList = null;
@@ -601,10 +602,10 @@ public class GetFrameCentroidsExecutor {
 		return centroidMap;
 	}
 
-	FIResult handMark(Procedure procedure, FIConfig fiConfig) throws AbortProcedureException {
+	FIResult handMark(Procedure procedure, FIConfig fiConfig) throws AbortProcedureException, Exception {
 
 		List<FloatPoint> handMarked = null;
-		ProcedureCcdFrame procedureCcdFrame = procedure.getLatestProcedureCcdFrame();
+		ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
 		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		int mirrorCount = procedure.getProcedureConfigSet().getGlobalConfig().getMirrorCount();
 		Integer[] mirrorConfig = procedure.getProcedureConfigSet().getGlobalConfig().getMirrorList();

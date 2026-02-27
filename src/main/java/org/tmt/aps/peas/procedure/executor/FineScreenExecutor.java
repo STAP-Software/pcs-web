@@ -44,6 +44,7 @@ import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionMgmt;
@@ -250,8 +251,10 @@ public class FineScreenExecutor {
 				/*        PupilRegistration Subflow           */
 				/**********************************************/			
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
+				
+				ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
 
-				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+				FindCentroidsResult findCentroidsResult = procedureCcdFrame.getCentroidMap().getFindCentroidsResult();
 				
 	
 				/*****************************************************/

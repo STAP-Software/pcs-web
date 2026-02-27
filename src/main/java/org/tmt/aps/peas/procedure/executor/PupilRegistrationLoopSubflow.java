@@ -14,6 +14,8 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -31,6 +33,8 @@ public class PupilRegistrationLoopSubflow {
 	
 	@EJB
 	private UserPromptMgmt userPromptMgmt;
+	@EJB
+	private FrameMgmt frameMgmt;
 	@EJB
 	private StatusLogger statusLogger;
 	@EJB
@@ -60,7 +64,8 @@ public class PupilRegistrationLoopSubflow {
 			/**********************************************/
 			/*        PupilRegistration Subflow           */
 			/**********************************************/			
-			FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
+			FindCentroidsResult findCentroidsResult = procedureCcdFrame.getCentroidMap().getFindCentroidsResult();
 
 			boolean frameOk = pupilRegistrationSubflow.execute(procedure, findCentroidsResult);
 

@@ -46,6 +46,7 @@ import org.tmt.aps.peas.extInterface.business.DcsMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
@@ -329,9 +330,11 @@ public class NarrowBandPhasingExecutor {
 				/*        PupilRegistration Subflow           */
 				/**********************************************/
 				pupilRegistrationLoopSubflow.pupilRegistrationLoop(procedure, currentSession);
-										
-				FindCentroidsResult findCentroidsResult = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult();
-				CcdFrame ccdFrame = procedure.getLatestProcedureCcdFrame().getCcdFrame();
+				
+				ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
+				
+				FindCentroidsResult findCentroidsResult = procedureCcdFrame.getCentroidMap().getFindCentroidsResult();
+				CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 
 				//***********************************************//
 				//                 nbAnalyzeFrame                //

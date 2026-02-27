@@ -24,6 +24,8 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.GlobalConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CommandFailureException;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -49,6 +51,8 @@ public class PupilRegistrationSubflow {
 	private StatusLogger statusLogger;
 	@EJB
 	private CameraMgmt cameraMgmt;
+	@EJB
+	private FrameMgmt frameMgmt;
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
 	@EJB
@@ -95,11 +99,11 @@ public class PupilRegistrationSubflow {
 		 */
 		GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 		
-
+		ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
 		
 		PupilRegErrorResult pupilRegErrorResult = computationLibrary.calculatePupilRegError(
 			procedure.getProcedureConfigSet().getPupilRegErrorConfig(), 
-			procedure.getLatestProcedureCcdFrame().getCentroidMap(), 
+			procedureCcdFrame.getCentroidMap(), 
 			procedureConfig.getPupilMaskType().getNumSpots(), 
 			constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotPerp(),
 			constantsCache.getPrimaryMirrorSegmentConstants().getPeripheralSpotParallel(),

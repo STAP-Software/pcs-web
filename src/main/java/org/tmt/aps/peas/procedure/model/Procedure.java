@@ -5,6 +5,7 @@
  */
 package org.tmt.aps.peas.procedure.model;
 
+import java.lang.System.Logger;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
@@ -368,28 +369,6 @@ public class Procedure {
 	 */
 	public boolean isArchivedProcedure() {
 		return procedureState == PROCEDURE_STATE_COMPLETED || procedureState == PROCEDURE_STATE_ABORTED;
-	}
-
-	/**
-	 * Adds a procedureCcdFrame to this procedure
-	 * @param procedureCcdFrame the procedureCcdFrame to add
-	 */
-	public void addProcedureCcdFrame(ProcedureCcdFrame procedureCcdFrame) {
-		if (procedureCcdFrameList == null) {
-			procedureCcdFrameList = new ArrayList<ProcedureCcdFrame>();
-		}
-		procedureCcdFrameList.add(procedureCcdFrame);
-		
-	}
-	
-	/**
-	 * @return the most recent ProcedureCcdFrame in the list or null if the list does not exist
-	 */
-	public ProcedureCcdFrame getLatestProcedureCcdFrame() {
-		if (procedureCcdFrameList == null) {
-			return null;
-		}
-		return procedureCcdFrameList.get(procedureCcdFrameList.size()-1);
 	}
 	
 	/**

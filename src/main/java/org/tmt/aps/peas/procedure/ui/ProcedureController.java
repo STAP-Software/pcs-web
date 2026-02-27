@@ -1536,7 +1536,8 @@ public class ProcedureController implements Serializable {
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
 
-			float[][] frame = procedure.getLatestProcedureCcdFrame().getCcdFrame().getCorrectedFrame();
+			ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
+			float[][] frame = procedureCcdFrame.getCcdFrame().getCorrectedFrame();
 
 			FindCentResult findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
 			subimage = findCentResult.getSubimage();
@@ -1688,7 +1689,8 @@ public class ProcedureController implements Serializable {
 		int y = (Double.valueOf(yStr)).intValue(); 
 
 		// check for null so we don't get exceptions
-		if (selectedFrame.getCcdFrame().getRawFrame() != null) {
+		if ((selectedFrame != null) && (selectedFrame.getCcdFrame() != null) && (selectedFrame.getCcdFrame().getRawFrame()) != null) {
+
 			int size = selectedFrame.getCcdFrame().getRawFrame()[0].length;
 			
 			// place within bounds

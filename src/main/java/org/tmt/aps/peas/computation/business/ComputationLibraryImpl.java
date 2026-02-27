@@ -75,7 +75,9 @@ import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.config.model.PupilRegErrorConfig;
 import org.tmt.aps.peas.config.model.TelescopeConstants;
+import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FineTiltMirror;
@@ -133,6 +135,8 @@ public class ComputationLibraryImpl {
 
 	@EJB
 	StatusLogger statusLogger;
+	@EJB
+	FrameMgmt frameMgmt;
 
 	
 	private static final int NUM_SUFS_SEGMENT_SPOTS = 127;
@@ -1090,12 +1094,14 @@ public class ComputationLibraryImpl {
 	 * @throws AutoRefMapCheckException thrown if a new reference map needs to be taken
 	 */
 	public void autoRefMapCheck(AutoRefMapConfig autoRefMapConfig, Point currentCoarsePosition, Point currentFinePosition, float ccdLeftTemperature, float ccdRightTemperature, 
-			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException {
+			int numIterations, Date currentDate, RefBeamMap currentRefMap) throws ComputationException, AutoRefMapCheckException, Exception {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
 		
+		ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(currentRefMap.getProcedureRefBeamMap().getProcedure());
+		
 		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, ccdLeftTemperature, ccdRightTemperature,  
-				numIterations, currentDate, currentRefMap);
+				numIterations, currentDate, currentRefMap, procedureCcdFrame);
 		
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
