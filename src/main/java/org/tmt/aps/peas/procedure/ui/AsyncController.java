@@ -43,7 +43,7 @@ import org.tmt.aps.peas.visualization.ui.VisualizationController;
  * @author smichaels
  *
  */
-@Named
+@Named("asyncController")
 @SessionScoped
 public class AsyncController implements Serializable {
 

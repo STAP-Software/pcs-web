@@ -158,38 +158,47 @@ public class FrameMgmt {
 	 * @param procedureCcdFrame the procedureCcdFrame structure containing the information to create the FITS filename and the raw frame
 	 * @throws Exception
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
-	public void saveCcdFrame(ProcedureCcdFrame procedureCcdFrame) throws Exception {
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void saveCcdFrame(Procedure procedure, CcdFrame ccdFrame, int procedureIterationNumber, int phasingStepNumber) throws Exception {
 		// determine FITS file name
 		
-		ProcedureConfig procedureConfig = procedureCcdFrame.getProcedure().getProcedureConfigSet().getProcedureConfig();
+		ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 		
 		int ufsSegment = procedureConfig.getUfsSegment() == null ? -1 : procedureConfig.getUfsSegment();
 		int sufsGroup = procedureConfig.getSufsGroup() == null ? -1 : procedureConfig.getSufsGroup();
 		
 		FitsFilename fitsFilename = new FitsFilename(
-				procedureCcdFrame.getProcedure().getTelescope().getTelescopeId(), 
-				procedureCcdFrame.getProcedure().getProcedureType().getProcedureTypeCd(), 
-				procedureCcdFrame.getProcedure().getProcedureNumber(),
-				procedureCcdFrame.getProcedureIterationNumber(), 
+				procedure.getTelescope().getTelescopeId(), 
+				procedure.getProcedureType().getProcedureTypeCd(), 
+				procedure.getProcedureNumber(),
+				procedureIterationNumber, 
 				ufsSegment,
 				sufsGroup, 
-				procedureCcdFrame.getPhasingStepNumber(),
+				phasingStepNumber,
 				procedureConfig.getFilter().getFilterNameAsNumber(),
 				procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeName(),
 				procedureConfig.getFilter().getFilterName());
 
 		// save the frame to a FITS file
-		CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 		ccdFrame.setFitsFilename(fitsFilename.generateFileName());
-		ccdFrame.setInstrumentId(procedureCcdFrame.getProcedure().getInstrument().getInstrumentId());
+		ccdFrame.setInstrumentId(procedure.getInstrument().getInstrumentId());
 		
 		
 		boolean overwritten = saveFitsFrame(ccdFrame);
 
+		CameraState cameraState = ccdFrame.getCameraState();
+		
+		if (cameraState != null) {
+			logger.info(MessageGenerator.generateMessage("record.create", "cameraState"));
+			em.persist(cameraState);
+		}
+		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
+
+		
 		// save the Ccd record with the fits file name
-		//logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
-		//em.persist(ccdFrame);
+		// V3.0 uncommented
+		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
+		em.persist(ccdFrame);
 
 		//associateCcdFrame(procedureCcdFrame);
 		
@@ -498,20 +507,23 @@ public class FrameMgmt {
 		// SM V3.0 - this might get deprecated
 		// procedure.addProcedureCcdFrame(procedureCcdFrame);
 
+		//if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+			// generate filename and store into the FITS file
+	        int phasingStepNumber = procedureType.isCoarsePhasing() ? iteration : 0;
+			saveCcdFrame(procedure, ccdFrame, iteration, phasingStepNumber);			
+		//}
+
+		
 		// SM V3.0  always store in database, don't wait until end of procedure 
 		ProcedureCcdFrame procedureCcdFrame = createAndPersistProcedureCcdFrame(procedure.getProcedureId(), ccdFrame, frameNumber, iteration, procedureType);
 		
-		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
-			// generate filename and store into the FITS file
-			saveCcdFrame(procedureCcdFrame);			
-		}
 
 
 		return procedureCcdFrame;
 	}
 
 	// SM V3.0 - workaround for new restrictive Hibernate that does not support in memory associations across transaction/EJB boundaries - store in DB immediately
-    @TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public ProcedureCcdFrame createAndPersistProcedureCcdFrame(
             Long procedureId,
             CcdFrame ccdFrame,
@@ -521,40 +533,38 @@ public class FrameMgmt {
     ) {
         Procedure procedure = em.find(Procedure.class, procedureId);
 
-        ProcedureCcdFrame frame = new ProcedureCcdFrame();
-        frame.setProcedure(procedure);
-        frame.setCcdFrame(ccdFrame);
-        frame.setProcedureFrameNumber(frameNumber);
+        ProcedureCcdFrame procedureCcdFrame = new ProcedureCcdFrame();
+        procedureCcdFrame.setProcedure(procedure);
+        procedureCcdFrame.setCcdFrame(ccdFrame);
+        procedureCcdFrame.setProcedureFrameNumber(frameNumber);
 
-        if (procedureType.isCoarsePhasing()) {
-            frame.setProcedureIterationNumber(1);
-            frame.setPhasingStepNumber(iteration);
-            frame.setPhasingFilterNumber(0);
-        } else if (procedureType.isNarrowBandPhasing()) {
-            frame.setProcedureIterationNumber(1);
-            frame.setPhasingStepNumber(0);
-            frame.setPhasingFilterNumber(iteration);
-        } else {
-            frame.setProcedureIterationNumber(iteration);
-            frame.setPhasingStepNumber(0);
-            frame.setPhasingFilterNumber(0);
-        }
+        procedureCcdFrame.setPhasingStepNumber(procedureType.isCoarsePhasing() ? iteration : 0);
+        procedureCcdFrame.setProcedureIterationNumber(procedureType.isCoarsePhasing() || procedureType.isNarrowBandPhasing() ? 1 : iteration);
+        procedureCcdFrame.setPhasingFilterNumber(procedureType.isNarrowBandPhasing() ? iteration : 0);
+        
 
-        em.persist(frame);
+        em.persist(procedureCcdFrame);
         em.flush(); // ensures visibility to other threads immediately
 
-        return frame;
+        return procedureCcdFrame;
+    }
+    
+    // V3.0 helper method
+    public int determinePhasingStepNumber(ProcedureType procedureType, int iteration) {
+            	
+    	return procedureType.isCoarsePhasing() ? iteration : 0;
+
     }
 	
     // V3.0 - replaces getLatestProcedureCcdFrame
     public ProcedureCcdFrame findLatestProcedureCcdFrame(Procedure procedure) throws Exception {
     	ProcedureCcdFrame procedureCcdFrame = em.createQuery("""
                 SELECT f
-                FROM ProcedureCcdFrame f
-                JOIN FETCH f.ccdFrame c
-                LEFT JOIN FETCH f.centroidMap cm
-                WHERE f.procedure.procedureId = :pid
-                ORDER BY f.procedureFrameNumber DESC
+				FROM ProcedureCcdFrame f
+				JOIN FETCH f.ccdFrame
+				LEFT JOIN FETCH f.centroidMap
+				WHERE f.procedure.procedureId = :pid
+				ORDER BY f.procedureFrameNumber DESC
             """, ProcedureCcdFrame.class)
             .setParameter("pid", procedure.getProcedureId())
             .setMaxResults(1)

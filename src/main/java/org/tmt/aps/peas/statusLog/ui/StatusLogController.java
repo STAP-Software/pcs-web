@@ -22,7 +22,7 @@ import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
  * JSF Controller class for the StatusLog related functionality in the PEAS user interface.  Exposes a procedureStatusLog to the user interface.
  * @author smichaels
  */
-@Named
+@Named("statusLogController")
 @SessionScoped
 public class StatusLogController implements Serializable {
 
@@ -66,6 +66,14 @@ public class StatusLogController implements Serializable {
 	 */
 	public void clearProcedureStatusLog() {
 		procedureStatusLog = new ProcedureStatusLog();
+	}
+	
+	
+	public int getLogEntryCount() {
+	    if (procedureStatusLog == null || procedureStatusLog.getLogEntryList() == null) {
+	        return -1;
+	    }
+	    return procedureStatusLog.getLogEntryList().size();
 	}
 	
 }

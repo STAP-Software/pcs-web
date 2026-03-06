@@ -9,15 +9,14 @@
 	<ui:define name="content">
 	
 		<h:form>
-			<p:poll async="true" immediate="true" interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady :procedureDetailForm:miscPanel:cameraStatusPanel" />
+			<p:poll async="true" immediate="true" interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable :procedureDetailForm:miscPanel:cameraStatusPanel" />
 		</h:form>
 		
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
-			<p:poll widgetVar="procedureExecutionPoller" autoStart="false"
-				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable" listener="#{asyncController.asyncListener}"
-				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()"
-				rendered="#{sessionController.runProcedurePermission}" />
+			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" interval="2"
+				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm " listener="#{asyncController.asyncListener}"
+				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()" />
 		</h:form>
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
@@ -334,7 +333,7 @@
 					<p:tab title="Procedure Event Log">
 						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:206px" mode="native">
 						
-						<h:outputText value="#{statusLogController.procedureStatusLog != null ? statusLogController.procedureStatusLog.logEntryList.size : -1} entries" />
+						<h:outputText value="#{statusLogController.logEntryCount} entries" />
 						
 							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" lazy="false">
 

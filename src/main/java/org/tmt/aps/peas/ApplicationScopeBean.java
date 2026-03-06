@@ -192,7 +192,7 @@ public class ApplicationScopeBean implements Serializable {
 				procedureController.doViewNextArchivedProcedure();
 			} else {
 				breadcrumbMenuBean.removeTo("Procedure #");
-				//procedureController.doViewProcedure();
+				//procedureController.doViewArchivedProcedure();
 			}
 		} else if (path.equals("/modules/diagnostic/acsManualInterface.xhtml")) {
 			acsManualController.doViewAcsManualInterface();

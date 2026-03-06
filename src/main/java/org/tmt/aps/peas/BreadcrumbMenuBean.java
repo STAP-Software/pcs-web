@@ -1,188 +1,179 @@
-/**
- * @author Scott Michaels
- * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
- * All Rights Reserved.
- */
 package org.tmt.aps.peas;
 
 import java.io.Serializable;
-import java.util.List;
+import java.util.*;
 
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.component.UIComponent;
+import jakarta.faces.context.FacesContext;
 import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
-import org.primefaces.model.menu.MenuItem;
-import org.primefaces.model.menu.DefaultMenuItem;
-import org.primefaces.model.menu.MenuModel;
-import org.primefaces.model.menu.Submenu;
-import org.primefaces.model.menu.DefaultSubMenu;
-import org.primefaces.model.menu.DefaultMenuModel;
-import org.primefaces.model.menu.MenuElement;
+import org.primefaces.model.menu.*;
 
-
-
-/**
- * JSF named object controlling the breadcrumb
- * @author smichaels
- *
- */
-@Named
+@Named("breadcrumbMenuBean")
 @SessionScoped
 public class BreadcrumbMenuBean implements Serializable {
 
-	Logger logger = Logger.getLogger(this.getClass());
+    private static final long serialVersionUID = 1L;
 
-	private MenuModel model;
-	String immediateUrl;
+    private final Logger logger = Logger.getLogger(this.getClass());
 
-	/**
-	 * Default constructor: creates a breadcrumb menu model with one menu item: the session list
-	 */
-	public BreadcrumbMenuBean() {
-		model = new DefaultMenuModel();
-		MenuItem item = DefaultMenuItem.builder()
-		.value("Session List")
-		.url("sessionList.xhtml")
-		.icon(null)
-		.id("breadCrumbMenu_Item_0")
-		.build();  // need to set ids explicitly to avoid collisions in view
-		
-		
-		model.getElements().add(item);
-	}
-	
-	/**
-	 * Clears the breadcrumb menu model and adds one menu item
-	 * @param name the name of the menu item
-	 * @param url the URL it links to
-	 */
-	public void addFirstItem(String name, String url) {
-		model = new DefaultMenuModel();
-		
-		MenuItem item = DefaultMenuItem.builder()
-			.value(name)
-			.url(addBreadcrumbSource(url))
-			.icon(null)
-			.id("breadcrumbMenu_Item_" + model.getElements().size())
-			.build();  // need to set ids explicitly to avoid collisions in view
-		
-			
-		immediateUrl = addBreadcrumbSource(url);
+    private List<Crumb> crumbs = new ArrayList<>();
 
-		model.getElements().add(item);
+    // kept for compatibility with existing code
+    private String immediateUrl;
 
+    public BreadcrumbMenuBean() {
 
-	}
-	
-	/**
-	 * Adds one menu item to the breadcrumb
-	 * @param name the name of the menu item
-	 * @param url the URL it links to
-	 */
-	public void addItem(String name, String url) {
-		MenuItem item = DefaultMenuItem.builder()
-			.value(name)
-			.url(addBreadcrumbSource(url))
-			.icon(null)
-			.id("breadcrumbMenu_Item_" + model.getElements().size())
-			.build();  // need to set ids explicitly to avoid collisions in view
-		
-		
+        crumbs.add(new Crumb(
+                "Home",
+                "/modules/session/sessionList.xhtml?faces-redirect=true",
+                "pi pi-home"));
 
-		
-		immediateUrl = addBreadcrumbSource(url);
+        crumbs.add(new Crumb(
+                "Session List",
+                "/modules/session/sessionList.xhtml?faces-redirect=true",
+                ""));
+    }
 
+    // ---- Build PrimeFaces model ----
+    public MenuModel getModel() {
 
-		model.getElements().add(item);
-	}
-	
-	/**
-	 * Adds a menu item to the breadcrumb at the front of the list
-	 * @param name the name of the menu item
-	 * @param url the URL it links to
-	 */
-	public void insertFirst(String name, String url) {
-		MenuItem item = DefaultMenuItem.builder()
-			.value(name)
-			.url(addBreadcrumbSource(url))
-			.icon(null)
-			.id("breadcrumbMenu_Item_" + model.getElements().size())
-			.build();  // need to set ids explicitly to avoid collisions in view
-		
-		
-		
-		if (model.getElements().size() == 0) {
-			// if this will be the only item, then set the immediateUrl
-			immediateUrl = addBreadcrumbSource(url);
-		}
+        DefaultMenuModel model = new DefaultMenuModel();
 
-		model.getElements().add(0, item);
-	}
-	
-	private String addBreadcrumbSource(String url) {
-		if (url.contains("?")) {
-			return url + "&from-breadcrumb=true";
-		} else {
-			return url + "?from-breadcrumb=true";
-		}
-	}
-	
-	/**
-	 * Removes all menuitems from the breadcrumb until reaching the item matching name
-	 * @param name the name to match
-	 */
-	public void removeTo(String value) {
-	    List<MenuElement> elements = model.getElements();
+        for (int i = 0; i < crumbs.size(); i++) {
 
-	    for (int i = elements.size() - 1; i >= 0; i--) {
-	        MenuElement element = elements.get(i);
+            Crumb c = crumbs.get(i);
 
-	        if (element instanceof MenuItem) {
-	            MenuItem item = (MenuItem) element;
+            DefaultMenuItem item = DefaultMenuItem.builder()
+                    .value(c.label)
+                    .command("#{breadcrumbMenuBean.navigate}")
+                    .ajax(false)
+                    .icon(c.icon)
+                    .id("breadcrumbMenu_Item_" + i)
+                    .build();
 
-	            if (value.equals(item.getValue())) {
-	                break; // stop trimming
-	            } else {
-	                elements.remove(i);
-	            }
-	        }
-	    }
-	}
+            Map<String, List<String>> params = new HashMap<>();
+            params.put("crumbIndex", Collections.singletonList(String.valueOf(i)));
+            params.put("target", Collections.singletonList(c.outcome));
 
-	/**
-	 * @return the breadcrumb menu model
-	 */
-	public MenuModel getModel() {
-		return model;
-	}
+            item.setParams(params);
 
-	/**
-	 * @return the immediate URL, which is the URL of the last item in the breadcrumb
-	 */
-	public String getImmediateUrl() {
-		return immediateUrl;
-	}
-	
-	/**
-	 * @return true if the immediate URL is the procedurePerspective
-	 */
-	public boolean getInProcedure() {
-		
-		logger.debug("immediateUrl = " + immediateUrl);
-		
-		return immediateUrl != null && immediateUrl.contains("procedurePerspective");
-	}
+            model.getElements().add(item);
+        }
 
-	/**
-	 * Removes the last item in the breadcrumb
-	 */
-	public void removeLast() {
-		List<MenuElement> elements = model.getElements();
-	    if (!elements.isEmpty()) {
-	        elements.remove(elements.size() - 1);
-	    }
-	}
-	
+        return model;
+    }
+
+    // ---- Navigation handler ----
+    public String navigate() {
+
+        FacesContext ctx = FacesContext.getCurrentInstance();
+        Map<String,String> params =
+                ctx.getExternalContext().getRequestParameterMap();
+
+        int index = Integer.parseInt(params.get("crumbIndex"));
+        String target = params.get("target");
+
+        while (crumbs.size() > index + 1) {
+            crumbs.remove(crumbs.size() - 1);
+        }
+
+        immediateUrl = target;
+
+        return target;
+    }
+
+    // ---- Breadcrumb operations ----
+
+    public void addFirstItem(String name, String command) {
+
+        System.out.println("BREADCRUMB: ADD FIRST ITEM");
+
+        if (crumbs.size() > 1) {
+            crumbs.subList(1, crumbs.size()).clear();
+        }
+
+        crumbs.add(new Crumb(name, command, ""));
+        immediateUrl = null;
+    }
+
+    public void addItem(String name, String command) {
+
+        System.out.println("BREADCRUMB: ADD ITEM");
+
+        crumbs.add(new Crumb(name, command, ""));
+        immediateUrl = null;
+    }
+
+    public void insertFirst(String name, String command) {
+
+        System.out.println("BREADCRUMB: INSERT FIRST");
+
+        crumbs.add(1, new Crumb(name, command, ""));
+        immediateUrl = null;
+    }
+
+    public void removeTo(String value) {
+
+        System.out.println("BREADCRUMB: REMOVE TO " + value);
+
+        for (int i = crumbs.size() - 1; i >= 1; i--) {
+
+            Crumb c = crumbs.get(i);
+
+            // unchanged as requested
+            if (c.label.contains(value)) {
+                break;
+            } else {
+                crumbs.remove(i);
+            }
+        }
+    }
+
+    public void removeLast() {
+
+        System.out.println("BREADCRUMB: REMOVE LAST");
+
+        if (crumbs.size() > 1) {
+            crumbs.remove(crumbs.size() - 1);
+        }
+    }
+
+    // ---- Compatibility methods ----
+
+    public String getImmediateUrl() {
+        return immediateUrl;
+    }
+
+    public boolean isInProcedure() {
+        return immediateUrl != null &&
+               immediateUrl.contains("procedurePerspective");
+    }
+
+    // ---- Navigation convenience ----
+
+    public String goSessionList() {
+        return "/modules/session/sessionList.xhtml?faces-redirect=true";
+    }
+
+    public String goProcedurePerspective() {
+        System.out.println("goProcedurePerspective");
+        return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
+    }
+
+    // ---- Internal crumb object ----
+
+    private static class Crumb implements Serializable {
+
+        String label;
+        String outcome;
+        String icon;
+
+        Crumb(String label, String outcome, String icon) {
+            this.label = label;
+            this.outcome = outcome;
+            this.icon = icon;
+        }
+    }
 }

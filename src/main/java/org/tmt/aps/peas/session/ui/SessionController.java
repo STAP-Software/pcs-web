@@ -109,7 +109,7 @@ public class SessionController implements Serializable {
 	
 	String password;
 	
-	boolean runProcedurePermission;
+	boolean runProcedurePermission = true;
 	boolean ifCommandPermission;
 	boolean configPermission;
 	boolean includeTestData;

@@ -195,7 +195,7 @@ public class GetFrameCentroidsExecutor {
 
 			computationLibrary.evalFiResult(fiResult, fiConfig, procedureConfig);
 
-			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+			centroidMap = findAndDisplayCentroids(procedure, procedureCcdFrame, fiConfig, fiResult);
 
 			// test for non-linear subimage maximums
 			List<Integer> resultList = computationLibrary.checkSubimageIntensities(centroidMap, physicalModel.getInstrument().getCcd()
@@ -283,7 +283,7 @@ public class GetFrameCentroidsExecutor {
 			
 				// fracThreshExceededFindCent is only thrown from findCent, so we don't need to find again
 				if (!e.isFracThreshExceededFindCent()) {
-					centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);				
+					centroidMap = findAndDisplayCentroids(procedure, procedureCcdFrame, fiConfig, fiResult);				
 				}
 				procedureCcdFrame.setCentroidMap(centroidMap);
 			}
@@ -348,7 +348,7 @@ public class GetFrameCentroidsExecutor {
 		if (procedure.getProcedureType().isPassiveTilt()) {
 
 			fiResult = handMark(procedure, fiConfig);
-			centroidMap = findAndDisplayCentroids(procedure, fiConfig, fiResult);
+			centroidMap = findAndDisplayCentroids(procedure, procedureCcdFrame, fiConfig, fiResult);
 			procedureCcdFrame.setCentroidMap(centroidMap);
 
 		} 
@@ -429,7 +429,7 @@ public class GetFrameCentroidsExecutor {
 		return centroidMap;
 	}
 
-	private CentroidMap findAndDisplayCentroids(Procedure procedure, FIConfig fiConfig, FIResult fiResult) throws Exception {
+	private CentroidMap findAndDisplayCentroids(Procedure procedure, ProcedureCcdFrame procedureCcdFrame, FIConfig fiConfig, FIResult fiResult) throws Exception {
 
 
 		try {
@@ -437,7 +437,6 @@ public class GetFrameCentroidsExecutor {
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 	
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
-			ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
 
 			CcdFrame ccdFrame = procedureCcdFrame.getCcdFrame();
 	
