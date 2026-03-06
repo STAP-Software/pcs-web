@@ -113,7 +113,7 @@ public class AsyncController implements Serializable {
 	 */
 	public void asyncListener() {
 
-		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
+		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
 		
 		checkUserPrompt();
 		
@@ -239,7 +239,6 @@ public class AsyncController implements Serializable {
 
 		// refresh the controller from the logger to get it to the display
 		statusLogController.refreshCurrentProcedureStatusLog();
-		
 
 		//PrimeFaces.current().ajax().update("procedureDetailForm:miscPanel");
 		PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");

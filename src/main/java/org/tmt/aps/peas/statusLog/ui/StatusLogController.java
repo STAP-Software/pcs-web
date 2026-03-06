@@ -69,11 +69,5 @@ public class StatusLogController implements Serializable {
 	}
 	
 	
-	public int getLogEntryCount() {
-	    if (procedureStatusLog == null || procedureStatusLog.getLogEntryList() == null) {
-	        return -1;
-	    }
-	    return procedureStatusLog.getLogEntryList().size();
-	}
 	
 }

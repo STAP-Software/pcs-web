@@ -16,7 +16,10 @@
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" interval="2"
 				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm " listener="#{asyncController.asyncListener}"
-				stop="#{asyncController.onCompletePerformed}" oncomplete="scrollStatusLog()" />
+				 oncomplete="scrollStatusLog()" />
+				 
+				 <!-- stop="#{asyncController.onCompletePerformed}" -->
+				
 		</h:form>
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
@@ -303,9 +306,19 @@
 
 						<p:spacer height="10px" width="40px" />
 						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}">
-							<p:commandButton id="startButton" value="Start" icon="ui-icon-play" action="#{procedureController.doExecuteProcedure}" styleClass="noupdate"
-								onclick="startButton2.disable();" oncomplete="procedureExecutionPoller.start();" widgetVar="startButton2" update=":menuForm :errorGrowl"
-								disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
+							
+							
+							<p:commandButton id="startButton"
+							icon="pi pi-play"
+    						value="Start"
+    						action="#{procedureController.doExecuteProcedure}"
+    						update=":menuForm :errorGrowl"
+    						widgetVar="startButton2"
+    						onclick="startButton2.disable();"
+    						disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
+							
+							
+							
 							<p:spacer width="30px" />
 							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
 							<br />
@@ -333,11 +346,9 @@
 					<p:tab title="Procedure Event Log">
 						<p:scrollPanel id="procedureEventLogPanel" style="width:320px;height:206px" mode="native">
 						
-						<h:outputText value="#{statusLogController.logEntryCount} entries" />
-						
-							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" lazy="false">
+							<p:dataTable styleClass="eventLogTable" var="logEntry" value="#{statusLogController.procedureStatusLog.logEntryList}" lazy="false" style="width:100%">
 
-								<p:column headerText="Time">
+								<p:column headerText="Time" style="width:70px">
 									<h:outputText value="#{logEntry.createDate}" style="font-size: 10px">
 										<f:convertDateTime pattern="hh:mm:ss" />
 									</h:outputText>

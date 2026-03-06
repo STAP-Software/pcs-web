@@ -954,7 +954,8 @@ public class ProcedureController implements Serializable {
 			centerTelescopeExecutor.executeProcedure(procedure, sessionController.getCurrentSession());
 		}
 		
-
+		PrimeFaces.current().executeScript("PF('procedureExecutionPoller').start();");
+		
 		logger.debug("doExecuteProcedure::after executor call");
 
 	}

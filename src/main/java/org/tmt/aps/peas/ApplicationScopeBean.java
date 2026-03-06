@@ -94,6 +94,8 @@ public class ApplicationScopeBean implements Serializable {
 	public void preRenderView(ComponentSystemEvent e) {
 
 		Logger logger = Logger.getLogger(this.getClass());
+		
+	
 
 		// workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -167,8 +169,7 @@ public class ApplicationScopeBean implements Serializable {
 		if (path.equals(breadcrumbMenuBean.getImmediateUrl()) && path.equals("/modules/session/sessionList.xhtml")) {
 			// the same URL as the last action performed, we assume this is a result of a JSF action
 			return;
-		}
-
+		}		
 		
 		// We only handle 'top level' navigation points, which are faces-redirect=true
 
@@ -186,12 +187,14 @@ public class ApplicationScopeBean implements Serializable {
 			refBeamController.doViewReferenceBeam();
 		} else if (path.equals("/modules/config/missingSpots.xhtml")) {
 			missingSpotsController.doViewMissingSpots();
-		} else if (path.contains("/modules/procedure/procedurePerspective.") && facesRedirect != null) {
+		} else if (path.contains("/modules/procedure/procedurePerspective.")) {
+		//} else if (path.contains("/modules/procedure/procedurePerspective.") && facesRedirect != null) {
 			
 			if (test != null) {
+			
 				procedureController.doViewNextArchivedProcedure();
 			} else {
-				breadcrumbMenuBean.removeTo("Procedure #");
+				//breadcrumbMenuBean.removeTo("Procedure #");
 				//procedureController.doViewArchivedProcedure();
 			}
 		} else if (path.equals("/modules/diagnostic/acsManualInterface.xhtml")) {

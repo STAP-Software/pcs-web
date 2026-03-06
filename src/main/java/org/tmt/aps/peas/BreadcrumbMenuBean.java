@@ -100,7 +100,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void addItem(String name, String command) {
 
-        System.out.println("BREADCRUMB: ADD ITEM");
+        System.out.println("BREADCRUMB: ADD ITEM, name = " + name + ", command = " + command);
 
         crumbs.add(new Crumb(name, command, ""));
         immediateUrl = null;
