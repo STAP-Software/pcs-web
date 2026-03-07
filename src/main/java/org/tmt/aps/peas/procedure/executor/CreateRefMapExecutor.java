@@ -202,7 +202,8 @@ public class CreateRefMapExecutor {
 		refBeamMap.setRefBeamDefMapFlg(false);
 		
 		Integer sufsGroupNumber = procedure.getProcedureConfigSet().getProcedureConfig().getSufsGroup();
-		sufsGroupNumber = (sufsGroupNumber > 0) ? sufsGroupNumber : null;
+		// V3.0 handle sufsGroupNumber == null
+		sufsGroupNumber = (sufsGroupNumber == null || sufsGroupNumber > 0) ? sufsGroupNumber : null;
 		
 		refBeamMap.setSufsGroupNumber(sufsGroupNumber);
 

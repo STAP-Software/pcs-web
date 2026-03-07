@@ -400,6 +400,9 @@ public class ProcedureExecutionMgmt {
 
 			// associate ref beam maps
 			
+			// V3.0 - maybe not procedure, we need to understand when refBeamMaps are created and maybe store in procedureExecutionState as currentRefBeamMap
+			// also store ref beam map when it is first made?
+		
 			for (RefBeamMap refBeamMap : procedure.getAllRefBeamMaps()) {
 				
 				// if refBeam map does not exist, then create it

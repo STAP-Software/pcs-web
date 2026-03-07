@@ -16,7 +16,7 @@
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
 			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" interval="2"
 				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm " listener="#{asyncController.asyncListener}"
-				 oncomplete="scrollStatusLog()" />
+				 oncomplete="scrollStatusLog()" stop="#{asyncController.onCompletePerformed}" />
 				 
 				 <!-- stop="#{asyncController.onCompletePerformed}" -->
 				

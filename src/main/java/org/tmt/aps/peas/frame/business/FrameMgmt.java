@@ -485,6 +485,7 @@ public class FrameMgmt {
 	 * @return a procedureCcdFrame structure populated with the ccdFrame and procedure.  
 	 * @throws Exception
 	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
 	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
 			ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {
@@ -517,7 +518,8 @@ public class FrameMgmt {
 		// SM V3.0  always store in database, don't wait until end of procedure 
 		ProcedureCcdFrame procedureCcdFrame = createAndPersistProcedureCcdFrame(procedure.getProcedureId(), ccdFrame, frameNumber, iteration, procedureType);
 		
-
+		// SM V3.0 - store the procedureCcdFrame where everyone can get it without having to read the Procedure record again
+		procedureExecutionState.setCurrentProcedureCcdFrame(procedureCcdFrame);
 
 		return procedureCcdFrame;
 	}

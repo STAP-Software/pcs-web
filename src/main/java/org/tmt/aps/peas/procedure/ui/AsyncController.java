@@ -253,10 +253,14 @@ public class AsyncController implements Serializable {
 			
 			// if frame from file, and going from create ref map and back, we can loose procedure context, 
 			// so don't display if the procedure does not have that frame number
-			if (procedureController.getProcedure().getProcedureCcdFrameList().size() > selectedFrameNumber) {
+			
+			// V3.0 there is no list of ProcedureCcdFrames that persist in the Procedure EJB across transaction boundaries (New Hibernate rule)
+			// so we store the current ProcedureCcdFrame in the ProcedureExecutionState and get it from there
+			//if (procedureController.getProcedure().getProcedureCcdFrameList().size() > selectedFrameNumber) {
 
 				procedureController.setSelectedFrameNumber(selectedFrameNumber);
-				ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
+				//ProcedureCcdFrame selectedFrame = procedureController.getProcedure().getProcedureCcdFrameList().get(selectedFrameNumber);
+				ProcedureCcdFrame selectedFrame = procedureExecutionState.getCurrentProcedureCcdFrame();
 				procedureController.setSelectedFrame(selectedFrame);
 				procedureController.setBlankImage(false); // hack so that new images are never considered overwritten
 				
@@ -278,7 +282,7 @@ public class AsyncController implements Serializable {
 					PrimeFaces.current().executeScript("instructionDialog.show()");
 				}
 				
-			}
+			//}
 			
 			setDisplayNewFrame(false);
 		}

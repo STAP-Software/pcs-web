@@ -11,6 +11,7 @@ import jakarta.inject.Named;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.frame.model.CcdFrame;
+import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 
@@ -37,6 +38,7 @@ public class ProcedureExecutionState {
 	private boolean abortRequested;
 	private boolean onCompletePerformed;
 	private CcdFrame currentFrame;
+	private ProcedureCcdFrame currentProcedureCcdFrame;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
 	private ProcedureOutputable currentOutputTarget;
@@ -74,6 +76,14 @@ public class ProcedureExecutionState {
 
 	public void setCurrentFrame(CcdFrame currentFrame) {
 		this.currentFrame = currentFrame;
+	}
+
+	public ProcedureCcdFrame getCurrentProcedureCcdFrame() {
+		return currentProcedureCcdFrame;
+	}
+
+	public void setCurrentProcedureCcdFrame(ProcedureCcdFrame currentProcedureCcdFrame) {
+		this.currentProcedureCcdFrame = currentProcedureCcdFrame;
 	}
 
 	public Procedure getCurrentProcedure() {
