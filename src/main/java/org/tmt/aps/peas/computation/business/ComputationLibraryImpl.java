@@ -456,11 +456,17 @@ public class ComputationLibraryImpl {
 			}
 		}
 		
+		// V3.0 - force scale values should not be calculated from anything when not used.  This should be always true for ref beam maps.
+		float forceScaleValue = 1.0f;
+		float forceRotationDeg = 0.0f;
+		
 		// Force scale and rotation values, potentially coming from current ref map
-		float forceScaleValue = (fiConfig.isForceScale() && fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
-				.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
-		float forceRotationDeg = (fiConfig.isForceRotation() && fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap
-				.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
+		if (fiConfig.isForceScale()) {
+			forceScaleValue = (fiConfig.getForceScaleSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap.getCentroidMap().getScale() : fiConfig.getForceScaleValue();
+		}
+		if (fiConfig.isForceRotation()) {
+			forceRotationDeg = (fiConfig.getForceRotationSource() == FIConfig.FORCE_SOURCE_REF_MAP) ? currentRefMap.getCentroidMap().getRotation() : fiConfig.getForceRotationValue();
+		}
 
 		float forceRotationRad = forceRotationDeg * (float) Constants.DEG2RAD;
 

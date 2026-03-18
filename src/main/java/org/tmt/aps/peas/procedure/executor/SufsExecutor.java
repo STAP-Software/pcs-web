@@ -210,7 +210,7 @@ public class SufsExecutor {
 				}
 			}
 
-			procedure.addRefBeamMap(currentRefMap);
+			procedureExecutionState.setCurrentRefMap(currentRefMap);
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 
@@ -330,7 +330,7 @@ public class SufsExecutor {
 				int[][] sufsGroupSegmentToMask = constantsCache.getSufsConstants().getSufsGroupSegmentToMask();
 
 				SufsSegmentOffsetsResult sufsCentroidOffsets = computationLibrary.calculateSufsCentroidOffsets(findCentroidsResult,
-						procedure.getCurrentRefBeamMap().getCentroidMap().getFindCentroidsResult(),
+						procedureExecutionState.getCurrentRefMap().getCentroidMap().getFindCentroidsResult(),
 						procedure.getProcedureConfigSet().getCentroidOffsetsConfig(), procedureConfig.getPupilMaskType(),
 						subimageDefList.getNspotTypes(), subimageDefList.getMissingSpotFlags(), sufsGroupSegmentToMask,
 						centroidOffsetsConfig.getSufsIgnoreSubimageThreshold());

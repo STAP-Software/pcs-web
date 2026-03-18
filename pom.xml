@@ -139,6 +139,7 @@
 		    </exclusions>
 		</dependency>
         
+        
 		<dependency>
 		  <groupId>org.jboss.logging</groupId>
 		  <artifactId>jboss-logging</artifactId>
@@ -324,7 +325,12 @@
 		    <url>https://repository.primefaces.org</url>
 		    <layout>default</layout>
 		 </repository>
-		 	
+		 
+	   <repository>
+        	<id>primefaces</id>
+        	<url>https://repository.primefaces.org</url>
+    	</repository>
+		 
 	</repositories>
 	
 </project>

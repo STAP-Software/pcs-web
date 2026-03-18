@@ -199,7 +199,7 @@ public class CoarsePhasingExecutor {
 				}
 			}
 
-			procedure.addRefBeamMap(currentRefMap);
+			procedureExecutionState.setCurrentRefMap(currentRefMap);
 
 			logger.debug("light source 1 = " + procedureConfig.getLightSource());
 			

@@ -14,6 +14,7 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
+import java.util.function.Supplier;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
@@ -111,6 +112,10 @@ import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
+
+import java.util.Base64;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 
 /**
  * JSF Controller for procedure setup, execution, frame marking and viewing archived procedures
@@ -437,6 +442,9 @@ public class ProcedureController implements Serializable {
 	public StreamedContent getGraphicImage() {
 
 		FacesContext context = FacesContext.getCurrentInstance();
+		
+		logger.info("getGraphicImage called. phase = " + 
+	             FacesContext.getCurrentInstance().getCurrentPhaseId());
 
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
 			// So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
@@ -451,7 +459,12 @@ public class ProcedureController implements Serializable {
 			// if (indexStr == null) {
 			// pcf = procedure.getLatestProcedureCcdFrame();
 			// } else {
+			
+			logger.debug("selectedFrameNumber = " + selectedFrameNumber);
+			logger.debug("frame list size = " + procedure.getProcedureCcdFrameList().size());
 			selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
+			logger.debug("selectedFrame = " + selectedFrame);
+			logger.debug("ccdFrame = " + selectedFrame.getCcdFrame());
 			// }
 
 			// if the selected frame was overwritten during the procedure, we want to show a blank frame
@@ -459,8 +472,13 @@ public class ProcedureController implements Serializable {
 			if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
 				// check to see if its the same FITS filename as the selected frame
 				ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
+				
+				logger.debug("Checking overwrite logic");
+				logger.debug("selected fits = " + selectedFrame.getCcdFrame().getFitsFilename());
+				logger.debug("next fits = " + nextFrame.getCcdFrame().getFitsFilename());
 				if (nextFrame.getCcdFrame().getFitsFilename().equals(selectedFrame.getCcdFrame().getFitsFilename())) {
 					// get a blank picture
+					logger.debug("Returning blank image due to overwrite");
 					Utils.waitFor(1000);
 					
 					StreamedContent file = DefaultStreamedContent.builder()
@@ -476,7 +494,11 @@ public class ProcedureController implements Serializable {
 			
 			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
-			logger.debug("falseColorPng = " + falseColorPng);
+			if (falseColorPng == null) {
+			    logger.debug("falseColorPng is NULL");
+			} else {
+			    logger.debug("falseColorPng length = " + falseColorPng.length);
+			}
 
 			if (falseColorPng == null) {
 				return null;
@@ -492,6 +514,33 @@ public class ProcedureController implements Serializable {
 			
 		}
 	}
+	
+	public String getBase64GraphicImage() {
+	    try {
+	        StreamedContent sc = getGraphicImage();
+	        if (sc == null) return "";
+
+	        Supplier<InputStream> streamSupplier = sc.getStream();
+	        if (streamSupplier == null) return "";
+
+	        try (InputStream is = streamSupplier.get();
+	             ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
+
+	            byte[] buffer = new byte[8192];
+	            int bytesRead;
+	            while ((bytesRead = is.read(buffer)) != -1) {
+	                baos.write(buffer, 0, bytesRead);
+	            }
+
+	            byte[] imgBytes = baos.toByteArray();
+	            return Base64.getEncoder().encodeToString(imgBytes);
+	        }
+	    } catch (Exception e) {
+	        e.printStackTrace();
+	        return "";
+	    }
+	}
+	
 
 	public List<FitsFilename> getAvailableFitsFiles() {
 		return availableFitsFiles;

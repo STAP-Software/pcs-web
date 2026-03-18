@@ -113,7 +113,7 @@ public class AsyncController implements Serializable {
 	 */
 	public void asyncListener() {
 
-		logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
+		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
 		
 		checkUserPrompt();
 		

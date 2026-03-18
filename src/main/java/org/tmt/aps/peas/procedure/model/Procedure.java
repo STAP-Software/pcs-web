@@ -379,26 +379,6 @@ public class Procedure {
 	}
 
 	
-	@Transient 
-	private List<RefBeamMap> refBeamMapStore = new ArrayList<RefBeamMap>(); 
-
-	public RefBeamMap getCurrentRefBeamMap() {
-		if (refBeamMapStore.isEmpty()) {
-			return null;
-		}
-		return refBeamMapStore.get(refBeamMapStore.size()-1);
-	}
-	
-	public List<RefBeamMap> getAllRefBeamMaps() {
-		return new ArrayList<RefBeamMap>(refBeamMapStore);
-	}
-
-	public void addRefBeamMap(RefBeamMap refBeamMap) {
-		refBeamMapStore.add(refBeamMap);
-	}
-	
-	
-	
 
 	@Transient
 	private int percentComplete;

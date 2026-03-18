@@ -77,6 +77,8 @@ public class CreateRefMapExecutor {
 	private ReadyCameraSubflow readyCameraSubflow;
 	@EJB	
 	private GetFrameCentroidsExecutor getFrameCentroidsExecutor;
+	@EJB 
+	private CentroidMapMgmt centroidMapMgmt;
 
 	
 	private List<String> logMessages;
@@ -155,7 +157,10 @@ public class CreateRefMapExecutor {
 			
 			// save the reference beam map
 			RefBeamMap refBeamMap = buildRefMap(procedureCcdFrame.getCentroidMap(), procedure);
-			procedure.addRefBeamMap(refBeamMap);
+			
+			centroidMapMgmt.saveRefBeamMap(refBeamMap);
+			
+			procedureExecutionState.setCurrentRefMap(refBeamMap);
 
 			procedureExecutionState.setPercentComplete(80);
 

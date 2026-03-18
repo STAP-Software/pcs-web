@@ -73,6 +73,7 @@ public class ProcedureMgmt {
 					procedure.getProcedureConfigSet().getIterationListConfig());
 		}
 		
+		
 		try {
 			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
 			procedure.setProcedureOutput(procedureOutput);

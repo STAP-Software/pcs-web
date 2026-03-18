@@ -185,8 +185,9 @@ public class GetFrameCentroidsExecutor {
 		
 		boolean findAllMaskSpots = procedure.getProcedureType().isCreateRefMap() && !procedureConfig.getPupilMaskType().isPupilMaskTypeSufs();
 		
+
 		
-		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedure.getCurrentRefBeamMap(),
+		fiResult = computationLibrary.findAndIdentify(ccdFrame.getCorrectedFrame(), numSpots, fiConfig, procedureExecutionState.getCurrentRefMap(),
 				subimageDefList.getSubimageDefListCentroids(), subimageDefList.getMissingSpotFlags(), findAllMaskSpots);
 
 		logger.info("Find and Identify completed");
@@ -473,6 +474,9 @@ public class GetFrameCentroidsExecutor {
 				}
 				
 				centroidMap = buildCentroidMap(findCentroidsResult, procedureConfig, fiConfig, fiResult);
+				
+				// V3.0 - save centroid map 
+				centroidMapMgmt.saveCentroidMap(centroidMap);
 	
 				procedureCcdFrame.setCentroidMap(centroidMap);
 

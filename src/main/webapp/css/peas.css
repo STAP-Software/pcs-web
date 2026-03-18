@@ -122,41 +122,34 @@ body {
 }
 
 
-.btmsFormLabelColumn label {
-	float: right;
-  	margin-right:0.5em;
-  	padding-top:0.2em;
-  	text-align:right;
-  	font-weight:bold;
-   	font-size: 1em;
-   	color: #666666;
+.btmsFormLabelColumn {
+    text-align: right;
+    padding-right: 0.5em;
 }
+
+.btmsFormLabelColumn label {
+    font-weight: bold;
+    font-size: 1em;
+    color: #666666;
+}
+
 .btmsFormLabelColumn a {
-	float: right;
-  	margin-right:0.5em;
-  	padding-top:0.2em;
-  	text-align:right;
-  	font-weight:normal;
-   	font-size: 1em;
+    font-weight: normal;
+    font-size: 1em;
+}
+
+.btmsFormInputColumn {
+    text-align: left;
 }
 
 .btmsFormInputColumn label {
-  	float: left;
-  	margin-right:0.5em;
-  	padding-top:0.2em;
-  	text-align:left;
-  	font-weight:normal;
-   	font-size: 1em;
+    font-weight: normal;
+    font-size: 1em;
 }
 
-.btmsFormOutputColumn td {
-  	float: left;
-  	margin-right:0.5em;
-  	padding-top:0.4em;
-  	text-align:left;
-  	font-weight:normal;
-   	font-size: 1em;
-   	vertical-align: bottom;
+.btmsFormOutputColumn {
+    text-align: left;
+    vertical-align: bottom;
 }
 
 
@@ -200,6 +193,13 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	vertical-align: top;
 }
 
+.leftCol, .rightCol {
+    width: calc((100% - 601px) / 2);
+}
+.centerCol {
+	width: 600px;
+}
+
 .topAlignPanel tbody tr td {
 	vertical-align: top;
 	border: 0px;
@@ -235,6 +235,28 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	border: none;
 	width: 100%;
 }
+
+.pcsFormNoBorder .ui-panelgrid-cell {
+    padding: 8px 8px !important;
+}
+
+
+.pcsTable td {
+    padding: 6px 3px 6px 8px !important;          
+}
+
+.pcsTable tbody tr:nth-child(odd) {
+    background-color: #f2f5f9; 
+}
+.pcsTable tbody tr:nth-child(even) {
+    background-color: #ffffff;
+}
+
+.pcsTable tbody tr td {
+    border-bottom: 1px solid #a8a8a8 !important;
+}
+
+
 
 .pcsNoPad {
 	border-collapse: separate;
@@ -344,9 +366,7 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	position: relative;
 	left: 1000px;
 }
-.noupdate {
-/* class that indicates to primefaces not to update */
-}
+
 
 .noPadding td {
 	padding: 0px;

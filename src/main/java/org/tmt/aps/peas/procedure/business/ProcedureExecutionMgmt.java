@@ -356,6 +356,9 @@ public class ProcedureExecutionMgmt {
 			logger.debug("performProcedureCompletion::globalConfig updated");
 
 			// persist all the frames
+			/**
+			 * V3.0 all frames will be persisted as they are taken and centroided
+			 *
 			if (procedure.getProcedureCcdFrameList() != null) {
 				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 					procedureCcdFrame.setProcedure(procedure); // need the assigned procedure id
@@ -363,6 +366,9 @@ public class ProcedureExecutionMgmt {
 					// save the associated centroid map
 					if (procedureCcdFrame.getCentroidMap() != null) {
 						CentroidMap centroidMap = centroidMapMgmt.saveCentroidMap(procedureCcdFrame.getCentroidMap());
+						
+						logger.info("centroidMapId AFTER STORING  " + centroidMap.getCentroidMapId());		
+						
 						procedureCcdFrame.setCentroidMap(centroidMap);
 					}
 					
@@ -395,26 +401,25 @@ public class ProcedureExecutionMgmt {
 					
 				}
 			}
+			*/
 
 			logger.debug("performProcedureCompletion::all frames and centroid maps completed");
 
 			// associate ref beam maps
 			
-			// V3.0 - maybe not procedure, we need to understand when refBeamMaps are created and maybe store in procedureExecutionState as currentRefBeamMap
-			// also store ref beam map when it is first made?
+			// V3.0 - associate ref beam map directly with procedure
 		
-			for (RefBeamMap refBeamMap : procedure.getAllRefBeamMaps()) {
+			RefBeamMap refBeamMap = procedureExecutionState.getCurrentRefMap();
 				
-				// if refBeam map does not exist, then create it
-				if (refBeamMap.isNewRecord()) {
-					centroidMapMgmt.saveRefBeamMap(refBeamMap);
-				}
-
-				centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
-			}
-
+			centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
+			
 			logger.debug("performProcedureCompletion::ref maps associated");
 
+			
+			/*
+			 * V3.0 Temporarily suspend saving procedure output - re-enable once we can get procedures completing error free
+			 *
+			
 			// persist the procedure output
 			if (procedure.getProcedureOutput() != null) {
 				procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
@@ -422,31 +427,39 @@ public class ProcedureExecutionMgmt {
 					procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
 				}
 			}
+			
+			*/
 
 			
 			statusLogger.log("procedure.saving_complete");
 			statusLogger.saveLog(procedure.getProcedureId());
 			// everything is now stored. Reload somethings for immediate viewing.
 
-			try {
-				// set up for immediate viewing
-				procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
-
-				logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
-
-				// procedure frame data for immediate viewing
-				for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-
-					procedureMgmt.setupFrameLog(procedureCcdFrame);
-				}
-
-			} catch (Exception e) {
-				// don't stop just because we can't read it all back
-				logger.error(MessageGenerator.generateMessage("generic.error"), e);
-			}
 			
-			// do not allow procedure to complete until frame requests have been met
-			frameDisplayMgmt.waitForPendingDisplays();
+			// V3.0 - skip if transitioning to a superprocedure
+			if (procedureExecutionState.getSuperProcedure() == null) {
+			
+				try {
+					// set up for immediate viewing
+					procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
+	
+					logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
+	
+					// procedure frame data for immediate viewing
+					for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+	
+						procedureMgmt.setupFrameLog(procedureCcdFrame);
+					}
+	
+				} catch (Exception e) {
+					// don't stop just because we can't read it all back
+					logger.error(MessageGenerator.generateMessage("generic.error"), e);
+				}
+				
+				// do not allow procedure to complete until frame requests have been met
+				frameDisplayMgmt.waitForPendingDisplays();
+			
+			}
 			
 
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure

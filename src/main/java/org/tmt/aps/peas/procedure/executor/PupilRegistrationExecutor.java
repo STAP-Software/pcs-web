@@ -169,7 +169,7 @@ public class PupilRegistrationExecutor {
 			procedureExecutionState.setPercentComplete(10);
 
 			
-			procedure.addRefBeamMap(currentRefMap);
+			procedureExecutionState.setCurrentRefMap(currentRefMap);
 
 			
 			/**********************************************/

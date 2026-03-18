@@ -14,6 +14,7 @@ import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
+import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
 /**
  * Singleton EJB containing procedure state information: run state, procedure/subprocedure context, 
@@ -39,6 +40,7 @@ public class ProcedureExecutionState {
 	private boolean onCompletePerformed;
 	private CcdFrame currentFrame;
 	private ProcedureCcdFrame currentProcedureCcdFrame;
+	private RefBeamMap currentRefMap;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
 	private ProcedureOutputable currentOutputTarget;
@@ -51,6 +53,10 @@ public class ProcedureExecutionState {
 		abortRequested = false;
 		onCompletePerformed = false;
 		procedure.setIteration(0);
+		// V3.0 reset frame and ccdFrame as they are managed here now
+		currentFrame = null;
+		currentProcedureCcdFrame = null;
+		currentRefMap = null;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -84,6 +90,14 @@ public class ProcedureExecutionState {
 
 	public void setCurrentProcedureCcdFrame(ProcedureCcdFrame currentProcedureCcdFrame) {
 		this.currentProcedureCcdFrame = currentProcedureCcdFrame;
+	}
+
+	public RefBeamMap getCurrentRefMap() {
+		return currentRefMap;
+	}
+
+	public void setCurrentRefMap(RefBeamMap currentRefMap) {
+		this.currentRefMap = currentRefMap;
 	}
 
 	public Procedure getCurrentProcedure() {

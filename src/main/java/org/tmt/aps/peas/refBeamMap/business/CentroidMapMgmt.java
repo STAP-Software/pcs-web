@@ -446,6 +446,14 @@ public class CentroidMapMgmt {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public RefBeamMap saveRefBeamMap(RefBeamMap refBeamMap) {
+		
+		if (refBeamMap.getCentroidMap() == null) {
+		    throw new RuntimeException("CentroidMap is null");
+		}
+
+		if (refBeamMap.getCentroidMap().getCentroidMapId() == null) {
+		    throw new RuntimeException("CentroidMap ID is null");
+		}
 
 		CentroidMap centroidMap = em.find(CentroidMap.class, refBeamMap.getCentroidMap().getCentroidMapId());
 		refBeamMap.setCentroidMap(centroidMap);
