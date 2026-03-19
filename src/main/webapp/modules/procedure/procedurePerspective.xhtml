@@ -9,17 +9,22 @@
 	<ui:define name="content">
 	
 		<h:form>
-			<p:poll async="true" immediate="true" interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable :procedureDetailForm:miscPanel:cameraStatusPanel" />
-		</h:form>
+			<!--  
+			<p:poll interval="2" update=":procedureDetailForm:controlPanel:startButton :procedureDetailForm:controlPanel:cameraNotReady  :procedureDetailForm:miscPanel:cameraStatusPanel" />
+			-->
+		</h:form>  
 		
 		<h:form id="pollerForm">
 			<!-- keep the poller outside its update fixes it so that it stops correctly -->
-			<p:poll widgetVar="procedureExecutionPoller" autoStart="false" interval="2"
-				update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm " listener="#{asyncController.asyncListener}"
-				 oncomplete="scrollStatusLog()" stop="#{asyncController.onCompletePerformed}" />
+			<!-- p:poll widgetVar="procedureExecutionPoller" autoStart="false" interval="2"
+				update="@none" listener="#{asyncController.asyncListener}"
+				 oncomplete="scrollStatusLog()"  /> -->
 				 
-				 <!-- stop="#{asyncController.onCompletePerformed}" -->
+				 <!-- stop="#{asyncController.onCompletePerformed}" update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable" -->
 				
+			<p:poll interval="2" listener="#{asyncController.asyncListener}" update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm" 
+				widgetVar="procedureExecutionPoller" autoStart="false" oncomplete="scrollStatusLog()" />
+			
 		</h:form>
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{procedureController.frameCentroidXs}" />
@@ -343,10 +348,9 @@
 						<p:spacer height="1px" width="320px" />
 
 					</p:tab>
-					<p:tab title="Procedure Event Log">
-						
-						
-							<p:dataTable  styleClass="pcsTable ui-datatable-striped"
+					<p:tab title="Procedure Event Log">				
+
+						<p:dataTable id="procedureEventLog" widgetVar="statusLogTable" styleClass="pcsTable ui-datatable-striped"
 				                     var="logEntry" 
 				                     value="#{statusLogController.procedureStatusLog.logEntryList}" 
 				                     lazy="false" 
@@ -671,10 +675,17 @@
 		
 	}
 	
-	function scrollStatusLog() {
-		var objDiv = document.getElementById('procedureDetailForm:controlPanel:procedureEventLogPanel');
-		objDiv.scrollTop = objDiv.scrollHeight;
-	}
+
+
+    function scrollStatusLog() {
+        var dtWidget = PF('statusLogTable');
+        if (dtWidget) {
+            var scrollBody = dtWidget.jq.find('.ui-datatable-scrollable-body');
+            if (scrollBody.length) {
+                scrollBody.scrollTop(scrollBody[0].scrollHeight);
+            }
+        }
+    }
 	
 	function play_wake_up_sound() {
 		document.getElementById('audiocontrol').play();

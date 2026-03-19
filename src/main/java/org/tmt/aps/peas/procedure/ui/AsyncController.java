@@ -113,36 +113,43 @@ public class AsyncController implements Serializable {
 	 */
 	public void asyncListener() {
 
-		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
+		try {
 		
-		checkUserPrompt();
 		
-		checkVisualizationDisplays();
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> Polling...");
+			
+			checkUserPrompt();
+			
+			checkVisualizationDisplays();
+			
+			checkProcedureStatus();
+			
+			checkFrameDisplay();
+	
+			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Update camera display...");
+	
+			checkCameraDisplay();
+			
+			checkMessages();
+			
+			checkIsWaiting();
+			
+			checkSubProcedureStart();
+			
+			checkSubProcedureEnd();
+			
+			// will execute if on the last time through
+			if (!procedureExecutionState.getExecutionStatus() && !isOnCompletePerformed()) {
+				logger.info("CALLING ONCOMPLETE");
+				onComplete();
+			}
+			
+			if (!procedureExecutionState.getExecutionStatus() && isOnCompletePerformed()) {
+				checkCompleteMessage();
+			}
 		
-		checkProcedureStatus();
-		
-		checkFrameDisplay();
-
-		logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> Update camera display...");
-
-		checkCameraDisplay();
-		
-		checkMessages();
-		
-		checkIsWaiting();
-		
-		checkSubProcedureStart();
-		
-		checkSubProcedureEnd();
-		
-		// will execute if on the last time through
-		if (!procedureExecutionState.getExecutionStatus() && !isOnCompletePerformed()) {
-			logger.info("CALLING ONCOMPLETE");
-			onComplete();
-		}
-		
-		if (!procedureExecutionState.getExecutionStatus() && isOnCompletePerformed()) {
-			checkCompleteMessage();
+		} catch (Exception e) {
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> Polling ERROR", e);
 		}
 				
 	}
