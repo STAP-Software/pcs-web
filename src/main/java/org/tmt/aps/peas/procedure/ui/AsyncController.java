@@ -253,6 +253,7 @@ public class AsyncController implements Serializable {
 	
 	private void checkFrameDisplay() {
 		
+		
 		if (getDisplayNewFrame() || getMarkNewFrame()) {
 			
 			// setup the selected frame
@@ -270,6 +271,8 @@ public class AsyncController implements Serializable {
 				ProcedureCcdFrame selectedFrame = procedureExecutionState.getCurrentProcedureCcdFrame();
 				procedureController.setSelectedFrame(selectedFrame);
 				procedureController.setBlankImage(false); // hack so that new images are never considered overwritten
+				
+				logger.info("##########################  CHECK FRAME DISPLAY: SelectedFrame = " + selectedFrame);
 				
 				// get the marking to the procedure
 				String xList = FloatPointListEncoder.encodeXList(frameDisplayMgmt.getMarkList());
@@ -293,6 +296,7 @@ public class AsyncController implements Serializable {
 			
 			setDisplayNewFrame(false);
 		}
+		
 		if (getMarkNewFrame()) {
 
 			PrimeFaces.current().executeScript("markFrame()");

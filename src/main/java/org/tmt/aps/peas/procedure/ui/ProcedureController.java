@@ -445,11 +445,43 @@ public class ProcedureController implements Serializable {
 		
 		logger.info("getGraphicImage called. phase = " + 
 	             FacesContext.getCurrentInstance().getCurrentPhaseId());
+		
+		logger.info("getGraphicImage, procedureExecutionState.getExecutionStatus() = " + procedureExecutionState.getExecutionStatus());
+				
 
 		if (context.getCurrentPhaseId() == PhaseId.RENDER_RESPONSE) {
 			// So, we're rendering the view. Return a stub StreamedContent so that it will generate right URL.
 			return new DefaultStreamedContent();
+			
+		} else if (procedureExecutionState.getExecutionStatus()) {
+			// V3.0 viewing an active procedure
+			
+			logger.info("################################# ProcedureController::getGraphicImage " + selectedFrame.getCcdFrame());
+			logger.info("################################# ProcedureController::getGraphicImage " + selectedFrame.getCcdFrame().getFalseColorPng());
+			
+			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
+
+			if (falseColorPng == null) {
+			    logger.debug("falseColorPng is NULL");
+			} else {
+			    logger.debug("falseColorPng length = " + falseColorPng.length);
+			}
+
+			if (falseColorPng == null) {
+				return null;
+			}
+			
+			StreamedContent file = DefaultStreamedContent.builder()
+				    .stream(() -> new ByteArrayInputStream(falseColorPng))
+				    .contentType("image/png")
+				    .name("myFile.png")    // optional, but often required
+				    .build();
+			
+			return file;
+
 		} else {
+			
+			// Viewing ARHIVED PROCEDURE
 			// So, browser is requesting the image. Get ID value from actual request param.
 			// String indexStr = FacesContext.getCurrentInstance().getExternalContext().getRequestParameterMap().get("frameIndex");
 
@@ -460,15 +492,16 @@ public class ProcedureController implements Serializable {
 			// pcf = procedure.getLatestProcedureCcdFrame();
 			// } else {
 			
-			logger.debug("selectedFrameNumber = " + selectedFrameNumber);
-			logger.debug("frame list size = " + procedure.getProcedureCcdFrameList().size());
+			logger.info("selectedFrameNumber = " + selectedFrameNumber);
+			logger.info("frame list size = " + procedure.getProcedureCcdFrameList().size());
 			selectedFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber);
-			logger.debug("selectedFrame = " + selectedFrame);
-			logger.debug("ccdFrame = " + selectedFrame.getCcdFrame());
+			logger.info("selectedFrame = " + selectedFrame);
+			logger.info("ccdFrame = " + selectedFrame.getCcdFrame());
 			// }
 
 			// if the selected frame was overwritten during the procedure, we want to show a blank frame
 			
+			logger.info("procedure.procedureCcdFrameCount(): " + procedure.getProcedureCcdFrameCount() + ", selectedFrameNumber: " + selectedFrameNumber);
 			if (procedure.getProcedureCcdFrameCount() > selectedFrameNumber + 1) {
 				// check to see if its the same FITS filename as the selected frame
 				ProcedureCcdFrame nextFrame = procedure.getProcedureCcdFrameList().get(selectedFrameNumber + 1);
@@ -491,6 +524,8 @@ public class ProcedureController implements Serializable {
 				}
 			}
 			
+			logger.info("################################# ProcedureController::getGraphicImage " + selectedFrame.getCcdFrame());
+			logger.info("################################# ProcedureController::getGraphicImage " + selectedFrame.getCcdFrame().getFalseColorPng());
 			
 			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
