@@ -208,8 +208,12 @@ public class AsyncController implements Serializable {
 			
 			
 			if (visualizationDisplay.isDisplayTypeCentroids()) {
-				PrimeFaces.current().executeScript("runDrawSpots(); centroidsDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("centroidsDialog", "spotsForm");
+				
+				PrimeFaces.current().executeScript("runDrawSpots(); PF('centroidsDisplayDialog').show();");
 			}
+			
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
 				PrimeFaces.current().executeScript("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
 			}
