@@ -23,6 +23,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.Constant;
 import org.tmt.aps.peas.config.model.ProcedureConfigDefaults;
+import org.tmt.aps.peas.config.model.ProcedureConfigSet;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureOutput;
@@ -75,13 +76,15 @@ public class ProcedureMgmt {
 		
 		
 		try {
-			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
-			procedure.setProcedureOutput(procedureOutput);
+			// TODO: V3 - uncomment when procedure output is implemented
+			//ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
+			//procedure.setProcedureOutput(procedureOutput);
 			
 			// procedure frame data 
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 
-				setupFrameLog(procedureCcdFrame);
+				// TODO: V3 - uncomment when procedure output is implemented
+				//setupFrameLog(procedureCcdFrame);
 			}
 			
 		} catch (Throwable e) {
@@ -143,7 +146,7 @@ public class ProcedureMgmt {
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Procedure updateProcedure(Procedure procedure) {
 		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
-		em.merge(procedure);
+		procedure = em.merge(procedure);
 		return procedure;
 	}
 	
@@ -168,6 +171,13 @@ public class ProcedureMgmt {
 	public Procedure createProcedure(Procedure procedure) {
 		
 		logger.info(MessageGenerator.generateMessage("record.create", "procedure"));
+		ProcedureConfigSet config = procedure.getProcedureConfigSet();
+
+		if (config.getProcedureConfigSetId() == null) {
+		    em.persist(config);
+		}
+
+		procedure.setProcedureConfigSet(config);
 		em.persist(procedure);
 		return procedure;
 	}

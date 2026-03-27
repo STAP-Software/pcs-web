@@ -161,12 +161,13 @@ public class AsyncController implements Serializable {
 		if (userPromptMgmt.getPendingPrompt() != null) {
 			procedureController.setCurrentPrompt(userPromptMgmt.getPendingPrompt());
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to execute requestContext..." + procedureController.getCurrentPrompt().getMessage());
-		
+					
 			
-			PrimeFaces.current().ajax().update("promptDialog"); 
-			PrimeFaces.current().ajax().update("promptDialogForm"); 
-			PrimeFaces.current().executeScript("userPromptDialog.show()");
+			PrimeFaces.current().ajax().update("promptDialog", "promptDialogForm");
 			
+			PrimeFaces.current().executeScript("PF('userPromptDialog').show();");
+
+	
 			userPromptMgmt.setPendingPrompt(null);
 		}
 
@@ -215,7 +216,11 @@ public class AsyncController implements Serializable {
 			}
 			
 			if (visualizationDisplay.isDisplayTypeCentroidOffsets()) {
-				PrimeFaces.current().executeScript("runDrawOffsets(); centroidOffsetDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("centroidOffsetDialog", "offsetsForm");
+				
+				PrimeFaces.current().executeScript("runDrawOffsets(); PF('centroidOffsetDisplayDialog').show();");
+
 			}
 			if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 				PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");

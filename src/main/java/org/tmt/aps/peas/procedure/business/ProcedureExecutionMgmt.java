@@ -355,6 +355,14 @@ public class ProcedureExecutionMgmt {
 			}
 			logger.debug("performProcedureCompletion::globalConfig updated");
 
+			
+			// V3.0 update procedure instance with saved hierarchy
+			// this restores the procedure CCD frame list, centroids etc - 
+			// which during the procedure execution needed to be handled outside the procedure instance
+			procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
+			
+			System.out.println("AFTER FIND instance: " + System.identityHashCode(procedure));
+
 			// persist all the frames
 			/**
 			 * V3.0 all frames will be persisted as they are taken and centroided
@@ -409,12 +417,15 @@ public class ProcedureExecutionMgmt {
 			
 			// V3.0 - associate ref beam map directly with procedure
 		
+			/** 
+			 * Test ONLY
+			 
 			RefBeamMap refBeamMap = procedureExecutionState.getCurrentRefMap();
 				
 			centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
 			
 			logger.debug("performProcedureCompletion::ref maps associated");
-
+			 */
 			
 			/*
 			 * V3.0 Temporarily suspend saving procedure output - re-enable once we can get procedures completing error free
@@ -437,18 +448,25 @@ public class ProcedureExecutionMgmt {
 
 			
 			// V3.0 - skip if transitioning to a superprocedure
+			
+			/**
+			 * TEST ONLY
+			
 			if (procedureExecutionState.getSuperProcedure() == null) {
 			
 				try {
 					// set up for immediate viewing
-					procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
+					
+					// TODO: Uncomment when we have fixed storage of procedure output
+					//procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
 	
 					logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
 	
 					// procedure frame data for immediate viewing
 					for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 	
-						procedureMgmt.setupFrameLog(procedureCcdFrame);
+						// TODO uncomment when we have fixed storage of the frame logs
+						//procedureMgmt.setupFrameLog(procedureCcdFrame);
 					}
 	
 				} catch (Exception e) {
@@ -460,7 +478,7 @@ public class ProcedureExecutionMgmt {
 				frameDisplayMgmt.waitForPendingDisplays();
 			
 			}
-			
+		    */
 
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			
@@ -474,7 +492,11 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 
+			System.out.println("IN UPDATE instance: " + System.identityHashCode(procedure));
+			System.out.println("Frame list: " + procedure.getProcedureCcdFrameList());
+			
 
+			
 			// update in database
 			procedureMgmt.updateProcedure(procedure);
 

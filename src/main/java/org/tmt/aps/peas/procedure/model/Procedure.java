@@ -159,11 +159,11 @@ public class Procedure {
 	@JoinColumn(name = "sessionId")
 	Session session;
 
-	@OneToMany (mappedBy="procedure")
+	@OneToMany (mappedBy="procedure", cascade=CascadeType.MERGE)
 	List<ProcedureCcdFrame> procedureCcdFrameList;
 
 	
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn (name="procedureConfigSetId")
 	private ProcedureConfigSet procedureConfigSet;
 

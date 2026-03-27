@@ -22,13 +22,26 @@ function runDrawOffsets() {
 	ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawCentroidOffsets(true,true)", 10);
+		
+	// Get PF dialog widget correctly
+    var dlg = PF('centroidOffsetsDisplayDialog');
+    if (!dlg) {
+        console.error("Dialog widget not found");
+        return;
+    }
+
+    // Avoid rebinding multiple times
+    if (!dlg._resizeBound) {
+        dlg._resizeBound = true;
+
+        dlg.jq.on('resize', function () {
+            if (!resizing) {
+                resizing = true;
+                window.setTimeout(centroidsResizeHandler, 1000);
+            }
+        });
+    }
 	
-	$(centroidOffsetDisplayDialog.jqId).bind('resize', function(){
-		if (!resizing) {
-			resizing = true;
-			window.setTimeout("centroidOffsetsResizeHandler()", 1000);
-		}
-	})
 	
 }
 
@@ -37,14 +50,14 @@ function centroidOffsetsResizeHandler() {
 	var baseScale = 0.61;
 	var baseCanvasSize = 600.0;
 	
-	var d = document.getElementById("centroidOffsetDialog"); 
+	var d = document.querySelector("[id$='centroidOffsetDialog']"); 
 	var availableWidth = d.offsetWidth - 300 - 100;
 	var availableHeight = d.offsetHeight - 70;
 	var available = Math.min(availableWidth, availableHeight);
 	
 	var scale = baseScale * available / baseCanvasSize;
 	
-	var c = document.getElementById("offsetsCanvas");
+	var c = document.querySelector("[id$='offsetsCanvas']"); 
 	c.width=available;
 	c.height=available;
 	
@@ -65,39 +78,39 @@ function drawCentroidOffsets(drawSegments,drawSegNums) {
 	centOffScope.drawSegNums = drawSegNums;
 	centOffScope.drawSegments = drawSegments;
 	
-	var c = document.getElementById("offsetsCanvas");
+	var c = document.querySelector("[id$='offsetsCanvas']"); 
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
 
 
 	// display coordinates - hex centers
-	var xField1 = document.getElementById('offsetsForm:segCentDefXs').value;
+	var xField1 = document.querySelector("[id$='segCentDefXs']").value;
  	var xHexCenterArray = xField1.split(','); 
  	
-	var yField1 = document.getElementById('offsetsForm:segCentDefYs').value;
+	var yField1 = document.querySelector("[id$='segCentDefYs']").value;
  	var yHexCenterArray = yField1.split(','); 
  	
  	// display coordinates - ideal centroid positions
-	var xField2 = document.getElementById('offsetsForm:centDefXs').value;
+	var xField2 = document.querySelector("[id$='centDefXs']").value;
  	var xCentroidArray = xField2.split(','); 
  	
-	var yField2 = document.getElementById('offsetsForm:centDefYs').value;
+	var yField2 = document.querySelector("[id$='centDefYs']").value;
  	var yCentroidArray = yField2.split(','); 
    
  	// display coordiantes - centroid offsets
-	var xField3 = document.getElementById('offsetsForm:centroidOffsetXs').value;
+	var xField3 = document.querySelector("[id$='centroidOffsetXs']").value;
  	var xOffsetArray = xField3.split(','); 
  	
-	var yField3 = document.getElementById('offsetsForm:centroidOffsetYs').value;
+	var yField3 = document.querySelector("[id$='centroidOffsetYs']").value;
  	var yOffsetArray = yField3.split(','); 
    
-	var field4 = document.getElementById('offsetsForm:goodSpots').value;
+	var field4 = document.querySelector("[id$='goodSpots']").value;
  	var goodSpotsArray = field4.split(','); 
    
-	var offsetScale = parseFloat(document.getElementById('offsetsForm:scaleSlider').value);
+	var offsetScale = parseFloat(document.querySelector("[id$='scaleSlider']").value);
  	 
 	// calculate max length of all offsets
-	var maxLen = document.getElementById('offsetsForm:maxOffset').value;
+	var maxLen = document.querySelector("[id$='maxOffset']").value;
 
 	
 	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
@@ -359,9 +372,9 @@ function drawHex(ctx, x, y, newSideLen, number, drawSegment, drawSegNum) {
     		<h:panelGroup styleClass="dialogCommandGroup">
     		
 			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="centroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('centroidOffsetDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="centroidOffsetDisplayDialog.hide()" />
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="PF('centroidOffsetDisplayDialog').hide()" />
 					
 			</h:panelGroup>
      		</h:form>
