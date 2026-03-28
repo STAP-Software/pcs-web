@@ -159,7 +159,7 @@ public class Procedure {
 	@JoinColumn(name = "sessionId")
 	Session session;
 
-	@OneToMany (mappedBy="procedure", cascade=CascadeType.MERGE)
+	@OneToMany (mappedBy="procedure")
 	List<ProcedureCcdFrame> procedureCcdFrameList;
 
 	

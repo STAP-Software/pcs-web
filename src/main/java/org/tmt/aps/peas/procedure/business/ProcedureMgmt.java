@@ -7,6 +7,7 @@ package org.tmt.aps.peas.procedure.business;
 
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import jakarta.ejb.EJB;
@@ -144,10 +145,29 @@ public class ProcedureMgmt {
 	 * Updates a procedure in the database
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
+	public Procedure updateProcedure(Procedure detachedProcedure, Date executionEndTime) {
+		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
+		
+	    // Load the managed entity
+	    Procedure managed = em.find(Procedure.class, detachedProcedure.getProcedureId());
+
+	    managed.setProcedureState(detachedProcedure.getProcedureState());
+	    managed.setExecutionEndTime(executionEndTime);
+
+	    em.flush();
+
+
+	    return managed;		
+	}
+	
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public Procedure updateProcedure(Procedure procedure) {
 		logger.info(MessageGenerator.generateMessage("record.update", "procedure"));
-		procedure = em.merge(procedure);
-		return procedure;
+		
+		em.merge(procedure);
+
+	    return procedure;
+		
 	}
 	
 	/**

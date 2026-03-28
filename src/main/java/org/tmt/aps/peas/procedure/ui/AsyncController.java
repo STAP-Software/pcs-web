@@ -429,12 +429,16 @@ public class AsyncController implements Serializable {
 			
 			PrimeFaces.current().ajax().update("procedureDetailForm:controlPanel");
 			
-
 			
 		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		} finally {
 			setOnCompletePerformed(true);
+			
+			PrimeFaces.current().executeScript("PF('procedureExecutionPoller').stop()");
+			
+			procedureController.doViewArchivedProcedure();
+			
 			logger.info("ONCOMPLETE COMPLETED");
 		}
 	}

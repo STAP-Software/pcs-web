@@ -14,6 +14,8 @@ import java.util.concurrent.Future;
 import jakarta.ejb.EJB;
 import jakarta.ejb.EJBTransactionRolledbackException;
 import jakarta.ejb.Stateless;
+import jakarta.ejb.TransactionAttribute;
+import jakarta.ejb.TransactionAttributeType;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.Constants;
@@ -316,17 +318,18 @@ public class ProcedureExecutionMgmt {
 	 * @param procedure the procedure to complete and store
 	 * @param currentSession the night session the procedure is associated with
 	 */
+	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void performProcedureCompletion(Procedure procedure, Session currentSession) {
 
 		try {
 						
-			procedure.setExecutionEndTime(new Date());
+			Date executionEndTime = new Date();
 
 			logger.debug("performProcedureCompletion 1");
 			graphicDisplayMgmt.setIteration(0);
 			
 			// this persists the procedure
-			procedureMgmt.updateProcedure(procedure);
+			//procedureMgmt.updateProcedure(procedure);
 
 			sessionMgmt.updateCurrentSession(currentSession);
 
@@ -498,7 +501,7 @@ public class ProcedureExecutionMgmt {
 
 			
 			// update in database
-			procedureMgmt.updateProcedure(procedure);
+			procedureMgmt.updateProcedure(procedure, executionEndTime);
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
