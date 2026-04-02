@@ -318,6 +318,7 @@ public class ProcedureExecutionMgmt {
 	 * @param procedure the procedure to complete and store
 	 * @param currentSession the night session the procedure is associated with
 	 */
+	// V3.0 NOT_SUPPORTED added so that any previous open transactions do not overwrite what is performed here
 	@TransactionAttribute(TransactionAttributeType.NOT_SUPPORTED)
 	public void performProcedureCompletion(Procedure procedure, Session currentSession) {
 

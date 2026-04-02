@@ -14,7 +14,6 @@
 			<title>Phasing Camera Software</title>
 		</f:facet>
   
-		<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/peas.css" />
 
 <style type="text/css">
 
@@ -37,6 +36,8 @@
     <!-- Choose a theme you have in your JAR: 'lara-light-indigo' is not in the core jar -->
     <!-- For example, use nova-light if using free built-in theme: -->
     <!--  h:outputStylesheet name="theme.css" library="primefaces-nova-light" / -->
+	
+	<link rel="stylesheet" type="text/css" href="${request.contextPath}/css/peas.css" />
 
 
 	</h:head>
@@ -119,7 +120,7 @@
 			</div>
 
 
-			<div class="flex-1 overflow-auto p-4">
+			<div class="flex-1 overflow-auto p-0">
 				<ui:include src="modules/util/navigation.xhtml"/>
 
 				<p:messages id="errorGrowl" severity="error,fatal" showDetail="true" closable="true"/>

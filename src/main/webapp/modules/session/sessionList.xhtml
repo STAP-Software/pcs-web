@@ -14,12 +14,25 @@
 		
 			<div style="margin:30px;" >
 			
-			<div>
-			<h:outputLabel value="View the "/>&#160;<p:inputText value="#{sessionController.searchQuantity}" size="2" />&#160;<h:outputLabel value="most recent sessions prior to "/> &#160;&#160;<p:calendar size="6" id="popup" value="#{sessionController.searchDate}" timeZone="UTC" />&#160;&#160; <p:commandButton value="Search" action="#{sessionController.doSearchSessionList}" />
-			</div>
-			<br/>
-			
-			<p:dataTable id="sessionTable" var="nightSession" value="#{sessionController.sessionList}">				
+			<p:toolbar style="margin-bottom: 8px;">
+	            <p:toolbarGroup align="left">
+	                <h:outputLabel value="Show the most recent" style="margin-right: 6px;"/>
+	                <p:inputText value="#{sessionController.searchQuantity}" size="2" style="margin-right: 6px;"/>
+	                <h:outputLabel value="sessions prior to" style="margin-right: 6px;"/>
+	                <p:calendar size="8" id="popup" value="#{sessionController.searchDate}" 
+	                            timeZone="UTC" style="margin-right: 8px;"/>
+	                <p:commandButton value="Search" icon="pi pi-search"
+	                                 action="#{sessionController.doSearchSessionList}"
+	                                 update="sessionTable"
+	                                 style="padding: 2px 8px; font-size: 0.85rem"/>
+	            </p:toolbarGroup>
+
+	        </p:toolbar>
+	        			
+			<p:dataTable id="sessionTable" 
+             var="nightSession" 
+             value="#{sessionController.sessionList}"
+             stripedRows="true">				
 			    <f:facet name="header">
 					Session List for #{sessionController.telescope.telescopeName}
 				</f:facet>

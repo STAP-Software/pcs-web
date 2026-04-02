@@ -104,9 +104,15 @@
 }
 
 
-body {
-    background: #666666 !important ;
+html, body {
+    height: 100%;
+    background-color: #FFFFFF; /* white background for both */
 }
+
+.flex-1.overflow-auto {
+    background-color: #FFFFFF; /* white background for main scrollable area */
+}
+
 
 .ui-accordion .ui-accordion-content {
 	padding: 1em !important;
@@ -256,6 +262,62 @@ div.btmsBreadcrumb ul li a.ui-icon {
     border-bottom: 1px solid #a8a8a8 !important;
 }
 
+body .ui-datatable .ui-datatable-data > tr > td {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+body .ui-datatable thead th {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+}
+
+
+
+
+/* STRONGER TABLE COLORS */
+
+/* Table header - stronger color */
+body .ui-datatable thead th {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    background: #2c5f8a;
+    color: #ffffff;
+    border-color: #1e4a6e;
+}
+
+/* Table body rows */
+body .ui-datatable .ui-datatable-data > tr > td {
+    padding: 8px 16px;
+    font-size: 0.9rem;
+    color: #212529;
+}
+
+/* Alternating stripe color - make it more visible */
+body .ui-datatable.ui-datatable-striped .ui-datatable-data > tr.ui-datatable-odd {
+    background: #ddeaf6;
+}
+
+body .ui-datatable .ui-datatable-header {
+    border: 1px solid #2c3e50;
+}
+body .ui-datatable .ui-datatable-tablewrapper {
+    border: 1px solid #2c3e50;
+}
+/* toolbar above session list to filter choices */
+body .ui-toolbar .ui-widget {
+    font-weight: normal !important;
+    font-size: 1.1em !important;
+}
+
+body .ui-toolbar .ui-inputfield {
+    font-weight: normal !important;
+    font-size: 0.9em !important;
+}
+
+body .ui-toolbar .ui-button.ui-button-text-icon-left .ui-button-text {
+    padding: 2px 8px 2px 2rem;
+}
 
 
 .pcsNoPad {
