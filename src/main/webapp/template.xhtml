@@ -57,8 +57,8 @@
 				<h:form id="topForm">
 				<h:panelGroup style="float:left">
 
-				<h:outputText value="PEAS PCS" style="position: relative; top:14px; margin:40px 20px 40px 10px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
-				<h:outputText value="#{sessionController.telescope.telescopeName}" style="position: relative; top:14px; margin:40px 10px 40px 10px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="PEAS PCS" style="position: relative; top:20px; margin:40px 20px 40px 10px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
+				<h:outputText value="#{sessionController.telescope.telescopeName}" style="position: relative; top:20px; margin:40px 10px 40px 10px;color:#d4f8ff;font-size:24pt;text-shadow: 1px 1px 1px #bbb;" />
 				
 				</h:panelGroup>
 				 <h:panelGroup id="extInfMode" style="float:right">
@@ -72,25 +72,25 @@
 				<h:panelGrid id="extInfConn" columns="4" rendered="#{!sessionController.renderSimulationMode}" 
 					columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn" >
 					
-					<h:outputText value="CAM: " style="position: relative;  top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="CAM: " style="position: relative; top:10px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					 
-					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.cameraEnabled}"/>
-					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.cameraEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:10px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.cameraEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.cameraStatus}" style="margin-right:20px; position: relative; top:10px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.cameraEnabled}"/>
 					
-					<h:outputText value="ACS: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="ACS: " style="position: relative; margin-right:20px; top:10px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					 
-					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.acsEnabled}"/>
-					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.acsEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:10px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.acsEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.acsStatus}" style="margin-right:20px; position: relative; top:10px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.acsEnabled}"/>
 					
-					<h:outputText value="CCD: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="CCD: " style="position: relative; top:10px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					 
-					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.ccdEnabled}"/>
-					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.ccdEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:10px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.ccdEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.ccdStatus}" style="margin-right:20px; position: relative; top:10px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.ccdEnabled}"/>
 					 
-					<h:outputText value="DCS: " style="position: relative; margin-right:20px; top:5px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
+					<h:outputText value="DCS: " style="position: relative; margin-right:20px; top:10px; color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" />
 					 
-					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px; position: relative; top:5px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.dcsEnabled}"/>
-					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px;position: relative; top:5px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.dcsEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px; position: relative; top:10px;color:#d4f8ff;font-size:12pt;text-shadow: 1px 1px 1px #bbb;" rendered="#{sessionController.extInfConnectConfig.dcsEnabled}"/>
+					<h:outputText value="#{sessionController.extInfConnectConfig.dcsStatus}" style="margin-right:20px; position: relative; top:10px;color:#ff4444;font-size:12pt;text-shadow: 1px 1px 1px #b22;" rendered="#{not sessionController.extInfConnectConfig.dcsEnabled}"/>
 				 
 				</h:panelGrid>
 				

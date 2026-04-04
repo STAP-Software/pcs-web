@@ -16,32 +16,38 @@
 		<h:form id="procedureListForm" style="margin:30px">
 
 			<p:accordionPanel id="sessionPanel" multiple="true" activeIndex="0,1">
+		
+			    <p:tab title="Session Detail">
+			
+					<div style="display: inline-flex; flex-direction: column; gap: 10px;">
+					
+					    <div style="display: grid; grid-template-columns: max-content 1fr;
+					                align-items: baseline; row-gap: 10px; column-gap: 16px;">
+					
+					        <p:outputLabel for="observers" value="Observers"
+					                       style="text-align: right; font-weight: bold;"/>
+					        <p:inputTextarea id="observers" value="#{sessionController.session.observers}"
+					                     rows="1" cols="30"/>
+					
+					        <p:outputLabel for="description" value="Description"
+					                       style="text-align: right; font-weight: bold; align-self: start; padding-top: 4px;"/>
+					        <p:inputTextarea id="description" value="#{sessionController.session.description}"
+					                         rows="4" cols="100" />
+					
+					    </div>
+					
+					    <div style="display: flex; justify-content: flex-end;">
+					        <p:commandButton value="Close" action="#{sessionController.doCancelSaveSession}"
+					                         icon="pi pi-cancel"
+					                         styleClass="ui-button-secondary mr-2" immediate="true" update="@form :growl :errorGrowl"/>
+					        <p:commandButton value="Save" action="#{sessionController.doSaveSession}"
+					                         icon="pi pi-check"
+					                         ajax="true" update="@form :growl :errorGrowl"/>
+					    </div>
+					
+					</div>
+			    </p:tab>
 
-				<p:tab title="Session Detail">
-
-					<p:panelGrid columns="2" styleClass="btmsForm">
-						<p:panelGrid columns="2" styleClass="btmsForm"
-							columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-							<h:outputLabel value="Observers" />
-							<p:inputTextarea value="#{sessionController.session.observers}"
-								rows="1" cols="30" />
-							<h:outputLabel value="Description" />
-							<p:inputTextarea value="#{sessionController.session.description}"
-								rows="5" cols="100" />
-
-						</p:panelGrid>
-
-						<f:facet name="footer">
-							<p:commandButton id="saveButton" value="Save" ajax="true"
-								icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
-								action="#{sessionController.doSaveSession}" />
-							<p:commandButton id="closeButton" value="Close"
-								icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
-								action="#{sessionController.doCancelSaveSession}" />
-						</f:facet>
-					</p:panelGrid>
-				</p:tab>
 
 				<p:tab title="Procedures">
 
