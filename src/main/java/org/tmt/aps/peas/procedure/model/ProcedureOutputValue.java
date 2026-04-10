@@ -33,6 +33,7 @@ import org.tmt.aps.peas.common.Utils;
     @NamedQuery(
         name = "findOutputDisplayValuesForProcedure",
         query = "SELECT p FROM ProcedureOutputValue p " +
+                "INNER JOIN FETCH p.procedureOutputField " +        // normal join for filtering
                 "INNER JOIN p.procedureOutputField f " +        // normal join for filtering
                 "INNER JOIN f.procedureOutputFieldDisplay fdElem " +
                 "INNER JOIN fdElem.procedureType pt " +
@@ -138,6 +139,13 @@ public class ProcedureOutputValue {
 
 	public String getDataFormatted() {
 		return Utils.reformatData(data, procedureOutputField);
+	}
+
+	@Override
+	public String toString() {
+		return "ProcedureOutputValue [procedureOutputValueId=" + procedureOutputValueId + ", procedureId=" + procedureId
+				+ ", iteration=" + iteration + ", data=" + data + ", procedureOutputField=" + procedureOutputField
+				+ "]";
 	}
 
 

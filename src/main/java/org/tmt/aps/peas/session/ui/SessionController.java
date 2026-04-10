@@ -22,6 +22,7 @@ import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
 import org.primefaces.PrimeFaces;
+import org.primefaces.model.SortMeta;
 import org.tmt.aps.peas.ApplicationScopeBean;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.Constants;
@@ -336,7 +337,7 @@ public class SessionController implements Serializable {
 
 
 
-	public int procedureSortFunction(Object o1, Object o2) {
+	public int procedureSortFunction(Object o1, Object o2, SortMeta sortMeta) {
 		Procedure p1 = (Procedure) o1;
 		Procedure p2 = (Procedure) o2;
 		return new ProcedureNumberComparator().compare(p1, p2);

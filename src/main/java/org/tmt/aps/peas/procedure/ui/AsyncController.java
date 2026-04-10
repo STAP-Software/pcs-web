@@ -339,10 +339,7 @@ public class AsyncController implements Serializable {
 	private void checkSubProcedureEnd() {
 
 		if (procedureExecutionState.isSubProcedureEndRequested()) {
-	
 
-
-			
 			// we captured it, so reset it for next time, if any
 			procedureExecutionState.resetSubProcedureEndRequested();
 			

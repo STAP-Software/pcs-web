@@ -13,6 +13,7 @@ import org.tmt.aps.peas.common.cdi.Abortable;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.procedure.model.Procedure;
+import org.tmt.aps.peas.procedure.model.ProcedureOutput;
 import org.tmt.aps.peas.procedure.model.ProcedureOutputable;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 
@@ -30,6 +31,7 @@ public class ProcedureExecutionState {
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private Procedure procedureStack;
+	private ProcedureOutput procedureOutputStack;
 	private Procedure pendingSubProcedure;
 	private boolean subProcedureStartRequested;
 	private boolean subProcedureEndRequested;
@@ -41,6 +43,7 @@ public class ProcedureExecutionState {
 	private CcdFrame currentFrame;
 	private ProcedureCcdFrame currentProcedureCcdFrame;
 	private RefBeamMap currentRefMap;
+	private ProcedureOutput currentProcedureOutput;
 	private Procedure currentProcedure;
 	private Throwable procedureException;
 	private ProcedureOutputable currentOutputTarget;
@@ -57,6 +60,7 @@ public class ProcedureExecutionState {
 		currentFrame = null;
 		currentProcedureCcdFrame = null;
 		currentRefMap = null;
+		currentProcedureOutput = null;
 	}
 	
 	public boolean getExecutionStatus() {
@@ -144,6 +148,20 @@ public class ProcedureExecutionState {
 	public void resetSubProcedureEndRequested() {
 		subProcedureEndRequested = false;
 	}
+	
+	// V3.0 - manage procedure output and save to stack when auto reference beam map is performed 
+	public void refBeamMapStarting(ProcedureOutput procedureOutput) {
+		if (currentProcedureOutput != null) {
+			procedureOutputStack = currentProcedureOutput;
+		}
+		currentProcedureOutput = procedureOutput;
+	}
+	public void refBeamMapEnded() {
+		if (procedureOutputStack != null) {
+			currentProcedureOutput = procedureOutputStack;
+		} 
+	}
+	
 
 	public void setPendingSubProcedure(Procedure pendingSubProcedure) {
 		this.pendingSubProcedure = pendingSubProcedure;
@@ -172,6 +190,8 @@ public class ProcedureExecutionState {
 		procedureStack = null;
 		subProcedureEndRequested = true;
 		
+		logger.info("TRANSFER CONTROL FROM SUB_PRCEDURE:: currentProcedureOutput = " + currentProcedureOutput.getClass().getName());
+		
 		return currentProcedure;
 	}
 
@@ -197,6 +217,14 @@ public class ProcedureExecutionState {
 
 	public boolean getOnCompletePerformed() {
 		return onCompletePerformed;
+	}
+	
+	public ProcedureOutput getCurrentProcedureOutput() {
+		return currentProcedureOutput;
+	}
+
+	public void setCurrentProcedureOutput(ProcedureOutput currentProcedureOutput) {
+		this.currentProcedureOutput = currentProcedureOutput;
 	}
 
 	public ProcedureOutputable getCurrentOutputTarget() {

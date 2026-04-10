@@ -60,7 +60,8 @@ public class ProcedureOutputMgmt {
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcedureOutputable createProcedureOutput(ProcedureOutputable procedureOutput, Long procedureId) throws Exception {
-
+		
+		
 		// generate all the ProcedureOutputValues for this procedureOutput
 		
 		// 1. get all the calc result and decision log class fields possible
@@ -71,11 +72,15 @@ public class ProcedureOutputMgmt {
 
 		for (Method poMethod : poMethods) {
 
+			logger.info("CREATE PROCEDURE OUTPUT:: " + poClass.getName() + ", " + poMethod.getName() + " : " + testMethodName(poClass, poMethod.getName(), outputClassNames));
+			
+			
 			// test that this is an official calc result getter method
 			if (!testMethodName(poClass, poMethod.getName(), outputClassNames)) continue;
 							
 			// get the calcResult object
 			Object calcResult = poMethod.invoke(procedureOutput, new Object[0]);
+
 
 			if (calcResult == null) continue;
 			
@@ -173,6 +178,7 @@ public class ProcedureOutputMgmt {
 		
 		
 		for (ProcedureOutputValue procedureOutputValue : procedureOutputList) {
+			
 			
 			// here, check for null and create object as necessary
 			String className = procedureOutputValue.getProcedureOutputField().getClassName();

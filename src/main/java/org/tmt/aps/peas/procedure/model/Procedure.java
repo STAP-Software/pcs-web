@@ -371,6 +371,18 @@ public class Procedure {
 		return procedureState == PROCEDURE_STATE_COMPLETED || procedureState == PROCEDURE_STATE_ABORTED;
 	}
 	
+	
+	/**
+	 * @return the most recent ProcedureCcdFrame in the list or null if the list does not exist
+	 */
+	public ProcedureCcdFrame getLatestProcedureCcdFrame() {
+		if (procedureCcdFrameList == null) {
+			return null;
+		}
+		return procedureCcdFrameList.get(procedureCcdFrameList.size()-1);
+	}	
+	
+	
 	/**
 	 * @return true if this is a new procedure record that has not yet been stored in the database
 	 */

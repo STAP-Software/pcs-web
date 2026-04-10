@@ -431,20 +431,19 @@ public class ProcedureExecutionMgmt {
 			logger.debug("performProcedureCompletion::ref maps associated");
 			 */
 			
-			/*
-			 * V3.0 Temporarily suspend saving procedure output - re-enable once we can get procedures completing error free
-			 *
+
 			
 			// persist the procedure output
-			if (procedure.getProcedureOutput() != null) {
-				procedureOutputMgmt.createProcedureOutput(procedure.getProcedureOutput(), procedure.getProcedureId());
-				for (ProcedureIterationOutput pio : procedure.getProcedureOutput().getProcedureIterationOutputList()) {
+			// V3.0 procedure output stored in the procedure execution state, not the procedure model
+						
+			if (procedureExecutionState.getCurrentProcedureOutput() != null) {
+				ProcedureOutput procedureOutput = procedureExecutionState.getCurrentProcedureOutput();
+				procedureOutputMgmt.createProcedureOutput(procedureOutput, procedure.getProcedureId());
+				for (ProcedureIterationOutput pio : procedureOutput.getProcedureIterationOutputList()) {
 					procedureOutputMgmt.createProcedureOutput(pio, procedure.getProcedureId());
 				}
 			}
 			
-			*/
-
 			
 			statusLogger.log("procedure.saving_complete");
 			statusLogger.saveLog(procedure.getProcedureId());

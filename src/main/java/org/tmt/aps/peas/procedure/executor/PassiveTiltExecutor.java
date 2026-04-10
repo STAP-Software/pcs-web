@@ -144,6 +144,8 @@ public class PassiveTiltExecutor {
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 
 			PassiveTiltProcedureOutput procedureOutput = (PassiveTiltProcedureOutput) procedure.getProcedureOutput();
+			// V3.0 - save it in procedureExecutionState to avoid transient Procedure fields not persisting outside transactions
+			procedureExecutionState.setCurrentProcedureOutput(procedureOutput);
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 

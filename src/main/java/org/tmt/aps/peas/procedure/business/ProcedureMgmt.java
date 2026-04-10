@@ -78,14 +78,14 @@ public class ProcedureMgmt {
 		
 		try {
 			// TODO: V3 - uncomment when procedure output is implemented
-			//ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
-			//procedure.setProcedureOutput(procedureOutput);
+			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
+			procedure.setProcedureOutput(procedureOutput);
 			
 			// procedure frame data 
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 
 				// TODO: V3 - uncomment when procedure output is implemented
-				//setupFrameLog(procedureCcdFrame);
+				setupFrameLog(procedureCcdFrame);
 			}
 			
 		} catch (Throwable e) {

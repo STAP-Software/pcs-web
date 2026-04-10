@@ -129,6 +129,9 @@ public class CreateRefMapExecutor {
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			
 			CreateRefBeamMapProcedureOutput procedureOutput = (CreateRefBeamMapProcedureOutput)procedure.getProcedureOutput();
+			
+			// V3.0 - save procedure output in procedure execution state not Procedure model, it is transient and will not survive transaction boundaries
+			procedureExecutionState.refBeamMapStarting(procedureOutput);
 						
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 			
@@ -188,6 +191,10 @@ public class CreateRefMapExecutor {
 		} finally {
 			statusLogger.log("procedure.saving");
 			procedureExecutionMgmt.performProcedureCompletion(procedure, currentSession);
+			
+			// V3.0 - save procedure output in procedure execution state not Procedure model, it is transient and will not survive transaction boundaries
+			procedureExecutionState.refBeamMapEnded();
+
 		}
 		
 		
