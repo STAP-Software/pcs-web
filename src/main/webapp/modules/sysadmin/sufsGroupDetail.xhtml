@@ -13,29 +13,46 @@
 			<f:event listener="#{sufsGroupController.validate}" type="postValidate" />
 			<h:inputHidden id="sufsGroupId" value="#{sufsGroupController.sufsGroup.sufsGroupId}"/>
 
-			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-				<f:facet name="header">
-					<h:outputText value="Sufs Group Information" />
-				</f:facet>
+			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 1px solid #d0d0d0;">
+			
+		       <div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+                   padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+           			SUFS Group Information
+       			</div>
 
-				<p:outputLabel value="Group Number" for="groupNumber"/>
-				<p:inputText id="groupNumber" value="#{sufsGroupController.sufsGroup.groupNumber}" required="true"  disabled="#{!sufsGroupController.sufsGroup.newRecord}" >
-					<f:validateLongRange minimum="1" maximum="6" />
-				</p:inputText>
+        		<div style="padding: 16px;">
+        		
+	            	<div class="label-input-grid" 
+	                 	style="display: grid; grid-template-columns: max-content max-content;
+	                        align-items: baseline; 
+	                        row-gap: 24px; column-gap: 24px;">
+	
 
-				<p:outputLabel value="Default Reference Beam" for="defaultRefBeamNum" />
-				<p:inputText id="defaultRefBeamNum" value="#{sufsGroupController.sufsGroup.defaultRefBeamNum}" required="true" />
 
+						<p:outputLabel value="Group Number" for="groupNumber"/>
+						<p:inputText id="groupNumber" value="#{sufsGroupController.sufsGroup.groupNumber}" required="true"  disabled="#{!sufsGroupController.sufsGroup.newRecord}" size="2" >
+							<f:validateLongRange minimum="1" maximum="6" />
+						</p:inputText>
+		
+						<p:outputLabel value="Default Reference Beam" for="defaultRefBeamNum" />
+						<p:inputText id="defaultRefBeamNum" value="#{sufsGroupController.sufsGroup.defaultRefBeamNum}" required="true" size="2" />
+	
+					</div>
+					
+					<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
+	
+						<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
+							action="#{sufsGroupController.doSaveSufsGroup}" />
+						<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
+							immediate="true" action="#{sufsGroupController.doCancelSaveSufsGroup}" />
 
-				<f:facet name="footer">
-					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
-						action="#{sufsGroupController.doSaveSufsGroup}" />
-					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
-						immediate="true" action="#{sufsGroupController.doCancelSaveSufsGroup}" />
-				</f:facet>
-			</p:panelGrid>
-
+					</div>
+					
+				</div>
+				
+			</div>
 			<br />
 
 		</h:form>

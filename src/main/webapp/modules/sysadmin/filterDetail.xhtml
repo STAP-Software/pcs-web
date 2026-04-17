@@ -53,9 +53,10 @@
 					<p:inputText value="#{filterController.filter.minCoherenceLimit}" size="3" />
 	
 	
-					</div>
-					
-					<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
+	            	<div class="label-input-grid" 
+	                 	style="display: grid; grid-template-columns: max-content max-content;
+	                        align-items: baseline; 
+	                        row-gap: 24px; column-gap: 24px;">
 						<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
 							action="#{filterController.doSaveFilter}" />
 						<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"

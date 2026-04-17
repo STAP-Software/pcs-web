@@ -1,44 +1,46 @@
-<ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
+<ui:composition 
+xmlns="http://www.w3.org/1999/xhtml" 
+xmlns:ui="http://java.sun.com/jsf/facelets" 
+xmlns:h="http://java.sun.com/jsf/html"
+xmlns:f="http://java.sun.com/jsf/core" 
+xmlns:p="http://primefaces.org/ui" 
+xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
   
 		<p:dialog id="loginDlg" header="Engineering/Administration Login" widgetVar="loginDialog" closable="false" modal="true" resizable="false">  
     		<h:form> 
 
-                    <p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn"> 
+ 			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 0px solid #d0d0d0;">
+			
+ 
+					<h:outputText value="Enter password for Administration Mode, " style="padding: 8px 16px" />
+
+					<h:outputText value = "or leave blank to enter Engineering Mode" style="padding: 8px 16px" />
+
   
-  						<p:row colspan="2">
-  						<br/>
-  						<br/>
-  						<br/>
-  						<br/>
-  						<br/>
-  						<br/>
-  						</p:row>
-  						
-  						<p:row colspan="2">
-  						<h:outputText value="Enter password for Administration Mode, "/>
-  						<br/>
-  						<h:outputText value = "or leave blank to enter Engineering Mode" />
-  						</p:row>
-  						
-   						<p:row colspan="2">
-  						<br/>
-  						</p:row>
-  
-  						<p:row>
-                        <h:outputLabel for="password" value="Password:" /> 
-                        <p:password  value="#{sessionController.password}" id="password" label="password" /> 
-  						</p:row>
+	            	<div class="label-input-grid" 
+	                 	style="display: grid; grid-template-columns: max-content max-content;
+	                        align-items: baseline; 
+	                        row-gap: 24px; column-gap: 16px;
+	                        overflow: hidden;">
 
-   						<p:row colspan="2">
-  						<br/>
-  						</p:row>
+                        <h:outputLabel for="password" value="Password:" style="padding: 24px 16px"/> 
+                        <p:password  value="#{sessionController.password}" id="password" 
+                        label="password" size="16" 
+                        style="padding: 24px 16px" /> 
+  					
+					</div>
 
-                        <f:facet name="footer"> 
-                            <p:commandButton id="loginButton" value="Login" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
-                        </f:facet> 
-                    </p:panelGrid> 
 
+  	            	<div class="label-input-grid" 
+	                 	style="display: flex; justify-content: flex-end;
+	                        padding: 8px 16px">
+                    
+                        <p:commandButton id="loginButton" value="Login" style="float:right" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
+					</div>
+					
+				</div>
+				
 
                 </h:form>  
 		</p:dialog> 

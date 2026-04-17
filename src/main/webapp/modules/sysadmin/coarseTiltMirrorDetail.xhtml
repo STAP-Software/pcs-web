@@ -10,31 +10,47 @@
 
 		<h:form id="coarseForm" style="margin:30px">
 
-			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 1px solid #d0d0d0;">
+			
+		       <div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+                   padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+           			Coarse Tilt Mirror Information
+       			</div>
 
-				<f:facet name="header">
-					<h:outputText value="Coarse Mirror Information" />
-				</f:facet>
+        		<div style="padding: 16px;">
+        		
+	            	<div class="label-input-grid" 
+	                 	style="display: grid; grid-template-columns: max-content max-content;
+	                        align-items: baseline; 
+	                        row-gap: 24px; column-gap: 24px;">
 
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmX')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmX}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmY')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmY}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','Orafactor')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.orafactor}" />
-
-				<f:facet name="footer">
-					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
-						action="#{coarseTiltMirrorController.doSaveCoarseTiltMirror}" />
-					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
-						action="#{coarseTiltMirrorController.doCancelSaveCoarseTiltMirror}" />
-				</f:facet>
-			</p:panelGrid>
+	
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmX')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmX}" size="8" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','MechanismLeverArmY')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.mechanismLeverArmY}" size="8"/>
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CoarseTiltMirror','Orafactor')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{coarseTiltMirrorController.coarseTiltMirror.orafactor}" size="8"/>
+	
+					</div>
+					
+					<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
+	
+						<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
+							action="#{coarseTiltMirrorController.doSaveCoarseTiltMirror}" />
+						<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
+							action="#{coarseTiltMirrorController.doCancelSaveCoarseTiltMirror}" />
+					</div>
+					
+				</div>
+				
+			</div>
 
 			<br />
 
