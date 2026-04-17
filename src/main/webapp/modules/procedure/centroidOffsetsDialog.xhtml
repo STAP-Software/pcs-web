@@ -15,11 +15,11 @@ var centOffScope = {drawSegments: true, drawSegNums: true};
 
 function runDrawOffsets() {
 
-	var c = document.getElementById("offsetsCanvas");
-	var ctx = c.getContext("2d");
+    var c = document.getElementById("offsetsCanvas");
+    var ctx = c.getContext("2d");
 
-	ctx.translate(-25,-10);
-	ctx.scale(0.61, 0.61);
+    // No scaling needed - drawing space is already 1000x1000
+    ctx.translate(-25, -10);  // keep your existing offset
 
 	window.setTimeout("drawCentroidOffsets(true,true)", 10);
 		
@@ -46,32 +46,26 @@ function runDrawOffsets() {
 }
 
 function centroidOffsetsResizeHandler() {
-	
-	var baseScale = 0.61;
-	var baseCanvasSize = 600.0;
-	
-	var d = document.querySelector("[id$='centroidOffsetDialog']"); 
-	var availableWidth = d.offsetWidth - 300 - 100;
-	var availableHeight = d.offsetHeight - 70;
-	var available = Math.min(availableWidth, availableHeight);
-	
-	var scale = baseScale * available / baseCanvasSize;
-	
-	var c = document.querySelector("[id$='offsetsCanvas']"); 
-	c.width=available;
-	c.height=available;
-	
-	var ctx = c.getContext("2d");
-
-	ctx.scale(scale, scale);
-
-	//alert("resizing")
-	drawCentroidOffsets(centOffScope.drawSegments, centOffScope.drawSegNums);
-	
-	resizing = false;
-
+    var d = document.querySelector("[id$='centroidOffsetDialog']"); 
+    var availableWidth = d.offsetWidth - 300 - 100;
+    var availableHeight = d.offsetHeight - 70;
+    var available = Math.min(availableWidth, availableHeight);
+    
+    var c = document.querySelector("[id$='offsetsCanvas']"); 
+    // Don't change c.width/c.height (drawing buffer stays 1000x1000)
+    // Only change CSS display size
+    c.style.width = available + "px";
+    c.style.height = available + "px";
+    
+    // No need to re-scale context - just redraw
+    var ctx = c.getContext("2d");
+    ctx.setTransform(1, 0, 0, 1, 0, 0);  // reset transform
+    ctx.translate(-25, -10);
+    
+    drawCentroidOffsets(centOffScope.drawSegments, centOffScope.drawSegNums);
+    
+    resizing = false;
 }
-
 
 function drawCentroidOffsets(drawSegments,drawSegNums) {
     
@@ -266,13 +260,16 @@ function drawHex(ctx, x, y, newSideLen, number, drawSegment, drawSegNum) {
 			
  			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
     			
-    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
+    		
+    		<h:panelGroup layout="block" style="display:flex; align-items:flex-start; width:100%; vertical-align:top" >
      		
-    		
-    		<canvas id="offsetsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
-    		
-    		
-    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
+    	
+			<canvas id="offsetsCanvas" width="1000" height="1000" 
+			        style="width:875px; height:875px; flex-shrink:0; border:0px solid #d3d3d3;">
+			    Your browser does not support the HTML5 canvas tag.
+			</canvas>
+			    		
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="flex:0 0 auto; border:0px; max-width:330px;" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 
@@ -366,7 +363,7 @@ function drawHex(ctx, x, y, newSideLen, number, drawSegment, drawSegNum) {
     		</p:panelGrid>    		
     		
     		
-    		</p:panelGrid>
+    		</h:panelGroup>
     		<br/>
     		    		
     		<h:panelGroup styleClass="dialogCommandGroup">

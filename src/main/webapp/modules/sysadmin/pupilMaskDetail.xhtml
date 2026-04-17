@@ -10,53 +10,72 @@
 
 		<h:form id="pupilMaskForm" style="margin:30px">
 
-			<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 1px solid #d0d0d0;">
+			
+		       <div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+                   padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+           			Pupil Mask Information
+       			</div>
 
-				<f:facet name="header">
-					<h:outputText value="Pupil Mask Information" />
-				</f:facet>
+        		<div style="padding: 16px;">
+        		
+	            	<div class="label-input-grid" 
+	                 	style="display: grid; grid-template-columns: max-content max-content;
+	                        align-items: baseline; 
+	                        row-gap: 24px; column-gap: 24px;">
 
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','MaskName')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-				<p:inputText value="#{pupilMaskController.pupilMask.maskName}" />
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','MaskName')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+						<p:inputText value="#{pupilMaskController.pupilMask.maskName}" size="3" />
+		
+						<h:outputLabel value="Pupil Mask Type" />
+						<p:selectOneMenu value="#{pupilMaskController.pupilMask.pupilMaskType}" converter="#{pupilMaskTypeConverter}" size="10">
+							<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
+						</p:selectOneMenu>
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','MaskRotation')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{pupilMaskController.pupilMask.maskRotation}"  size="4" />
+		
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','ArcsecPerMeter')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{pupilMaskController.pupilMask.arcsecPerMeter}"  size="10" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SpotDiamInterior')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{pupilMaskController.pupilMask.spotDiamInterior}"  size="6" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SpotDiamPeripheral')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{pupilMaskController.pupilMask.spotDiamPeripheral}"  size="3" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','CrossHairDiam')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})"  />
+						<p:inputText value="#{pupilMaskController.pupilMask.crossHairDiam}" size="7" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','PcsFocusToAcs')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{pupilMaskController.pupilMask.pcsFocusToAcs}" size="4" />
 
-				<h:outputLabel value="Pupil Mask Type" />
-				<p:selectOneMenu value="#{pupilMaskController.pupilMask.pupilMaskType}" converter="#{pupilMaskTypeConverter}">
-					<f:selectItems value="#{pupilMaskController.pupilMaskTypeList}" var="type" itemLabel="#{type.pupilMaskTypeName}" itemValue="#{type}" />
-				</p:selectOneMenu>
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','MaskRotation')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.maskRotation}" />
-
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','ArcsecPerMeter')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.arcsecPerMeter}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SpotDiamInterior')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.spotDiamInterior}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','SpotDiamPeripheral')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.spotDiamPeripheral}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','CrossHairDiam')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.crossHairDiam}" />
-
-				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('PupilMask','PcsFocusToAcs')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<p:inputText value="#{pupilMaskController.pupilMask.pcsFocusToAcs}" />
-
-				<f:facet name="footer">
-					<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
+					</div>
+					
+					<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
+					<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
 						action="#{pupilMaskController.doSavePupilMask}" />
-					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
+					<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
 						action="#{pupilMaskController.doCancelSavePupilMask}" />
-				</f:facet>
-			</p:panelGrid>
+
+					</div>
+					
+					
+					
+				</div>
+				
+				
+				
+			</div>
 
 			<br />
 

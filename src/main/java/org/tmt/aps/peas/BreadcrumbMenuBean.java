@@ -95,7 +95,8 @@ public class BreadcrumbMenuBean implements Serializable {
         }
 
         crumbs.add(new Crumb(name, command, ""));
-        immediateUrl = null;
+        
+        immediateUrl = command;
     }
 
     public void addItem(String name, String command) {
@@ -103,7 +104,10 @@ public class BreadcrumbMenuBean implements Serializable {
         System.out.println("BREADCRUMB: ADD ITEM, name = " + name + ", command = " + command);
 
         crumbs.add(new Crumb(name, command, ""));
-        immediateUrl = null;
+        
+        immediateUrl = command;
+        
+        //immediateUrl = null;
     }
 
     public void insertFirst(String name, String command) {
@@ -111,7 +115,10 @@ public class BreadcrumbMenuBean implements Serializable {
         System.out.println("BREADCRUMB: INSERT FIRST");
 
         crumbs.add(1, new Crumb(name, command, ""));
-        immediateUrl = null;
+        
+        immediateUrl = command;
+        
+        //immediateUrl = null;
     }
 
     public void removeTo(String value) {
@@ -150,6 +157,7 @@ public class BreadcrumbMenuBean implements Serializable {
         return immediateUrl != null &&
                immediateUrl.contains("procedurePerspective");
     }
+    
 
     // ---- Navigation convenience ----
 

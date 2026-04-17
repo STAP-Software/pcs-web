@@ -172,9 +172,6 @@ html, body {
 }
 
 
-}
-
-
 
 .peasFormLabelColumn {
   	text-align:right;
@@ -188,7 +185,7 @@ html, body {
 	font-weight:normal !important;
 	padding:1px !important;
 	box-shadow:none !important;
-	font-size: 12px !important;
+	font-size: 1rem !important;
 }
 
 /* disable breadcrumb home icon and let text appear */
@@ -321,6 +318,29 @@ body .ui-datatable .ui-datatable-header {
 body .ui-datatable .ui-datatable-tablewrapper {
     border: 1px solid #2c3e50;
 }
+
+body .ui-datatable-scrollable-header-box {
+	margin-right: 0 !important;
+	border-left: 1px solid #2c3e50 !important;	
+	border-right: 1px solid #2c3e50 !important;
+}
+
+body .ui-datatable .ui-datatable-scrollable-body {
+	border-left: 1px solid #2c3e50 !important;	
+	border-right: 1px solid #2c3e50 !important;
+	border-top: 0px !important;
+}
+
+body .ui-datatable-scrollable-header {
+    border-bottom: 0px solid #ccc !important;
+}
+
+body .ui-datatable .ui-datatable-scrollable-header th,
+body .ui-datatable .ui-datatable-scrollable-body td {
+    padding-left: 6px !important;
+}
+
+
 /* toolbar above session list to filter choices */
 body .ui-toolbar .ui-widget {
     font-weight: normal !important;
@@ -621,4 +641,26 @@ html, body {
     background: transparent;
     padding: 6px 0 0 0;
 }
+
+
+/* V3.0 method for label and inputs */
+.label-input-grid label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+   	font-family: Arial, sans-serif;
+    font-size: 1rem;
+   	font-weight: bold;
+}
+   
+.label-input-grid input,
+.label-input-grid textarea,
+.label-input-grid span,
+.label-input-grid select {
+       justify-self: start;
+}
+
+
+
+
 

@@ -8,13 +8,48 @@
 
 	<ui:define name="content">
 
+
+		<h:outputStylesheet>
+		    /* Give the tab panel a visible border */
+		    #ccdForm .ui-tabs .ui-tabs-panels {
+		        border: 1px solid #d0d0d0;
+		        border-top: none;
+		    }
+		
+		    /* Style inactive tabs */
+		    #ccdForm .ui-tabs .ui-tabs-nav li {
+		        background: #e8e8e8;
+		        border: 1px solid #d0d0d0;
+		    }
+		
+		    /* Style the active/selected tab with full color fill */
+		    #ccdForm .ui-tabs .ui-tabs-nav li.ui-tabs-active,
+		    #ccdForm .ui-tabs .ui-tabs-nav li.ui-state-active {
+		        background: #1a73e8;
+		        border-color: #1a73e8;
+		    }
+		
+		    #ccdForm .ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+		    #ccdForm .ui-tabs .ui-tabs-nav li.ui-state-active a {
+		        color: #ffffff;
+		    }
+		    
+
+
+
+		</h:outputStylesheet>
+
+
 		<h:form id="ccdForm" style="margin:30px">
 
-			<p:tabView id="ccdDetailTabView" >
+			<p:tabView id="ccdDetailTabView" style="width:fit-content" >
 
 				<p:tab title="Ccd Detail">
 
-					<p:panelGrid columns="2" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+					<div style="display: inline-flex; flex-direction: column; gap: 10px;">
+					
+					    <div class="label-input-grid" style="display: grid; grid-template-columns: max-content 1fr;
+					                align-items: baseline; row-gap: 10px; column-gap: 16px;">
 
 						<h:outputLabel value="Name" for="ccdName" />
 						<p:inputText id="ccdName" value="#{ccdDefController.ccd.ccdName}" required="true"/>
@@ -23,7 +58,7 @@
 						<h:outputText id="ccdType" value="#{ccdDefController.ccd.ccdType.ccdTypeName}" required="true"/>
 
 						<h:outputLabel value="Description" />
-						<p:inputTextarea value="#{ccdDefController.ccd.ccdDescription}" rows="2" cols="70" />
+						<p:inputTextarea value="#{ccdDefController.ccd.ccdDescription}" rows="2" cols="50" />
 						
 						<h:outputLabel value="Rows" for="rowCount" />
 						<h:outputText id="rowCount" value="#{ccdDefController.ccd.rowCount}" size="3" required="true" />
@@ -70,13 +105,16 @@
 						<h:outputLabel value="Gain Setting 3 Channel1 Offset" for="gain3Offset1" />
 						<p:inputText id="gain3Offset1" value="#{ccdDefController.ccd.ccdGain3.gainOffsetChannel1}" size="3" required="true"/>
 
-						<f:facet name="footer">
-							<p:commandButton id="saveButton" value="Save" ajax="true" icon="ui-icon-check" style="float:right" update="@form :growl :errorGrowl"
-								action="#{ccdDefController.doSaveCcd}" />
-							<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update="@form :growl :errorGrowl"
-								action="#{ccdDefController.doCancelSaveCcd}" />
-						</f:facet>
-					</p:panelGrid>
+					</div>
+					</div>
+					
+					<div style="display: flex; justify-content: flex-end; gap: 8px;">
+											
+						<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
+							action="#{ccdDefController.doSaveCcd}" />
+						<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
+							action="#{ccdDefController.doCancelSaveCcd}" />
+					</div>
 
 				</p:tab>
 

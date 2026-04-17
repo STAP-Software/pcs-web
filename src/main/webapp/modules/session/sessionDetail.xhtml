@@ -72,7 +72,7 @@
 					</h:panelGroup>
 
 					<p:dataTable id="sessionTable" var="procedure"
-						value="#{sessionController.session.procedureList}" rowKey="#{procedure.procedureId}">
+						value="#{sessionController.session.procedureList}" rowKey="#{procedure.procedureId}" stripedRows="true">
 						<f:facet name="header">
 							<h:outputText value="Session Summary: " />
 							<h:outputText value="&#160;&#160;&#160;&#160;" />
@@ -100,10 +100,10 @@
 						<p:column headerText="Procedure Number" sortBy="#{procedure}" sortFunction="#{sessionController.procedureSortFunction}" style="width:5%">
 							<h:outputText value="#{procedure.procedureNumber}" />
 						</p:column>
-						<p:column headerText="Test Number" style="width:10%">
+						<p:column headerText="Test Number" style="width:5%">
 							<h:outputText value="#{procedure.testNumber}" />
 						</p:column>
-						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}">
+						<p:column headerText="Procedure Type" sortBy="#{procedure.procedureType.procedureTypeName}" style="width:10%">
 							<h:outputText value="#{procedure.procedureType.procedureTypeName}" />
 							<h:outputText value=" #{procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" rendered="#{procedure.procedureType.coarsePhasing}" />
 							<h:outputText value=" (Group #{procedure.procedureConfigSet.procedureConfig.sufsGroup})" rendered="#{procedure.procedureType.sufs}" />
@@ -114,7 +114,7 @@
 								value="#{fn:length(procedure.procedureCcdFrameList)}" />
 						</p:column>
 						 -->
-						<p:column headerText="Start Time" style="width:10%">
+						<p:column headerText="Start Time" style="width:8%">
 							<h:outputText value="#{procedure.executionStartTime}" >
 								<f:convertDateTime type="date" pattern="HH:mm:ss" timezone="UTC" />
 							</h:outputText>

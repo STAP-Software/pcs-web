@@ -164,7 +164,7 @@ public class ProcedureOutputMgmt {
 				
 		String fullPoClassName = "org.tmt.aps.peas.procedure.model." + poClassName;
 
-		Object poClassInstance = Class.forName(fullPoClassName).newInstance();
+		Object poClassInstance = Class.forName(fullPoClassName).getDeclaredConstructor().newInstance();
 		ProcedureOutput procedureOutput = (ProcedureOutput) poClassInstance;
 		procedureOutput.setProcedureOutputList(procedureOutputDisplayList);
 
@@ -191,7 +191,7 @@ public class ProcedureOutputMgmt {
 			if (calcResult == null) {
 				// create a new one and apply setter in procedureOutput 
 				String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
-				calcResult = Class.forName(fullClassName).newInstance();
+				calcResult = Class.forName(fullClassName).getDeclaredConstructor().newInstance();
 				// apply setter method
 				Class[] paramTypes = {calcResult.getClass()};
 				Method setterMethod = poClassInstance.getClass().getMethod("set" + className, paramTypes);
@@ -226,7 +226,7 @@ public class ProcedureOutputMgmt {
 			
 			String fullPoItClassName = "org.tmt.aps.peas.procedure.model." + poItClassName;
 
-			Object poItClassInstance = Class.forName(fullPoItClassName).newInstance();
+			Object poItClassInstance = Class.forName(fullPoItClassName).getDeclaredConstructor().newInstance();
 
 			ProcedureIterationOutput pio = (ProcedureIterationOutput) poItClassInstance;
 			pio.setProcedureIterationOutputList(procedureIterationOutputDisplayList);
@@ -253,7 +253,7 @@ public class ProcedureOutputMgmt {
 				if (calcResult == null) {
 					// create a new one and apply setter in procedureOutput 
 					String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
-					calcResult = Class.forName(fullClassName).newInstance();
+					calcResult = Class.forName(fullClassName).getDeclaredConstructor().newInstance();
 					// apply setter method
 					Class[] paramTypes = {calcResult.getClass()};
 					Method setterMethod = poItClassInstance.getClass().getMethod("set" + className, paramTypes);
