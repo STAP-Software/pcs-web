@@ -27,46 +27,47 @@
 	                        row-gap: 24px; column-gap: 24px;">
 	
 	
-					<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','FilterName')}" />				
-					<h:outputLabel value="#{fieldMetaData.displayLabel}" for="filterName"/> 
-					<p:inputText id="filterName" value="#{filterController.filter.filterName}" size="3" />
-	
-					<h:outputLabel value="Filter Type" for="filterType"/>
-					<p:selectOneMenu id="filterType" value="#{filterController.filter.filterType}" converter="#{filterTypeConverter}">
-						<f:selectItems value="#{filterController.filterTypeList}" var="type" itemLabel="#{type.filterTypeName}" itemValue="#{type}" />
-					</p:selectOneMenu>
-					
-					<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','WaveLength')}" />				
-					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-					<p:inputText value="#{filterController.filter.wavelength}" size="5" />
-	
-					<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','Bandwidth')}" />
-					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-					<p:inputText value="#{filterController.filter.bandwidth}" size="3" />
-	
-					<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','CoherenceLength')}" />
-					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-					<p:inputText value="#{filterController.filter.coherenceLength}" size="3" />
-	
-					<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','MinCoherenceLimit')}" />
-					<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-					<p:inputText value="#{filterController.filter.minCoherenceLimit}" size="3" />
-	
-	
-	            	<div class="label-input-grid" 
-	                 	style="display: grid; grid-template-columns: max-content max-content;
-	                        align-items: baseline; 
-	                        row-gap: 24px; column-gap: 24px;">
-						<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
-							action="#{filterController.doSaveFilter}" />
-						<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
-							action="#{filterController.doCancelSaveFilter}" />
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','FilterName')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel}" for="filterName"/> 
+						<p:inputText id="filterName" value="#{filterController.filter.filterName}" size="3" />
+		
+						<h:outputLabel value="Filter Type" for="filterType"/>
+						<p:selectOneMenu id="filterType" value="#{filterController.filter.filterType}" converter="#{filterTypeConverter}">
+							<f:selectItems value="#{filterController.filterTypeList}" var="type" itemLabel="#{type.filterTypeName}" itemValue="#{type}" />
+						</p:selectOneMenu>
+						
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','WaveLength')}" />				
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{filterController.filter.wavelength}" size="5" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','Bandwidth')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{filterController.filter.bandwidth}" size="3" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','CoherenceLength')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{filterController.filter.coherenceLength}" size="3" />
+		
+						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Filter','MinCoherenceLimit')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+						<p:inputText value="#{filterController.filter.minCoherenceLimit}" size="3" />
+		
+		
+		            	<div class="label-input-grid" 
+		                 	style="display: grid; grid-template-columns: max-content max-content;
+		                        align-items: baseline; 
+		                        row-gap: 24px; column-gap: 24px;">
+							<p:commandButton id="saveButton" value="Save" ajax="true" icon="pi pi-check" style="float:right" update="@form :growl :errorGrowl"
+								action="#{filterController.doSaveFilter}" />
+							<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update="@form :growl :errorGrowl"
+								action="#{filterController.doCancelSaveFilter}" />
+						</div>
+						
 					</div>
 					
 				</div>
-				
-			</div>
 		
+			</div>
 
 		
 

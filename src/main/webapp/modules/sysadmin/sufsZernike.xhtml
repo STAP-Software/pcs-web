@@ -10,105 +10,120 @@
 
 		<h:form id="sufsZernikeOrderForm" style="margin:30px">
 
-			<p:panelGrid columns="6" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
+			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 1px solid #d0d0d0;">
+			
+		       <div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+                   padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+           			Sufs Segment Zernike Order to Calculate
+       			</div>
 
-				<f:facet name="header">
-					<h:outputText value="Sufs Segment Zernike Order to Calculate" />
-				</f:facet>
+        		<div style="padding: 16px;">
+        		
+					<div class="label-input-grid" 
+					     style="display: grid; grid-template-columns: repeat(6, max-content);
+					            align-items: baseline; 
+					            row-gap: 24px; column-gap: 24px;">
+					            
+						<p:outputLabel value="Segment 1" />
+						<p:inputText id="groupNumber1" value="#{globalConfigController.sufsZernikeOrderObjectArray[0]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 13" />
+						<p:inputText id="groupNumber13" value="#{globalConfigController.sufsZernikeOrderObjectArray[12]}" required="true" size="2"  maxlength="2" />
+						<p:outputLabel value="Segment 25" />
+						<p:inputText id="groupNumber25" value="#{globalConfigController.sufsZernikeOrderObjectArray[24]}" required="true" size="2"  maxlength="2" />
+		
+						<p:outputLabel value="Segment 2" />
+						<p:inputText id="groupNumber2" value="#{globalConfigController.sufsZernikeOrderObjectArray[1]}" required="true"  size="2"  maxlength="2" />
+						<p:outputLabel value="Segment 14" />
+						<p:inputText id="groupNumber14" value="#{globalConfigController.sufsZernikeOrderObjectArray[13]}" required="true" size="2"  maxlength="2" />
+						<p:outputLabel value="Segment 26" />
+						<p:inputText id="groupNumber26" value="#{globalConfigController.sufsZernikeOrderObjectArray[25]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 3" />
+						<p:inputText id="groupNumber3" value="#{globalConfigController.sufsZernikeOrderObjectArray[2]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 15" />
+						<p:inputText id="groupNumber15" value="#{globalConfigController.sufsZernikeOrderObjectArray[14]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 27" />
+						<p:inputText id="groupNumber27" value="#{globalConfigController.sufsZernikeOrderObjectArray[26]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 4" />
+						<p:inputText id="groupNumber4" value="#{globalConfigController.sufsZernikeOrderObjectArray[3]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 16" />
+						<p:inputText id="groupNumber16" value="#{globalConfigController.sufsZernikeOrderObjectArray[15]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 28" />
+						<p:inputText id="groupNumber28" value="#{globalConfigController.sufsZernikeOrderObjectArray[27]}" required="true" size="2"  maxlength="2"/>
+		
+						<p:outputLabel value="Segment 5" />
+						<p:inputText id="groupNumber5" value="#{globalConfigController.sufsZernikeOrderObjectArray[4]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 17" />
+						<p:inputText id="groupNumber17" value="#{globalConfigController.sufsZernikeOrderObjectArray[16]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 29" />
+						<p:inputText id="groupNumber29" value="#{globalConfigController.sufsZernikeOrderObjectArray[28]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 6" />
+						<p:inputText id="groupNumber6" value="#{globalConfigController.sufsZernikeOrderObjectArray[5]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 18" />
+						<p:inputText id="groupNumber18" value="#{globalConfigController.sufsZernikeOrderObjectArray[17]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 30" />
+						<p:inputText id="groupNumber30" value="#{globalConfigController.sufsZernikeOrderObjectArray[29]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 7" />
+						<p:inputText id="groupNumber7" value="#{globalConfigController.sufsZernikeOrderObjectArray[6]}" required="true"  size="2" maxlength="2" />
+						<p:outputLabel value="Segment 19" />
+						<p:inputText id="groupNumber19" value="#{globalConfigController.sufsZernikeOrderObjectArray[18]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 31" />
+						<p:inputText id="groupNumber31" value="#{globalConfigController.sufsZernikeOrderObjectArray[30]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 8" />
+						<p:inputText id="groupNumber8" value="#{globalConfigController.sufsZernikeOrderObjectArray[7]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 20" />
+						<p:inputText id="groupNumber20" value="#{globalConfigController.sufsZernikeOrderObjectArray[19]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 32" />
+						<p:inputText id="groupNumber32" value="#{globalConfigController.sufsZernikeOrderObjectArray[31]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 9" />
+						<p:inputText id="groupNumber9" value="#{globalConfigController.sufsZernikeOrderObjectArray[8]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 21" />
+						<p:inputText id="groupNumber21" value="#{globalConfigController.sufsZernikeOrderObjectArray[20]}" required="true"  size="2" maxlength="2"/>
+						<p:outputLabel value="Segment 33" />
+						<p:inputText id="groupNumber33" value="#{globalConfigController.sufsZernikeOrderObjectArray[32]}" required="true"  size="2" maxlength="2"/>
+		
+						<p:outputLabel value="Segment 10" />
+						<p:inputText id="groupNumber10" value="#{globalConfigController.sufsZernikeOrderObjectArray[9]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 22" />
+						<p:inputText id="groupNumber22" value="#{globalConfigController.sufsZernikeOrderObjectArray[21]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 34" />
+						<p:inputText id="groupNumber34" value="#{globalConfigController.sufsZernikeOrderObjectArray[33]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 11" />
+						<p:inputText id="groupNumber11" value="#{globalConfigController.sufsZernikeOrderObjectArray[10]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 23" />
+						<p:inputText id="groupNumber23" value="#{globalConfigController.sufsZernikeOrderObjectArray[22]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 35" />
+						<p:inputText id="groupNumber35" value="#{globalConfigController.sufsZernikeOrderObjectArray[34]}" required="true" size="2" maxlength="2" />
+		
+						<p:outputLabel value="Segment 12" />
+						<p:inputText id="groupNumber12" value="#{globalConfigController.sufsZernikeOrderObjectArray[11]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 24" />
+						<p:inputText id="groupNumber24" value="#{globalConfigController.sufsZernikeOrderObjectArray[23]}" required="true" size="2" maxlength="2" />
+						<p:outputLabel value="Segment 36" />
+						<p:inputText id="groupNumber36" value="#{globalConfigController.sufsZernikeOrderObjectArray[35]}" required="true" size="2" maxlength="2" />
 
-				<p:outputLabel value="Segment 1" />
-				<p:inputText id="groupNumber1" value="#{globalConfigController.sufsZernikeOrderObjectArray[0]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 13" />
-				<p:inputText id="groupNumber13" value="#{globalConfigController.sufsZernikeOrderObjectArray[12]}" required="true" size="2"  maxlength="2" />
-				<p:outputLabel value="Segment 25" />
-				<p:inputText id="groupNumber25" value="#{globalConfigController.sufsZernikeOrderObjectArray[24]}" required="true" size="2"  maxlength="2" />
+						<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px; grid-column: 1 / -1;">
 
-				<p:outputLabel value="Segment 2" />
-				<p:inputText id="groupNumber2" value="#{globalConfigController.sufsZernikeOrderObjectArray[1]}" required="true"  size="2"  maxlength="2" />
-				<p:outputLabel value="Segment 14" />
-				<p:inputText id="groupNumber14" value="#{globalConfigController.sufsZernikeOrderObjectArray[13]}" required="true" size="2"  maxlength="2" />
-				<p:outputLabel value="Segment 26" />
-				<p:inputText id="groupNumber26" value="#{globalConfigController.sufsZernikeOrderObjectArray[25]}" required="true" size="2" maxlength="2" />
+							<p:commandButton value="Save" ajax="false" icon="pi pi-check" style="float:right" update=":growl :errorGrowl"
+								action="#{globalConfigController.doSaveSufsZernikes}" />
+							<p:commandButton value="Reset" icon="pi pi-refresh" style="float:right" update="@form :growl :errorGrowl"
+								immediate="true" action="#{globalConfigController.doViewSufsZernikes}" />
 
-				<p:outputLabel value="Segment 3" />
-				<p:inputText id="groupNumber3" value="#{globalConfigController.sufsZernikeOrderObjectArray[2]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 15" />
-				<p:inputText id="groupNumber15" value="#{globalConfigController.sufsZernikeOrderObjectArray[14]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 27" />
-				<p:inputText id="groupNumber27" value="#{globalConfigController.sufsZernikeOrderObjectArray[26]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 4" />
-				<p:inputText id="groupNumber4" value="#{globalConfigController.sufsZernikeOrderObjectArray[3]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 16" />
-				<p:inputText id="groupNumber16" value="#{globalConfigController.sufsZernikeOrderObjectArray[15]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 28" />
-				<p:inputText id="groupNumber28" value="#{globalConfigController.sufsZernikeOrderObjectArray[27]}" required="true" size="2"  maxlength="2"/>
-
-				<p:outputLabel value="Segment 5" />
-				<p:inputText id="groupNumber5" value="#{globalConfigController.sufsZernikeOrderObjectArray[4]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 17" />
-				<p:inputText id="groupNumber17" value="#{globalConfigController.sufsZernikeOrderObjectArray[16]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 29" />
-				<p:inputText id="groupNumber29" value="#{globalConfigController.sufsZernikeOrderObjectArray[28]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 6" />
-				<p:inputText id="groupNumber6" value="#{globalConfigController.sufsZernikeOrderObjectArray[5]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 18" />
-				<p:inputText id="groupNumber18" value="#{globalConfigController.sufsZernikeOrderObjectArray[17]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 30" />
-				<p:inputText id="groupNumber30" value="#{globalConfigController.sufsZernikeOrderObjectArray[29]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 7" />
-				<p:inputText id="groupNumber7" value="#{globalConfigController.sufsZernikeOrderObjectArray[6]}" required="true"  size="2" maxlength="2" />
-				<p:outputLabel value="Segment 19" />
-				<p:inputText id="groupNumber19" value="#{globalConfigController.sufsZernikeOrderObjectArray[18]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 31" />
-				<p:inputText id="groupNumber31" value="#{globalConfigController.sufsZernikeOrderObjectArray[30]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 8" />
-				<p:inputText id="groupNumber8" value="#{globalConfigController.sufsZernikeOrderObjectArray[7]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 20" />
-				<p:inputText id="groupNumber20" value="#{globalConfigController.sufsZernikeOrderObjectArray[19]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 32" />
-				<p:inputText id="groupNumber32" value="#{globalConfigController.sufsZernikeOrderObjectArray[31]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 9" />
-				<p:inputText id="groupNumber9" value="#{globalConfigController.sufsZernikeOrderObjectArray[8]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 21" />
-				<p:inputText id="groupNumber21" value="#{globalConfigController.sufsZernikeOrderObjectArray[20]}" required="true"  size="2" maxlength="2"/>
-				<p:outputLabel value="Segment 33" />
-				<p:inputText id="groupNumber33" value="#{globalConfigController.sufsZernikeOrderObjectArray[32]}" required="true"  size="2" maxlength="2"/>
-
-				<p:outputLabel value="Segment 10" />
-				<p:inputText id="groupNumber10" value="#{globalConfigController.sufsZernikeOrderObjectArray[9]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 22" />
-				<p:inputText id="groupNumber22" value="#{globalConfigController.sufsZernikeOrderObjectArray[21]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 34" />
-				<p:inputText id="groupNumber34" value="#{globalConfigController.sufsZernikeOrderObjectArray[33]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 11" />
-				<p:inputText id="groupNumber11" value="#{globalConfigController.sufsZernikeOrderObjectArray[10]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 23" />
-				<p:inputText id="groupNumber23" value="#{globalConfigController.sufsZernikeOrderObjectArray[22]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 35" />
-				<p:inputText id="groupNumber35" value="#{globalConfigController.sufsZernikeOrderObjectArray[34]}" required="true" size="2" maxlength="2" />
-
-				<p:outputLabel value="Segment 12" />
-				<p:inputText id="groupNumber12" value="#{globalConfigController.sufsZernikeOrderObjectArray[11]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 24" />
-				<p:inputText id="groupNumber24" value="#{globalConfigController.sufsZernikeOrderObjectArray[23]}" required="true" size="2" maxlength="2" />
-				<p:outputLabel value="Segment 36" />
-				<p:inputText id="groupNumber36" value="#{globalConfigController.sufsZernikeOrderObjectArray[35]}" required="true" size="2" maxlength="2" />
-
-
-				<f:facet name="footer">
-					<p:commandButton value="Save" ajax="false" icon="ui-icon-check" style="float:right" update=":growl :errorGrowl"
-						action="#{globalConfigController.doSaveSufsZernikes}" />
-					<p:commandButton value="Reset" icon="ui-icon-refresh" style="float:right" update="@form :growl :errorGrowl"
-						immediate="true" action="#{globalConfigController.doViewSufsZernikes}" />
-				</f:facet>
-			</p:panelGrid>
-
+						</div>
+						
+					</div>
+					
+				</div>
+		
+			</div>
+			
 			<br />
 
 		</h:form>

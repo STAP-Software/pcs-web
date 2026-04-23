@@ -8,66 +8,78 @@
 	<ui:define name="content">
 
 		<h:form id="setupForm"  style="margin:30px">
+		
+		
+			<div style="display: inline-flex; flex-direction: column; gap: 0; 
+                width: fit-content; border: 1px solid #d0d0d0;">
+			
+		       <div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+                   padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+           			Global Configuration
+       			</div>
 
-			<p:panelGrid columns="1" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+        		<div style="padding: 16px;">
+        		
 
-				<f:facet name="header">
-					<h:outputText value="Global Configuration" />
-				</f:facet>
+					<p:fieldset legend="General" toggleable="true" toggleSpeed="500">
+	
+		            	<div class="label-input-grid" 
+		                 	style="display: grid; grid-template-columns: max-content max-content;
+		                        align-items: baseline; 
+		                        row-gap: 24px; column-gap: 24px;">
+	
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorX')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfigDefaults.coarseMirrorX}" size="5" />
+							
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorY')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfigDefaults.coarseMirrorY}" size="5" />
+							
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorX')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="fineMirrorX" value="#{globalConfigController.globalConfigDefaults.fineMirrorX}" size="5" />
+							
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorY')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="fineMirrorY" value="#{globalConfigController.globalConfigDefaults.fineMirrorY}" size="5" />
+	
+						</div>
+	
+					</p:fieldset>
+	
+	
+					<p:spacer height="10px" />
+					<p:fieldset legend="Pupil Registration Offsets" toggleable="true" toggleSpeed="500">
 
-				<p:fieldset legend="General" toggleable="true" toggleSpeed="500">
-
-					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorX')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="coarseMirrorX" value="#{globalConfigController.globalConfigDefaults.coarseMirrorX}" size="5" />
-						
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','CoarseMirrorY')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="coarseMirrorY" value="#{globalConfigController.globalConfigDefaults.coarseMirrorY}" size="5" />
-						
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorX')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="fineMirrorX" value="#{globalConfigController.globalConfigDefaults.fineMirrorX}" size="5" />
-						
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','FineMirrorY')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="fineMirrorY" value="#{globalConfigController.globalConfigDefaults.fineMirrorY}" size="5" />
-
-					</p:panelGrid>
-
-				</p:fieldset>
+		            	<div class="label-input-grid" 
+		                 	style="display: grid; grid-template-columns: max-content max-content;
+		                        align-items: baseline; 
+		                        row-gap: 24px; column-gap: 24px;">
+	
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetX')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="pupilRegistrationOffsetX" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetX}" size="5" />
+							
+							<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetY')}" />
+							<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+							<p:inputText id="pupilRegistrationOffsetY" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetY}" size="5" />
+							
+	
+						</div>
+	
+					</p:fieldset>
 
 
-				<p:spacer height="10px" />
-				<p:fieldset legend="Pupil Registration Offsets" toggleable="true" toggleSpeed="500">
-
-					<p:panelGrid columns="2" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetX')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="pupilRegistrationOffsetX" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetX}" size="5" />
-						
-						<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('GlobalConfig','PupilRegistrationOffsetY')}" />
-						<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-						<p:inputText id="pupilRegistrationOffsetY" value="#{globalConfigController.globalConfigDefaults.pupilRegistrationOffsetY}" size="5" />
-						
-
-					</p:panelGrid>
-
-				</p:fieldset>
+					<p:spacer height="10px" />
 
 
-				<p:spacer height="10px" />
-
-
-				<f:facet name="footer">
-					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{globalConfigController.doSaveSetup}" update=":growl :errorGrowl" />
-					<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="false" action="#{globalConfigController.doViewGlobalConfig}" update="@form" />
-				</f:facet>
-
-			</p:panelGrid>
+					<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+						<p:commandButton style="float:right" value="Save" icon="pi pi-check" ajax="true" action="#{globalConfigController.doSaveSetup}" update=":growl :errorGrowl" />
+						<p:commandButton style="float:right" value="Reset" icon="pi pi-refresh" ajax="false" action="#{globalConfigController.doViewGlobalConfig}" update="@form" />
+					</div>
+				</div>
+			</div>
 		</h:form>
 	</ui:define>
 
