@@ -9,148 +9,166 @@
 
 <ui:composition template="../../template.xhtml">
 
-	<ui:define name="content">
+    <ui:define name="content">
 
-		<h:form id="acsManualForm">
+        <h:form id="acsManualForm">
 
+            <div style="display:flex; flex-direction:row; align-items:flex-start; gap:24px; margin:30px;">
 
-			<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsExecutionPanel">
-				<p:panelGrid columns="1" style="margin:0" styleClass="pcsForm">
+                <!-- Left column: Actuator Delta Command Tool -->
+                <div style="display:inline-flex; flex-direction:column; gap:0; width:fit-content; border:1px solid #d0d0d0;">
+                
+                    <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
+                               padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
+                        ACS Actuator Delta Command Tool
+                    </div>
 
-					<f:facet name="header">
-					ACS Actuator Delta Command Tool
-					</f:facet>
-					
+                    <div style="padding:16px;">
 
-					<p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" paginator="true" rows="12">
-
-						<p:column headerText="Segment">
-							<h:outputLabel value="#{rowIndex + 1}" />
-						</p:column>
-						<p:column headerText="Actuator 1 (nm)">
-							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][0]}" />
-						</p:column>
-						<p:column headerText="Actuator 2 (nm)">
-							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][1]}" />
-						</p:column>
-						<p:column headerText="Actuator 3 (nm)">
-							<p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][2]}" />
-						</p:column>
+						 <p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" 
+						             paginator="true" rows="12" tableStyle="width:auto">
 						
-
-					</p:dataTable>
-
-						<p:panelGrid styleClass="pcsFormNoBorder">
-							<p:row>
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
-								</p:column>
-								<p:column>
-									<p:fileUpload value="#{acsManualController.uploadFile}" mode="advanced" auto="true" dragDropSupport="false"
-										fileUploadListener="#{acsManualController.handleFileUpload}"
-										update=":growl :errorGrowl @form"
-										sizeLimit="40000" styleClass="no-expand"/>
-								</p:column>
-							</p:row>
-
-						</p:panelGrid>
-					
-
-					<h:outputLabel style="height: 0px" />
-											
-					<f:facet name="footer">
-						<p:commandButton value="Reset" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doClear}" update="@form"/>
-						<p:commandButton value="Send Commands" icon="ui-icon-check"
-							ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
-							update=":growl :errorGrowl" />
-					</f:facet>
-
-				</p:panelGrid>
-				
-				<p:panelGrid columns="1" style="margin-top:5px;" styleClass="pcsFormNoBorder">
-				<p:panelGrid columns="3" style="margin:0px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
-					<f:facet name="header">
-						ACS Query Tool
-					</f:facet>
-					
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					
-					<h:outputLabel value="Mirror Temp (C)" style="position:relative; top:-3px" />
-					<h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:0px">
-						<f:convertNumber pattern="#0.000" />
-					</h:outputText>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
-							update=":growl :errorGrowl" />		
-										
-					<h:outputLabel value="Is Running" style="position:relative; top:-3px" />
-					<h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:0px"/>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doQueryRunning}"
-							update=":growl :errorGrowl" />		
+						    <p:column headerText="Segment" style="width:70px">
+						        <h:outputLabel value="#{rowIndex + 1}" />
+						    </p:column>
+						    <p:column headerText="Actuator 1 (nm)" style="width:100px">
+						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][0]}" />
+						    </p:column>
+						    <p:column headerText="Actuator 2 (nm)" style="width:100px">
+						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][1]}" />
+						    </p:column>
+						    <p:column headerText="Actuator 3 (nm)" style="width:100px">
+						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][2]}" />
+						    </p:column>
 						
-					<h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:-3px" />
-					<h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:0px">
-						<f:convertNumber pattern="#0.000" />
-					</h:outputText>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doQueryRmsActMove}"
-							update=":growl :errorGrowl" />		
-					
-					<h:outputLabel value="Sensor Range (nm)" style="position:relative; top:-3px" />
-					<h:outputText value="#{acsManualController.sensorRange}" style="position:relative; top:0px">
-						<f:convertNumber pattern="#0" />
-					</h:outputText>
-					<p:commandButton value="Query" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doQuerySensorRange}"
-							update=":growl :errorGrowl" />		
-						
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-						
-					<f:facet name="footer">
-						<p:commandButton value="Query All" icon="ui-icon-refresh"
-							ajax="false" action="#{acsManualController.doQueryAll}"
-							update=":growl :errorGrowl" />
-					
-					</f:facet>
-				</p:panelGrid>
-				
-				<p:panelGrid columns="2" style="margin-top:30px;width:100%" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
-					<f:facet name="header">
-						ACS Snapshot Tool
-					</f:facet>
-					
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-					
-					<h:outputLabel value="Snapshot number" />
-					<p:inputText size="6" value="#{acsManualController.snapshotNumber}" />
-						
-					<h:outputLabel style="height: 10px" />
-					<h:outputLabel style="height: 10px" />
-						
-					<f:facet name="footer">
-						<p:commandButton value="Load Snapshot" icon="ui-icon-transferthick-e-w"
-							ajax="false" action="#{acsManualController.doLoadSnapshot}"
-							update=":growl :errorGrowl" />
-					
-						<p:commandButton value="Take Snapshot" icon="ui-icon-check"
-							ajax="false" action="#{acsManualController.doTakeSnapshot}"
-							update=":growl :errorGrowl" />
-					</f:facet>
-				</p:panelGrid>
+						</p:dataTable>
+                        <p:panelGrid styleClass="pcsFormNoBorder">
+                            <p:row>
+                                <p:column styleClass="btmsFormLabelColumn">
+                                    <h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
+                                </p:column>
+                                <p:column>
+                                    <p:fileUpload value="#{acsManualController.uploadFile}" mode="advanced" auto="true" dragDropSupport="false"
+                                        fileUploadListener="#{acsManualController.handleFileUpload}"
+                                        update=":growl :errorGrowl @form"
+                                        sizeLimit="40000" styleClass="no-expand"/>
+                                </p:column>
+                            </p:row>
+                        </p:panelGrid>
 
+                        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+                            <p:commandButton value="Reset" icon="ui-icon-refresh"
+                                ajax="false" action="#{acsManualController.doClear}" update="@form"/>
+                            <p:commandButton value="Send Commands" icon="ui-icon-check"
+                                ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
+                                update=":growl :errorGrowl" />
+                        </div>
 
-			</p:panelGrid>
-			</p:panelGrid>
+                    </div>
+                </div>
 
-		</h:form>
+                <!-- Right column: Query Tool + Snapshot Tool stacked -->
+                <div style="display:flex; flex-direction:column; gap:24px; width:fit-content; align-items:stretch;">
 
-	</ui:define>
+                    <!-- ACS Query Tool -->
+                    <div style="display:inline-flex; flex-direction:column; gap:0; width:fit-content; border:1px solid #d0d0d0;">
+                        <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
+                                   padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
+                            ACS Query Tool
+                        </div>
+                        <div style="padding:16px;">
+                        
+                        
+		 	            	<div class="label-value-grid" 
+			                 	style="display: grid; grid-template-columns: max-content max-content max-content;
+			                        align-items: baseline; 
+			                        row-gap: 24px; column-gap: 24px;">
+
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+
+                                <h:outputLabel value="Mirror Temp (C)" style="position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:0px">
+                                    <f:convertNumber pattern="#0.000" />
+                                </h:outputText>
+                                <p:commandButton value="Query" icon="pi pi-refresh"
+                                    ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
+                                    update=":growl :errorGrowl" />
+
+                                <h:outputLabel value="Is Running" style="position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:0px"/>
+                                <p:commandButton value="Query" icon="pi pi-refresh"
+                                    ajax="false" action="#{acsManualController.doQueryRunning}"
+                                    update=":growl :errorGrowl" />
+
+                                <h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:0px">
+                                    <f:convertNumber pattern="#0.000" />
+                                </h:outputText>
+                                <p:commandButton value="Query" icon="pi pi-refresh"
+                                    ajax="false" action="#{acsManualController.doQueryRmsActMove}"
+                                    update=":growl :errorGrowl" />
+
+                                <h:outputLabel value="Sensor Range (nm)" style="position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.sensorRange}" style="position:relative; top:0px">
+                                    <f:convertNumber pattern="#0" />
+                                </h:outputText>
+                                <p:commandButton value="Query" icon="pi pi-refresh"
+                                    ajax="false" action="#{acsManualController.doQuerySensorRange}"
+                                    update=":growl :errorGrowl" />
+
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+
+                            </div>
+                            <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+                                <p:commandButton value="Query All" icon="pi pi-sync"
+                                    ajax="false" action="#{acsManualController.doQueryAll}"
+                                    update=":growl :errorGrowl" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ACS Snapshot Tool -->
+    				<div style="display:flex; flex-direction:column; gap:0; width:100%; border:1px solid #d0d0d0;">
+                        <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
+                                   padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
+                            ACS Snapshot Tool
+                        </div>
+                        <div style="padding:16px;">
+                            <p:panelGrid columns="2" style="margin:0px;width:100%" styleClass="pcsForm"
+                                         columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+
+                                <h:outputLabel value="Snapshot number" />
+                                <p:inputText size="6" value="#{acsManualController.snapshotNumber}" />
+
+                                <h:outputLabel style="height:10px" />
+                                <h:outputLabel style="height:10px" />
+
+                            </p:panelGrid>
+                            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px;">
+                                <p:commandButton value="Load Snapshot" icon="pi pi-download"
+                                    ajax="false" action="#{acsManualController.doLoadSnapshot}"
+                                    update=":growl :errorGrowl" />
+                                <p:commandButton value="Take Snapshot" icon="pi pi-save"
+                                    ajax="false" action="#{acsManualController.doTakeSnapshot}"
+                                    update=":growl :errorGrowl" />
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <!-- end right column -->
+
+            </div>
+
+        </h:form>
+
+    </ui:define>
 </ui:composition>
 </html>

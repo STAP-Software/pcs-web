@@ -660,7 +660,18 @@ html, body {
        justify-self: start;
 }
 
+.label-value-grid span:not(.ui-button-icon-left):not(.ui-button-icon-right) {
+    font-size: 1rem;
+    font-family: Arial, sans-serif;
+    font-weight: bold;
+}
 
-
-
+.label-value-grid label {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+   	font-family: Arial, sans-serif;
+    font-size: 1rem;
+   	font-weight: normal;
+}
 
