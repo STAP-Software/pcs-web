@@ -1,11 +1,9 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml"
-	xmlns:ui="http://java.sun.com/jsf/facelets"
-	xmlns:h="http://java.sun.com/jsf/html"
-	xmlns:f="http://java.sun.com/jsf/core"
-	xmlns:p="http://primefaces.org/ui">
-
-
+    xmlns:ui="http://java.sun.com/jsf/facelets"
+    xmlns:h="http://java.sun.com/jsf/html"
+    xmlns:f="http://java.sun.com/jsf/core"
+    xmlns:p="http://primefaces.org/ui">
 
 <ui:composition template="../../template.xhtml">
 
@@ -25,44 +23,53 @@
 
                     <div style="padding:16px;">
 
-						 <p:dataTable value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" 
-						             paginator="true" rows="12" tableStyle="width:auto">
-						
-						    <p:column headerText="Segment" style="width:70px">
-						        <h:outputLabel value="#{rowIndex + 1}" />
-						    </p:column>
-						    <p:column headerText="Actuator 1 (nm)" style="width:100px">
-						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][0]}" />
-						    </p:column>
-						    <p:column headerText="Actuator 2 (nm)" style="width:100px">
-						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][1]}" />
-						    </p:column>
-						    <p:column headerText="Actuator 3 (nm)" style="width:100px">
-						        <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][2]}" />
-						    </p:column>
-						
-						</p:dataTable>
-                        <p:panelGrid styleClass="pcsFormNoBorder">
-                            <p:row>
-                                <p:column styleClass="btmsFormLabelColumn">
-                                    <h:outputLabel value="Upload values from File: " style="position:relative; top:-10px"/>
-                                </p:column>
-                                <p:column>
-                                    <p:fileUpload value="#{acsManualController.uploadFile}" mode="advanced" auto="true" dragDropSupport="false"
-                                        fileUploadListener="#{acsManualController.handleFileUpload}"
-                                        update=":growl :errorGrowl @form"
-                                        sizeLimit="40000" styleClass="no-expand"/>
-                                </p:column>
-                            </p:row>
-                        </p:panelGrid>
+                        <p:dataTable id="actDeltasTable" value="#{acsManualController.actDeltas}" var="segAct" rowIndexVar="rowIndex" 
+                                     paginator="true" rows="12" tableStyle="width:auto">
+                        
+                            <p:column headerText="Segment" style="width:70px">
+                                <h:outputLabel value="#{rowIndex + 1}" />
+                            </p:column>
+                            <p:column headerText="Actuator 1 (nm)" style="width:100px">
+                                <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][0]}" />
+                            </p:column>
+                            <p:column headerText="Actuator 2 (nm)" style="width:100px">
+                                <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][1]}" />
+                            </p:column>
+                            <p:column headerText="Actuator 3 (nm)" style="width:100px">
+                                <p:inputText size="4" value="#{acsManualController.actDeltas[rowIndex][2]}" />
+                            </p:column>
+                        
+                        </p:dataTable>
+                        
+						<div style="border:1px solid #d0d0d0; padding:12px; margin-top:16px;">
+						    <div style="font-weight:bold; font-size:14px; font-family:Arial, sans-serif; 
+						                margin-bottom:12px;">
+						        Upload Values from File
+						    </div>
+							<p:fileUpload id="fileUpload"
+							              mode="advanced"
+							              auto="false"
+							              multiple="false"
+							              maxFileSize="10485760"
+							              accept="*/*"
+							              listener="#{acsManualController.handleFileUpload}"
+							              update="@form :growl :errorGrowl"/>
+			                           
+			 			</div>
 
-                        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
-                            <p:commandButton value="Reset" icon="ui-icon-refresh"
-                                ajax="false" action="#{acsManualController.doClear}" update="@form"/>
-                            <p:commandButton value="Send Commands" icon="ui-icon-check"
-                                ajax="false" action="#{acsManualController.doSendActDeltaCommands}"
-                                update=":growl :errorGrowl" />
-                        </div>
+						
+				        <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
+							<p:commandButton value="Reset" icon="pi pi-refresh"
+							    action="#{acsManualController.doClear}"
+							    process="@this :acsManualForm:actDeltasTable"
+							    update="@form"/>
+							
+							<p:commandButton value="Send Commands" icon="pi pi-send"
+							    action="#{acsManualController.doSendActDeltaCommands}"
+							    process="@this :acsManualForm:actDeltasTable"
+							    update=":growl :errorGrowl"/>
+			    
+			            </div>
 
                     </div>
                 </div>
@@ -78,11 +85,10 @@
                         </div>
                         <div style="padding:16px;">
                         
-                        
-		 	            	<div class="label-value-grid" 
-			                 	style="display: grid; grid-template-columns: max-content max-content max-content;
-			                        align-items: baseline; 
-			                        row-gap: 24px; column-gap: 24px;">
+                            <div class="label-value-grid" 
+                                 style="display: grid; grid-template-columns: max-content max-content max-content;
+                                        align-items: baseline; 
+                                        row-gap: 24px; column-gap: 24px;">
 
                                 <h:outputLabel style="height:10px" />
                                 <h:outputLabel style="height:10px" />
@@ -93,13 +99,13 @@
                                     <f:convertNumber pattern="#0.000" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
-                                    ajax="false" action="#{acsManualController.doQueryMirrorTemp}"
+                                    action="#{acsManualController.doQueryMirrorTemp}"
                                     update=":growl :errorGrowl" />
 
                                 <h:outputLabel value="Is Running" style="position:relative; top:-3px" />
                                 <h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:0px"/>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
-                                    ajax="false" action="#{acsManualController.doQueryRunning}"
+                                    action="#{acsManualController.doQueryRunning}"
                                     update=":growl :errorGrowl" />
 
                                 <h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:-3px" />
@@ -107,7 +113,7 @@
                                     <f:convertNumber pattern="#0.000" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
-                                    ajax="false" action="#{acsManualController.doQueryRmsActMove}"
+                                    action="#{acsManualController.doQueryRmsActMove}"
                                     update=":growl :errorGrowl" />
 
                                 <h:outputLabel value="Sensor Range (nm)" style="position:relative; top:-3px" />
@@ -115,7 +121,7 @@
                                     <f:convertNumber pattern="#0" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
-                                    ajax="false" action="#{acsManualController.doQuerySensorRange}"
+                                    action="#{acsManualController.doQuerySensorRange}"
                                     update=":growl :errorGrowl" />
 
                                 <h:outputLabel style="height:10px" />
@@ -125,14 +131,14 @@
                             </div>
                             <div style="display:flex; justify-content:flex-end; margin-top:8px;">
                                 <p:commandButton value="Query All" icon="pi pi-sync"
-                                    ajax="false" action="#{acsManualController.doQueryAll}"
+                                    action="#{acsManualController.doQueryAll}"
                                     update=":growl :errorGrowl" />
                             </div>
                         </div>
                     </div>
 
                     <!-- ACS Snapshot Tool -->
-    				<div style="display:flex; flex-direction:column; gap:0; width:100%; border:1px solid #d0d0d0;">
+                    <div style="display:flex; flex-direction:column; gap:0; width:100%; border:1px solid #d0d0d0;">
                         <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
                                    padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
                             ACS Snapshot Tool
@@ -153,10 +159,10 @@
                             </p:panelGrid>
                             <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px;">
                                 <p:commandButton value="Load Snapshot" icon="pi pi-download"
-                                    ajax="false" action="#{acsManualController.doLoadSnapshot}"
+                                    action="#{acsManualController.doLoadSnapshot}"
                                     update=":growl :errorGrowl" />
                                 <p:commandButton value="Take Snapshot" icon="pi pi-save"
-                                    ajax="false" action="#{acsManualController.doTakeSnapshot}"
+                                    action="#{acsManualController.doTakeSnapshot}"
                                     update=":growl :errorGrowl" />
                             </div>
                         </div>

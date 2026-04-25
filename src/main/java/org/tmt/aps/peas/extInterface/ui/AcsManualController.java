@@ -11,6 +11,7 @@ import java.io.Serializable;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
+import jakarta.enterprise.context.RequestScoped;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
@@ -56,7 +57,6 @@ public class AcsManualController implements Serializable {
 
 	@PostConstruct
 	public void init() {
-
 		for (int i = 0; i < 36; i++) {
 			for (int j = 0; j < 3; j++) {
 				actDeltas[i][j] = 0.0f;
@@ -69,7 +69,7 @@ public class AcsManualController implements Serializable {
 		return uploadFile;
 	}
     
-	public void setUploadFitsFile(UploadedFile uploadFile) {
+	public void setUploadFile(UploadedFile uploadFile) {
         this.uploadFile = uploadFile;
     }
 
@@ -125,38 +125,41 @@ public class AcsManualController implements Serializable {
 	/**
 	 * Handles file update of actuator deltas files
 	 */
-	public void handleFileUpload() {
-
-		BufferedReader br = null;
-		try {
+	public void handleFileUpload(FileUploadEvent event) {
 		
-			br = new BufferedReader(new InputStreamReader(uploadFile.getInputStream()));
-
-			for (int i = 0; i < 36; i++) {
-				for (int j = 0; j < 3; j++) {
-					String line = br.readLine();
-					if (line == null) break;
-					Float temp = Float.valueOf(line);
-					actDeltas[i][j] = temp;
-				}
-			}
-
-			FacesMessage msg = new FacesMessage("values uploaded successfully");
-			FacesContext.getCurrentInstance().addMessage(null, msg);
-
-		} catch (Exception e) {
-			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
-		} finally {
-			try {
-				br.close();
-			} catch (Exception e2) {
-				FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e2));
-				logger.error(MessageGenerator.generateMessage("generic.error"), e2);
-			}
-		}
+	    UploadedFile file = event.getFile();
+	    if (file == null || file.getSize() == 0) {
+	        FacesContext.getCurrentInstance().addMessage(null,
+	            new FacesMessage(FacesMessage.SEVERITY_WARN, "No file selected", null));
+	        return;
+	    }
+	    BufferedReader br = null;
+	    try {
+	        br = new BufferedReader(new InputStreamReader(file.getInputStream()));
+	        for (int i = 0; i < 36; i++) {
+	            for (int j = 0; j < 3; j++) {
+	                String line = br.readLine();
+	                if (line == null) break;
+	                // Strip UTF-8 BOM if present
+	                line = line.replace("\uFEFF", "");
+	                actDeltas[i][j] = Float.valueOf(line.trim());
+	            }
+	        }
+	        FacesContext.getCurrentInstance().addMessage(null,
+	            new FacesMessage("Values uploaded successfully from: " + file.getFileName()));
+	    } catch (Exception e) {
+	        FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+	        logger.error(MessageGenerator.generateMessage("generic.error"), e);
+	    } finally {
+	        if (br != null) {
+	            try { br.close(); } catch (Exception e2) {
+	                logger.error(MessageGenerator.generateMessage("generic.error"), e2);
+	            }
+	        }
+	    }
 	}
-
+	
+	
 	/**
 	 * JSF Action method to render the ACS manual/diagnostic view
 	 * @return the JSF page to render
