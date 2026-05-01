@@ -179,9 +179,8 @@ public class SufsGroupController implements Serializable {
 
 	/**
 	 * JSF Action method to save an SUFS group configuration.  Does not allow duplicate group numbers or group numbers greater than 7.
-	 * @return the JSF page to render the SUFS group list
 	 */
-	public String doSaveSufsGroup() {
+	public void doSaveSufsGroup() {
 
 		try {
 
@@ -214,9 +213,6 @@ public class SufsGroupController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 
-		breadcrumbMenuBean.addFirstItem("Sufs Groups", "/modules/sysadmin/sufsGroupList.xhtml");
-
-		return "/modules/sysadmin/sufsGroupList.xhtml?faces-redirect=true";
 	}
 	
 	/**

@@ -178,9 +178,8 @@ public class FilterController implements Serializable {
 
 	/** 
 	 * JSF Action method to save a filter to the database
-	 * @return JSF page to render when complete
 	 */
-	public String doSaveFilter() {
+	public void doSaveFilter() {
 
 		try {
 		
@@ -200,7 +199,6 @@ public class FilterController implements Serializable {
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 		}
 		
-		return "/modules/sysadmin/filterList.xhtml?faces-redirect=true";
 	}
 
 	/**

@@ -15,237 +15,258 @@
        	<h:form id="dcsManualForm">
        		
   
-       		<p:panelGrid columns="3" style="margin:10px;" styleClass="pcsExecutionPanel">
-  
-         		<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
-       		
-       			<f:facet name="header">
-					DCS Command Tool
-				</f:facet>
- 
-        		<h:outputLabel style="height: 2px" />
-        		<h:outputLabel style="height: 2px" />
-      
- 				<p:fieldset legend="Secondary Mirror Actuator Deltas">
- 
-    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
-				<h:panelGroup>
-				<h:outputText value="Actuator #1 (mm): " />
-				<p:spacer width="5px"/>								
-          		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[0]}" size="4" />	
- 				</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Actuator #2 (mm): " />	
-  				<p:spacer width="5px"/>				
-         		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[1]}" size="4" />	
-          		</h:panelGroup>
+            <div style="display:flex; flex-direction:row; align-items:flex-start; gap:24px; margin:30px;">
 
- 				<h:panelGroup>
-          		<h:outputText value="Actuator #3 (mm): " />	
-				<p:spacer width="5px"/>				
-         		<p:inputText value="#{dcsManualController.secondaryDeltaCmds[2]}" size="4" />	
-          		</h:panelGroup>
-				</p:panelGrid>
-				</p:fieldset>
-      			<p:commandButton value="Send Commands" icon="ui-icon-check" 
-							ajax="false" action="#{dcsManualController.doCommandSecondary}" 
-							update=":growl :errorGrowl" />	
+                <!-- Left column: Actuator Delta Command Tool -->
+                <div style="display:inline-flex; flex-direction:column; gap:0; width:fit-content; border:1px solid #d0d0d0;">
+                
+                    <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
+                               padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
+                        DCS Command Tool
+                    </div>
+     
+				<div style="padding:16px; display:flex; flex-direction:column; gap:24px;">
 				
+				    <p:fieldset legend="Secondary Mirror Actuator Deltas">
+				    
+				        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
 				
- 				<p:fieldset legend="Telescope">
-    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Delta Azimuth (arcsec): " />	
- 				<p:spacer width="12px"/>				
-         		<p:inputText value="#{dcsManualController.telescopeDeltaCmds[0]}" size="4" />	
-          		</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Delta Elevation (arcsec): " />	
- 				<p:spacer width="5px"/>				
-         		<p:inputText value="#{dcsManualController.telescopeDeltaCmds[1]}" size="4" />	
-          		</h:panelGroup>
-       			</p:panelGrid>
- 				</p:fieldset>
- 				<p:commandButton value="Send Commands" icon="ui-icon-check" 
-							ajax="false" action="#{dcsManualController.doCommandTelescopeDelta}"
-							update=":growl :errorGrowl" />
- 								          		
-       			
-         		<h:outputLabel style="height: 2px" />
-        		<h:outputLabel style="height: 2px" />
-       			
-        	</p:panelGrid>
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+				
+				                <h:outputText value="Actuator #1 (mm): " />
+				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[0]}" size="4" />
+				
+				                <h:outputText value="Actuator #2 (mm): " />
+				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[1]}" size="4" />
+				
+				                <h:outputText value="Actuator #3 (mm): " />
+				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[2]}" size="4" />
+				
+				            </div>
+				
+				            <p:commandButton value="Send Commands" icon="pi pi-send"
+				                ajax="false" action="#{dcsManualController.doCommandSecondary}"
+				                update=":growl :errorGrowl" />
+				
+				        </div>
+				    </p:fieldset>
+				
+				    <p:fieldset legend="Telescope">
+				        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+				
+				                <h:outputText value="Delta Azimuth (arcsec): " />
+				                <p:inputText value="#{dcsManualController.telescopeDeltaCmds[0]}" size="4" />
+				
+				                <h:outputText value="Delta Elevation (arcsec): " />
+				                <p:inputText value="#{dcsManualController.telescopeDeltaCmds[1]}" size="4" />
+				
+				            </div>
+				
+				            <p:commandButton value="Send Commands" icon="pi pi-send"
+				                ajax="false" action="#{dcsManualController.doCommandTelescopeDelta}"
+				                update=":growl :errorGrowl" />
+				
+				        </div>
+				    </p:fieldset>
+				
+				</div>
+        	</div>
    
-       		<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
-       		
-       			<f:facet name="header">
-					DCS Status
-				</f:facet>
+            <div style="display:inline-flex; flex-direction:column; gap:0; width:fit-content; border:1px solid #d0d0d0;">
+             
+                 <div style="background:#e8e8e8; border-bottom:1px solid #d0d0d0;
+                            padding:6px 12px; font-weight:bold; font-size:18px; font-family:Arial, sans-serif;">
+                     DCS Status
+                 </div>
+                 
+                 
+                 
+  
+ 				<div style="padding:16px; display:flex; flex-direction:column; gap:24px;">
+				
+				    <p:fieldset legend="DCS Status">
+				    
+				        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+				                        
+				                <h:outputLabel value="Status:" />
+          						<h:outputText value="#{dcsManualController.dcsStatusDisplayString}" />
+          					</div>
+          					<p:commandButton value="Query" icon="pi pi-refresh" 
+								ajax="false" action="#{dcsManualController.doQueryDcsStatus}" 
+								update=":growl :errorGrowl" />	
+						</div>
+          			</p:fieldset>	
+       			
  
-        		<h:outputLabel style="height: 2px" />
-        		<h:outputLabel style="height: 2px" />
-        
-        		<p:fieldset legend="DCS Status">
-   				
-   				<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
-          		<h:outputText value="#{dcsManualController.dcsStatusDisplayString}" />
-          		</p:panelGrid>
-          		</p:fieldset>	
-       			<p:commandButton value="Query" icon="ui-icon-refresh" 
-							ajax="false" action="#{dcsManualController.doQueryDcsStatus}" 
-							update=":growl :errorGrowl" />	
  
+ 					<p:fieldset legend="Secondary Mirror">
+				        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
  
- 				<p:fieldset legend="Secondary Mirror">
- 
-    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
-				<h:panelGroup>
-				<h:outputText value="Actuator #1 (mm):" />
-				<p:spacer width="5px"/>				
-          		<h:outputText value="#{dcsManualController.m2Pos[0]}">
-          			<f:convertNumber pattern="#0.000" />
-          		</h:outputText>	
- 				</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Actuator #2 (mm): " />	
-  				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.m2Pos[1]}" >
-          			<f:convertNumber pattern="#0.000" />
-          		</h:outputText>		
-          		</h:panelGroup>
 
- 				<h:panelGroup>
-          		<h:outputText value="Actuator #3 (mm): " />	
-				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.m2Pos[2]}" >
-          			<f:convertNumber pattern="#0.000" />
-          		</h:outputText>		
-          		</h:panelGroup>
-				</p:panelGrid>
-				</p:fieldset>
-      			<p:commandButton value="Query" icon="ui-icon-refresh" 
-							ajax="false" action="#{dcsManualController.doQuerySecondary}" 
-							update=":growl :errorGrowl" />	
+								<h:outputLabel value="Actuator #1 (mm):" />
+				          		<h:outputText value="#{dcsManualController.m2Pos[0]}">
+				          			<f:convertNumber pattern="#0.000" />
+				          		</h:outputText>	
+				
+				          		<h:outputLabel value="Actuator #2 (mm): " />	
+				         		<h:outputText value="#{dcsManualController.m2Pos[1]}" >
+				          			<f:convertNumber pattern="#0.000" />
+				          		</h:outputText>		
+				
+				          		<h:outputLabel value="Actuator #3 (mm): " />	
+				         		<h:outputText value="#{dcsManualController.m2Pos[2]}" >
+				          			<f:convertNumber pattern="#0.000" />
+				          		</h:outputText>		
+				          	</div>
+							<p:commandButton value="Query" icon="pi pi-refresh" 
+								ajax="false" action="#{dcsManualController.doQuerySecondary}" 
+								update=":growl :errorGrowl" />	
+						</div>
+					</p:fieldset>
+      			
 			
 				
 				
- 				<p:fieldset legend="Telescope">
-    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
- 				
- 				<h:panelGroup>
- 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
-          		<h:outputText value="Azimuth (#{fieldMetaData.units}): " />	
- 				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" >
-          			<f:converter converterId="DynamicNumberConverter" />
-					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-          		</h:outputText>		
-          		</h:panelGroup>
- 				
- 				<h:panelGroup>
- 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
-          		<h:outputText value="Elevation (#{fieldMetaData.units}): " />	
- 				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" >
-          			<f:converter converterId="DynamicNumberConverter" />
-					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-          		</h:outputText>		
-          		</h:panelGroup>
-       			</p:panelGrid>
- 				</p:fieldset>
- 				<p:commandButton value="Query" icon="ui-icon-refresh" 
-							ajax="false" action="#{dcsManualController.doQueryTelescopePosition}"
-							update=":growl :errorGrowl" />
+	 				<p:fieldset legend="Telescope">
+				        <div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+	
+				 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
+				          		<h:outputLabel value="Azimuth (#{fieldMetaData.units}): " />	
+				         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" >
+				          			<f:converter converterId="DynamicNumberConverter" />
+									<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				          		</h:outputText>			
+				
+				 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
+				          		<h:outputLabel value="Elevation (#{fieldMetaData.units}): " />	
+							
+				         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" >
+				          			<f:converter converterId="DynamicNumberConverter" />
+									<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				          		</h:outputText>		
+	 						</div>
+	 						<p:commandButton value="Query" icon="pi pi-refresh" 
+								ajax="false" action="#{dcsManualController.doQueryTelescopePosition}"
+								update=":growl :errorGrowl" />
+								
+						</div>
+	 				</p:fieldset>
+	 				
  								          		
 				
 				
 				
 				
- 				<p:fieldset legend="M2 Focus and Tilt">
-    			<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Telescope Focus (mm): " />	
- 				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[0]}" >
-          			<f:convertNumber pattern="#0.00" />
-          		</h:outputText>		
-          		</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="M2 Tilt-X (arcsec): " />	
- 				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[1]}" >
-          			<f:convertNumber pattern="#0.00" />
-          		</h:outputText>		
-          		</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="M2 Tilt-Y (arcsec): " />	
- 				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[2]}" >
-          			<f:convertNumber pattern="#0.00" />
-          		</h:outputText>		
-          		</h:panelGroup>
- 				
- 				
-          		
-       			</p:panelGrid>
- 				</p:fieldset>
- 				<p:commandButton value="Query" icon="ui-icon-refresh" 
-							ajax="false" action="#{dcsManualController.doQueryM2FocusAndTilt}"
-							update=":growl :errorGrowl" />
+	 				<p:fieldset legend="M2 Focus and Tilt">
+	 					<div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+	 				
+
+				          		<h:outputLabel value="Telescope Focus (mm): " />	
+				 							
+				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[0]}" >
+				          			<f:convertNumber pattern="#0.00" />
+				          		</h:outputText>		
+				          	
+				 			
+				          		<h:outputLabel value="M2 Tilt-X (arcsec): " />	
+						
+				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[1]}" >
+				          			<f:convertNumber pattern="#0.00" />
+				          		</h:outputText>		
+				          	
+				 				
+				          		<h:outputLabel value="M2 Tilt-Y (arcsec): " />	
+				 								
+				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[2]}" >
+				          			<f:convertNumber pattern="#0.00" />
+				          		</h:outputText>		
+
+	 						</div>
+	 				
+	          				<p:commandButton value="Query" icon="pi pi-refresh" 
+								ajax="false" action="#{dcsManualController.doQueryM2FocusAndTilt}"
+								update=":growl :errorGrowl" />
+						</div>
+	 				</p:fieldset>
+	 				
  								          		
 				
 				
 				
 				
-				<p:fieldset legend="Star">
-   				<p:panelGrid columns="1" style="margin:2px 10px 2px 10px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormInputColumn">
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Name: " />	
- 				<p:spacer width="12px"/>				
-         		<h:outputText value="#{dcsManualController.starInfo.starName}" />	
-          		</h:panelGroup>
- 				
- 				<h:panelGroup>
-          		<h:outputText value="Mag: " />	
- 				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.starInfo.starMag}" >
-         			<f:convertNumber pattern="#0.00" />
-         		</h:outputText>	
-          		</h:panelGroup>
- 				          		 				          		
- 				<h:panelGroup>
-          		<h:outputText value="Color: " />	
- 				<p:spacer width="5px"/>				
-         		<h:outputText value="#{dcsManualController.starInfo.starColor}" />	
-          		</h:panelGroup>
-       			</p:panelGrid>
- 				</p:fieldset>
- 				<p:commandButton value="Query" icon="ui-icon-refresh" 
-							ajax="false" action="#{dcsManualController.doQueryStar}"
-							update=":growl :errorGrowl" />
+					<p:fieldset legend="Star">
+	 					<div style="display:flex; flex-direction:row; align-items:flex-end; justify-content:space-between; gap:24px;">
+				
+				            <div style="display:grid; 
+				                        grid-template-columns: max-content max-content;
+				                        align-items: baseline;
+				                        row-gap: 24px; 
+				                        column-gap: 24px;">
+
+				          		<h:outputLabel value="Name: " />	
+				         		<h:outputText value="#{dcsManualController.starInfo.starName}" />	
+			
+				          		<h:outputLabel value="Mag: " />	
+				         		<h:outputText value="#{dcsManualController.starInfo.starMag}" >
+				         			<f:convertNumber pattern="#0.00" />
+				         		</h:outputText>	
+			
+				          		<h:outputLabel value="Color: " />	
+				         		<h:outputText value="#{dcsManualController.starInfo.starColor}" />	
+				         	</div>
+							<p:commandButton value="Query" icon="pi pi-refresh" 
+								ajax="false" action="#{dcsManualController.doQueryStar}"
+								update=":growl :errorGrowl" />
+						</div>
+	 				</p:fieldset>
+	 				
  								          		 				          		
- 							
-        		<h:outputLabel style="height: 2px" />
-        		<h:outputLabel style="height: 2px" />
- 
         			
-       			<f:facet name="footer">
-       				<p:commandButton value="Query All" icon="ui-icon-refresh"
+       				<div style="display:flex; justify-content:flex-end;">
+       					<p:commandButton value="Query All" icon="pi pi-sync"
 							ajax="false" action="#{dcsManualController.doQueryAll}"
 							update=":growl :errorGrowl" />
-				</f:facet>
 
-        	</p:panelGrid>
+					</div>
+        		</div>
          	
-        	</p:panelGrid>
+       		</div>
+       	</div>
+       
     		
        	</h:form>
               

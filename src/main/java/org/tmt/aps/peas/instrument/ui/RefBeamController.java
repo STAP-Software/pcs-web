@@ -182,9 +182,8 @@ public class RefBeamController implements Serializable {
 
 	/**
 	 * Creates or updates a reference beam configuration record
-	 * @return the JSF page to render when complete
 	 */
-	public String doSaveReferenceBeam() {
+	public void doSaveReferenceBeam() {
 
 		try {
 
@@ -199,13 +198,10 @@ public class RefBeamController implements Serializable {
 
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 
-			return "/modules/sysadmin/refBeamList.xhtml?faces-redirect=true";
-
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 
-			return null;
 		}
 
 	}

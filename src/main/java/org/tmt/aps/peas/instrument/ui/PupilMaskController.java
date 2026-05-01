@@ -171,9 +171,8 @@ public class PupilMaskController implements Serializable {
 
 	/** 
 	 * JSF Action method to save a pupil mask to the database
-	 * @return JSF page to render when complete
 	 */
-	public String doSavePupilMask() {
+	public void doSavePupilMask() {
 		
 		try {
 		
@@ -188,13 +187,11 @@ public class PupilMaskController implements Serializable {
 		
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 		
-			return "/modules/sysadmin/pupilMaskList.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 			
-			return null;
 		}
 
 	}

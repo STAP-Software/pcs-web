@@ -188,9 +188,8 @@ public class CcdDefController implements Serializable {
 
 	/**
 	 * JSF Action to save a CCD configuration
-	 * @return the JSF page to render when complete
 	 */
-	public String doSaveCcd() {
+	public void doSaveCcd() {
 
 		try {
 
@@ -207,14 +206,11 @@ public class CcdDefController implements Serializable {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateSuccessfulMessage());
 			
 			breadcrumbMenuBean.addFirstItem("PCS CCDs", "/modules/sysadmin/ccdList.xhtml");
-
-			return "/modules/sysadmin/ccdList.xhtml?faces-redirect=true";
 			
 		} catch (Exception e) {
 			FacesContext.getCurrentInstance().addMessage(null, Utils.recordUpdateFailedMessage(e));
 			logger.error(MessageGenerator.generateMessage("crud.failure"), e);
 			
-			return null;
 		}
 
 	}
