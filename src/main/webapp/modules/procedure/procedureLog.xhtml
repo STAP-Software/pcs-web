@@ -8,48 +8,111 @@
 
 	<ui:define name="content">
 
-		<h:form id="procedureLogForm">
 
-		<p:tabView>
+
+		<h:outputStylesheet>
+		    /* Give the tab panel a visible border */
+		    #procedureLogForm .ui-tabs .ui-tabs-panels {
+		        border: 1px solid #d0d0d0;
+		        border-top: none;
+		    }
+		
+		    /* Style inactive tabs */
+		    #procedureLogForm .ui-tabs .ui-tabs-nav li {
+		        background: #e8e8e8;
+		        border: 1px solid #d0d0d0;
+		    }
+		
+		    /* Style the active/selected tab with full color fill */
+		    #procedureLogForm .ui-tabs .ui-tabs-nav li.ui-tabs-active,
+		    #procedureLogForm .ui-tabs .ui-tabs-nav li.ui-state-active {
+		        background: #1a73e8;
+		        border-color: #1a73e8;
+		    }
+		
+		    #procedureLogForm .ui-tabs .ui-tabs-nav li.ui-tabs-active a,
+		    #procedureLogForm .ui-tabs .ui-tabs-nav li.ui-state-active a {
+		        color: #ffffff;
+		    }
+	
+			#procedureLogForm .ui-tabs .ui-tabs-nav li.ui-tabs-header {
+			    padding: 0 !important;
+			}		    
+			
+			#procedureLogForm .ui-tabs .ui-tabs-nav li.ui-tabs-header a {
+			    display: block !important;
+			    padding: 1rem !important;
+			    cursor: pointer !important;
+			}
+			
+			#procedureLogForm .ui-tabs .ui-tabs-nav li.ui-tabs-selected a,
+			#procedureLogForm .ui-tabs .ui-tabs-nav li.ui-state-active a {
+			    cursor: pointer !important;
+			    display: block !important;
+			    padding: 1rem !important;
+			}
+			
+			
+			#procedureLogForm .ui-tabs .ui-tabs-nav li.ui-state-active {
+			    box-shadow: none !important;
+			}
+			
+			
+			#procedureLogForm .ui-tabs .ui-tabs-nav.ui-widget-header {
+			    border: none !important;
+			    background: none !important;
+			}
+			
+			#procedureLogForm .ui-tabs .ui-tabs-nav {
+			    border-bottom: 2px solid #dee2e6;
+			}
+
+		</h:outputStylesheet>
+
+
+
+		<h:form id="procedureLogForm" style="margin:30px">
+
+		<p:tabView id="procedureLogTabView">
        	 	<p:tab title="Procedure Report">
 		
-			<h:commandLink>
-				<p:graphicImage value="../../images/excel.png" />
-				<p:dataExporter type="xls" target="plogTable" fileName="plog" />
-			</h:commandLink>
-			<h:commandLink>
-				<p:graphicImage value="../../images/csv.png" />
-				<p:dataExporter type="csv" target="plogTable" fileName="plog" />
-			</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage value="../../images/excel.png" />
+					<p:dataExporter type="xls" target="plogTable" fileName="plog" />
+				</h:commandLink>
+				<h:commandLink>
+					<p:graphicImage value="../../images/csv.png" />
+					<p:dataExporter type="csv" target="plogTable" fileName="plog" />
+				</h:commandLink>
 
 			
-			<p:dataTable id="plogTable" var="plogValue" value="#{procedureController.procedure.procedureOutput.procedureOutputList}" 
-			scrollable="true" scrollHeight="500" stripedRows="true">
-			
-				<f:facet name="header">
-        			Procedure Execution Values
-    			</f:facet>
-
-				<p:column headerText="Name" style="width:150px;vertical-align:top">
-					<h:outputText value="#{plogValue.procedureOutputField.displayLabel}" />
-				</p:column>
-				<p:column headerText="Value" style="width:400px;vertical-align:top">
-					<h:outputText style="white-space:pre-line" escape="false" value="#{plogValue.dataFormatted}" />
-				</p:column>
+				<p:dataTable id="plogTable" var="plogValue" 
+				    value="#{procedureController.procedure.procedureOutput.procedureOutputList}"
+				    scrollable="true" scrollHeight="600" stripedRows="true">
 				
-				<p:column headerText="Units" style="width:50px;vertical-align:top">
-					<h:outputText value="#{plogValue.procedureOutputField.units}" />
-				</p:column>
-				<p:column headerText="Description" style="width:400px;vertical-align:top">
-					<h:outputText value="#{plogValue.procedureOutputField.description}" />
-				</p:column>
-
-			</p:dataTable>
+				    <f:facet name="header">
+				        Procedure Execution Values
+				    </f:facet>
+				
+				    <p:column headerText="Name" style="width:150px; vertical-align:top; text-align:left">
+				        <h:outputText value="#{plogValue.procedureOutputField.displayLabel}" />
+				    </p:column>
+				    <p:column headerText="Value" style="width:400px; vertical-align:top; text-align:left">
+				        <h:outputText style="white-space:pre-line" escape="false" value="#{plogValue.dataFormatted}" />
+				    </p:column>
+				    <p:column headerText="Units" style="width:50px; vertical-align:top; overflow:hidden; white-space:nowrap;">
+				        <h:outputText value="#{plogValue.procedureOutputField.units}" />
+				    </p:column>
+				    <p:column headerText="Description" style="width:400px; vertical-align:top; text-align:left">
+				        <h:outputText value="#{plogValue.procedureOutputField.description}" />
+				    </p:column>
+				
+				</p:dataTable>			
 			</p:tab>
 			
 			<p:tab title="Frame/Centroids Reports">
 			
-				<p:tabView value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" >
+				<p:tabView id="frameTabView" value="#{procedureController.procedure.procedureCcdFrameList}" var="procedureFrame" toggleable="false" >
 				
 					<p:tab title="Frame #{procedureFrame.procedureFrameNumber + 1} Report">
 						
@@ -64,7 +127,7 @@
 						</h:commandLink>
 			
 			
-						<p:dataTable id="flogTable" var="flogValue" value="#{procedureFrame.frameFieldDisplayList}" scrollable="true" scrollHeight="500" 
+						<p:dataTable id="flogTable" var="flogValue" value="#{procedureFrame.frameFieldDisplayList}" scrollable="true" scrollHeight="600" 
 						 stripedRows="true">
 							<f:facet name="header">
 			        				Frame/Centroids Related Values
@@ -96,7 +159,7 @@
 			<p:tab title="Procedure Iteration Reports" rendered="#{not empty procedureController.procedure.procedureOutput.procedureIterationOutputList}">
 			
 			
-			<p:tabView value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio">
+			<p:tabView id="iterationTabView" value="#{procedureController.procedure.procedureOutput.procedureIterationOutputList}" var="pio" toggleable="false">
 			
 				<p:tab title="Iteration #{procedureController.findIterationString(pio.iteration)}">
 
@@ -109,7 +172,7 @@
 						<p:dataExporter type="csv" target="iterTable" fileName="plog" />
 					</h:commandLink>
 				
-					<p:dataTable id="iterTable" var="plogIterValue" value="#{pio.procedureIterationOutputList}" scrollable="true" scrollHeight="500" 
+					<p:dataTable id="iterTable" var="plogIterValue" value="#{pio.procedureIterationOutputList}" scrollable="true" scrollHeight="600" 
 						 stripedRows="true">
 						<f:facet name="header">
 		        				Procedure Iteration Execution Values

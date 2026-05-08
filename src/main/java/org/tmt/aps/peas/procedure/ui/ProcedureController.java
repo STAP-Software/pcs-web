@@ -462,9 +462,9 @@ public class ProcedureController implements Serializable {
 			byte[] falseColorPng = selectedFrame.getCcdFrame().getFalseColorPng();
 
 			if (falseColorPng == null) {
-			    logger.debug("falseColorPng is NULL");
+			    logger.info("falseColorPng is NULL");
 			} else {
-			    logger.debug("falseColorPng length = " + falseColorPng.length);
+			    logger.info("falseColorPng length = " + falseColorPng.length);
 			}
 
 			if (falseColorPng == null) {

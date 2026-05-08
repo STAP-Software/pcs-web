@@ -319,10 +319,12 @@ body .ui-datatable .ui-datatable-tablewrapper {
     border: 1px solid #2c3e50;
 }
 
+/* Extend scrollable table header color accross the top */
+
 body .ui-datatable-scrollable-header-box {
-	margin-right: 0 !important;
-	border-left: 1px solid #2c3e50 !important;	
-	border-right: 1px solid #2c3e50 !important;
+    margin-right: 15px !important;
+    border-left: 1px solid #2c3e50 !important;
+    border-right: none !important;
 }
 
 body .ui-datatable .ui-datatable-scrollable-body {
@@ -332,13 +334,10 @@ body .ui-datatable .ui-datatable-scrollable-body {
 }
 
 body .ui-datatable-scrollable-header {
+	background: #2c5f8a !important;
     border-bottom: 0px solid #ccc !important;
 }
 
-body .ui-datatable .ui-datatable-scrollable-header th,
-body .ui-datatable .ui-datatable-scrollable-body td {
-    padding-left: 6px !important;
-}
 
 
 /* toolbar above session list to filter choices */
@@ -673,5 +672,9 @@ html, body {
    	font-family: Arial, sans-serif;
     font-size: 1rem;
    	font-weight: normal;
+}
+
+#plogTable .ui-datatable-scrollable-header-box table {
+    margin-left: -11px !important;
 }
 

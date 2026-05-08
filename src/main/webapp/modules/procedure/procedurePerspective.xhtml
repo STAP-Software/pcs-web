@@ -444,8 +444,8 @@
 								
 							</f:facet>
 						
-							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" />
-						
+							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" cache="false" />
+					
 						
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 							
@@ -600,7 +600,7 @@
 		window.setTimeout("drawFrame2(true)", 500);
 	}
 	
-	function drawFrame2(mark) {
+	function drawFrame2_orig(mark) {
 		removeCanvasEvents();
 		var c = document.getElementById("frameCanvas");
 
@@ -608,7 +608,7 @@
 		
 		var img = document.getElementById("procedureDetailForm:frameImage");
 		
-		// console.log(img)
+		console.log("ready to draw:: " + img);
 		
 		ctx.clearRect(0,0,c.width,c.height);
 		
@@ -630,7 +630,39 @@
 		
 		initCanvasEvents();
 	}
-		
+	
+	function drawFrame2(mark) {
+	    removeCanvasEvents();
+	    var c = document.getElementById("frameCanvas");
+	    var ctx = c.getContext("2d");
+	    
+	    var img = document.getElementById("procedureDetailForm:frameImage");
+	    var originalSrc = img.src;
+	    
+	    console.log("img.src = " + originalSrc);
+	    
+	    img.onload = function() {
+	        ctx.clearRect(0, 0, c.width, c.height);
+	        ctx.drawImage(img, 0, 0, c.width, c.height);
+	        
+	        var blankImage = document.getElementById('frameHiddenForm:blankImage').value;
+	        if (blankImage == "true") {
+	            ctx.font = "12px Arial";
+	            ctx.fillStyle = "black";
+	            ctx.fillText("Frame not used in analysis, overwritten by subsequent frame", 100, 250);
+	        } else if (mark) {
+	            markFrame2(c, ctx, img);
+	        }
+	        
+	        initCanvasEvents();
+	    };
+	    
+	    // Force re-fetch by clearing src then restoring original
+	    img.src = "";
+	    img.src = originalSrc;
+	}
+	
+	
 	function markFrame2(c, ctx, img) {
 		
 		console.log("about to mark frame")

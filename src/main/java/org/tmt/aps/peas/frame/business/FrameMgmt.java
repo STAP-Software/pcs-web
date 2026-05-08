@@ -209,6 +209,41 @@ public class FrameMgmt {
 	}
 
 	/**
+	 * Saves a frame to FITS file  
+	 * @param procedureCcdFrame the procedureCcdFrame structure containing the information to create the FITS filename and the raw frame
+	 * @throws Exception
+	 */
+	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	public void saveCcdFrameFromFile(Procedure procedure, CcdFrame ccdFrame, int procedureIterationNumber, int phasingStepNumber) throws Exception {
+
+		// save the frame to a FITS file
+		logger.info("saveCcdFrameFromFile:: FITS = " + ccdFrame.getFitsFilename());
+		ccdFrame.setInstrumentId(procedure.getInstrument().getInstrumentId());
+		
+		CameraState cameraState = ccdFrame.getCameraState();
+		
+		if (cameraState != null) {
+			logger.info(MessageGenerator.generateMessage("record.create", "cameraState"));
+			em.persist(cameraState);
+		}
+		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
+
+		
+		// save the Ccd record with the fits file name
+		// V3.0 uncommented
+		logger.info(MessageGenerator.generateMessage("record.create", "ccdFrame"));
+		em.persist(ccdFrame);
+
+		//associateCcdFrame(procedureCcdFrame);
+		
+		// create the png.  This will overwrite any previously generated png file with the same FITS name prefix
+		byte[] falseColorPng = generatePng(ccdFrame, true);
+		ccdFrame.setFalseColorPng(falseColorPng);
+
+	}
+
+	
+	/**
 	 * Associate a ccdFrame with a procedure.  If the ccdFrame may only have a FITS filename.  This function finds the CcdFrame record in the database 
 	 * if it exists, otherwise it is stored in the database at this time.  
 	 * @param procedureCcdFrame the procedure CcdFrame structure.  This may not be fully populated with a raw frame, but must at least have a FITS Filename
@@ -508,11 +543,16 @@ public class FrameMgmt {
 		// SM V3.0 - this might get deprecated
 		// procedure.addProcedureCcdFrame(procedureCcdFrame);
 
-		//if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
+		if (procedureConfig.getFrameSource() == Constants.FRAME_SOURCE_CCD) {
 			// generate filename and store into the FITS file
 	        int phasingStepNumber = procedureType.isCoarsePhasing() ? iteration : 0;
 			saveCcdFrame(procedure, ccdFrame, iteration, phasingStepNumber);			
-		//}
+		
+		} else {
+			// need to persist CCD frame, it may be imported into the development environment and not have a record
+			int phasingStepNumber = procedureType.isCoarsePhasing() ? iteration : 0;
+			saveCcdFrameFromFile(procedure, ccdFrame, iteration, phasingStepNumber);	
+		}
 
 		
 		// SM V3.0  always store in database, don't wait until end of procedure 

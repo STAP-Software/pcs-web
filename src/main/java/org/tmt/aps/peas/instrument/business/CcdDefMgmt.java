@@ -18,6 +18,7 @@ import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdGain;
+import org.tmt.aps.peas.instrument.model.CcdType;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
@@ -96,6 +97,9 @@ public class CcdDefMgmt {
 	}
 
 	
+	public CcdType findCcdType(Long ccdTypeId) {
+		return em.find(CcdType.class, ccdTypeId);
+	}
 
 	/**
 	 * Links a CCD record to an instrument record, removing any previous link to another CCD record.

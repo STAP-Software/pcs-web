@@ -24,6 +24,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.instrument.business.CcdDefMgmt;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Ccd;
+import org.tmt.aps.peas.instrument.model.CcdType;
 
 /**
  * JSF Controller for CCD configuration user interface
@@ -137,6 +138,10 @@ public class CcdDefController implements Serializable {
 	public String doNewCcd() {
 
 		ccd = new Ccd();
+		
+		
+		CcdType ccdType = ccdDefMgmt.findCcdType(CcdType.CCD_TYPE_ID_SCIMEAS);
+		ccd.setCcdType(ccdType);
 
 		breadcrumbMenuBean.addItem("New Ccd", "/modules/sysadmin/ccdDetail.xhtml");
 

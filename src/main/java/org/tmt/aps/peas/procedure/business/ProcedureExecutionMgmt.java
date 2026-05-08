@@ -178,7 +178,7 @@ public class ProcedureExecutionMgmt {
 
 		
 		
-		logger.info("performProcedureStartup 3");
+		logger.info("performProcedureStartup 3: isFrameFromFile = " + procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile());
 
 		// if this is frame from file, associate the frame now
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {

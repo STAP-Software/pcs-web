@@ -60,6 +60,8 @@ public class FrameSimulator {
 		for (FitsFilename fitsFilename : fitsFilenameList) {
 			CcdFrame ccdFrame = frameMgmt.loadFitsFrame(fitsFilename.getFileName());
 			
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>> FrameSimulator::init():: FITS Filename: " + fitsFilename.getFileName());
+			
 			byte[] falseColorPng = frameMgmt.loadPng(ccdFrame, true);
 			ccdFrame.setFalseColorPng(falseColorPng);
 			

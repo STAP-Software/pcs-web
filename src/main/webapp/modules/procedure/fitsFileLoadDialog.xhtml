@@ -7,7 +7,7 @@
               header="FITS File Loader"
               widgetVar="fitsFileLoadDialog"
               modal="true"
-              width="500">
+              width="550">
 
         <h:form id="fitsFileLoadForm">
 
@@ -27,8 +27,8 @@
                                       value="#{procedureController.selectedFitsFiles}"
                                       converter="#{pcsFitsFileConverter}"
                                       showCheckbox="true"
-                                      style="width:300px;"
-                                      panelStyle="width:300px;"
+                                      style="width:350px;"
+                                      panelStyle="width:350px;"
                                       scrollHeight="296"
                                       widgetVar="fitsSelectWidget">
                         <f:selectItems value="#{procedureController.availableFitsFiles}"

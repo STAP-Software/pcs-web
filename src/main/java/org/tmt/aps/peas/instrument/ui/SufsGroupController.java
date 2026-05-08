@@ -172,7 +172,7 @@ public class SufsGroupController implements Serializable {
 
 		sufsGroup = new SufsGroup();
 
-		breadcrumbMenuBean.addItem("Sufs Group " + sufsGroup, "/modules/sysadmin/sufsGroupDetail.xhtml");
+		breadcrumbMenuBean.addItem("New Sufs Group ", "/modules/sysadmin/sufsGroupDetail.xhtml");
 
 		return "/modules/sysadmin/sufsGroupDetail.xhtml?faces-redirect=true";
 	}
