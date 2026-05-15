@@ -616,6 +616,10 @@ public class GetFrameCentroidsExecutor {
 
 		while (true) {
 			frameDisplayMgmt.displayFrame(MessageGenerator.generateMessage("instructions.pt_hand_mark"), "PTNumbering.jpg");
+			
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>FrameDisplayMgmt::handMark:: calling DisplayFRame with instructions");
+			
+			
 			frameDisplayMgmt.clearMarking();
 			frameDisplayMgmt.setPendingMarkAction(true);
 			// wait for user to mark frame

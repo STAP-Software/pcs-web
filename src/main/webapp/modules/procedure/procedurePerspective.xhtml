@@ -57,107 +57,95 @@
 
 					<p:tab title="Procedure Configuration">
 
-						<p:panelGrid id="configPanel" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+		        		<div id="configPanel" style="padding: 16px;">
+		        		
+			            	<div class="label-input-grid" 
+			                 	style="display: grid; grid-template-columns: max-content max-content;
+			                        align-items: baseline; 
+			                        row-gap: 24px; column-gap: 24px;">
 				
-							<p:row rendered="#{procedureController.renderPupilMaskSelect}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Mask" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu id="pupilMaskSelect" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
-										<f:selectItem itemLabel="Select One" itemValue=""/> 
-										<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
-										<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.pupilMaskSelectListener}" />
-									</p:selectOneMenu>
-								</p:column>
-							</p:row>
+								<h:outputLabel value="Mask" rendered="#{procedureController.renderPupilMaskSelect}"/>
 
-							<p:row rendered="#{procedureController.renderRegisterForSelect}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Register Pupil For" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu id="registerPupilForSelect" value="#{procedureController.registerPupilFor}" converter="#{procedureTypeConverter}" disabled="#{procedureController.procedure.procedureState gt 1}">
-										<f:selectItem itemLabel="Select One" itemValue=""/> 
-										<f:selectItems value="#{procedureController.procedureTypeForSelectList}" var="procedureType" itemLabel="#{procedureType.procedureTypeName}" itemValue="#{procedureType}" />
-										<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.registerPupilForSelectListener}" />
-									</p:selectOneMenu>
-								</p:column>
-							</p:row>
-
-							<p:row rendered="#{procedureController.procedure.procedureType.coarsePhasing or 
-								(procedureController.procedure.procedureType.pupilRegistration and 
-								procedureController.registerPupilFor.procedureTypeId == 3)}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Coarse Phasing Option" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" disabled="#{procedureController.procedure.procedureState gt 1}">
-										<f:selectItem itemLabel="Select One" itemValue="0"/> 
-										<f:selectItem itemLabel="Phasing 30" itemValue="30" />
-										<f:selectItem itemLabel="Phasing 100" itemValue="100" />
-										<f:selectItem itemLabel="Phasing 300" itemValue="300" />
-										<f:selectItem itemLabel="Phasing 1000" itemValue="1000" />
-										<p:ajax update=":advancedForm intTime startButton" listener="#{procedureController.coarsePhasingOptionSelectListener}" />
-									</p:selectOneMenu>
-								</p:column>
-							</p:row>
+								<p:selectOneMenu id="pupilMaskSelect" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.pupilMask}" 
+									converter="#{pupilMaskConverter}" disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.renderPupilMaskSelect}">
+									<f:selectItem itemLabel="Select One" itemValue=""/> 
+									<f:selectItems value="#{procedureController.pupilMaskSelectList}" var="mask" itemLabel="#{mask.maskName}" itemValue="#{mask}" />
+									<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.pupilMaskSelectListener}" />
+								</p:selectOneMenu>
 
 
-							<p:row rendered="#{not procedureController.procedure.procedureType.narrowBandPhasing}" >
-								<p:column styleClass="btmsFormLabelColumn">
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}" 
-										editable="true"
-										disabled="#{procedureController.procedure.procedureState gt 1}" styleClass="intTime">
-										<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTimeList}" /> 
-									</p:selectOneMenu>
-									<h:message for="intTime" style="color:red" showSummary="true" showDetail="true" />
-								</p:column>
-							</p:row>
+								<h:outputLabel value="Register Pupil For" rendered="#{procedureController.renderRegisterForSelect}"/>
 
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}" >
-								<p:column styleClass="btmsFormLabelColumn">
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:inputText id="intTimes" size="15" 
-									value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" 
-									disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
-									<h:message for="intTimes" style="color:red" showSummary="true" showDetail="true" />
-								</p:column>
-							</p:row>
+								<p:selectOneMenu id="registerPupilForSelect" value="#{procedureController.registerPupilFor}" converter="#{procedureTypeConverter}" 
+									disabled="#{procedureController.procedure.procedureState gt 1}" rendered="#{procedureController.renderRegisterForSelect}">
+									<f:selectItem itemLabel="Select One" itemValue=""/> 
+									<f:selectItems value="#{procedureController.procedureTypeForSelectList}" var="procedureType" itemLabel="#{procedureType.procedureTypeName}" itemValue="#{procedureType}" />
+									<p:ajax update=":advancedForm intTime controlPanel startButton" listener="#{procedureController.registerPupilForSelectListener}" />
+								</p:selectOneMenu>
+
+
+								<h:outputLabel value="Coarse Phasing Option" rendered="#{procedureController.procedure.procedureType.coarsePhasing or (procedureController.procedure.procedureType.pupilRegistration and 
+									procedureController.registerPupilFor.procedureTypeId == 3)}"/>
+
+								<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.coarsePhasingOption}" disabled="#{procedureController.procedure.procedureState gt 1}"
+									rendered="#{procedureController.procedure.procedureType.coarsePhasing or (procedureController.procedure.procedureType.pupilRegistration and procedureController.registerPupilFor.procedureTypeId == 3)}">
+									<f:selectItem itemLabel="Select One" itemValue="0"/> 
+									<f:selectItem itemLabel="Phasing 30" itemValue="30" />
+									<f:selectItem itemLabel="Phasing 100" itemValue="100" />
+									<f:selectItem itemLabel="Phasing 300" itemValue="300" />
+									<f:selectItem itemLabel="Phasing 1000" itemValue="1000" />
+									<p:ajax update=":advancedForm intTime startButton" listener="#{procedureController.coarsePhasingOptionSelectListener}" />
+								</p:selectOneMenu>
+
+
+
+ 
+								<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
+								<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" rendered="#{not procedureController.procedure.procedureType.narrowBandPhasing}"/>
+
+								<h:panelGroup rendered="#{not procedureController.procedure.procedureType.narrowBandPhasing}">
+								<p:selectOneMenu id="intTime" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTime}"  
+									editable="true"
+									disabled="#{procedureController.procedure.procedureState gt 1}" styleClass="intTime">
+									<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.integrationTimeList}" /> 
+								</p:selectOneMenu>
+								<h:message for="intTime" style="color:red" showSummary="true" showDetail="true" />
+								</h:panelGroup>
+
+
+								<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
+								<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}"/>
+
+								<h:panelGroup rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
+								<p:inputText id="intTimes" size="15"
+								value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" 
+								disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
+								<h:message for="intTimes" style="color:red" showSummary="true" showDetail="true" />
+								</h:panelGroup>
 							
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}" >
-								<p:column styleClass="btmsFormLabelColumn">
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','CcdGain')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
-									<p:inputText id="ccdGainNumbers" size="15" 
-									value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.ccdGainList}" 
-									disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
-									<h:message for="ccdGainNumbers" style="color:red" showSummary="true" showDetail="true" />
-								</p:column>
-							</p:row>
 
-							<p:row rendered="#{procedureController.renderNumTrials}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Number of Trials" />
-								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">								
-									<p:selectOneMenu id="iterationCount" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
-										editable="true"
-										disabled="#{procedureController.procedure.procedureState gt 1}" >
-										<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numTrialsList}" />
-									</p:selectOneMenu>
-								</p:column>
-							</p:row>
+								<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','CcdGain')}" />				
+								<h:outputLabel value="#{fieldMetaData.displayLabel}s (#{fieldMetaData.units})" rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}"/>
 
+								<h:panelGroup rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}">
+								<p:inputText id="ccdGainNumbers" size="15" 
+								value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.ccdGainList}" 
+								disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
+								<h:message for="ccdGainNumbers" style="color:red" showSummary="true" showDetail="true" />
+								</h:panelGroup>
+
+
+
+								<h:outputLabel value="Number of Trials" rendered="#{procedureController.renderNumTrials}"/>
+						
+								<p:selectOneMenu id="iterationCount" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
+									editable="true"
+									disabled="#{procedureController.procedure.procedureState gt 1}" 
+									rendered="#{procedureController.renderNumTrials}">
+									<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numTrialsList}" />
+								</p:selectOneMenu>
+
+ 
 							<!-- 
 							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and procedureController.procedure.procedureConfigSet.procedureConfig.lightSource eq 2}">
 								<p:column styleClass="btmsFormLabelColumn">
@@ -175,11 +163,11 @@
 							</p:row>
 							-->
 							 
-							<p:row rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Filter Set" />
-								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">	
+
+								<h:outputLabel value="Filter Set" rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}"/>
+	
+								<h:panelGroup rendered="#{procedureController.procedure.procedureType.narrowBandPhasing}"
+									layout="block" style="display: inline-flex; align-items: center; gap: 10px;">
 									<p:selectOneMenu id="loopOptions2" value="#{procedureController.procedure.procedureConfigSet.iterationListConfig}" converter="#{iterationListConfigConverter}"
 										disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}" >
 										<f:selectItems value="#{procedureController.iterationListConfigOptions}" var="option" itemLabel="#{option.iterationValueList.displayString}" itemValue="#{option}" />
@@ -187,77 +175,65 @@
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
 									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
-								</p:column>
-							</p:row>
-
-							<p:row rendered="#{procedureController.renderSufsGroup}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Segment Group Number" />
-								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">
-									<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
-									disabled="#{procedureController.procedure.procedureState gt 1}" >
-										<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
-										<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
-									</p:selectOneMenu>
-									
-								</p:column>
-							</p:row>
-
-							<p:row rendered="#{procedureController.procedure.procedureType.sufs}">
-								
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Sufs Coarse Pupil Offsets (microns)" />
-								</p:column>   
-								<p:column styleClass="btmsFormInputColumn">
-									<h:panelGroup id="sufsOffsetXGroup">
+								</h:panelGroup>
+	
+	
+								<h:outputLabel value="Segment Group Number" rendered="#{procedureController.renderSufsGroup}"/>
+	
+								<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
+								disabled="#{procedureController.procedure.procedureState gt 1}" 
+								rendered="#{procedureController.renderSufsGroup}">
+									<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
+									<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
+								</p:selectOneMenu>
+										
+	
+	
+								<h:outputLabel value="Sufs Coarse Pupil Offsets (microns)" rendered="#{procedureController.procedure.procedureType.sufs}"/>
+	
+								<h:panelGroup id="sufsOffsetXGroup" rendered="#{procedureController.procedure.procedureType.sufs}"
+								    layout="block" style="display: inline-flex; align-items: center; gap: 10px;">
 									<h:outputLabel value="X: " />
 									<p:inputText id="sufsOffsetX" maxlength="5"  
 										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}"
 										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
 									<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultX})" />
-									</h:panelGroup>
-									<br/>
-									<p:spacer height="5" width="1"/>
-									<br/>
-									<h:panelGroup id="sufsOffsetYGroup">
-									<h:outputLabel value="Y: " />
-									<p:inputText id="sufsOffsetY" maxlength="5"  
-										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
-										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
-									<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultY})" />
-									</h:panelGroup>
-									
-								</p:column>
-								
-								
-							</p:row>
+								</h:panelGroup>
 
-							<p:row rendered="#{sessionController.engineeringView}">
-								<p:column styleClass="btmsFormLabelColumn">
-									<h:outputLabel value="Frame Source" />
-								</p:column>
-								<p:column styleClass="btmsFormInputColumn">
+								<h:panelGroup id="sufsOffsetYGroup" rendered="#{procedureController.procedure.procedureType.sufs}"
+									layout="block" style="display: inline-flex; align-items: center; gap: 10px;">
+								<h:outputLabel value="Y: " />
+								<p:inputText id="sufsOffsetY" maxlength="5"  
+									value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
+									size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
+								<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultY})" />
+								</h:panelGroup>
+											
+
+								<h:outputLabel value="Frame Source" rendered="#{sessionController.engineeringView}"/>
+	
+								<h:panelGroup id="frameSourceGroup" layout="block" style="display: inline-flex; align-items: center; gap: 10px;"
+    								rendered="#{sessionController.engineeringView}">
 									<p:selectOneMenu value="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource}"
 										disabled="#{procedureController.procedure.procedureState gt 1}">
 										<f:selectItem itemLabel="Select One" itemValue="" />
 										<f:selectItem itemLabel="CCD" itemValue="1" />
 										<f:selectItem itemLabel="File" itemValue="2" />
-										<p:ajax update="configPanel startButton" listener="#{procedureController.frameSourceListener}" />
+										<p:ajax update="frameSourceGroup startButton" listener="#{procedureController.frameSourceListener}" />
 									</p:selectOneMenu>
-									<p:spacer width="10px" />
 									<p:commandButton id="openFitsFolder"
 						                 icon="pi pi-folder-open"
 						                 type="button"
 						                 styleClass="thinPadding"
-						                 style="top:-5px"
 						                 disabled="#{procedureController.procedure.procedureState gt 1}"
 						                 rendered="#{procedureController.procedure.procedureConfigSet.procedureConfig.frameSource eq 2}"
 						                 onclick="PF('fitsFileLoadDialog').show();" />
-								</p:column>
-							</p:row>
+								</h:panelGroup>
+							
+							</div>
+						
+						</div>
 
-						</p:panelGrid>
 					</p:tab>
 
 
@@ -551,7 +527,8 @@
 		<ui:include src="singleFilterEdgeHeightsDialog.xhtml"/>
 		<ui:include src="edgeResidualsDialog.xhtml"/>
 		<ui:include src="sufsCentroidOffsetsDialog.xhtml"/>
-		<ui:include src="avgSufsCentroidOffsetsDialog.xhtml"/>
+		<ui:include src="avgSufsCentroidOffsetsDialog.xhtml"/>		
+
 		
 
 <script>

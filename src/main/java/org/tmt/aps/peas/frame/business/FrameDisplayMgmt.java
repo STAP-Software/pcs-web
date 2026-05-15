@@ -108,6 +108,9 @@ public class FrameDisplayMgmt implements Serializable {
 		pendingDisplay = true;
 		this.frameInstructions = frameInstructions.replace("\n", "<br/>");
 		this.frameInstructionImageName = imageName;
+		
+		logger.info("frameDisplayMgmt::displayFrame:: frameInstructions = " + frameInstructions);
+		
 	}
 	
 	/**

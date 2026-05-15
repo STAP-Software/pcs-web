@@ -2,14 +2,16 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
   
 		<p:dialog id="instructionDlg" header="Instructions" widgetVar="instructionDialog" closable="true" 
-		position="10, 158" width="330" height="370" style="background-color: #FFFF88; background-image: none">  
+		position="10, 158" width="510" height="510" style="background-color: #FFFF88 !important; background-image: none !important"
+		contentStyle="background-color: #FFFF88 !important; background-image: none !important"
+		styleClass="instruction-dialog">  
     		<h:form id="instructionDialogForm">
-    		<div style="margin: 10px">
+    		<div style="margin: 10px;">
     		<br/>
     		<h:outputText value="#{procedureController.frameInstructions}" escape="false"/>
     		<br/>
     		<br/>
-    		<p:graphicImage value="../../images/#{procedureController.frameInstructionImageName}" height="270" width="270" style="border: 1px solid black"
+    		<p:graphicImage value="../../images/#{procedureController.frameInstructionImageName}" height="440" width="440" style="border: 1px solid black"
     		rendered="#{not empty procedureController.frameInstructionImageName}"/>
     		</div>      		  
      		</h:form>

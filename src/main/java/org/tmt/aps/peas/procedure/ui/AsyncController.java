@@ -262,6 +262,7 @@ public class AsyncController implements Serializable {
 	
 	private void checkFrameDisplay() {
 		
+		logger.info("##########################  CHECK FRAME DISPLAY: New Frame = " + getDisplayNewFrame() + ", getMarkedNewFrame = " + getMarkNewFrame());
 		
 		if (getDisplayNewFrame() || getMarkNewFrame()) {
 			
@@ -296,9 +297,11 @@ public class AsyncController implements Serializable {
 							
 				PrimeFaces.current().executeScript("drawFrame()");
 				
+				logger.info(">>>>>>>>>>>>CHECK FRAME DISPLAY about to show instruction dialog::" +  frameDisplayMgmt.getFrameInstructions());
+				
 				if (frameDisplayMgmt.getFrameInstructions() != null) {
-					PrimeFaces.current().ajax().update("instructionDialogForm");
-					PrimeFaces.current().executeScript("instructionDialog.show()");
+					PrimeFaces.current().ajax().update("instructionDlg");
+					PrimeFaces.current().executeScript("PF('instructionDialog').show()");
 				}
 				
 			//}

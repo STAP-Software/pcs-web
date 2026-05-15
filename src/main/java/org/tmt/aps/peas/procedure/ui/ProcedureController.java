@@ -794,7 +794,8 @@ public class ProcedureController implements Serializable {
 	}
 
 	public void frameSourceListener() {
-		logger.debug("Frame Source Listener");
+	    int frameSource = procedure.getProcedureConfigSet().getProcedureConfig().getFrameSource();
+	    logger.info("Frame Source Listener - frameSource=" + frameSource);
 	}
 
 	/**
@@ -1652,7 +1653,7 @@ public class ProcedureController implements Serializable {
 
 		frameMarkingMode = false;
 	
-		PrimeFaces.current().executeScript("instructionDialog.hide()");
+		PrimeFaces.current().executeScript("PF('instructionDialog').hide()");
 	}
 
 	/**
@@ -1663,7 +1664,7 @@ public class ProcedureController implements Serializable {
 
 		frameMarkingMode = false;
 		
-		PrimeFaces.current().executeScript("instructionDialog.hide()");
+		PrimeFaces.current().executeScript("PF('instructionDialog').hide()");
 		procedureExecutionState.setAbortRequested(true);
 	}
 	

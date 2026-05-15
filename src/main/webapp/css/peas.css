@@ -678,3 +678,26 @@ html, body {
     margin-left: -11px !important;
 }
 
+
+/* Dialog outer container */
+.instruction-dialog.ui-dialog {
+    background-color: #FFFF88 !important;
+    background-image: none !important;
+}
+
+/* The content area */
+.instruction-dialog .ui-dialog-content {
+    background-color: #FFFF88 !important;
+    background-image: none !important;
+}
+
+/* The title bar — style or keep themed */
+.instruction-dialog .ui-dialog-titlebar {
+    background-color: #FFFF88 !important; /* slightly darker yellow for header */
+    background-image: none !important;
+}
+
+
+
+
+
