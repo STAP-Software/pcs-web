@@ -56,8 +56,8 @@
 				<p:accordionPanel id="controlPanel" multiple="true" activeIndex="0,1,2">
 
 					<p:tab title="Procedure Configuration">
-
-		        		<div id="configPanel" style="padding: 16px;">
+					
+						<p:outputPanel id="configPanel" style="padding: 16px;">
 		        		
 			            	<div class="label-input-grid" 
 			                 	style="display: grid; grid-template-columns: max-content max-content;
@@ -141,7 +141,8 @@
 								<p:selectOneMenu id="iterationCount" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numberOfTrials}"
 									editable="true"
 									disabled="#{procedureController.procedure.procedureState gt 1}" 
-									rendered="#{procedureController.renderNumTrials}">
+									rendered="#{procedureController.renderNumTrials}"
+									style="width: 3em">
 									<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numTrialsList}" />
 								</p:selectOneMenu>
 
@@ -182,31 +183,32 @@
 	
 								<p:selectOneMenu id="groupNum" value="#{procedureController.procedure.procedureConfigSet.procedureConfig.sufsGroup}"
 								disabled="#{procedureController.procedure.procedureState gt 1}" 
-								rendered="#{procedureController.renderSufsGroup}">
+								rendered="#{procedureController.renderSufsGroup}"
+								style="width: calc(100% + 1.5em)">
 									<f:selectItems value="#{procedureController.sufsGroupSelectList}" />
 									<p:ajax update="sufsOffsetXGroup sufsOffsetYGroup startButton intTime :advancedForm" listener="#{procedureController.sufsGroupChangeListener}" />
 								</p:selectOneMenu>
 										
 	
 	
-								<h:outputLabel value="Sufs Coarse Pupil Offsets (microns)" rendered="#{procedureController.procedure.procedureType.sufs}"/>
+								<h:outputLabel value="SUFS X Coarse Offset (&#181;m)" rendered="#{procedureController.procedure.procedureType.sufs}"/>
 	
 								<h:panelGroup id="sufsOffsetXGroup" rendered="#{procedureController.procedure.procedureType.sufs}"
 								    layout="block" style="display: inline-flex; align-items: center; gap: 10px;">
-									<h:outputLabel value="X: " />
 									<p:inputText id="sufsOffsetX" maxlength="5"  
 										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}"
 										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
-									<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultX})" />
+									<h:outputText value="&#160;(Default:&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultX})" />
 								</h:panelGroup>
+
+								<h:outputLabel value="SUFS Y Coarse Offset (&#181;m)" rendered="#{procedureController.procedure.procedureType.sufs}"/>
 
 								<h:panelGroup id="sufsOffsetYGroup" rendered="#{procedureController.procedure.procedureType.sufs}"
 									layout="block" style="display: inline-flex; align-items: center; gap: 10px;">
-								<h:outputLabel value="Y: " />
-								<p:inputText id="sufsOffsetY" maxlength="5"  
-									value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
-									size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
-								<h:outputText value="&#160;&#160;&#160;(Default:&#160;&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultY})" />
+									<p:inputText id="sufsOffsetY" maxlength="5"  
+										value="#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}"
+										size="3" disabled="#{procedureController.procedure.procedureState gt 1}" />
+									<h:outputText value="&#160;(Default:&#160;#{procedureController.procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetDefaultY})" />
 								</h:panelGroup>
 											
 
@@ -232,98 +234,110 @@
 							
 							</div>
 						
-						</div>
+						</p:outputPanel>
 
 					</p:tab>
 
 
 					<p:tab id="statusAndControlTab" title="Status and Control">
 
-						<p:panelGrid id="statusAndControlPanel" columns="2" styleClass="btmsForm" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
-							<h:outputLabel value="Procedure Type" />
-							<h:outputText value="#{procedureController.procedure.procedureType.procedureTypeName}" />
-							<h:outputLabel value="Procedure #" />
-							<h:panelGroup>
-							<h:outputText value="#{procedureController.procedure.procedureNumber}" />
-							<p:spacer height="1px" width="15px"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
-							<h:outputLabel value="Iteration "  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
-							<p:spacer height="1px" width="15px"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"/>
-							<h:outputText value="#{procedureExecutionState.currentIteration}"  rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}" />
-							<p:spacer height="1px" width="15px"/>
-							<!-- 
-							<p:commandLink ajax="true" update=":procedureLogForm" oncomplete="procedureLogDialog.show();" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
-								<h:outputText value="Procedure Log" />
-							</p:commandLink>
-							 -->
-							<p:commandLink ajax="true" update=":procedureLogForm" action="#{procedureController.doShowProcedureLog}" style="font-weight:normal;color:blue"  rendered="#{procedureController.procedure.procedureState ge 3}">
-								<h:outputText value="Procedure Log" />
-							</p:commandLink>
-							
-							</h:panelGroup>
-							<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" rendered="#{procedureController.procedure.procedureState eq 3}" />
-							<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedureController.procedure.procedureState eq 4}" />
+						<p:outputPanel id="statusAndControlPanel" style="padding: 16px;">
+		        		
+			            	<div class="label-input-grid" 
+			                 	style="display: grid; grid-template-columns: max-content max-content;
+			                        align-items: baseline; 
+			                        row-gap: 24px; column-gap: 24px;">
 
-							<h:outputLabel value="Execution Start" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
-							<h:outputText value="#{procedureController.procedure.executionStartTime}" >
-									<f:convertDateTime pattern="hh:mm:ss " />
-								</h:outputText>
-								<h:outputText value=" UTC"/>
-							</h:panelGroup>
-							
-							<h:outputLabel value="Execution End" rendered="#{procedureController.procedure.procedureState ge 3}" />
-							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
-							<h:outputText value="#{procedureController.procedure.executionEndTime}" >
-									<f:convertDateTime pattern="hh:mm:ss " />
-								</h:outputText>
-								<h:outputText value=" UTC"/>
-							</h:panelGroup>
+								<h:outputLabel value="Procedure Type" />
+								<h:outputText value="#{procedureController.procedure.procedureType.procedureTypeName}" />
+								<h:outputLabel value="Procedure #" />
+								<h:panelGroup layout="block" style="display: flex; align-items: center; gap: 15px;">
 								
-							<h:outputLabel value="ACS Snap # After" rendered="#{procedureController.procedure.procedureState eq 3}" />
-							<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" rendered="#{procedureController.procedure.procedureState eq 3}" />
+								    <h:outputText value="#{procedureController.procedure.procedureNumber}" />
+								
+								    <h:panelGroup rendered="#{procedureController.procedure.procedureState eq 2 and procedureExecutionState.currentIteration gt 0}"
+								        style="display: flex; align-items: center; gap: 15px;">
+								        <h:outputLabel value="Iteration" />
+								        <h:outputText value="#{procedureExecutionState.currentIteration}" />
+								    </h:panelGroup>
+								
+								    <p:commandLink ajax="true"
+								        update=":procedureLogForm"
+								        action="#{procedureController.doShowProcedureLog}"
+								        style="font-weight: normal; color: blue;"
+								        rendered="#{procedureController.procedure.procedureState ge 3}">
+								        <h:outputText value="Procedure Log" />
+								    </p:commandLink>
+								
+								</h:panelGroup>
+								<h:outputLabel value="Status" rendered="#{procedureController.procedure.procedureState ge 3}" />
+								<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" rendered="#{procedureController.procedure.procedureState eq 3}" />
+								<h:outputText value="#{procedureController.procedure.procedureStateDisplayString}" style="color:red" rendered="#{procedureController.procedure.procedureState eq 4}" />
+	
+								<h:outputLabel value="Execution Start" rendered="#{procedureController.procedure.procedureState ge 3}" />
+								<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
+								<h:outputText value="#{procedureController.procedure.executionStartTime}" >
+										<f:convertDateTime pattern="hh:mm:ss " />
+									</h:outputText>
+									<h:outputText value=" UTC"/>
+								</h:panelGroup>
+								
+								<h:outputLabel value="Execution End" rendered="#{procedureController.procedure.procedureState ge 3}" />
+								<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
+								<h:outputText value="#{procedureController.procedure.executionEndTime}" >
+										<f:convertDateTime pattern="hh:mm:ss " />
+									</h:outputText>
+									<h:outputText value=" UTC"/>
+								</h:panelGroup>
+									
+								<h:outputLabel value="ACS Snap # After" rendered="#{procedureController.procedure.procedureState eq 3}" />
+								<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" rendered="#{procedureController.procedure.procedureState eq 3}" />
 							
-						</p:panelGrid>
+							</div>
+							
+						</p:outputPanel>
 
-						<p:spacer height="10px" width="40px" />
-						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}">
-							
-							
-							<p:commandButton id="startButton"
-							icon="pi pi-play"
-    						value="Start"
-    						action="#{procedureController.doExecuteProcedure}"
-    						update=":menuForm :errorGrowl"
-    						widgetVar="startButton2"
-    						onclick="startButton2.disable();"
-    						disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
-							
-							
-							
-							<p:spacer width="30px" />
-							<p:commandButton value="Abort" icon="ui-icon-close" action="#{procedureController.doAbortProcedure}" disabled="#{not asyncController.executionStatus or asyncController.abortRequested}"  />
-							<br />
-							
-							<h:panelGroup id="cameraNotReady" layout="block" >
-							<h:panelGroup layout="block" styleClass="redText" rendered="#{procedureController.cameraNotReady}">
-								<h:outputText value="Camera not ready" styleClass="redText" />
-							</h:panelGroup>
-							</h:panelGroup>
-							
-							<br />
-							<p:progressBar widgetVar="pbAjax" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated"
-								displayOnly="true" />
-							<!-- 
-						<p:progressBar widgetVar="pbAjax" ajax="true" value="#{asyncController.percentComplete}" labelTemplate="{value}%" styleClass="animated">
-							<p:ajax event="complete" listener="#{asyncController.onComplete}" update=":procedureDetailForm" />
-						</p:progressBar>
-						 -->
-						 
+						<h:panelGroup rendered="#{procedureController.procedure.procedureState lt 3}"
+						    layout="block"
+						    style="margin-top: 10px; padding: 0 20px;">
+						
+						    <div style="display: flex; justify-content: center; align-items: center; gap: 30px; margin-bottom: 10px;">
+						        <p:commandButton id="startButton"
+						            icon="pi pi-play"
+						            value="Start"
+						            action="#{procedureController.doExecuteProcedure}"
+						            update=":menuForm :errorGrowl"
+						            widgetVar="startButton2"
+						            onclick="startButton2.disable();"
+						            disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
+						
+						        <p:commandButton value="Abort"
+						            icon="ui-icon-close"
+						            action="#{procedureController.doAbortProcedure}"
+						            disabled="#{not asyncController.executionStatus or asyncController.abortRequested}" />
+						    </div>
+						
+						    <h:panelGroup id="cameraNotReady" layout="block" style="text-align: center;">
+						        <h:panelGroup layout="block" styleClass="redText" rendered="#{procedureController.cameraNotReady}">
+						            <h:outputText value="Camera not ready" styleClass="redText" />
+						        </h:panelGroup>
+						    </h:panelGroup>
+						
+						    <div style="margin-top: 30px; width: 100%;">
+						        <p:progressBar widgetVar="pbAjax"
+						            value="#{asyncController.percentComplete}"
+						            labelTemplate="{value}%"
+						            styleClass="animated"
+						            displayOnly="true" />
+						    </div>
+						
 						</h:panelGroup>
-						<br/>
-						<p:spacer height="1px" width="320px" />
 
 					</p:tab>
+					
+					
+					
+					
 					<p:tab title="Procedure Event Log">				
 
 						<p:dataTable id="procedureEventLog" widgetVar="statusLogTable" styleClass="pcsTable ui-datatable-striped"
@@ -473,27 +487,36 @@
 
 					<p:tab title="Procedure Context">
 
-						<p:panelGrid id="contextPanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+		        		<div style="padding: 16px;">
+		        		
+			            	<div class="label-input-grid" 
+			                 	style="display: grid; grid-template-columns: max-content max-content;
+			                        align-items: baseline; 
+			                        row-gap: 24px; column-gap: 24px;">
 
-							<h:outputLabel value="Test #" />
-							<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
+								<h:outputLabel value="Test #" />
+								<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
+	
+								<h:outputLabel value="Comments" />
+								<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="32" />
+								
+								<h:outputLabel value="Operational Data" rendered="#{sessionController.engineeringView}" />
+								<p:selectBooleanCheckbox value="#{procedureController.procedure.operational}" rendered="#{sessionController.engineeringView}" />
 
-							<h:outputLabel value="Comments" />
-							<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="30" />
-							
-							<h:outputLabel value="Operational Data" rendered="#{sessionController.engineeringView}" />
-							<p:selectBooleanCheckbox value="#{procedureController.procedure.operational}" rendered="#{sessionController.engineeringView}" />
+							</div>
+				
+							<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
 
-
-							<f:facet name="footer">
-								<h:panelGroup layout="block" style="display:flex; justify-content:flex-end; gap:10px;">
-									<p:commandButton  value="Save" icon="pi pi-check" ajax="true" action="#{procedureController.doSaveContext}" process="contextPanel" update=":asyncErrorGrowl :asyncGrowl"/>
-									<p:commandButton  value="Reset" icon="pi pi-refresh"  update="contextPanel" process="@this" >
-										<p:resetInput target="contextPanel" />
+									<p:commandButton  value="Save" icon="pi pi-check" style="float:right" ajax="true" action="#{procedureController.doSaveContext}" process="miscPanel" update=":asyncErrorGrowl :asyncGrowl"/>
+									<p:commandButton  value="Reset" icon="pi pi-refresh" style="float:right" update="miscPanel" process="@this" >
+										<p:resetInput target="miscPanel" />
 									</p:commandButton>
-								</h:panelGroup>
-							</f:facet>
-						</p:panelGrid>
+							</div>
+								
+						</div>
+		
+						
+						
 					</p:tab>
 					
 					<p:tab title="Phasing Camera State" rendered="#{not procedureController.procedure.archivedProcedure}" >

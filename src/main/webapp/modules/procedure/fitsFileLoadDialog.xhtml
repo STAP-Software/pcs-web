@@ -43,14 +43,14 @@
             <div class="dialogButtons">
                 <p:commandButton id="saveButton"
                                  value="Load"
-                                 icon="ui-icon-check"
+                                 icon="pi pi-upload"
                                  action="#{procedureController.doLoadFitsFile}"
                                  update=":growl :errorGrowl :advancedForm :procedureDetailForm:framePanel :procedureDetailForm:controlPanel"
                                  oncomplete="PF('fitsFileLoadDialog').hide();" />
 
                 <p:commandButton id="closeButton"
                                  value="Close"
-                                 icon="ui-icon-cancel"
+                                 icon="pi pi-times"
                                  action="#{procedureController.doCancelSaveAdvancedOptions}"
                                  oncomplete="PF('fitsFileLoadDialog').hide();" />
             </div>
