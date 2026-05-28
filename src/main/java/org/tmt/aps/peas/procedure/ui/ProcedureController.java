@@ -769,6 +769,7 @@ public class ProcedureController implements Serializable {
 	 */
 	public boolean isCameraNotReady() {
 		
+		
 		// frame from file, always ready
 		if (procedure.getProcedureConfigSet().getProcedureConfig().isFrameFromFile()) {
 			return false;

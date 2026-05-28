@@ -373,35 +373,29 @@
 				</p:accordionPanel>
 
 				<h:panelGroup id="framePanel">
-					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
+				
+					<h:panelGroup layout="block" style="text-align: center; width: 100%; display: flex; align-items: center; justify-content: center; height: 600px"
 						rendered="#{procedureController.procedure.procedureState eq 1}">
+					
+						<p:outputPanel layout="block" style="padding:12px;margin:12px; display: inline-block; text-align: left; width: fit-content;" >
+								
+									<h:outputText value="Loaded Frames from File:" rendered="#{not empty procedureController.selectedFitsFiles}" />
+	
+									<h:outputText style="text-align:center" value="No CCD Images" rendered="#{empty procedureController.selectedFitsFiles}" />
+									<ul>
+										<ui:repeat value="#{procedureController.selectedFitsFiles}" var="fitsFile">
+											<li style="margin-bottom: 4px"><h:outputText value="#{fitsFile.fileName}" /></li>
+										</ui:repeat>
+									</ul>
+	
+						</p:outputPanel>
+					</h:panelGroup>
 
-						<p:panelGrid columns="1" style="padding:0;margin:0">
-
-							<p:spacer width="512" height="212" />
-							<br />
-
-							<p:panelGrid columns="1" style="padding:0; margin:auto; width: 200px; text-align:center">
-								<h:outputText value="Loaded Frames from File:" rendered="#{not empty procedureController.selectedFitsFiles}" />
-							</p:panelGrid>
-							
-							<p:panelGrid columns="1" style="padding:0; margin:auto; width: 400px; text-align:center">
-								<h:outputText style="text-align:center" value="No CCD Images" rendered="#{empty procedureController.selectedFitsFiles}" />
-								<ul>
-									<ui:repeat value="#{procedureController.selectedFitsFiles}" var="fitsFile">
-										<li><h:outputText value="#{fitsFile.fileName}" /></li>
-									</ui:repeat>
-								</ul>
-							</p:panelGrid>
-							
-						</p:panelGrid>
-
-					</p:panelGrid>
-
-					<p:panelGrid columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate"
+					<p:outputPanel layout="block" style="padding:0;margin:0" styleClass="btmsForm noupdate"
 						rendered="#{procedureController.procedure.procedureState ge 2}">
-						<f:facet name="header">
-							
+						
+						<h:panelGroup layout="block" style="display: flex; flex-direction: row; gap: 8px; margin-bottom: 12px">
+					
 							<h:panelGroup rendered="#{procedureController.procedure.procedureState ge 3}" >
 							<h:outputText value="Frame # " style="float:left;position:relative;top:7px;margin-right:10px" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}"/>
 							<p:selectOneButton value="#{procedureController.selectedFrameNumber}" style="float:left">
@@ -410,15 +404,17 @@
            						<p:ajax listener="#{procedureController.frameSelectListener}" update="framePanel miscPanel" oncomplete="markFrame();" />
        						</p:selectOneButton>
        						</h:panelGroup>
+						</h:panelGroup>
+						
+						
+						<h:panelGroup layout="block" style="padding-bottom:4px;margin-bottom:4px;border-bottom:1px solid #ccc">
 							
-						</f:facet>
-						
-						
-						<p:panelGrid columns="1" style="padding:0;margin:0;border:1px">
-							<f:facet name="header">
-								<h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
-								<p:menubar id="frameMenu">
-	
+						    <h:panelGroup layout="block" style="text-align:center; font-size:1.1em; font-weight:bold; padding-bottom:4px; margin-bottom:4px;">
+						        <h:outputText value="#{procedureController.selectedFrame.ccdFrame.fitsFilename}" />
+						    </h:panelGroup>
+							
+							<p:menubar id="frameMenu">
+
 								<p:submenu label="File" icon="ui-icon-disk"> 
 									<!-- TODO update loadPanel -->
 									<p:menuitem value="Save Current Displayed Image As ..." disabled="#{sessionController.procedureExecuting}" update=":growl :errorGrowl" onclick="saveCanvasPng();" />
@@ -429,55 +425,55 @@
 									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" icon="ui-icon-check" rendered="#{not procedureController.markedDisplayMode}"  />				  
 									<p:menuitem value="Do Not Show Marking" update="frameMenu :frameHiddenForm" action="#{procedureController.doSetMarkedDisplayMode(false)}" rendered="#{procedureController.markedDisplayMode}"   />				  
 								</p:submenu>				
-			
+		
 							</p:menubar>
 								
-							</f:facet>
+							
 						
 							<p:graphicImage id="frameImage"  value="#{procedureController.graphicImage}" height="512px" width="512px" style="position: absolute;left:-10000px" cache="false" />
 					
 						
 							<canvas id="frameCanvas" width="512px" height="512px" style="border:1px solid #d3d3d3;cursor:crosshair" > Your browser does not support the HTML5 canvas tag.</canvas>
 							
+						</h:panelGroup>
+						
+						
+						
+						<h:panelGroup layout="block" style="display: flex; flex-direction: column; gap: 8px; margin-bottom: 12px">
 
-							<p:panelGrid styleClass="pcsNoPad" columnClasses="peasFormLabelColumn, peasFormOutputColumn">
+							<canvas id="infoCanvas" width="auto" height="15px"></canvas>
 
-							<p:row>
-								<p:column styleClass="peasFormLabelColumn" style="width:25%">
-									<canvas id="infoCanvas" width="180px" height="15px" ></canvas>
-								</p:column>
-								<p:column styleClass="peasFormLabelColumn" style="width:55%">
-									<h:outputLabel value="Median Peak Intensity (counts, e-):  " />
-								</p:column>
-								<p:column styleClass="peasFormOutputColumn" style="width:20%">
-									<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
-										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
-									</h:outputText>
-									<h:outputText value=", " rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" />
-									<h:outputText value="#{procedureController.selectedFrame.medianPeakIntensityAdu}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
-										<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
-									</h:outputText>
-									
-								</p:column>
-							</p:row>
-							</p:panelGrid>
 							
-							<p:spacer height="1px"/>
-
-							<f:facet name="footer">
-								<a id="saveAsPngId" href="#" download="frame.png" />
-								<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
-									action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-								<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
-									action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-								<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
-									action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-								<p:commandButton style="float:left" value="Abort Procedure" icon="ui-icon-cancel" ajax="true"
-									action="#{procedureController.doAbortFromHandMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
-							</f:facet>
+							<h:panelGroup style="display: flex; flex-direction: row; gap: 8px; margin-bottom: 12px">
+								<h:outputLabel value="Median Peak Intensity (counts, e-):  " rendered="#{not empty procedureController.procedure.procedureCcdFrameList}"/>
 							
-						</p:panelGrid>
-					</p:panelGrid>
+								<h:outputText value="#{procedureController.selectedFrame.centroidMap.medianPeakIntensity}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+									<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
+								</h:outputText>
+								<h:outputText value=", " rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" />
+								<h:outputText value="#{procedureController.selectedFrame.medianPeakIntensityAdu}" rendered="#{not empty procedureController.procedure.procedureCcdFrameList}" >
+									<f:convertNumber type="number"  minFractionDigits="1" pattern="#0.0"/>
+								</h:outputText>
+							</h:panelGroup>
+
+						</h:panelGroup>
+							
+							
+
+						<h:panelGroup layout="block" style="display: flex; flex-direction: row; gap: 8px; margin-bottom: 0px">
+							
+							<a id="saveAsPngId" href="#" download="frame.png" />
+							<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
+								action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+							<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+								action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+							<p:commandButton style="float:right" value="Apply Marking" icon="ui-icon-check" ajax="true"
+								action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+							<p:commandButton style="float:left" value="Abort Procedure" icon="ui-icon-cancel" ajax="true"
+								action="#{procedureController.doAbortFromHandMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+							
+						</h:panelGroup>
+					</p:outputPanel>
 
 
 				</h:panelGroup>
