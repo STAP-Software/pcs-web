@@ -359,6 +359,8 @@ public class SessionController implements Serializable {
 	 */
 	public String doViewCurrentSession() {
 		
+		logger.info("doViewCurrentSession");
+		
 		try {
 			session = sessionMgmt.findSession(currentSession.getSessionId(), includeTestData);
 		} catch (Exception e) {

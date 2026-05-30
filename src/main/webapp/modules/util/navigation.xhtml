@@ -13,7 +13,7 @@
 						<p:menuitem value="Disconnect" ajax="true" action="#{sessionController.extInfChangeListener}" update="@form" rendered="#{!sessionController.extInfSimulationMode and sessionController.ifCommandPermission}"/>
 					
 						<p:menuitem value="View Sessions" ajax="false" action="#{sessionController.doViewSessionList}" disabled="#{sessionController.navDisabled}"/>
-						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onstart="waitDialog.show();" oncomplete="waitDialog.hide();" disabled="#{sessionController.navDisabled}"/>
+						<p:menuitem value="View Current Session" ajax="true" update="@form" action="#{sessionController.doViewCurrentSession}" onclick="PF('waitDialog').show();" oncomplete="PF('waitDialog').hide();" disabled="#{sessionController.navDisabled}"/>
 					</p:submenu>
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.navDisabled}" 
 						icon="pi pi-refresh" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.navDisabled and sessionController.runProcedurePermission}" />

@@ -151,7 +151,7 @@ public class Procedure {
 	@JoinColumn(name = "instrumentId")
 	Instrument instrument;
 	
-	@ManyToOne (fetch = FetchType.LAZY)
+	@ManyToOne (fetch = FetchType.EAGER)
 	@JoinColumn(name = "procedureTypeId")
 	ProcedureType procedureType;
 

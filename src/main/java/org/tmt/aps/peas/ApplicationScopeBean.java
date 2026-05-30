@@ -175,8 +175,9 @@ public class ApplicationScopeBean implements Serializable {
 
 		if (path.contains("/modules/session/sessionList.")) {
 			sessionController.doViewSessionList();
-		} else if (path.contains("/modules/session/sessionDetail.") && fromBreadcrumb != null) {
-			sessionController.doViewSession();
+		//} else if (path.contains("/modules/session/sessionDetail.") && fromBreadcrumb != null) {
+		} else if (path.contains("/modules/session/sessionDetail.")) {
+			sessionController.doViewCurrentSession();
 		} else if (path.equals("/modules/sysadmin/sufsGroupList.xhtml")) {
 			sufsGroupController.doViewSufsGroupList();
 		} else if (path.equals("/modules/sysadmin/sufsGroupDetail.xhtml")) {
