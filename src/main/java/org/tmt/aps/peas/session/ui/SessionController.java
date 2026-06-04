@@ -91,6 +91,7 @@ public class SessionController implements Serializable {
 	@Inject
 	private ApplicationScopeBean applicationScopeBean;
 
+
 	Session currentSession;
 	//Session currentSessionPersisted; // the session that is completed and stored
 	Session session;
@@ -369,8 +370,8 @@ public class SessionController implements Serializable {
 
 		// order procedures by procedure number
 		Collections.sort(session.getProcedureList(), new ProcedureNumberComparator());
-
-		breadcrumbMenuBean.addFirstItem("Current Session", "/modules/session/sessionDetail.xhtml");
+		
+		breadcrumbMenuBean.addFirstItem("Session: " + session.getTelescope().getTelescopeName() + " - (" + session.getSessionDateFormatted() + ")", "/modules/session/sessionDetail.xhtml");
 		return "/modules/session/sessionDetail.xhtml?faces-redirect=true";
 
 	}
@@ -381,6 +382,8 @@ public class SessionController implements Serializable {
 	 */
 	public String doViewSession() {
 
+		logger.info("doViewSession:: id = " + session.getSessionId());
+		
 		try {
 			session = sessionMgmt.findSession(session.getSessionId(), includeTestData);
 	

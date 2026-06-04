@@ -1001,7 +1001,8 @@ public class ProcedureController implements Serializable {
 		}
 			
 			
-			
+		// V3.0 clear any frames setup for display
+		selectedFrame = null;
 		
 		// reset marking mode in case of hiccup in previous procedure
 		frameMarkingMode = false;

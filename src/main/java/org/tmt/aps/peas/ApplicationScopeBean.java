@@ -163,8 +163,9 @@ public class ApplicationScopeBean implements Serializable {
 		String test = request.getParameter("test");
 		String fromBreadcrumb = request.getParameter("from-breadcrumb");
 		
-		logger.debug("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
-		logger.debug("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
+		logger.info("URL = >>>>>>>>>>>>>>>>>>>>>  " + path);
+		logger.info("immediateURL = >>>>>>>>>>>>>>>>>>>>>  " + breadcrumbMenuBean.getImmediateUrl());
+		logger.info("fromBreadcrumb = >>>>>>>>>>>>>>>>>>>>>  " + fromBreadcrumb);
 
 		if (path.equals(breadcrumbMenuBean.getImmediateUrl()) && path.equals("/modules/session/sessionList.xhtml")) {
 			// the same URL as the last action performed, we assume this is a result of a JSF action
@@ -175,8 +176,7 @@ public class ApplicationScopeBean implements Serializable {
 
 		if (path.contains("/modules/session/sessionList.")) {
 			sessionController.doViewSessionList();
-		//} else if (path.contains("/modules/session/sessionDetail.") && fromBreadcrumb != null) {
-		} else if (path.contains("/modules/session/sessionDetail.")) {
+		} else if (path.contains("/modules/session/sessionDetail.") && fromBreadcrumb != null) {
 			sessionController.doViewCurrentSession();
 		} else if (path.equals("/modules/sysadmin/sufsGroupList.xhtml")) {
 			sufsGroupController.doViewSufsGroupList();

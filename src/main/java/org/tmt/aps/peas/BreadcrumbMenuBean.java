@@ -5,16 +5,24 @@ import java.util.*;
 
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.context.FacesContext;
+import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
 import org.primefaces.model.menu.*;
+import org.tmt.aps.peas.session.model.Session;
+import org.tmt.aps.peas.session.ui.SessionController;
 
 @Named("breadcrumbMenuBean")
 @SessionScoped
 public class BreadcrumbMenuBean implements Serializable {
 
     private static final long serialVersionUID = 1L;
+    
+    
+    @Inject
+    private SessionController sessionController;
+    
 
     private final Logger logger = Logger.getLogger(this.getClass());
 
@@ -75,11 +83,22 @@ public class BreadcrumbMenuBean implements Serializable {
         int index = Integer.parseInt(params.get("crumbIndex"));
         String target = params.get("target");
 
+        // Access the crumb being navigated to
+        Crumb targetCrumb = crumbs.get(index);
+        
         while (crumbs.size() > index + 1) {
             crumbs.remove(crumbs.size() - 1);
         }
 
         immediateUrl = target;
+        
+        
+		Session session = sessionController.getCurrentSession();
+
+        // V3.0 re-populate model for current session based on destination
+        if (target.contains("sessionDetail") && targetCrumb.label.contains(session.getSessionDateFormatted())) {
+            sessionController.doViewCurrentSession();
+        }
 
         return target;
     }
