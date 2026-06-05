@@ -420,16 +420,13 @@ public class ProcedureExecutionMgmt {
 			// associate ref beam maps
 			
 			// V3.0 - associate ref beam map directly with procedure
-		
-			/** 
-			 * Test ONLY
-			 
+					 
 			RefBeamMap refBeamMap = procedureExecutionState.getCurrentRefMap();
 				
 			centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
 			
 			logger.debug("performProcedureCompletion::ref maps associated");
-			 */
+
 			
 
 			

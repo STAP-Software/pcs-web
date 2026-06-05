@@ -196,6 +196,8 @@ public class PassiveTiltExecutor {
 					// execute the subprocedure
 					createRefMapExecutor.executeSynchronousProcedure(subProcedure, currentSession);
 
+					logger.info(">>>>>>>>>>>>>>>>>>>>>>>> before centroidMapMgmt call currentRefMap = " + currentRefMap );
+					
 					currentRefMap = centroidMapMgmt.getCurrentRefBeamMap(physicalModel.getInstrument().getInstrumentId(), procedureConfig
 							.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getFilter().getFilterType()
 							.getFilterTypeId(), -1);
@@ -203,6 +205,9 @@ public class PassiveTiltExecutor {
 
 				}
 			}
+
+			// V3.0 test only
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>> currentRefMap = " + currentRefMap);
 
 			procedureExecutionState.setCurrentRefMap(currentRefMap);
 
