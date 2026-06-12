@@ -230,25 +230,20 @@ public class AsyncController implements Serializable {
 			if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
 				PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
 			}
+			
+			
 			if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
-				PrimeFaces.current().executeScript("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("actDeltasDialog", "actDeltasForm");
+				PrimeFaces.current().executeScript("runDrawActDeltas(); PF('actuatorDeltasDisplayDialog').show()");
 			}
 			
-			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> visualizationDisplay.getVisualizationDisplayId(): " + visualizationDisplay.getVisualizationDisplayId());
 			
 			if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
 				
+				PrimeFaces.current().ajax().update("edgeHeightsDialog", "edgeHeightsForm");
+				PrimeFaces.current().executeScript("runDrawEdgeHeights(); PF('edgeHeightsDisplayDialog').show()");
 
-				
-PrimeFaces.current().executeScript(
-		 "console.log('executeScript reached'); " +
-		"try { runDrawEdgeHeights(); PF('edgeHeightsDisplayDialog').show(); } " +
-	    "catch(e) { alert('Error: ' + e.message); }"
-	);
-				//PrimeFaces.current().executeScript("runDrawEdgeHeights(); PF('edgeHeightsDisplayDialog').show()");
-				
-				logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> performed show ");
-				
 			}
 			
 			if (visualizationDisplay.isDisplayTypeSingleFilterEdgeHeights()) {

@@ -19,7 +19,7 @@ function runDrawEdgeHeights() {
 	var ctx = c.getContext("2d");
 
 	ctx.translate(-25,-10);
-	ctx.scale(0.61, 0.61);
+	//ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawEdgeHeights(true,true,true)", 10);
 	
@@ -34,23 +34,23 @@ function runDrawEdgeHeights() {
 
 function edgeHeightsResizeHandler() {
 	
-	var baseScale = 0.61;
-	var baseCanvasSize = 600.0;
+	//var baseScale = 0.61;
+	//var baseCanvasSize = 600.0;
 	
 	var d = document.getElementById("edgeHeightsDialog"); 
 	var availableWidth = d.offsetWidth - 300 - 100;
 	var availableHeight = d.offsetHeight - 70;
 	var available = Math.min(availableWidth, availableHeight);
 	
-	var scale = baseScale * available / baseCanvasSize;
+	//var scale = baseScale * available / baseCanvasSize;
 	
 	var c = document.getElementById("edgeHeightsCanvas");
-	c.width=available;
-	c.height=available;
+	c.width=available + "px";
+	c.height=available + "px";
 	
 	var ctx = c.getContext("2d");
 
-	ctx.scale(scale, scale);
+	//ctx.scale(scale, scale);
 
 	//alert("resizing")
 	drawEdgeHeights(edgeHeightsScope.drawSegments, edgeHeightsScope.drawSegNums, edgeHeightsScope.drawEdgeNums);
@@ -336,10 +336,10 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
      		
     		
-    		<canvas id="edgeHeightsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
+    		<canvas id="edgeHeightsCanvas" width="1000" height="1000" style="width:875px; height:875px; flex-shrink:0; border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
     		
     		
-    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
+    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="flex:0 0 auto; border:0px; max-width:330px;" >
 			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
 				<c:set var="procedureOutput" value="#{visualizationController.edgeHeightsDisplayValues}" />
@@ -417,9 +417,9 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
     		<h:panelGroup styleClass="dialogCommandGroup">
     		
 			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="edgeHeightsDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('edgeHeightsDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="edgeHeightsDisplayDialog.hide()" />
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="PF('edgeHeightsDisplayDialog').hide()" />
 			</h:panelGroup>
 
      		</h:form>

@@ -29,7 +29,7 @@ function runDrawActDeltas() {
 	
 	window.setTimeout("drawActDeltas(true,true,true,true,false)", 10);
 	
-	$(actuatorDeltasDisplayDialog.jqId).bind('resize', function(){
+	$(PF('actuatorDeltasDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
 			window.setTimeout("actuatorDeltasResizeHandler()", 1000);
@@ -488,9 +488,9 @@ function drawHex2(ctx, x, y, sideLen, number, drawSegment, drawSegNum, act1Posit
     		<br/>
     		<h:panelGroup styleClass="dialogCommandGroup">
 			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="actuatorDeltasDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}"/>
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('actuatorDeltasDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}"/>
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="actuatorDeltasDisplayDialog.hide()" />
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="PF('actuatorDeltasDisplayDialog').hide()" />
 			</h:panelGroup>
 					
     		</h:form>
