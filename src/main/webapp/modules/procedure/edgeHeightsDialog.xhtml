@@ -23,7 +23,7 @@ function runDrawEdgeHeights() {
 
 	window.setTimeout("drawEdgeHeights(true,true,true)", 10);
 	
-	$(edgeHeightsDisplayDialog.jqId).bind('resize', function(){
+	$(PF('edgeHeightsDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
 			window.setTimeout("edgeHeightsResizeHandler()", 1000);

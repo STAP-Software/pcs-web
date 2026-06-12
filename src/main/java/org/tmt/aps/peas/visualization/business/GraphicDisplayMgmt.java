@@ -703,8 +703,12 @@ public class GraphicDisplayMgmt implements Serializable {
 		logger.info(MessageGenerator.generateMessage("waitForUser.start", "displayEdgeHeights"));
 
 		setAndEncodeEdgeHeightsDisplayValues(edgeHeightsDisplayValues);
+		
+		logger.info("about to set pendingDisplay");
 				
 		pendingDisplay = new VisualizationDisplay(VisualizationDisplay.DISPLAY_TYPE_EDGE_HEIGHTS);
+		
+		logger.info("pending display set: " + pendingDisplay);
 		
 		waitForReturnState();
 		

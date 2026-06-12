@@ -185,6 +185,8 @@ public class AsyncController implements Serializable {
 		VisualizationDisplay visualizationDisplay = graphicDisplayMgmt.getPendingDisplay();
 
 		
+		logger.info(">>>>>>>>>>>>> visualizationDisplay = " + visualizationDisplay);
+		
 		if (visualizationDisplay != null) {
 			logger.debug(">>>>>>>>>>>>>>>>>>>>>>>>> About to update Forms...");
 			
@@ -231,9 +233,24 @@ public class AsyncController implements Serializable {
 			if (visualizationDisplay.isDisplayTypeActuatorDeltas()) {
 				PrimeFaces.current().executeScript("runDrawActDeltas(); actuatorDeltasDisplayDialog.show()");
 			}
+			
+			logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> visualizationDisplay.getVisualizationDisplayId(): " + visualizationDisplay.getVisualizationDisplayId());
+			
 			if (visualizationDisplay.isDisplayTypeEdgeHeights()) {
-				PrimeFaces.current().executeScript("runDrawEdgeHeights(); edgeHeightsDisplayDialog.show()");
+				
+
+				
+PrimeFaces.current().executeScript(
+		 "console.log('executeScript reached'); " +
+		"try { runDrawEdgeHeights(); PF('edgeHeightsDisplayDialog').show(); } " +
+	    "catch(e) { alert('Error: ' + e.message); }"
+	);
+				//PrimeFaces.current().executeScript("runDrawEdgeHeights(); PF('edgeHeightsDisplayDialog').show()");
+				
+				logger.info(">>>>>>>>>>>>>>>>>>>>>>>>> performed show ");
+				
 			}
+			
 			if (visualizationDisplay.isDisplayTypeSingleFilterEdgeHeights()) {
 				PrimeFaces.current().executeScript("runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()");
 			}
