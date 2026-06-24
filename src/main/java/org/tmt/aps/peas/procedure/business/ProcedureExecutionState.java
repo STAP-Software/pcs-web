@@ -47,6 +47,7 @@ public class ProcedureExecutionState {
 	private Procedure currentProcedure;
 	private Throwable procedureException;
 	private ProcedureOutputable currentOutputTarget;
+	private int procedureCcdFrameCount;
 
 	public void init(Procedure procedure) {
 		currentProcedure = procedure;
@@ -59,6 +60,7 @@ public class ProcedureExecutionState {
 		// V3.0 reset frame and ccdFrame as they are managed here now
 		currentFrame = null;
 		currentProcedureCcdFrame = null;
+		procedureCcdFrameCount = 0;
 		currentRefMap = null;
 		currentProcedureOutput = null;
 	}
@@ -94,6 +96,11 @@ public class ProcedureExecutionState {
 
 	public void setCurrentProcedureCcdFrame(ProcedureCcdFrame currentProcedureCcdFrame) {
 		this.currentProcedureCcdFrame = currentProcedureCcdFrame;
+		procedureCcdFrameCount++;
+	}
+	
+	public int getProcedureCcdFrameCount() {
+		return procedureCcdFrameCount;
 	}
 
 	public RefBeamMap getCurrentRefMap() {

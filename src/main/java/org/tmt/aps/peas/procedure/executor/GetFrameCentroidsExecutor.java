@@ -139,7 +139,9 @@ public class GetFrameCentroidsExecutor {
 		findCentroidsResult = null;
 
 		// initialize frame number
-		frameNumber = procedure.getProcedureCcdFrameCount();
+		// V3.0 ProcedureCcdFrameCount should be handled in ProcedureExecutionState
+		//frameNumber = procedure.getProcedureCcdFrameCount();
+		frameNumber = procedureExecutionState.getProcedureCcdFrameCount();
 
 
 		takeFrameAndFindCentroids();
