@@ -26,28 +26,38 @@ function runDrawEdgeResiduals() {
 	$(PF('edgeResidualsDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
-			window.setTimeout("edgeResidualsResizeHandler()", 1000);
+			window.setTimeout("edgeResidualsResizeHandler()", 100);
 		}
 	})
 	
 }
 
 function edgeResidualsResizeHandler() {
-	
-	var d = document.getElementById("edgeResidualsDialog"); 
-	var availableWidth = d.offsetWidth - 300 - 100;
-	var availableHeight = d.offsetHeight - 70;
-	var available = Math.min(availableWidth, availableHeight);
-	
-	var c = document.getElementById("edgeResidualsCanvas");
-	c.width = available;
-	c.height = available;
-	
-	var ctx = c.getContext("2d");
 
-	drawEdgeResiduals(edgeResidualsScope.drawSegments, edgeResidualsScope.drawSegNums, edgeResidualsScope.drawEdgeNums);
-	
-	resizing = false;
+    var c = document.getElementById("edgeResidualsCanvas");
+    var rightPanel = document.getElementById("edgeResidualsForm:edgeResidualsRightPanel");
+    var dlgWrapper = document.getElementById("edgeResidualsDialog").closest('.ui-dialog');
+
+    c.style.width = "0px";
+    c.style.height = "0px";
+
+    var availableWidth = dlgWrapper.offsetWidth - rightPanel.offsetWidth - 30 - 48;
+    var availableHeight = dlgWrapper.offsetHeight - 128;
+    var available = Math.max(750, Math.min(availableWidth, availableHeight));
+
+    c.width = available;
+    c.height = available;
+    c.style.width = available + "px";
+    c.style.height = available + "px";
+
+    var ctx = c.getContext("2d");
+    var scale = available / 1000.0;
+    ctx.scale(scale, scale);
+    ctx.translate(-25, -10);
+
+    drawEdgeResiduals(edgeResidualsScope.drawSegments, edgeResidualsScope.drawSegNums, edgeResidualsScope.drawEdgeNums);
+
+    resizing = false;
 
 }
 
@@ -223,6 +233,9 @@ function drawEdgeResiduals(drawSegments,drawSegNums,drawEdgeNums) {
 	var cl = document.getElementById("edgeResidualsLegendCanvas");
 	var ctxl = cl.getContext("2d");
 
+	ctxl.setTransform(1,0,0,1,0,0);
+	ctxl.clearRect(0,0,cl.width,cl.height);
+	
 	// draw a circle with white interior
 	// draw a circle with white interior
 	ctxl.beginPath();
@@ -302,7 +315,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
 
 			<!-- outer flex row: canvas on the left, controls on the right -->
-			<h:panelGroup layout="block" style="display:flex; flex-direction:row; gap:30px; align-items:flex-start; width:100%;">
+			<h:panelGroup layout="block" style="display:flex; flex-direction:row; gap:30px; align-items:flex-start; width:100%; justify-content:space-between;">
 
 				<canvas id="edgeResidualsCanvas" width="1000" height="1000"
 				        style="width:750px; height:750px; flex-shrink:0;">
@@ -310,7 +323,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				</canvas>
 
 				<!-- right panel: vertical flex column -->
-				<h:panelGroup layout="block" style="flex:0 0 auto; display:flex; flex-direction:column; gap:10px;">
+				<h:panelGroup id="edgeResidualsRightPanel" layout="block" style="flex:0 0 auto; display:flex; flex-direction:column; gap:10px;">
 
 					<!-- label/value pairs and toggles in a 2-column grid -->
 					<p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder ui-panelgrid-blank" columnClasses="btmsFormLabelColumn, btmsFormInputColumn" style="white-space:nowrap;">

@@ -26,28 +26,42 @@ function runDrawEdgeHeights() {
 	$(PF('edgeHeightsDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
-			window.setTimeout("edgeHeightsResizeHandler()", 1000);
+			window.setTimeout("edgeHeightsResizeHandler()", 100);
 		}
 	})
 	
 }
 
 function edgeHeightsResizeHandler() {
-	
-	var d = document.getElementById("edgeHeightsDialog"); 
-	var availableWidth = d.offsetWidth - 300 - 100;
-	var availableHeight = d.offsetHeight - 70;
-	var available = Math.min(availableWidth, availableHeight);
-	
-	var c = document.getElementById("edgeHeightsCanvas");
-	c.width = available;
-	c.height = available;
-	
-	var ctx = c.getContext("2d");
 
-	drawEdgeHeights(edgeHeightsScope.drawSegments, edgeHeightsScope.drawSegNums, edgeHeightsScope.drawEdgeNums);
-	
-	resizing = false;
+    var c = document.getElementById("edgeHeightsCanvas");
+    var rightPanel = document.getElementById("edgeHeightsForm:edgeHeightsRightPanel");
+    var dlgWrapper = document.getElementById("edgeHeightsDialog").closest('.ui-dialog');
+
+    c.style.width = "0px";
+    c.style.height = "0px";
+
+    var availableWidth = dlgWrapper.offsetWidth - rightPanel.offsetWidth - 30 - 48;
+    var availableHeight = dlgWrapper.offsetHeight - 128;
+    var available = Math.max(750, Math.min(availableWidth, availableHeight));
+
+    console.log("dlgWrapper=" + dlgWrapper.offsetWidth + " rightPanel=" + rightPanel.offsetWidth + " availableWidth=" + availableWidth + " availableHeight=" + availableHeight);
+    
+    c.width = available;
+    c.height = available;
+    c.style.width = available + "px";
+    c.style.height = available + "px";
+
+    var ctx = c.getContext("2d");
+    var scale = available / 1000.0;
+    ctx.scale(scale, scale);
+    ctx.translate(-25, -10);
+
+    drawEdgeHeights(edgeHeightsScope.drawSegments, edgeHeightsScope.drawSegNums, edgeHeightsScope.drawEdgeNums);
+
+
+    
+    resizing = false;
 
 }
 
@@ -222,7 +236,9 @@ function drawEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 	
 	var cl = document.getElementById("edgeHeightsLegendCanvas");
 	var ctxl = cl.getContext("2d");
-
+	ctxl.setTransform(1,0,0,1,0,0);
+	ctxl.clearRect(0,0,cl.width,cl.height);
+	
 	// draw a circle with white interior
 	// draw a circle with white interior
 	ctxl.beginPath();
@@ -302,7 +318,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
 
 			<!-- outer flex row: canvas on the left, controls on the right -->
-			<h:panelGroup layout="block" style="display:flex; flex-direction:row; gap:30px; align-items:flex-start; width:100%;">
+			<h:panelGroup layout="block" style="display:flex; flex-direction:row; gap:30px; align-items:flex-start; width:100%; justify-content:space-between;">
 
 				<canvas id="edgeHeightsCanvas" width="1000" height="1000"
 				        style="width:750px; height:750px; flex-shrink:0;">
@@ -310,7 +326,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 				</canvas>
 
 				<!-- right panel: vertical flex column -->
-				<h:panelGroup layout="block" style="flex:0 0 auto; display:flex; flex-direction:column; gap:10px;">
+				<h:panelGroup id="edgeHeightsRightPanel" layout="block" style="flex:0 0 auto; display:flex; flex-direction:column; gap:10px;">
 
 					<!-- label/value pairs and toggles in a 2-column grid -->
 					<p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder ui-panelgrid-blank" columnClasses="btmsFormLabelColumn, btmsFormInputColumn" style="white-space:nowrap;">
@@ -361,7 +377,7 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 					</p:panelGrid>
 
 					<!-- slider below the grid -->
-					<h:panelGroup layout="block" style="width:100%; padding-top:10px;">
+					<h:panelGroup layout="block"  style="width:300px; padding-top:10px;">
 						<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
 						<br/>
 						<p:spacer height="10"/>
