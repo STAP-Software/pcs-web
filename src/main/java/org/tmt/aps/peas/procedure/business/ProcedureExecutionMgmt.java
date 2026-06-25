@@ -433,6 +433,8 @@ public class ProcedureExecutionMgmt {
 			// persist the procedure output
 			// V3.0 procedure output stored in the procedure execution state, not the procedure model
 						
+			logger.info("@@@@@@@@@@@@@@@@@@@@ procedure output is: " + procedureExecutionState.getCurrentProcedureOutput());			
+			
 			if (procedureExecutionState.getCurrentProcedureOutput() != null) {
 				ProcedureOutput procedureOutput = procedureExecutionState.getCurrentProcedureOutput();
 				procedureOutputMgmt.createProcedureOutput(procedureOutput, procedure.getProcedureId());

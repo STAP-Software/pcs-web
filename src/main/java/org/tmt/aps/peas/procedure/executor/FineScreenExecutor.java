@@ -146,6 +146,8 @@ public class FineScreenExecutor {
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
 			FineScreenProcedureOutput procedureOutput = (FineScreenProcedureOutput) procedure.getProcedureOutput();
+			// V3.0 - save it in procedureExecutionState to avoid transient Procedure fields not persisting outside transactions
+			procedureExecutionState.setCurrentProcedureOutput(procedureOutput);
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 

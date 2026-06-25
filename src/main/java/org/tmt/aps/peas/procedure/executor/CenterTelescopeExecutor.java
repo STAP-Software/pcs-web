@@ -120,6 +120,9 @@ public class CenterTelescopeExecutor {
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			
 			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();
+			// V3.0 - save it in procedureExecutionState to avoid transient Procedure fields not persisting outside transactions
+			procedureExecutionState.setCurrentProcedureOutput(procedureOutput);
+
 			
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
 			

@@ -149,6 +149,8 @@ public class ProcedureOutputMgmt {
 	public ProcedureOutput findProcedureOutput(Procedure procedure) throws Exception {
 
 		// fill out a list of ProcedureOutputValues
+		
+		logger.info("******************************** findProcedureOutput");
 
 		TypedQuery<ProcedureOutputValue> query = em.createNamedQuery("findOutputDisplayValuesForProcedure", ProcedureOutputValue.class);
 		query.setParameter("procedureId", procedure.getProcedureId());
@@ -189,6 +191,9 @@ public class ProcedureOutputMgmt {
 			Object calcResult = calcResultGetMethod.invoke(poClassInstance, new Object[0]);
 			
 			if (calcResult == null) {
+				
+				logger.info("******************************** findProcedureOutput: " + calcResultGetMethod.getName() + " returned null");
+				
 				// create a new one and apply setter in procedureOutput 
 				String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
 				calcResult = Class.forName(fullClassName).getDeclaredConstructor().newInstance();

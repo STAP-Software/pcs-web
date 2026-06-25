@@ -150,6 +150,8 @@ public class SufsExecutor {
 			CentroidOffsetsConfig centroidOffsetsConfig = procedure.getProcedureConfigSet().getCentroidOffsetsConfig();
 
 			SufsProcedureOutput procedureOutput = (SufsProcedureOutput) procedure.getProcedureOutput();
+			// V3.0 - save it in procedureExecutionState to avoid transient Procedure fields not persisting outside transactions
+			procedureExecutionState.setCurrentProcedureOutput(procedureOutput);
 
 			statusLogger.log("procedure.start", procedure.getProcedureType().getProcedureTypeName());
 
