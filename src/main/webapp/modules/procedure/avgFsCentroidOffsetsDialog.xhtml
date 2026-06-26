@@ -22,7 +22,7 @@ function runDrawAvgFsOffsets() {
 	window.setTimeout("drawAvgFsCentroidOffsets(true,true)", 10);
 	
 
-	$(avgFsCentroidOffsetDisplayDialog.jqId).bind('resize', function(){
+	$(PF('avgFsCentroidOffsetDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
 			window.setTimeout("avgFsCentroidOffsetsResizeHandler()", 1000);
@@ -346,9 +346,9 @@ function drawHex(ctx, x, y, newSideLen, number, drawSegment, drawSegNum) {
     		<br/>
     		<h:panelGroup styleClass="dialogCommandGroup">
 			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="avgFsCentroidOffsetDisplayDialog.hide()" rendered="#{sessionController.procedureExecuting}" />
+					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('avgFsCentroidOffsetDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}" />
 			<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="avgFsCentroidOffsetDisplayDialog.hide()" />
+					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="PF('avgFsCentroidOffsetDisplayDialog').hide()" />
 			</h:panelGroup>
     		</h:form>
 		</p:dialog> 

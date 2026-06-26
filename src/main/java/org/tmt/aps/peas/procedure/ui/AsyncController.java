@@ -225,10 +225,17 @@ public class AsyncController implements Serializable {
 
 			}
 			if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
-				PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); avgPtCentroidOffsetDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("avgPtCentroidOffsetsDialog", "avgPtOffsetsForm");
+				
+				PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); PF('avgPtCentroidOffsetDisplayDialog').show()");
 			}
+			
 			if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
-				PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); avgFsCentroidOffsetDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("avgFsCentroidOffsetsDialog", "avgFsOffsetsForm");
+				
+				PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); PF('avgFsCentroidOffsetDisplayDialog').show()");
 			}
 			
 			

@@ -195,6 +195,8 @@ public class ProcedureExecutionState {
 		
 		currentProcedure = procedureStack;
 		procedureStack = null;
+		// V3.0 - reset the frame count when starting the actual procedure
+		procedureCcdFrameCount = 0;
 		subProcedureEndRequested = true;
 		
 		logger.info("TRANSFER CONTROL FROM SUB_PRCEDURE:: currentProcedureOutput = " + currentProcedureOutput.getClass().getName());
