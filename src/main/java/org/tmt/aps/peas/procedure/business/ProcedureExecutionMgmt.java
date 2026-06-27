@@ -414,27 +414,26 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 			*/
-
-			logger.debug("performProcedureCompletion::all frames and centroid maps completed");
+			
 
 			// associate ref beam maps
 			
 			// V3.0 - associate ref beam map directly with procedure
 					 
-			RefBeamMap refBeamMap = procedureExecutionState.getCurrentRefMap();
+			if (procedureExecutionState.getCurrentRefMap() != null) {
 				
-			centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
+				RefBeamMap refBeamMap = procedureExecutionState.getCurrentRefMap();
+				
+				centroidMapMgmt.associateRefBeamMap(refBeamMap, procedure);
 			
-			logger.debug("performProcedureCompletion::ref maps associated");
-
+				logger.debug("performProcedureCompletion::ref maps associated");
+			}
 			
 
 			
 			// persist the procedure output
 			// V3.0 procedure output stored in the procedure execution state, not the procedure model
 						
-			logger.info("@@@@@@@@@@@@@@@@@@@@ procedure output is: " + procedureExecutionState.getCurrentProcedureOutput());			
-			
 			if (procedureExecutionState.getCurrentProcedureOutput() != null) {
 				ProcedureOutput procedureOutput = procedureExecutionState.getCurrentProcedureOutput();
 				procedureOutputMgmt.createProcedureOutput(procedureOutput, procedure.getProcedureId());

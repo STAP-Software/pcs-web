@@ -600,6 +600,13 @@ public class FrameMgmt {
 	
     // V3.0 - replaces getLatestProcedureCcdFrame
     public ProcedureCcdFrame findLatestProcedureCcdFrame(Procedure procedure) throws Exception {
+    	
+    	// V3.0 return the cached current procedureCcdFrame if running a procedure
+    	if (procedureExecutionState.getExecutionStatus()) {
+    		return procedureExecutionState.getCurrentProcedureCcdFrame();
+    	}
+    	
+    	// V3.0 otherwise read from database - TODO: I haven't found the use case for this code yet
     	ProcedureCcdFrame procedureCcdFrame = em.createQuery("""
                 SELECT f
 				FROM ProcedureCcdFrame f
@@ -636,6 +643,8 @@ public class FrameMgmt {
 			}
         }
     }
+    
+
 
     
 

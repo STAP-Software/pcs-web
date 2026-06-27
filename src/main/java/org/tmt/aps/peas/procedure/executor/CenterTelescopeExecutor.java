@@ -22,6 +22,7 @@ import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.model.CenterTelescopeCalcResult;
 import org.tmt.aps.peas.computation.model.FindCentResult;
+import org.tmt.aps.peas.computation.model.FindCentroidsResult;
 import org.tmt.aps.peas.computation.model.StartupComputationsResult;
 import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
@@ -41,6 +42,7 @@ import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
 import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.refBeamMap.model.RefBeamMap;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
@@ -210,7 +212,7 @@ public class CenterTelescopeExecutor {
 			FloatPoint desiredPixLocation = new FloatPoint(ccdFrame.getAxes1()/2.0f + refMapTranslation.x, ccdFrame.getAxes2()/2.0f + refMapTranslation.y);
 			CenterTelescopeCalcResult centerTelescopeCalcResult = computationLibrary.centerTelescopeCalc(centroid, desiredPixLocation, startupComputationsResult.getArcsecPerPixel());
 			
-			procedureExecutionState.setPercentComplete(90);
+			procedureExecutionState.setPercentComplete(90);			
 			
 			// display result and ask if we should move telescope
 			statusLogger.log("telescope.desired_move", centerTelescopeCalcResult.getDeltaAzEl());

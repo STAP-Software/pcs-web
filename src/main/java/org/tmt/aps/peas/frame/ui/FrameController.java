@@ -1,6 +1,6 @@
 /**
  * @author Scott Michaels
- * Copyright (C) 2013 Thirty Meter Telescope Corporation. 
+ * Copyright (C) 2013-2026 Thirty Meter Telescope Corporation. 
  * All Rights Reserved.
  */
 package org.tmt.aps.peas.frame.ui;
@@ -23,7 +23,6 @@ import jakarta.inject.Named;
 
 import org.apache.commons.beanutils.BeanComparator;
 import org.jboss.logging.Logger;
-import org.primefaces.PrimeFaces;
 import org.primefaces.event.NodeSelectEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.DefaultTreeNode;
@@ -43,7 +42,6 @@ import org.tmt.aps.peas.computation.model.Subimage;
 import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.model.FindCentConfig;
 import org.tmt.aps.peas.extInterface.business.CcdMgmt;
-import org.tmt.aps.peas.extInterface.ui.CameraManualController;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.model.FitsFilename;
@@ -67,13 +65,15 @@ import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 @SessionScoped
 public class FrameController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8240264741836197644L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
-	@Inject
-	private CameraManualController cameraManualController;
-
 	@EJB
 	FrameMgmt frameMgmt;
 	@EJB
@@ -91,10 +91,10 @@ public class FrameController implements Serializable {
 	@EJB
 	private ComputationLibraryImpl computationLibrary;
 
-	private TreeNode sessionRoot;
-	private TreeNode typeRoot;
+	private TreeNode<FrameTreeElement> sessionRoot;
+	private TreeNode<FrameTreeElement> typeRoot;
 
-	private TreeNode selectedNode;
+	private TreeNode<?> selectedNode;
 	private StreamedContent graphicImage;
 	private int searchRadius;
 	private String centroidXs;
@@ -109,19 +109,19 @@ public class FrameController implements Serializable {
 
 	Map<String, List<FitsFilename>> type2Fits;
 
-	public TreeNode getSessionRoot() {
+	public TreeNode<FrameTreeElement> getSessionRoot() {
 		return sessionRoot;
 	}
 
-	public TreeNode getTypeRoot() {
+	public TreeNode<FrameTreeElement> getTypeRoot() {
 		return typeRoot;
 	}
 
-	public TreeNode getSelectedNode() {
+	public TreeNode<?> getSelectedNode() {
 		return selectedNode;
 	}
 
-	public void setSelectedNode(TreeNode selectedNode) {
+	public void setSelectedNode(TreeNode<?> selectedNode) {
 		this.selectedNode = selectedNode;
 	}
 
@@ -242,8 +242,8 @@ public class FrameController implements Serializable {
 		long start = System.currentTimeMillis();
 
 		// dummy for session root
-		sessionRoot = new DefaultTreeNode(new FrameTreeElement("Sessions", "-"), null);
-		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
+		sessionRoot = new DefaultTreeNode<FrameTreeElement>(new FrameTreeElement("Sessions", "-"), null);
+		typeRoot = new DefaultTreeNode<FrameTreeElement>("folder", new FrameTreeElement("Frames", "-"), null);
 
 		try {
 
@@ -267,6 +267,9 @@ public class FrameController implements Serializable {
 			pupilMask = cameraDefMgmt.getPupilMaskByTypeAndWheel(PupilMaskType.PUPIL_MASK_TYPE_ID_36,
 					physicalModel.getInstrument().getCamera().getPupilWheel().getPupilWheelId());
 
+			
+			markedSubimageList = new ArrayList<MarkedSubimage>();
+			
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 		}
@@ -278,8 +281,8 @@ public class FrameController implements Serializable {
 	public void reload() {
 
 		// dummy for session root
-		sessionRoot = new DefaultTreeNode(new FrameTreeElement("Sessions", "-"), null);
-		typeRoot = new DefaultTreeNode("folder", new FrameTreeElement("Frames", "-"), null);
+		sessionRoot = new DefaultTreeNode<FrameTreeElement>(new FrameTreeElement("Sessions", "-"), null);
+		typeRoot = new DefaultTreeNode<FrameTreeElement>("folder", new FrameTreeElement("Frames", "-"), null);
 
 		try {
 			reloadFits();
@@ -308,16 +311,16 @@ public class FrameController implements Serializable {
 	
 				Map<Date, List<FitsFilename>> telescopeFitsMap = telescope2Fits.get(telescope);
 	
-				TreeNode telescopeNode = new DefaultTreeNode(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
+				TreeNode<FrameTreeElement> telescopeNode = new DefaultTreeNode<FrameTreeElement>(new FrameTreeElement("Keck " + telescope, "-"), sessionRoot);
 	
 				for (Date date : telescopeFitsMap.keySet()) {
 					List<FitsFilename> dateFitsList = telescopeFitsMap.get(date);
-					TreeNode dateNode = new DefaultTreeNode(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
+					TreeNode<FrameTreeElement> dateNode = new DefaultTreeNode<FrameTreeElement>(new FrameTreeElement(sdf.format(date), ""), telescopeNode);
 	
 					// order dateFitsList by procedure number
-					Collections.sort(dateFitsList, new BeanComparator("procedureNumber"));
+					Collections.sort(dateFitsList, new BeanComparator<FitsFilename>("procedureNumber"));
 					for (FitsFilename fitsFile : dateFitsList) {
-						TreeNode sessionNode00 = new DefaultTreeNode("picture",
+						new DefaultTreeNode<FrameTreeElement>("picture",
 								new FrameTreeElement(
 										fitsFile.getProcedureNumber() + ": " + fitsFile.getProcedureName() + ": " + fitsFile.getFileName(),
 										fitsFile.getFileName()),
@@ -332,14 +335,14 @@ public class FrameController implements Serializable {
 	
 				List<FitsFilename> typeFitsList = type2Fits.get(type);
 	
-				TreeNode typeNode = new DefaultTreeNode(new FrameTreeElement(type, ""), typeRoot);
+				TreeNode<FrameTreeElement> typeNode = new DefaultTreeNode<FrameTreeElement>(new FrameTreeElement(type, ""), typeRoot);
 	
 				// order typeFitsList by telescope
-				Collections.sort(typeFitsList, new BeanComparator("procedureNumber"));
-				Collections.sort(typeFitsList, new BeanComparator("date"));
-				Collections.sort(typeFitsList, new BeanComparator("telescope"));
+				Collections.sort(typeFitsList, new BeanComparator<FitsFilename>("procedureNumber"));
+				Collections.sort(typeFitsList, new BeanComparator<FitsFilename>("date"));
+				Collections.sort(typeFitsList, new BeanComparator<FitsFilename>("telescope"));
 				for (FitsFilename fitsFile : typeFitsList) {
-					TreeNode sessionNode00 = new DefaultTreeNode("picture",
+					new DefaultTreeNode<FrameTreeElement>("picture",
 							new FrameTreeElement(fitsFile.getFileName(), fitsFile.getFileName()), typeNode);
 	
 					if (firstFilename == null) {

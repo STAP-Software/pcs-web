@@ -1226,6 +1226,7 @@ public class ProcedureController implements Serializable {
 			}
 
 			// show frames marked at first
+			
 			doSetMarkedDisplayMode(true);
 			
 			breadcrumbMenuBean.removeTo("Session:");
@@ -1624,7 +1625,9 @@ public class ProcedureController implements Serializable {
 			// double the search radius for hand marking
 			findCentConfig.setIrad(findCentConfig.getIrad() * 2);
 
+			// V3.0 - don't always read from DB, get from execution state when executing a procedure
 			ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
+			
 			float[][] frame = procedureCcdFrame.getCcdFrame().getCorrectedFrame();
 
 			FindCentResult findCentResult = computationLibrary.findCent(frame, guess, findCentConfig, Constants.SPOT_TYPE_INTERIOR);
@@ -1715,7 +1718,8 @@ public class ProcedureController implements Serializable {
 		
 		try {
 		
-			if (setting) {
+			// V3.0 - we always got a stack trace with center telescope frames, since they didn't have a centroidMap
+			if (setting && (!procedure.getProcedureType().isCenterTelescope())) {
 				// get the marking and set it
 				
 				FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();

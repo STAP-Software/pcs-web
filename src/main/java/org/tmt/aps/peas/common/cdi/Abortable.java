@@ -1,7 +1,7 @@
 /**
  * @author Scott Michaels
  * @version 1.0
- * Copyright IBM Corporation 2013 - All Rights Reserved.
+ * Copyright IBM Corporation 2013-2026 - All Rights Reserved.
  */
 package org.tmt.aps.peas.common.cdi;
 
@@ -25,4 +25,5 @@ import jakarta.interceptor.InterceptorBinding;
 @Documented
 public @interface Abortable {
 
+	
 }
