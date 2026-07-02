@@ -269,9 +269,11 @@ public class ComputationLibraryImpl {
 		float[] rawPeak = new float[arrayLen];
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
+		logger.info("FIND CENTROIDS JNI CALL START");		
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
 				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
-
+		logger.info("FIND CENTROIDS JNI CALL END");
+		
 		if (retVal.getCode() > 0) {
 			statusLogger.log(retVal);
 			throw new ComputationException("No good centroid could be found.  "  + MessageGenerator.generateErrorMessage(retVal) + ".  ");

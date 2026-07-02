@@ -19,44 +19,43 @@ function runDrawSingleFilterEdgeHeights() {
 	var ctx = c.getContext("2d");
 
 	ctx.translate(-25,-10);
-	ctx.scale(0.61, 0.61);
 
 	window.setTimeout("drawSingleFilterEdgeHeights(true,true,true)", 10);
 	
-	$(singleFilterEdgeHeightsDisplayDialog.jqId).bind('resize', function(){
+	$(PF('singleFilterEdgeHeightsDisplayDialog').jqId).bind('resize', function(){
 		if (!resizing) {
 			resizing = true;
-			window.setTimeout("singleFilterEdgeHeightsResizeHandler()", 1000);
+			window.setTimeout("singleFilterEdgeHeightsResizeHandler()", 100);
 		}
 	})
-	
 }
 
 function singleFilterEdgeHeightsResizeHandler() {
-	
-	var baseScale = 0.61;
-	var baseCanvasSize = 600.0;
-	
-	var d = document.getElementById("singleFilterEdgeHeightsDialog"); 
-	var availableWidth = d.offsetWidth - 300 - 100;
-	var availableHeight = d.offsetHeight - 70;
-	var available = Math.min(availableWidth, availableHeight);
-	
-	var scale = baseScale * available / baseCanvasSize;
-	
+
 	var c = document.getElementById("singleFilterEdgeHeightsCanvas");
-	c.width=available;
-	c.height=available;
-	
+	var rightPanel = document.getElementById("singleFilterEdgeHeightsForm:singleFilterEdgeHeightsRightPanel");
+	var dlgWrapper = document.getElementById("singleFilterEdgeHeightsDialog").closest('.ui-dialog');
+
+	c.style.width = "0px";
+	c.style.height = "0px";
+
+	var availableWidth = dlgWrapper.offsetWidth - rightPanel.offsetWidth - 30 - 48;
+	var availableHeight = dlgWrapper.offsetHeight - 128;
+	var available = Math.max(750, Math.min(availableWidth, availableHeight));
+
+	c.width = available;
+	c.height = available;
+	c.style.width = available + "px";
+	c.style.height = available + "px";
+
 	var ctx = c.getContext("2d");
-
+	var scale = available / 1000.0;
 	ctx.scale(scale, scale);
+	ctx.translate(-25, -10);
 
-	//alert("resizing")
 	drawSingleFilterEdgeHeights(singleFilterEdgeHeightsScope.drawSegments, singleFilterEdgeHeightsScope.drawSegNums, singleFilterEdgeHeightsScope.drawEdgeNums);
-	
-	resizing = false;
 
+	resizing = false;
 }
 
 
@@ -70,26 +69,21 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 	var ctx = c.getContext("2d");
 	ctx.clearRect(0,0,1000,1000);
 
-
-	// display coordinates - hex centers
 	var xField1 = document.getElementById('singleFilterEdgeHeightsForm:segCentDefXs').value;
  	var xHexCenterArray = xField1.split(','); 
  	
 	var yField1 = document.getElementById('singleFilterEdgeHeightsForm:segCentDefYs').value;
  	var yHexCenterArray = yField1.split(','); 
  	
- 	// display coordinates - ideal centroid positions
 	var xField2 = document.getElementById('singleFilterEdgeHeightsForm:edgeXs').value;
  	var xEdgeArray = xField2.split(','); 
  	
 	var yField2 = document.getElementById('singleFilterEdgeHeightsForm:edgeYs').value;
  	var yEdgeArray = yField2.split(','); 
    
- 	// display coordinates - edge angles
  	var field3 = document.getElementById('singleFilterEdgeHeightsForm:edgeNormAngles').value;
  	var edgeNormAngles = field3.split(',');
  	
- 	// edge heights
  	var field4 = document.getElementById('singleFilterEdgeHeightsForm:singleFilterEdgeHeights').value;
  	var singleFilterEdgeHeights = field4.split(',');
  	
@@ -101,40 +95,25 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
  	
 	var offsetScale = parseFloat(document.getElementById('singleFilterEdgeHeightsForm:scaleSlider').value);
  	 
-	// calculate max length of all offsets
 	var maxLen = document.getElementById('singleFilterEdgeHeightsForm:maxError').value;
 	
-	// the max displayed length at 100% offset scale is sqrt(3)/2 * sideLen
-	// the max length will then be the length of the hexRadius
-	var scaleFactor = hexRadius / maxLen;  
+	var scaleFactor = hexRadius / maxLen;
 
 	var centerX = 512;
 	var centerY = 512;
-	
 
 	for (var i = 0; i < xHexCenterArray.length; i++) {
-		
-		var x = centerX + parseFloat(xHexCenterArray[i]) * sideLen
-		var y = centerY - parseFloat(yHexCenterArray[i]) * sideLen
-								
-		drawHexCentered(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums)
+		var x = centerX + parseFloat(xHexCenterArray[i]) * sideLen;
+		var y = centerY - parseFloat(yHexCenterArray[i]) * sideLen;
+		drawHexCentered(ctx, x, y, sideLen, i+1, drawSegments, drawSegNums);
 	}
-	
-	
-	
+
 	for (var i = 0; i < 84; i++) {
-		
-		//var a = sideLen * 3.0 / 4.0;
-		//var b = sideLen * Math.sqrt(3.0) / 4.0;
-		// The x-coordinates are in units of 0.75a, where a is the hexagon side (eg, 900 mm).  The y-coordinates are in units of sqrt(3)/4 times a
 		
 		var x = centerX + parseFloat(xEdgeArray[i]) * sideLen;
 		var y = centerY - parseFloat(yEdgeArray[i]) * sideLen;
-						
-		// if useForAnalysis, rowFlagOut are 1, then draw a line, otherwise a circle
 		
 		if (useForAnalysis[i] == 0) {
-			// draw a circle with no interior
 			ctx.beginPath();
 			ctx.strokeStyle = 'black';
 			ctx.arc(x, y, 10, 0, 2*Math.PI);
@@ -143,8 +122,7 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 			ctx.fillStyle = 'white';
 		    ctx.fill();
 		    
-		} else if (rowFlagOut[i] == 0 ){
-			// draw a circle with black interior
+		} else if (rowFlagOut[i] == 0) {
 			ctx.beginPath();
 			ctx.strokeStyle = 'black';
 			ctx.arc(x, y, 10, 0, 2*Math.PI);
@@ -154,14 +132,10 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 		    ctx.fill();
 
 		} else {
-			// draw the edge height line
-		
-			var edgeHeight = (parseFloat(singleFilterEdgeHeights[i]) * scaleFactor * offsetScale / 100.0)
-			
-			var edgeAngle = (parseFloat(edgeNormAngles[i])) * 2 * Math.PI / 360.0
-			
-			var dx = x + (Math.cos(edgeAngle) * edgeHeight)
-			var dy = y - (Math.sin(edgeAngle) * edgeHeight)
+			var edgeHeight = (parseFloat(singleFilterEdgeHeights[i]) * scaleFactor * offsetScale / 100.0);
+			var edgeAngle = (parseFloat(edgeNormAngles[i])) * 2 * Math.PI / 360.0;
+			var dx = x + (Math.cos(edgeAngle) * edgeHeight);
+			var dy = y - (Math.sin(edgeAngle) * edgeHeight);
 					
 			ctx.beginPath();
 			ctx.strokeStyle = 'red';
@@ -176,37 +150,26 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
 			ctx.stroke();
 			ctx.fillStyle = 'white';
 		    ctx.fill();
-		    
 		}
 		
 	    if (drawEdgeNums) {
-	    	
 			var yEdgeHeightTextOffset = 8;
-
-			// text a little higher up when circle is larger
-			if ((useForAnalysis[i] == 0) || (rowFlagOut[i] == 0 )) {
+			if ((useForAnalysis[i] == 0) || (rowFlagOut[i] == 0)) {
 				yEdgeHeightTextOffset = 12;
 			}
-	    	
 			ctx.fillStyle = '#888888';
 			ctx.font="18px Arial";
 			var offsetX = (i+1 < 10) ? x - 4 : x - 10;
-			ctx.fillText(i+1, offsetX, y - yEdgeHeightTextOffset);		    	
+			ctx.fillText(i+1, offsetX, y - yEdgeHeightTextOffset);
 	    }
-
-
 	}
 	
-	// max len is the value assigned to a side in the key
-
 	// add the key
-	
 	ctx.beginPath();
 	ctx.strokeStyle = 'red';
     ctx.moveTo(850, 950);
     ctx.lineTo(850 + sideLen, 950);
     ctx.stroke();
-   
 
 	ctx.beginPath();
 	ctx.strokeStyle = 'black';
@@ -226,77 +189,53 @@ function drawSingleFilterEdgeHeights(drawSegments,drawSegNums,drawEdgeNums) {
     
 	ctx.fillStyle = 'black';
 	ctx.font="18px Arial";
-	
 	ctx.fillText((sideLen * 100.00 / (scaleFactor * offsetScale)).toFixed(2) + " microns", 844, 940);
 	
-	
 	// add the legend
-	
 	var cl = document.getElementById("singleFilterEdgeHeightsLegendCanvas");
 	var ctxl = cl.getContext("2d");
+	ctxl.setTransform(1,0,0,1,0,0);
+	ctxl.clearRect(0,0,cl.width,cl.height);
 
-	// draw a circle with white interior
 	ctxl.beginPath();
 	ctxl.strokeStyle = 'black';
-	ctxl.arc(15, 60, 5, 0, 2*Math.PI);
+	ctxl.arc(20, 20, 7, 0, 2*Math.PI);
 	ctxl.closePath();
 	ctxl.stroke();
 	ctxl.fillStyle = 'white';
-    ctxl.fill();
-	
-	// draw a circle with black interior
+	ctxl.fill();
+
 	ctxl.beginPath();
 	ctxl.strokeStyle = 'black';
-	ctxl.arc(15, 100, 5, 0, 2*Math.PI);
+	ctxl.arc(20, 60, 7, 0, 2*Math.PI);
 	ctxl.closePath();
 	ctxl.stroke();
 	ctxl.fillStyle = 'black';
-    ctxl.fill();
+	ctxl.fill();
 
 	ctxl.fillStyle = 'grey';
-	ctxl.font="12px Arial";
-	
-	ctxl.fillText("Pre-excluded edges", 35, 65);
-	ctxl.fillText("Measurement ignored", 35, 105);
-
-	ctxl.fillText("Line points from edge", 10, 150);
-	ctxl.fillText("to lower segment", 10, 165);
-	
+	ctxl.font = "16px Arial";
+	ctxl.fillText("Pre-excluded edges", 40, 25);
+	ctxl.fillText("Measurement ignored", 40, 65);
+	ctxl.fillText("Line points from edge to lower segment", 10, 110);
 }
 
 function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
-	// draw a hexgon of side sideLen centered on position x, y
 	
-	var a = sideLen
+	var a = sideLen;
 	var b = a * Math.sqrt(3) / 2;
 
-	// 0 is the left side of hex, b + a/2 is the x center
-	// 0 is the top of the hex, 
-	
-	
-	//       (a/2, 0)
-	//          ______________
-	//         /
-	//        /
-	//       /
-	//      /
-	//     /
-	//    (0,b)
-	
-	// the box is centered at a, b so we subtract these to get the center
-	
 	if (drawSegment) {
 		ctx.beginPath();
 		ctx.strokeStyle = '#888888';
-    	ctx.moveTo(x-a,y)	
-		ctx.lineTo(x-a/2,y-b)
-    	ctx.lineTo(x+a/2,y-b)
-    	ctx.lineTo(x+a,y)
-    	ctx.lineTo(x+a/2,y+b)
-    	ctx.lineTo(x-a/2,y+b)
+    	ctx.moveTo(x-a,y);
+		ctx.lineTo(x-a/2,y-b);
+    	ctx.lineTo(x+a/2,y-b);
+    	ctx.lineTo(x+a,y);
+    	ctx.lineTo(x+a/2,y+b);
+    	ctx.lineTo(x-a/2,y+b);
 		ctx.closePath();
 		ctx.stroke();
-	
 		ctx.fillStyle = "#e8f0f8";
 		ctx.fill();
 	}
@@ -313,117 +252,115 @@ function drawHexCentered(ctx, x, y, sideLen, number, drawSegment, drawSegNum) {
 //]]>  
 </script>   
 
-		<p:dialog id="singleFilterEdgeHeightsDialog" header="Measured Edge Heights for Single Filter" widgetVar="singleFilterEdgeHeightsDisplayDialog" closable="false" >  
-     		<h:form id="singleFilterEdgeHeightsForm">
 
-    		<h:inputHidden id="singleFilterEdgeHeights" value="#{visualizationController.singleFilterEdgeHeights}" />
-    		<h:inputHidden id="maxError" value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorMax}" />
-    		<h:inputHidden id="useForAnalysis" value="#{visualizationController.useForAnalysis}" />
-    		<h:inputHidden id="rowFlagOut" value="#{visualizationController.rowFlagOut}" />
+	<p:dialog id="singleFilterEdgeHeightsDialog" header="Measured Edge Heights for Single Filter" widgetVar="singleFilterEdgeHeightsDisplayDialog" closable="false"
+	          width="1180">
+		<h:form id="singleFilterEdgeHeightsForm">
 
-     		<h:inputHidden id="edgeXs" value="#{visualizationController.edgeXs}" />
+			<h:inputHidden id="singleFilterEdgeHeights" value="#{visualizationController.singleFilterEdgeHeights}" />
+			<h:inputHidden id="maxError" value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorMax}" />
+			<h:inputHidden id="useForAnalysis" value="#{visualizationController.useForAnalysis}" />
+			<h:inputHidden id="rowFlagOut" value="#{visualizationController.rowFlagOut}" />
+			<h:inputHidden id="edgeXs" value="#{visualizationController.edgeXs}" />
 			<h:inputHidden id="edgeYs" value="#{visualizationController.edgeYs}" />
-			
 			<h:inputHidden id="edgeNormAngles" value="#{visualizationController.edgeNormAngles}" />
-			
-     		<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentersX}" />
+			<h:inputHidden id="segCentDefXs" value="#{visualizationController.segCentersX}" />
 			<h:inputHidden id="segCentDefYs" value="#{visualizationController.segCentersY}" />
-			
- 			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
-    			
-    		<p:panelGrid columns="2" styleClass="pcsFormNoBorder" style="vertical-align:top">
-     		
-    		
-    		<canvas id="singleFilterEdgeHeightsCanvas" width="600px" height="600px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
-    		
-    		
-    		<p:panelGrid columns="1" styleClass="pcsFormNoBorder" style="border:0px;max-width:330px" >
-			<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+			<h:inputHidden id="maxOffset" value="#{visualizationController.maxOffset}" />
 
-				<c:set var="procedureOutput" value="#{visualizationController.singleFilterEdgeHeightsDisplayValues}" />
-				
-				<!-- measure edge stats -->
-				<p:spacer height="15"/><p:spacer height="15"/>
-				
-				<h:outputLabel value="Filter" />
-					
-				<h:outputText value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.iterationValueList.findEntityLabelValue(visualizationController.iteration,'Filter')}" style="position:relative; top:2px" />				
-				
-				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.goodEdgeCount}" style="position:relative; top:2px" />				
-				
-				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorMax')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorMax}" style="position:relative; top:2px" >
-					<f:converter converterId="DynamicNumberConverter" />
-					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-				</h:outputText>
-				
-				<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorRss')}" />				
-				<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorRss}" style="position:relative; top:2px" >
-					<f:converter converterId="DynamicNumberConverter" />
-					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-				</h:outputText>
-								
-				 
-				<!-- residual edge stats -->
-				<!--
-				<p:spacer height="15"/><p:spacer height="15"/>
-				<h:outputLabel value="Number of good edges" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px" />
-				<h:outputLabel value="Max residual error (microns)" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorMax}" style="position:relative; top:2px" />
-				<h:outputLabel value="RSS residual edge error" />
-				<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px" />
-				 -->			
-				
-				<p:spacer height="30"/><p:spacer height="30"/>
-				<h:outputLabel value="Show Segments" />
-     			<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
-    			</p:selectBooleanButton>
-				<p:spacer height="1"/><p:spacer height="1"/>
-				<h:outputLabel value="Show Segment Numberings" />
-     			<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
-    			</p:selectBooleanButton>
-				<p:spacer height="1"/><p:spacer height="1"/>
-				<h:outputLabel value="Show Edge Numberings" />
-     			<p:selectBooleanButton value="#{visualizationController.showEdgeNums}" onLabel="On" offLabel="Off" >
-    				<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
-    			</p:selectBooleanButton>
-    			
-    			<p:spacer height="10"/><p:spacer height="10"/>
-    			
-    			
-    		</p:panelGrid>
-    		<p:panelGrid columns="1" style="margin-bottom: 10px; width:100%">
-  
-  				<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
-        		<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
-        		<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%"> 
-            		<p:ajax event="slideEnd" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
-        		</p:slider>
-    		</p:panelGrid>
-    		
-    		<canvas id="singleFilterEdgeHeightsLegendCanvas" width="200px" height="200px" style="border:0px solid #d3d3d3;"> Your browser does not support the HTML5 canvas tag.</canvas>
-    		
-    		</p:panelGrid>    		
-    		
-    		
-    		</p:panelGrid>
-    		<br/>
-    		
-   			<h:panelGroup styleClass="dialogCommandGroup">
-     			<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="singleFilterEdgeHeightsDisplayDialog.hide()" />
-				<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
-					action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="singleFilterEdgeHeightsDisplayDialog.hide()" />
+			<!-- outer flex row: canvas on the left, controls on the right -->
+			<h:panelGroup layout="block" style="display:flex; flex-direction:row; gap:30px; align-items:flex-start; width:100%; justify-content:space-between;">
+
+				<canvas id="singleFilterEdgeHeightsCanvas" width="1000" height="1000"
+				        style="width:750px; height:750px; flex-shrink:0;">
+					Your browser does not support the HTML5 canvas tag.
+				</canvas>
+
+				<!-- right panel: vertical flex column -->
+				<h:panelGroup id="singleFilterEdgeHeightsRightPanel" layout="block" style="flex:0 0 auto; display:flex; flex-direction:column; gap:10px;">
+
+					<p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder ui-panelgrid-blank" columnClasses="btmsFormLabelColumn, btmsFormInputColumn" style="white-space:nowrap;">
+
+						<c:set var="procedureOutput" value="#{visualizationController.singleFilterEdgeHeightsDisplayValues}" />
+
+						<p:spacer height="15"/><p:spacer height="15"/>
+
+						<h:outputLabel value="Filter" />
+						<h:outputText value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.iterationValueList.findEntityLabelValue(visualizationController.iteration,'Filter')}" style="position:relative; top:2px" />
+
+						<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','GoodEdgeCount')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel}" />
+						<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.goodEdgeCount}" style="position:relative; top:2px" />
+
+						<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorMax')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (&#956;m)" />
+						<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorMax}" style="position:relative; top:2px">
+							<f:converter converterId="DynamicNumberConverter" />
+							<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+						</h:outputText>
+
+						<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('PhasingStatsResult','EdgeErrorRss')}" />
+						<h:outputLabel value="#{fieldMetaData.displayLabel} (&#956;m)" />
+						<h:outputText value="#{visualizationController.singleFilterEdgeHeightsDisplayValues.edgeErrorRss}" style="position:relative; top:2px">
+							<f:converter converterId="DynamicNumberConverter" />
+							<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+						</h:outputText>
+
+						<p:spacer height="30"/><p:spacer height="30"/>
+
+						<h:outputLabel value="Show Segments" />
+						<p:selectBooleanButton value="#{visualizationController.showSegments}" onLabel="On" offLabel="Off">
+							<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
+						</p:selectBooleanButton>
+
+						<p:spacer height="1"/><p:spacer height="1"/>
+
+						<h:outputLabel value="Show Segment Numberings" />
+						<p:selectBooleanButton value="#{visualizationController.showSegNums}" onLabel="On" offLabel="Off">
+							<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
+						</p:selectBooleanButton>
+
+						<p:spacer height="1"/><p:spacer height="1"/>
+
+						<h:outputLabel value="Show Edge Numberings" />
+						<p:selectBooleanButton value="#{visualizationController.showEdgeNums}" onLabel="On" offLabel="Off">
+							<p:ajax update="@this" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
+						</p:selectBooleanButton>
+
+					</p:panelGrid>
+
+					<!-- slider below the grid -->
+					<h:panelGroup layout="block" style="width:100%; padding-top:10px; padding-left:10px; padding-right:10px; box-sizing:border-box;">
+						<h:outputText id="scaleOutput" value="Offset scale: #{visualizationController.offsetScale}%" />
+						<br/>
+						<p:spacer height="10"/>
+						<h:inputHidden id="scaleSlider" value="#{visualizationController.offsetScale}" />
+						<p:slider for="scaleSlider" display="scaleOutput" minValue="0" maxValue="300" displayTemplate="Offset scale: {value}%">
+							<p:ajax event="slideEnd" listener="#{visualizationController.updateSingleFilterEdgeHeightsDisplayListener}" />
+						</p:slider>
+					</h:panelGroup>
+
+					<!-- legend canvas below the slider -->
+					<canvas id="singleFilterEdgeHeightsLegendCanvas" width="300" height="200"
+					        style="width:300px; height:200px; margin-top:40px;">
+					    Your browser does not support the HTML5 canvas tag.
+					</canvas>
+
+				</h:panelGroup>
+
 			</h:panelGroup>
-     		</h:form>
-		</p:dialog> 
+
+			<br/>
+
+			<h:panelGroup styleClass="dialogCommandGroup">
+				<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
+						action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('singleFilterEdgeHeightsDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}"/>
+				<p:commandButton id="closeButton" value="Close" styleClass="dialogbutton" update=":growl :errorGrowl"
+						action="#{asyncController.doCloseGraphicsDisplay}" oncomplete="PF('singleFilterEdgeHeightsDisplayDialog').hide()" />
+			</h:panelGroup>
+
+		</h:form>
+	</p:dialog>
 
 
 </ui:composition>

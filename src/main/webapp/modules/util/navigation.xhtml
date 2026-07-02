@@ -70,7 +70,9 @@
 						<p:submenu label="Iteration #{loop.index+1}" >
 							<p:menuitem value="Centroids" action="#{visualizationController.doPopulateCentroidDisplay(loop.index)}" update=":spotsForm"  oncomplete="runDrawSpots();PF('centroidsDisplayDialog').show();" rendered="#{visualizationController.centroidDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
 							<p:menuitem value="Centroid Offsets" action="#{visualizationController.doPopulateCentroidOffsetDisplay(loop.index)}" update=":offsetsForm" oncomplete="runDrawOffsets(); PF('centroidOffsetDisplayDialog').show()" rendered="#{visualizationController.centroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+							
 							<p:menuitem value="SUFS Centroid Offsets" action="#{visualizationController.doPopulateSufsCentroidOffsetDisplay(loop.index)}" update=":sufsOffsetsForm" oncomplete="runDrawSufsOffsets(); PF('sufsCentroidOffsetDisplayDialog').show()" rendered="#{visualizationController.sufsCentroidOffsetDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>
+							
 							<p:menuitem value="Single Filter Edge Heights" action="#{visualizationController.doPopulateSingleFilterEdgeHeightsDisplay(loop.index)}" update=":singleFilterEdgeHeightsForm" oncomplete="runDrawSingleFilterEdgeHeights(); PF('singleFilterEdgeHeightsDisplayDialog').show()" rendered="#{visualizationController.singleFilterEdgeHeightsDisplayEnabled}" disabled="#{sessionController.navDisabled}"/>		
  						</p:submenu>
 						</c:forEach>

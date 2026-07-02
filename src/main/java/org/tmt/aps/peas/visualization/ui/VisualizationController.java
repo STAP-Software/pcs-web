@@ -604,6 +604,7 @@ public class VisualizationController implements Serializable {
 		centroidOffsetDisplayEnabled = false;
 		avgPtCentroidOffsetDisplayEnabled = false;
 		avgFsCentroidOffsetDisplayEnabled = false;
+		sufsCentroidOffsetDisplayEnabled = false;
 		avgSufsCentroidOffsetDisplayEnabled = false;
 		actuatorDeltaDisplayEnabled = false;
 		edgeHeightsDisplayEnabled = false;

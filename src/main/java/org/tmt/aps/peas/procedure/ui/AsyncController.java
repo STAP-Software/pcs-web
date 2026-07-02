@@ -254,16 +254,29 @@ public class AsyncController implements Serializable {
 			}
 			
 			if (visualizationDisplay.isDisplayTypeSingleFilterEdgeHeights()) {
-				PrimeFaces.current().executeScript("runDrawSingleFilterEdgeHeights(); singleFilterEdgeHeightsDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("singleFilterEdgeHeightsDialog", "singleFilterEdgeHeightsForm");
+				PrimeFaces.current().executeScript("runDrawSingleFilterEdgeHeights(); PF('singleFilterEdgeHeightsDisplayDialog').show()");
 			}
+			
 			if (visualizationDisplay.isDisplayTypeEdgeResiduals()) {
-				PrimeFaces.current().executeScript("runDrawEdgeResiduals(); edgeResidualsDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("edgeResidualsDialog", "edgeResidualsForm");
+				PrimeFaces.current().executeScript("runDrawEdgeResiduals(); PF('edgeResidualsDisplayDialog').show()");
 			}
+			
+			
 			if (visualizationDisplay.isDisplayTypeSufsCentroidOffsets()) {
-				PrimeFaces.current().executeScript("runDrawSufsOffsets(); sufsCentroidOffsetDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("sufsCentroidOffsetDialog", "sufsOffsetsForm");				
+				PrimeFaces.current().executeScript("runDrawSufsOffsets(); PF('sufsCentroidOffsetDisplayDialog').show()");
 			}
+			
+			
 			if (visualizationDisplay.isDisplayTypeAvgSufsCentroidOffsets()) {
-				PrimeFaces.current().executeScript("runDrawAvgSufsOffsets(); avgSufsCentroidOffsetDisplayDialog.show()");
+				
+				PrimeFaces.current().ajax().update("avgSufsCentroidOffsetDialog", "avgSufsOffsetsForm");
+				PrimeFaces.current().executeScript("runDrawAvgSufsOffsets(); PF('avgSufsCentroidOffsetDisplayDialog').show()");
 			}
 			
 			graphicDisplayMgmt.setPendingDisplay(null);
