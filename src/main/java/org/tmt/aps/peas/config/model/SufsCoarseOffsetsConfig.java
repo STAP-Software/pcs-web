@@ -116,7 +116,7 @@ public class SufsCoarseOffsetsConfig {
 	public String toString() {
 		
 		StringBuffer buf = new StringBuffer();
-		buf.append("SufsOffsetsToZernikesConfig:");
+		buf.append("SufsCoarseOffsetsConfig:");
 		buf.append("\ncoarseMirrorOffsetDefaultX = " + coarseMirrorOffsetDefaultY);
 		buf.append("\ncoarseMirrorOffsetDefaultY = " + coarseMirrorOffsetDefaultY);
 		buf.append("\ncoarseMirrorOffsetCurrentX = " + coarseMirrorOffsetCurrentX);

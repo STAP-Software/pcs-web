@@ -92,13 +92,18 @@ public class SessionMgmt {
 	        	try {
 
 	            ProcedureConfigSet pcs = procedure.getProcedureConfigSet();
+	           
+	            
 	            if (pcs != null) {
 	                // Force initialization by accessing properties
 	                pcs.getProcedureConfig().getCoarsePhasingOption();
 	                pcs.getGlobalConfig();
 	                pcs.getSufsCoarseOffsetsConfig();
 	                pcs.getIterationListConfig();
+	                
 	            }
+	            
+	            logger.info("findSession:: SUFS CoarseOffsets Config: " + pcs.getSufsCoarseOffsetsConfig());
 
 	            // Initialize other lazy associations
 	            procedure.getProcedureType().getProcedureTypeId();

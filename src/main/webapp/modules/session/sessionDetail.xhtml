@@ -141,328 +141,319 @@
 						</p:column>
 
  
-						<p:rowExpansion>
-							<p:panelGrid columns="3" style="margin:5px; width:800px"
-								styleClass="pcsFormNoBorder alignTop">
+<p:rowExpansion>
+    <div style="display:flex; flex-direction:row; flex-wrap:wrap; align-items:flex-start; gap:20px; margin:5px;">
 
-								<p:panelGrid columns="2"
-									styleClass="pcsFormNoBorder" style="width:250px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+        <!-- General -->
+        <h:panelGroup layout="block" style="flex:0 0 auto; width:400px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                General
+            </div>
+            <div style="padding:10px;">
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-									<f:facet name="header">
-                    					General 
-                					</f:facet>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px"
+                        rendered="#{not procedure.procedureType.narrowBandPhasing}">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
+                    <h:outputText value="#{procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" style="position:relative; top:4px"
+                        rendered="#{procedure.procedureType.narrowBandPhasing}" />
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									
-									<h:outputText value="#{procedure.procedureConfigSet.procedureConfig.integrationTime}" style="position:relative; top:4px"  
-										rendered="#{not procedure.procedureType.narrowBandPhasing}">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
-									<h:outputText value="#{procedure.procedureConfigSet.iterationListConfig.integrationTimeList}" style="position:relative; top:4px"  
-										rendered="#{procedure.procedureType.narrowBandPhasing}" />
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeEl')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px" >
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarName')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-									<h:outputText value="#{procedure.starNameFormatted}" style="position:relative; top:2px" />
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarVmag')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-									<h:outputText value="#{procedure.starVmagFormatted}" style="position:relative; top:2px" />
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarSpType')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel}" />
-									<h:outputText value="#{procedure.starSpTypeFormatted}" style="position:relative; top:2px" />
-									
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirror')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:panelGroup style="position:relative; top:4px">
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
-									<h:outputText value=", " />
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorY}" />
-									</h:panelGroup>
-									
-									<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlate')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:panelGroup style="position:relative; top:4px">
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateX}" />
-									<h:outputText value=", " />
-									<h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateY}" />
-									</h:panelGroup>
-								
-								</p:panelGrid>
- 								
- 								
-								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:300px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.passiveTilt}">
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeEl')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.telescopeEl}" style="position:relative; top:4px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									<f:facet name="header">
-                    					#{procedure.procedureType.procedureTypeName} 
-                					</f:facet>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarName')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel}" />
+                    <h:outputText value="#{procedure.starNameFormatted}" style="position:relative; top:2px" />
 
-									<h:outputLabel value="M1 Cmds RMS (nm)" />
-									<h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarVmag')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel}" />
+                    <h:outputText value="#{procedure.starVmagFormatted}" style="position:relative; top:2px" />
 
-									<h:outputLabel value="M1 Commands Sent" />
-									<h:outputText value="#{procedure.passiveTiltProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
-								
-								</p:panelGrid>
-	
-	
-								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:330px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.fineScreen}">
-	
-									<f:facet name="header">
-	                   					#{procedure.procedureType.procedureTypeName} 
-	               					</f:facet>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('Procedure','StarSpType')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel}" />
+                    <h:outputText value="#{procedure.starSpTypeFormatted}" style="position:relative; top:2px" />
 
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirror')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:panelGroup style="position:relative; top:4px">
+                        <h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorX}" />
+                        <h:outputText value=", " />
+                        <h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.steeringMirrorY}" />
+                    </h:panelGroup>
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2TipTiltErrorArcsec')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} X (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
-									
-									<h:outputLabel value="#{fieldMetaData.displayLabel} Y (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.y}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
-									
-	
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2PistonErrorUm')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2PistonErrorUm}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlate')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:panelGroup style="position:relative; top:4px">
+                        <h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateX}" />
+                        <h:outputText value=", " />
+                        <h:outputText value="#{procedure.latestProcedureCcdFrame.ccdFrame.cameraState.tiltPlateY}" />
+                    </h:panelGroup>
 
-									<h:outputLabel value="Secondary Commands Sent" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m2CmdsSent}" style="position:relative; top:2px"/>
+                </p:panelGrid>
+            </div>
+        </h:panelGroup>
 
+        <!-- Passive Tilt -->
+        <h:panelGroup layout="block" rendered="#{procedure.procedureType.passiveTilt}"
+            style="flex:0 0 auto; width:400px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                #{procedure.procedureType.procedureTypeName}
+            </div>
+            <div style="padding:10px;">
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+                    <h:outputLabel value="M1 Cmds RMS (nm)" />
+                    <h:outputText value="#{procedure.passiveTiltProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
+                        <f:convertNumber pattern="#0.0" />
+                    </h:outputText>
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','TelescopeFocus')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.telescopeFocus}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
+                    <h:outputLabel value="M1 Commands Sent" />
+                    <h:outputText value="#{procedure.passiveTiltProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaX')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaX}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
+                </p:panelGrid>
+            </div>
+        </h:panelGroup>
 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaY')}" />				
-									<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaY}" style="position:relative; top:2px">
-										<f:converter converterId="DynamicNumberConverter" />
-										<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-									</h:outputText>
+        <!-- Fine Screen -->
+        <h:panelGroup layout="block" rendered="#{procedure.procedureType.fineScreen}"
+            style="flex:0 0 auto; width:440px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                #{procedure.procedureType.procedureTypeName}
+            </div>
+            <div style="padding:10px;">
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2TipTiltErrorArcsec')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} X (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.x}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									<h:outputLabel value="M1 Cmds RMS (nm)" />
-									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />	
-									</h:outputText>
-									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasRmsEom}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} Y (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2TipTiltErrorArcsec.y}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									</h:panelGroup>
-									
-									<h:outputLabel value="M1 Cmds RMS - Focus Mode Only (nm)" />
-									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasFmRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('CalcM2PttErrorsMeanEomResult','MeanM2PistonErrorUm')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.calcM2PttErrorsMeanEomResult.meanM2PistonErrorUm}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasFmRmsEom}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
+                    <h:outputLabel value="Secondary Commands Sent" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m2CmdsSent}" style="position:relative; top:2px"/>
 
-									</h:panelGroup>
-									
-									<h:outputLabel value="M1 Cmds RMS - No Focus Mode (nm)" />
-									<h:panelGroup>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasNoFmRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','TelescopeFocus')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.telescopeFocus}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									<h:outputText value=" +- " style="position:relative; top:2px"/>
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasNoFmRmsEom}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaX')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaX}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									</h:panelGroup>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('M2FocusAndTilts','M2ThetaY')}" />
+                    <h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.m2FocusAndTilts.m2ThetaY}" style="position:relative; top:2px">
+                        <f:converter converterId="DynamicNumberConverter" />
+                        <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                    </h:outputText>
 
-									<h:outputLabel value="M1 Commands Sent" />
-									<h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
+                    <h:outputLabel value="M1 Cmds RMS (nm)" />
+                    <h:panelGroup>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasRms}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                        <h:outputText value=" +- " style="position:relative; top:2px"/>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasRmsEom}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                    </h:panelGroup>
 
+                    <h:outputLabel value="M1 Cmds RMS - Focus Mode Only (nm)" />
+                    <h:panelGroup>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasFmRms}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                        <h:outputText value=" +- " style="position:relative; top:2px"/>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasFmRmsEom}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                    </h:panelGroup>
 
-								</p:panelGrid>
-	
-								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:300px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.coarsePhasing}">
-	
-								<f:facet name="header">
-                   					#{procedure.procedureType.procedureTypeName} 
-               					</f:facet>
+                    <h:outputLabel value="M1 Cmds RMS - No Focus Mode (nm)" />
+                    <h:panelGroup>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActCommandsResult.desiredActDeltasNoFmRms}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                        <h:outputText value=" +- " style="position:relative; top:2px"/>
+                        <h:outputText value="#{procedure.fineScreenProcedureOutput.calcDesiredActDeltasRmsEomResult.desiredActDeltasNoFmRmsEom}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                    </h:panelGroup>
 
-									<h:outputLabel value="Segment Piston RMS (microns)" />
-									<h:outputText value="#{procedure.coarsePhasingProcedureOutput.bbAnalyzeSequenceResult.segmentPistonRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.000" />
-									</h:outputText>
-	
-									<h:outputLabel value="RSS Residual Edge Heights (microns)" />
-									<h:outputText value="#{procedure.coarsePhasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.000" />
-									</h:outputText>
-	
-									<h:outputLabel value="Number of Phasing Edges" />
-									<h:outputText value="#{procedure.coarsePhasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
+                    <h:outputLabel value="M1 Commands Sent" />
+                    <h:outputText value="#{procedure.fineScreenProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 
-									<h:outputLabel value="M1 Commands Sent" />
-									<h:outputText value="#{procedure.coarsePhasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
-	
-								</p:panelGrid>
+                </p:panelGrid>
+            </div>
+        </h:panelGroup>
 
+        <!-- Coarse Phasing -->
+        <h:panelGroup layout="block" rendered="#{procedure.procedureType.coarsePhasing}"
+            style="flex:0 0 auto; width:400px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                #{procedure.procedureType.procedureTypeName}
+            </div>
+            <div style="padding:10px;">
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+                    <h:outputLabel value="Segment Piston RMS (microns)" />
+                    <h:outputText value="#{procedure.coarsePhasingProcedureOutput.bbAnalyzeSequenceResult.segmentPistonRms}" style="position:relative; top:2px">
+                        <f:convertNumber pattern="#0.000" />
+                    </h:outputText>
 
+                    <h:outputLabel value="RSS Residual Edge Heights (microns)" />
+                    <h:outputText value="#{procedure.coarsePhasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
+                        <f:convertNumber pattern="#0.000" />
+                    </h:outputText>
 
+                    <h:outputLabel value="Number of Phasing Edges" />
+                    <h:outputText value="#{procedure.coarsePhasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
 
-								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:300px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.narrowBandPhasing}">
-	
-								<f:facet name="header">
-                   					#{procedure.procedureType.procedureTypeName} 
-               					</f:facet>
+                    <h:outputLabel value="M1 Commands Sent" />
+                    <h:outputText value="#{procedure.coarsePhasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 
-									<h:outputLabel value="Segment Piston RMS (microns)" />
-									<h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.nbActuatorsResult.segmentPistonRms}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.000" />
-									</h:outputText>
-	
-									<h:outputLabel value="RSS Residual Edge Heights (microns)" />
-									<h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.000" />
-									</h:outputText>
-	
-									<h:outputLabel value="Number of Phasing Edges" />
-									<h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
+                </p:panelGrid>
+            </div>
+        </h:panelGroup>
 
-									<h:outputLabel value="M1 Commands Sent" />
-									<h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
-	
-								</p:panelGrid>
+        <!-- Narrow Band Phasing -->
+        <h:panelGroup layout="block" rendered="#{procedure.procedureType.narrowBandPhasing}"
+            style="flex:0 0 auto; width:300px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                #{procedure.procedureType.procedureTypeName}
+            </div>
+            <div style="padding:10px;">
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
+                    <h:outputLabel value="Segment Piston RMS (microns)" />
+                    <h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.nbActuatorsResult.segmentPistonRms}" style="position:relative; top:2px">
+                        <f:convertNumber pattern="#0.000" />
+                    </h:outputText>
 
+                    <h:outputLabel value="RSS Residual Edge Heights (microns)" />
+                    <h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.phasingStatsResult.residualEdgeErrorRss}" style="position:relative; top:2px">
+                        <f:convertNumber pattern="#0.000" />
+                    </h:outputText>
 
+                    <h:outputLabel value="Number of Phasing Edges" />
+                    <h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.phasingStatsResult.goodEdgeCount}" style="position:relative; top:2px"/>
 
+                    <h:outputLabel value="M1 Commands Sent" />
+                    <h:outputText value="#{procedure.narrowBandPhasingProcedureOutput.procedureDecisionLog.m1CmdsSent}" style="position:relative; top:2px"/>
 
+                </p:panelGrid>
+            </div>
+        </h:panelGroup>
 
+        <!-- Sufs -->
+        <h:panelGroup layout="block" rendered="#{procedure.procedureType.sufs}"
+            style="flex:0 0 auto; width:580px; border:1px solid #ccc; border-radius:4px;">
+            <div style="background:#2c5f8a; color:white; text-align:center; font-weight:bold; padding:8px; border-radius:4px 4px 0 0;">
+                #{procedure.procedureType.procedureTypeName}
+            </div>
+            <div style="padding:10px;">
 
-								<p:panelGrid columns="1" 
-									styleClass="pcsFormNoBorder" style="width:420px"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn" rendered="#{procedure.procedureType.sufs}">
-	
-								<f:facet name="header">
-                   					#{procedure.procedureType.procedureTypeName} 
-               					</f:facet>
+                <p:panelGrid columns="2" layout="tabular" styleClass="pcsFormNoBorder"  style="width:100%; table-layout:auto;"
+                    columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-								<p:panelGrid columns="2" 
-									styleClass="pcsFormNoBorder" style="width:100%"
-									columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+                    <h:outputLabel value="Coarse Offsets (x,y) (microns)" />
+                    <h:panelGroup>
+                        <h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                        <h:outputText value=",  " />
+                        <h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}" style="position:relative; top:2px">
+                            <f:convertNumber pattern="#0.0" />
+                        </h:outputText>
+                    </h:panelGroup>
 
-									<h:outputLabel value="Coarse Offsets (x,y) (microns)" />
-									<h:panelGroup>
-									<h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentX}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>		
-									<h:outputText value=",  " />
-									<h:outputText value="#{procedure.procedureConfigSet.sufsCoarseOffsetsConfig.coarseMirrorOffsetCurrentY}" style="position:relative; top:2px">
-										<f:convertNumber pattern="#0.0" />
-									</h:outputText>
-									</h:panelGroup>
-									
-								</p:panelGrid>
+                </p:panelGrid>
 
+                <p:dataTable id="segmentStatsTable" var="segmentStats" rowIndexVar="rowIndex" tableStyle="table-layout:fixed; width:100%;"
+                    value="#{procedure.sufsProcedureOutput.sufsSegmentZernikeStatsResult.sufsZernikeStatsResult}">
 
-								<p:dataTable var="segmentStats" rowIndexVar="rowIndex" value="#{procedure.sufsProcedureOutput.sufsSegmentZernikeStatsResult.sufsZernikeStatsResult}">
-								    <p:column headerText="SP">
-								    	<!-- need to use the group segment number to derive the segment number -->
-								        <h:outputText value="#{constantsCache.sufsConstants.sufsGroupToMirror[procedure.procedureConfigSet.procedureConfig.sufsGroup-1][rowIndex]}" />
-								        
-								    </p:column>
-								 
-								 
-									<c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />				
-								    <p:column headerText="Zernike 4 Mean +- EOM (#{fieldMetaData.units})">
-								        <h:outputText value="#{segmentStats.zernikeMeans[3]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								        <h:outputText value=" +- " />
-								        <h:outputText value="#{segmentStats.zernikeEoms[3]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								    </p:column>
-								 
-								    <p:column headerText="Zernike 5 Mean +- EOM (#{fieldMetaData.units})">
-								        <h:outputText value="#{segmentStats.zernikeMeans[4]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								        <h:outputText value=" +- " />
-								        <h:outputText value="#{segmentStats.zernikeEoms[4]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								    </p:column>
-								 
-								    <p:column headerText="Zernike 6 Mean +- EOM (#{fieldMetaData.units})">
-								        <h:outputText value="#{segmentStats.zernikeMeans[5]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								        <h:outputText value=" +- " />
-								        <h:outputText value="#{segmentStats.zernikeEoms[5]}">
-								        	<f:converter converterId="DynamicNumberConverter" />
-											<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-								        </h:outputText>
-								    </p:column>
-								 
-								</p:dataTable>
-								
-								</p:panelGrid>
+                    <p:column headerText="SP" style="width:8%; text-align:center;">
+                        <h:outputText value="#{constantsCache.sufsConstants.sufsGroupToMirror[procedure.procedureConfigSet.procedureConfig.sufsGroup-1][rowIndex]}" />
+                    </p:column>
 
-							</p:panelGrid>
+                    <c:set var="fieldMetaData" value="#{metaDataController.findProcedureOutputField('SufsSegmentZernikeStatsResult','ZernikeMeans')}" />
+                    <p:column headerText="Zernike 4 Mean +- EOM (#{fieldMetaData.units})" style="width:30.67%; text-align:right;">
+                        <h:outputText value="#{segmentStats.zernikeMeans[3]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                        <h:outputText value=" +- " />
+                        <h:outputText value="#{segmentStats.zernikeEoms[3]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                    </p:column>
 
-						</p:rowExpansion>
+                    <p:column headerText="Zernike 5 Mean +- EOM (#{fieldMetaData.units})" style="width:30.67%; text-align:right;">
+                        <h:outputText value="#{segmentStats.zernikeMeans[4]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                        <h:outputText value=" +- " />
+                        <h:outputText value="#{segmentStats.zernikeEoms[4]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                    </p:column>
+
+                    <p:column headerText="Zernike 6 Mean +- EOM (#{fieldMetaData.units})" style="width:30.67%; text-align:right;">
+                        <h:outputText value="#{segmentStats.zernikeMeans[5]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                        <h:outputText value=" +- " />
+                        <h:outputText value="#{segmentStats.zernikeEoms[5]}">
+                            <f:converter converterId="DynamicNumberConverter" />
+                            <f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+                        </h:outputText>
+                    </p:column>
+
+                </p:dataTable>
+
+            </div>
+        </h:panelGroup>
+
+    </div>
+</p:rowExpansion>
+
 
 
 					</p:dataTable>

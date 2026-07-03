@@ -1,10 +1,10 @@
 
 .ui-datatable th,.ui-datatable tfoot,.ui-datatable td {
-	font-size: 12px;
+	font-size: 1rem;
 }
 
 .ui-datatable th {
-	font-size: 12px;
+	font-size: 1rem;
 }
 
 .ui-datatable .ui-datatable-data td,.ui-datatable .ui-datatable-data-empty td {
@@ -148,13 +148,13 @@ html, body {
 
 .btmsFormLabelColumn label {
     font-weight: bold;
-    font-size: 1em;
+    font-size: 1rem;
     color: #666666;
 }
 
 .btmsFormLabelColumn a {
     font-weight: normal;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 .btmsFormInputColumn {
@@ -163,7 +163,7 @@ html, body {
 
 .btmsFormInputColumn label {
     font-weight: normal;
-    font-size: 1em;
+    font-size: 1rem;
 }
 
 .btmsFormOutputColumn {
@@ -698,4 +698,14 @@ html, body {
 }
 
 
+body #segmentStatsTable_head thead th:nth-child(1),
+body #segmentStatsTable_data tbody td:nth-child(1) {
+    text-align: center;
+    vertical-align: middle;
+}
 
+body #segmentStatsTable_head thead th:nth-child(n+2),
+body #segmentStatsTable_data tbody td:nth-child(n+2) {
+    text-align: right;
+    vertical-align: middle;
+}
