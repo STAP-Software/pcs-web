@@ -122,7 +122,7 @@ public class ProcedureMgmt {
 			
 			if (object != null) {
 
-				Class clazz = object.getClass();
+				Class<? extends Object> clazz = object.getClass();
 				
 
 				String fieldName = fieldDisplay.getFieldName();
@@ -130,7 +130,7 @@ public class ProcedureMgmt {
 				String methodPrefix = fieldDisplay.getFieldMetaData().getDataType() == Constant.DATA_TYPE_BOOLEAN ? "is" : "get";
 
 				String methodName = methodPrefix + Character.toUpperCase(fieldName.charAt(0)) + fieldName.substring(1);
-				Method method = clazz.getMethod(methodName, null);
+				Method method = clazz.getMethod(methodName);
 								
 				String value = procedureOutputMgmt.encodeObjectFieldValue(object, method, fieldDisplay.getFieldMetaData());
 				

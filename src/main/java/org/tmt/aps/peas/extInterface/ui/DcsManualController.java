@@ -10,7 +10,6 @@ import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -33,6 +32,11 @@ import org.tmt.aps.peas.extinf.TimeoutException;
 @Named
 @SessionScoped
 public class DcsManualController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7807048207847494968L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

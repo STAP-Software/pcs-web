@@ -25,7 +25,6 @@ import jakarta.persistence.Transient;
 import org.apache.commons.beanutils.BeanUtils;
 import org.tmt.aps.peas.common.FloatListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
-import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.PupilMask;

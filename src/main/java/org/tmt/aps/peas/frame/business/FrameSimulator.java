@@ -6,13 +6,12 @@
 package org.tmt.aps.peas.frame.business;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jakarta.ejb.EJB;
 import jakarta.ejb.Singleton;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.Rect;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
@@ -53,8 +52,9 @@ public class FrameSimulator {
 		frameList = new ArrayList<CcdFrame>();
 		
 		// reorder filename list according to fits filename numbering
-		Collections.sort(fitsFilenameList, new BeanComparator("phasingStep"));
-		Collections.sort(fitsFilenameList, new BeanComparator("iteration"));
+		fitsFilenameList.sort(Comparator.comparing(FitsFilename::getPhasingStep));
+		fitsFilenameList.sort(Comparator.comparing(FitsFilename::getIteration));
+
 		
 		
 		for (FitsFilename fitsFilename : fitsFilenameList) {

@@ -43,6 +43,11 @@ import org.tmt.aps.peas.instrument.model.TwoPosMechanism;
 @SessionScoped
 public class CameraManualController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4790771108913193052L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
@@ -638,10 +643,10 @@ public class CameraManualController implements Serializable {
 		try {
 
 			if (shutterCmd == Shutter.STATE_CLOSE) {
-				int state = cameraMgmt.commandCcdShutterState(0);
+				//int state = cameraMgmt.commandCcdShutterState(0);
 				//getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 			} else if (shutterCmd == Shutter.STATE_OPEN) {
-				int state = cameraMgmt.commandCcdShutterState(1);
+				//int state = cameraMgmt.commandCcdShutterState(1);
 				//getCamera().getShutter().setState(state == 0 ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
 			} else {
 				// timed exposure
@@ -670,7 +675,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Point result = future.get();
+			future.get();
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt"));			
 		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
@@ -687,7 +692,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Integer result = future.get();
+			future.get();
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt X"));			
 		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
@@ -704,7 +709,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Integer result = future.get();
+			future.get();
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Fine Tilt Y"));			
 		} catch (CommandFailureException e) {			
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandFailedMessage(e));
@@ -722,7 +727,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Integer result = future.get();									
+			future.get();									
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt X"));
 			
 		} catch (CommandFailureException e) {			
@@ -742,7 +747,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Integer result = future.get();									
+			future.get();									
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt Y"));
 			
 		} catch (CommandFailureException e) {			
@@ -762,7 +767,7 @@ public class CameraManualController implements Serializable {
 			while (!future.isDone()) {
 				Thread.sleep(500);
 			}
-			Point result = future.get();									
+			future.get();									
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Coarse Tilt"));
 			
 		} catch (CommandFailureException e) {			
@@ -784,9 +789,7 @@ public class CameraManualController implements Serializable {
 			while (!twoPosFuture.isDone()) {
 				Thread.sleep(500);
 			}
-			int twoPosState = twoPosFuture.get();
-			//getCamera().getTwoPosMechanism().setState(
-			//		twoPosState == 1 ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+			twoPosFuture.get();
 						
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Two Pos Mech"));
 
@@ -810,8 +813,7 @@ public class CameraManualController implements Serializable {
 			while (!ccdPowerFuture.isDone()) {
 				Thread.sleep(500);
 			}
-			int ccdState = ccdPowerFuture.get();
-			//getCcd().setState(ccdState == 1 ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+			ccdPowerFuture.get();
 						
 			FacesContext.getCurrentInstance().addMessage(null, Utils.commandSuccessfulMessage("Ccd Power"));
 

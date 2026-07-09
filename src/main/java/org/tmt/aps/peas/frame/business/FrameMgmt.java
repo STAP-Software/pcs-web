@@ -184,7 +184,7 @@ public class FrameMgmt {
 		ccdFrame.setInstrumentId(procedure.getInstrument().getInstrumentId());
 		
 		
-		boolean overwritten = saveFitsFrame(ccdFrame);
+		saveFitsFrame(ccdFrame);
 
 		CameraState cameraState = ccdFrame.getCameraState();
 		

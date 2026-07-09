@@ -27,7 +27,14 @@ import org.tmt.aps.peas.instrument.model.PupilMaskType;
  */
 @Named
 @SessionScoped
-public class PupilMaskTypeConverter implements Converter, Serializable {
+public class PupilMaskTypeConverter implements Converter<Object>, Serializable {
+
+
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7510897005608536927L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

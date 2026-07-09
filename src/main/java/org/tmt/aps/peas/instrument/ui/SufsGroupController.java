@@ -39,6 +39,11 @@ import org.tmt.aps.peas.instrument.model.SufsGroup;
 @SessionScoped
 public class SufsGroupController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4292536017311327328L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

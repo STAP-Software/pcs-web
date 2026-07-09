@@ -27,7 +27,12 @@ import org.tmt.aps.peas.instrument.model.FilterType;
  */
 @Named
 @SessionScoped
-public class FilterTypeConverter implements Converter, Serializable {
+public class FilterTypeConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6742302105434917350L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

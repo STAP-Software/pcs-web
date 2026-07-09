@@ -45,6 +45,11 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @SessionScoped
 public class MissingSpotsController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4531632515189417769L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

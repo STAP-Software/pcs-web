@@ -15,13 +15,10 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
-import jakarta.persistence.Transient;
 
 import org.tmt.aps.peas.instrument.model.CcdType;
-import org.tmt.aps.peas.instrument.model.FilterType;
 import org.tmt.aps.peas.instrument.model.Instrument;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
-import org.tmt.aps.peas.instrument.model.ReferenceBeam;
+
 
 /** 
  * Configuration entity class representing the RefMapConfigDefaults table.  This information does not need to be stored with a procedure 

@@ -14,7 +14,6 @@ import jakarta.persistence.TypedQuery;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.config.model.IterationListConfigOption;
-import org.tmt.aps.peas.config.model.IterationValueList;
 import org.tmt.aps.peas.config.model.ProcedureIterationDef;
 
 /**

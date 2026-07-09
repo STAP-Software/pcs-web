@@ -49,13 +49,13 @@ public class IterationValueList {
 		
 		Object object = getIterationValue(iteration).getIterableEntity(accessName);
 		
-		Class clazz = object.getClass();
+		Class<? extends Object> clazz = object.getClass();
 		
 		String methodName = "get" + Character.toUpperCase(labelFieldName.charAt(0)) + labelFieldName.substring(1);
 		
-		Method method = clazz.getMethod(methodName, null);
+		Method method = clazz.getMethod(methodName);
 		
-		return method.invoke(object, null).toString();
+		return method.invoke(object).toString();
 		
 
 	}

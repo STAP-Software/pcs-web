@@ -23,6 +23,8 @@ import org.tmt.aps.peas.common.MessageGenerator;
 @WebServlet("/help/images/*")
 public class ImageServlet extends HttpServlet {
 	
+	private static final long serialVersionUID = 5208313459464331786L;
+	
 	Logger logger = Logger.getLogger(this.getClass());
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

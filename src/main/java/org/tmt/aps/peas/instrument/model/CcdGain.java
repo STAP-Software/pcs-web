@@ -16,7 +16,6 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.config.model.IterableEntity;
-import org.tmt.aps.peas.extinf.Gain;
 
 /**
  * Instrument configuration Entity class representing the CcdType database table.  

@@ -34,6 +34,11 @@ import org.tmt.aps.peas.instrument.model.PupilWheel;
 @SessionScoped
 public class PupilMaskController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -6459339774416302807L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

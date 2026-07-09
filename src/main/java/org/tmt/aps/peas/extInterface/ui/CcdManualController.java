@@ -21,7 +21,6 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
 import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
-import org.tmt.aps.peas.computation.model.CorrectOverscanDarkResult;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraPoller;
@@ -32,7 +31,6 @@ import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.CcdFrame;
 import org.tmt.aps.peas.frame.ui.FrameController;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
-import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdState;
 
 /**
@@ -42,6 +40,11 @@ import org.tmt.aps.peas.instrument.model.CcdState;
 @Named
 @SessionScoped
 public class CcdManualController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2374809795362449316L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -80,8 +83,6 @@ public class CcdManualController implements Serializable {
 	double desiredTemp;
 
 	CcdState ccdState;
-	
-	private static final int OVERSCAN_COL_COUNT = 24;
 	
 	@PostConstruct
 	public void init() {

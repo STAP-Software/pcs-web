@@ -32,6 +32,11 @@ import org.tmt.aps.peas.PeasProperties;
 @SessionScoped
 public class HelpController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 8369775933545061345L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
@@ -40,7 +45,7 @@ public class HelpController implements Serializable {
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 
-	private TreeNode helpContentRoot;
+	private TreeNode<String> helpContentRoot;
 	
 	private String currentPage = "/pcs-web/help/content/overview.htm";
 
@@ -53,7 +58,7 @@ public class HelpController implements Serializable {
 	private void init() {
 		
 		
-		helpContentRoot = new DefaultTreeNode("Root", null);
+		helpContentRoot = new DefaultTreeNode<String>("Root", null);
 
 		
 		// read in and parse the contents file
@@ -79,7 +84,7 @@ public class HelpController implements Serializable {
 				
 				String sectionName = (String)sectionObj.get("sectionName");
 				
-				TreeNode treeNode = new DefaultTreeNode("folder", sectionName, helpContentRoot);
+				TreeNode<String> treeNode = new DefaultTreeNode<String>("folder", sectionName, helpContentRoot);
 				
 				
 				JSONArray subsectionsObj = (JSONArray)sectionObj.get("subsections");
@@ -91,7 +96,7 @@ public class HelpController implements Serializable {
 					String subsectionName = (String)subsectionObj.get("sectionName");
 					String subsectionLink = (String)subsectionObj.get("contentFilename");
 
-					new DefaultTreeNode("link", new HelpPageLink(subsectionName, subsectionLink), treeNode);
+					new DefaultTreeNode<HelpPageLink>("link", new HelpPageLink(subsectionName, subsectionLink), treeNode);
 
 				}
 				
@@ -104,11 +109,11 @@ public class HelpController implements Serializable {
 
 	}
 
-	public TreeNode getHelpContentRoot() {
+	public TreeNode<String> getHelpContentRoot() {
 		return helpContentRoot;
 	}
 
-	public void setHelpContentRoot(TreeNode helpContentRoot) {
+	public void setHelpContentRoot(TreeNode<String> helpContentRoot) {
 		this.helpContentRoot = helpContentRoot;
 	}
 

@@ -40,6 +40,11 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
 @SessionScoped
 public class RefBeamController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 5319781901646027598L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

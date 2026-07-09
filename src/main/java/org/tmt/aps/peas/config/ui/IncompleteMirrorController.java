@@ -6,7 +6,6 @@
 package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -31,10 +30,8 @@ import org.tmt.aps.peas.config.business.GlobalConfigMgmt;
 import org.tmt.aps.peas.config.business.MissingSpotsMgmt;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
 import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 import org.tmt.aps.peas.session.ui.SessionController;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
-import org.tmt.aps.peas.telescope.model.Telescope;
 import org.tmt.aps.peas.visualization.ui.VisualizationController;
 
 /**
@@ -45,6 +42,11 @@ import org.tmt.aps.peas.visualization.ui.VisualizationController;
 @Named
 @SessionScoped
 public class IncompleteMirrorController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2794271656053632906L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -76,8 +78,6 @@ public class IncompleteMirrorController implements Serializable {
 	Long instrumentId;
 
 	private List<Integer> mirrorSegments;
-
-	private List<Integer> mirrorSegmentsSaved;
 
 	String mirrors; // for javascript display
 

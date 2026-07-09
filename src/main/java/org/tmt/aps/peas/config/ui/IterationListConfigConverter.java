@@ -20,7 +20,6 @@ import jakarta.inject.Named;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.model.IterationListConfig;
-import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.procedure.ui.ProcedureController;
 
 /**
@@ -30,7 +29,12 @@ import org.tmt.aps.peas.procedure.ui.ProcedureController;
  */
 @Named
 @SessionScoped
-public class IterationListConfigConverter implements Converter, Serializable {
+public class IterationListConfigConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8055430398645455161L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

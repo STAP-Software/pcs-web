@@ -35,6 +35,11 @@ import org.tmt.aps.peas.instrument.model.CcdType;
 @SessionScoped
 public class CcdDefController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -379293946701793301L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

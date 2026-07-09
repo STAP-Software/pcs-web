@@ -35,6 +35,11 @@ import org.tmt.aps.peas.instrument.model.FilterWheel;
 @SessionScoped
 public class FilterController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -8988250954791099247L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

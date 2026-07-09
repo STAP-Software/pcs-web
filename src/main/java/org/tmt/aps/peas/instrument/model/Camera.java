@@ -7,6 +7,7 @@ package org.tmt.aps.peas.instrument.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -23,7 +24,6 @@ import jakarta.persistence.Transient;
 import org.apache.commons.beanutils.BeanComparator;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
-import org.tmt.aps.peas.extinf.CameraStatus;
 
 
 /**
@@ -332,7 +332,8 @@ public class Camera {
 	public List<ReferenceBeam> getOrderedReferenceBeamList() {
 		List<ReferenceBeam> refBeamList = new ArrayList<ReferenceBeam>(referenceBeamSet);
 		
-		Collections.sort(refBeamList, new BeanComparator("refBeamNum"));
+		refBeamList.sort(Comparator.comparing(ReferenceBeam::getRefBeamNum));
+
 		
 		return refBeamList;
 	}

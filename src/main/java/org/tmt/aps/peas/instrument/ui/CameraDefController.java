@@ -10,11 +10,9 @@ import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
-import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.Instrument;
@@ -28,10 +26,13 @@ import org.tmt.aps.peas.instrument.model.Instrument;
 @SessionScoped
 public class CameraDefController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4448080077149545313L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
-	@Inject
-	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@EJB
 	PhysicalModel physicalModel;
 

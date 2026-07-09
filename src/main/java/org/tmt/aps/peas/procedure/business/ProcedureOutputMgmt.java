@@ -67,16 +67,16 @@ public class ProcedureOutputMgmt {
 		// 1. get all the calc result and decision log class fields possible
 		List<String> outputClassNames = getOutputFieldClassNames();
 		
-		Class poClass = procedureOutput.getClass();
+		Class<? extends ProcedureOutputable> poClass = procedureOutput.getClass();
 		Method[] poMethods = poClass.getMethods();
 
 		for (Method poMethod : poMethods) {
 
-			logger.info("CREATE PROCEDURE OUTPUT:: " + poClass.getName() + ", " + poMethod.getName() + " : " + testMethodName(poClass, poMethod.getName(), outputClassNames));
+			logger.info("CREATE PROCEDURE OUTPUT:: " + poClass.getName() + ", " + poMethod.getName() + " : " + testMethodName(poMethod.getName(), outputClassNames));
 			
 			
 			// test that this is an official calc result getter method
-			if (!testMethodName(poClass, poMethod.getName(), outputClassNames)) continue;
+			if (!testMethodName(poMethod.getName(), outputClassNames)) continue;
 							
 			// get the calcResult object
 			Object calcResult = poMethod.invoke(procedureOutput, new Object[0]);
@@ -84,8 +84,7 @@ public class ProcedureOutputMgmt {
 
 			if (calcResult == null) continue;
 			
-			// get all field methods from the calc result class
-			Class calcClass = calcResult.getClass();
+			calcResult.getClass();
 	
 			Method[] methods = calcResult.getClass().getMethods();
 	
@@ -128,7 +127,7 @@ public class ProcedureOutputMgmt {
 	}
 	
 			
-	private boolean testMethodName(Class poClass, String methodName, List<String> candidates) {
+	private boolean testMethodName(String methodName, List<String> candidates) {
 		if (methodName.startsWith("get")) {
 			for (String candidate : candidates) {
 				if (methodName.equals("get" + candidate)) {					
@@ -186,9 +185,9 @@ public class ProcedureOutputMgmt {
 			String className = procedureOutputValue.getProcedureOutputField().getClassName();
 			// get the calc result object from the procedure output.  Create if necessary
 			
-			Method calcResultGetMethod = poClassInstance.getClass().getMethod("get" + className, new Class[0]);
+			Method calcResultGetMethod = poClassInstance.getClass().getMethod("get" + className);
 			
-			Object calcResult = calcResultGetMethod.invoke(poClassInstance, new Object[0]);
+			Object calcResult = calcResultGetMethod.invoke(poClassInstance);
 			
 			if (calcResult == null) {
 				
@@ -198,7 +197,7 @@ public class ProcedureOutputMgmt {
 				String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
 				calcResult = Class.forName(fullClassName).getDeclaredConstructor().newInstance();
 				// apply setter method
-				Class[] paramTypes = {calcResult.getClass()};
+				Class<?>[] paramTypes = {calcResult.getClass()};
 				Method setterMethod = poClassInstance.getClass().getMethod("set" + className, paramTypes);
 				Object[] params = {calcResult};
 				setterMethod.invoke(poClassInstance, params);
@@ -251,16 +250,16 @@ public class ProcedureOutputMgmt {
 				String className = procedureOutputValue.getProcedureOutputField().getClassName();
 				// get the calc result object from the procedure output.  Create if necessary
 				
-				Method calcResultGetMethod = poItClassInstance.getClass().getMethod("get" + className, new Class[0]);
+				Method calcResultGetMethod = poItClassInstance.getClass().getMethod("get" + className);
 				
-				Object calcResult = calcResultGetMethod.invoke(poItClassInstance, new Object[0]);
+				Object calcResult = calcResultGetMethod.invoke(poItClassInstance);
 				
 				if (calcResult == null) {
 					// create a new one and apply setter in procedureOutput 
 					String fullClassName = className.contains("DecisionLog") ? "org.tmt.aps.peas.procedure.model." + className : "org.tmt.aps.peas.computation.model." + className;
 					calcResult = Class.forName(fullClassName).getDeclaredConstructor().newInstance();
 					// apply setter method
-					Class[] paramTypes = {calcResult.getClass()};
+					Class<?>[] paramTypes = {calcResult.getClass()};
 					Method setterMethod = poItClassInstance.getClass().getMethod("set" + className, paramTypes);
 					Object[] params = {calcResult};
 					setterMethod.invoke(poItClassInstance, params);
@@ -337,8 +336,7 @@ public class ProcedureOutputMgmt {
 	 */
 	public String encodeObjectFieldValue(Object object, Method method, FieldDescriptor fieldDescriptor) throws Exception {
 
-		// extract and convert the data
-		Class returnTypeClass = method.getReturnType();
+		method.getReturnType();
 		Object[] args = new Object[0];
 
 		StringBuffer buf = new StringBuffer();

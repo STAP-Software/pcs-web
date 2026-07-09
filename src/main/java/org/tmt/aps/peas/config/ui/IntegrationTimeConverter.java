@@ -6,8 +6,6 @@
 package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
-import java.util.List;
-
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
 import jakarta.faces.application.FacesMessage;
@@ -21,7 +19,6 @@ import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.config.business.IterationEntityCache;
 import org.tmt.aps.peas.config.model.IntegrationTime;
-import org.tmt.aps.peas.config.model.IterationListConfig;
 
 /**
  * JSF Converter class to enable usage of IterationListConfig objects on JSF pages
@@ -30,7 +27,12 @@ import org.tmt.aps.peas.config.model.IterationListConfig;
  */
 @Named
 @SessionScoped
-public class IntegrationTimeConverter implements Converter, Serializable {
+public class IntegrationTimeConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6044444622554828437L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

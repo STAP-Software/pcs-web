@@ -10,11 +10,11 @@ import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
+
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
-import jakarta.persistence.Transient;
+
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
@@ -34,6 +34,11 @@ import org.tmt.aps.peas.config.model.GlobalConfigDefaults;
 @Named
 @SessionScoped
 public class GlobalConfigController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3062315062087723357L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

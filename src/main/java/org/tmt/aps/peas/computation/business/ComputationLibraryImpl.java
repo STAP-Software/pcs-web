@@ -269,7 +269,9 @@ public class ComputationLibraryImpl {
 		float[] rawPeak = new float[arrayLen];
 		int[] findCentStatus = new int[arrayLen];  // return status of each call to 
 
-		logger.info("FIND CENTROIDS JNI CALL START");		
+		logger.info("FIND CENTROIDS JNI CALL START");	
+		
+		@SuppressWarnings("unused")
 		Object[] result = jfindCentroids.jfindCentroids(retVal, frame, irad, imargin, x_guesses,
 				y_guesses, itermax, nspotTypes, passedMissingSpotFlags, nGauss, x_cent, y_cent, intensity, peak, rawPeak, findCentStatus);
 		logger.info("FIND CENTROIDS JNI CALL END");
@@ -381,6 +383,7 @@ public class ComputationLibraryImpl {
 	
 			staticBadPixelCorrectedFrame = new int[frame.length][frame[0].length];
 	
+			@SuppressWarnings("unused")
 			Object[] result = jremoveBadPixels.jremoveBadPixels(retVal, frame, x1, y1, x2, y2, staticBadPixelCorrectedFrame);
 	
 			if (retVal.getCode() > 0) {
@@ -641,8 +644,6 @@ public class ComputationLibraryImpl {
 		JcalculateCentroidOffsets jcalculateCentroidOffsets = new JcalculateCentroidOffsets();
 		RetVal retVal = new RetVal();
 
-		float[] fiParams = new float[6];
-
 		float[][] ref_cent = FloatPointListEncoder.convertToNby2Array(Arrays.asList(refMapCentroids));
 		float[][] centroid = FloatPointListEncoder.convertToNby2Array(Arrays.asList(centroids));
 
@@ -858,6 +859,7 @@ public class ComputationLibraryImpl {
 		float[] x_offsets_out = new float[centroidOffsets.length];
 		float[] y_offsets_out = new float[centroidOffsets.length];
 
+		@SuppressWarnings("unused")
 		Object output[] = jttOffsetsToActs.jttOffsetsToActs(retVal, x_act_pos, y_act_pos, imageScale, x_offsets, y_offsets, mirror_config, x_offsets_out,
 				y_offsets_out, desired_act_deltas);
 
@@ -900,6 +902,7 @@ public class ComputationLibraryImpl {
 		float[] act_p = new float[actPos.length];
 
 
+		@SuppressWarnings("unused")
 		Object output[] = jdecomposeActs.jdecomposeActs(retVal, actPos, act_tt, act_p);
 
 		if (retVal.getCode() > 0) {
@@ -939,6 +942,7 @@ public class ComputationLibraryImpl {
 		float[] act_p = new float[ttActs.length];
 
 
+		@SuppressWarnings("unused")
 		Object output[] = joptimalPistons.joptimalPistons(retVal, controlMatrix, ttActs, mirrorConfig, testArray, 0, act_p);
 
 		if (retVal.getCode() > 0) {
@@ -1483,6 +1487,7 @@ public class ComputationLibraryImpl {
 
 		
 		
+		@SuppressWarnings("unused")
 		Object[] result = jcalculateFocusModeVector.jcalculateFocusModeVector(retVal, controlMatrix, focusModeVector);
 
 		
@@ -1519,6 +1524,7 @@ public class ComputationLibraryImpl {
 		
 		float[] m2ActDeltas = new float[3];
 		
+		@SuppressWarnings("unused")
 		Object[] result = jm2ActuatorsFromPtt.jm2ActuatorsFromPtt(retVal, meanM2TipTiltError.x, meanM2TipTiltError.y, meanM2PistonError * 1000.0f, 
 				m2ActuatorRadius * 1000.0f, m2ActDeltas);
 
@@ -1722,6 +1728,7 @@ public class ComputationLibraryImpl {
 		float[][][][] templateArray = new float[dim1][dim1][phasingTemplateCount][3];
 
 		
+		@SuppressWarnings("unused")
 		Object[] result = jmakeTemplate.jmakeTemplate(retVal, phasingSubimageFftSize, phasingSubimageFftSize, findCentConfig.getItermax(), findCentConfig.getImargin(), findCentConfig.getNgauss(), 
 				Constants.SPOT_TYPE_INTERIOR, findCentConfig.getIrad(), Constants.TEMPLATE_CENTROID_CALC_METHOD_FIND_CENT, arcsecPerPixel, filter.getWavelength() * Constants.NM_TO_MICRONS, 
 				pupilMask.getCrossHairDiam() * Constants.METERS_TO_UM,
@@ -1778,6 +1785,7 @@ public class ComputationLibraryImpl {
 		float[] coherenceArray = new float[edgeCount];
 		float[] bestCorrelationIndex = new float[edgeCount];
 		
+		@SuppressWarnings("unused")
 		Object[] result = jbbAnalyzeFrame.jbbAnalyzeFrame(retVal, frame, centroidsX, centroidsY, foundEdgeCentroids, edgeAngle, templateArray, coherenceArray, bestCorrelationIndex);
 
 		
@@ -2040,6 +2048,7 @@ public class ComputationLibraryImpl {
 		
 		float[][] colorSteps = new float[stepCount+1][3];
 		
+		@SuppressWarnings("unused")
 		Object[] result = jcolorStep.jcolorStep(retVal, stepCount, stepSizeNm, colorSteps);
 
 		if (retVal.getCode() > 0) {
@@ -2073,6 +2082,7 @@ public class ComputationLibraryImpl {
 
 		float[] m1ActuatorDeltas = new float[segmentColors.length*3];
 	
+		@SuppressWarnings("unused")
 		Object[] result = jcolorStepToActuators.jcolorStepToActuators(retVal, colors, segmentColors, m1ActuatorDeltas);
 
 		
@@ -2284,8 +2294,6 @@ public class ComputationLibraryImpl {
 
 
 		int[][] segNspotTypes = generateSufsSegmentInts(nspotTypes, sufsGroupSegmentToMask);
-		int[][] segMissingSpotFlags = generateSufsSegmentInts(missingSpotFlags, sufsGroupSegmentToMask);
-		int[][] segFindCentStatusList = generateSufsSegmentInts(findCentStatusList, sufsGroupSegmentToMask);
 		
 		CentroidStatsResult[] centroidStatsResult = new CentroidStatsResult[7];
 		
@@ -2622,6 +2630,7 @@ public class ComputationLibraryImpl {
 	    float[] chisqF = new float[edgeCount];
 
 	
+		@SuppressWarnings("unused")
 		Object[] result = jnbAnalyzeFrame.jnbAnalyzeFrame(retVal, frame, xCentroids, yCentroids, goodEdgeSpots, edgeAngle, template, 
 	            coherenceOut, bestCorrelationIndex, aFit, bFit, phiFit, chisqF);
 
@@ -2735,6 +2744,7 @@ public class ComputationLibraryImpl {
 		int[] rowFlagOut = new int[numEdges];
 		float[][] nbStepBestFit = new float[numEdges][numFilters];
 
+		@SuppressWarnings("unused")
 		Object[] result = jnbAnalyzeFilterSequence.jnbAnalyzeFilterSequence(retVal, rowFlagInT, stepTableT, filterWavelengthMicrons, range, 
 				rInt, chi2nm, nbStep, rowFlagOut, nbStepBestFit);
 	            

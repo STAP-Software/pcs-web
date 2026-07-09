@@ -37,6 +37,8 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 
 import jakarta.transaction.Transactional;
 
+
+
 /**
  * Session EJB containing database methods to search, create and update night sessions
  * Manages procedure numbering
@@ -95,22 +97,37 @@ public class SessionMgmt {
 	           
 	            
 	            if (pcs != null) {
-	                // Force initialization by accessing properties
-	                pcs.getProcedureConfig().getCoarsePhasingOption();
-	                pcs.getGlobalConfig();
-	                pcs.getSufsCoarseOffsetsConfig();
-	                pcs.getIterationListConfig();
-	                
-	            }
-	            
-	            logger.info("findSession:: SUFS CoarseOffsets Config: " + pcs.getSufsCoarseOffsetsConfig());
+	            	// force initialization by accessing a field
+	                if (pcs.getProcedureConfig() != null) {
+	                    pcs.getProcedureConfig().getCoarsePhasingOption();
+	                }
+	                if (pcs.getGlobalConfig() != null) {
+	                    pcs.getGlobalConfig().hashCode(); // or any real field getter
+	                }
+	                if (pcs.getSufsCoarseOffsetsConfig() != null) {
+	                    pcs.getSufsCoarseOffsetsConfig().getSufsCoarseOffsetsConfigId(); // or any real field getter
+	                }
+	                if (pcs.getIterationListConfig() != null) {
+	                    pcs.getIterationListConfig().hashCode(); // or any real field getter
+	                }
+	            }	            
+
 
 	            // Initialize other lazy associations
-	            procedure.getProcedureType().getProcedureTypeId();
-	            procedure.getTelescope().getTelescopeId();
-	            procedure.getInstrument().getInstrumentId();
-	            procedure.getSession().getSessionId();
-
+	            if (procedure.getProcedureType() != null) {
+	                procedure.getProcedureType().getProcedureTypeName(); // or any non-id field
+	            }
+	            if (procedure.getTelescope() != null) {
+	                procedure.getTelescope().hashCode(); // or a real field getter
+	            }
+	            if (procedure.getInstrument() != null) {
+	                procedure.getInstrument().hashCode(); // or a real field getter
+	            }
+	            if (procedure.getSession() != null) {
+	                procedure.getSession().hashCode(); // or a real field getter
+	            }
+	            
+	            
 	            // procedure output
 	            ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
 	            procedure.setProcedureOutput(procedureOutput);

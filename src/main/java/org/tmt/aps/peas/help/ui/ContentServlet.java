@@ -23,6 +23,8 @@ import org.tmt.aps.peas.common.MessageGenerator;
 @WebServlet("/help/content/*")
 public class ContentServlet extends HttpServlet {
 
+	private static final long serialVersionUID = 320675504900405189L;
+	
 	Logger logger = Logger.getLogger(this.getClass());
 	
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

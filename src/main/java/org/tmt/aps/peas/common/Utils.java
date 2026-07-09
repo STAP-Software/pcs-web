@@ -26,7 +26,7 @@ public class Utils {
 	 * @return the number of milliseconds waited
 	 * @throws Exception
 	 */
-	public static long waitForComplete(Future... futures) throws Exception {
+	public static long waitForComplete(Future<?>... futures) throws Exception {
 
 		// if a future is null, then ignore it
 
@@ -35,7 +35,7 @@ public class Utils {
 		while (true) {
 
 			boolean allDone = true;
-			for (Future f : futures) {
+			for (Future<?> f : futures) {
 
 				if (f == null)
 					continue;
@@ -57,7 +57,7 @@ public class Utils {
 		long endTime = System.currentTimeMillis();
 		
 		try {
-			for (Future f : futures) {
+			for (Future<?> f : futures) {
 				if (f == null)
 					continue;
 				logger.info("Testing Future: " + f);
@@ -125,7 +125,7 @@ public class Utils {
 		}
 	}
 
-	private static Throwable findNestedException(Throwable th, Class clazz) {
+	private static Throwable findNestedException(Throwable th, Class<IllegalArgumentException> clazz) {
 		Throwable current = th;
 		while (current != null) {
 			if (current.getClass() == clazz) {

@@ -387,8 +387,11 @@ public class JavaComputations {
 	{
 		int idx1 = matrix.length;
 		int idx2 = matrix[0].length;
+		
+		@SuppressWarnings("unchecked")
 		Class<T> arrayType = (Class<T>) matrix[0][0].getClass();
 		
+		@SuppressWarnings("unchecked")
 	    T[][] transpose = (T[][]) Array.newInstance(arrayType, idx2, idx1);
 	    for (int x = 0; x < idx2; x++)
 	    {

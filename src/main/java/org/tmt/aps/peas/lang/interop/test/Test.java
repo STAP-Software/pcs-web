@@ -9,7 +9,7 @@ public class Test {
 		
 		RetVal retVal = new RetVal();
 
-		JfindAndIdentify jfid = new JfindAndIdentify();
+		//JfindAndIdentify jfid = new JfindAndIdentify();
 
 		float[][] frame = new float[1024][1025];
 		for (int i=0; i<1024; i++) {
@@ -18,7 +18,7 @@ public class Test {
 			}
 		}
 
-		float[][] centroids = new float[36][2];
+		//float[][] centroids = new float[36][2];
 
 		//Object[] returnValues = jfid.jfindAndIdentify(retVal, frame, centroids);
 

@@ -9,17 +9,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.NamedQueries;
-import jakarta.persistence.NamedQuery;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraStatus;
-import org.tmt.aps.peas.frame.model.CcdFrame;
 
 /**
  * Database Entity representing the CameraState table.  Each record is a snapshot of the camera state, typically taken when a frame is being taken.

@@ -27,7 +27,12 @@ import org.tmt.aps.peas.instrument.model.ReferenceBeam;
  */
 @Named
 @SessionScoped
-public class RefBeamConverter implements Converter, Serializable {
+public class RefBeamConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4291367609971608092L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

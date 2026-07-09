@@ -28,7 +28,12 @@ import org.tmt.aps.peas.instrument.model.SufsGroup;
  */
 @Named
 @SessionScoped
-public class SufsGroupConverter implements Converter, Serializable {
+public class SufsGroupConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 291055237722930350L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

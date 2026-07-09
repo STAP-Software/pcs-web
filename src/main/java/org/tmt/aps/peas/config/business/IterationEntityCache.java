@@ -320,9 +320,9 @@ public class IterationEntityCache {
 		String getter = "get" + Character.toUpperCase(entity.getKeyFieldName().charAt(0)) + entity.getKeyFieldName().substring(1);
 		
 		try {
-			Method method = entity.getClass().getMethod(getter , null);
+			Method method = entity.getClass().getMethod(getter);
 			
-			Object result = method.invoke(entity, null);
+			Object result = method.invoke(entity);
 			
 			if (result instanceof String) {
 				return Long.valueOf((String)result);

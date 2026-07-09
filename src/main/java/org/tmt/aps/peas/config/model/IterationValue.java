@@ -37,9 +37,9 @@ public class IterationValue {
 			
 			String getter = "get" + Character.toUpperCase(labelValueField.charAt(0)) + labelValueField.substring(1);
 			
-			Method method = entity.getClass().getMethod(getter , null);
+			Method method = entity.getClass().getMethod(getter);
 			
-			return "" + method.invoke(entity, null);
+			return "" + method.invoke(entity);
 		
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -10,7 +10,6 @@ import java.io.Serializable;
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
-import jakarta.faces.application.FacesMessage;
 import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
@@ -32,6 +31,11 @@ import org.tmt.aps.peas.instrument.model.CoarseTiltMirror;
 @Named
 @SessionScoped
 public class CoarseTiltMirrorController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4227875828132315092L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

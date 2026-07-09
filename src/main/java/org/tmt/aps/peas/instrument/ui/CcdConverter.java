@@ -27,7 +27,12 @@ import org.tmt.aps.peas.instrument.model.Ccd;
  */
 @Named
 @SessionScoped
-public class CcdConverter implements Converter, Serializable {
+public class CcdConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1383029704081601834L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

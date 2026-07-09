@@ -8,6 +8,7 @@ package org.tmt.aps.peas.config.ui;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
@@ -45,6 +46,11 @@ import org.tmt.aps.peas.session.ui.SessionController;
 @Named
 @SessionScoped
 public class IterationConfigController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 9143557542172753971L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -111,7 +117,7 @@ public class IterationConfigController implements Serializable {
 			// set up the filter list
 			filterList = sessionController.getInstrument().getCamera().getFilterWheel().getOrigFilterList();
 			// order by name
-			Collections.sort(filterList, new BeanComparator("filterName"));
+			filterList.sort(Comparator.comparing(Filter::getFilterName));
 
 			// set up the ref beam list
 			refBeamList = cameraDefMgmt.findAllRefBeams(instrument.getInstrumentId());

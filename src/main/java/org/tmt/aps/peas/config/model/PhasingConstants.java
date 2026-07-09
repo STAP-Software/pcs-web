@@ -1,8 +1,5 @@
 package org.tmt.aps.peas.config.model;
 
-import java.util.List;
-
-import org.tmt.aps.peas.instrument.model.Filter;
 
 /**
  * Constants data class containing phasing constants.  This class is populated from database data in the {@link Constant} class and is made available to executors and

@@ -20,6 +20,8 @@ import org.tmt.aps.peas.session.model.FieldMetaData;
 public class MetaDataController implements Serializable {
 
 	
+	private static final long serialVersionUID = -2741873416027206102L;
+	
 	@EJB
 	FieldMetaDataCache fieldMetaDataCache;
 	

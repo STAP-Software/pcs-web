@@ -32,6 +32,11 @@ import org.tmt.aps.peas.instrument.model.FineTiltMirror;
 @SessionScoped
 public class FineTiltMirrorController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 7531517684136835323L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

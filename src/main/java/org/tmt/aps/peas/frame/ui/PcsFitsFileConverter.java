@@ -28,7 +28,12 @@ import org.tmt.aps.peas.frame.model.FitsFilename;
  */
 @Named
 @SessionScoped
-public class PcsFitsFileConverter implements Converter, Serializable {
+public class PcsFitsFileConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4484665759146029064L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

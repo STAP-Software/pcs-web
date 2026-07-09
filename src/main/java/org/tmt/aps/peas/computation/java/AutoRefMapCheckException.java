@@ -12,6 +12,8 @@ import org.tmt.aps.peas.common.MessageGenerator;
  */
 public class AutoRefMapCheckException extends Exception {
 
+	private static final long serialVersionUID = 4459237357840430981L;
+
 	/**
 	 * Constructor using key and two arguments
 	 * @param key the message bundle key

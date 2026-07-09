@@ -1,9 +1,7 @@
 package org.tmt.aps.peas.config.model;
 
-import java.util.List;
 
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.Point;
 
 /**

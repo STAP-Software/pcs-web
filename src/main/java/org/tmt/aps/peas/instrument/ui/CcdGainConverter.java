@@ -29,7 +29,12 @@ import org.tmt.aps.peas.instrument.model.Filter;
  */
 @Named
 @SessionScoped
-public class CcdGainConverter implements Converter, Serializable {
+public class CcdGainConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4291122651249797152L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
