@@ -47,6 +47,11 @@ import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 @Lock(LockType.READ)
 public class GraphicDisplayMgmt implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 2699900394616232757L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

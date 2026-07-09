@@ -6,10 +6,7 @@
 package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.enterprise.context.SessionScoped;
@@ -85,7 +82,9 @@ public class SufsGroupController implements Serializable {
 	public void refreshSufsGroupList() throws Exception {
 		
 		sufsGroupList = cameraDefMgmt.findSufsGroups();
-		Set<SufsGroup> sufsGroupSet = new HashSet<SufsGroup>(sufsGroupList);
+		
+		// V3.0
+		//Set<SufsGroup> sufsGroupSet = new HashSet<SufsGroup>(sufsGroupList);
 
 		// update physical model on the fly
 		//physicalModel.getInstrument().getCamera().getPupilWheel().getSufsPupilMask().setSufsGroupSet(sufsGroupSet);

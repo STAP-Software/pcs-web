@@ -21,6 +21,7 @@ public class MissingSpotsConverter {
 		String line;
 		List<String> fAndIList = new ArrayList<String>();
 		List<String> analList = new ArrayList<String>();
+		@SuppressWarnings("unused")
 		List<String> oneList = new ArrayList<String>();
 
 		try {

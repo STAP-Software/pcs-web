@@ -23,7 +23,6 @@ import org.tmt.aps.peas.computation.business.ComputationLibraryImpl;
 import org.tmt.aps.peas.computation.java.AutoRefMapCheckException;
 import org.tmt.aps.peas.computation.model.BbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.BbAnalyzeSequenceResult;
-import org.tmt.aps.peas.computation.model.CoherenceAnalyzerResult;
 import org.tmt.aps.peas.computation.model.ColorStepResult;
 import org.tmt.aps.peas.computation.model.ColorStepToActuatorsResult;
 import org.tmt.aps.peas.computation.model.FindCentroidsResult;
@@ -306,7 +305,8 @@ public class CoarsePhasingExecutor {
 				/**********************************************/
 				/// BbAnalyzeFrame
 				/**********************************************/		
-			    BbAnalyzeFrameResult bbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
+			    @SuppressWarnings("unused")
+				BbAnalyzeFrameResult bbAnalyzeFrameResult = computationLibrary.bbAnalyzeFrame(
 			    		procedureCcdFrame.getCcdFrame().getCorrectedFrame(),
 			    		findCentroidsResult, 
 			    		constantsCache.getPrimaryMirrorConstants().getEdgeAngle(),
@@ -432,7 +432,8 @@ public class CoarsePhasingExecutor {
 		    /**********************************************/
 			/*          TerraceModeComponents             */
 			/**********************************************/		
-		    TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
+		    @SuppressWarnings("unused")
+			TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(),
 		    		bbAnalyzeSequenceResult.getActCalc(),
 		    		globalConfig.getMirrorListInt());

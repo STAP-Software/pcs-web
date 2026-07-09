@@ -29,6 +29,11 @@ import org.tmt.aps.peas.common.Utils;
 @Lock(LockType.READ)
 public class FrameDisplayMgmt implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2329925059448350604L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	private boolean pendingDisplay;

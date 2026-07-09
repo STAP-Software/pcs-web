@@ -11,8 +11,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
@@ -20,7 +18,6 @@ import jakarta.persistence.Transient;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
  * Configuration entity class representing the PupilRegErrorConfig table

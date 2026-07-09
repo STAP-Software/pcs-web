@@ -10,7 +10,6 @@ import org.tmt.aps.peas.computation.model.NbAnalyzeFrameResult;
 import org.tmt.aps.peas.computation.model.NbAnalyzeStepSequenceResult;
 import org.tmt.aps.peas.computation.model.PhasingStatsResult;
 import org.tmt.aps.peas.computation.model.PupilRegErrorResult;
-import org.tmt.aps.peas.instrument.model.Filter;
 import org.tmt.aps.peas.visualization.model.SingleFilterEdgeHeightsDisplayValues;
 
 /**

@@ -29,7 +29,8 @@ public class CcdCommandSimulator implements CcdCommand {
 	private GainImpl gain;
 	private double exposureTime = 12.4;
 
-	 private double[] ccdTemps = {-198.0, -24.3341345, -25.1};
+	// V3.0 - not used
+	//private double[] ccdTemps = {-198.0, -24.3341345, -25.1};
 	
 	public CcdCommandSimulator(Ccd ccd, int imageHeight, int imageWidth, int overscanWidth, int overscanHeight, int gainNumber, 
 			int[] offsetCalibration) {

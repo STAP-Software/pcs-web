@@ -156,11 +156,11 @@ public class ProcedureOutput implements ProcedureOutputable {
 		
 		for (ProcedureIterationOutput pio : procedureIterationOutputList) {
 		
-			Class pioClass = pio.getClass();
+			Class<? extends ProcedureIterationOutput> pioClass = pio.getClass();
 			
-			Method calcGetterMethod = pioClass.getMethod("get" + resultFieldName, new Class[0]);
+			Method calcGetterMethod = pioClass.getMethod("get" + resultFieldName);
 			
-			Object calcResult = calcGetterMethod.invoke(pio, new Object[0]);
+			Object calcResult = calcGetterMethod.invoke(pio);
 	
 			resultList.add(resultClass.cast(calcResult));		
 		}
@@ -183,17 +183,17 @@ public class ProcedureOutput implements ProcedureOutputable {
 		
 		for (ProcedureIterationOutput pio : procedureIterationOutputList) {
 		
-			Class pioClass = pio.getClass();
+			Class<? extends ProcedureIterationOutput> pioClass = pio.getClass();
 			
-			Method calcGetterMethod = pioClass.getMethod("get" + classname, new Class[0]);
+			Method calcGetterMethod = pioClass.getMethod("get" + classname);
 			
-			Object calcResult = calcGetterMethod.invoke(pio, new Object[0]);
+			Object calcResult = calcGetterMethod.invoke(pio);
 	
-			Class calcClass = calcResult.getClass();
+			Class<? extends Object> calcClass = calcResult.getClass();
 			
-			Method fieldGetterMethod = calcClass.getMethod("get" + fieldname, new Class[0]);
+			Method fieldGetterMethod = calcClass.getMethod("get" + fieldname);
 			
-			Object fieldValue = fieldGetterMethod.invoke(calcResult, new Object[0]);
+			Object fieldValue = fieldGetterMethod.invoke(calcResult);
 			
 			resultList.add(resultClass.cast(fieldValue));
 					

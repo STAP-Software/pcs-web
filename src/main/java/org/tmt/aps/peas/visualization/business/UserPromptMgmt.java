@@ -27,6 +27,11 @@ import org.tmt.aps.peas.visualization.model.UserPrompt;
 @Lock(LockType.READ)
 public class UserPromptMgmt implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2985883383809789534L;
+
 	@EJB
 	ProcedureExecutionState procedureExecutionState;
 	

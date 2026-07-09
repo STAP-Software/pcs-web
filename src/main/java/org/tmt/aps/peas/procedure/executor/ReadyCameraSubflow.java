@@ -1,6 +1,5 @@
 package org.tmt.aps.peas.procedure.executor;
 
-import java.util.Hashtable;
 import java.util.concurrent.Future;
 
 import jakarta.ejb.EJB;

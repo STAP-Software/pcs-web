@@ -273,9 +273,11 @@ public class FineScreenExecutor {
 				/*              fineScreenScaleError                 */
 				/*****************************************************/
 				
+				@SuppressWarnings("unused")
 				List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 				
 				// spots that can be used (found without errors and should be used for analysis)
+				@SuppressWarnings("unused")
 				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 				
 				
@@ -403,6 +405,7 @@ public class FineScreenExecutor {
 			/*              fineScreenScaleError - Avg           */
 			/*****************************************************/
 			
+			@SuppressWarnings("unused")
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 						
 			

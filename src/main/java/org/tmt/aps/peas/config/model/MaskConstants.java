@@ -1,7 +1,6 @@
 package org.tmt.aps.peas.config.model;
 
 import org.tmt.aps.peas.common.FloatPoint;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
  * Constants data class containing mask constants.  This class is populated from database data in the {@link Constant} class and is made available to executors and

@@ -317,6 +317,7 @@ public class SufsExecutor {
 				/*****************************************************/
 				Future<Exception> dcsFuture = centerTelescopeSubflow.centerTelescope(procedure, currentSession);
 
+				@SuppressWarnings("unused")
 				CentroidOffsetsResult centroidOffsetsResult = pio.getCentroidOffsetsResult();
 
 				ProcedureCcdFrame procedureCcdFrame = frameMgmt.findLatestProcedureCcdFrame(procedure);
@@ -440,6 +441,7 @@ public class SufsExecutor {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList(
 					procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), procedureConfig.getSufsGroup());
 
+			@SuppressWarnings("unused")
 			FindCentroidsResult[] findCentroidsIterations = procedureOutput
 					.getIterationResultObjectFor("FindCentroidsResult", FindCentroidsResult.class).toArray(new FindCentroidsResult[0]);
 
@@ -449,6 +451,7 @@ public class SufsExecutor {
 			computationLibrary.calculateSufsAvgCentroidStats(sufsSegmentAvgOffsetsResult, avgGoodSpotMask, subimageDefList.getNspotTypes(),
 					sufsGroupSegmentToMask);
 
+			@SuppressWarnings("unused")
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 
 			/*****************************************************/
@@ -460,6 +463,7 @@ public class SufsExecutor {
 					.getIterationResultObjectFor("SufsSegmentZernikeResult", SufsSegmentZernikeResult.class)
 					.toArray(new SufsSegmentZernikeResult[0]);
 
+			@SuppressWarnings("unused")
 			SufsSegmentZernikeStatsResult sufsSegmentZernikeStatsResult = computationLibrary
 					.calculateSufsZernikeStats(sufsSegmentZernikeResultIterations);
 

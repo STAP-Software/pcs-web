@@ -14,7 +14,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
 import org.jboss.logging.Logger;
-import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.visualization.model.ProcTypeVisualizationDisplay;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 

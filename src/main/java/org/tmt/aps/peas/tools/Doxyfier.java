@@ -72,7 +72,9 @@ public class Doxyfier {
 			
 			Element root = document.getDocumentElement();
 			
+			@SuppressWarnings("unused")
 			String author = root.getElementsByTagName("author").item(0).getTextContent();
+			@SuppressWarnings("unused")
 			String shortDesc = root.getElementsByTagName("short-desc").item(0).getTextContent();
 			String longDesc = root.getElementsByTagName("long-desc").item(0).getTextContent();
 			

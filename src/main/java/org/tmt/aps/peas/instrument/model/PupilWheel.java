@@ -6,7 +6,7 @@
 package org.tmt.aps.peas.instrument.model;
 
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -18,8 +18,6 @@ import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.Transient;
-
-import org.apache.commons.beanutils.BeanComparator;
 
 /**
  * Instrument configuration Entity class representing the PupilWheel table.  Transient fields for managing pupilMasks 1 through 6, 
@@ -123,7 +121,8 @@ public class PupilWheel implements DeviceStates {
 	public List<PupilMask> getOrigPupilMaskList() {
 		
 		List<PupilMask> maskList = new ArrayList<PupilMask>(pupilMaskSet);
-		Collections.sort(maskList, new BeanComparator("maskName"));
+		maskList.sort(Comparator.comparing(PupilMask::getMaskName));
+
 		return maskList;
 	}
 

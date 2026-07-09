@@ -15,7 +15,6 @@ import jakarta.enterprise.context.SessionScoped;
 import jakarta.inject.Named;
 
 import org.jboss.logging.Logger;
-import org.primefaces.PrimeFaces;
 import org.tmt.aps.peas.common.MessageGenerator;
 
 /**
@@ -25,6 +24,11 @@ import org.tmt.aps.peas.common.MessageGenerator;
 @Named
 @SessionScoped
 public class VersionController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -5944573721852237879L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

@@ -18,6 +18,8 @@ import org.tmt.aps.peas.extinf.TimeoutException;
  */
 public class DcsCommandSimulator implements DcsCommand {
 
+	private static final long serialVersionUID = -5616223260066913776L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	double[] dcsM2Pos = {0.1f, 0.2f, 0.3f};

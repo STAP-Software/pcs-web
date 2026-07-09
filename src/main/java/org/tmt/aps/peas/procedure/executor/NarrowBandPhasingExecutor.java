@@ -523,7 +523,8 @@ public class NarrowBandPhasingExecutor {
 		    /**********************************************/
 			/*          TerraceModeComponents             */
 			/**********************************************/		
-		    TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
+		    @SuppressWarnings("unused")
+			TerraceModeComponentsResult terraceModeComponentsResult = computationLibrary.terraceModeComponents(
 		    		constantsCache.getPrimaryMirrorConstants().getPrimaryActPos(),
 		    		nbActuatorsResult.getActCalc(),
 		    		globalConfig.getMirrorListInt());

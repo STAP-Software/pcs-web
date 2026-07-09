@@ -7,4 +7,6 @@ package org.tmt.aps.peas.procedure.exception;
  */
 public class HandMarkRequiredException extends FandIException {
 
+	private static final long serialVersionUID = 7798193907747677877L;
+
 }

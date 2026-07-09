@@ -6,6 +6,7 @@ package org.tmt.aps.peas.procedure.exception;
  *
  */
 public final class AbortProcedureException extends RuntimeException {
+	
     private static final long serialVersionUID = 1L;
 
 	public AbortProcedureException(String message) {

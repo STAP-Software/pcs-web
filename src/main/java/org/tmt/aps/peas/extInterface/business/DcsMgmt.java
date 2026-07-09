@@ -14,7 +14,6 @@ import jakarta.ejb.Stateless;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.Constants;
-import org.tmt.aps.peas.common.FloatPoint;
 import org.tmt.aps.peas.extinf.StarInfo;
 
 /**

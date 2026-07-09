@@ -107,7 +107,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void addFirstItem(String name, String command) {
 
-        System.out.println("BREADCRUMB: ADD FIRST ITEM");
+        logger.debug("BREADCRUMB: ADD FIRST ITEM");
 
         if (crumbs.size() > 1) {
             crumbs.subList(1, crumbs.size()).clear();
@@ -120,7 +120,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void addItem(String name, String command) {
 
-        System.out.println("BREADCRUMB: ADD ITEM, name = " + name + ", command = " + command);
+    	logger.debug("BREADCRUMB: ADD ITEM, name = " + name + ", command = " + command);
 
         crumbs.add(new Crumb(name, command, ""));
         
@@ -131,7 +131,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void insertFirst(String name, String command) {
 
-        System.out.println("BREADCRUMB: INSERT FIRST");
+    	logger.debug("BREADCRUMB: INSERT FIRST");
 
         crumbs.add(1, new Crumb(name, command, ""));
         
@@ -142,7 +142,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void removeTo(String value) {
 
-        System.out.println("BREADCRUMB: REMOVE TO " + value);
+    	logger.debug("BREADCRUMB: REMOVE TO " + value);
 
         for (int i = crumbs.size() - 1; i >= 1; i--) {
 
@@ -159,7 +159,7 @@ public class BreadcrumbMenuBean implements Serializable {
 
     public void removeLast() {
 
-        System.out.println("BREADCRUMB: REMOVE LAST");
+    	logger.debug("BREADCRUMB: REMOVE LAST");
 
         if (crumbs.size() > 1) {
             crumbs.remove(crumbs.size() - 1);
@@ -193,7 +193,12 @@ public class BreadcrumbMenuBean implements Serializable {
 
     private static class Crumb implements Serializable {
 
-        String label;
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = -7769796750493456799L;
+		
+		String label;
         String outcome;
         String icon;
 

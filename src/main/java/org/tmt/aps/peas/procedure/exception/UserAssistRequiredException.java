@@ -9,6 +9,8 @@ package org.tmt.aps.peas.procedure.exception;
  */
 public class UserAssistRequiredException extends FandIException {
 	
+	private static final long serialVersionUID = 6650675480327141084L;
+	
 	private boolean ndetectNotAllSingle;
 	private boolean fracThreshExceeded;
 	private boolean fracAnalysisThreshExceeded;

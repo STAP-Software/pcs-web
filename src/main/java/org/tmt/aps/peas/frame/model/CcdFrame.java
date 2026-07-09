@@ -24,7 +24,6 @@ import jakarta.persistence.TemporalType;
 import jakarta.persistence.Transient;
 
 import org.tmt.aps.peas.config.model.ProcedureConfig;
-import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.instrument.model.CameraState;
 import org.tmt.aps.peas.instrument.model.CcdState;
 import org.tmt.aps.peas.instrument.model.PupilMaskType;

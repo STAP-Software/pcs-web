@@ -5,8 +5,6 @@
  */
 package org.tmt.aps.peas.statusLog.business;
 
-import java.util.Collection;
-
 import jakarta.annotation.PostConstruct;
 import jakarta.ejb.EJB;
 import jakarta.ejb.Lock;

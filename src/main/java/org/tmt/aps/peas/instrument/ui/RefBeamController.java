@@ -7,7 +7,7 @@ package org.tmt.aps.peas.instrument.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 import jakarta.annotation.PostConstruct;
@@ -21,7 +21,6 @@ import jakarta.faces.event.ComponentSystemEvent;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.PeasProperties;
@@ -88,7 +87,7 @@ public class RefBeamController implements Serializable {
 		try {
 			referenceBeamList = new ArrayList<ReferenceBeam>(physicalModel.getInstrument().getCamera().getReferenceBeamSet());
 
-			Collections.sort(referenceBeamList, new BeanComparator("refBeamNum"));
+			referenceBeamList.sort(Comparator.comparing(ReferenceBeam::getRefBeamNum));
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);

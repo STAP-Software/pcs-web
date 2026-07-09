@@ -26,6 +26,11 @@ import org.tmt.aps.peas.statusLog.model.ProcedureStatusLog;
 @SessionScoped
 public class StatusLogController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -4267451454652435265L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

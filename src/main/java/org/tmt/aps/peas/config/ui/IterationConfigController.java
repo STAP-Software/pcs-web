@@ -7,7 +7,6 @@ package org.tmt.aps.peas.config.ui;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 
@@ -18,7 +17,6 @@ import jakarta.faces.context.FacesContext;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.PeasProperties;
 import org.tmt.aps.peas.common.MessageGenerator;
@@ -410,6 +408,7 @@ public class IterationConfigController implements Serializable {
 			option.setOptionOrder(nextNum);  // this is not needed, since we are not saving the 'option' to the database
 
 			// the procedureIterationDefs for this procedureType
+			@SuppressWarnings("unused")
 			List<ProcedureIterationDef> entityList = iterationEntityCache.getProcedureIterationDefList(procedureType.getProcedureTypeId());
 			// use this to determine the order we need to define for the encoding
 

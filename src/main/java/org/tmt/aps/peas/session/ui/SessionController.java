@@ -58,6 +58,11 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 @SessionScoped
 public class SessionController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3185984116656324313L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB
@@ -88,10 +93,8 @@ public class SessionController implements Serializable {
 
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
-	@Inject
-	private ApplicationScopeBean applicationScopeBean;
-
-
+	
+	
 	Session currentSession;
 	//Session currentSessionPersisted; // the session that is completed and stored
 	Session session;

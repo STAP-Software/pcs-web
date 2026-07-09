@@ -45,6 +45,11 @@ import org.tmt.aps.peas.session.ui.SessionController;
 @ApplicationScoped
 public class ApplicationScopeBean implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3416824266185751787L;
+	
 	@Inject
 	private BreadcrumbMenuBean breadcrumbMenuBean;
 	@Inject
@@ -159,6 +164,7 @@ public class ApplicationScopeBean implements Serializable {
 			return;
 		}
 
+		@SuppressWarnings("unused")
 		String facesRedirect = request.getParameter("faces-redirect");
 		String test = request.getParameter("test");
 		String fromBreadcrumb = request.getParameter("from-breadcrumb");

@@ -28,7 +28,12 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
  */
 @Named
 @SessionScoped
-public class ProcedureTypeConverter implements Converter, Serializable {
+public class ProcedureTypeConverter implements Converter<Object>, Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 4942041735875413691L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

@@ -10,8 +10,7 @@ import java.io.Serializable;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Date;
+import java.util.Comparator;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.function.Supplier;
@@ -27,11 +26,9 @@ import jakarta.faces.model.SelectItem;
 import jakarta.inject.Inject;
 import jakarta.inject.Named;
 
-import org.apache.commons.beanutils.BeanComparator;
 import org.apache.commons.beanutils.BeanUtils;
 import org.jboss.logging.Logger;
 import org.primefaces.PrimeFaces;
-import org.primefaces.event.FileUploadEvent;
 import org.primefaces.model.DefaultStreamedContent;
 import org.primefaces.model.StreamedContent;
 
@@ -107,7 +104,6 @@ import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.ui.SessionController;
-import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.statusLog.ui.StatusLogController;
 import org.tmt.aps.peas.visualization.model.UserPrompt;
 import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
@@ -124,6 +120,11 @@ import java.io.InputStream;
 @Named
 @SessionScoped
 public class ProcedureController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 6420966608154750329L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 
@@ -191,9 +192,8 @@ public class ProcedureController implements Serializable {
 	private StatusLogController statusLogController;
 	@Inject
 	private FrameController frameController;
-	@Inject
-	private AsyncController asyncController;
-	@Inject CameraManualController cameraManualController;
+	@Inject 
+	private CameraManualController cameraManualController;
 
 	// need to exchange when changing from subprocedure and back
 	Procedure procedure;
@@ -935,7 +935,8 @@ public class ProcedureController implements Serializable {
 
 			// create available FITS file list
 			availableFitsFiles = frameController.getProcedureFitsFiles(procedure.getProcedureType().getProcedureTypeCd());
-			Collections.sort(availableFitsFiles, new BeanComparator("fileName"));
+			availableFitsFiles.sort(Comparator.comparing(FitsFilename::getFileName));
+
 
 			// clean up from previous procedure state
 			procedureExecutionState.init(procedure);
@@ -947,7 +948,6 @@ public class ProcedureController implements Serializable {
 
 			SimpleDateFormat sdf = new SimpleDateFormat("MM/dd/yyyy hh:mm a z");
 			sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-			Date date = new Date();
 			breadcrumbMenuBean.addFirstItem("Procedure #" + procedure.getProcedureNumber() + ": "
 					+ procedure.getProcedureType().getProcedureTypeName(),
 					"/modules/procedure/procedurePerspective.xhtml?faces-redirect=true");

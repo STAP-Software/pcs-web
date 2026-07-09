@@ -15,11 +15,9 @@ import jakarta.persistence.TypedQuery;
 
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
-import org.tmt.aps.peas.config.model.FIConfigDefaults;
 import org.tmt.aps.peas.instrument.model.Ccd;
 import org.tmt.aps.peas.instrument.model.CcdGain;
 import org.tmt.aps.peas.instrument.model.CcdType;
-import org.tmt.aps.peas.instrument.model.PupilMaskType;
 
 /**
  * Session EJB managing database queries/updates for CCD configuration records

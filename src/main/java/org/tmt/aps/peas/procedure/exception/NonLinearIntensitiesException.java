@@ -7,6 +7,7 @@ package org.tmt.aps.peas.procedure.exception;
  */
 public class NonLinearIntensitiesException extends FandIException {
 	
+	private static final long serialVersionUID = -3129681181707153440L;
 	float max;
 	float threshold;
 	int n;

@@ -143,6 +143,7 @@ public class CreateRefMapExecutor {
 			
 			procedureExecutionState.setCurrentOutputTarget(procedureOutput);
 			
+			@SuppressWarnings("unused")
 			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
 					procedureConfig.getPupilMask().getArcsecPerMeter(),
 					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());

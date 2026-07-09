@@ -47,6 +47,11 @@ import org.tmt.aps.peas.visualization.ui.VisualizationController;
 @SessionScoped
 public class AsyncController implements Serializable {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -1380293181762461279L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 
 	@EJB

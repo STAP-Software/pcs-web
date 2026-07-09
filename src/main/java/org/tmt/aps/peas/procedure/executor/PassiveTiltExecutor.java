@@ -271,6 +271,7 @@ public class PassiveTiltExecutor {
 			/*****************************************************/
 			
 			//need to get centerSpots 
+			@SuppressWarnings("unused")
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 			
 			pio.getProcedureIterationDecisionLog().setTelescopeMoved(false);

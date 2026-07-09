@@ -15,7 +15,6 @@ import jakarta.ejb.Stateless;
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.model.GainImpl;
-import org.tmt.aps.peas.extinf.CameraStatus;
 import org.tmt.aps.peas.extinf.Gain;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
 import org.tmt.aps.peas.instrument.model.CcdState;

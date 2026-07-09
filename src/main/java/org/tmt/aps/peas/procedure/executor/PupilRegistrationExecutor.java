@@ -32,7 +32,6 @@ import org.tmt.aps.peas.config.model.ProcedureConfig;
 import org.tmt.aps.peas.extInterface.business.AcsMgmt;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extInterface.business.DcsMgmt;
-import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.frame.business.FrameMgmt;
 import org.tmt.aps.peas.frame.model.ProcedureCcdFrame;
 import org.tmt.aps.peas.instrument.business.PhysicalModel;
@@ -131,6 +130,7 @@ public class PupilRegistrationExecutor {
 		try {
 
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
+			@SuppressWarnings("unused")
 			GlobalConfig globalConfig = procedure.getProcedureConfigSet().getGlobalConfig();
 
 			//ComputationLibrary computationLibrary = computationContext.getComputationLibrary();
@@ -189,6 +189,7 @@ public class PupilRegistrationExecutor {
 			/***********************************************/
 			/*             Startup Computations            */
 			/***********************************************/
+			@SuppressWarnings("unused")
 			StartupComputationsResult startupComputationsResult = computationLibrary.startupComputations(
 					procedureConfig.getPupilMask().getArcsecPerMeter(),
 					physicalModel.getInstrument().getCcd().getCcdType().getPixelSize());
@@ -224,6 +225,7 @@ public class PupilRegistrationExecutor {
 			SubimageDefList subimageDefList = subimageDefCache.getSubimageDefList( procedureConfig.getPupilMask().getPupilMaskType().getPupilMaskTypeId(), sufsGroup);
 
 			
+			@SuppressWarnings("unused")
 			CentroidStatsResult centroidStatsResult = computationLibrary.calculateCentroidStats(centroidOffsetsResult.getCcdCentroidOffsets(), subimageDefList.getNspotTypes(), 
 					subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
@@ -234,11 +236,13 @@ public class PupilRegistrationExecutor {
 			/*****************************************************/
 			
 			//need to get centerSpots 
+			@SuppressWarnings("unused")
 			List<FloatPoint> centerSpots = Arrays.asList(constantsCache.getPrimaryMirrorConstants().getCenterSpot());
 						
 			if (procedureConfig.getPupilMaskType().isPupilMaskTypeFs()) {
 			
 				// spots that can be used (found without errors and should be used for analysis)
+				@SuppressWarnings("unused")
 				int[] good_spots = 	computationLibrary.goodCentroidsFound(subimageDefList.getMissingSpotFlags(), findCentroidsResult.getFindCentStatusList());
 
 			}

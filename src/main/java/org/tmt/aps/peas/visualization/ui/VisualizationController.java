@@ -23,7 +23,6 @@ import org.tmt.aps.peas.common.FloatPointListEncoder;
 import org.tmt.aps.peas.common.IntegerListEncoder;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
-import org.tmt.aps.peas.common.PointListEncoder;
 import org.tmt.aps.peas.computation.model.SubimageDefList;
 import org.tmt.aps.peas.config.business.ConstantsCache;
 import org.tmt.aps.peas.config.business.SubimageDefCache;
@@ -52,6 +51,11 @@ import org.tmt.aps.peas.visualization.model.VisualizationDisplay;
 @Named
 @SessionScoped
 public class VisualizationController implements Serializable {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -3889961203799535992L;
 
 	Logger logger = Logger.getLogger(this.getClass());
 

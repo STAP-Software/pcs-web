@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
-
 import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Utils;
@@ -25,6 +23,11 @@ import org.tmt.aps.peas.extinf.TimeoutException;
  */
 public class CameraCommandSimulator implements CameraCommand {
 
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = -2193806819934845413L;
+
 	Logger logger = Logger.getLogger(this.getClass());
 	
 	Map<Integer, List<CameraQueryListener>> deviceCodeToCameraChangeListenerList;
@@ -39,9 +42,12 @@ public class CameraCommandSimulator implements CameraCommand {
 	private int overallPowerState;
 	private int ccdControllerPowerState;
 	private int overallStatus;
-	private int fanPowerState;
+	
+	// V3.0 - value not used
+	//private int fanPowerState;
 	private int galilPowerState;
-	private int powerSuppliesPowerState;
+	// V3.0 - value not used
+	//private int powerSuppliesPowerState;
 	private int purgeAirState;
 
 	
@@ -173,9 +179,11 @@ public class CameraCommandSimulator implements CameraCommand {
 
 		overallPowerState = CameraCommand.UNKNOWN;
 		ccdControllerPowerState = CameraCommand.UNKNOWN;
-		fanPowerState = CameraCommand.UNKNOWN;
+		// V3.0 - not used
+		//fanPowerState = CameraCommand.UNKNOWN;
 		galilPowerState = CameraCommand.UNKNOWN;
-		powerSuppliesPowerState = CameraCommand.UNKNOWN;
+		// V3.0 - not used
+		//powerSuppliesPowerState = CameraCommand.UNKNOWN;
 	
 		
 		logger.info(MessageGenerator.generateMessage("command.success", "resetCamera::SIMULATOR"));
@@ -408,7 +416,9 @@ public class CameraCommandSimulator implements CameraCommand {
 		cameraStatus.overallPowerState = overallPowerState;
 		cameraStatus.ccdPowerState = ccdControllerPowerState;
 		cameraStatus.galilPowerState = galilPowerState;
-
+		
+		
+		
 		
 		
 		logger.trace(MessageGenerator.generateMessage("command.success", "getCameraStatus::SIMULATOR"));

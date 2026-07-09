@@ -23,8 +23,6 @@ import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
-import org.tmt.aps.peas.procedure.model.ProcedureType;
-
 /**
  * Database Entity class representing a row in the RefBeamMap table.
  * @author smichaels
