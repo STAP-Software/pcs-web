@@ -100,6 +100,13 @@ public class IterationEntityCache {
 		// load up the procedureTypeToIterationDefList map
 		iterationDefs = iterationMgmt.findProcedureIterationDefs();
 		
+		// V3.0 debug only
+		for (ProcedureIterationDef d : iterationDefs) {
+		    logger.debug("GLOBAL iterationDefs: procedureTypeId=" + d.getProcedureType().getProcedureTypeId()
+		        + " order=" + d.getIterationEntityOrder()
+		        + " className=" + d.getIterationEntityClassName()
+		        + " accessName=" + d.getIterationEntityAccessName());
+		}		
 		
 		// IterationDefLists maps to procedure type
 		for (ProcedureIterationDef iterationDef : iterationDefs) {
@@ -139,6 +146,10 @@ public class IterationEntityCache {
 		for (Filter filter : filterList) {
 			indexToEntityMap.put(getKeyFieldValue(filter), filter);
 			className = filter.getClassName();
+			
+			logger.debug("Loaded Filter into cache: filterId=" + getKeyFieldValue(filter) + " filterName=" + filter.getFilterName());
+		
+			
 		}
 		classToEntityMap.put(className, indexToEntityMap);
 		
@@ -197,7 +208,10 @@ public class IterationEntityCache {
 		
 		for (Long procedureTypeId : procedureTypeToIterationDefList.keySet()) {
 		
-			
+			 logger.debug("procedureTypeId=" + procedureTypeId
+				        + " iterationClassList=" + procedureTypeToIterationClassList.get(procedureTypeId));
+			 
+			 
 			// query iteration list config option lists
 			List<IterationListConfigOption> iterationListConfigList = iterationMgmt.findIterationListConfigOptions(procedureTypeId, instrumentId, ccd.getCcdType().getCcdTypeId());
 			
@@ -263,6 +277,14 @@ public class IterationEntityCache {
 					Long nextKey = Long.valueOf(items.get(i*classNames.size() + j));
 					// find the entity that matches
 					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(nextKey);
+					
+					// V3.0 protection against unexpected filter assignments
+					if (entity == null) {
+	                    logger.warn("IterationValueList decode: no entity found for class="
+	                        + classNames.get(j) + " key=" + nextKey
+	                        + " (entity may be unmounted/reassigned - check admin screens for this entity type)");
+	                }
+					
 					entities.add(entity);
 					
 				} catch (NumberFormatException e) {
@@ -275,6 +297,16 @@ public class IterationEntityCache {
 					Long key = Long.valueOf((int)(nextKey*10));
 										
 					IterableEntity entity = classToEntityMap.get(classNames.get(j)).get(key);
+					
+					// V3.0 protection against unexpected filter assignments
+	                if (entity == null) {
+	                    logger.warn("IterationValueList decode: no entity found for class="
+	                        + classNames.get(j) + " key=" + key
+	                        + " (entity may be unmounted/reassigned - check admin screens for this entity type)");
+	                }
+
+					
+					
 					entities.add(entity);
 					
 				}
