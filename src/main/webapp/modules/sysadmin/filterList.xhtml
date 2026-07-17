@@ -21,13 +21,13 @@
 			</div>
 			<br />
 
-			<div style="margin:30px;width:400px">
-				<p:dataTable id="sessionTable" var="filter" value="#{filterController.filterList}">
+			<div style="margin:30px; width:550px">
+				<p:dataTable id="sessionTable" var="filter" value="#{filterController.filterList}" style="table-layout:auto; width:auto;">
 					<f:facet name="header">
 					PCS Filters 
 				</f:facet>
 
-					<p:column>
+					<p:column style="width:40px">
 						<p:commandLink value="" style="float:left" action="#{filterController.doViewFilter}">
 						    <i class="pi pi-search"></i>
 							<f:setPropertyActionListener target="#{filterController.filter}" value="#{filter}" />
@@ -38,6 +38,9 @@
 					</p:column>
 					<p:column headerText="Filter Type">
 						<h:outputText value="#{filter.filterType.filterTypeName}" />
+					</p:column>
+					<p:column headerText="Wheel Assignment">
+						<h:outputText value="#{filter.filterWheelDescription}" />
 					</p:column>
 
 				</p:dataTable>

@@ -27,7 +27,9 @@ import org.tmt.aps.peas.config.model.IterableEntity;
     @NamedQuery(
         name = "findAllFilters",
         query = "SELECT o FROM Filter o " +
-                "INNER JOIN FETCH o.filterType"
+                "INNER JOIN FETCH o.filterType " +
+                "LEFT JOIN o.filterWheel fw " +
+                "ORDER BY fw.filterWheelId, o.wheelPosition"
     ),
     @NamedQuery(
         name = "findByFilterTypeAndWheel",
@@ -146,6 +148,12 @@ public class Filter implements IterableEntity {
 	public void setFilterWheel(FilterWheel filterWheel) {
 		this.filterWheel = filterWheel;
 	}
+	
+	
+	public String getFilterWheelDescription() {
+		return " Wheel: " + filterWheel.getFilterWheelId() + ", Slot: " + getWheelPosition();
+	}
+	
 	
 	public FilterType getFilterType() {
 		return filterType;
