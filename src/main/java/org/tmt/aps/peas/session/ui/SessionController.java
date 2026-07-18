@@ -571,7 +571,7 @@ public class SessionController implements Serializable {
 		if (advancedViewMode == true) {
 			PrimeFaces.current().executeScript("PF('loginDialog').show()");
 		} else {
-			PrimeFaces.current().ajax().update("procedureDetailForm procedureListForm");	
+			updateIfPresent("procedureDetailForm", "procedureListForm");	
 		}
 		
 	}
@@ -589,15 +589,23 @@ public class SessionController implements Serializable {
 			advancedViewMode = true;
 			advancedView = Constants.ADVANCED_VIEW_ADMINISTRATION;
 			advancedViewModeLabel = "Administration Mode";
-			PrimeFaces.current().ajax().update("menuForm");
 		} else {
 			advancedViewMode = true;
 			advancedView = Constants.ADVANCED_VIEW_ENGINEERING;
 			advancedViewModeLabel = "Engineering Mode";
-			PrimeFaces.current().ajax().update("menuForm");
+			
 		}
-		PrimeFaces.current().ajax().update("procedureDetailForm");
-		PrimeFaces.current().ajax().update("procedureListForm");
+		updateIfPresent("menuForm", "procedureDetailForm", "procedureListForm");
+	}
+	
+	
+	private void updateIfPresent(String... ids) {
+	    FacesContext ctx = FacesContext.getCurrentInstance();
+	    for (String id : ids) {
+	        if (ctx.getViewRoot().findComponent(id) != null) {
+	            PrimeFaces.current().ajax().update(id);
+	        }
+	    }
 	}
 
 	/**

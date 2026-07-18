@@ -402,7 +402,7 @@
 
                 </p:panelGrid>
 
-                <p:dataTable id="segmentStatsTable" var="segmentStats" rowIndexVar="rowIndex" tableStyle="table-layout:fixed; width:100%;"
+                <p:dataTable id="segmentStatsTable" var="segmentStats" rowIndexVar="rowIndex" lazy="false" tableStyle="table-layout:fixed; width:100%;"
                     value="#{procedure.sufsProcedureOutput.sufsSegmentZernikeStatsResult.sufsZernikeStatsResult}">
 
                     <p:column headerText="SP" style="width:8%; text-align:center;">
