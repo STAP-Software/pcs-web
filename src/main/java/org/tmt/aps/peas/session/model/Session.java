@@ -87,18 +87,33 @@ import org.tmt.aps.peas.telescope.model.Telescope;
     	        "LEFT OUTER JOIN FETCH s.procedureList.instrument " +
     	        "LEFT OUTER JOIN FETCH s.procedureList.session " +
 
-    	        "WHERE s.sessionId = :sessionId " +
-    	        "AND pFilter.procedureType.procedureTypeId = :procedureTypeId " +
-    	        "AND pFilter.telescope.telescopeId = :telescopeId"
+    	        "WHERE s.sessionId = :sessionId "
+
     ),
     @NamedQuery(
     	    name = "findSessionOperationalData",
-    	    query = "SELECT DISTINCT s FROM Session s " +
-    	            "INNER JOIN FETCH s.telescope " +
-    	            "INNER JOIN FETCH s.instrument " +
-    	            "LEFT JOIN s.procedureList p " +          // normal join for filtering only
-    	            "WHERE s.sessionId = :sessionId " +
-    	            "AND (p.operational = true OR p.procedureId IS NULL)"
+    	    query =  "SELECT DISTINCT s FROM Session s " +
+        	        "INNER JOIN FETCH s.telescope " +
+        	        "INNER JOIN FETCH s.instrument " +
+
+        	        "LEFT OUTER JOIN FETCH s.procedureList " +
+
+        	        // normal join only for filtering
+        	        "LEFT OUTER JOIN s.procedureList pFilter " +
+
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureConfigSet " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureConfigSet.procedureConfig " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureConfigSet.globalConfig " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureConfigSet.sufsCoarseOffsetsConfig " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureConfigSet.iterationListConfig " +
+
+        	        "LEFT OUTER JOIN FETCH s.procedureList.procedureType " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.telescope " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.instrument " +
+        	        "LEFT OUTER JOIN FETCH s.procedureList.session " +
+
+        	        "WHERE s.sessionId = :sessionId " +
+    	            "AND (pFilter.operational = true OR pFilter.procedureId IS NULL)"
     ),
     // TODO: the findSessionOperationalData also grab the full procedureList associations.  We will have to do it separately using this query
     @NamedQuery(

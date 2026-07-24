@@ -78,6 +78,7 @@ public class SessionMgmt {
 	    }
 	    query.setParameter("sessionId", sessionId);
 
+	    
 	    Session session;
 	    try {
 	        session = query.getSingleResult();
@@ -98,6 +99,8 @@ public class SessionMgmt {
 	        }
 	    }
 
+	    
+	    
 	    // Initialize lazy properties manually
 	    if (session.getProcedureList() != null) {
 	        for (Procedure procedure : session.getProcedureList()) {

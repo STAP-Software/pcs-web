@@ -9,13 +9,16 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import jakarta.ejb.EJB;
+import jakarta.el.MethodNotFoundException;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
 import jakarta.annotation.Priority;
 
 import org.jboss.logging.Logger;
+import org.tmt.aps.peas.computation.model.FindCentResult;
 import org.tmt.aps.peas.procedure.business.ProcedureExecutionState;
+import org.tmt.aps.peas.procedure.model.CenterTelescopeProcedureOutput;
 
 /**
  * Computation interceptor.  Every method with the <code>@Computation</code> annotation calls the method in this class with the 
@@ -51,6 +54,18 @@ public class ComputationInterceptor implements Serializable {
 			String setMethodName = "set" + result.getClass().getSimpleName();
 			Method setMethod = outputTarget.getClass().getMethod(setMethodName, parameters);
 			setMethod.invoke(outputTarget, result);
+
+		} catch (NoSuchMethodException e) {
+			
+			// for FindCentResult, only center telescope uses the output directly in reports
+			if (result instanceof FindCentResult) {
+				// most procedure output types correctly do not include FindCentResult; we want to suppress error logging in those cases 
+				
+				if ((procedureExecutionState.getCurrentOutputTarget() instanceof CenterTelescopeProcedureOutput)) {
+					// Center Telescope is the only one that does include FindCentResult, so don't suppress that if it occurs
+					logger.error(e);
+				}			
+			}
 
 		} catch (Throwable th) {
 			logger.error(th);
