@@ -32,81 +32,80 @@ import jakarta.persistence.TemporalType;
 @Table(name = "RefBeamMap")
 @NamedQueries({
 	@NamedQuery(
-	    name = "findCurrentRefBeamMap",
-	    query = "SELECT rb FROM RefBeamMap rb " +
-	            "INNER JOIN FETCH rb.centroidMap " +                 // fetch root
-	            "INNER JOIN FETCH rb.procedureRefBeamMap " +         // fetch root
-	            "INNER JOIN rb.procedureRefBeamMap.procedure p " +  // normal join, alias allowed for filtering
-	            "INNER JOIN p.procedureType pt " +                  // normal join, alias allowed
-	            "INNER JOIN FETCH p.procedureCcdFrameList " +       // fetch collections you want loaded
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
-	            "WHERE rb.instrumentId = :instrumentId " +
-	            "AND rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
-	            "AND rb.filterTypeId = :filterTypeId " +
-	            "AND rb.refBeamDefMapFlg = false " +
-	            "AND pt.procedureTypeId = 8 " +
-	            "ORDER BY rb.createDate DESC"
-	),
-    @NamedQuery(
-	    name = "findNewestRefBeamMap",
-	    query = "SELECT rb FROM RefBeamMap rb " +
-	            "INNER JOIN FETCH rb.centroidMap " +               // fetch root, no alias
-	            "INNER JOIN FETCH rb.procedureRefBeamMap " +       // fetch root, no alias
-	            "INNER JOIN rb.procedureRefBeamMap.procedure p " + // normal join with alias for filtering
-	            "INNER JOIN p.procedureType pt " +                 // normal join with alias
-	            "INNER JOIN FETCH p.procedureCcdFrameList " +      // fetch collections you want loaded
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
-	            "WHERE rb.instrumentId = :instrumentId " +
-	            "AND rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
-	            "AND rb.refBeamDefMapFlg = false " +
-	            "AND pt.procedureTypeId = 8 " +
-	            "ORDER BY rb.createDate DESC"
-	),
-    @NamedQuery(
-	    name = "findCurrentSufsRefBeamMap",
-	    query = "SELECT rb FROM RefBeamMap rb " +
-	            "INNER JOIN FETCH rb.centroidMap " +               // no alias
-	            "INNER JOIN FETCH rb.procedureRefBeamMap " +       // no alias
-	            "INNER JOIN rb.procedureRefBeamMap.procedure p " + // normal join with alias for filtering
-	            "INNER JOIN p.procedureType pt " +                 // normal join with alias
-	            "INNER JOIN FETCH p.procedureCcdFrameList " +      // fetch root collection
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
-	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
-	            "WHERE rb.instrumentId = :instrumentId " +
-	            "AND rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
-	            "AND rb.sufsGroupNumber = :sufsGroupNumber " +
-	            "AND rb.filterTypeId = :filterTypeId " +
-	            "AND rb.refBeamDefMapFlg = false " +
-	            "AND pt.procedureTypeId = 8 " +
-	            "ORDER BY rb.createDate DESC"
-	),
-    @NamedQuery(
-    	    name = "findNewestSufsRefBeamMap",
-    	    query = "SELECT rb FROM RefBeamMap rb " +
-    	            "INNER JOIN FETCH rb.centroidMap " +
-    	            "INNER JOIN FETCH rb.procedureRefBeamMap " +
-    	            "INNER JOIN rb.procedureRefBeamMap.procedure p " +   // normal join with alias 
-    	            "INNER JOIN p.procedureType pt " +
-    	            "INNER JOIN FETCH p.procedureCcdFrameList " +
-    	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
-    	            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
-    	            "WHERE rb.instrumentId = :instrumentId " +
-    	            "AND rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
-    	            "AND rb.sufsGroupNumber = :sufsGroupNumber " +
-    	            "AND rb.refBeamDefMapFlg = false " +
-    	            "AND pt.procedureTypeId = 8 " +
-    	            "ORDER BY rb.createDate DESC"
-    ),
-    @NamedQuery(
-        name = "findRefBeamDefMap",
-        query = "SELECT rb FROM RefBeamMap rb " +
-                "INNER JOIN FETCH rb.centroidMap " +   // no alias here
-                "WHERE rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
-                "AND rb.refBeamDefMapFlg = true " +
-                "ORDER BY rb.createDate DESC"
-    )
+		    name = "findCurrentRefBeamMapId",
+		    query = "SELECT rb.refBeamMapId FROM RefBeamMap rb " +
+		            "INNER JOIN rb.centroidMap cm " +
+		            "INNER JOIN rb.procedureRefBeamMap prb " +
+		            "INNER JOIN prb.procedure p " +
+		            "INNER JOIN p.procedureType pt " +
+		            "WHERE rb.instrumentId = :instrumentId " +
+		            "AND cm.pupilMaskTypeId = :pupilMaskTypeId " +
+		            "AND rb.filterTypeId = :filterTypeId " +
+		            "AND rb.refBeamDefMapFlg = false " +
+		            "AND pt.procedureTypeId = 8 " +
+		            "ORDER BY rb.createDate DESC"
+		),
+		@NamedQuery(
+		    name = "findCurrentSufsRefBeamMapId",
+		    query = "SELECT rb.refBeamMapId FROM RefBeamMap rb " +
+		            "INNER JOIN rb.centroidMap cm " +
+		            "INNER JOIN rb.procedureRefBeamMap prb " +
+		            "INNER JOIN prb.procedure p " +
+		            "INNER JOIN p.procedureType pt " +
+		            "WHERE rb.instrumentId = :instrumentId " +
+		            "AND cm.pupilMaskTypeId = :pupilMaskTypeId " +
+		            "AND rb.sufsGroupNumber = :sufsGroupNumber " +
+		            "AND rb.filterTypeId = :filterTypeId " +
+		            "AND rb.refBeamDefMapFlg = false " +
+		            "AND pt.procedureTypeId = 8 " +
+		            "ORDER BY rb.createDate DESC"
+		),
+		@NamedQuery(
+		    name = "findNewestRefBeamMapId",
+		    query = "SELECT rb.refBeamMapId FROM RefBeamMap rb " +
+		            "INNER JOIN rb.centroidMap cm " +
+		            "INNER JOIN rb.procedureRefBeamMap prb " +
+		            "INNER JOIN prb.procedure p " +
+		            "INNER JOIN p.procedureType pt " +
+		            "WHERE rb.instrumentId = :instrumentId " +
+		            "AND cm.pupilMaskTypeId = :pupilMaskTypeId " +
+		            "AND rb.refBeamDefMapFlg = false " +
+		            "AND pt.procedureTypeId = 8 " +
+		            "ORDER BY rb.createDate DESC"
+		),
+		@NamedQuery(
+		    name = "findNewestSufsRefBeamMapId",
+		    query = "SELECT rb.refBeamMapId FROM RefBeamMap rb " +
+		            "INNER JOIN rb.centroidMap cm " +
+		            "INNER JOIN rb.procedureRefBeamMap prb " +
+		            "INNER JOIN prb.procedure p " +
+		            "INNER JOIN p.procedureType pt " +
+		            "WHERE rb.instrumentId = :instrumentId " +
+		            "AND cm.pupilMaskTypeId = :pupilMaskTypeId " +
+		            "AND rb.sufsGroupNumber = :sufsGroupNumber " +
+		            "AND rb.refBeamDefMapFlg = false " +
+		            "AND pt.procedureTypeId = 8 " +
+		            "ORDER BY rb.createDate DESC"
+		),
+		@NamedQuery(
+		    name = "findRefBeamMapByIdFull",
+		    query = "SELECT rb FROM RefBeamMap rb " +
+		            "INNER JOIN FETCH rb.centroidMap " +
+		            "INNER JOIN FETCH rb.procedureRefBeamMap " +
+		            "INNER JOIN rb.procedureRefBeamMap.procedure p " +   // plain join, alias allowed, for navigation only
+		            "INNER JOIN FETCH p.procedureCcdFrameList " +        // fetch via path, no alias
+		            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
+		            "INNER JOIN FETCH p.procedureCcdFrameList.ccdFrame.cameraState " +
+		            "WHERE rb.refBeamMapId = :refBeamMapId"
+			),
+		@NamedQuery(
+	        name = "findRefBeamDefMap",
+	        query = "SELECT rb FROM RefBeamMap rb " +
+	                "INNER JOIN FETCH rb.centroidMap " +   // no alias here
+	                "WHERE rb.centroidMap.pupilMaskTypeId = :pupilMaskTypeId " +
+	                "AND rb.refBeamDefMapFlg = true " +
+	                "ORDER BY rb.createDate DESC"
+	    )
 })
 
 public class RefBeamMap {

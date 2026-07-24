@@ -66,39 +66,7 @@ public class CentroidMapMgmt {
 	@PersistenceContext	
 	private EntityManager em;
 
-	/**
-	 * Returns the reference beam map current to this session, given the instrument, pupil mask type and filter type
-	 * @param instrumentId PCS1 or PCS2
-	 * @param pupilMaskTypeId the pupil mask type id
-	 * @param filterTypeId the filter type id
-	 * @return the reference beam map
-	 */
-	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId) {
-		return getCurrentSessionRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, -1);
-	}
 
-	/**
-	 * Returns the reference beam map current to this session, given the instrument, pupil mask type, filter type and SUFS group number
-	 * @param instrumentId PCS1 or PCS2
-	 * @param pupilMaskTypeId the pupil mask type id
-	 * @param filterTypeId the filter type id
-	 * @param sufsGroupNumber the SUFS group number
-	 * @return the reference beam map
-	 */
-	public RefBeamMap getCurrentSessionRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
-		RefBeamMap refBeamMap = getCurrentRefBeamMap(instrumentId, pupilMaskTypeId, filterTypeId, sufsGroupNumber);
-
-		if (refBeamMap == null) {
-			return null;
-		}
-
-		// if older than 12 hours, then is not from this night session
-		if ((System.currentTimeMillis() - refBeamMap.getCreateDate().getTime()) > (ONE_DAY_MS / 2)) {
-			return null;
-		}
-
-		return refBeamMap;
-	}
 
 	/**
 	 * Returns the newest reference beam map stored in the database, for a given instrument, pupil mask type, filter type and SUFS group number
@@ -110,28 +78,31 @@ public class CentroidMapMgmt {
 	 */
 	public RefBeamMap getCurrentRefBeamMap(Long instrumentId, Long pupilMaskTypeId, Long filterTypeId, int sufsGroupNumber) {
 
-		TypedQuery<RefBeamMap> query;
-		if (sufsGroupNumber >= 0) {
-			query = em.createNamedQuery("findCurrentSufsRefBeamMap", RefBeamMap.class);
-			query.setParameter("sufsGroupNumber", sufsGroupNumber);
-		} else {
-			query = em.createNamedQuery("findCurrentRefBeamMap", RefBeamMap.class);
-		}
+	    TypedQuery<Long> idQuery;
+	    if (sufsGroupNumber >= 0) {
+	        idQuery = em.createNamedQuery("findCurrentSufsRefBeamMapId", Long.class);
+	        idQuery.setParameter("sufsGroupNumber", sufsGroupNumber);
+	    } else {
+	        idQuery = em.createNamedQuery("findCurrentRefBeamMapId", Long.class);
+	    }
 
-		query.setParameter("instrumentId", instrumentId);
-		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
-		query.setParameter("filterTypeId", filterTypeId);
+	    idQuery.setParameter("instrumentId", instrumentId);
+	    idQuery.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+	    idQuery.setParameter("filterTypeId", filterTypeId);
+	    idQuery.setMaxResults(1);
 
-		query.setMaxResults(1);
-		try {
-			RefBeamMap refBeamMap = query.getSingleResult();
+	    try {
+	        Long refBeamMapId = idQuery.getSingleResult();
 
-			return refBeamMap;
+	        TypedQuery<RefBeamMap> fullQuery = em.createNamedQuery("findRefBeamMapByIdFull", RefBeamMap.class);
+	        fullQuery.setParameter("refBeamMapId", refBeamMapId);
 
-		} catch (Exception e) {
-			logger.info("No reference beam map found.");
-			return null;
-		}
+	        return fullQuery.getSingleResult();
+
+	    } catch (Exception e) {
+	        logger.info("No reference beam map found.");
+	        return null;
+	    }
 
 	}
 
@@ -143,30 +114,32 @@ public class CentroidMapMgmt {
 	 */
 	public RefBeamMap getNewestRefBeamMap(Long instrumentId, Long pupilMaskTypeId, int sufsGroupNumber) {
 
-		TypedQuery<RefBeamMap> query = em.createNamedQuery("findNewestRefBeamMap", RefBeamMap.class);
-		if (sufsGroupNumber >= 0) {
-			query = em.createNamedQuery("findNewestSufsRefBeamMap", RefBeamMap.class);
-			query.setParameter("sufsGroupNumber", sufsGroupNumber);
-		} else {
-			query = em.createNamedQuery("findNewestRefBeamMap", RefBeamMap.class);
-		}
+	    TypedQuery<Long> idQuery;
+	    if (sufsGroupNumber >= 0) {
+	        idQuery = em.createNamedQuery("findNewestSufsRefBeamMapId", Long.class);
+	        idQuery.setParameter("sufsGroupNumber", sufsGroupNumber);
+	    } else {
+	        idQuery = em.createNamedQuery("findNewestRefBeamMapId", Long.class);
+	    }
 
-		query.setParameter("instrumentId", instrumentId);
-		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+	    idQuery.setParameter("instrumentId", instrumentId);
+	    idQuery.setParameter("pupilMaskTypeId", pupilMaskTypeId);
+	    idQuery.setMaxResults(1);
 
-		query.setMaxResults(1);
-		try {
-			RefBeamMap refBeamMap = query.getSingleResult();
+	    try {
+	        Long refBeamMapId = idQuery.getSingleResult();
 
-			return refBeamMap;
+	        TypedQuery<RefBeamMap> fullQuery = em.createNamedQuery("findRefBeamMapByIdFull", RefBeamMap.class);
+	        fullQuery.setParameter("refBeamMapId", refBeamMapId);
 
-		} catch (Exception e) {
-			logger.info("No reference beam map found.");
-			return null;
-		}
+	        return fullQuery.getSingleResult();
 
-	}
-	
+	    } catch (Exception e) {
+	        logger.info("No reference beam map found.");
+	        return null;
+	    }
+
+	}	
 	
 	/**
 	 * Retrieves a subimage definition list from the database, for a telecscope and pupil mask type

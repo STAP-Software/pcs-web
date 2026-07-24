@@ -82,10 +82,20 @@ public class SessionMgmt {
 	    try {
 	        session = query.getSingleResult();
 	    } catch (NoResultException e) {
+	    	
+	        logger.warnf("findSession: primary query (includeTestData=%s) returned no result for sessionId=%s",
+	                includeTestData, sessionId);
+	    	
 	        query = em.createNamedQuery("findSessionLight", Session.class);
 	        query.setParameter("sessionId", sessionId);
-	        session = query.getSingleResult();
-	        session.setProcedureList(new ArrayList<>());
+	        try {
+		        session = query.getSingleResult();
+		        session.setProcedureList(new ArrayList<>());
+	        } catch (NoResultException e2) {
+	            logger.errorf(e2, "findSession: findSessionLight ALSO returned no result for sessionId=%s " +
+	                    "— sessionId likely does not exist in the session table at all", sessionId);
+	            throw e2;	        	
+	        }
 	    }
 
 	    // Initialize lazy properties manually

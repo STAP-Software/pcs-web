@@ -88,7 +88,7 @@
 			
 				<p:dataTable id="plogTable" var="plogValue" 
 				    value="#{procedureController.procedure.procedureOutput.procedureOutputList}"
-				    scrollable="true" scrollHeight="600" stripedRows="true">
+				    scrollable="true" scrollHeight="600" stripedRows="true" lazy="false">
 				
 				    <f:facet name="header">
 				        Procedure Execution Values
@@ -126,9 +126,10 @@
 							<p:dataExporter type="csv" target="flogTable" fileName="plog" />
 						</h:commandLink>
 			
-			
+		
+	
 						<p:dataTable id="flogTable" var="flogValue" value="#{procedureFrame.frameFieldDisplayList}" scrollable="true" scrollHeight="600" 
-						 stripedRows="true">
+						 stripedRows="true" lazy="false" >
 							<f:facet name="header">
 			        				Frame/Centroids Related Values
 			    				</f:facet>
@@ -173,7 +174,7 @@
 					</h:commandLink>
 				
 					<p:dataTable id="iterTable" var="plogIterValue" value="#{pio.procedureIterationOutputList}" scrollable="true" scrollHeight="600" 
-						 stripedRows="true">
+						 stripedRows="true" lazy="false">
 						<f:facet name="header">
 		        				Procedure Iteration Execution Values
 		    				</f:facet>
