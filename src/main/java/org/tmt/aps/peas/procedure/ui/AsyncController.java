@@ -231,14 +231,14 @@ public class AsyncController implements Serializable {
 			}
 			if (visualizationDisplay.isDisplayTypeAvgPtCentroidOffsets()) {
 				
-				PrimeFaces.current().ajax().update("avgPtCentroidOffsetsDialog", "avgPtOffsetsForm");
+				PrimeFaces.current().ajax().update("avgPtCentroidOffsetDialog", "avgPtOffsetsForm");
 				
 				PrimeFaces.current().executeScript("runDrawAvgPtOffsets(); PF('avgPtCentroidOffsetDisplayDialog').show()");
 			}
 			
 			if (visualizationDisplay.isDisplayTypeAvgFsCentroidOffsets()) {
 				
-				PrimeFaces.current().ajax().update("avgFsCentroidOffsetsDialog", "avgFsOffsetsForm");
+				PrimeFaces.current().ajax().update("avgFsCentroidOffsetDialog", "avgFsOffsetsForm");
 				
 				PrimeFaces.current().executeScript("runDrawAvgFsOffsets(); PF('avgFsCentroidOffsetDisplayDialog').show()");
 			}

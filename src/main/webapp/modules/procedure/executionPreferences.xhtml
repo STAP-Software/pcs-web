@@ -161,12 +161,12 @@
 			
 			<p:spacer height="10px" />
 			
-			<br/>
-
-			<p:commandButton id="saveButton" value="Save" icon="pi pi-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
+			<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+				<p:commandButton id="saveButton" value="Save" icon="pi pi-check" style="float:right" update=":growl :errorGrowl" action="#{procedureController.doSaveAdvancedOptions}"
 				oncomplete="PF('executionPrefsDialog').hide();" disabled="#{procedureController.procedure.procedureState gt 1}" />
-			<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl"
+				<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl"
 				action="#{procedureController.doCancelSaveAdvancedOptions}" oncomplete="PF('executionPrefsDialog').hide();" />
+			</div>
 
 		</h:form>
 	</p:dialog>

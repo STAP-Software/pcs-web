@@ -3,19 +3,32 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui" xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 <ui:composition>
+
+<style>
+    .btmsForm.ui-panelgrid,
+    .btmsForm.ui-panelgrid .ui-panelgrid-cell,
+    .btmsForm.ui-panelgrid tr,
+    .btmsForm.ui-panelgrid td {
+        border: none !important;
+    }
+</style>
+
+<style>
+    .btmsForm.ui-panelgrid td.btmsFormLabelCol {
+        text-align: right;
+        font-weight: bold;
+    }
+</style>
+
 		<p:dialog id="iterationDlg" header="Add Iteration Set Option" widgetVar="iterationDialog" >
 
-		<h:form id="iterationConfigForm"  style="margin:30px">
-
-			<p:panelGrid columns="1" styleClass="pcsForm" columnClasses="btmsFormInputColumn">
-
-				<f:facet name="header">
-					<h:outputText value="Iteration Configuration" />
-				</f:facet>
+			<h:form id="iterationConfigForm">
+		
+				<p:spacer height="10px" />
 
 				<p:fieldset legend="Create a Custom Iteration Set" >
 
-					<p:panelGrid columns="6" styleClass="btmsForm" columnClasses="btmsFormLabelColumn, btmsFormInputColumn btmsFormInputColumn btmsFormInputColumn btmsFormInputColumn ">
+					<p:panelGrid columns="6" styleClass="btmsForm" layout="tabular" columnClasses="btmsFormLabelCol,,,,,">
 
 					<h:outputLabel value="Enable Iteration" />
 					
@@ -43,6 +56,7 @@
 						</p:selectBooleanCheckbox>
 					</h:panelGroup>
 
+					<p:spacer />
 
 					<h:outputLabel value="Filter Values" />
 
@@ -69,6 +83,8 @@
 					<f:selectItems value="#{iterationConfigController.filterList}" var="filter" itemLabel="#{filter.filterName}" itemValue="#{filter}" />
 					<p:ajax update="@form" />
 					</p:selectOneMenu>
+					
+					<p:spacer />
 
 
 					<h:outputLabel value="Ref Beam Values (when light source is LED)" />
@@ -97,37 +113,41 @@
 					<p:ajax update="@form" />
 					</p:selectOneMenu>
 
+					<p:spacer />
 
 					<h:outputLabel value="Integration Times (Star)" />
 
-					<p:inputText value="#{iterationConfigController.starIntTime1}" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.starIntTime1}" size="6" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.starIntTime2}" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.starIntTime2}" size="6" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.starIntTime3}" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.starIntTime3}" size="6" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.starIntTime4}" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.starIntTime4}" size="6" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
+					
+					<p:spacer />
 					
 					<h:outputLabel value="Integration Times (LED)" />
 
-					<p:inputText value="#{iterationConfigController.ledIntTime1}" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.ledIntTime1}" size="6" disabled="#{not iterationConfigController.elementEnable1}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.ledIntTime2}" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.ledIntTime2}" size="6" disabled="#{not iterationConfigController.elementEnable2}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.ledIntTime3}" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.ledIntTime3}" size="6" disabled="#{not iterationConfigController.elementEnable3}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
-					<p:inputText value="#{iterationConfigController.ledIntTime4}" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
+					<p:inputText value="#{iterationConfigController.ledIntTime4}" size="6" disabled="#{not iterationConfigController.elementEnable4}" converter="#{integrationTimeConverter}" >
 					<p:ajax event="change" update="@this" />
 					</p:inputText>
 					
+					<p:spacer />
 					
 					<h:outputLabel value="CCD Gain Values (Star)" />
 
@@ -155,6 +175,9 @@
 					<p:ajax update="@form" />
 					</p:selectOneMenu>
 					
+					<p:spacer />
+					
+					
 					<h:outputLabel value="CCD Gain Values (LED)" />
 
 					<p:selectOneMenu value="#{iterationConfigController.ledGain1}"
@@ -181,25 +204,23 @@
 					<p:ajax update="@form" />
 					</p:selectOneMenu>
 					
+					<p:spacer />
 					
-					
-					</p:panelGrid>
-
-				</p:fieldset>
+				</p:panelGrid>
+			</p:fieldset>
 
 
-				<p:spacer height="10px" />
+			<p:spacer height="10px" />
 
+			
+			<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+				<p:commandButton style="float:right" value="Save" icon="pi pi-check" ajax="true" action="#{iterationConfigController.doSaveIterationSet}" oncomplete="PF('iterationDialog').hide();" update=":procedureDetailForm:controlPanel:loopOptions2 :growl :errorGrowl" />
+				<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl" type="button" onclick="PF('iterationDialog').hide();" />
+			</div>		
 
-				<f:facet name="footer">
-					<p:commandButton style="float:right" value="Save" icon="ui-icon-check" ajax="true" action="#{iterationConfigController.doSaveIterationSet}" oncomplete="iterationDialog.hide();" update=":procedureDetailForm:controlPanel:loopOptions2 :growl :errorGrowl" />
-					<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl" type="button" onclick="iterationDialog.hide();" />
-					
-				</f:facet>
-
-			</p:panelGrid>
+			
 		</h:form>
-		</p:dialog>
+	</p:dialog>
 
 </ui:composition>
 

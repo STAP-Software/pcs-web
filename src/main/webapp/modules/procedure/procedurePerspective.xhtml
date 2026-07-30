@@ -175,7 +175,7 @@
 										<p:ajax update="startButton intTimes ccdGainNumbers" listener="#{procedureController.iterationListChangeListener}" />  
 									</p:selectOneMenu>
 									<p:spacer width="10px" />
-									<p:commandButton icon="ui-icon-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="iterationDialog.show();" update=":iterationConfigForm" />
+									<p:commandButton icon="pi pi-plus" styleClass="thinPadding" style="top:-5px" immediate="true" action="#{iterationConfigController.doResetIterationSet}" oncomplete="PF('iterationDialog').show();" update=":iterationConfigForm" />
 								</h:panelGroup>
 	
 	
