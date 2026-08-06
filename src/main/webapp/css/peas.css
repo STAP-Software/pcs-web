@@ -413,9 +413,27 @@ body .ui-toolbar .ui-button.ui-button-text-icon-left .ui-button-text {
 
 
 
+.ui-selectonemenu {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+}
+.ui-selectonemenu-label {
+    white-space: nowrap;
+}
+.ui-selectonemenu-trigger {
+    position: static !important;
+    flex-shrink: 0;
+}
+
+
+/*
 .ui-selectonemenu-trigger {
 	width: 14px !important;
 }
+*/
+
+
 .intTime {
      width: 100px !important;
 }

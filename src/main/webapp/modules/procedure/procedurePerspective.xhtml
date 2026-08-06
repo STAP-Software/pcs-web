@@ -99,7 +99,7 @@
 
 
 
- 
+  
 								<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('ProcedureConfig','IntegrationTime')}" />				
 								<h:outputLabel value="#{fieldMetaData.displayLabel} (#{fieldMetaData.units})" rendered="#{not procedureController.procedure.procedureType.narrowBandPhasing}"/>
 
@@ -129,12 +129,13 @@
 
 								<h:panelGroup rendered="#{procedureController.procedure.procedureType.narrowBandPhasing and sessionController.engineeringView}">
 								<p:inputText id="ccdGainNumbers" size="15" 
+									type="search"
 								value="#{procedureController.procedure.procedureConfigSet.iterationListConfig.ccdGainList}" 
 								disabled="#{procedureController.procedure.procedureState gt 1 or procedureController.procedure.procedureConfigSet.procedureConfig.frameFromFile}"/> 
 								<h:message for="ccdGainNumbers" style="color:red" showSummary="true" showDetail="true" />
 								</h:panelGroup>
 
-
+ 
 
 								<h:outputLabel value="Number of Trials" rendered="#{procedureController.renderNumTrials}"/>
 						
@@ -535,6 +536,7 @@
  			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
 		</h:form>
 
+ 
 		<ui:include src="advancedOptions.xhtml" />
 		<ui:include src="iterationConfig.xhtml" /> 
 		<ui:include src="executionPreferences.xhtml" />
