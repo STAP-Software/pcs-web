@@ -19,7 +19,7 @@ import org.tmt.aps.peas.computation.business.ComputationException;
 /**
  * This interceptor is not used.
  * @author smichaels
- * @deprecated
+ * @Deprecated
  */
 @Interceptor
 @Priority(1)

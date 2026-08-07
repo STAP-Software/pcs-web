@@ -16,7 +16,7 @@ import jakarta.interceptor.InterceptorBinding;
 /**
  * This annotation is not used
  * @author smichaels
- * @deprecated
+ * @Deprecated
  */
 @InterceptorBinding
 @Retention(RetentionPolicy.RUNTIME)

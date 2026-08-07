@@ -588,6 +588,7 @@
       
 	function initCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
+		if (!canvas) return;
 		canvas.addEventListener("mousedown", doMouseDown, false);
 		canvas.addEventListener('mousemove', doMouseMove, false);
 
@@ -595,6 +596,7 @@
 	
 	function removeCanvasEvents() {
 		var canvas = document.getElementById("frameCanvas");
+		if (!canvas) return;
 		canvas.removeEventListener("mousedown",doMouseDown);
 		canvas.removeEventListener("mousemove",doMouseMove);
 	}
@@ -622,6 +624,8 @@
 	function drawFrame2_orig(mark) {
 		removeCanvasEvents();
 		var c = document.getElementById("frameCanvas");
+		
+		if (!c) return; // not present in this mode (e.g. procedure setup mode)
 
 		var ctx = c.getContext("2d");
 		
@@ -653,6 +657,9 @@
 	function drawFrame2(mark) {
 	    removeCanvasEvents();
 	    var c = document.getElementById("frameCanvas");
+	    
+	    if (!c) return; // not present in this mode (e.g. procedure setup mode)
+	    
 	    var ctx = c.getContext("2d");
 	    
 	    var img = document.getElementById("procedureDetailForm:frameImage");

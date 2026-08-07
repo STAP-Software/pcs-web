@@ -6,7 +6,7 @@
 package org.tmt.aps.peas.instrument.model;
 
 /**
- * @deprecated
+ * @Deprecated
  * @author smichaels
  */
 public class KnifeEdge {

@@ -18,7 +18,7 @@ public class ComputationException extends Exception {
 	String errorCode;
 	/**
 	 * Constructor with message and error code
-	 * @deprecated
+	 * @Deprecated
 	 */
 	public ComputationException(String errorCode, String message) {
 		super(message);

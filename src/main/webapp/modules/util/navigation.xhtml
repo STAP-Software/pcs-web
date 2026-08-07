@@ -103,7 +103,7 @@
         				</p:selectBooleanButton>
             			<p:commandButton id="endSessionBtn" value="End Session" update=":growl :errorGrowl :menuForm"
 							action="#{sessionController.doEndSession}" disabled="#{sessionController.extInfSimulationMode}" style="margin-right:10px"
-							onclick="sessionClosingDialog.show();" oncomplete="sessionClosingDialog.hide();"/>
+							onclick="PF('sessionClosingDialog').show();" oncomplete="PF('sessionClosingDialog').hide();"/>
         			</f:facet>
 
 				</p:menubar>

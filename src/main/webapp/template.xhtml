@@ -15,6 +15,28 @@
 		</f:facet>
   
 
+<!-- 
+<script type="text/javascript">
+//<![CDATA[
+    (function() {
+        var originalError = console.error;
+        console.error = function() {
+            // Suppress PrimeFaces' benign "Request return with error:abort" noise.
+            // This fires when navigating away while the header status Poll
+            // (topForm:j_idt26) has an AJAX request in flight — harmless,
+            // not a real error.
+            if (arguments.length && typeof arguments[0] === 'string' &&
+                arguments[0].indexOf('Request return with error:abort') !== -1) {
+                return;
+            }
+            originalError.apply(console, arguments);
+        };
+    })();
+//]]>
+</script>
+
+ -->
+
 <style type="text/css">
 
 #svgbasics { width: 700px; height: 700px; border: 1px solid #484; }
@@ -137,7 +159,7 @@
 		</div>
 
 		<p:dialog modal="true" widgetVar="waitDialog" header="Please wait while records are retrieved..." resizable="false" draggable="false" close="false">
-			<h:graphicImage value=".../.../images/ajaxloadingbar.gif" />
+			<h:graphicImage value="../../images/ajaxloadingbar.gif" />
 		</p:dialog>
 		
 		

@@ -37,7 +37,7 @@ xmlns:pt="http://xmlns.jcp.org/jsf/passthrough">
 	                 	style="display: flex; justify-content: flex-end;
 	                        padding: 8px 16px">
                     
-                        <p:commandButton id="loginButton" value="Login" style="float:right" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="loginDialog.hide()" /> 
+                        <p:commandButton id="loginButton" value="Login" style="float:right" update=":growl :errorGrowl :menuForm" actionListener="#{sessionController.login}" onclick="PF('loginDialog').hide()" /> 
 					</div>
 					
 				</div>

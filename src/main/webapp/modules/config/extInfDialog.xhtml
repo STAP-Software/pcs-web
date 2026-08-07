@@ -28,16 +28,16 @@
 			</p:fieldset>
     		
     		
-    		<br/>
-    		<br/>
     		</div>  
     	
     		
-    		<p:commandButton id="button1" value="Cancel" style="float:right" update=":growl :errorGrowl :menuForm"
+			<div style="display: flex; justify-content: flex-end; gap: 12px; margin-top: 8px;">
+				<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
+					action="#{sessionController.doExtInfChange(true)}" oncomplete="PF('extInfDialog').hide();waitingPopup();"   />					
+    			<p:commandButton id="button1" value="Cancel" style="float:right" update=":growl :errorGrowl :menuForm"
 					action="#{sessionController.doExtInfChange(false)}" oncomplete="PF('extInfDialog').hide();" />
-			<p:commandButton id="button2" value="Ok" style="float:right" update=":growl :errorGrowl :menuForm"
-					action="#{sessionController.doExtInfChange(true)}" oncomplete="PF('extInfDialog').hide();waitingPopup();"   />
-					
+			</div>	
+			
 			<p:remoteCommand name="startSession" action="#{sessionController.doCheckStartSession}" update=":growl :errorGrowl" />
 			
 			</h:form>
@@ -57,7 +57,7 @@ function setAllExtInfCheckboxes() {
 	function waitingPopup() {
 		// popup a waiting popup if camera check is checked and execute a call to a JSF action
 		
-		if (cameraCheck.input.is(':checked') || ccdCheck.input.is('checked')) {
+		if (PF('cameraCheck').input.is(':checked') || PF('ccdCheck').input.is('checked')) {
 			
 			// Maybe no dialog but instead the Camera Status should be "Initializing" in the header section
 			// still execute call to JSF action here
