@@ -520,7 +520,7 @@ public class FrameMgmt {
 	 * @return a procedureCcdFrame structure populated with the ccdFrame and procedure.  
 	 * @throws Exception
 	 */
-	@TransactionAttribute(TransactionAttributeType.REQUIRED)
+	@TransactionAttribute(TransactionAttributeType.REQUIRES_NEW)
 	public ProcedureCcdFrame getProcedureCcdFrame(ProcedureConfig procedureConfig, FrameCorrectionConfig frameCorrectionConfig, 
 			ProcedureType procedureType, String procedureNumber, 
 			int iteration, int frameNumber, double exposureTime, List<Rect> badPixelList, boolean removeBadPixels) throws Exception {

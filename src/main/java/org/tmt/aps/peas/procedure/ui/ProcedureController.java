@@ -1716,54 +1716,46 @@ public class ProcedureController implements Serializable {
 		
 		markedDisplayMode = setting;
 		
+		// clear the marking 
+		setFrameCentroidXs(null);
+		setFrameCentroidYs(null);
+
+		boolean marked = false;
+		
 		try {
 		
 			// V3.0 - we always got a stack trace with center telescope frames, since they didn't have a centroidMap
 			if (setting && (!procedure.getProcedureType().isCenterTelescope())) {
 				// get the marking and set it
 				
-				FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();
-				//FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+				if (selectedFrame.getCentroidMap() != null) {
 				
-				float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
-				float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
 				
-				String centroidXs = FloatListEncoder.encodeList(xArray);
-				String centroidYs = FloatListEncoder.encodeList(yArray);
-	
-				setFrameCentroidXs(centroidXs);
-				setFrameCentroidYs(centroidYs);
-				
-				// display the frame unmarked
-				
-				PrimeFaces.current().ajax().update("frameHiddenForm");
-				PrimeFaces.current().executeScript("markFrame()");
-	
-				
-			} else {
-				// clear the marking 
-				setFrameCentroidXs(null);
-				setFrameCentroidYs(null);
-				
-				// display the frame unmarked
-				
-				PrimeFaces.current().ajax().update("frameHiddenForm");
-				PrimeFaces.current().executeScript("drawFrame()");
-	
-	
+					FloatPoint[] centroids = selectedFrame.getCentroidMap().getFindCentroidsResult().getCentroidList();
+					//FloatPoint[] centroids = procedure.getLatestProcedureCcdFrame().getCentroidMap().getFindCentroidsResult().getCentroidList();
+					
+					float[] xArray = FloatPointListEncoder.extractXArray(Arrays.asList(centroids));
+					float[] yArray = FloatPointListEncoder.extractYArray(Arrays.asList(centroids));
+					
+					String centroidXs = FloatListEncoder.encodeList(xArray);
+					String centroidYs = FloatListEncoder.encodeList(yArray);
+		
+					setFrameCentroidXs(centroidXs);
+					setFrameCentroidYs(centroidYs);
+					
+					marked = true;
+			
+				} else {
+					// frame did not successfully mark
+					logger.warn("Procedure Ccd Frame does not include centroid marking, possibly bad frame or aborted during centroiding/marking");
+				}
 			}
 		} catch (Throwable e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			
-			// clear the marking 
-			setFrameCentroidXs(null);
-			setFrameCentroidYs(null);
-			
-			// display the frame unmarked
-			
+		} finally {
 			PrimeFaces.current().ajax().update("frameHiddenForm");
-			PrimeFaces.current().executeScript("drawFrame()");
-
+			PrimeFaces.current().executeScript(marked ? "markFrame()" : "drawFrame()");
 		}
 	}
 

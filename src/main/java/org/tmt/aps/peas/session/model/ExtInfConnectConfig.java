@@ -16,7 +16,6 @@ public class ExtInfConnectConfig {
 	private boolean cameraHeartbeatStatus;
 	private boolean cameraInitializing;
 	private boolean ccdHeartbeatStatus;
-	
 	private boolean ccdInitializing;
 	
 	

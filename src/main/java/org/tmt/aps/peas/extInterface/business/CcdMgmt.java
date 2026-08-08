@@ -148,9 +148,8 @@ public class CcdMgmt {
 		return extInfFactory.getCcdCommand().getExposureTime();
 	}
 
-	public Future<Integer> refreshCcdStatus() throws Exception {
+	public void refreshCcdStatus() throws Exception {
 		extInfFactory.getCcdCommand().refreshCameraInfo();
-		return new AsyncResult<Integer>(1);
 	}
 	
 	public CcdState getCcdState() throws Exception {
@@ -174,15 +173,8 @@ public class CcdMgmt {
 		try {
 			
 			
-			Future<Integer> refreshFuture = refreshCcdStatus();
-			
-			while (!refreshFuture.isDone()) {
-				Thread.sleep(500);
-			}
-			refreshFuture.get();
-		
-			
-			
+			refreshCcdStatus();
+						
 			Instrument instrument = physicalModel.getInstrument();
 			
 			CcdState ccdState = getCcdState();

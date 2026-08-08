@@ -370,12 +370,7 @@ public class CcdManualController implements Serializable {
 		// refresh the status cache in the CCD client
 		try {
 				
-			Future<Integer> refreshFuture = ccdMgmt.refreshCcdStatus();
-			
-			while (!refreshFuture.isDone()) {
-				Thread.sleep(500);
-			}
-			refreshFuture.get();
+			ccdMgmt.refreshCcdStatus();
 					
 			refresh();
 
