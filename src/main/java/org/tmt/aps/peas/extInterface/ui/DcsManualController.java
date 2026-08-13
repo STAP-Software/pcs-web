@@ -70,6 +70,13 @@ public class DcsManualController implements Serializable {
 		telescopeFocusAndTilt[0] = 1.1;
 		telescopeFocusAndTilt[1] = 22.1;
 		telescopeFocusAndTilt[2] = 331.2;
+		
+		telescopeDeltaCmds[0] = Double.valueOf(0.0f);
+		telescopeDeltaCmds[1] = Double.valueOf(0.0f);
+		
+		secondaryDeltaCmds[0] = Double.valueOf(0.0f);
+		secondaryDeltaCmds[1] = Double.valueOf(0.0f);
+		secondaryDeltaCmds[2] = Double.valueOf(0.0f);
 	}
 
 

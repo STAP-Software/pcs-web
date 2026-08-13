@@ -3,43 +3,43 @@
 
 	<ui:define name="content">
 
-		<h:form id="cameraDiagForm">
-		
-			<p:spacer height="5px" />
+		<h:form id="cameraDiagForm" style="margin:30px">
 
-			<p:panelGrid id="cameraPanel" columns="2" style="margin:0" styleClass="topAlignPanel">
-			
-				<p:panelGrid columns="1" style="margin:0; align:top" styleClass="pcsForm">
+			<div style="display: flex; align-items: flex-start; gap: 24px;">
 
-					<f:facet name="header">
-					Camera Status
-					</f:facet>
-				
-						
-					<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/>
+				<!-- Camera Status -->
+				<div style="display: inline-flex; flex-direction: column; gap: 0;
+					width: fit-content; border: 1px solid #d0d0d0;">
 
-				
-				</p:panelGrid>
-					
+					<div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+						padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+						Camera Status
+					</div>
 
+					<div style="padding: 16px;">
+						<ui:include src="../diagnostic/cameraDiagnosticStatusBlock.xhtml"/>
+					</div>
 
+				</div>
 
-				<p:panelGrid columns="1" style="margin:0; align:top" styleClass="pcsForm">
+				<!-- Camera Manual Control -->
+				<div style="display: inline-flex; flex-direction: column; gap: 0;
+					width: fit-content; border: 1px solid #d0d0d0;">
 
-					<f:facet name="header">
-					Camera Manual Control
-					</f:facet>
-				
-						
-					<ui:include src="../diagnostic/cameraDiagnosticControlBlock.xhtml"/>
-		
+					<div style="background: #e8e8e8; border-bottom: 1px solid #d0d0d0;
+						padding: 6px 12px; font-weight: bold; font-size: 18px; font-family: Arial, sans-serif;">
+						Camera Manual Control
+					</div>
 
-				</p:panelGrid>
+					<div style="padding: 16px;">
+						<ui:include src="../diagnostic/cameraDiagnosticControlBlock.xhtml"/>
+					</div>
 
-			</p:panelGrid>
-			
+				</div>
+
+			</div>
+
 		</h:form>
 
 	</ui:define>
 </ui:composition>
-

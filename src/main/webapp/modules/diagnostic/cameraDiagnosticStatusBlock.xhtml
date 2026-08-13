@@ -3,8 +3,60 @@
 
 	<p:poll async="true" immediate="true" interval="1" listener="#{cameraManualController.pollListener}" />
 
-	<p:panelGrid id="cameraUpdateMethodPanel" columns="4" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormLabelColumn, btmsFormInputColumn">
-		<h:outputLabel value="Update using " />
+	<style>
+		/* Plain divs/spans/labels don't automatically inherit the app's
+		   font the way PrimeFaces' own generated table markup (p:panelGrid)
+		   used to - without this, text falls back to the browser default
+		   (often a serif font) instead of matching the rest of the page.
+		   Same stack globalConfig's own header explicitly sets. */
+		.pcsUpdateMethodGrid,
+		.pcsStatusGrid {
+			font-family: Arial, Helvetica, sans-serif;
+			font-size: 1em;
+		}
+		.pcsUpdateMethodGrid {
+			display: grid;
+			grid-template-columns: max-content max-content max-content;
+			align-items: baseline;
+			justify-items: start;
+			column-gap: 14px;
+			row-gap: 8px;
+		}
+		.pcsStatusGrid {
+			display: grid;
+			grid-template-columns: repeat(6, max-content);
+			row-gap: 16px;
+			column-gap: 14px;
+			margin-top: 16px;
+		}
+		/* Each field is its own subgrid row: a row that only renders 4 of 6
+		   cells (conditional Call/Select-method controls) simply leaves the
+		   remaining cells blank in THAT row - it can never shift columns in
+		   any other row, the way a missing p:panelGrid cell never could. */
+		.pcsStatusGrid .pcsRow {
+			display: grid;
+			grid-template-columns: subgrid;
+			grid-column: 1 / -1;
+			align-items: baseline;
+			justify-items: start;
+			column-gap: 14px;
+		}
+		/* Bold, right-justified, non-wrapping field labels. justify-self:end
+		   (not text-align+stretch) is used deliberately: the row uses
+		   justify-items:start so buttons/dropdowns don't stretch to the
+		   widest item in their column, which means a label's own box is
+		   already exactly as wide as its text - text-align would have
+		   nothing to align against. justify-self:end instead positions
+		   that tightly-sized box at the right edge of the column itself. */
+		.pcsFieldLabel {
+			font-weight: bold;
+			white-space: nowrap;
+			justify-self: end;
+		}
+	</style>
+
+	<h:panelGroup id="cameraUpdateMethodPanel" layout="block" styleClass="pcsUpdateMethodGrid">
+		<h:outputLabel value="Update using "  styleClass="pcsFieldLabel" />
 		<p:selectOneMenu value="#{cameraManualController.statusUpdateMethod}" style="top:2px">
 			<f:selectItem itemLabel="Select update method" itemValue="0" />
 			<f:selectItem itemLabel="Status Change Listener" itemValue="1" />
@@ -14,344 +66,370 @@
 		</p:selectOneMenu>
 		<p:commandButton value="getStatus()" action="#{cameraManualController.doGetStatus}" ajax="true" update="cameraStatusPanel :growl :errorGrowl" 
 			rendered="#{cameraManualController.statusUpdateMethod eq 5}"  style="position: relative; top:-2px;" />
-		
-		
-	</p:panelGrid>
-	
-	<p:spacer width="400px" height="1px" />
+	</h:panelGroup>
 
-	<p:panelGrid id="cameraStatusPanel" columns="6" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn, btmsFormInputColumn">
+	<h:panelGroup id="cameraStatusPanel" layout="block" styleClass="pcsStatusGrid">
 
-		<h:outputLabel value="Overall Status" />	
-		<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
-		<h:outputText id="overallStatStatus" value="" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="1"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[21] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((21).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}" styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<h:outputLabel value="Pupil Mask" />	
-		<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
-		<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="1"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[1] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((1).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[1] eq 4}" styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<h:outputLabel value="Filter" />
-		<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
-		<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="2"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[2] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((2).intValue())}" update="filterWheelValue filterWheelStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[2] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Overall Status"  styleClass="pcsFieldLabel" />	
+			<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="overallStatStatus" value="" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="1"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[21] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((21).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[21] eq 4}" styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<h:outputLabel value="Ref. Beam" />
-		<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
-		<h:outputText id="refBeamStatus" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="7"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[7] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((7).intValue())}" update="refBeamValue refBeamStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[7] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Pupil Mask"  styleClass="pcsFieldLabel" />	
+			<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="1"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[1] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((1).intValue())}" update="pupilMaskValue pupilMaskStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[1] eq 4}" styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Filter"  styleClass="pcsFieldLabel" />
+			<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="2"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[2] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((2).intValue())}" update="filterWheelValue filterWheelStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[2] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
-		<h:outputLabel value="Fine Pupil Adj (x) (#{fieldMetaData.units})" />
-		<h:outputText id="fineXValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
-		<h:outputText id="fineXStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="3"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[3] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((3).intValue())}" update="fineXValue fineXStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[3] eq 3}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
-		<h:outputLabel value="Fine Pupil Adj (y) (#{fieldMetaData.units})" />
-		<h:outputText id="fineYValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
-		<h:outputText id="fineYStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="4"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[4] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((4).intValue())}" update="fineYValue fineYStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[4] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
-		<h:outputLabel value="Coarse Pupil Adj (x) (#{fieldMetaData.units})" />
-		<h:outputText id="coarseXValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
-		<h:outputText id="coarseXStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="9"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[9] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((9).intValue())}" update="coarseXValue coarseXStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[9] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
-		<h:outputLabel value="Coarse Pupil Adj (y) (#{fieldMetaData.units})" />
-		<h:outputText id="coarseYValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
-		<h:outputText id="coarseYStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="10"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[10] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((10).intValue())}" update="coarseYValue coarseYStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[10] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Ref. Beam"  styleClass="pcsFieldLabel" />
+			<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="refBeamStatus" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="7"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[7] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((7).intValue())}" update="refBeamValue refBeamStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[7] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<h:outputLabel value="Two Position Mech" />
-		<h:outputText id="twoPosValue" value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
-		<h:outputText id="twoPosStatus" value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" style="position:relative; top:2px" />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="5"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[5] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((5).intValue())}" update="twoPosValue twoPosStatus :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[5] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Fine Pupil Adj (x) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="fineXValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
+			<h:outputText id="fineXStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="3"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[3] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((3).intValue())}" update="fineXValue fineXStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[3] eq 3}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<h:outputLabel value="CCD Power" />
-		<h:outputText id="ccdPowerValue" value="#{cameraManualController.ccd.displayString}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="8"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[8] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((8).intValue())}" update="ccdPowerValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[8] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
-		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
-		<h:outputText id="instTempValue" value="#{cameraManualController.camera.instrumentTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[13]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="13"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[13] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((13).intValue())}" update="instTempValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[13] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Fine Pupil Adj (y) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="fineYValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
+			<h:outputText id="fineYStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="4"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[4] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((4).intValue())}" update="fineYValue fineYStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[4] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />				
-		<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})" />
-		<h:outputText id="boxTempValue" value="#{cameraManualController.camera.electronicsBoxTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[12]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="12"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[12] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((12).intValue())}" update="boxTempValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[12] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Coarse Pupil Adj (x) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="coarseXValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
+			<h:outputText id="coarseXStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="9"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[9] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((9).intValue())}" update="coarseXValue coarseXStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[9] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
-		<h:outputLabel value="Instrument Humidity" />
-		<h:outputText id="instHumidValue" value="#{cameraManualController.camera.instrumentHumidity}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#.#"/>
-		</h:outputText>
-		
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[15]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="15"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[15] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((15).intValue())}" update="instHumidValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[15] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<h:outputLabel value="Electronics Box Humidity" />
-		<h:outputText id="boxHumidValue" value="#{cameraManualController.camera.electronicsBoxHumidity}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#.#"/>
-		</h:outputText>
-		
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[14]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="14"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[14] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((14).intValue())}" update="boxHumidValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[14] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<h:outputLabel value="Temperature Interlock" />
-		<h:outputText id="tempInterlockValue" value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="16"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[16] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((16).intValue())}" update="tempInterlockValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[16] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		
-		
-		<h:outputLabel value="Purge State" />
-		<h:outputText id="purgeValue" value="#{cameraManualController.camera.purgeState ? 'On' : 'Off'}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[18]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="18"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[18] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((18).intValue())}" update="purgeValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[18] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		<h:outputLabel value="Glycol Flow" />
-		<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow ? 'On' : 'Off'}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[19]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="19"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[19] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((19).intValue())}" update="glycolValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[19] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-		
-		<h:outputLabel value="Overall Power" />
-		<h:outputText id="overallPower" value="#{cameraManualController.camera.overallPowerStateDisplayString}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[20]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="20"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[20] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((20).intValue())}" update="glycolValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[20] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-						
-		<h:outputLabel value="Galil Power" />
-		<h:outputText id="galilPower" value="#{cameraManualController.camera.galilPowerStateDisplayString}" style="position:relative; top:2px" />
-		<h:outputText />
-		<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[17]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
-			<f:selectItem itemLabel="Select method" itemValue="0" />
-			<f:selectItem itemLabel="Change Listener" itemValue="1" />
-			<f:selectItem itemLabel="queryCamera()" itemValue="4" />
-			<f:attribute name="deviceCode" value="17"/>
-			<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
-		</p:selectOneMenu>
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
-		<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[17] ne 4}" />
-		<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((17).intValue())}" update="glycolValue :growl :errorGrowl" 
-		rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[17] eq 4}"  styleClass="thinButton"/>
-		<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
-		
-	
-	</p:panelGrid>
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Coarse Pupil Adj (y) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="coarseYValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
+			<h:outputText id="coarseYStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="10"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[10] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((10).intValue())}" update="coarseYValue coarseYStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[10] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
 
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Two Position Mech"  styleClass="pcsFieldLabel" />
+			<h:outputText id="twoPosValue" value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
+			<h:outputText id="twoPosStatus" value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" style="position:relative; top:2px" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="5"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[5] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((5).intValue())}" update="twoPosValue twoPosStatus :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[5] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="CCD Power"  styleClass="pcsFieldLabel" />
+			<h:outputText id="ccdPowerValue" value="#{cameraManualController.ccd.displayString}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="8"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[8] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((8).intValue())}" update="ccdPowerValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[8] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="instTempValue" value="#{cameraManualController.camera.instrumentTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[13]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="13"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[13] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((13).intValue())}" update="instTempValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[13] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
+			<h:outputText id="boxTempValue" value="#{cameraManualController.camera.electronicsBoxTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+			</h:outputText>
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[12]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="12"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[12] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((12).intValue())}" update="boxTempValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[12] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Instrument Humidity"  styleClass="pcsFieldLabel" />
+			<h:outputText id="instHumidValue" value="#{cameraManualController.camera.instrumentHumidity}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#.#"/>
+			</h:outputText>
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[15]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="15"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[15] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((15).intValue())}" update="instHumidValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[15] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Electronics Box Humidity"  styleClass="pcsFieldLabel" />
+			<h:outputText id="boxHumidValue" value="#{cameraManualController.camera.electronicsBoxHumidity}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#.#"/>
+			</h:outputText>
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[14]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="14"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[14] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((14).intValue())}" update="boxHumidValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[14] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Temperature Interlock"  styleClass="pcsFieldLabel" />
+			<h:outputText id="tempInterlockValue" value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="16"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[16] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((16).intValue())}" update="tempInterlockValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[16] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Purge State"  styleClass="pcsFieldLabel" />
+			<h:outputText id="purgeValue" value="#{cameraManualController.camera.purgeState ? 'On' : 'Off'}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[18]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="18"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[18] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((18).intValue())}" update="purgeValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[18] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Glycol Flow"  styleClass="pcsFieldLabel" />
+			<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow ? 'On' : 'Off'}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[19]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="19"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[19] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((19).intValue())}" update="glycolValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[19] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Overall Power"  styleClass="pcsFieldLabel" />
+			<h:outputText id="overallPower" value="#{cameraManualController.camera.overallPowerStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[20]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="20"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[20] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((20).intValue())}" update="glycolValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[20] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+		<h:panelGroup layout="block" styleClass="pcsRow">
+			<h:outputLabel value="Galil Power"  styleClass="pcsFieldLabel" />
+			<h:outputText id="galilPower" value="#{cameraManualController.camera.galilPowerStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText styleClass="pcsBlank" />
+			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[17]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
+				<f:selectItem itemLabel="Select method" itemValue="0" />
+				<f:selectItem itemLabel="Change Listener" itemValue="1" />
+				<f:selectItem itemLabel="queryCamera()" itemValue="4" />
+				<f:attribute name="deviceCode" value="17"/>
+				<p:ajax listener="#{cameraManualController.queryUpdateMethodChangeListener}" update="cameraUpdateMethodPanel cameraStatusPanel" />
+			</p:selectOneMenu>
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
+			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[17] ne 4}" />
+			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((17).intValue())}" update="glycolValue :growl :errorGrowl" 
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[17] eq 4}"  styleClass="thinButton"/>
+			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
+		</h:panelGroup>
+
+	</h:panelGroup>
 
 </ui:composition>
