@@ -157,7 +157,7 @@
 			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4}" />
 			<h:outputLabel rendered="#{cameraManualController.statusUpdateMethod ne 4 or cameraManualController.queryUpdateMethod[3] ne 4}" />
 			<p:commandButton value="Call" ajax="true" action="#{cameraManualController.doCallQueryCamera((3).intValue())}" update="fineXValue fineXStatus :growl :errorGrowl" 
-			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[3] eq 3}"  styleClass="thinButton"/>
+			rendered="#{cameraManualController.statusUpdateMethod eq 4 and cameraManualController.queryUpdateMethod[3] eq 4}"  styleClass="thinButton"/>
 			<h:outputText value="" style="width:0; padding:0; border:none; font-size:0;" />
 		</h:panelGroup>
 
