@@ -88,51 +88,48 @@
                             <div class="label-value-grid" 
                                  style="display: grid; grid-template-columns: max-content max-content max-content;
                                         align-items: baseline; 
-                                        row-gap: 24px; column-gap: 24px;">
+                                        row-gap: 20px; column-gap: 24px;">
 
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
-
-                                <h:outputLabel value="Mirror Temp (C)" style="position:relative; top:-3px" />
-                                <h:outputText value="#{acsManualController.mirrorTemp}" style="position:relative; top:0px">
+                                <h:outputLabel value="Mirror Temp (C)" style="font-weight:bold; position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.mirrorTemp}" style="font-weight:normal; position:relative; top:0px">
                                     <f:convertNumber pattern="#0.000" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
                                     action="#{acsManualController.doQueryMirrorTemp}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this"
+                                    update=":growl :errorGrowl :acsManualForm" />
 
-                                <h:outputLabel value="Is Running" style="position:relative; top:-3px" />
-                                <h:outputText value="#{acsManualController.acsRunning}" style="position:relative; top:0px"/>
+                                <h:outputLabel value="Is Running" style="font-weight:bold; position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.acsRunning}" style="font-weight:normal; position:relative; top:0px"/>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
                                     action="#{acsManualController.doQueryRunning}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this"
+                                    update=":growl :errorGrowl :acsManualForm" />
 
-                                <h:outputLabel value="RMS Actuator Move (nm)" style="position:relative; top:-3px" />
-                                <h:outputText value="#{acsManualController.rmsActuatorMove}" style="position:relative; top:0px">
+                                <h:outputLabel value="RMS Actuator Move (nm)" style="font-weight:bold; position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.rmsActuatorMove}" style="font-weight:normal; position:relative; top:0px">
                                     <f:convertNumber pattern="#0.000" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
                                     action="#{acsManualController.doQueryRmsActMove}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this"
+                                    update=":growl :errorGrowl :acsManualForm" />
 
-                                <h:outputLabel value="Sensor Range (nm)" style="position:relative; top:-3px" />
-                                <h:outputText value="#{acsManualController.sensorRange}" style="position:relative; top:0px">
+                                <h:outputLabel value="Sensor Range (nm)" style="font-weight:bold; position:relative; top:-3px" />
+                                <h:outputText value="#{acsManualController.sensorRange}" style="font-weight:normal; position:relative; top:0px">
                                     <f:convertNumber pattern="#0" />
                                 </h:outputText>
                                 <p:commandButton value="Query" icon="pi pi-refresh"
                                     action="#{acsManualController.doQuerySensorRange}"
-                                    update=":growl :errorGrowl" />
-
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
+                                    process="@this"
+                                    update=":growl :errorGrowl :acsManualForm" />
 
                             </div>
-                            <div style="display:flex; justify-content:flex-end; margin-top:8px;">
+                            <div style="display:flex; justify-content:flex-end; margin-top:16px;">
                                 <p:commandButton value="Query All" icon="pi pi-sync"
                                     action="#{acsManualController.doQueryAll}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this"
+                                    update=":growl :errorGrowl :acsManualForm" />
                             </div>
                         </div>
                     </div>
@@ -147,23 +144,19 @@
                             <p:panelGrid columns="2" style="margin:0px;width:100%" styleClass="pcsForm"
                                          columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
 
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
-
-                                <h:outputLabel value="Snapshot number" />
+                                <h:outputLabel value="Snapshot number" style="font-weight:bold" />
                                 <p:inputText size="6" value="#{acsManualController.snapshotNumber}" />
 
-                                <h:outputLabel style="height:10px" />
-                                <h:outputLabel style="height:10px" />
-
                             </p:panelGrid>
-                            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:8px;">
+                            <div style="display:flex; justify-content:flex-end; gap:12px; margin-top:16px;">
                                 <p:commandButton value="Load Snapshot" icon="pi pi-download"
                                     action="#{acsManualController.doLoadSnapshot}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this :acsManualForm:snapshotNumber"
+                                    update=":growl :errorGrowl :acsManualForm" />
                                 <p:commandButton value="Take Snapshot" icon="pi pi-save"
                                     action="#{acsManualController.doTakeSnapshot}"
-                                    update=":growl :errorGrowl" />
+                                    process="@this :acsManualForm:snapshotNumber"
+                                    update=":growl :errorGrowl :acsManualForm" />
                             </div>
                         </div>
                     </div>
@@ -177,4 +170,4 @@
 
     </ui:define>
 </ui:composition>
-</html>
+</html>
