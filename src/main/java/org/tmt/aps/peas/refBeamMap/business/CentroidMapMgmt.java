@@ -52,7 +52,6 @@ public class CentroidMapMgmt {
 
 	Logger logger = Logger.getLogger(this.getClass());
 
-	private static final long ONE_DAY_MS = 24 * 60 * 60 * 1000;
 
 	@EJB
 	MissingSpotsMgmt missingSpotsMgmt;

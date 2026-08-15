@@ -37,13 +37,13 @@
 				                        row-gap: 24px; 
 				                        column-gap: 24px;">
 				
-				                <h:outputText value="Actuator #1 (mm): " />
+				                <h:outputText value="Actuator #1 (mm): " style="font-weight:bold" />
 				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[0]}" size="4" />
 				
-				                <h:outputText value="Actuator #2 (mm): " />
+				                <h:outputText value="Actuator #2 (mm): " style="font-weight:bold" />
 				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[1]}" size="4" />
 				
-				                <h:outputText value="Actuator #3 (mm): " />
+				                <h:outputText value="Actuator #3 (mm): " style="font-weight:bold" />
 				                <p:inputText value="#{dcsManualController.secondaryDeltaCmds[2]}" size="4" />
 				
 				            </div>
@@ -64,10 +64,10 @@
 				                        row-gap: 24px; 
 				                        column-gap: 24px;">
 				
-				                <h:outputText value="Delta Azimuth (arcsec): " />
+				                <h:outputText value="Delta Azimuth (arcsec): " style="font-weight:bold" />
 				                <p:inputText value="#{dcsManualController.telescopeDeltaCmds[0]}" size="4" />
 				
-				                <h:outputText value="Delta Elevation (arcsec): " />
+				                <h:outputText value="Delta Elevation (arcsec): " style="font-weight:bold" />
 				                <p:inputText value="#{dcsManualController.telescopeDeltaCmds[1]}" size="4" />
 				
 				            </div>
@@ -104,7 +104,7 @@
 				                        row-gap: 24px; 
 				                        column-gap: 24px;">
 				                        
-				                <h:outputLabel value="Status:" />
+				                <h:outputLabel value="Status:" style="font-weight:bold" />
           						<h:outputText value="#{dcsManualController.dcsStatusDisplayString}" />
           					</div>
           					<p:commandButton value="Query" icon="pi pi-refresh" 
@@ -125,17 +125,17 @@
 				                        column-gap: 24px;">
  
 
-								<h:outputLabel value="Actuator #1 (mm):" />
+								<h:outputLabel value="Actuator #1 (mm):" style="font-weight:bold" />
 				          		<h:outputText value="#{dcsManualController.m2Pos[0]}">
 				          			<f:convertNumber pattern="#0.000" />
 				          		</h:outputText>	
 				
-				          		<h:outputLabel value="Actuator #2 (mm): " />	
+				          		<h:outputLabel value="Actuator #2 (mm): " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.m2Pos[1]}" >
 				          			<f:convertNumber pattern="#0.000" />
 				          		</h:outputText>		
 				
-				          		<h:outputLabel value="Actuator #3 (mm): " />	
+				          		<h:outputLabel value="Actuator #3 (mm): " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.m2Pos[2]}" >
 				          			<f:convertNumber pattern="#0.000" />
 				          		</h:outputText>		
@@ -159,14 +159,14 @@
 				                        column-gap: 24px;">
 	
 				 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
-				          		<h:outputLabel value="Azimuth (#{fieldMetaData.units}): " />	
+				          		<h:outputLabel value="Azimuth (#{fieldMetaData.units}): " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.telescopePosition[0]}" >
 				          			<f:converter converterId="DynamicNumberConverter" />
 									<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 				          		</h:outputText>			
 				
 				 				<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CcdFrame','TelescopeAzEl')}" />
-				          		<h:outputLabel value="Elevation (#{fieldMetaData.units}): " />	
+				          		<h:outputLabel value="Elevation (#{fieldMetaData.units}): " style="font-weight:bold" />	
 							
 				         		<h:outputText value="#{dcsManualController.telescopePosition[1]}" >
 				          			<f:converter converterId="DynamicNumberConverter" />
@@ -195,21 +195,21 @@
 				                        column-gap: 24px;">
 	 				
 
-				          		<h:outputLabel value="Telescope Focus (mm): " />	
+				          		<h:outputLabel value="Telescope Focus (mm): " style="font-weight:bold" />	
 				 							
 				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[0]}" >
 				          			<f:convertNumber pattern="#0.00" />
 				          		</h:outputText>		
 				          	
 				 			
-				          		<h:outputLabel value="M2 Tilt-X (arcsec): " />	
+				          		<h:outputLabel value="M2 Tilt-X (arcsec): " style="font-weight:bold" />	
 						
 				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[1]}" >
 				          			<f:convertNumber pattern="#0.00" />
 				          		</h:outputText>		
 				          	
 				 				
-				          		<h:outputLabel value="M2 Tilt-Y (arcsec): " />	
+				          		<h:outputLabel value="M2 Tilt-Y (arcsec): " style="font-weight:bold" />	
 				 								
 				         		<h:outputText value="#{dcsManualController.telescopeFocusAndTilt[2]}" >
 				          			<f:convertNumber pattern="#0.00" />
@@ -237,15 +237,15 @@
 				                        row-gap: 24px; 
 				                        column-gap: 24px;">
 
-				          		<h:outputLabel value="Name: " />	
+				          		<h:outputLabel value="Name: " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.starInfo.starName}" />	
 			
-				          		<h:outputLabel value="Mag: " />	
+				          		<h:outputLabel value="Mag: " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.starInfo.starMag}" >
 				         			<f:convertNumber pattern="#0.00" />
 				         		</h:outputText>	
 			
-				          		<h:outputLabel value="Color: " />	
+				          		<h:outputLabel value="Color: " style="font-weight:bold" />	
 				         		<h:outputText value="#{dcsManualController.starInfo.starColor}" />	
 				         	</div>
 							<p:commandButton value="Query" icon="pi pi-refresh" 

@@ -9,7 +9,6 @@ import java.io.Serializable;
 import java.lang.reflect.Method;
 
 import jakarta.ejb.EJB;
-import jakarta.el.MethodNotFoundException;
 import jakarta.interceptor.AroundInvoke;
 import jakarta.interceptor.Interceptor;
 import jakarta.interceptor.InvocationContext;
