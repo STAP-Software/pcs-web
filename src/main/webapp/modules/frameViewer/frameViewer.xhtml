@@ -4,6 +4,12 @@
 
 	<ui:define name="content">
 
+		<style>
+			.fitsBrowserCol { width: 35%; vertical-align: top; }
+			.frameViewerCol { width: 33%; vertical-align: top; }
+			.cameraCol { width: 32%; vertical-align: top; }
+		</style>
+
 		<h:form id="frameHiddenForm">
 			<h:inputHidden id="centroidXs" value="#{frameController.centroidXs}" />
 			<h:inputHidden id="centroidYs" value="#{frameController.centroidYs}" />
@@ -14,37 +20,37 @@
 			<h:inputHidden id="frameHeight" value="#{frameController.ccdFrame.frameHeight}" />
 		</h:form>
 		<h:form id="frameDisplayForm">
-		
+
 			<p:spacer height="10px" />
 
-			<p:panelGrid columns="3" styleClass="pcsExecutionPanel">
+			<p:panelGrid columns="3" styleClass="pcsExecutionPanel" columnClasses="fitsBrowserCol,frameViewerCol,cameraCol">
 
 
 				<p:accordionPanel id="loadPanel" multiple="true" activeIndex="1,2">
-				
+
 					<p:tab id="fitsBrowser" title="FITS File Browsing">
 						<ui:include src="fitsBrowserBlock.xhtml"/>
 					</p:tab>
-										
+
 					<p:tab title="#{ccdManualController.statusPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/ccdStatusBlock.xhtml"/>
 					</p:tab>
 					<p:tab title="#{ccdManualController.commandPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/ccdManualBlock.xhtml"/>
 					</p:tab>
-										
+
 				</p:accordionPanel>
 
 				<h:panelGroup>
-					<ui:include src="../frameViewer/frameDisplayBlock.xhtml"/> 
+					<ui:include src="../frameViewer/frameDisplayBlock.xhtml"/>
 				</h:panelGroup>
-				
+
 				<p:accordionPanel id="cameraPanel" multiple="true" activeIndex="0,1"  rendered="#{sessionController.ifCommandPermission}">
 
 					<p:tab title="Camera Status">
-						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/> 
+						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
 					</p:tab>
-					
+
 					<p:tab title="Camera Manual Control">
 						<ui:include src="../diagnostic/cameraControlBlock.xhtml"/>
 					</p:tab>
@@ -54,10 +60,9 @@
 
 			</p:panelGrid>
 		</h:form>
-		
+
 		<ui:include src="markingInfoDialog.xhtml"/>
-		
+
 
 	</ui:define>
 </ui:composition>
-

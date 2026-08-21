@@ -2,66 +2,71 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
-	<p:panelGrid id="ccdStatusPanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+	<p:outputPanel id="ccdStatusPanel" style="padding: 16px;">
 
-		<h:outputLabel value="Image Size (x,y)" />		
-		<h:panelGroup style="position:relative; top:3px">
-		<h:outputText value="#{ccdManualController.ccdState.imageWidth}"  />
-		<h:outputText value=", " />
-		<h:outputText value="#{ccdManualController.ccdState.imageHeight}"  />
-		</h:panelGroup>
+    	<div class="label-input-grid" 
+         	style="display: grid; grid-template-columns: max-content max-content;
+                align-items: baseline; 
+                row-gap: 24px; column-gap: 24px;">
 
-		<h:outputLabel value="Overscanned Image Size (x,y)" />
-		<h:panelGroup style="position:relative; top:3px">
-		<h:outputText value="#{ccdManualController.ccdState.overscannedImageWidth}"  />
-		<h:outputText value=", " />
-		<h:outputText value="#{ccdManualController.ccdState.overscannedImageHeight}"  />
-		</h:panelGroup>
+			<h:outputLabel value="Image Size (x,y)" />
+			<h:panelGroup style="position:relative; top:3px">
+				<h:outputText value="#{ccdManualController.ccdState.imageWidth}" />
+				<h:outputText value=", " />
+				<h:outputText value="#{ccdManualController.ccdState.imageHeight}" />
+			</h:panelGroup>
 
-		<h:outputLabel value="Gain Number" />
-		<h:outputText value="#{ccdManualController.ccdState.gainNumber}" style="position:relative; top:2px" />
+			<h:outputLabel value="Overscanned Image Size (x,y)" />
+			<h:panelGroup style="position:relative; top:3px">
+				<h:outputText value="#{ccdManualController.ccdState.overscannedImageWidth}" />
+				<h:outputText value=", " />
+				<h:outputText value="#{ccdManualController.ccdState.overscannedImageHeight}" />
+			</h:panelGroup>
 
-		<h:outputLabel value="Gain Value" />
-		<h:outputText value="#{ccdManualController.ccdState.gainValue}" style="position:relative; top:2px" />
+			<h:outputLabel value="Gain Number" />
+			<h:outputText value="#{ccdManualController.ccdState.gainNumber}" style="position:relative; top:2px" />
 
-		<h:outputLabel value="Channel 0 Offset" />
-		<h:outputText value="#{ccdManualController.ccdState.channelOffset0}" style="position:relative; top:2px" />
-		
-		<h:outputLabel value="Channel 1 Offset" />
-		<h:outputText value="#{ccdManualController.ccdState.channelOffset1}" style="position:relative; top:2px" />
+			<h:outputLabel value="Gain Value" />
+			<h:outputText value="#{ccdManualController.ccdState.gainValue}" style="position:relative; top:2px" />
 
-		<h:outputLabel value="Temperature Setting" />
-		<h:outputText value="#{ccdManualController.ccdState.temperatureSetting}" style="position:relative; top:2px" />
-		
-		<h:outputLabel value="Case Temperature" />
-		<h:outputText value="#{ccdManualController.ccdState.caseTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#.0"/>
-		</h:outputText>
+			<h:outputLabel value="Channel 0 Offset" />
+			<h:outputText value="#{ccdManualController.ccdState.channelOffset0}" style="position:relative; top:2px" />
 
-		<h:outputLabel value="CCD Left Temperature" />
-		<h:outputText value="#{ccdManualController.ccdState.leftTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#.0"/>
-		</h:outputText>
+			<h:outputLabel value="Channel 1 Offset" />
+			<h:outputText value="#{ccdManualController.ccdState.channelOffset1}" style="position:relative; top:2px" />
 
-		<h:outputLabel value="CCD Right Temperature" />
-		<h:outputText value="#{ccdManualController.ccdState.rightTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#.0"/>
-		</h:outputText>
-		
-		<h:outputLabel value="CCD Exposure Time" />
-		<h:outputText value="#{ccdManualController.ccdState.exposureTime}" style="position:relative; top:2px" />
+			<h:outputLabel value="Temperature Setting" />
+			<h:outputText value="#{ccdManualController.ccdState.temperatureSetting}" style="position:relative; top:2px" />
 
+			<h:outputLabel value="Case Temperature" />
+			<h:outputText value="#{ccdManualController.ccdState.caseTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#.0"/>
+			</h:outputText>
 
+			<h:outputLabel value="CCD Left Temperature" />
+			<h:outputText value="#{ccdManualController.ccdState.leftTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#.0"/>
+			</h:outputText>
 
-		<f:facet name="footer">
-			<p:commandButton value="Requery Server" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefreshFromServer}" update="ccdStatusPanel :growl :errorGrowl" />
-			<p:commandButton value="Refresh" icon="ui-icon-refresh" ajax="true" action="#{ccdManualController.doRefresh}" update="ccdStatusPanel :growl :errorGrowl" />
-		</f:facet>
+			<h:outputLabel value="CCD Right Temperature" />
+			<h:outputText value="#{ccdManualController.ccdState.rightTemperature}" style="position:relative; top:2px" >
+				<f:converter converterId="DynamicNumberConverter" />
+				<f:attribute name="pattern" value="#.0"/>
+			</h:outputText>
 
-	</p:panelGrid>
+			<h:outputLabel value="CCD Exposure Time" />
+			<h:outputText value="#{ccdManualController.ccdState.exposureTime}" style="position:relative; top:2px" />
+
+		</div>
+
+		<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
+			<p:commandButton value="Requery Server" icon="pi pi-refresh" ajax="true" action="#{ccdManualController.doRefreshFromServer}" update="ccdStatusPanel :growl :errorGrowl" />
+			<p:commandButton value="Refresh" icon="pi pi-refresh" ajax="true" action="#{ccdManualController.doRefresh}" update="ccdStatusPanel :growl :errorGrowl" />
+		</div>
+
+	</p:outputPanel>
 
 
 

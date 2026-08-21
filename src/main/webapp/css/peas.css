@@ -209,9 +209,6 @@ div.btmsBreadcrumb ul li a.ui-icon {
 	left: 300px;
 }
 
-.pcsExecutionPanel tbody tr td {
-	vertical-align: top;
-}
 
 .leftCol, .rightCol {
     width: calc((100% - 601px) / 2);
