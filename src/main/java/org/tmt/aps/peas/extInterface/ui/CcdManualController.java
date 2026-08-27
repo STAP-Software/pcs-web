@@ -198,7 +198,6 @@ public class CcdManualController implements Serializable {
 		}
 		
 		return title;
-
 	}
 	
 	/**

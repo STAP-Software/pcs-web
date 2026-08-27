@@ -143,7 +143,7 @@
 									editable="true"
 									disabled="#{procedureController.procedure.procedureState gt 1}" 
 									rendered="#{procedureController.renderNumTrials}"
-									style="width: 3em">
+									style="width: 4em">
 									<f:selectItems value="#{procedureController.procedure.procedureConfigSet.procedureConfig.numTrialsList}" />
 								</p:selectOneMenu>
 
@@ -500,7 +500,7 @@
 								<p:inputText size="4" value="#{procedureController.procedure.testNumber}" />
 	
 								<h:outputLabel value="Comments" />
-								<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="32" />
+								<p:inputTextarea value="#{procedureController.procedure.comments}" rows="1" cols="26" />
 								
 								<h:outputLabel value="Operational Data" rendered="#{sessionController.engineeringView}" />
 								<p:selectBooleanCheckbox value="#{procedureController.procedure.operational}" rendered="#{sessionController.engineeringView}" />

@@ -1,10 +1,7 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
-	<p:panelGrid id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
-		<f:facet name="header">
-			<h:outputText value="#{frameController.selectedFitsFilename}" />
-		</f:facet>
+	<p:tab title="Image Display Tool#{empty frameController.selectedFitsFilename ? '' : ' - '}#{frameController.selectedFitsFilename}" id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
 
 		<p:menubar id="frameMenu">
 
@@ -51,385 +48,355 @@
 		<!--   -->
 		
 		<!-- additions for new ccd type -->
-		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
-			<p:row>
-				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
-					<h:outputLabel value="CCD:" />
-				</p:column>
-				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:2px">
-					<h:outputText value="#{frameController.ccdFrame.ccdName}" />
-				</p:column>
-				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
-					<h:outputLabel value="Gain:" />
-				</p:column>
-				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:2px">
-					<h:outputText value="#{frameController.ccdFrame.ccdGainValue}" />
-				</p:column>
-			</p:row>
-			<p:row>
-				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
-					<h:outputLabel value="Image Size:" />
-				</p:column>
-				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:4px">
-					<h:outputText value="#{frameController.ccdFrame.axes1}" />
-					<h:outputText value=", " />
-					<h:outputText value="#{frameController.ccdFrame.axes2}" />
-				</p:column>
-				<p:column styleClass="btmsFormLabelColumn" style="width:25%">
-					<h:outputLabel value="Channel Offsets:" />
-				</p:column>
-				<p:column styleClass="btmsFormOutputColumn" style="width:25%; position:relative; top:4px">
-					<h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel0}" />
-					<h:outputText value=", " />
-					<h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel1}" />
-				</p:column>
-			</p:row>
-		</p:panelGrid>		
-		
-		
-		<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="#{frameController.ccdFrame.frameHeight}" width="#{frameController.ccdFrame.frameWidth}" style="position: absolute;left:-10000px" cache="false" />
+		<div style="max-width: #{frameController.ccdFrame.frameWidth / 2}px; margin: 0 auto;">
 
-		<canvas id="frameCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="#{frameController.ccdFrame.frameHeight / 2}" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
-		tag.</canvas>
-		<p:spacer height="1px"/>
-		<div id="pngImageDiv" />
-		<canvas id="infoCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="15px" ></canvas>
-		<p:panelGrid styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormOutputColumn">
-			<p:row>
-				<p:column styleClass="btmsFormLabelColumn" style="width:35%">
-					<h:outputLabel value="Search Radius (pixels):" />
-				</p:column>
-				<p:column styleClass="btmsFormInputColumn" style="width:15%">
-					<p:selectOneMenu value="#{frameController.searchRadius}">
-						<f:selectItem itemLabel="6" itemValue="6" />
-						<f:selectItem itemLabel="7" itemValue="7" />
-						<f:selectItem itemLabel="10" itemValue="10" />
-						<f:selectItem itemLabel="12" itemValue="12" />
-						<f:selectItem itemLabel="15" itemValue="15" />
-						<f:selectItem itemLabel="20" itemValue="20" />
-						<p:ajax update=":frameHiddenForm" oncomplete="markFrame();" />
-					</p:selectOneMenu>
-				</p:column>
-				<p:column styleClass="btmsFormLabelColumn" style="width:15%">
-					<h:outputLabel value="SNR:" />
-				</p:column>
-				<p:column styleClass="btmsFormOutputColumn" style="width:35%; position:relative; top:2px">
-					<h:outputText value="10.8" />
-				</p:column>
-			</p:row>
-		</p:panelGrid>
-		
+			<div style="display:flex; flex-wrap:wrap; gap:24px; margin: 16px 0;">
+				<span style="white-space:nowrap;"><h:outputLabel value="CCD:" style="font-weight:bold;" />&#160;<h:outputText value="#{frameController.ccdFrame.ccdName}" /></span>
+				<span style="white-space:nowrap;"><h:outputLabel value="Gain:" style="font-weight:bold;" />&#160;<h:outputText value="#{frameController.ccdFrame.ccdGainValue}" /></span>
+				<span style="white-space:nowrap;"><h:outputLabel value="Channel Offsets:" style="font-weight:bold;" />&#160;<h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel0}" />, <h:outputText value="#{frameController.ccdFrame.ccdGainOffsetChannel1}" /></span>
+			</div>
 
+			<p:graphicImage id="frameImage" value="#{frameController.graphicImage}" height="#{frameController.ccdFrame.frameHeight}" width="#{frameController.ccdFrame.frameWidth}" style="position: absolute;left:-10000px" cache="false" />
+
+			<canvas id="frameCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="#{frameController.ccdFrame.frameHeight / 2}" style="border:0px solid #d3d3d3;cursor:crosshair"> Your browser does not support the HTML5 canvas
+			tag.</canvas>
+			<p:spacer height="1px"/>
+			<div id="pngImageDiv" />
+			<canvas id="infoCanvas" width="#{frameController.ccdFrame.frameWidth / 2}" height="28px" ></canvas>
+
+			<div style="display:flex; flex-wrap:wrap; gap:24px; margin: 16px 0;">
+				<span style="white-space:nowrap;"><h:outputLabel value="Image Size:" style="font-weight:bold;" />&#160;<h:outputText value="#{frameController.ccdFrame.axes1}" />, <h:outputText value="#{frameController.ccdFrame.axes2}" /></span>
+				<span style="white-space:nowrap;"><h:outputLabel value="SNR:" style="font-weight:bold;" />&#160;<h:outputText value="10.8" /></span>
+			</div>
+
+			<div style="display:flex; flex-wrap:wrap; align-items:center; gap:12px; margin: 16px 0;">
+				<h:outputLabel value="Search Radius (pixels):" style="font-weight:bold; white-space:nowrap;" />
+				<p:selectOneMenu value="#{frameController.searchRadius}">
+					<f:selectItem itemLabel="6" itemValue="6" />
+					<f:selectItem itemLabel="7" itemValue="7" />
+					<f:selectItem itemLabel="10" itemValue="10" />
+					<f:selectItem itemLabel="12" itemValue="12" />
+					<f:selectItem itemLabel="15" itemValue="15" />
+					<f:selectItem itemLabel="20" itemValue="20" />
+					<p:ajax update=":frameHiddenForm" oncomplete="markFrame();" />
+				</p:selectOneMenu>
+			</div>
+
+		</div>
 		
-		<f:facet name="footer">
+		<div style="display:flex; justify-content:flex-end; gap:8px; margin-top:24px;">
 			<a id="saveAsPngId" href="#" download="frame.png" />
 		
-			<p:commandButton style="float:right" value="Undo" icon="ui-icon-refresh" ajax="true"
+			<p:commandButton value="Undo" icon="pi pi-undo" ajax="true"
 				action="#{frameController.doUndoMarking}" update=":frameHiddenForm :markingForm" oncomplete="redraw();"/>
-			<p:commandButton style="float:right" value="Reset" icon="ui-icon-refresh" ajax="true"
+			<p:commandButton value="Clear Marking" icon="pi pi-eraser" ajax="true"
 				action="#{frameController.doResetMarking}" update=":frameHiddenForm :markingForm" oncomplete="redraw();"/>
 				
-		</f:facet>
-	</p:panelGrid>
-	<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm :markingForm" oncomplete="markFrame();" />
-	<p:remoteCommand name="frameValue" action="#{frameController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />
+		</div>
 
+		<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm :markingForm" oncomplete="markFrame();" />
+		<p:remoteCommand name="frameValue" action="#{frameController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />
 
-	<script>
-		//<![CDATA[
-		    	
-	var gkhead = new Image;
-	
-	var canvasOffsetLeft = 463;
-	var canvasOffsetTop = 242;
-	
-	var txPoint;
-
-	//window.onload = reload();
-	
-	var canvas = document.getElementById("frameCanvas");
-	var ctx = canvas.getContext('2d');
-	
-	function reload() {		
-				
-		canvas = document.getElementById("frameCanvas");
-		ctx = canvas.getContext('2d');
-		trackTransforms(ctx);
+		<script>
+			//<![CDATA[
+			    	
+		var gkhead = new Image;
 		
-		// now scale by 0.5 to fit 1024 frame into 512
-		ctx.scale(0.5, 0.5)
+		var canvasOffsetLeft = 463;
+		var canvasOffsetTop = 242;
 		
-		
-		redraw();
-		
-		setupListeners();
-	}
+		var txPoint;
 	
-	function setupListeners() {
-		// set event listeners per mode
-		var frameEditMode = document.getElementById("frameHiddenForm:frameEditMode").value;
+		//window.onload = reload();
 		
-		if (frameEditMode == 'true') {
-			
-	  	    canvas.removeEventListener('mousemove', doMouseMove);
-			canvas.removeEventListener("mousedown", doMouseDown);       
-			
-			canvas.addEventListener('mousedown', doDragStart, false);
-			canvas.addEventListener('mousemove', doDrag, false);
-			canvas.addEventListener('mouseup', doDragEnd, false);
-			canvas.addEventListener('DOMMouseScroll',handleScroll,false);
-			canvas.addEventListener('mousewheel',handleScroll,false);
-			canvas.addEventListener('mousemove', doMouseMove, false);
-		} 
-		
-  	    
-		if (frameEditMode == 'false') {
-			canvas.removeEventListener('mousedown', doDragStart);
-			canvas.removeEventListener('mousemove', doDrag);
-			canvas.removeEventListener('mouseup', doDragEnd);
-			canvas.removeEventListener('DOMMouseScroll',handleScroll);
-			canvas.removeEventListener('mousewheel',handleScroll);
-	  	    canvas.removeEventListener('mousemove', doMouseMove);
-
-			canvas.addEventListener("mousedown", doMouseDown, false); 
-			canvas.addEventListener('mousemove', doMouseMove, false);
-		}
-	}
-
-	
-	function redraw() {
-		
-		// Clear the entire canvas
-		var p1 = ctx.transformedPoint(0,0);
-		var p2 = ctx.transformedPoint(canvas.width,canvas.height);
-		ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
-
-		var img = document.getElementById("frameDisplayForm:frameImage");
-		
-		var frameWidth = document.getElementById('frameHiddenForm:frameWidth').value;
-		var frameHeight = document.getElementById('frameHiddenForm:frameHeight').value;
-		
-		ctx.drawImage(img, 0, 0, frameWidth, frameHeight);
-				
-		var xField = document.getElementById('frameHiddenForm:centroidXs').value;
-		var xArray = xField.split(',');
-		var yField = document.getElementById('frameHiddenForm:centroidYs').value;
-		var yArray = yField.split(',');
-		
-		if (xField == "") return;
-		
-		var radius = document.getElementById('frameHiddenForm:spotRadius').value;
-		
-		for (var i = 0; i < xArray.length; i++) {
-			ctx.beginPath();
-			ctx.arc(xArray[i], yArray[i], radius, 0, 2 * Math.PI);
-			ctx.strokeStyle = '#ff8888';
-			ctx.lineWidth = 4;
-			ctx.stroke();
-		}
-		
-	
-	}
-	
-	// handlers
-	var lastX=canvas.width/2, lastY=canvas.height/2;
-	var dragStart,dragged;
-	
-	
-	function doDragStart(evt) {
-		document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
-		lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
-		lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
-		dragStart = ctx.transformedPoint(lastX,lastY);
-		dragged = false;
-	}
-	
-	function doDrag(evt) {
-		lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
-		lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
-		dragged = true;
-		if (dragStart) {
-			var pt = ctx.transformedPoint(lastX,lastY);
-			
-			ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
-			redraw();
-		}			
-	}
-	
-	function doDragEnd(evt) {
-		dragStart = null;
-	}
-	
-
-	var scaleFactor = 1.1;
-	var zoom = function(clicks) {
-		
-		var factor = Math.pow(scaleFactor,clicks);
-		
-		// limit scale factor to 0.5 or more
-		if (factor * ctx.currentScale() < 0.5) {
-			factor = 0.5 / ctx.currentScale();
-		}
-		var pt = ctx.transformedPoint(lastX,lastY);
-		
-		ctx.translate(pt.x,pt.y);
-		ctx.scale(factor,factor);
-		ctx.translate(-pt.x,-pt.y);
-		
-		redraw();
-	}
-
-	var handleScroll = function(evt) {
-		var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
-		if (delta) zoom(delta);
-		return evt.preventDefault() && false;
-	};
-	
-	// marking and value listeners
-	function doMouseMove(event) {
-  		var canvas = document.getElementById("frameCanvas");
-  		mousePos = getMousePos(canvas, event);
-  		txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
- 		// call javascript function that is defined in <p:remote>
- 		frameValue([{name: 'mouse_x', value: txPoint.x}, {name: 'mouse_y', value: txPoint.y}]);
-  	}
-	
-	function doMouseDown(event) {  		
- 			
- 		var canvas = document.getElementById("frameCanvas");
- 			
-        //var rect = canvas.getBoundingClientRect();
-        //canvas_x = event.clientX - rect.left;
-        //canvas_y = event.clientY - rect.top;
-        
-  		mousePos = getMousePos(canvas, event);
-  		txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
-       
- 		// call javascript function that is defined in <p:remote>
- 		handMark([{name: 'canvas_x', value: txPoint.x}, {name: 'canvas_y', value: txPoint.y}]);
- 			
- 	}
-	
-	
-	//gkhead.src = "file:///opt/apps/peasData/frames/K1_11AUG06_CPH_030_1K.png"
-	
-	// Adds ctx.getTransform() - returns an SVGMatrix
-	// Adds ctx.transformedPoint(x,y) - returns an SVGPoint
-	function trackTransforms(ctx){
-	
 		var canvas = document.getElementById("frameCanvas");
 		var ctx = canvas.getContext('2d');
-
-		var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
-		var xform = svg.createSVGMatrix();
-		ctx.getTransform = function(){ return xform; };
 		
-		var savedTransforms = [];
-		var save = ctx.save;
-		ctx.save = function(){
-			savedTransforms.push(xform.translate(0,0));
-			return save.call(ctx);
-		};
-		var restore = ctx.restore;
-		ctx.restore = function(){
-			xform = savedTransforms.pop();
-			return restore.call(ctx);
-		};
-
-		var scale = ctx.scale;
-		ctx.scale = function(sx,sy){
-			xform = xform.scaleNonUniform(sx,sy);
-			return scale.call(ctx,sx,sy);
-		};
-		var rotate = ctx.rotate;
-		ctx.rotate = function(radians){
-			xform = xform.rotate(radians*180/Math.PI);
-			return rotate.call(ctx,radians);
-		};
-		var translate = ctx.translate;
-		ctx.translate = function(dx,dy){
-			xform = xform.translate(dx,dy);
-			return translate.call(ctx,dx,dy);
-		};
-		var transform = ctx.transform;
-		ctx.transform = function(a,b,c,d,e,f){
-			var m2 = svg.createSVGMatrix();
-			m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
-			xform = xform.multiply(m2);
-			return transform.call(ctx,a,b,c,d,e,f);
-		};
-		var setTransform = ctx.setTransform;
-		ctx.setTransform = function(a,b,c,d,e,f){
-			xform.a = a;
-			xform.b = b;
-			xform.c = c;
-			xform.d = d;
-			xform.e = e;
-			xform.f = f;
-			return setTransform.call(ctx,a,b,c,d,e,f);
-		};
-		var pt  = svg.createSVGPoint();
-		ctx.transformedPoint = function(x,y){
-			pt.x=x; pt.y=y;
-			return pt.matrixTransform(xform.inverse());
+		function reload() {		
+					
+			canvas = document.getElementById("frameCanvas");
+			ctx = canvas.getContext('2d');
+			trackTransforms(ctx);
+			
+			// reset to identity first so repeated calls never compound the scale
+			ctx.setTransform(1, 0, 0, 1, 0, 0);
+			
+			// now scale by 0.5 to fit 1024 frame into 512
+			ctx.scale(0.5, 0.5)
+			
+			
+			redraw();
+			
+			setupListeners();
 		}
 		
-		ctx.currentScale = function() {
-			return Math.sqrt(xform.a * xform.a + xform.b * xform.b)
-		}
-	}
-		           		           
+		function setupListeners() {
+			// set event listeners per mode
+			var frameEditMode = document.getElementById("frameHiddenForm:frameEditMode").value;
+			
+			if (frameEditMode == 'true') {
+				
+		  	    canvas.removeEventListener('mousemove', doMouseMove);
+				canvas.removeEventListener("mousedown", doMouseDown);       
+				
+				canvas.addEventListener('mousedown', doDragStart, false);
+				canvas.addEventListener('mousemove', doDrag, false);
+				canvas.addEventListener('mouseup', doDragEnd, false);
+				canvas.addEventListener('DOMMouseScroll',handleScroll,false);
+				canvas.addEventListener('mousewheel',handleScroll,false);
+				canvas.addEventListener('mousemove', doMouseMove, false);
+			} 
+			
+	  	    
+			if (frameEditMode == 'false') {
+				canvas.removeEventListener('mousedown', doDragStart);
+				canvas.removeEventListener('mousemove', doDrag);
+				canvas.removeEventListener('mouseup', doDragEnd);
+				canvas.removeEventListener('DOMMouseScroll',handleScroll);
+				canvas.removeEventListener('mousewheel',handleScroll);
+		  	    canvas.removeEventListener('mousemove', doMouseMove);
 	
-		function markFrame() {
-			window.setTimeout("drawFrame2(true)", 200);
+				canvas.addEventListener("mousedown", doMouseDown, false); 
+				canvas.addEventListener('mousemove', doMouseMove, false);
+			}
 		}
 	
-		function drawFrame() {
-			window.setTimeout("reload()", 200);
+		
+		function redraw() {
+			
+			// Clear the entire canvas
+			var p1 = ctx.transformedPoint(0,0);
+			var p2 = ctx.transformedPoint(canvas.width,canvas.height);
+			ctx.clearRect(p1.x,p1.y,p2.x-p1.x,p2.y-p1.y);
+	
+			var img = document.querySelector('img[id$="frameImage"]');
+			
+			var frameWidth = document.getElementById('frameHiddenForm:frameWidth').value;
+			var frameHeight = document.getElementById('frameHiddenForm:frameHeight').value;
+			
+			ctx.drawImage(img, 0, 0, frameWidth, frameHeight);
+					
+			var xField = document.getElementById('frameHiddenForm:centroidXs').value;
+			var xArray = xField.split(',');
+			var yField = document.getElementById('frameHiddenForm:centroidYs').value;
+			var yArray = yField.split(',');
+			
+			if (xField == "") return;
+			
+			var radius = document.getElementById('frameHiddenForm:spotRadius').value;
+			
+			for (var i = 0; i < xArray.length; i++) {
+				ctx.beginPath();
+				ctx.arc(xArray[i], yArray[i], radius, 0, 2 * Math.PI);
+				ctx.strokeStyle = '#ff8888';
+				ctx.lineWidth = 4;
+				ctx.stroke();
+			}
+			
+		
+		}
+		
+		// handlers
+		var lastX=canvas.width/2, lastY=canvas.height/2;
+		var dragStart,dragged;
+		
+		
+		function doDragStart(evt) {
+			document.body.style.mozUserSelect = document.body.style.webkitUserSelect = document.body.style.userSelect = 'none';
+			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+			dragStart = ctx.transformedPoint(lastX,lastY);
+			dragged = false;
+		}
+		
+		function doDrag(evt) {
+			lastX = evt.offsetX || (evt.pageX - canvasOffsetLeft);
+			lastY = evt.offsetY || (evt.pageY - canvasOffsetTop);
+			dragged = true;
+			if (dragStart) {
+				var pt = ctx.transformedPoint(lastX,lastY);
+				
+				ctx.translate(pt.x-dragStart.x,pt.y-dragStart.y);
+				redraw();
+			}			
+		}
+		
+		function doDragEnd(evt) {
+			dragStart = null;
+		}
+		
+	
+		var scaleFactor = 1.1;
+		var zoom = function(clicks) {
+			
+			var factor = Math.pow(scaleFactor,clicks);
+			
+			// limit scale factor to 0.5 or more
+			if (factor * ctx.currentScale() < 0.5) {
+				factor = 0.5 / ctx.currentScale();
+			}
+			var pt = ctx.transformedPoint(lastX,lastY);
+			
+			ctx.translate(pt.x,pt.y);
+			ctx.scale(factor,factor);
+			ctx.translate(-pt.x,-pt.y);
+			
+			redraw();
 		}
 	
-		function drawFrame2(mark) {
-			redraw()		
-		}
-	
-  		function displayFrameValue() {
-  			
-  			var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
-  			var message = '    Mouse position: (' + Math.floor(txPoint.x) + ', ' + Math.floor(txPoint.y) + '),  value = ' + pixelValue;
-	        var infoCanvas = document.getElementById("infoCanvas");
-	        writeMessage(infoCanvas, message);
-  		}
-
+		var handleScroll = function(evt) {
+			var delta = evt.wheelDelta ? evt.wheelDelta/40 : evt.detail ? -evt.detail : 0;
+			if (delta) zoom(delta);
+			return evt.preventDefault() && false;
+		};
 		
-		function writeMessage(infoCanvas, message) {
-	        var context = infoCanvas.getContext('2d');
-	        context.clearRect(0, 0, 300, 15);
-	        context.font = '10pt Arial';
-	        context.fillStyle = '#444444';
-	        context.fillText(message, 1, 12);
-	      }
+		// marking and value listeners
+		function doMouseMove(event) {
+	  		var canvas = document.getElementById("frameCanvas");
+	  		mousePos = getMousePos(canvas, event);
+	  		txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
+	 		// call javascript function that is defined in <p:remote>
+	 		frameValue([{name: 'mouse_x', value: txPoint.x}, {name: 'mouse_y', value: txPoint.y}]);
+	  	}
 		
-	      function getMousePos(canvas, evt) {
-	    	var canvas = document.getElementById("frameCanvas");
-	        var rect = canvas.getBoundingClientRect();
-	        return {
-	          x: evt.clientX - rect.left,
-	          y: evt.clientY - rect.top
-	        };
-	      }
+		function doMouseDown(event) {  		
+	 			
+	 		var canvas = document.getElementById("frameCanvas");
+	 			
+	        //var rect = canvas.getBoundingClientRect();
+	        //canvas_x = event.clientX - rect.left;
+	        //canvas_y = event.clientY - rect.top;
+	        
+	  		mousePos = getMousePos(canvas, event);
+	  		txPoint = ctx.transformedPoint(mousePos.x,mousePos.y);
+	       
+	 		// call javascript function that is defined in <p:remote>
+	 		handMark([{name: 'canvas_x', value: txPoint.x}, {name: 'canvas_y', value: txPoint.y}]);
+	 			
+	 	}
 		
-	      function saveCanvasPng() {
+		
+		//gkhead.src = "file:///opt/apps/peasData/frames/K1_11AUG06_CPH_030_1K.png"
+		
+		// Adds ctx.getTransform() - returns an SVGMatrix
+		// Adds ctx.transformedPoint(x,y) - returns an SVGPoint
+		function trackTransforms(ctx){
+		
 			var canvas = document.getElementById("frameCanvas");
-			var button = document.getElementById("saveAsPngId");
-		    var img = canvas.toDataURL("image/png");
-		    button.href = img;
-		    button.click();
-	      }
-	      
-		window.setTimeout("reload()", 200);
+			var ctx = canvas.getContext('2d');
+	
+			var svg = document.createElementNS("http://www.w3.org/2000/svg",'svg');
+			var xform = svg.createSVGMatrix();
+			ctx.getTransform = function(){ return xform; };
+			
+			var savedTransforms = [];
+			var save = ctx.save;
+			ctx.save = function(){
+				savedTransforms.push(xform.translate(0,0));
+				return save.call(ctx);
+			};
+			var restore = ctx.restore;
+			ctx.restore = function(){
+				xform = savedTransforms.pop();
+				return restore.call(ctx);
+			};
+	
+			var scale = ctx.scale;
+			ctx.scale = function(sx,sy){
+				xform = xform.scaleNonUniform(sx,sy);
+				return scale.call(ctx,sx,sy);
+			};
+			var rotate = ctx.rotate;
+			ctx.rotate = function(radians){
+				xform = xform.rotate(radians*180/Math.PI);
+				return rotate.call(ctx,radians);
+			};
+			var translate = ctx.translate;
+			ctx.translate = function(dx,dy){
+				xform = xform.translate(dx,dy);
+				return translate.call(ctx,dx,dy);
+			};
+			var transform = ctx.transform;
+			ctx.transform = function(a,b,c,d,e,f){
+				var m2 = svg.createSVGMatrix();
+				m2.a=a; m2.b=b; m2.c=c; m2.d=d; m2.e=e; m2.f=f;
+				xform = xform.multiply(m2);
+				return transform.call(ctx,a,b,c,d,e,f);
+			};
+			var setTransform = ctx.setTransform;
+			ctx.setTransform = function(a,b,c,d,e,f){
+				xform.a = a;
+				xform.b = b;
+				xform.c = c;
+				xform.d = d;
+				xform.e = e;
+				xform.f = f;
+				return setTransform.call(ctx,a,b,c,d,e,f);
+			};
+			var pt  = svg.createSVGPoint();
+			ctx.transformedPoint = function(x,y){
+				pt.x=x; pt.y=y;
+				return pt.matrixTransform(xform.inverse());
+			}
+			
+			ctx.currentScale = function() {
+				return Math.sqrt(xform.a * xform.a + xform.b * xform.b)
+			}
+		}
+			           		           
 		
-		//]]>
-	</script>
+			function markFrame() {
+				window.setTimeout("drawFrame2(true)", 200);
+			}
+		
+			function drawFrame() {
+				window.setTimeout("reload()", 200);
+			}
+		
+			function drawFrame2(mark) {
+				redraw()		
+			}
+		
+	  		function displayFrameValue() {
+	  			
+	  			var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
+	  			var message = '    Mouse position: (' + Math.floor(txPoint.x) + ', ' + Math.floor(txPoint.y) + '),  value = ' + pixelValue;
+		        var infoCanvas = document.getElementById("infoCanvas");
+		        writeMessage(infoCanvas, message);
+	  		}
+	
+			
+			function writeMessage(infoCanvas, message) {
+		        var context = infoCanvas.getContext('2d');
+		        context.clearRect(0, 0, infoCanvas.width, infoCanvas.height);
+		        context.font = '17px Arial';
+		        context.fillStyle = '#444444';
+		        context.textAlign = 'center';
+		        context.fillText(message, infoCanvas.width / 2, 20);
+		      }
+			
+		      function getMousePos(canvas, evt) {
+		    	var canvas = document.getElementById("frameCanvas");
+		        var rect = canvas.getBoundingClientRect();
+		        return {
+		          x: evt.clientX - rect.left,
+		          y: evt.clientY - rect.top
+		        };
+		      }
+			
+		      function saveCanvasPng() {
+				var canvas = document.getElementById("frameCanvas");
+				var button = document.getElementById("saveAsPngId");
+			    var img = canvas.toDataURL("image/png");
+			    button.href = img;
+			    button.click();
+		      }
+		      
+			window.setTimeout("reload()", 200);
+			
+			//]]>
+		</script>
 
+	</p:tab>
 
 </ui:composition>

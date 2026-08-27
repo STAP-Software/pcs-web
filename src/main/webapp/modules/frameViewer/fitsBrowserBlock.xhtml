@@ -65,7 +65,7 @@
 				<p:tree value="#{frameController.sessionRoot}" var="frameTreeElement" selectionMode="single" style="width:100%;border:none"
 					selection="#{frameController.selectedNode}" id="sessionTree" animate="true">
 
-					<p:ajax event="select" update=":frameDisplayForm:framePanel :markingForm" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
+					<p:ajax event="select" update=":frameDisplayForm:frameViewerPanel :markingForm" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
 
 
 					<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
@@ -85,7 +85,7 @@
 				<p:tree value="#{frameController.typeRoot}" var="frameTreeElement" selectionMode="single" style="width:100%"
 					selection="#{frameController.selectedNode}" id="typeTree" animate="true">
 
-					<p:ajax event="select" update=":frameDisplayForm:framePanel :frameHiddenForm :markingForm" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
+					<p:ajax event="select" update=":frameDisplayForm:frameViewerPanel :frameHiddenForm :markingForm" listener="#{frameController.onNodeSelect}" oncomplete="drawFrame()" />
 
 					<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed">
 						<h:outputText value="#{frameTreeElement.displayName}" />

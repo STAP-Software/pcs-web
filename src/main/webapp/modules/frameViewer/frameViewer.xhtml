@@ -41,17 +41,17 @@
 
 				</p:accordionPanel>
 
-				<h:panelGroup>
+				<p:accordionPanel id="frameViewerPanel">
 					<ui:include src="../frameViewer/frameDisplayBlock.xhtml"/>
-				</h:panelGroup>
+				</p:accordionPanel>
 
-				<p:accordionPanel id="cameraPanel" multiple="true" activeIndex="0,1"  rendered="#{sessionController.ifCommandPermission}">
+				<p:accordionPanel id="cameraPanel" multiple="true" activeIndex="0,1"  >
 
-					<p:tab title="Camera Status">
+					<p:tab title="#{cameraManualController.statusPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/cameraStatusBlock.xhtml"/>
 					</p:tab>
 
-					<p:tab title="Camera Manual Control">
+					<p:tab title="#{cameraManualController.commandPanelTitle}" rendered="#{sessionController.ifCommandPermission}">
 						<ui:include src="../diagnostic/cameraControlBlock.xhtml"/>
 					</p:tab>
 

@@ -25,6 +25,7 @@ import org.tmt.aps.peas.BreadcrumbMenuBean;
 import org.tmt.aps.peas.common.MessageGenerator;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.common.Utils;
+import org.tmt.aps.peas.config.business.ExtInfConfigState;
 import org.tmt.aps.peas.extInterface.business.CameraMgmt;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryListener;
@@ -55,7 +56,8 @@ public class CameraManualController implements Serializable {
 
 	@EJB
 	CameraMgmt cameraMgmt;
-
+	@EJB
+	ExtInfConfigState extInfConfigState;
 
 
 	@Inject
@@ -948,6 +950,26 @@ public class CameraManualController implements Serializable {
 	}
 	
 	
+	public String getStatusPanelTitle() {
+		
+		String title = "Camera Status";
+		
+		if (!extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			title += " - SIMULATOR";
+		}
+		
+		return title;
+	}
 	
+	public String getCommandPanelTitle() {
+		
+		String title = "Camera Manual Control";
+		
+		if (!extInfConfigState.getExtInfConnectConfig().isCameraEnabled()) {
+			title += " - SIMULATOR";
+		}
+		
+		return title;
+	}
 
 }
