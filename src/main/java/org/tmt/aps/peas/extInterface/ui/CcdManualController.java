@@ -243,7 +243,7 @@ public class CcdManualController implements Serializable {
 				
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
 				
-				PrimeFaces.current().ajax().update("frameDisplayForm:framePanel");
+				PrimeFaces.current().ajax().update("frameDisplayForm:frameViewerPanel");
 				PrimeFaces.current().executeScript("drawFrame()");
 				
 				commandType = "Take Exposure";
@@ -267,7 +267,7 @@ public class CcdManualController implements Serializable {
 				ccdFrame = frameMgmt.populateCcdFrame(overscanRawFrame, exposureTime, 0, -1, -1, null);
 				
 				frameController.setupFrameToolFrameDisplay(ccdFrame);
-				PrimeFaces.current().ajax().update("frameDisplayForm:framePanel");
+				PrimeFaces.current().ajax().update("frameDisplayForm:frameViewerPanel");
 				PrimeFaces.current().executeScript("drawFrame()");
 				
 				commandType = "Take Overscanned Exposure";

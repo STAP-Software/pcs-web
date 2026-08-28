@@ -6,7 +6,7 @@
 			<p:column colspan="2">
 				<p:fileUpload value="#{procedureController.uploadFitsFile}" mode="advanced" auto="true" dragDropSupport="false" 
 					fileUploadListener="#{procedureController.handleFileUpload}"
-					update=":growl :errorGrowl :frameDisplayForm:framePanel"
+					update=":growl :errorGrowl :frameDisplayForm:frameViewerPanel"
 					sizeLimit="4000000" allowTypes="/(\.|\/)(FTS)$/" />
 			</p:column>
 		</p:row>
