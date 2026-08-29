@@ -39,7 +39,7 @@
 			
 			<p:submenu label="Tools" icon="pi pi-pencil">
 				<p:menuitem value="Display Marking Info" ajax="true" action="#{frameController.doUpdateMarkingInfoDialog}" update=":markingForm" oncomplete="PF('markingDialog').show();" />
-				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm :frameDisplayForm:frameViewerPanel :growl :errorGrowl" oncomplete="drawFrame();" />
+				<p:menuitem value="Correct Dark Current" ajax="true" action="#{frameController.doCorrectDarkCurrent}" update=":frameHiddenForm :frameDisplayForm:framePanel :growl :errorGrowl" oncomplete="drawFrame();" />
 			</p:submenu>
 
 
@@ -94,7 +94,7 @@
 				
 		</div>
 
-		<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm :markingForm" oncomplete="markFrame();" />
+		<p:remoteCommand name="handMark" action="#{frameController.doHandMark}" update=":frameHiddenForm :markingForm :growl :errorGrowl" oncomplete="markFrame();" />
 		<p:remoteCommand name="frameValue" action="#{frameController.doGetFrameValue}" update=":frameHiddenForm" oncomplete="displayFrameValue();" />
 
 		<script>

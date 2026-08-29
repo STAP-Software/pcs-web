@@ -61,7 +61,7 @@
 
 		<div style="display: flex; justify-content: flex-end; gap: 8px; margin-top: 24px">
 			<p:commandButton value="Send Command" icon="pi pi-check" ajax="true" action="#{ccdManualController.doSendCommand}"
-				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel :frameHiddenForm" oncomplete="redraw();" />
+				update=":growl :errorGrowl ccdStatusPanel ccdCommandPanel :frameHiddenForm" />
 		</div>
 
 	</p:outputPanel>

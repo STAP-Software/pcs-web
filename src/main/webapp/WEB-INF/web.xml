@@ -65,7 +65,7 @@
     	<exception-type>
           jakarta.faces.application.ViewExpiredException
     	</exception-type >
-    	<location>/timeout.xhtml</location>
+    	<location>/modules/session/sessionList.jsf</location>
 	</error-page>	
 		
 

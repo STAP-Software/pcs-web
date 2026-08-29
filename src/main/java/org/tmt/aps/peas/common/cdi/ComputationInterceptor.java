@@ -45,6 +45,10 @@ public class ComputationInterceptor implements Serializable {
 		
 		Object result = ctx.proceed();
 		
+		if (procedureExecutionState.getCurrentOutputTarget() == null) {
+			return result;
+		}
+		
 		try {
 			// log the result to the current output target
 			Object outputTarget = procedureExecutionState.getCurrentOutputTarget();		

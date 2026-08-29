@@ -3,7 +3,7 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
 <ui:composition>
-		<p:dialog id="markingDlg" header="Marking Information" widgetVar="markingDialog" >
+		<p:dialog id="markingDlg" header="Marking Information" widgetVar="markingDialog" width="1000px" >
 
 			<h:form id="markingForm">
 			
@@ -100,7 +100,8 @@
 				
 				<br/>
 
-				<p:commandButton id="closeButton" value="Close" icon="ui-icon-cancel" style="float:right" update=":growl :errorGrowl"
+
+				<p:commandButton id="closeButton" value="Close" icon="pi pi-times" style="float:right" update=":growl :errorGrowl"
 					type="button" onclick="PF('markingDialog').hide();" />
 
 			</h:form>

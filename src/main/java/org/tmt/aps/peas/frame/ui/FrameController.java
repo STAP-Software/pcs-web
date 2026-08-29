@@ -468,8 +468,12 @@ public class FrameController implements Serializable {
 			// create the table data
 			markedSubimageList.add(markedSubimage);
 
-		} catch (Exception e) {
-			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		} catch (Throwable t) {
+			// defense in depth - calcMarkedSubimage() handles its own failures directly
+			// (including surfacing a message to the user), so this only catches
+			// anything unexpected elsewhere in this method
+			logger.error(MessageGenerator.generateMessage("generic.error"), t);
+			FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(t));
 		}
 	}
 
@@ -719,6 +723,27 @@ public class FrameController implements Serializable {
 			return markedSubimage;
 
 		} catch (Exception e) {
+
+			// walk the cause chain for UnsatisfiedLinkError - it can arrive wrapped
+			// differently depending on the call path (EJBException here vs.
+			// EJBTransactionRolledbackException in ProcedureExecutionMgmt), so check
+			// by cause rather than by the specific outer exception type
+			Throwable cause = e;
+			while (cause != null && !(cause instanceof UnsatisfiedLinkError)) {
+				cause = cause.getCause();
+			}
+
+			if (cause instanceof UnsatisfiedLinkError) {
+				// same message used in ProcedureExecutionMgmt for this same
+				// hot-deploy/native-library scenario
+				Exception friendlyException = new Exception("Fortran libraries not accessible due to hot deployment.  To fix, restart JBoss.");
+				logger.error(MessageGenerator.generateMessage("generic.error"), friendlyException);
+				FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(friendlyException));
+			} else {
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
+				FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
+			}
+
 			MarkedSubimage markedSubimage = new MarkedSubimage(count, subimage.getCentroid(), subimage.getSubimageIntensity(),
 					subimage.getPeakIntensity(), subimage.getFindCentStatus(), new FloatPoint(0,0), 0.0f, 0.0f);
 
