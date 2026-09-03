@@ -563,56 +563,6 @@ public class FrameController implements Serializable {
 
 	}
 	
-	public void doCorrectDarkCurrent() {
-		try 
-		{
-		// get overscan results for testing
-		Ccd ccd = physicalModel.getInstrument().getCcd();
-		int overscanSize = (ccd.getCcdType().getOverscanReadoutWidth() - ccd.getCcdType().getNormalReadoutWidth())/2;
-
-		short[][] frame = ccdFrame.getRawFrame();
-		int[][] intFrame = new int[frame.length][frame[0].length];
-		for (int i = 0; i < frame.length; i++) {
-			for (int j = 0; j < frame[0].length; j++) {
-				intFrame[i][j] = (int)frame[i][j];
-			}
-		}
-
-		
-		CorrectOverscanDarkResult result = computationLibrary.correctOverscanFrameDarkOffsets(intFrame, 
-				ccd.getDarkOvscnLeftColStart(), 
-				ccd.getDarkOvscnLeftColEnd(), 
-				ccd.getDarkOvscnRightColStart(), 
-				ccd.getDarkOvscnRightColEnd(),
-				overscanSize);
-		
-		int[][] corrected = result.getCorrectedFrame();
-		short[][] shortFrame = new short[corrected.length][corrected[0].length];
-		for (int i = 0; i < corrected.length; i++) {
-			for (int j = 0; j < corrected[0].length; j++) {
-				shortFrame[i][j] = (short)corrected[i][j];
-			}
-		}
-	
-		
-		// overwrite ccdFrame with corrected frame
-		CcdFrame correctedFrame = frameMgmt.populateCcdFrame(shortFrame, ccdFrame.getIntTime(), 0, 
-				result.getDarkMedianValueLeft(), result.getDarkMedianValueRight(), null);
-
-		setupFrameToolFrameDisplay(correctedFrame);
-		
-		//RequestContext requestContext = RequestContext.getCurrentInstance();
-		//requestContext.update("frameDisplayForm:framePanel");
-		//requestContext.execute("drawFrame()");
-
-	} catch (Exception e) {
-		FacesContext.getCurrentInstance().addMessage(null, Utils.genericErrorMessage(e));
-		logger.error(MessageGenerator.generateMessage("generic.error"), e);
-	}
-		
-	}
-	
-
 	/**
 	 * JSF Action method to set the frame display mode to allow panning and zooming into the frame
 	 * @param setting if true sets the pan/zoom mode on

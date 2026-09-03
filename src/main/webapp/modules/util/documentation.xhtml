@@ -8,17 +8,30 @@
 
 	<ui:define name="content">
 
+		<style type="text/css">
+			.pcsContentsCol {
+				flex: 0 0 auto !important;
+				width: auto !important;
+				max-width: none !important;
+			}
+
+			.pcsFrameCol {
+				flex: 1 1 auto !important;
+				width: auto !important;
+			}
+		</style>
+
 		<h:form id="documentationForm">
 
 
-			<p:panelGrid columns="2" style="margin:10px;" styleClass="pcsExecutionPanel">
-				<p:panelGrid columns="1" style="margin:0" styleClass="pcsFormNoBorder">
+			<p:panelGrid columns="2" style="margin:10px; width:100%;" styleClass="pcsExecutionPanel" columnClasses="pcsContentsCol,pcsFrameCol">
+				<p:panelGrid columns="1" style="margin:0;" styleClass="pcsFormNoBorder">
 
 					<f:facet name="header">
 					Contents
 					</f:facet>
 
-					<p:tree value="#{helpController.helpContentRoot}" var="node" id="contentsTree" expanded="true" style="width:250px; border:0 none;">
+					<p:tree value="#{helpController.helpContentRoot}" var="node" id="contentsTree" expanded="true" style="white-space:nowrap; border:0 none;">
 
 						<p:treeNode expandedIcon="ui-icon-folder-open" collapsedIcon="ui-icon-folder-collapsed" type="folder">
 							<h:outputText style="font-weight:bold" value="#{node}" />
@@ -30,7 +43,7 @@
 
 				</p:panelGrid>
 
-   				<iframe style="border: 0 none;" width="1000" height="1200" src="#{helpController.currentPage}" />    				 
+   				<iframe style="border: 0 none; width:100%; height:1200px;" src="#{helpController.currentPage}" />
 
 			</p:panelGrid>
 
