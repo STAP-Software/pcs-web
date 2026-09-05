@@ -87,7 +87,16 @@ import org.tmt.aps.peas.telescope.model.Telescope;
 		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.nbFilterSeqConfig " +
 		            "LEFT OUTER JOIN FETCH p.procedureConfigSet.frameCorrectionConfig " +
 		            "WHERE p.procedureId = :procedureId"
-	)
+	),
+	@NamedQuery(
+		    name = "findProcedureEncompassingDate",
+		    query = "SELECT DISTINCT p FROM Procedure p " +
+		    		"LEFT JOIN FETCH p.procedureType " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList " +
+		            "LEFT OUTER JOIN FETCH p.procedureCcdFrameList.ccdFrame " +
+		            "WHERE :refMapCreateDate BETWEEN p.executionStartTime AND FUNCTION('TIMESTAMPADD', SECOND, 5, p.executionEndTime)" +
+		            "AND p.procedureType.procedureTypeId = :procedureTypeId" 
+	)	
 
 	
 })

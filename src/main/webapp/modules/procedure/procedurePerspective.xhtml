@@ -290,6 +290,9 @@
 									<h:outputText value=" UTC"/>
 								</h:panelGroup>
 									
+								<h:outputLabel value="Ref Map Used" rendered="#{procedureController.procedure.procedureState eq 3}" />
+								<h:outputText value="#{procedureController.refMapFilename}" rendered="#{procedureController.procedure.procedureState eq 3}" />
+								
 								<h:outputLabel value="ACS Snap # After" rendered="#{procedureController.procedure.procedureState eq 3}" />
 								<h:outputText size="4" value="#{procedureController.procedure.procedureOutput.m1SnapNumberAfterDisplayText}" rendered="#{procedureController.procedure.procedureState eq 3}" />
 							

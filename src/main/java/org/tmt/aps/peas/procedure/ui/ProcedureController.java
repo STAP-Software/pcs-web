@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
+import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
 import java.util.function.Supplier;
@@ -101,6 +102,7 @@ import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.procedure.model.PupilRegistrationProcedureOutput;
 import org.tmt.aps.peas.procedure.model.SufsProcedureOutput;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.ProcedureRefBeamMap;
 import org.tmt.aps.peas.session.business.FieldMetaDataCache;
 import org.tmt.aps.peas.session.business.SessionMgmt;
 import org.tmt.aps.peas.session.ui.SessionController;
@@ -223,6 +225,7 @@ public class ProcedureController implements Serializable {
 	boolean blankImage = false;
 	
 	ProcedureType registerPupilFor;
+	String refMapFilename;
 	
 	@PostConstruct
 	public void init() {
@@ -248,6 +251,7 @@ public class ProcedureController implements Serializable {
 				sufsGroupSelectList.add(selectItem);
 			}
 
+			refMapFilename = null;
 		
 	    } catch (Exception e) {
 	        throw new IllegalStateException("Initialization failed", e);
@@ -434,6 +438,10 @@ public class ProcedureController implements Serializable {
 	
 	public List<IterationListConfig> getIterationListConfigOptions() {
 		return iterationEntityCache.getOptionList(procedure.getProcedureType().getProcedureTypeId());
+	}
+	
+	public String getRefMapFilename() {
+		return refMapFilename;
 	}
 
 	/**
@@ -1225,6 +1233,17 @@ public class ProcedureController implements Serializable {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
 
+			// v3.0 get reference beam used
+			ProcedureRefBeamMap procedureRefBeamMap = centroidMapMgmt.findRefBeamMapForProcedure(procedure.getProcedureId());
+			Date refBeamCreated = procedureRefBeamMap.getRefBeamMap().getCreateDate();
+			// get the refmap procedure that created it
+			Procedure refMapProcedure = procedureMgmt.findProcedureEncompassingDate(refBeamCreated, ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+			ProcedureCcdFrame refMapProcedureCcdFrame = refMapProcedure.getProcedureCcdFrameList().get(0);
+			refMapFilename = refMapProcedureCcdFrame.getCcdFrame().getFitsFilename();
+			
+
+			
+			
 			// show frames marked at first
 			
 			doSetMarkedDisplayMode(true);

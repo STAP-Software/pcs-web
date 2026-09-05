@@ -95,6 +95,34 @@ public class ProcedureMgmt {
 		return procedure;
 	}
 	
+	
+	public Procedure findProcedureEncompassingDate(Date refMapCreateDate, Long procedureTypeId) {
+		TypedQuery<Procedure> query = em.createNamedQuery("findProcedureEncompassingDate", Procedure.class);
+		query.setParameter("refMapCreateDate", refMapCreateDate);
+		query.setParameter("procedureTypeId", procedureTypeId);
+		
+		Procedure procedure = query.getSingleResult();
+		
+		
+		
+		try {
+			
+			// procedure frame data 
+			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
+
+				procedureCcdFrame.getCcdFrame();
+
+			}
+			
+		} catch (Throwable e) {
+			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		}
+		
+		return procedure;
+	}
+
+	
+	
 	/**
 	 * Load up frame report data from a single procedureCcdFrame
 	 * Ultimately populates the frame log data by calling {@link ProcedureCcdFrame#setFrameFieldDisplayList(List)} 

@@ -326,8 +326,6 @@ public class ProcedureExecutionMgmt {
 			logger.debug("performProcedureCompletion 1");
 			graphicDisplayMgmt.setIteration(0);
 			
-			// this persists the procedure
-			//procedureMgmt.updateProcedure(procedure);
 
 			sessionMgmt.updateCurrentSession(currentSession);
 
@@ -425,6 +423,7 @@ public class ProcedureExecutionMgmt {
 			
 				logger.debug("performProcedureCompletion::ref maps associated");
 			}
+
 			
 
 			

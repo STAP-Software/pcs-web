@@ -472,4 +472,20 @@ public class CentroidMapMgmt {
 		em.persist(procedureRefBeamMap);
 	}
 
+	/**
+	 * Queries the database for the ref beam map used for the procedure
+	 * @param procedureId the procedure Id
+	 * @return a procedureRefBeamMap entry
+	 */
+	public ProcedureRefBeamMap findRefBeamMapForProcedure(Long procedureId) {
+
+		TypedQuery<ProcedureRefBeamMap> query = em.createNamedQuery("findRefBeamMapsForProcedure", ProcedureRefBeamMap.class);
+		query.setParameter("procedureId", procedureId);
+
+		query.setMaxResults(1);
+
+		return query.getSingleResult();
+	}
+
+	
 }
