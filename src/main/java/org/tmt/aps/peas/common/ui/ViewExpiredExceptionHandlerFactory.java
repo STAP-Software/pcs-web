@@ -16,14 +16,14 @@ import jakarta.faces.context.ExceptionHandlerFactory;
  */
 public class ViewExpiredExceptionHandlerFactory extends ExceptionHandlerFactory {
 
-	private final ExceptionHandlerFactory parent;
+
 
 	public ViewExpiredExceptionHandlerFactory(ExceptionHandlerFactory parent) {
-		this.parent = parent;
+		super(parent);
 	}
 
 	@Override
 	public ExceptionHandler getExceptionHandler() {
-		return new ViewExpiredExceptionHandler(parent.getExceptionHandler());
+		return new ViewExpiredExceptionHandler(getWrapped().getExceptionHandler());
 	}
 }

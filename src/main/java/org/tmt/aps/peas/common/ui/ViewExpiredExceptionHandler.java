@@ -52,15 +52,8 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
 	// unauthenticated/bookmarked root requests to
 	private static final String ENTRY_POINT_URL = "/modules/session/sessionList.jsf";
 
-	private final ExceptionHandler wrapped;
-
 	public ViewExpiredExceptionHandler(ExceptionHandler wrapped) {
-		this.wrapped = wrapped;
-	}
-
-	@Override
-	public ExceptionHandler getWrapped() {
-		return wrapped;
+		super(wrapped);
 	}
 
 	@Override
@@ -69,6 +62,7 @@ public class ViewExpiredExceptionHandler extends ExceptionHandlerWrapper {
 		Iterator<ExceptionQueuedEvent> events = getUnhandledExceptionQueuedEvents().iterator();
 
 		while (events.hasNext()) {
+		
 
 			ExceptionQueuedEvent event = events.next();
 			ExceptionQueuedEventContext context = (ExceptionQueuedEventContext) event.getSource();
