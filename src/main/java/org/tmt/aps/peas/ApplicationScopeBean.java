@@ -100,7 +100,7 @@ public class ApplicationScopeBean implements Serializable {
 
 		Logger logger = Logger.getLogger(this.getClass());
 		
-	
+
 
 		// workaround for "java.lang.IllegalStateException: Cannot create a session after the response has been committed" problem with JSF
 		HttpServletRequest request = (HttpServletRequest) FacesContext.getCurrentInstance().getExternalContext().getRequest();
@@ -127,16 +127,38 @@ public class ApplicationScopeBean implements Serializable {
 					
 				} else {
 					// set the JSESSIONID cookie to that of the persistent session
-					session = getPersistentSession();
-					addCookie(response, "JSESSIONID", session.getId(), 1800);			
+					session = getPersistentSession();	
+					addCookie(response, "JSESSIONID", session.getId(), session.getMaxInactiveInterval());			
 				}
 			} else {
-				// bounce them out
+				// the requested session doesn't match our recorded owner - but that owner's HttpSession
+				// may be long dead (timed out, server-side eviction, etc). Only bounce this browser if
+				// the recorded owner's session is still genuinely alive; otherwise let this browser claim
+				// ownership instead of requiring a server restart to free it up.
+				boolean ownerSessionStillAlive;
 				try {
-					ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
-				    ec.redirect(ec.getRequestContextPath() + "/error.html");
-				} catch (Exception ex) {
-					ex.printStackTrace();
+					getPersistentSession().getLastAccessedTime();
+					ownerSessionStillAlive = true;
+				} catch (IllegalStateException | NullPointerException ex) {
+					ownerSessionStillAlive = false;
+				}
+
+				if (!ownerSessionStillAlive) {
+					logger.info("recorded owner session is no longer valid; granting persistent session to new requester");
+					session = (HttpSession) FacesContext.getCurrentInstance().getExternalContext().getSession(true);
+					sessionController.setRunProcedurePermission(true);
+					sessionController.setIfCommandPermission(true);
+					sessionController.setConfigPermission(true);
+					setPersistentSession(session);
+					ownerRequestedSessionId = session.getId();
+				} else {
+					// bounce them out
+					try {
+						ExternalContext ec = FacesContext.getCurrentInstance().getExternalContext();
+					    ec.redirect(ec.getRequestContextPath() + "/error.html");
+					} catch (Exception ex) {
+						ex.printStackTrace();
+					}
 				}
 			}
 		} 
@@ -240,7 +262,9 @@ public class ApplicationScopeBean implements Serializable {
 			filterController.doViewFilterWheel();
 		}
 		
-	}
+	}		
+		
+		
 	/**
 	 * @return the persistent session object
 	 */
