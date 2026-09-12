@@ -12,7 +12,9 @@ import jakarta.persistence.NamedQueries;
 import jakarta.persistence.NamedQuery;
 import jakarta.persistence.OneToOne;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 
+import org.jboss.logging.Logger;
 import org.tmt.aps.peas.common.Point;
 import org.tmt.aps.peas.extinf.CameraCommand;
 import org.tmt.aps.peas.extinf.CameraQueryResult;
@@ -56,6 +58,9 @@ import org.tmt.aps.peas.extinf.CameraStatus;
 
 public class Instrument {
 
+	@Transient
+	Logger logger = Logger.getLogger(this.getClass());
+	
 	@Id
 	private Long instrumentId;
 	
@@ -188,6 +193,11 @@ public class Instrument {
 	 */
 	public void updateState(CameraState cameraState) {
 		
+		// V3.0 TEST
+		logger.infof("cameraState raw: id=%d, overallStatus=%d, ccdTemp=%f, boxTemp=%f, benchTemp=%f, prismWheelPos=%d, refBeamPos=%d",
+			    cameraState.getCameraStateId(), cameraState.getOverallStatus(), cameraState.getCcdTemp(),
+			    cameraState.getBoxTemp(), cameraState.getBenchTemp(), cameraState.getPrismWheelPos(), cameraState.getRefBeamPos());
+		
 		if (cameraState != null) {
 		
 		// Pupil Mask
@@ -253,7 +263,9 @@ public class Instrument {
 		// Overall status
 		camera.setOverallStatus(cameraState.getOverallStatus());
 		
-		
+		// V3.0 TEST
+        logger.infof("after update: overallStatus=%d, instrumentTemp=%f, camera identity=%s", 
+            camera.getOverallStatus(), camera.getInstrumentTemperature(), System.identityHashCode(camera));
 
 	} else {
 		camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);

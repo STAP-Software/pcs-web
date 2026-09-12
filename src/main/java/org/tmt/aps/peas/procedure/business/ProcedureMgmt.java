@@ -62,6 +62,11 @@ public class ProcedureMgmt {
 		
 		Procedure procedure = query.getSingleResult();
 		
+		// V3.0 TEST
+		logger.infof("cameraState check: %s", 
+			    procedure.getProcedureCcdFrameList().isEmpty() ? "no frames" :
+			    procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
+		
 		if (procedure.getProcedureType().isNarrowBandPhasing()) {
 			
 			iterationEntityCache.populateIterationValueList(procedure.getProcedureConfigSet().getIterationListConfig(), 

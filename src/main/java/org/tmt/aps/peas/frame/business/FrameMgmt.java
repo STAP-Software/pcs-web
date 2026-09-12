@@ -214,9 +214,23 @@ public class FrameMgmt {
 	 * @throws Exception
 	 */
 	@TransactionAttribute(TransactionAttributeType.REQUIRED)
-	public void saveCcdFrameFromFile(Procedure procedure, CcdFrame ccdFrame, int procedureIterationNumber, int phasingStepNumber) throws Exception {
+	public CcdFrame saveCcdFrameFromFile(Procedure procedure, CcdFrame ccdFrame, int procedureIterationNumber, int phasingStepNumber) throws Exception {
 
-		// save the frame to a FITS file
+		// if a CcdFrame record already exists for this FITS filename (e.g. production data), reuse it -
+		// and its real CameraState - rather than persisting the freshly-simulated one
+		CcdFrame existingCcdFrame = findCcdFrame(ccdFrame.getFitsFilename());
+
+		if (existingCcdFrame != null) {
+			logger.info("saveCcdFrameFromFile:: existing CcdFrame record found for FITS = " + ccdFrame.getFitsFilename() + ", reusing it");
+
+			// transient fields aren't persisted, so carry over what was just loaded from the FITS file
+			existingCcdFrame.setRawFrame(ccdFrame.getRawFrame());
+			existingCcdFrame.setFalseColorPng(ccdFrame.getFalseColorPng());
+
+			return existingCcdFrame;
+		}
+
+		// no existing record (e.g. development/investigation environments) - save the frame to a FITS file
 		logger.info("saveCcdFrameFromFile:: FITS = " + ccdFrame.getFitsFilename());
 		ccdFrame.setInstrumentId(procedure.getInstrument().getInstrumentId());
 		
@@ -240,6 +254,7 @@ public class FrameMgmt {
 		byte[] falseColorPng = generatePng(ccdFrame, true);
 		ccdFrame.setFalseColorPng(falseColorPng);
 
+		return ccdFrame;
 	}
 
 	
@@ -551,7 +566,8 @@ public class FrameMgmt {
 		} else {
 			// need to persist CCD frame, it may be imported into the development environment and not have a record
 			int phasingStepNumber = procedureType.isCoarsePhasing() ? iteration : 0;
-			saveCcdFrameFromFile(procedure, ccdFrame, iteration, phasingStepNumber);	
+			ccdFrame = saveCcdFrameFromFile(procedure, ccdFrame, iteration, phasingStepNumber);
+			procedureExecutionState.setCurrentFrame(ccdFrame); // may now be a different (existing) record
 		}
 
 		

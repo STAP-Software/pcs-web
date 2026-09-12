@@ -79,11 +79,9 @@ public class FrameSimulator {
 		
 		CcdFrame ccdFrame = frameList.get(index);
 				
-		// simulate the camera state too
-		CameraState cameraState = new CameraState();
-		cameraState.setCcdTemp(44.4f);
-		ccdFrame.setCameraState(cameraState);
 		Instrument instrument = physicalModel.getInstrument();
+		CameraState cameraState = new CameraState(instrument);
+		ccdFrame.setCameraState(cameraState);
 		ccdFrame.setInstrumentId(instrument.getInstrumentId());
 		ccdFrame.setIntTime(0.0f);
 

@@ -2,77 +2,73 @@
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui"  xmlns:c="http://java.sun.com/jsp/jstl/core">
 
 
-	<p:panelGrid id="cameraStatePanel" columns="2" style="margin:0px;" styleClass="pcsFormNoBorder" columnClasses="btmsFormLabelColumn, btmsFormInputColumn">
+	<p:outputPanel id="cameraStatePanel" style="padding: 16px;">
 
-		<h:outputLabel value="Overall Status" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
+    	<div class="label-input-grid" 
+         	style="display: grid; grid-template-columns: max-content max-content;
+                align-items: baseline; 
+                row-gap: 24px; column-gap: 24px;">
 
-		<h:outputLabel value="Pupil Mask" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
+			<h:outputLabel value="Overall Status" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.overallStatusDisplayString}" />
 
-		<h:outputLabel value="Filter" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
+			<h:outputLabel value="Pupil Mask" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.pupilWheel.stateDisplayString}" />
 
-		<h:outputLabel value="Ref. Beam" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
+			<h:outputLabel value="Filter" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.filterWheel.stateDisplayString}" />
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
-		<h:outputLabel value="Fine Pupil Adj (x, y) (#{fieldMetaData.units})" />
-		<h:panelGroup style="position:relative; top:3px">
-			<h:outputText value="#{procedureController.frameInstrument.camera.fineTiltMirror.stateXDisplayString}" />
-			<h:outputText value=", " />
-			<h:outputText value="#{procedureController.frameInstrument.camera.fineTiltMirror.stateYDisplayString}" />
-		</h:panelGroup>
+			<h:outputLabel value="Ref. Beam" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.currentRefBeamDisplayString}" />
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
-		<h:outputLabel value="Coarse Pupil Adj (x, y) (#{fieldMetaData.units})" />
-		<h:panelGroup style="position:relative; top:3px">
-			<h:outputText value="#{procedureController.frameInstrument.camera.coarseTiltMirror.stateXDisplayString}" />
-			<h:outputText value=", " />
-			<h:outputText value="#{procedureController.frameInstrument.camera.coarseTiltMirror.stateYDisplayString}" />
-		</h:panelGroup>
 
-		<h:outputLabel value="Two Position Mech" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />						
+			<h:outputLabel value="Fine Pupil Adj (x, y) (#{fieldMetaData.units})" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.fineTiltMirror.stateXDisplayString}, #{procedureController.frameInstrument.camera.fineTiltMirror.stateYDisplayString}" />
 
-		<h:outputLabel value="CCD Power" />
-		<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" style="position:relative; top:2px" />
-		
-		<h:outputLabel value="CCD Gain" />
-		<h:outputText value="#{procedureController.frameInstrument.ccd.ccdGain.gainDisplay}" style="position:relative; top:2px" />
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />				
+			<h:outputLabel value="Coarse Pupil Adj (x, y) (#{fieldMetaData.units})" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.coarseTiltMirror.stateXDisplayString}, #{procedureController.frameInstrument.camera.coarseTiltMirror.stateYDisplayString}" />
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
-	    <h:outputLabel value="CCD Temp (L,R) (#{fieldMetaData.units})" />
-		<h:panelGroup style="position:relative; top:3px">
-			<h:outputText value="#{procedureController.frameInstrument.ccd.leftTemperature}" style="position:relative; top:2px" >
+			<h:outputLabel value="Two Position Mech" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.twoPosMechanism.displayString}" />
+
+			<h:outputLabel value="CCD Power" />
+			<h:outputText value="#{procedureController.frameInstrument.ccd.displayString}" />
+			
+			<h:outputLabel value="CCD Gain" />
+			<h:outputText value="#{procedureController.frameInstrument.ccd.ccdGain.gainDisplay}" />
+
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','CcdTemp')}" />				
+			<h:outputLabel value="CCD Temp (L,R) (#{fieldMetaData.units})" />
+			<h:panelGroup style="align-self:center">
+				<h:outputText value="#{procedureController.frameInstrument.ccd.leftTemperature}" >
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				</h:outputText>
+				<h:outputText value=", "  />
+				<h:outputText value="#{procedureController.frameInstrument.ccd.rightTemperature}" >
+					<f:converter converterId="DynamicNumberConverter" />
+					<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
+				</h:outputText>
+			</h:panelGroup>
+
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
+			<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.instrumentTemperature}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 			</h:outputText>
-			<h:outputText value=", "  style="position:relative; top:2px" />
-			<h:outputText value="#{procedureController.frameInstrument.ccd.rightTemperature}" style="position:relative; top:2px" >
+
+			<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />				
+			<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})" />
+			<h:outputText value="#{procedureController.frameInstrument.camera.electronicsBoxTemperature}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 			</h:outputText>
-		</h:panelGroup>
-		
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />				
-		<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.instrumentTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
+		</div>
 
-		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />				
-		<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})" />
-		<h:outputText value="#{procedureController.frameInstrument.camera.electronicsBoxTemperature}" style="position:relative; top:2px" >
-			<f:converter converterId="DynamicNumberConverter" />
-			<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
-		</h:outputText>
-
-
-
-	</p:panelGrid>
-
+	</p:outputPanel>
 
 
 </ui:composition>
