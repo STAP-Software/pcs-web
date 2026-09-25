@@ -481,6 +481,9 @@ public class GetFrameCentroidsExecutor {
 				centroidMapMgmt.saveCentroidMap(centroidMap);
 	
 				procedureCcdFrame.setCentroidMap(centroidMap);
+	
+				// V3.0 - persist attachment to procedureCcdFrame
+				frameMgmt.updateProcedureCcdFrameCentroidMap(procedureCcdFrame.getProcedureCcdFrameId(), centroidMap.getCentroidMapId());
 
 				// display the marked frame
 				frameDisplayMgmt.setMarking(Arrays.asList(findCentroidsResult.getCentroidList()));

@@ -535,7 +535,7 @@
 
 			</p:panelGrid>
 			<p:remoteCommand name="handMark" action="#{procedureController.doHandMark}" update=":frameHiddenForm" oncomplete="markFrame();" /> 
-			<p:remoteCommand name="frameValue" action="#{procedureController.doGetFrameValue}" process="@this" update=":frameHiddenForm" oncomplete="displayFrameValue();" />	
+			<p:remoteCommand name="frameValue" action="#{procedureController.doGetFrameValue}" process="@this" partialSubmit="true" update=":frameHiddenForm:pixelValue" oncomplete="displayFrameValue();" />	
  			<p:remoteCommand name="testAutoRun" action="#{procedureController.doOnLoad}" autoRun="true" />
 		</h:form>
 
@@ -756,35 +756,23 @@
 		document.getElementById('audiocontrol').load();
 	}
 	
- 	function displayFrameValue() {
- 			
- 		var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
- 		var message = 'pos: (' + Math.floor(mousePos.x) + ', ' + Math.floor(mousePos.y) + '),  val = ' + pixelValue;
-        var infoCanvas = document.getElementById("infoCanvas");
-        writeMessage(infoCanvas, message);
- 	}
+	var sentPos;
+
+	function displayFrameValue() {
+	    var pixelValue = document.getElementById('frameHiddenForm:pixelValue').value;
+	    var message = 'pos: (' + Math.floor(sentPos.x) + ', ' + Math.floor(sentPos.y) + '),  val = ' + pixelValue;
+	    writeMessage(document.getElementById("infoCanvas"), message);
+	    moving = false;
+	}
 
 	function doMouseMove(event) {
-	
- 		var canvas = document.getElementById("frameCanvas");
-  		mousePos = getMousePos(canvas, event);
-
-		if (!moving) {
-			moving = true;
-			window.setTimeout("mouseMoveHandler()", 300);
-		}
-   	}
-		
-	function mouseMoveHandler() {
-		
- 		// convert 512 to 1024
-  		mousePos.x = mousePos.x * 2;
-  		mousePos.y = mousePos.y * 2;
-  		
- 		// call javascript function that is defined in <p:remote>
- 		frameValue([{name: 'mouse_x', value: mousePos.x}, {name: 'mouse_y', value: mousePos.y}]);
-
- 		moving = false;
+	    mousePos = getMousePos(document.getElementById("frameCanvas"), event);
+	    if (!moving) {
+	        moving = true;
+	        // convert 512 to 1024
+	        sentPos = {x: mousePos.x * 2, y: mousePos.y * 2};
+	        frameValue([{name: 'mouse_x', value: sentPos.x}, {name: 'mouse_y', value: sentPos.y}]);
+	    }
 	}
 	
 	function writeMessage(infoCanvas, message) {

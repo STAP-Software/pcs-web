@@ -56,6 +56,7 @@ import org.tmt.aps.peas.procedure.exception.BadDarkMedianValueException;
 import org.tmt.aps.peas.procedure.model.Procedure;
 import org.tmt.aps.peas.procedure.model.ProcedureType;
 import org.tmt.aps.peas.refBeamMap.business.CentroidMapMgmt;
+import org.tmt.aps.peas.refBeamMap.model.CentroidMap;
 import org.tmt.aps.peas.statusLog.business.StatusLogger;
 import org.tmt.aps.peas.telescope.business.TelescopeMgmt;
 import org.tmt.aps.peas.telescope.model.Telescope;
@@ -607,6 +608,7 @@ public class FrameMgmt {
         return procedureCcdFrame;
     }
     
+    
     // V3.0 helper method
     public int determinePhasingStepNumber(ProcedureType procedureType, int iteration) {
             	
@@ -660,7 +662,12 @@ public class FrameMgmt {
         }
     }
     
-
+    // V3.0 
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void updateProcedureCcdFrameCentroidMap(Long procedureCcdFrameId, Long centroidMapId) {
+    	ProcedureCcdFrame procedureCcdFrame = em.find(ProcedureCcdFrame.class, procedureCcdFrameId);
+    	procedureCcdFrame.setCentroidMap(em.getReference(CentroidMap.class, centroidMapId));
+    }
 
     
 
