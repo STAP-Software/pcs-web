@@ -53,6 +53,16 @@
 			white-space: nowrap;
 			justify-self: end;
 		}
+		/* The Call buttons are centered in their row rather than
+		   baseline-aligned, so they line up against the dropdown beside
+		   them regardless of thinButton's padding or height. top:0
+		   cancels the global .thinButton top:-3px nudge within this
+		   grid only; this selector outranks .thinButton, so no
+		   !important is needed. */
+		.pcsStatusGrid .pcsRow .ui-button {
+			align-self: center;
+			top: 0;
+		}
 	</style>
 
 	<h:panelGroup id="cameraUpdateMethodPanel" layout="block" styleClass="pcsUpdateMethodGrid">
@@ -72,8 +82,8 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Overall Status"  styleClass="pcsFieldLabel" />	
-			<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" style="position:relative; top:2px" />
-			<h:outputText id="overallStatStatus" value="" style="position:relative; top:2px" />
+			<h:outputText id="overallStatValue" value="#{cameraManualController.camera.overallStatusDisplayString}" />
+			<h:outputText id="overallStatStatus" value="" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[21]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -90,8 +100,8 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Pupil Mask"  styleClass="pcsFieldLabel" />	
-			<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" style="position:relative; top:2px" />
-			<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="pupilMaskValue" value="#{cameraManualController.camera.pupilWheel.stateDisplayString}" />
+			<h:outputText id="pupilMaskStatus" value="#{cameraManualController.camera.pupilWheel.rawStateDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[1]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -108,8 +118,8 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Filter"  styleClass="pcsFieldLabel" />
-			<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" style="position:relative; top:2px" />
-			<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="filterWheelValue" value="#{cameraManualController.camera.filterWheel.stateDisplayString}" />
+			<h:outputText id="filterWheelStatus" value="#{cameraManualController.camera.filterWheel.rawStateDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[2]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -126,7 +136,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Ref. Beam"  styleClass="pcsFieldLabel" />
-			<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="refBeamValue" value="#{cameraManualController.camera.currentRefBeamDisplayString}" />
 			<h:outputText id="refBeamStatus" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[7]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -145,8 +155,8 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Fine Pupil Adj (x) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="fineXValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
-			<h:outputText id="fineXStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="fineXValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.x}" />
+			<h:outputText id="fineXStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateXDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[3]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -164,8 +174,8 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','TiltPlateX')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Fine Pupil Adj (y) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="fineYValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
-			<h:outputText id="fineYStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="fineYValue" value="#{cameraManualController.camera.fineTiltMirror.currentPosition.y}" />
+			<h:outputText id="fineYStatus" value="#{cameraManualController.camera.fineTiltMirror.rawStateYDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[4]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -183,8 +193,8 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Coarse Pupil Adj (x) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="coarseXValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" style="position:relative; top:2px" />
-			<h:outputText id="coarseXStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="coarseXValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.x}" />
+			<h:outputText id="coarseXStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateXDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[9]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -202,8 +212,8 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','SteeringMirrorX')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Coarse Pupil Adj (y) (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="coarseYValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" style="position:relative; top:2px" />
-			<h:outputText id="coarseYStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="coarseYValue" value="#{cameraManualController.camera.coarseTiltMirror.currentPosition.y}" />
+			<h:outputText id="coarseYStatus" value="#{cameraManualController.camera.coarseTiltMirror.rawStateYDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[10]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -220,8 +230,8 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Two Position Mech"  styleClass="pcsFieldLabel" />
-			<h:outputText id="twoPosValue" value="#{cameraManualController.camera.twoPosMechanism.displayString}" style="position:relative; top:2px" />
-			<h:outputText id="twoPosStatus" value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="twoPosValue" value="#{cameraManualController.camera.twoPosMechanism.displayString}" />
+			<h:outputText id="twoPosStatus" value="#{cameraManualController.camera.twoPosMechanism.rawStateDisplayString}" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[5]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
 				<f:selectItem itemLabel="Change Listener" itemValue="1" />
@@ -238,7 +248,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="CCD Power"  styleClass="pcsFieldLabel" />
-			<h:outputText id="ccdPowerValue" value="#{cameraManualController.ccd.displayString}" style="position:relative; top:2px" />
+			<h:outputText id="ccdPowerValue" value="#{cameraManualController.ccd.displayString}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[8]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -257,7 +267,7 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BenchTemp')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Instrument Temp (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="instTempValue" value="#{cameraManualController.camera.instrumentTemperature}" style="position:relative; top:2px" >
+			<h:outputText id="instTempValue" value="#{cameraManualController.camera.instrumentTemperature}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 			</h:outputText>
@@ -279,7 +289,7 @@
 		<c:set var="fieldMetaData" value="#{metaDataController.findFieldMetaData('CameraState','BoxTemp')}" />
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Electronics Box Temp (#{fieldMetaData.units})"  styleClass="pcsFieldLabel" />
-			<h:outputText id="boxTempValue" value="#{cameraManualController.camera.electronicsBoxTemperature}" style="position:relative; top:2px" >
+			<h:outputText id="boxTempValue" value="#{cameraManualController.camera.electronicsBoxTemperature}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#{fieldMetaData.displayFormat}"/>
 			</h:outputText>
@@ -300,7 +310,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Instrument Humidity"  styleClass="pcsFieldLabel" />
-			<h:outputText id="instHumidValue" value="#{cameraManualController.camera.instrumentHumidity}" style="position:relative; top:2px" >
+			<h:outputText id="instHumidValue" value="#{cameraManualController.camera.instrumentHumidity}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#.#"/>
 			</h:outputText>
@@ -321,7 +331,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Electronics Box Humidity"  styleClass="pcsFieldLabel" />
-			<h:outputText id="boxHumidValue" value="#{cameraManualController.camera.electronicsBoxHumidity}" style="position:relative; top:2px" >
+			<h:outputText id="boxHumidValue" value="#{cameraManualController.camera.electronicsBoxHumidity}" >
 				<f:converter converterId="DynamicNumberConverter" />
 				<f:attribute name="pattern" value="#.#"/>
 			</h:outputText>
@@ -342,7 +352,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Temperature Interlock"  styleClass="pcsFieldLabel" />
-			<h:outputText id="tempInterlockValue" value="#{cameraManualController.camera.temperatureInterlock}" style="position:relative; top:2px" />
+			<h:outputText id="tempInterlockValue" value="#{cameraManualController.camera.temperatureInterlock}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[16]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -360,7 +370,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Purge State"  styleClass="pcsFieldLabel" />
-			<h:outputText id="purgeValue" value="#{cameraManualController.camera.purgeState ? 'On' : 'Off'}" style="position:relative; top:2px" />
+			<h:outputText id="purgeValue" value="#{cameraManualController.camera.purgeState ? 'On' : 'Off'}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[18]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -378,7 +388,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Glycol Flow"  styleClass="pcsFieldLabel" />
-			<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow ? 'On' : 'Off'}" style="position:relative; top:2px" />
+			<h:outputText id="glycolValue" value="#{cameraManualController.camera.glycolFlow ? 'On' : 'Off'}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[19]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -396,7 +406,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Overall Power"  styleClass="pcsFieldLabel" />
-			<h:outputText id="overallPower" value="#{cameraManualController.camera.overallPowerStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="overallPower" value="#{cameraManualController.camera.overallPowerStateDisplayString}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[20]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />
@@ -414,7 +424,7 @@
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
 			<h:outputLabel value="Galil Power"  styleClass="pcsFieldLabel" />
-			<h:outputText id="galilPower" value="#{cameraManualController.camera.galilPowerStateDisplayString}" style="position:relative; top:2px" />
+			<h:outputText id="galilPower" value="#{cameraManualController.camera.galilPowerStateDisplayString}" />
 			<h:outputText styleClass="pcsBlank" />
 			<p:selectOneMenu value="#{cameraManualController.queryUpdateMethod[17]}" style="top:0px" rendered="#{cameraManualController.statusUpdateMethod eq 4}" >
 				<f:selectItem itemLabel="Select method" itemValue="0" />

@@ -46,6 +46,12 @@
 		.pcsInlineLabel {
 			font-weight: bold;
 		}
+		/* One-pixel nudge down so the Send buttons sit centered against
+		   their dropdowns. PrimeFaces already makes .ui-button
+		   position:relative, so top applies directly. */
+		.pcsControlGrid .ui-button {
+			top: 1px;
+		}
 	</style>
 
 	<div class="pcsControlGrid">
@@ -56,7 +62,7 @@
 					<f:selectItem itemLabel="Init Camera" itemValue="1" />
 					<f:selectItem itemLabel="Stow Camera" itemValue="0" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendInstrumentStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendInstrumentStateCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -69,7 +75,7 @@
 					<f:selectItem itemLabel="Position 5" itemValue="5" />
 					<f:selectItem itemLabel="Position 6" itemValue="6" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPupilMaskCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPupilMaskCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -82,7 +88,7 @@
 					<f:selectItem itemLabel="Position 5" itemValue="5" />
 					<f:selectItem itemLabel="Position 6" itemValue="6" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFilterCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendFilterCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -99,7 +105,7 @@
 					<f:selectItem itemLabel="Ref. Beam 9" itemValue="9" />
 					<f:selectItem itemLabel="Ref. Beams Off" itemValue="0" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendRefBeamCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendRefBeamCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -111,11 +117,11 @@
 				<p:inputText value="#{cameraManualController.fineTiltCmd.y}" size="3"  />
 			</h:panelGroup>
 			<h:panelGroup layout="block" styleClass="pcsCell">
-				<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendFineCommandX}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendFineCommandX}" update=":growl :errorGrowl" />
 				<h:outputText value="&#160;&#160;" />
-				<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendFineCommandY}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendFineCommandY}" update=":growl :errorGrowl" />
 				<h:outputText value="&#160;&#160;" />
-				<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendFineCommandBoth}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendFineCommandBoth}" update=":growl :errorGrowl" />
 			</h:panelGroup>
 		</h:panelGroup>
 
@@ -128,11 +134,11 @@
 				<p:inputText value="#{cameraManualController.coarseTiltCmd.y}" size="3"  />
 			</h:panelGroup>
 			<h:panelGroup layout="block" styleClass="pcsCell">
-				<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendCoarseCommandX}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send X" ajax="true" action="#{cameraManualController.doSendCoarseCommandX}" update=":growl :errorGrowl" />
 				<h:outputText value="&#160;&#160;" />
-				<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendCoarseCommandY}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send Y" ajax="true" action="#{cameraManualController.doSendCoarseCommandY}" update=":growl :errorGrowl" />
 				<h:outputText value="&#160;&#160;" />
-				<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendCoarseCommandBoth}" update=":growl :errorGrowl" style="top:8px" />
+				<p:commandButton value="Send Both" ajax="true" action="#{cameraManualController.doSendCoarseCommandBoth}" update=":growl :errorGrowl" />
 			</h:panelGroup>
 		</h:panelGroup>
 
@@ -142,7 +148,7 @@
 					<f:selectItem itemLabel="Extend" itemValue="1" />
 					<f:selectItem itemLabel="Retract" itemValue="2" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendTwoPosMechCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendTwoPosMechCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -151,7 +157,7 @@
 					<f:selectItem itemLabel="On" itemValue="1" />
 					<f:selectItem itemLabel="Off" itemValue="2" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCcdPowerCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendCcdPowerCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -160,7 +166,7 @@
 					<f:selectItem itemLabel="On" itemValue="1" />
 					<f:selectItem itemLabel="Off" itemValue="0" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendOverallPowerStateCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -169,7 +175,7 @@
 					<f:selectItem itemLabel="On" itemValue="1" />
 					<f:selectItem itemLabel="Off" itemValue="0" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendGalilPowerStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendGalilPowerStateCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 		<h:panelGroup layout="block" styleClass="pcsRow">
@@ -178,7 +184,7 @@
 					<f:selectItem itemLabel="On" itemValue="1" />
 					<f:selectItem itemLabel="Off" itemValue="0" />
 			</p:selectOneMenu>
-			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPurgeAirStateCommand}" update=":growl :errorGrowl" style="top:8px" />
+			<p:commandButton value="Send" ajax="true" action="#{cameraManualController.doSendPurgeAirStateCommand}" update=":growl :errorGrowl" />
 		</h:panelGroup>
 
 	</div>
