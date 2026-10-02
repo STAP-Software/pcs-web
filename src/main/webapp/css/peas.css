@@ -206,7 +206,8 @@ div.btmsBreadcrumb ul li a.ui-icon {
 
 
 .ui-growl {
-	left: 300px;
+	left: 340px;
+	top: 160px !important
 }
 
 
