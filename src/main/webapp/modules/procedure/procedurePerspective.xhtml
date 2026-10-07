@@ -474,9 +474,9 @@
 								<p:commandButton style="float:right" value="Apply Marking" icon="pi pi-check" ajax="true"
 									action="#{procedureController.doApplyMarking}" update=":growl :errorGrowl framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 								<p:commandButton style="float:right" value="Reset" icon="pi pi-refresh" ajax="true"
-									action="#{procedureController.doResetMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+									action="#{procedureController.doResetMarking}" update=":frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 								<p:commandButton style="float:right" value="Undo" icon="pi pi-undo" ajax="true"
-									action="#{procedureController.doUndoMarking}" update="framePanel :frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
+									action="#{procedureController.doUndoMarking}" update=":frameHiddenForm" disabled="#{not asyncController.frameMarkActionPending}" oncomplete="markFrame();"/>
 								
 							</h:panelGroup>
 						
