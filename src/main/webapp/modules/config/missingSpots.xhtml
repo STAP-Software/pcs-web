@@ -114,7 +114,7 @@
 						
 						<div style="display:flex; flex-direction:column; gap:4px;">
 						    <div style="font-size:16px; font-family:Arial, sans-serif; font-weight:normal;">spot #</div>
-						    <p:scrollPanel style="width:200px;height:728px">
+						    <p:scrollPanel style="width:200px;height:840px">
 						        <p:selectManyCheckbox id="spotSelector" value="#{missingSpotsController.selectedSpots}" layout="pageDirection" converter="jakarta.faces.Integer">
 						            <f:selectItems value="#{missingSpotsController.spots}" />
 						            <p:ajax update="centroidNbrs centroidXs centroidYs missingSpots spotSelector" 
@@ -157,6 +157,10 @@ function drawMissingSpots() {
 	
 	var c = document.getElementById("spotCanvas");
 	var ctx = c.getContext("2d");
+
+	var zoom = 1.15;   // drawing area scale; canvas is 750 * zoom square
+	c.width = Math.round(750 * zoom);
+	c.height = Math.round(750 * zoom);
 	ctx.clearRect(0,0,c.width, c.height);
 
 	var numbersField = document.getElementById('missingSpotsForm:centroidNbrs').value;
@@ -197,34 +201,35 @@ function drawMissingSpots() {
 		} else {
 	 		ctx.fillStyle = "blue";
 		}
-		ctx.fillText(numbersArray[i], (xArray[i] * 0.78) - 45, (yArray[i] * 0.78) - 20);	
+		ctx.fillText(numbersArray[i], ((xArray[i] * 0.78) - 45) * zoom, ((yArray[i] * 0.78) - 20) * zoom);	
 	}
 	
 	
 	var numberSegments = document.getElementById('missingSpotsForm:showSegNum').value;
 
-	if (numberSegments=="true") {
+	if (numberSegments=="true" && document.getElementById('missingSpotsForm:showSegmentNumbers')) {
 		
 		var gsnField = document.getElementById('missingSpotsForm:groupSegmentNumbers').value;
 		var gsnArray = gsnField.split(','); 		
 
 		ctx.font = "30px Arial";
-		ctx.fillStyle = "black";			
-		ctx.fillText(gsnArray[0], (512 * 0.78) - 55, (512 * 0.78) - 15);
-		
-		
-		
-		ctx.fillText(gsnArray[1], (512 * 0.78) - 55, (768 * 0.78) - 25);	
-		
-		ctx.fillText(gsnArray[2], (768 * 0.78) - 70, (640 * 0.78) - 20);	
-		
-		ctx.fillText(gsnArray[3], (768 * 0.78) - 70, (384 * 0.78) - 10);	
-		
-		ctx.fillText(gsnArray[4], (512 * 0.78) - 55, (256 * 0.78) - 5);	
-		
-		ctx.fillText(gsnArray[5], (256 * 0.78) - 40, (384 * 0.78) - 10);	
-		
-		ctx.fillText(gsnArray[6], (256 * 0.78) - 40, (640 * 0.78) - 20);	
+		ctx.fillStyle = "black";
+		ctx.textAlign = "center";
+		ctx.textBaseline = "middle";
+
+		// hexagon centers in canvas pixels: center hexagon, plus neighbor offsets
+		var cx = 360.5 * zoom, cy = 376 * zoom, dx = 167.5 * zoom, dy = 96.75 * zoom;
+
+		ctx.fillText(gsnArray[0], cx,      cy);
+		ctx.fillText(gsnArray[1], cx,      cy + 2 * dy);
+		ctx.fillText(gsnArray[2], cx + dx, cy + dy);
+		ctx.fillText(gsnArray[3], cx + dx, cy - dy);
+		ctx.fillText(gsnArray[4], cx,      cy - 2 * dy);
+		ctx.fillText(gsnArray[5], cx - dx, cy - dy);
+		ctx.fillText(gsnArray[6], cx - dx, cy + dy);
+
+		ctx.textAlign = "start";
+		ctx.textBaseline = "alphabetic";
 
 	}
 	
