@@ -22,7 +22,7 @@
 				 
 				 <!-- stop="#{asyncController.onCompletePerformed}" update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm :procedureDetailForm:procedureEventLogPanel:procedureEventLogTable" -->
 				
-			<p:poll interval="2" listener="#{asyncController.asyncListener}" update=":growl :errorGrowl :menuForm :advancedForm :executionPrefsForm" 
+			<p:poll interval="2" listener="#{asyncController.asyncListener}" update=":growl :errorGrowl :menuForm :breadcrumbForm :advancedForm :executionPrefsForm" 
 				widgetVar="procedureExecutionPoller" autoStart="false" oncomplete="scrollStatusLog()" />
 			
 		</h:form>
@@ -309,7 +309,7 @@
 						            icon="pi pi-play"
 						            value="Start"
 						            action="#{procedureController.doExecuteProcedure}"
-						            update=":menuForm :errorGrowl"
+						            update=":menuForm :breadcrumbForm :errorGrowl"
 						            widgetVar="startButton2"
 						            onclick="startButton2.disable();"
 						            disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />

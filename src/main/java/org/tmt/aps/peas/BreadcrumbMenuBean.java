@@ -58,6 +58,7 @@ public class BreadcrumbMenuBean implements Serializable {
                     .command("#{breadcrumbMenuBean.navigate}")
                     .ajax(false)
                     .icon(c.icon)
+                    .disabled(isCrumbDisabled(i))
                     .id("breadcrumbMenu_Item_" + i)
                     .build();
 
@@ -73,6 +74,12 @@ public class BreadcrumbMenuBean implements Serializable {
         return model;
     }
 
+    // Home and the procedure crumb(s) are disabled while a procedure is executing
+    private boolean isCrumbDisabled(int index) {
+        return sessionController.isNavDisabled()
+                && (index == 0 || crumbs.get(index).outcome.contains("procedurePerspective"));
+    }
+
     // ---- Navigation handler ----
     public String navigate() {
 
@@ -81,6 +88,11 @@ public class BreadcrumbMenuBean implements Serializable {
                 ctx.getExternalContext().getRequestParameterMap();
 
         int index = Integer.parseInt(params.get("crumbIndex"));
+
+        if (isCrumbDisabled(index)) {
+            return null;
+        }
+
         String target = params.get("target");
 
         // Access the crumb being navigated to
