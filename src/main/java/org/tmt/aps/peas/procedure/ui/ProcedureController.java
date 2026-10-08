@@ -1236,13 +1236,16 @@ public class ProcedureController implements Serializable {
 				procedure.getProcedureConfigSet().setFiConfig(new FIConfig());
 			}
 
-			// v3.0 get reference beam used
+			// v3.0 get reference beam used (null for procedures that do not use one, e.g. Center Telescope)
+			refMapFilename = null;
 			ProcedureRefBeamMap procedureRefBeamMap = centroidMapMgmt.findRefBeamMapForProcedure(procedure.getProcedureId());
-			Date refBeamCreated = procedureRefBeamMap.getRefBeamMap().getCreateDate();
-			// get the refmap procedure that created it
-			Procedure refMapProcedure = procedureMgmt.findProcedureEncompassingDate(refBeamCreated, ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
-			ProcedureCcdFrame refMapProcedureCcdFrame = refMapProcedure.getProcedureCcdFrameList().get(0);
-			refMapFilename = refMapProcedureCcdFrame.getCcdFrame().getFitsFilename();
+			if (procedureRefBeamMap != null) {
+				Date refBeamCreated = procedureRefBeamMap.getRefBeamMap().getCreateDate();
+				// get the refmap procedure that created it
+				Procedure refMapProcedure = procedureMgmt.findProcedureEncompassingDate(refBeamCreated, ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+				ProcedureCcdFrame refMapProcedureCcdFrame = refMapProcedure.getProcedureCcdFrameList().get(0);
+				refMapFilename = refMapProcedureCcdFrame.getCcdFrame().getFitsFilename();
+			}
 			
 
 			

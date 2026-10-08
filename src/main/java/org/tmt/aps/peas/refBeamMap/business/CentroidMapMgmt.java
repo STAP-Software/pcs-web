@@ -475,7 +475,7 @@ public class CentroidMapMgmt {
 	/**
 	 * Queries the database for the ref beam map used for the procedure
 	 * @param procedureId the procedure Id
-	 * @return a procedureRefBeamMap entry
+	 * @return a procedureRefBeamMap entry, or null if the procedure did not use a reference beam map
 	 */
 	public ProcedureRefBeamMap findRefBeamMapForProcedure(Long procedureId) {
 
@@ -484,7 +484,9 @@ public class CentroidMapMgmt {
 
 		query.setMaxResults(1);
 
-		return query.getSingleResult();
+		// procedures that do not use a reference beam map (e.g. Center Telescope) have no entry
+		List<ProcedureRefBeamMap> results = query.getResultList();
+		return results.isEmpty() ? null : results.get(0);
 	}
 
 	
