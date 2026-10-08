@@ -151,13 +151,13 @@
 
 					<p:spacer width="100" height="10" />
 
-					<p:dataTable id="ccdBadPixelTable" var="hotPixel" value="#{ccdDefController.ccd.hotPixelList}" style="width: 300px"
+					<p:dataTable id="ccdBadPixelTable" var="hotPixel" value="#{ccdDefController.ccd.hotPixelList}" style="width: 420px"
 					columnClasses="btmsFormOutputColumn">
 
-						<p:column headerText="P1 (x,y)">
+						<p:column headerText="P1 (x,y)" style="white-space: nowrap">
 							(<h:outputText value="#{hotPixel.p1.x}" />, <h:outputText value="#{hotPixel.p1.y}" />)
 						</p:column>
-						<p:column headerText="P2 (x,y)">
+						<p:column headerText="P2 (x,y)" style="white-space: nowrap">
 							(<h:outputText value="#{hotPixel.p2.x}" />, <h:outputText value="#{hotPixel.p2.y}" />)
 						</p:column>
 						<p:column headerText="Delete">
@@ -198,13 +198,13 @@
 
 					<p:spacer width="100" height="10" />
 
-					<p:dataTable id="ccdBadColumnTable" var="hotColumn" value="#{ccdDefController.ccd.hotColumnList}" style="width: 300px"
+					<p:dataTable id="ccdBadColumnTable" var="hotColumn" value="#{ccdDefController.ccd.hotColumnList}" style="width: 420px"
 					columnClasses="btmsFormOutputColumn">
 
-						<p:column headerText="P1 (x,y)">
+						<p:column headerText="P1 (x,y)" style="white-space: nowrap">
 							(<h:outputText value="#{hotColumn.p1.x}" />, <h:outputText value="#{hotColumn.p1.y}" />)
 						</p:column>
-						<p:column headerText="P2 (x,y)">
+						<p:column headerText="P2 (x,y)" style="white-space: nowrap">
 							(<h:outputText value="#{hotColumn.p2.x}" />, <h:outputText value="#{hotColumn.p2.y}" />)
 						</p:column>
 						<p:column headerText="Delete">
