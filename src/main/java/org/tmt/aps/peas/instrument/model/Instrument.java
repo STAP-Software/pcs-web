@@ -193,144 +193,145 @@ public class Instrument {
 	 */
 	public void updateState(CameraState cameraState) {
 		
-		// V3.0 TEST
-		logger.infof("cameraState raw: id=%d, overallStatus=%d, ccdTemp=%f, boxTemp=%f, benchTemp=%f, prismWheelPos=%d, refBeamPos=%d",
-			    cameraState.getCameraStateId(), cameraState.getOverallStatus(), cameraState.getCcdTemp(),
-			    cameraState.getBoxTemp(), cameraState.getBenchTemp(), cameraState.getPrismWheelPos(), cameraState.getRefBeamPos());
-		
 		if (cameraState != null) {
-		
-		// Pupil Mask
-		camera.getPupilWheel().setState(cameraState.isPrismWheelIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-		camera.getPupilWheel().setSelectedPupilMaskNumber(cameraState.getPrismWheelPos());
+			
+			// V3.0 TEST
+			logger.infof("cameraState raw: id=%d, overallStatus=%d, ccdTemp=%f, boxTemp=%f, benchTemp=%f, prismWheelPos=%d, refBeamPos=%d",
+				    cameraState.getCameraStateId(), cameraState.getOverallStatus(), cameraState.getCcdTemp(),
+				    cameraState.getBoxTemp(), cameraState.getBenchTemp(), cameraState.getPrismWheelPos(), cameraState.getRefBeamPos());
+			
 
-		// Filter
-		camera.getFilterWheel().setState(cameraState.isFilterWheelIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-		camera.getFilterWheel().setSelectedFilterNumber(cameraState.getFilterWheelPos());
-
-		// Ref Beam
-		camera.setCurrentRefBeam(cameraState.getRefBeamPos());
-
-		// Shutter
-		camera.getShutter().setState(cameraState.getShutterState() == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
-		
-		// Fine Tilt
-		camera.getFineTiltMirror().setCurrentPosition(new Point(cameraState.getTiltPlateX(), cameraState.getTiltPlateY()));
-		camera.getFineTiltMirror().setStateX(cameraState.isTiltPlateXIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-		camera.getFineTiltMirror().setStateY(cameraState.isTiltPlateYIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-
-		// Coarse Tilt
-		camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraState.getSteeringMirrorX(), cameraState.getSteeringMirrorY()));
-		camera.getCoarseTiltMirror().setStateX(cameraState.isSteeringMirrorXIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-		camera.getCoarseTiltMirror().setStateY(cameraState.isSteeringMirrorYIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
-		
-		// Two Position Mech
-		camera.getTwoPosMechanism().setState(cameraState.getTwoPosDevPos() == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
-
-		// CCD Power
-		ccd.setState(cameraState.getCcdPowerState() == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
-
-		// CCD Temperature
-		ccd.setTemperature((float) cameraState.getCcdTemp());
-
-		// Instrument Temperature
-		camera.setInstrumentTemperature(((float) cameraState.getBenchTemp()));
-
-		// Electronics Box Temperature
-		camera.setElectronicsBoxTemperature(((float) cameraState.getBoxTemp()));
-		
-		// instrument RH
-		camera.setInstrumentHumidity((float)cameraState.getBenchHumidity());
-		
-		// Electronics box RH
-		camera.setElectronicsBoxHumidity((float)cameraState.getBoxHumidity());
-		
-		// Temperature Interlock
-		camera.setTemperatureInterlock(cameraState.isTemperatureInterlock());
-		
-		// Purge State
-		camera.setPurgeState(cameraState.isPurgeState());
-		
-		// Glycol Flow
-		camera.setGlycolFlow(cameraState.isGlycolFlow());
-
-		// Overall Power State
-		camera.setOverallPowerState(cameraState.getOverallPowerState());
-		
-		// Galil Power State
-		camera.setGalilPowerState(cameraState.getGalilPowerState());
-		
-		// Overall status
-		camera.setOverallStatus(cameraState.getOverallStatus());
-		
-		// V3.0 TEST
-        logger.infof("after update: overallStatus=%d, instrumentTemp=%f, camera identity=%s", 
-            camera.getOverallStatus(), camera.getInstrumentTemperature(), System.identityHashCode(camera));
-
-	} else {
-		camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);
-		camera.getPupilWheel().setSelectedPupilMaskNumber(0);
-
-		// Filter
-		camera.getFilterWheel().setState(DeviceStates.STATE_IN_TRANSIT);
-		camera.getFilterWheel().setSelectedFilterNumber(0);
-
-		// Ref Beam
-		camera.setCurrentRefBeam(0);
-
-		// Shutter
-		camera.getShutter().setState(Shutter.STATE_CLOSE);
-		
-		// Fine Tilt
-		camera.getFineTiltMirror().setCurrentPosition(new Point(0, 0));
-		camera.getFineTiltMirror().setStateX(DeviceStates.STATE_IN_TRANSIT);
-		camera.getFineTiltMirror().setStateY(DeviceStates.STATE_IN_TRANSIT);
-
-		// Coarse Tilt
-		camera.getCoarseTiltMirror().setCurrentPosition(new Point(0, 0));
-		camera.getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_TRANSIT);
-		camera.getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_TRANSIT);
-		
-		// Two Position Mech
-		camera.getTwoPosMechanism().setState(TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND);
-
-		// CCD Power
-		ccd.setState(Ccd.POWER_STATE_OFF);
-
-		// CCD Temperature
-		ccd.setTemperature(0.0f);
-
-		// Instrument Temperature
-		camera.setInstrumentTemperature(0.0f);
-
-		// Electronics Box Temperature
-		camera.setElectronicsBoxTemperature(0.0f);
+			// Pupil Mask
+			camera.getPupilWheel().setState(cameraState.isPrismWheelIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+			camera.getPupilWheel().setSelectedPupilMaskNumber(cameraState.getPrismWheelPos());
 	
-		// instrument RH
-		camera.setInstrumentHumidity(0.0f);
+			// Filter
+			camera.getFilterWheel().setState(cameraState.isFilterWheelIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+			camera.getFilterWheel().setSelectedFilterNumber(cameraState.getFilterWheelPos());
+	
+			// Ref Beam
+			camera.setCurrentRefBeam(cameraState.getRefBeamPos());
+	
+			// Shutter
+			camera.getShutter().setState(cameraState.getShutterState() == CameraCommand.CLOSED ? Shutter.STATE_CLOSE : Shutter.STATE_OPEN);
+			
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(cameraState.getTiltPlateX(), cameraState.getTiltPlateY()));
+			camera.getFineTiltMirror().setStateX(cameraState.isTiltPlateXIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+			camera.getFineTiltMirror().setStateY(cameraState.isTiltPlateYIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+	
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(cameraState.getSteeringMirrorX(), cameraState.getSteeringMirrorY()));
+			camera.getCoarseTiltMirror().setStateX(cameraState.isSteeringMirrorXIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+			camera.getCoarseTiltMirror().setStateY(cameraState.isSteeringMirrorYIsInTransit() ? DeviceStates.STATE_IN_TRANSIT : DeviceStates.STATE_IN_POSITION);
+			
+			// Two Position Mech
+			camera.getTwoPosMechanism().setState(cameraState.getTwoPosDevPos() == CameraCommand.EXTENDED ? TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND : TwoPosMechanism.TWO_POS_MECH_STATE_RETRACT);
+	
+			// CCD Power
+			ccd.setState(cameraState.getCcdPowerState() == CameraCommand.ON ? Ccd.POWER_STATE_ON : Ccd.POWER_STATE_OFF);
+	
+			// CCD Temperature
+			ccd.setTemperature((float) cameraState.getCcdTemp());
+	
+			// Instrument Temperature
+			camera.setInstrumentTemperature(((float) cameraState.getBenchTemp()));
+	
+			// Electronics Box Temperature
+			camera.setElectronicsBoxTemperature(((float) cameraState.getBoxTemp()));
+			
+			// instrument RH
+			camera.setInstrumentHumidity((float)cameraState.getBenchHumidity());
+			
+			// Electronics box RH
+			camera.setElectronicsBoxHumidity((float)cameraState.getBoxHumidity());
+			
+			// Temperature Interlock
+			camera.setTemperatureInterlock(cameraState.isTemperatureInterlock());
+			
+			// Purge State
+			camera.setPurgeState(cameraState.isPurgeState());
+			
+			// Glycol Flow
+			camera.setGlycolFlow(cameraState.isGlycolFlow());
+	
+			// Overall Power State
+			camera.setOverallPowerState(cameraState.getOverallPowerState());
+			
+			// Galil Power State
+			camera.setGalilPowerState(cameraState.getGalilPowerState());
+			
+			// Overall status
+			camera.setOverallStatus(cameraState.getOverallStatus());
+			
+			// V3.0 TEST
+	        logger.infof("after update: overallStatus=%d, instrumentTemp=%f, camera identity=%s", 
+	            camera.getOverallStatus(), camera.getInstrumentTemperature(), System.identityHashCode(camera));
+	
+		} else {
+			camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);
+			camera.getPupilWheel().setSelectedPupilMaskNumber(0);
+	
+			// Filter
+			camera.getFilterWheel().setState(DeviceStates.STATE_IN_TRANSIT);
+			camera.getFilterWheel().setSelectedFilterNumber(0);
+	
+			// Ref Beam
+			camera.setCurrentRefBeam(0);
+	
+			// Shutter
+			camera.getShutter().setState(Shutter.STATE_CLOSE);
+			
+			// Fine Tilt
+			camera.getFineTiltMirror().setCurrentPosition(new Point(0, 0));
+			camera.getFineTiltMirror().setStateX(DeviceStates.STATE_IN_TRANSIT);
+			camera.getFineTiltMirror().setStateY(DeviceStates.STATE_IN_TRANSIT);
+	
+			// Coarse Tilt
+			camera.getCoarseTiltMirror().setCurrentPosition(new Point(0, 0));
+			camera.getCoarseTiltMirror().setStateX(DeviceStates.STATE_IN_TRANSIT);
+			camera.getCoarseTiltMirror().setStateY(DeviceStates.STATE_IN_TRANSIT);
+			
+			// Two Position Mech
+			camera.getTwoPosMechanism().setState(TwoPosMechanism.TWO_POS_MECH_STATE_EXTEND);
+	
+			// CCD Power
+			ccd.setState(Ccd.POWER_STATE_OFF);
+	
+			// CCD Temperature
+			ccd.setTemperature(0.0f);
+	
+			// Instrument Temperature
+			camera.setInstrumentTemperature(0.0f);
+	
+			// Electronics Box Temperature
+			camera.setElectronicsBoxTemperature(0.0f);
 		
-		// Electronics box RH
-		camera.setElectronicsBoxHumidity(0.0f);
-		
-		// Temperature Interlock
-		camera.setTemperatureInterlock(false);
-		
-		// Purge State
-		camera.setPurgeState(false);
-		
-		// Glycol Flow
-		camera.setGlycolFlow(false);
-
-
-		// Overall Power State
-		camera.setOverallPowerState(CameraCommand.UNKNOWN);
-
-		// Galil Power State
-		camera.setGalilPowerState(CameraCommand.UNKNOWN);
-		
-		camera.setOverallStatus(CameraCommand.UNKNOWN);
-
-	}
+			// instrument RH
+			camera.setInstrumentHumidity(0.0f);
+			
+			// Electronics box RH
+			camera.setElectronicsBoxHumidity(0.0f);
+			
+			// Temperature Interlock
+			camera.setTemperatureInterlock(false);
+			
+			// Purge State
+			camera.setPurgeState(false);
+			
+			// Glycol Flow
+			camera.setGlycolFlow(false);
+	
+	
+			// Overall Power State
+			camera.setOverallPowerState(CameraCommand.UNKNOWN);
+	
+			// Galil Power State
+			camera.setGalilPowerState(CameraCommand.UNKNOWN);
+			
+			camera.setOverallStatus(CameraCommand.UNKNOWN);
+	
+		}
 	}
 	
 	
