@@ -444,39 +444,6 @@ public class ProcedureExecutionMgmt {
 			// everything is now stored. Reload somethings for immediate viewing.
 
 			
-			// V3.0 - skip if transitioning to a superprocedure
-			
-			/**
-			 * TEST ONLY
-			
-			if (procedureExecutionState.getSuperProcedure() == null) {
-			
-				try {
-					// set up for immediate viewing
-					
-					// TODO: Uncomment when we have fixed storage of procedure output
-					//procedure.setProcedureOutput(procedureOutputMgmt.findProcedureOutput(procedure));
-	
-					logger.debug("performProcedureCompletion::procedure output set up for immediate viewing");
-	
-					// procedure frame data for immediate viewing
-					for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
-	
-						// TODO uncomment when we have fixed storage of the frame logs
-						//procedureMgmt.setupFrameLog(procedureCcdFrame);
-					}
-	
-				} catch (Exception e) {
-					// don't stop just because we can't read it all back
-					logger.error(MessageGenerator.generateMessage("generic.error"), e);
-				}
-				
-				// do not allow procedure to complete until frame requests have been met
-				frameDisplayMgmt.waitForPendingDisplays();
-			
-			}
-		    */
-
 			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			
 			// for phasing, we are already aborted at this point but do not have getAbortRequested() set anymore.

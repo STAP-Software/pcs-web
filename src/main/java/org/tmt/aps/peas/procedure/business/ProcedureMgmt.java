@@ -62,8 +62,8 @@ public class ProcedureMgmt {
 		
 		Procedure procedure = query.getSingleResult();
 		
-		// V3.0 TEST
-		logger.infof("cameraState check: %s", 
+		// V3.0
+		logger.debugf("cameraState check: %s", 
 			    procedure.getProcedureCcdFrameList().isEmpty() ? "no frames" :
 			    procedure.getProcedureCcdFrameList().get(0).getCcdFrame().getCameraState());
 		
@@ -82,14 +82,13 @@ public class ProcedureMgmt {
 		
 		
 		try {
-			// TODO: V3 - uncomment when procedure output is implemented
+			
 			ProcedureOutput procedureOutput = procedureOutputMgmt.findProcedureOutput(procedure);
 			procedure.setProcedureOutput(procedureOutput);
 			
 			// procedure frame data 
 			for (ProcedureCcdFrame procedureCcdFrame : procedure.getProcedureCcdFrameList()) {
 
-				// TODO: V3 - uncomment when procedure output is implemented
 				setupFrameLog(procedureCcdFrame);
 			}
 			

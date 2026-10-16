@@ -195,8 +195,8 @@ public class Instrument {
 		
 		if (cameraState != null) {
 			
-			// V3.0 TEST
-			logger.infof("cameraState raw: id=%d, overallStatus=%d, ccdTemp=%f, boxTemp=%f, benchTemp=%f, prismWheelPos=%d, refBeamPos=%d",
+			// V3.0 
+			logger.debugf("cameraState raw: id=%d, overallStatus=%d, ccdTemp=%f, boxTemp=%f, benchTemp=%f, prismWheelPos=%d, refBeamPos=%d",
 				    cameraState.getCameraStateId(), cameraState.getOverallStatus(), cameraState.getCcdTemp(),
 				    cameraState.getBoxTemp(), cameraState.getBenchTemp(), cameraState.getPrismWheelPos(), cameraState.getRefBeamPos());
 			
@@ -264,9 +264,9 @@ public class Instrument {
 			// Overall status
 			camera.setOverallStatus(cameraState.getOverallStatus());
 			
-			// V3.0 TEST
-	        logger.infof("after update: overallStatus=%d, instrumentTemp=%f, camera identity=%s", 
-	            camera.getOverallStatus(), camera.getInstrumentTemperature(), System.identityHashCode(camera));
+			// V3.0 
+	        logger.debugf("after update: overallStatus=%d, instrumentTemp=%f, camera identity=%s", 
+		            (Object) camera.getOverallStatus(), camera.getInstrumentTemperature(), System.identityHashCode(camera));
 	
 		} else {
 			camera.getPupilWheel().setState(DeviceStates.STATE_IN_TRANSIT);

@@ -391,8 +391,8 @@ public class ProcedureController implements Serializable {
 	}
 
 	public Instrument getFrameInstrument() {
-		// V3.0 - TEST
-		 logger.infof("getFrameInstrument() called, identity=%s, camera overallStatus=%d", 
+		// V3.0 
+		 logger.debugf("getFrameInstrument() called, identity=%s, camera overallStatus=%d", 
 			        System.identityHashCode(frameInstrument), frameInstrument.getCamera().getOverallStatus());
 		return frameInstrument;
 	}
