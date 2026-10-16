@@ -1,7 +1,12 @@
 <ui:composition xmlns="http://www.w3.org/1999/xhtml" xmlns:ui="http://java.sun.com/jsf/facelets" xmlns:h="http://java.sun.com/jsf/html"
 	xmlns:f="http://java.sun.com/jsf/core" xmlns:p="http://primefaces.org/ui">
 
-	<p:tab title="Image Display Tool#{empty frameController.selectedFitsFilename ? '' : ' - '}#{frameController.selectedFitsFilename}" id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
+
+	<p:tab id="framePanel" columns="1" style="padding:0;margin:0" styleClass="btmsForm noupdate">
+		<f:facet name="title">
+			<h:outputText id="frameTitle" value="Image Display Tool#{empty frameController.selectedFitsFilename ? '' : ' - '}#{frameController.selectedFitsFilename}" />
+		</f:facet>
+
 
 		<p:menubar id="frameMenu">
 
@@ -9,7 +14,7 @@
 			    <p:menuitem value="Save" ajax="true" 
 			                action="#{frameController.doSaveFrame}" 
 			                disabled="#{sessionController.procedureExecuting or not frameController.saveAllowed}" 
-			                update=":frameDisplayForm:loadPanel:fitsBrowser :growl :errorGrowl"/>
+			                update=":frameDisplayForm:loadPanel:fitsBrowser :frameDisplayForm:frameViewerPanel:frameTitle :growl :errorGrowl"/>
 			    <p:menuitem value="Save Current Displayed Image As ..." 
 			                disabled="#{sessionController.procedureExecuting}" 
 			                update=":growl :errorGrowl" 
