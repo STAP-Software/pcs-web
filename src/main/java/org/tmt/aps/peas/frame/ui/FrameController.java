@@ -196,11 +196,7 @@ public class FrameController implements Serializable {
 	}
 
 	public String getSelectedFitsFilename() {
-		if (selectedNode == null) {
-			return null;
-		}
-		FrameTreeElement fte = (FrameTreeElement) selectedNode.getData();
-		return fte.getFileName();
+		return (ccdFrame == null) ? null : ccdFrame.getFitsFilename();
 	}
 
 	public StreamedContent getGraphicImage() {
