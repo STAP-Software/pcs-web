@@ -444,7 +444,6 @@ public class ProcedureExecutionMgmt {
 			// everything is now stored. Reload somethings for immediate viewing.
 
 			
-			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 			
 			// for phasing, we are already aborted at this point but do not have getAbortRequested() set anymore.
 			// FIXME: we need to implement this as a better state machine to avoid this kind of hack
@@ -466,6 +465,8 @@ public class ProcedureExecutionMgmt {
 
 		} catch (Exception e) {
 			logger.error(MessageGenerator.generateMessage("generic.error"), e);
+		} finally {
+			procedureExecutionState.requestCompleteProcedure(); // if this is a subprocedure, transfer control to superprocedure
 		}
 	}
 

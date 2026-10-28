@@ -142,7 +142,7 @@ function drawSpots() {
 
 		
  		<p:commandButton value="Abort" styleClass="dialogbutton" update=":growl :errorGrowl"
-			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="cPF('centroidsDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}" />
+			action="#{asyncController.doCloseGraphicsDisplayAbort}" oncomplete="PF('centroidsDisplayDialog').hide()" rendered="#{sessionController.procedureExecuting}" />
     	<p:commandButton id="button2" value="#{visualizationController.currentDisplay.button2Text}" styleClass="dialogbutton" update=":growl :errorGrowl"
 				action="#{asyncController.doCloseGraphicsDisplay2}" oncomplete="PF('centroidsDisplayDialog').hide()" rendered="#{visualizationController.currentDisplay.buttonCount gt 1}" />
     	<p:commandButton id="button1" value="#{visualizationController.currentDisplay.button1Text}" styleClass="dialogbutton" update=":growl :errorGrowl"

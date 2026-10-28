@@ -311,11 +311,11 @@
 						            action="#{procedureController.doExecuteProcedure}"
 						            update=":menuForm :breadcrumbForm :errorGrowl"
 						            widgetVar="startButton2"
-						            onclick="startButton2.disable();"
+						            onclick="PF('startButton2').disable();"
 						            disabled="#{asyncController.executionStatus or not procedureController.startEnabled}" />
 						
 						        <p:commandButton value="Abort"
-						            icon="ui-icon-close"
+						            icon="pi pi-times"
 						            action="#{procedureController.doAbortProcedure}"
 						            disabled="#{not asyncController.executionStatus or asyncController.abortRequested}" />
 						    </div>

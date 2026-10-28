@@ -18,7 +18,7 @@
 					<p:menuitem value="Rerun Last Procedure" action="#{procedureController.doNewLastProc}" disabled="#{sessionController.navDisabled}" 
 						icon="pi pi-refresh" rendered="#{sessionController.currentSessionLastProcedure != null and not sessionController.navDisabled and sessionController.runProcedurePermission}" />
 					<p:menuitem value="Go to Running Procedure" action="#{procedureController.doViewProcedure}"
-						icon="pi pi-refresh" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="procedureExecutionPoller.start();" />
+						icon="pi pi-refresh" rendered="#{sessionController.navDisabled and sessionController.runProcedurePermission}" oncomplete="PF('procedureExecutionPoller').start();" />
 					<p:submenu label="Run" icon="pi pi-cog" rendered="#{sessionController.runProcedurePermission}">
 						<p:menuitem value="Passive Tilt" action="#{procedureController.doNewPassiveTilt}" disabled="#{sessionController.navDisabled}"/>
 						<p:menuitem value="Coarse Phasing" action="#{procedureController.doNewCoarsePhasing}" disabled="#{sessionController.navDisabled}"/>

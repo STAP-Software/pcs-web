@@ -99,7 +99,17 @@ public class SessionMgmt {
 	        }
 	    }
 
-	    
+	    // V3.0 - the operational query can't filter the fetched procedure list under Hibernate 6,
+	    // so exclude test procedures here when test data is not requested
+	    if (!includeTestData && session.getProcedureList() != null) {
+	        List<Procedure> operationalList = new ArrayList<>();
+	        for (Procedure p : session.getProcedureList()) {
+	            if (p.isOperational()) {
+	                operationalList.add(p);
+	            }
+	        }
+	        session.setProcedureList(operationalList);
+	    }
 	    
 	    // Initialize lazy properties manually
 	    if (session.getProcedureList() != null) {
