@@ -35,8 +35,6 @@ import org.tmt.aps.peas.session.model.FrameFieldDisplay;
 import org.tmt.aps.peas.session.model.Session;
 import org.tmt.aps.peas.telescope.model.Telescope;
 
-import jakarta.transaction.Transactional;
-
 
 
 /**
@@ -66,8 +64,6 @@ public class SessionMgmt {
 	 * @return the night session
 	 */
 
-
-	@Transactional(Transactional.TxType.SUPPORTS)
 	public Session findSession(Long sessionId, boolean includeTestData) {
 
 	    TypedQuery<Session> query;

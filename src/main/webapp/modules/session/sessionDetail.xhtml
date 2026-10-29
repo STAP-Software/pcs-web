@@ -67,7 +67,7 @@
 					<h:panelGroup rendered="#{sessionController.engineeringView}">
 						<h:outputLabel value="Show Non-Operational Procedures: " style="position:relative; top:-10px;"/>
 						<p:selectBooleanCheckbox value="#{sessionController.includeTestData}" style="position:relative;top:-12px;margin-left:2px" >
-						<p:ajax listener="#{sessionController.operationalViewChangeListener}" update="sessionTable"/>
+						<p:ajax listener="#{sessionController.operationalViewChangeListener}" process="@this sessionTable" update="sessionTable"/>
 						</p:selectBooleanCheckbox>
 					</h:panelGroup>
 
