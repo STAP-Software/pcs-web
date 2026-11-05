@@ -1119,11 +1119,10 @@ public class ComputationLibraryImpl {
 		
 		ProcedureCcdFrame procedureCcdFrame = frameMgmt.findRefBeamMapProcedureCcdFrame(currentRefMap.getRefBeamMapId());
 		
-		/* V3.0 TEST ONLY
+	
 		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, ccdLeftTemperature, ccdRightTemperature,  
 				numIterations, currentDate, currentRefMap, procedureCcdFrame);
-		*/
-
+		
 
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
