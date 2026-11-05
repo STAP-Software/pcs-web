@@ -669,6 +669,27 @@ public class FrameMgmt {
     	procedureCcdFrame.setCentroidMap(em.getReference(CentroidMap.class, centroidMapId));
     }
 
+    // V3.0
+    public ProcedureCcdFrame findRefBeamMapProcedureCcdFrame(Long refBeamMapId) {
+    	return em.createQuery("""
+                SELECT f
+				FROM ProcedureCcdFrame f
+				JOIN FETCH f.ccdFrame
+				JOIN FETCH f.ccdFrame.cameraState
+				WHERE f.procedure.procedureId IN (
+					SELECT prb.procedure.procedureId
+					FROM ProcedureRefBeamMap prb
+					WHERE prb.refBeamMap.refBeamMapId = :refBeamMapId
+					AND prb.procedure.procedureType.procedureTypeId = 8)
+            """, ProcedureCcdFrame.class)
+            .setParameter("refBeamMapId", refBeamMapId)
+            .setMaxResults(1)
+            .getResultStream()
+            .findFirst()
+            .orElse(null);
+    }
+    
+    
     
 
 	/**

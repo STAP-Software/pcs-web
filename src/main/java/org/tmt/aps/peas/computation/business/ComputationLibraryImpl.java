@@ -1110,11 +1110,21 @@ public class ComputationLibraryImpl {
 		
 		logger.info(MessageGenerator.generateMessage("computation.start", "autoRefMapCheck"));
 		
-		ProcedureCcdFrame procedureCcdFrame = currentRefMap.getProcedureRefBeamMap().getProcedure().getLatestProcedureCcdFrame();
 		
+		logger.infof("autoRefMapCheck: refMap=%d checkFrameProcedure=%d type=%d",
+			    currentRefMap.getRefBeamMapId(),
+			    currentRefMap.getProcedureRefBeamMap().getProcedure().getProcedureId(),
+			    currentRefMap.getProcedureRefBeamMap().getProcedure().getProcedureType().getProcedureTypeId());
+		
+		
+		ProcedureCcdFrame procedureCcdFrame = frameMgmt.findRefBeamMapProcedureCcdFrame(currentRefMap.getRefBeamMapId());
+		
+		/* V3.0 TEST ONLY
 		JavaComputations.autoRefMapCheck(autoRefMapConfig, currentCoarsePosition, currentFinePosition, ccdLeftTemperature, ccdRightTemperature,  
 				numIterations, currentDate, currentRefMap, procedureCcdFrame);
-		
+		*/
+
+
 		logger.info(MessageGenerator.generateMessage("computation.success", "autoRefMapCheck"));
 	}
 
