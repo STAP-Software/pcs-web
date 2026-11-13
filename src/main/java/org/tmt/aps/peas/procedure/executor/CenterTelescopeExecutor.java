@@ -116,7 +116,7 @@ public class CenterTelescopeExecutor {
 		logger.info("CenterTelescopeExecutor::executeProcedure::" );
 
 		try {
-
+			
 			ProcedureConfig procedureConfig = procedure.getProcedureConfigSet().getProcedureConfig();
 			
 			CenterTelescopeProcedureOutput procedureOutput = (CenterTelescopeProcedureOutput)procedure.getProcedureOutput();

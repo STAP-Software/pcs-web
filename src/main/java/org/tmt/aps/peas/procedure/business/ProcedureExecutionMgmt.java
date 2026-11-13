@@ -354,11 +354,16 @@ public class ProcedureExecutionMgmt {
 			}
 			logger.debug("performProcedureCompletion::globalConfig updated");
 
+			// V3.0 save aborted state from current procedure instance
+			boolean aborted = procedure.isProcedureStateAborted();
 			
 			// V3.0 update procedure instance with saved hierarchy
 			// this restores the procedure CCD frame list, centroids etc - 
 			// which during the procedure execution needed to be handled outside the procedure instance
 			procedure = procedureMgmt.findProcedure(procedure.getProcedureId());
+			
+			// V3.0 restore aborted state on newly loaded instance
+			if (aborted) procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 			
 			System.out.println("AFTER FIND instance: " + System.identityHashCode(procedure));
 
@@ -446,7 +451,7 @@ public class ProcedureExecutionMgmt {
 			
 			
 			// for phasing, we are already aborted at this point but do not have getAbortRequested() set anymore.
-			// FIXME: we need to implement this as a better state machine to avoid this kind of hack
+
 			if (procedure.getProcedureState() != Procedure.PROCEDURE_STATE_ABORTED) {
 				if (procedureExecutionState.getAbortRequested()) {
 					procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
