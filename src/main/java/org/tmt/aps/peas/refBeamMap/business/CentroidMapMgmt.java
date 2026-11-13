@@ -98,7 +98,7 @@ public class CentroidMapMgmt {
 
 	        return fullQuery.getSingleResult();
 
-	    } catch (Exception e) {
+	    } catch (NoResultException e) {
 	        logger.info("No reference beam map found.");
 	        return null;
 	    }
