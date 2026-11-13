@@ -1238,15 +1238,19 @@ public class ProcedureController implements Serializable {
 
 			// v3.0 get reference beam used (null for procedures that do not use one, e.g. Center Telescope)
 			refMapFilename = null;
-			ProcedureRefBeamMap procedureRefBeamMap = centroidMapMgmt.findRefBeamMapForProcedure(procedure.getProcedureId());
-			if (procedureRefBeamMap != null) {
-				Date refBeamCreated = procedureRefBeamMap.getRefBeamMap().getCreateDate();
-				// get the refmap procedure that created it
-				Procedure refMapProcedure = procedureMgmt.findProcedureEncompassingDate(refBeamCreated, ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
-				ProcedureCcdFrame refMapProcedureCcdFrame = refMapProcedure.getProcedureCcdFrameList().get(0);
-				refMapFilename = refMapProcedureCcdFrame.getCcdFrame().getFitsFilename();
+			try {
+				ProcedureRefBeamMap procedureRefBeamMap = centroidMapMgmt.findRefBeamMapForProcedure(procedure.getProcedureId());
+				if (procedureRefBeamMap != null) {
+					Date refBeamCreated = procedureRefBeamMap.getRefBeamMap().getCreateDate();
+					// get the refmap procedure that created it
+					Procedure refMapProcedure = procedureMgmt.findProcedureEncompassingDate(refBeamCreated, ProcedureType.PROCEDURE_TYPE_ID_CREATE_REFERENCE_BEAM_MAP);
+					ProcedureCcdFrame refMapProcedureCcdFrame = refMapProcedure.getProcedureCcdFrameList().get(0);
+					refMapFilename = refMapProcedureCcdFrame.getCcdFrame().getFitsFilename();
+				}
+			} catch (Exception e) {
+				// v3.0 a failed ref map lookup must not block viewing the procedure
+				logger.error(MessageGenerator.generateMessage("generic.error"), e);
 			}
-			
 
 			
 			
