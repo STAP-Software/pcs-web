@@ -871,10 +871,10 @@ public class FrameMgmt {
 				
 				ccdFrame.setHeaderPupilMaskType(headerPupilMaskType);
 				
-				System.out.println("MASK = " + mask);
+				logger.info("MASK = " + mask);
 				
 				String filter = imhdu.getHeader().getStringValue("FILTER");
-				System.out.println("FILTER = " + filter);
+				logger.info("FILTER = " + filter);
 				
 				ccdFrame.setCcdName(imhdu.getHeader().getStringValue("CCD"));
 				ccdFrame.setCcdGainValue(imhdu.getHeader().getFloatValue("CCDGAIN"));

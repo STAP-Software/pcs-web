@@ -197,7 +197,7 @@ public class BreadcrumbMenuBean implements Serializable {
     }
 
     public String goProcedurePerspective() {
-        System.out.println("goProcedurePerspective");
+        logger.info("goProcedurePerspective");
         return "/modules/procedure/procedurePerspective.xhtml?faces-redirect=true";
     }
 

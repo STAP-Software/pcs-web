@@ -722,7 +722,7 @@ public class ComputationLibraryImpl {
 		
 		for (int i=0; i<centroidOffsets.length; i++) {
 			if (centroidOffsets[i].mag() == 0.0f && goodSpots[i] == 1) {
-				System.out.println("divide by zero anticipated: " + i);
+				logger.warn("divide by zero anticipated: " + i);
 			}
 		}
 		

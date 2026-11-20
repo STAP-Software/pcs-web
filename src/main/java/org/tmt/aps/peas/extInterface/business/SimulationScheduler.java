@@ -70,7 +70,7 @@ public class SimulationScheduler {
 				
 				// Camera Query
 				
-				System.out.println(Arrays.toString(simulator.deviceCodeToCameraChangeListenerList.keySet().toArray()));
+				logger.info(Arrays.toString(simulator.deviceCodeToCameraChangeListenerList.keySet().toArray()));
 				
 				for (Integer deviceKey : simulator.deviceCodeToCameraChangeListenerList.keySet()) {
 					// get the value CameraQueryResult for this device

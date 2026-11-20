@@ -365,7 +365,7 @@ public class ProcedureExecutionMgmt {
 			// V3.0 restore aborted state on newly loaded instance
 			if (aborted) procedure.setProcedureState(Procedure.PROCEDURE_STATE_ABORTED);
 			
-			System.out.println("AFTER FIND instance: " + System.identityHashCode(procedure));
+			logger.debug("AFTER FIND instance: " + System.identityHashCode(procedure));
 
 			// persist all the frames
 			/**
@@ -460,8 +460,8 @@ public class ProcedureExecutionMgmt {
 				}
 			}
 
-			System.out.println("IN UPDATE instance: " + System.identityHashCode(procedure));
-			System.out.println("Frame list: " + procedure.getProcedureCcdFrameList());
+			logger.debug("IN UPDATE instance: " + System.identityHashCode(procedure));
+			logger.debug("Frame list: " + procedure.getProcedureCcdFrameList());
 			
 
 			

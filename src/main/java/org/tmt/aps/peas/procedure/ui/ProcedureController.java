@@ -1312,10 +1312,6 @@ public class ProcedureController implements Serializable {
 	public void doViewAdvancedOptions() {
 		
 	}
-
-	public void doTest1() {
-		System.out.println("test");
-	}
 	
 	/**
 	 * JSF Action method called when the Cancel button in the Advanced Options dialog is clicked
@@ -1607,7 +1603,7 @@ public class ProcedureController implements Serializable {
 		IterationListConfig iterationListConfig = procedure.getProcedureConfigSet().getIterationListConfig();
 		iterationListConfig.updateDisplayLists(procedure.getProcedureConfigSet().getProcedureConfig().getLightSource());
 		
-		System.out.println(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
+		logger.info(procedure.getProcedureConfigSet().getIterationListConfig().getIterationValueList().getDisplayString());
 		
 		
 		// load up the search range for NB phasing

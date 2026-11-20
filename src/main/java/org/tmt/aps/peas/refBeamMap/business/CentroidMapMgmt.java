@@ -279,7 +279,7 @@ public class CentroidMapMgmt {
 		List<Integer> fullFandIMissingSpotList = new ArrayList<Integer>();
 		
 		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
-			System.out.println(Arrays.toString(mirrorConfigPresentSubaperatures));
+			logger.info("phasing subaperatures present: " + Arrays.toString(mirrorConfigPresentSubaperatures));
 		}
 		
 		// fold in incomplete mirror segments - do not do this for Sufs ref maps
@@ -300,7 +300,7 @@ public class CentroidMapMgmt {
 		
 		
 		if (pupilMaskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_160)) {
-		System.out.println("full list = " + fullFandIMissingSpotList + ", sufsGroup = " + sufsGroupNumber);
+			logger.info("full FandI missing spot list = " + fullFandIMissingSpotList + ", sufsGroup = " + sufsGroupNumber);
 		}
 		
 		for (Integer spot : fullFandIMissingSpotList) {

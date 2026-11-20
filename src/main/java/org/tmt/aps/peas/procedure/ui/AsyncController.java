@@ -496,7 +496,7 @@ public class AsyncController implements Serializable {
 	 * JSF Action method called when visualization display close button is clicked.
 	 */
 	public void doCloseGraphicsDisplay() {
-		System.out.println("closing graphics display");
+		logger.info("closing graphics display");
 		graphicDisplayMgmt.setReturnState(1);
 		visualizationController.setCurrentDisplay(null);
 	}

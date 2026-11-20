@@ -466,8 +466,8 @@ public class CameraManualController implements Serializable {
 				String prefix = device2fieldNamePrefix.get(deviceCode);
 				
 				
-				System.out.println(" Updating: cameraDiagForm:" + prefix + "Value");
-				System.out.println(" Updating: cameraDiagForm:" + prefix + "Status");
+				logger.info(" Updating: cameraDiagForm:" + prefix + "Value");
+				logger.info(" Updating: cameraDiagForm:" + prefix + "Status");
 				
 				PrimeFaces.current().ajax().update("cameraDiagForm:" + prefix + "Value"); 
 				PrimeFaces.current().ajax().update("cameraDiagForm:" + prefix + "Status"); 

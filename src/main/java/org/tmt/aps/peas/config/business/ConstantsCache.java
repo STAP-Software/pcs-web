@@ -89,7 +89,7 @@ public class ConstantsCache {
 	
 	public FloatPoint[] getMaskTheoreticalLocations(Long maskTypeId, Integer sufsGroupNumber) {
 		
-		System.out.println(maskTypeId);
+		logger.info("getMaskTheoreticalLocations::maskTypeId = " + maskTypeId);
 		
 		if (maskTypeId.equals(PupilMaskType.PUPIL_MASK_TYPE_ID_36)) {
 			
@@ -127,7 +127,7 @@ public class ConstantsCache {
 		int groupCenterMirror = sufsConstants.getSufsGroupToMirror()[sufsGroupNumber.intValue() - 1][0];
 		FloatPoint groupTranslation = primaryMirrorConstants.getSegmentCenters()[groupCenterMirror-1]; // position of the segment center of the segment this group is centered over
 		
-		//System.out.println("groupTranslation = " + groupTranslation);
+		logger.debug("groupTranslation = " + groupTranslation);
 		
 		for (int i=0; i<subaperatures.length; i++) {
 			

@@ -34,8 +34,7 @@ public class MissingSpotsMgmt {
 	 * @return the list of missing spots
 	 */
 	public MissingSpotList findMissingSpotList(int spotListType, Long telescopeId, Long pupilMaskTypeId) {
-		System.out.println(spotListType + "::" +  pupilMaskTypeId);
-		logger.debug("findMissingSpotList::");
+		logger.debug("findMissingSpotList::" + spotListType + "::" +  pupilMaskTypeId);
 		TypedQuery<MissingSpotList> query = em.createNamedQuery("findSpotListByTypeAndMask", MissingSpotList.class);
 		query.setParameter("spotListType", spotListType);
 		query.setParameter("pupilMaskTypeId", pupilMaskTypeId);
